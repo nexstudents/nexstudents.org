@@ -1,7 +1,7 @@
 # NexStudents — Free Placement Assessment
 
 A placement test that actually places. Free, online, scored the moment the student finishes.
-No printing, no answer key to mark by hand, no account, no sales call.
+No answer key to mark by hand, no sales call.
 
 **Live:** https://nexstudents.github.io/nexstudents.org/
 
