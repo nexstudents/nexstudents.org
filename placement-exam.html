@@ -3,21 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Reading Placement — Level B</title>
+<title>Reading Placement — Level B | NexStudents</title>
+<meta name="description" content="Free reading comprehension placement exam, Level B (grade 6). Auto-scored with a breakdown by skill.">
+<meta name="theme-color" content="#fdf7f1">
+<link rel="canonical" href="https://nexstudents.org/placement-exam.html">
+<!-- The site sheet comes FIRST so the nav, slide-out panel and footer are
+     styled exactly as on every other page. The block below only handles the
+     exam itself and deliberately loads second so it wins where they overlap. -->
+<link rel="stylesheet" href="/assets/site.css">
 <style>
+  /* The exam was built standalone with its own colour names before the site
+     had a design system. Rather than rename every selector, those names are
+     now MAPPED onto the site variables - so the exam follows the theme and
+     there is exactly one place to change a colour. */
   :root{
-    --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --line:#2a2f3a;
-    --text:#e8eaed; --dim:#9aa2b1; --accent:#4c8dff; --good:#3ecf8e; --warn:#f5a524; --bad:#f4685f;
-  }
-  @media (prefers-color-scheme: light){
-    :root{ --bg:#f6f7f9; --surface:#fff; --surface2:#f0f2f5; --line:#dfe3e8;
-           --text:#1a1d23; --dim:#5d6673; --accent:#2f6fe0; }
+    --surface:var(--bg-2);
+    --surface2:var(--bg-3);
+    --text:var(--fg);
+    --dim:var(--muted);
+    --good:#2f9e69;      /* passes AA on the cream, unlike the original #3ecf8e */
+    --warn:#c8791a;
+    --bad:#c8453c;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);
        font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-       padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+       padding:0 0 env(safe-area-inset-bottom)}
+  /* The exam column is deliberately narrow for readability. The footer is not
+     part of the exam, so it keeps the site's full width. */
   .wrap{max-width:760px;margin:0 auto;padding:24px 18px 64px}
+  footer .wrap{max-width:var(--max);padding-left:var(--gutter);padding-right:var(--gutter)}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
   h1{font-size:26px;margin:0 0 6px;letter-spacing:-.02em}
   h2{font-size:19px;margin:0 0 12px}
@@ -69,6 +84,43 @@
 </style>
 </head>
 <body>
+
+<nav class="top">
+  <div class="nav-in">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="panel">
+      <i></i><i></i><i></i>
+    </button>
+    <a class="word" href="/">NEX<b>STUDENTS</b></a>
+    <div class="tabs">
+      <a href="/">Home</a>
+      <a class="on" href="/placement-exam.html">Placement Exam</a>
+      <a class="soon" href="/games/">Games</a>
+      <a class="soon" href="/resources/">Resources</a>
+    </div>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<aside class="panel" id="panel" aria-hidden="true" aria-label="Menu">
+  <div class="panel-top">
+    <span class="word">NEX<b>STUDENTS</b></span>
+    <button class="panel-close" id="panelClose" aria-label="Close menu">&times;</button>
+  </div>
+  <a class="pl" href="/">Home</a>
+  <a class="pl" href="/placement-exam.html">Placement Exam<small>Reading, Level B &middot; grade 6</small></a>
+  <a class="pl" href="/games/">Games <span class="pdot">&bull;</span><small>Coming soon</small></a>
+  <a class="pl" href="/resources/">Resources <span class="pdot">&bull;</span><small>Coming soon</small></a>
+  <div class="panel-foot">
+    <a class="btn solid" href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a>
+    <p>No sign-up. No email required.</p>
+    <div class="panel-mini">
+      <a href="https://nexedgestudios.com/">NexEdge Studios</a>
+      <a href="https://github.com/nexstudents">GitHub</a>
+    </div>
+  </div>
+</aside>
+
 <div class="wrap">
 
   <!-- ============ SCREEN 1: INSTRUCTIONS ============ -->
@@ -281,5 +333,19 @@ function finish(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 </script>
+
+<footer>
+  <div class="wrap">
+    <div class="fbot">
+      <p style="margin:0"><strong>NexStudents</strong> is a brand of NexEdge Studios.</p>
+      <p style="margin:0">
+        &copy; <span class="yr">2026</span> NexEdge Studios<span class="tm">&trade;</span>.
+        All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/site.js"></script>
 </body>
 </html>

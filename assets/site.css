@@ -28,6 +28,16 @@
   --accent-soft:rgba(226,86,10,.10);
   --accent-ink:#ffffff;
   --accent-rgb:226,86,10;   /* the accent as channels, for the rgba() glows below */
+  /* The complement. Orange sits at hue 21, so its opposite is hue ~201, an
+     azure blue. Paul's call, and it is the right one - a single warm accent
+     on a warm ground reads flat. ORANGE IS FOR ACTIONS, BLUE IS FOR
+     INFORMATION. Do not swap those roles or the page stops telling the
+     reader where to click.
+     Their true complement (#0a8ee2) only manages 3.2:1 on the cream, so this
+     is darkened to 4.6:1 while holding the same hue. */
+  --accent-2:#0a6fb4;
+  --accent-2-rgb:10,111,180;
+  --accent-2-soft:rgba(10,111,180,.10);
   --nav-bg:rgba(255,252,249,.9);
   --hover:#f8ece1;         /* was hardcoded dark in the NexEdge sheet */
   --max:1180px;
@@ -239,7 +249,7 @@ section{padding:82px 0;scroll-margin-top:72px}
 .head{display:flex;align-items:flex-end;justify-content:space-between;
   gap:22px;margin-bottom:32px;flex-wrap:wrap}
 .kicker{font-size:11px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin:0 0 10px}
+  color:var(--accent-2);font-weight:700;margin:0 0 10px}
 .h2{margin:0;font-weight:900;letter-spacing:-.035em;line-height:1.05;
   font-size:clamp(1.7rem,4.4vw,2.6rem)}
 .sub{margin:12px 0 0;color:var(--muted);max-width:58ch}
@@ -256,10 +266,13 @@ section{padding:82px 0;scroll-margin-top:72px}
   .cell.w4{grid-column:span 4}
   .cell.w6{grid-column:span 6}
 }
-.ic{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;
-  justify-content:center;border:1px solid var(--accent);color:var(--accent);
+/* Icon tiles are INFORMATION, so they take the blue. The orange is reserved
+   for things you click. */
+.ic{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;
+  justify-content:center;border:1px solid var(--accent-2);color:var(--accent-2);
+  background:var(--accent-2-soft);
   margin-bottom:20px;transition:background .35s,color .35s}
-.cell:hover .ic{background:var(--accent);color:var(--accent-ink)}
+.cell:hover .ic{background:var(--accent-2);color:#fff}
 .ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;
   stroke-linecap:round;stroke-linejoin:round}
 .cell h3{margin:0 0 10px;font-size:1.22rem;letter-spacing:-.02em}
@@ -267,7 +280,7 @@ section{padding:82px 0;scroll-margin-top:72px}
 .ticks{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px}
 .ticks li{display:flex;align-items:center;gap:10px;font-size:.85rem;
   letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--fg)}
-.ticks i{width:6px;height:6px;background:var(--accent);border-radius:2px;flex:none}
+.ticks i{width:6px;height:6px;background:var(--accent-2);border-radius:2px;flex:none}
 
 /* ---------- cards ---------- */
 .grid2{display:grid;gap:14px}
