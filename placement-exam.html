@@ -41,7 +41,7 @@
   .rule li{padding:10px 0 10px 28px;position:relative;border-bottom:1px solid var(--line)}
   .rule li:last-child{border-bottom:0}
   .rule li::before{content:"";position:absolute;left:6px;top:19px;width:7px;height:7px;
-                   border-radius:50%;background:var(--accent)}
+                   border-radius:50%;background:var(--accent-2)}
   button{font:inherit;font-weight:600;cursor:pointer;border:0;border-radius:10px;
          padding:13px 22px;background:var(--accent);color:#fff}
   button:disabled{opacity:.4;cursor:not-allowed}
@@ -53,8 +53,11 @@
   .passage p{margin:0 0 15px;font-size:17px;line-height:1.75;max-width:64ch}
   .passage p:last-child{margin:0}
   @media (max-width:560px){ .passage{padding:20px 18px} .passage p{font-size:16px} }
+  /* ORANGE IS FOR ACTIONS, BLUE IS FOR INFORMATION - the same rule the rest of
+     the site follows. Progress, instructions and the verdict are information;
+     the buttons and the option you pick are actions and stay orange. */
   .bar{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:18px}
-  .bar > i{display:block;height:100%;background:var(--accent);transition:width .25s}
+  .bar > i{display:block;height:100%;background:var(--accent-2);transition:width .25s}
   .meta{display:flex;justify-content:space-between;color:var(--dim);font-size:13px;margin-bottom:10px}
   .opt{display:block;width:100%;text-align:left;background:var(--surface2);color:var(--text);
        border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:7px;
@@ -65,7 +68,7 @@
   .opt.sel b{color:var(--accent)}
   .score{font-size:44px;font-weight:700;letter-spacing:-.03em;margin:0}
   .score span{font-size:22px;color:var(--dim);font-weight:600}
-  .verdict{border-left:3px solid var(--accent);padding:12px 0 12px 16px;margin:18px 0;color:var(--dim)}
+  .verdict{border-left:3px solid var(--accent-2);padding:12px 0 12px 16px;margin:18px 0;color:var(--dim)}
   .verdict b{color:var(--text)}
   table{width:100%;border-collapse:collapse;font-size:15px}
   th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
