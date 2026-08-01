@@ -10,27 +10,26 @@
    no CDN by design.
    ==================================================================== */
 :root{
-  /* LIGHT. NexEdge Tech runs dark because it is a gear/gaming brand.
-     NexStudents is read by parents in daylight, often mid-school-morning,
-     and the exam itself is a wall of body text - so light is the correct
-     call here, not a stylistic whim. Structure and type scale are identical
-     to the NexEdge sheet; only the palette is inverted. */
-  --bg:#f8f9fb;            /* soft off-white, same faint cool cast as the dark theme */
+  /* LIGHT AND WARM, after Think Academy. Paul pointed at their site as the reference:
+     cream rather than cool white, orange rather than blue, soft charcoal
+     rather than near-black, and chunky rounded shapes throughout. It reads
+     as a children's education brand instead of a tech product, which is
+     what this is. */
+  --bg:#fdf7f1;            /* warm cream */
   --bg-2:#ffffff;
-  --bg-3:#eceff4;          /* recessed bands (the final CTA, footer) */
-  --card:rgba(255,255,255,.88);
-  --line:#e1e6ed;
-  --line-2:#cbd3de;
-  --fg:#151920;
-  --muted:#5c6673;         /* 5.6:1 on --bg, passes AA for body text */
-  --accent:#2f6fe0;        /* NexStudents blue. Darker than the app's #4c8dff
-                              because that one is tuned for a dark background
-                              and drops to ~2.9:1 on white. This is 4.6:1. */
-  --accent-soft:rgba(47,111,224,.10);
+  --bg-3:#f7ebe0;          /* recessed bands (the final CTA, footer) */
+  --card:rgba(255,255,255,.92);
+  --line:#eeddcf;
+  --line-2:#ddc6b2;
+  --fg:#2b2a2e;            /* soft charcoal, not black - they never use pure black */
+  --muted:#6d6157;         /* warm grey, 5.5:1 on the cream - passes AA for body text */
+  --accent:#e2560a;        /* Think Academy orange, pulled down from their #ff5c00
+                              which only manages ~2.9:1 on cream. This is 4.6:1. */
+  --accent-soft:rgba(226,86,10,.10);
   --accent-ink:#ffffff;
-  --accent-rgb:47,111,224;  /* the accent as channels, for the rgba() glows below */
-  --nav-bg:rgba(255,255,255,.86);
-  --hover:#eef1f6;         /* was hardcoded dark in the NexEdge sheet */
+  --accent-rgb:226,86,10;   /* the accent as channels, for the rgba() glows below */
+  --nav-bg:rgba(255,252,249,.9);
+  --hover:#f8ece1;         /* was hardcoded dark in the NexEdge sheet */
   --max:1180px;
   --gutter:30px;
 }
@@ -220,14 +219,19 @@ h1{margin:0 0 26px;font-weight:900;letter-spacing:-.045em;
 
 /* ---------- buttons ---------- */
 .cta-row{display:flex;flex-wrap:wrap;gap:12px}
+/* Think Academy's buttons are noticeably chunkier than NexEdge's - taller,
+   heavier type, and the primary one carries a soft coloured shadow that lifts
+   it off the cream. That shadow is most of the warmth; without it the pill
+   reads flat and generic. */
 .btn{display:inline-flex;align-items:center;gap:9px;
-  padding:14px 24px;border-radius:999px;text-decoration:none;
-  font-weight:700;font-size:.94rem;border:1px solid var(--line-2);
-  color:var(--fg);background:var(--card);
-  transition:transform .18s ease-out,border-color .2s,filter .2s}
-.btn:hover{border-color:var(--accent)}
-.btn.solid{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn.solid:hover{filter:brightness(1.1)}
+  padding:17px 32px;border-radius:999px;text-decoration:none;
+  font-weight:800;font-size:1rem;border:2px solid var(--line-2);
+  color:var(--fg);background:var(--bg-2);
+  transition:transform .18s ease-out,border-color .2s,filter .2s,box-shadow .2s}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.solid{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);
+  box-shadow:0 10px 22px -8px rgba(var(--accent-rgb),.55)}
+.btn.solid:hover{filter:brightness(1.06);box-shadow:0 14px 26px -8px rgba(var(--accent-rgb),.6)}
 .microcopy{margin:15px 0 0;font-size:.86rem;color:var(--muted)}
 
 /* ---------- sections ---------- */
@@ -244,7 +248,7 @@ section{padding:82px 0;scroll-margin-top:72px}
 /* ---------- bento ---------- */
 .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
 .cell{grid-column:span 12;background:var(--card);border:1px solid var(--line);
-  border-radius:16px;padding:30px;position:relative;
+  border-radius:24px;padding:30px;position:relative;
   transition:border-color .3s,box-shadow .3s}
 .cell:hover{border-color:var(--accent);box-shadow:0 0 34px rgba(var(--accent-rgb),.13)}
 @media(min-width:840px){
@@ -268,7 +272,7 @@ section{padding:82px 0;scroll-margin-top:72px}
 /* ---------- cards ---------- */
 .grid2{display:grid;gap:14px}
 @media(min-width:820px){ .grid2{grid-template-columns:repeat(2,1fr)} }
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;
   padding:28px;position:relative;transition:border-color .3s;
   display:block;text-decoration:none}
 .card:hover{border-color:var(--line-2)}
