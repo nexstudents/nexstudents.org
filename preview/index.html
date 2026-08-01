@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>NexStudents — find the gap</title>
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   STRUCTURE taken from the lttstore.com DOM audit, 2026-08-01:
+     · sections run 540-890px tall, not 300 - each is nearly a screen
+     · a consistent 96px vertical rhythm between them
+     · EVERY SECTION IS A DIFFERENT SHAPE. cinematic hero -> portrait tiles
+       butted together at gap:0 -> square grid -> ultra-wide band -> marquee
+     · full-bleed alternates with contained
+   The earlier drafts were plain because they were three boxes in a column.
+   That was a structure problem, not a colour problem.
+   ══════════════════════════════════════════════════════════════════════ */
+@font-face{font-family:'Archivo';src:url('/assets/fonts/archivo-var.woff2') format('woff2-variations');
+  font-weight:400 900;font-display:swap}
+:root{
+  /* MONOCHROME, straight off lttstore. No blue, no accent hue at all - the
+     "accent" is white, exactly as their SHOP NOW button is white on black.
+     #16191d and #f1f3f5 are their actual measured values. */
+  --bg:#0a0b0d;          /* near-black ground */
+  --panel:#16191d;       /* their panel grey */
+  --panel-2:#1f242a;     /* raised / track grey */
+  --line:#2b3138;
+  --fg:#f1f3f5;          /* their off-white. never pure #fff for body text */
+  --dim:#98a1ab;
+  --a:#ffffff;           /* actions are WHITE */
+  --a-ink:#0a0b0d;       /* on black text */
+  --ok:#e6e9ed;          /* mastered reads as bright bar, not a colour */
+  --gap:#ff5c33;         /* THE ONLY COLOUR ON THE PAGE. the gap, nothing else */
+  --r:4px; --pill:999px; --rhythm:96px;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+/* overflow-x MUST live on html, not body. Putting it on body makes the body
+   the scroll container, so window scroll events never fire - which silently
+   killed the sticky-nav compression and the back-to-top button. `clip` also
+   avoids creating a scroll container at all, unlike `hidden`. */
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-weight:800;letter-spacing:-.04em;line-height:1.02;margin:0}
+
+/* ── announcement bar: thin, centred, dismissible. sits ABOVE the nav ── */
+/* dark bar with white underlined text, as theirs is - NOT the white accent,
+   which turned the top of the page into a bright slab */
+.ann{background:#000;color:var(--fg);text-align:center;font-size:13.5px;font-weight:600;
+  padding:11px 44px 11px 20px;position:relative;border-bottom:1px solid var(--line)}
+.ann b{font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.ann button{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;
+  border:0;color:inherit;font-size:17px;cursor:pointer;line-height:1;padding:6px;opacity:.75}
+.ann button:hover{opacity:1}
+
+/* ── section header with a right-aligned link, their pattern ── */
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:40px}
+.shead .lnk{display:inline-flex;align-items:center;gap:12px;font-size:14px;font-weight:600;
+  color:var(--dim);white-space:nowrap;transition:color .2s}
+.shead .lnk i{width:34px;height:34px;border-radius:var(--pill);border:1px solid var(--line);
+  display:grid;place-items:center;font-style:normal;transition:background .25s,border-color .25s}
+@media(hover:hover){ .shead .lnk:hover{color:var(--fg)} .shead .lnk:hover i{background:var(--panel);border-color:var(--a)} }
+@media(max-width:640px){ .shead{flex-direction:column;align-items:flex-start} }
+
+/* ── 4-across square grid, 48px/24px gaps — their featured-collection ── */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:48px 24px}
+@media(max-width:900px){ .grid4{grid-template-columns:repeat(2,1fr)} }
+.lv{display:block}
+.lv .sqr{aspect-ratio:1/1;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  display:flex;flex-direction:column;justify-content:space-between;padding:24px;
+  transition:border-color .28s ease,transform .28s var(--ease)}
+@media(hover:hover){ .lv:hover .sqr{border-color:var(--a);transform:translateY(-5px)} }
+.lv .g{font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.lv .n{font-size:clamp(2rem,3.4vw,2.9rem);font-weight:800;letter-spacing:-.05em;line-height:1}
+.lv .st{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--a);margin-top:8px;display:block}
+.lv .st.soon{color:var(--dim)}
+.lv h4{margin:14px 0 0;font-size:.95rem;font-weight:600;letter-spacing:-.01em}
+.lv p{margin:3px 0 0;font-size:.84rem;color:var(--dim)}
+
+/* ── CAROUSEL — measured off lttstore: 40x40 square arrow buttons, a flex
+      track at 20px gap, cards around a 1.20 ratio. Theirs scrolls with the
+      arrows; this adds scroll-snap so a trackpad swipe lands cleanly too. ── */
+.rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;padding-bottom:6px;
+  scrollbar-width:none;-ms-overflow-style:none}
+.rail::-webkit-scrollbar{display:none}
+@media(prefers-reduced-motion:reduce){ .rail{scroll-behavior:auto} }
+.ws{flex:0 0 300px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r);padding:22px;display:flex;flex-direction:column;
+  min-height:250px;transition:border-color .28s ease,transform .28s var(--ease)}
+@media(hover:hover){ .ws:hover{border-color:var(--a);transform:translateY(-4px)} }
+.ws .tagr{align-self:flex-start;margin-bottom:auto}
+.ws h4{margin:18px 0 6px;font-size:1.18rem;font-weight:800;letter-spacing:-.03em}
+.ws p{margin:0 0 16px;font-size:.87rem;color:var(--dim);line-height:1.5}
+.ws .meta{display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--line);padding-top:14px;font-size:.78rem;color:var(--dim);font-weight:600}
+.ws .meta em{font-style:normal;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;
+  font-size:.68rem;font-weight:800}
+/* ── ARROWS, matched to lttstore: a PAIR at the TOP-RIGHT above the rail,
+      ~44px, transparent with a thin outline, chevron glyph. The unavailable
+      one DIMS rather than disappearing, so the pair never reflows.
+      (My first pass was 68px solid white circles hanging off the rail sides,
+      which is a different control entirely.) ── */
+.railwrap{position:relative}
+.arrows{display:flex;gap:10px}
+.arrows button{width:44px;height:44px;border-radius:50%;
+  background:transparent;color:var(--fg);
+  border:1px solid rgba(241,243,245,.28);
+  font-family:inherit;font-size:19px;font-weight:400;line-height:1;cursor:pointer;
+  display:grid;place-items:center;
+  transition:border-color .22s ease,background .22s ease,opacity .22s ease}
+@media(hover:hover){
+  .arrows button:hover{border-color:var(--fg);background:rgba(241,243,245,.07)} }
+.arrows button:active{transform:scale(.94)}
+.railwrap .arrows button:disabled{opacity:.28;pointer-events:none}
+
+/* ── the big mid-page offer: worksheets are the headline product, so this
+      button is the loudest thing between the hero and the footer ── */
+.offer{text-align:center;margin-top:52px}
+.offer .btn{font-size:1.15rem;padding:22px 54px}
+.offer p{margin:16px 0 0;font-size:.88rem;color:var(--dim)}
+/* on narrow screens the arrows would cover the cards, so the rail just swipes */
+@media(max-width:820px){ .arrows{display:none} }
+
+/* ── back to top ── */
+.top{position:fixed;right:20px;bottom:20px;z-index:70;background:var(--panel);color:var(--fg);
+  border:1px solid var(--line);border-radius:var(--pill);padding:11px 18px;font-size:13px;
+  font-weight:700;font-family:inherit;cursor:pointer;opacity:0;pointer-events:none;
+  transition:opacity .3s ease,transform .3s var(--ease);transform:translateY(8px)}
+.top.on{opacity:1;pointer-events:auto;transform:none}
+@media(hover:hover){ .top:hover{border-color:var(--a)} }
+
+nav{position:sticky;top:0;z-index:60;background:rgba(11,13,18,.9);backdrop-filter:blur(12px);
+  border-bottom:1px solid transparent;transition:border-color .3s}
+nav.stuck{border-bottom-color:var(--line)}
+.nv{max-width:1180px;margin:0 auto;padding:15px 28px;display:flex;align-items:center;gap:28px}
+.word{font-weight:800;font-size:19px;letter-spacing:-.03em}
+.word b{color:var(--a)}
+.tabs{display:flex;gap:22px}
+.tabs a{font-size:14px;font-weight:500;color:var(--dim);transition:color .18s}
+.tabs a.on{color:var(--fg)}
+@media(hover:hover){ .tabs a:hover{color:var(--fg)} }
+@media(max-width:880px){ .tabs{display:none} }
+
+/* ══ MOBILE NAV ══ Below 880px the tabs hide and NOTHING replaced them, so
+   the site had no navigation on a phone at all. Burger + slide-out drawer. ══ */
+.burger{display:none;flex-direction:column;justify-content:center;gap:5px;
+  width:42px;height:38px;padding:0 9px;margin-left:-9px;background:none;border:0;cursor:pointer}
+.burger i{display:block;height:2px;background:var(--fg);border-radius:2px;
+  transition:transform .3s var(--ease),opacity .2s}
+.burger i:nth-child(2){width:72%;align-self:flex-end}
+body.nav-open .burger i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+body.nav-open .burger i:nth-child(2){opacity:0}
+body.nav-open .burger i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:880px){ .burger{display:inline-flex} }
+
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70;
+  opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s}
+body.nav-open .scrim{opacity:1;visibility:visible}
+
+.drawer{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);z-index:80;
+  background:var(--panel);border-right:1px solid var(--line);
+  transform:translateX(-100%);transition:transform .38s var(--ease);
+  display:flex;flex-direction:column;padding:22px}
+body.nav-open .drawer{transform:none}
+.drawer .x{align-self:flex-end;background:none;border:0;color:var(--dim);
+  font-size:26px;line-height:1;cursor:pointer;padding:4px 8px}
+.drawer a{display:block;padding:15px 0;font-size:1.08rem;font-weight:700;
+  letter-spacing:-.02em;border-bottom:1px solid var(--line)}
+.drawer a small{display:block;font-size:.64rem;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--dim);margin-top:4px}
+.drawer .btn{margin-top:auto;justify-content:center}
+@media(prefers-reduced-motion:reduce){ .drawer,.scrim{transition:none} }
+
+/* ── other mobile breaks found in the same audit ── */
+/* worksheet cards were a fixed 300px - wider than the content area on a
+   360px phone, so the last card was always clipped */
+@media(max-width:600px){ .ws{flex:0 0 78vw} }
+/* the 4-up square grid stayed 2-up all the way down, giving ~140px squares */
+@media(max-width:560px){ .grid4{grid-template-columns:1fr;gap:16px}
+  .lv .sqr{aspect-ratio:auto} }
+/* the big offer button overflowed a 320px screen */
+@media(max-width:420px){ .offer .btn{padding:18px 26px;font-size:1rem}
+  .btn{padding:15px 24px} }
+.btn{display:inline-flex;align-items:center;gap:9px;font-family:inherit;font-weight:700;font-size:15px;
+  padding:16px 34px;border-radius:var(--r);border:0;cursor:pointer;background:var(--a);color:var(--a-ink);
+  transition:transform 130ms var(--ease),filter 180ms ease}
+.btn:active{transform:scale(.975)}
+@media(hover:hover){ .btn:hover{filter:brightness(1.08)} }
+.btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.nv .btn{margin-left:auto;padding:10px 20px;font-size:14px}
+
+/* ── 1. HERO — full-bleed, tall, cinematic ── */
+.hero{min-height:660px;display:flex;align-items:center;padding:70px 0;position:relative}
+.hero:before{content:"";position:absolute;z-index:-1;inset:0;
+  background:radial-gradient(70% 90% at 78% 40%,rgba(34,211,238,.13),transparent 62%)}
+.hg{display:grid;grid-template-columns:1.06fr .94fr;gap:64px;align-items:center}
+@media(max-width:980px){ .hg{grid-template-columns:1fr;gap:44px} .hero{min-height:0} }
+.tagline{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);
+  border-radius:var(--pill);padding:6px 14px 6px 6px;font-size:12.5px;font-weight:600;
+  color:var(--dim);margin-bottom:26px}
+.tagline i{background:var(--a);color:var(--a-ink);font-style:normal;font-weight:800;font-size:11px;
+  padding:3px 9px;border-radius:var(--pill)}
+/* the floor was 2.9rem (46px), which does not fit "Find the" on a 320px
+   screen. 2rem lets it wrap sanely on the smallest phones. */
+h1{font-size:clamp(2rem,6.2vw,4.6rem);margin-bottom:22px}
+h1 u{text-decoration:none;color:var(--a)}
+.sub{font-size:1.12rem;color:var(--dim);max-width:42ch;margin:0 0 32px}
+.acts{display:flex;gap:12px;flex-wrap:wrap}
+.tiny{margin:20px 0 0;font-size:.86rem;color:var(--dim)}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:26px 28px}
+.ct{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.big{font-weight:800;font-size:2.9rem;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+.big s{text-decoration:none;color:var(--dim);font-size:1.05rem;font-weight:600;margin-left:8px}
+.tagr{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  border:1px solid var(--line);border-radius:var(--pill);padding:7px 12px}
+.rw{display:grid;grid-template-columns:1fr 92px 42px;align-items:center;gap:14px;padding:9px 0}
+.rw b{font-weight:500;font-size:.93rem}
+.tk{height:6px;background:var(--panel-2);border-radius:var(--pill);overflow:hidden}
+.tk i{display:block;height:100%;border-radius:var(--pill);background:var(--ok);transform:scaleX(0);
+  transform-origin:left;transition:transform .45s var(--ease)}
+.tk i.bad{background:var(--gap)}
+.card.go .tk i{transform:scaleX(var(--w))}
+.card.go .rw:nth-of-type(1) i{transition-delay:.04s} .card.go .rw:nth-of-type(2) i{transition-delay:.09s}
+.card.go .rw:nth-of-type(3) i{transition-delay:.14s} .card.go .rw:nth-of-type(4) i{transition-delay:.19s}
+.card.go .rw:nth-of-type(5) i{transition-delay:.24s} .card.go .rw:nth-of-type(6) i{transition-delay:.29s}
+.nm{text-align:right;font-size:.85rem;font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums}
+.flag{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);font-size:.9rem;color:var(--dim)}
+.flag b{color:var(--a);font-weight:700}
+
+/* ── 2. THE SKILL STRIP — six portrait tiles, gap:0, they touch ── */
+.strip{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)}
+@media(max-width:900px){ .strip{grid-template-columns:repeat(3,1fr)} }
+@media(max-width:520px){ .strip{grid-template-columns:repeat(2,1fr)} }
+.tile{aspect-ratio:2/3;border-right:1px solid var(--line);padding:26px 22px;display:flex;
+  flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;
+  transition:background .3s ease}
+.tile:last-child{border-right:0}
+@media(hover:hover){ .tile:hover{background:var(--panel)} }
+.tile n{display:block;font-size:.7rem;font-weight:800;letter-spacing:.16em;color:var(--dim)}
+.tile h3{font-size:1.35rem;letter-spacing:-.03em}
+.tile p{margin:10px 0 0;font-size:.82rem;color:var(--dim);line-height:1.45;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+/* ── their collection tiles keep the description hidden and slide a small
+      banner up inside the box on hover. Gated to pointer devices so touch
+      users, who cannot hover, always see the text. ── */
+@media(hover:hover) and (pointer:fine){
+  .tile p{opacity:0;transform:translateY(10px);
+    transition:opacity .26s var(--ease),transform .26s var(--ease)}
+  .tile:hover p{opacity:1;transform:none}
+}
+.tile .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--a);width:0;
+  transition:width .5s var(--ease)}
+.strip.go .tile .bar{width:var(--w)}
+
+/* ── 3. THE LADDER — INVERTED. lttstore flips the whole page background
+      between sections (dark -> #f3f3f3 light -> vivid orange). That wholesale
+      inversion is the thing that stops a long page reading as one flat slab.
+      This section is the light one. ── */
+.band{padding:var(--rhythm) 0}
+.band.light{background:#f2f4f7;color:#0b0d12}
+.band.light .h2s{color:#5a6472}
+.band.light .kick{color:#0b7c8c}
+.band.light .qcell{background:#fff;border-color:#dfe4ec}
+.band.light .qcell p{color:#5a6472}
+.band.light .qcell em{color:#0b7c8c}
+@media(hover:hover){ .band.light .qcell:hover{border-color:#0b7c8c} }
+.kick{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--a);margin:0 0 14px}
+h2{font-size:clamp(1.9rem,3.6vw,2.8rem);margin-bottom:16px;max-width:20ch}
+.h2s{color:var(--dim);max-width:50ch;margin:0 0 48px;font-size:1.02rem}
+.sq{display:grid;grid-template-columns:repeat(3,1fr);gap:48px 24px}
+@media(max-width:860px){ .sq{grid-template-columns:1fr;gap:24px} }
+.qcell{aspect-ratio:1/1;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:30px;display:flex;flex-direction:column;justify-content:space-between;
+  transition:border-color .3s ease,transform .3s var(--ease)}
+@media(max-width:860px){ .qcell{aspect-ratio:auto} }
+@media(hover:hover){ .qcell:hover{border-color:var(--a);transform:translateY(-4px)} }
+.qcell em{font-style:normal;font-weight:800;font-size:.74rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--a)}
+.qcell .pc{font-size:clamp(2.2rem,4vw,3.2rem);font-weight:800;letter-spacing:-.045em;line-height:1}
+.qcell p{margin:10px 0 0;color:var(--dim);font-size:.92rem}
+
+/* ── 4. THE BIG MID-PAGE CALL TO ACTION — vivid, full-bleed, and the loudest
+      thing on the page. lttstore puts a #ff551a band here; this is ours.
+      overflow:visible + a card pushed past the bottom edge, because breaking
+      the section boundary is what gives their bands depth. ── */
+.state{min-height:460px;display:flex;align-items:center;background:var(--a);color:var(--a-ink);
+  position:relative;overflow:visible;margin-bottom:120px}
+.state .wrap{position:relative;z-index:2}
+.state h2{font-size:clamp(2.1rem,4.6vw,3.6rem);max-width:20ch}
+.state p{color:rgba(4,34,42,.78);max-width:52ch;margin:20px 0 30px;font-size:1.06rem;font-weight:500}
+.state .btn{background:var(--a-ink);color:var(--a)}
+/* the escapee: breaks 120px past the band's bottom edge */
+.escape{position:absolute;right:max(28px,calc((100vw - 1180px)/2 + 28px));bottom:-120px;z-index:3;
+  width:330px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:22px 24px;box-shadow:0 30px 60px -22px rgba(0,0,0,.6)}
+.escape em{font-style:normal;font-size:.7rem;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--a)}
+.escape .pc{font-size:2.4rem;font-weight:800;letter-spacing:-.04em;line-height:1.1;color:var(--fg)}
+.escape p{color:var(--dim);font-size:.86rem;margin:6px 0 0;font-weight:400}
+@media(max-width:1000px){
+  .escape{position:static;width:auto;margin:30px 0 -80px;box-shadow:none}
+  .state{margin-bottom:100px}
+}
+
+/* ── 5. THE ROLLING BANNER — measured off lttstore: a 332px full-bleed band
+      with 140px type at weight 700 and slightly NEGATIVE tracking. My first
+      pass was a 34px strip at 2.4rem, which is why it read as a footnote
+      instead of an event. Scale was the whole point. ── */
+.mq{height:332px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;
+  background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+@media(max-width:700px){ .mq{height:190px} }
+.mq div{display:inline-flex;align-items:center;gap:64px;padding-right:64px;
+  animation:slide 38s linear infinite;will-change:transform}
+.mq span{font-size:clamp(3rem,9.2vw,140px);font-weight:800;letter-spacing:-.01em;
+  line-height:1;color:var(--panel-2)}
+/* one word in the accent - the gap is what the whole page is about */
+.mq span.on{color:var(--a)}
+@keyframes slide{ to{ transform:translateX(-50%) } }
+@media(hover:hover){ .mq:hover div{animation-play-state:paused} }
+
+.final{padding:var(--rhythm) 0;text-align:center}
+.final h2{margin:0 auto 16px;max-width:17ch}
+.final p{color:var(--dim);max-width:44ch;margin:0 auto 32px}
+footer{border-top:1px solid var(--line);padding:30px 0;font-size:.84rem;color:var(--dim)}
+
+.rv{opacity:0;transform:translateY(16px);transition:opacity .42s var(--ease),transform .42s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.05s} .rv.d2{transition-delay:.1s} .rv.d3{transition-delay:.15s}
+@media(prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  .tk i{transition:none;transform:scaleX(var(--w))}
+  .mq div{animation:none} .strip .bar{transition:none;width:var(--w)}
+}
+</style>
+</head>
+<body>
+
+<div class="ann" id="ann">
+  Reading Level B is live now. Levels A and C land next. <b>Start free</b>
+  <button aria-label="Dismiss" onclick="document.getElementById('ann').remove()">&times;</button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+  <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
+  <a href="#">Home</a>
+  <a href="#">Worksheets<small>Free to download</small></a>
+  <a href="#">Games<small>Coming soon</small></a>
+  <a href="#">Placement Exam<small>Reading, Level B</small></a>
+  <a href="#">Resources<small>Coming soon</small></a>
+  <a class="btn" href="#">Start free</a>
+</aside>
+
+<nav id="nav"><div class="nv">
+  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+    <i></i><i></i><i></i>
+  </button>
+  <div class="word">Nex<b>Students</b></div>
+  <div class="tabs"><a class="on" href="#">Home</a><a href="#">Placement Exam</a>
+    <a href="#">Games</a><a href="#">Resources</a></div>
+  <a class="btn" href="#">Start free</a>
+</div></nav>
+
+<!-- 1 ── hero -->
+<div class="wrap hero"><div class="hg">
+  <div>
+    <div class="tagline rv"><i>FREE</i> Reading Level B &middot; marked the moment you finish</div>
+    <h1 class="rv d1">Find the <u>gap</u>, not just the score.</h1>
+    <p class="sub rv d2">A twenty-minute reading assessment that tells you which skill gave way,
+      so you know what to teach on Monday.</p>
+    <div class="acts rv d3"><a class="btn" href="#">Start the exam</a>
+      <a class="btn ghost" href="#">See how it marks</a></div>
+    <p class="tiny rv d3">One passage &middot; 12 questions &middot; marked instantly</p>
+  </div>
+  <div class="rv d2">
+    <div class="card" id="card" role="img" aria-label="Example result: 8 of 12, 67 percent. Inference 0 of 3 is the gap.">
+      <div class="ct"><div class="big"><span id="n1">0</span>/12 <s id="n2">0%</s></div>
+        <div class="tagr">Reading &middot; Level B</div></div>
+      <div class="rw"><b>Main idea</b><div class="tk"><i style="--w:1"></i></div><div class="nm">2/2</div></div>
+      <div class="rw"><b>Inference</b><div class="tk"><i class="bad" style="--w:.05"></i></div><div class="nm">0/3</div></div>
+      <div class="rw"><b>Vocabulary</b><div class="tk"><i style="--w:1"></i></div><div class="nm">2/2</div></div>
+      <div class="rw"><b>Supporting detail</b><div class="tk"><i style="--w:1"></i></div><div class="nm">2/2</div></div>
+      <div class="rw"><b>Text structure</b><div class="tk"><i class="bad" style="--w:.5"></i></div><div class="nm">1/2</div></div>
+      <div class="rw"><b>Author&rsquo;s purpose</b><div class="tk"><i style="--w:1"></i></div><div class="nm">1/1</div></div>
+      <p class="flag"><b>Inference is the gap.</b> Six scattered misses would mean something
+        completely different. That is why one number is useless.</p>
+    </div>
+  </div>
+</div></div>
+
+<!-- 2 ── the strip: six portrait tiles, touching -->
+<div class="strip" id="strip">
+  <div class="tile"><n>01</n><div><h3>Main idea</h3><p>What the whole passage is actually about.</p></div><i class="bar" style="--w:100%"></i></div>
+  <div class="tile"><n>02</n><div><h3>Inference</h3><p>What the text means without saying it.</p></div><i class="bar" style="--w:8%"></i></div>
+  <div class="tile"><n>03</n><div><h3>Vocabulary</h3><p>A word&rsquo;s meaning from the sentence around it.</p></div><i class="bar" style="--w:100%"></i></div>
+  <div class="tile"><n>04</n><div><h3>Detail</h3><p>Finding the line that proves the answer.</p></div><i class="bar" style="--w:100%"></i></div>
+  <div class="tile"><n>05</n><div><h3>Structure</h3><p>How the writer built the argument.</p></div><i class="bar" style="--w:50%"></i></div>
+  <div class="tile"><n>06</n><div><h3>Purpose</h3><p>Why the writer wrote it at all.</p></div><i class="bar" style="--w:100%"></i></div>
+</div>
+
+<!-- 3 ── THE LEVELS: 4-across square grid, section header with a right link -->
+<div class="band"><div class="wrap">
+  <div class="shead rv">
+    <div>
+      <p class="kick">The ladder</p>
+      <h2>Four levels, so a result has somewhere to send you.</h2>
+    </div>
+    <a class="lnk" href="#">See all levels <i>&rarr;</i></a>
+  </div>
+  <div class="grid4">
+    <a class="lv rv" href="#"><div class="sqr">
+      <div><span class="g">Grade 5</span><div class="n">A</div><span class="st soon">Coming next</span></div>
+      <div><h4>The floor</h4><p>Use if Level B lands under 60%.</p></div></div></a>
+    <a class="lv rv d1" href="#"><div class="sqr">
+      <div><span class="g">Grade 6</span><div class="n">B</div><span class="st">Live now</span></div>
+      <div><h4>Start here</h4><p>The level most students have just finished.</p></div></div></a>
+    <a class="lv rv d2" href="#"><div class="sqr">
+      <div><span class="g">Grade 7</span><div class="n">C</div><span class="st soon">Coming next</span></div>
+      <div><h4>The climb</h4><p>Use if Level B lands at 85% or above.</p></div></div></a>
+    <a class="lv rv d3" href="#"><div class="sqr">
+      <div><span class="g">Grade 8</span><div class="n">D</div><span class="st soon">Later</span></div>
+      <div><h4>The ceiling</h4><p>For students already reading past their year.</p></div></div></a>
+  </div>
+</div></div>
+
+<!-- 4 ── the ladder rules, ON LIGHT -->
+<div class="band light"><div class="wrap">
+  <p class="kick rv">How it places</p>
+  <h2 class="rv d1">The score picks the next move.</h2>
+  <p class="h2s rv d2">Start at the level your student just finished. Where they stop holding up
+    is where they actually are.</p>
+  <div class="sq">
+    <div class="qcell rv d1"><em>Climb</em><div><div class="pc">85%+</div>
+      <p>Not the ceiling. Go up a level and keep going until it bites.</p></div></div>
+    <div class="qcell rv d2"><em>Hold</em><div><div class="pc">60&ndash;84%</div>
+      <p>That is the placement. Read the skill rows to see what to teach first.</p></div></div>
+    <div class="qcell rv d3"><em>Drop</em><div><div class="pc">&lt;60%</div>
+      <p>Go down a level first. One collapsed skill drags everything else down.</p></div></div>
+  </div>
+</div></div>
+
+<!-- 5 ── FREE WORKSHEETS: carousel with arrow selectors.
+        PLACEHOLDER. Nothing is downloadable yet, so the cards say so plainly
+        and carry no href - a dead download link is worse than an honest one. -->
+<div class="band"><div class="wrap">
+  <div class="shead rv">
+    <div>
+      <p class="kick">Free worksheets</p>
+      <h2>Print the practice for whichever skill gave way.</h2>
+    </div>
+    <div class="arrows">
+      <button id="wsPrev" aria-label="Previous worksheets">&#8249;</button>
+      <button id="wsNext" aria-label="Next worksheets">&#8250;</button>
+    </div>
+  </div>
+  <div class="railwrap">
+   <div class="rail" id="wsRail">
+    <div class="ws"><span class="tagr">Inference</span>
+      <h4>Reading between the lines</h4>
+      <p>Six short passages where the answer is never stated outright.</p>
+      <div class="meta"><em>PDF &middot; 4 pages</em><span>Coming soon</span></div></div>
+    <div class="ws"><span class="tagr">Main idea</span>
+      <h4>What is this really about?</h4>
+      <p>Separating the central idea from the detail that supports it.</p>
+      <div class="meta"><em>PDF &middot; 3 pages</em><span>Coming soon</span></div></div>
+    <div class="ws"><span class="tagr">Vocabulary</span>
+      <h4>Meaning from context</h4>
+      <p>Working out an unfamiliar word from the sentence around it.</p>
+      <div class="meta"><em>PDF &middot; 4 pages</em><span>Coming soon</span></div></div>
+    <div class="ws"><span class="tagr">Text structure</span>
+      <h4>How the writer built it</h4>
+      <p>Cause and effect, compare and contrast, problem and solution.</p>
+      <div class="meta"><em>PDF &middot; 5 pages</em><span>Coming soon</span></div></div>
+    <div class="ws"><span class="tagr">Supporting detail</span>
+      <h4>Find the line that proves it</h4>
+      <p>Evidence hunting, which is the habit most standardised tests reward.</p>
+      <div class="meta"><em>PDF &middot; 3 pages</em><span>Coming soon</span></div></div>
+    <div class="ws"><span class="tagr">Author&rsquo;s purpose</span>
+      <h4>Why they wrote it at all</h4>
+      <p>Telling explanation apart from persuasion apart from description.</p>
+      <div class="meta"><em>PDF &middot; 3 pages</em><span>Coming soon</span></div></div>
+   </div><!-- /.rail -->
+  </div><!-- /.railwrap -->
+
+  <div class="offer rv">
+    <a class="btn" href="#">Shop the worksheets</a>
+    <p>Free to download. New sheets added as each level ships.</p>
+  </div>
+</div></div>
+
+<!-- ── GAMES: sits directly under the worksheets offer ── -->
+<div class="band"><div class="wrap">
+  <div class="shead rv">
+    <div>
+      <p class="kick">Games</p>
+      <h2>Practice that does not feel like a worksheet.</h2>
+    </div>
+    <a class="lnk" href="#">All games <i>&rarr;</i></a>
+  </div>
+  <div class="grid4">
+    <a class="lv rv" href="#"><div class="sqr">
+      <div><span class="g">Inference</span><div class="n">01</div><span class="st soon">Coming soon</span></div>
+      <div><h4>Read between the lines</h4><p>Short scenes, one hidden meaning each.</p></div></div></a>
+    <a class="lv rv d1" href="#"><div class="sqr">
+      <div><span class="g">Vocabulary</span><div class="n">02</div><span class="st soon">Coming soon</span></div>
+      <div><h4>Word in context</h4><p>Guess the meaning from the sentence around it.</p></div></div></a>
+    <a class="lv rv d2" href="#"><div class="sqr">
+      <div><span class="g">Structure</span><div class="n">03</div><span class="st soon">Coming soon</span></div>
+      <div><h4>Rebuild the argument</h4><p>Put a scrambled passage back in order.</p></div></div></a>
+    <a class="lv rv d3" href="#"><div class="sqr">
+      <div><span class="g">Main idea</span><div class="n">04</div><span class="st soon">Coming soon</span></div>
+      <div><h4>Name the point</h4><p>One passage, four titles, one that actually fits.</p></div></div></a>
+  </div>
+</div></div>
+
+<!-- 6 ── THE BIG MID-PAGE CTA. vivid, full-bleed, with a card breaking out
+        past its bottom edge -->
+<div class="state">
+  <div class="wrap">
+    <h2 class="rv">No percentile. Ever.</h2>
+    <p class="rv d1">Saying a child reads at a 6.4 level needs a tested population of thousands.
+      We do not have one, and that norming is the actual product the paid tests sell. You get
+      the more useful thing instead: which skill to teach on Monday.</p>
+    <a class="btn rv d2" href="#">Start the exam</a>
+  </div>
+  <div class="escape rv d2">
+    <em>What you get instead</em>
+    <div class="pc">6 skills</div>
+    <p>Scored separately, with every missed question shown and explained.</p>
+  </div>
+</div>
+
+<div class="final"><div class="wrap">
+  <h2 class="rv">Stop guessing what they need.</h2>
+  <p class="rv d1">Twenty minutes, marked instantly. Then teach the gap it finds.</p>
+  <a class="btn rv d2" href="#">Start the exam</a>
+</div></div>
+
+<!-- ── the rolling banner: LAST, immediately above the footer, which is where
+     lttstore puts theirs. It was sitting mid-page before. ── -->
+<div class="mq"><div>
+  <span>Main idea</span><span class="on">Inference</span><span>Vocabulary</span>
+  <span>Supporting detail</span><span>Text structure</span><span>Author&rsquo;s purpose</span>
+  <span>Main idea</span><span class="on">Inference</span><span>Vocabulary</span>
+  <span>Supporting detail</span><span>Text structure</span><span>Author&rsquo;s purpose</span>
+</div></div>
+
+<div class="wrap"><footer>NexStudents is a brand of NexEdge Studios. &copy; 2026</footer></div>
+
+<button class="top" id="toTop">&uarr; Back to top</button>
+
+<script>
+const R=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){ e.target.classList.add('in'); e.target.classList.add('go'); io.unobserve(e.target);}
+}),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv,#strip').forEach(el=>io.observe(el));
+/* ── mobile drawer ── */
+const burger=document.getElementById('burger'), drawer=document.getElementById('drawer'),
+      scrim=document.getElementById('scrim'), dClose=document.getElementById('drawerClose');
+function setNav(open){
+  document.body.classList.toggle('nav-open',open);
+  burger.setAttribute('aria-expanded',open);
+  drawer.setAttribute('aria-hidden',!open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+burger.onclick=()=>setNav(!document.body.classList.contains('nav-open'));
+scrim.onclick=()=>setNav(false);
+dClose.onclick=()=>setNav(false);
+drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setNav(false)));
+addEventListener('keydown',e=>{ if(e.key==='Escape') setNav(false); });
+
+const nav=document.getElementById('nav'), toTop=document.getElementById('toTop');
+addEventListener('scroll',()=>{
+  nav.classList.toggle('stuck',scrollY>16);
+  toTop.classList.toggle('on',scrollY>700);
+},{passive:true});
+toTop.onclick=()=>scrollTo({top:0,behavior:R?'auto':'smooth'});
+
+/* ── worksheet carousel: arrows move one card + its gap, and disable at the
+      ends so the control tells you when there is nothing more to see ── */
+const rail=document.getElementById('wsRail');
+const prev=document.getElementById('wsPrev'), next=document.getElementById('wsNext');
+const step=()=>rail.querySelector('.ws').getBoundingClientRect().width+20;
+prev.onclick=()=>rail.scrollBy({left:-step(),behavior:R?'auto':'smooth'});
+next.onclick=()=>rail.scrollBy({left: step(),behavior:R?'auto':'smooth'});
+function ends(){
+  prev.disabled = rail.scrollLeft<=2;
+  next.disabled = rail.scrollLeft >= rail.scrollWidth-rail.clientWidth-2;
+}
+rail.addEventListener('scroll',ends,{passive:true});
+addEventListener('resize',ends); ends();
+const card=document.getElementById('card');
+function up(el,to,sfx,ms){ if(R){el.textContent=to+sfx;return;}
+  const t0=performance.now();
+  (function t(now){const p=Math.min((now-t0)/ms,1);
+    el.textContent=Math.round(to*(1-Math.pow(1-p,3)))+sfx;
+    if(p<1)requestAnimationFrame(t);})(t0); }
+addEventListener('load',()=>setTimeout(()=>{ card.classList.add('go');
+  up(document.getElementById('n1'),8,'',620); up(document.getElementById('n2'),67,'%',620); },240));
+</script>
+</body>
+</html>
