@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reading Placement — Level B</title>
+<style>
+  :root{
+    --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --line:#2a2f3a;
+    --text:#e8eaed; --dim:#9aa2b1; --accent:#4c8dff; --good:#3ecf8e; --warn:#f5a524; --bad:#f4685f;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f7f9; --surface:#fff; --surface2:#f0f2f5; --line:#dfe3e8;
+           --text:#1a1d23; --dim:#5d6673; --accent:#2f6fe0; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  .wrap{max-width:760px;margin:0 auto;padding:24px 18px 64px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.02em}
+  h2{font-size:19px;margin:0 0 12px}
+  .sub{color:var(--dim);margin:0 0 22px;font-size:15px}
+  .rule{list-style:none;padding:0;margin:0}
+  .rule li{padding:10px 0 10px 28px;position:relative;border-bottom:1px solid var(--line)}
+  .rule li:last-child{border-bottom:0}
+  .rule li::before{content:"";position:absolute;left:6px;top:19px;width:7px;height:7px;
+                   border-radius:50%;background:var(--accent)}
+  button{font:inherit;font-weight:600;cursor:pointer;border:0;border-radius:10px;
+         padding:13px 22px;background:var(--accent);color:#fff}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  button.ghost{background:var(--surface2);color:var(--text);border:1px solid var(--line)}
+  /* the passage is the test — it gets the room, not the answers */
+  .passage{background:var(--surface2);border:1px solid var(--line);border-radius:12px;
+           padding:26px 28px;margin-bottom:20px}
+  .passage h3{margin:0 0 14px;font-size:20px;letter-spacing:-.01em}
+  .passage p{margin:0 0 15px;font-size:17px;line-height:1.75;max-width:64ch}
+  .passage p:last-child{margin:0}
+  @media (max-width:560px){ .passage{padding:20px 18px} .passage p{font-size:16px} }
+  .bar{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:18px}
+  .bar > i{display:block;height:100%;background:var(--accent);transition:width .25s}
+  .meta{display:flex;justify-content:space-between;color:var(--dim);font-size:13px;margin-bottom:10px}
+  .opt{display:block;width:100%;text-align:left;background:var(--surface2);color:var(--text);
+       border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:7px;
+       font-weight:400;cursor:pointer;line-height:1.5}
+  .opt:hover{border-color:var(--accent)}
+  .opt.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface2))}
+  .opt b{display:inline-block;width:22px;color:var(--dim);font-weight:700}
+  .opt.sel b{color:var(--accent)}
+  .score{font-size:44px;font-weight:700;letter-spacing:-.03em;margin:0}
+  .score span{font-size:22px;color:var(--dim);font-weight:600}
+  .verdict{border-left:3px solid var(--accent);padding:12px 0 12px 16px;margin:18px 0;color:var(--dim)}
+  .verdict b{color:var(--text)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+  td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .sk{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;width:100%;min-width:80px}
+  .sk > i{display:block;height:100%}
+  .miss{font-size:14px;color:var(--dim);margin-top:6px}
+  .miss b{color:var(--text)}
+  .missq{padding:14px 0;border-bottom:1px solid var(--line)}
+  .missq:last-child{border-bottom:0}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+       color:var(--dim);border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin-bottom:6px}
+  .hide{display:none}
+  .foot{color:var(--dim);font-size:13px;text-align:center;margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ SCREEN 1: INSTRUCTIONS ============ -->
+  <section id="s-intro">
+    <div class="card">
+      <h1>Reading Placement — Level B</h1>
+      <p class="sub">One passage, 12 questions. About 20 minutes.</p>
+      <ul class="rule">
+        <li>Read the passage all the way through before you answer anything.</li>
+        <li>You can scroll back to the passage at any time. It stays on screen.</li>
+        <li>Every answer is in the text. Nothing here needs outside knowledge.</li>
+        <li>Answer on your own. No help, no searching.</li>
+        <li>You can only submit once, so take your time on each question.</li>
+      </ul>
+      <p class="sub" style="margin:20px 0 18px">
+        This is not a graded test and it does not affect anything. It finds the right level to teach
+        from. Answering honestly is the whole point — a score that is too high just means being
+        taught the wrong things.
+      </p>
+      <button onclick="start()">Start</button>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 2: TEST ============ -->
+  <section id="s-test" class="hide">
+    <div class="passage">
+      <h3>The Master of Disguise</h3>
+      <p>An octopus has no bones, no shell, and no claws worth fearing. In an ocean full of sharks,
+      eels, and hungry seabirds, that sounds like a losing hand. Yet octopuses have survived for
+      millions of years, and their secret is not strength. It is deception.</p>
+      <p>The skin of an octopus is covered with millions of tiny sacs of color called chromatophores.
+      Each sac is ringed by a set of muscles. When those muscles pull, the sac stretches wide and its
+      color spreads across the skin. When they relax, the color shrinks to a dot and disappears. An
+      octopus can flood its whole body with red, brown, or yellow in less than a second, faster than
+      you can blink.</p>
+      <p>Color alone would not be enough. A flat patch of brown on a rough coral reef would still
+      stand out. So an octopus also changes its texture. Small bumps in the skin, called papillae,
+      can rise and flatten on command. Within moments a smooth arm can become as rough and spiky as
+      the rock beside it.</p>
+      <p>The strangest part is what the octopus does not have. Every experiment so far suggests that
+      octopuses are colorblind. They have only one kind of light-detecting cell in their eyes, while
+      humans have three. An animal that cannot see color is somehow matching color better than any
+      painter.</p>
+      <p>Researchers are still arguing about how. One leading idea is that octopuses "see" with their
+      skin. Scientists have found light-sensitive proteins, the same kind found in eyes, scattered
+      across the octopus's body. If that is true, an octopus resting on a stone may be sensing that
+      stone's color through its arms rather than looking at it at all.</p>
+      <p>Camouflage is only the first line of defense. If a predator spots the octopus anyway, the
+      animal has a second trick: it fires a cloud of black ink and jets away. The ink does more than
+      blind. It carries a chemical that dulls the predator's sense of smell, so even a shark tracking
+      by scent loses the trail.</p>
+      <p>None of this makes the octopus safe. Most species live only one or two years, and many die
+      shortly after reproducing. But for a soft, boneless animal in a hard ocean, disappearing has
+      proven to be a better strategy than fighting.</p>
+    </div>
+
+    <div class="card">
+      <div class="meta"><span id="prog">Question 1 of 12</span><span id="ans">0 answered</span></div>
+      <div class="bar"><i id="progbar" style="width:0"></i></div>
+      <h2 id="qtext"></h2>
+      <div id="opts"></div>
+      <div style="display:flex;gap:10px;margin-top:18px">
+        <button class="ghost" id="back" onclick="go(-1)">Back</button>
+        <button id="next" onclick="go(1)" disabled>Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3: RESULT ============ -->
+  <section id="s-done" class="hide">
+    <div class="card">
+      <h2>Result</h2>
+      <p class="score" id="scoreline"></p>
+      <div class="verdict" id="verdict"></div>
+    </div>
+    <div class="card">
+      <h2>Breakdown by skill</h2>
+      <table>
+        <thead><tr><th>Skill</th><th style="width:38%"></th><th class="n">Score</th></tr></thead>
+        <tbody id="skills"></tbody>
+      </table>
+      <p class="miss" id="readnote"></p>
+    </div>
+    <div class="card" id="missbox">
+      <h2>Questions missed</h2>
+      <div id="misses"></div>
+    </div>
+    <p class="foot">NexStudents · free placement assessment prototype</p>
+  </section>
+
+</div>
+
+<script>
+/* ---- ITEM BANK -------------------------------------------------------------
+   skill tags drive the breakdown. a = index of correct option.
+   ANSWER SPREAD (checked, do not let this drift): A×3, B×3, C×3, D×3.
+   Sequence: C D A B A C B D D B C A  — deliberately irregular.
+   TWO ways to get this wrong, both of which happened here:
+     1. a first draft landed on B seven times out of twelve, with D never correct at all;
+     2. the fix spread it evenly but produced DACBDACBDACB, a repeating cycle — just as guessable.
+   Re-check BOTH the counts and the sequence any time an item is reworded or replaced.      */
+/* Item bank, encoded. NOT security — scoring happens in the browser, so a determined viewer can
+   still recover the key. This only stops casual View Source. Real fix is server-side scoring,
+   which lands when NexStudents has a backend. To edit items: decode, change, re-run
+   scratchpad/encode_items.js, which re-checks the 3/3/3/3 spread and the sequence. */
+const Q = JSON.parse(new TextDecoder().decode(
+  Uint8Array.from(atob("W3sicyI6Ik1haW4gaWRlYSIsInEiOiJXaGljaCBzZW50ZW5jZSBiZXN0IHN0YXRlcyB0aGUgY2VudHJhbCBpZGVhIG9mIHRoZSBwYXNzYWdlPyIsImEiOjIsIm8iOlsiT2N0b3B1c2VzIGFyZSBhbW9uZyB0aGUgbW9zdCBkYW5nZXJvdXMgcHJlZGF0b3JzIGluIHRoZSBvY2Vhbi4iLCJTY2llbnRpc3RzIGhhdmUgZmluYWxseSBleHBsYWluZWQgaG93IG9jdG9wdXMgY2Ftb3VmbGFnZSB3b3Jrcy4iLCJPY3RvcHVzZXMgc3Vydml2ZSBieSBoaWRpbmcgYW5kIGVzY2FwaW5nIHJhdGhlciB0aGFuIGJ5IGZpZ2h0aW5nLiIsIk9jdG9wdXNlcyBsaXZlIHNob3J0IGxpdmVzIGFuZCBkaWUgc29vbiBhZnRlciByZXByb2R1Y2luZy4iXX0seyJzIjoiVm9jYWJ1bGFyeSBpbiBjb250ZXh0IiwicSI6IkluIHBhcmFncmFwaCAxLCDigJxkZWNlcHRpb27igJ0gbW9zdCBuZWFybHkgbWVhbnMiLCJhIjozLCJvIjpbInN0cmVuZ3RoIiwicGF0aWVuY2UiLCJzcGVlZCIsInRyaWNrZXJ5Il19LHsicyI6IlN1cHBvcnRpbmcgZGV0YWlsIiwicSI6IkFjY29yZGluZyB0byB0aGUgcGFzc2FnZSwgd2hhdCBtYWtlcyBhIGNocm9tYXRvcGhvcmXigJlzIGNvbG9yIHNwcmVhZCBhY3Jvc3MgdGhlIHNraW4/IiwiYSI6MCwibyI6WyJNdXNjbGVzIGFyb3VuZCB0aGUgc2FjIHB1bGwgaXQgb3BlbiIsIlBhcGlsbGFlIHJpc2UgdXAgYW5kIHB1c2ggdGhlIGNvbG9yIG91dHdhcmQiLCJMaWdodC1zZW5zaXRpdmUgcHJvdGVpbnMgaW4gdGhlIHNraW4gc3dpdGNoIG9uIiwiSW5rIGZyb20gdGhlIHNhYyBtaXhlcyB3aXRoIHNlYXdhdGVyIl19LHsicyI6IkluZmVyZW5jZSIsInEiOiJXaHkgZG9lcyB0aGUgYXV0aG9yIGNhbGwgdGhlIG9jdG9wdXPigJlzIGNvbG9yYmxpbmRuZXNzIOKAnHRoZSBzdHJhbmdlc3QgcGFydOKAnT8iLCJhIjoxLCJvIjpbIkJlY2F1c2UgY29sb3JibGluZCBhbmltYWxzIHVzdWFsbHkgY2Fubm90IHN1cnZpdmUgaW4gdGhlIG9jZWFuIiwiQmVjYXVzZSB0aGUgb2N0b3B1cyBzaG91bGQgbm90IGJlIGFibGUgdG8gZG8gdGhlIHZlcnkgdGhpbmcgaXQgaXMgYmVzdCBhdCIsIkJlY2F1c2Ugc2NpZW50aXN0cyBoYXZlIHByb3ZlZCB0aGUgb2N0b3B1cyBpcyBub3QgcmVhbGx5IGNvbG9yYmxpbmQiLCJCZWNhdXNlIGh1bWFucyB3aXRoIHRocmVlIGNlbGwgdHlwZXMgY2Fubm90IG1hdGNoIGNvbG9ycyBhcyB3ZWxsIl19LHsicyI6IlRleHQgc3RydWN0dXJlIiwicSI6IlBhcmFncmFwaCAzIGJlZ2lucywg4oCcQ29sb3IgYWxvbmUgd291bGQgbm90IGJlIGVub3VnaC7igJ0gV2hhdCBqb2IgZG9lcyB0aGF0IHNlbnRlbmNlIGRvPyIsImEiOjAsIm8iOlsiSXQgc2lnbmFscyBhIHNoaWZ0IHRvIGEgc2Vjb25kIGNhbW91ZmxhZ2UgdG9vbCB0aGUgb2N0b3B1cyBuZWVkcy4iLCJJdCBpbnRyb2R1Y2VzIHRoZSBkaXNhZ3JlZW1lbnQgYW1vbmcgcmVzZWFyY2hlcnMuIiwiSXQgZ2l2ZXMgYW4gZXhhbXBsZSB0aGF0IHN1cHBvcnRzIHRoZSBwcmV2aW91cyBwYXJhZ3JhcGguIiwiSXQgcmVwZWF0cyB0aGUgbWFpbiBpZGVhIG9mIHBhcmFncmFwaCAyIGluIHNpbXBsZXIgd29yZHMuIl19LHsicyI6IkF1dGhvcuKAmXMgcHVycG9zZSIsInEiOiJUaGUgYXV0aG9yIHdyb3RlIHRoaXMgcGFzc2FnZSBtYWlubHkgdG8iLCJhIjoyLCJvIjpbImNvbXBhcmUgb2N0b3B1cyBleWVzIHdpdGggaHVtYW4gZXllcyIsInBlcnN1YWRlIHJlYWRlcnMgdG8gcHJvdGVjdCBvY3RvcHVzZXMgZnJvbSBwcmVkYXRvcnMiLCJleHBsYWluIGhvdyBhbiBvY3RvcHVzIGhpZGVzIGFuZCB3aHkgdGhhdCBpcyBwdXp6bGluZyIsImRlc2NyaWJlIGEgc2NpZW50aXN04oCZcyBkYWlseSB3b3JrIHN0dWR5aW5nIHRoZSBvY2VhbiJdfSx7InMiOiJJbmZlcmVuY2UiLCJxIjoiVGhlIHBhc3NhZ2Ugc2F5cyB0aGUgaW5rIOKAnGRvZXMgbW9yZSB0aGFuIGJsaW5kLuKAnSBXaGF0IGNhbiB5b3UgY29uY2x1ZGUgZnJvbSB0aGlzPyIsImEiOjEsIm8iOlsiVGhlIGluayBpcyBwb2lzb25vdXMgZW5vdWdoIHRvIGtpbGwgYSBzaGFyay4iLCJBIHByZWRhdG9yIGh1bnRpbmcgYnkgc21lbGwgY291bGQgc3RpbGwgYmUgZm9vbGVkIGJ5IHRoZSBpbmsuIiwiT2N0b3B1c2VzIHVzZSBpbmsgbW9yZSBvZnRlbiB0aGFuIHRoZXkgdXNlIGNhbW91ZmxhZ2UuIiwiVGhlIGluayBwZXJtYW5lbnRseSBkYW1hZ2VzIGEgcHJlZGF0b3LigJlzIHNlbnNlIG9mIHNtZWxsLiJdfSx7InMiOiJWb2NhYnVsYXJ5IGluIGNvbnRleHQiLCJxIjoiSW4gdGhlIGxhc3QgcGFyYWdyYXBoLCDigJxqZXRzIGF3YXnigJ0gbWVhbnMgdGhlIG9jdG9wdXMiLCJhIjozLCJvIjpbImdsb3dzIGJyaWdodGx5IGFuZCB0aGVuIGZhZGVzIiwiaGFyZGVucyBpdHMgc2tpbiBmb3IgcHJvdGVjdGlvbiIsInNpbmtzIHNsb3dseSB0byB0aGUgc2VhZmxvb3IiLCJzaG9vdHMgYXdheSBxdWlja2x5Il19LHsicyI6IlN1cHBvcnRpbmcgZGV0YWlsIiwicSI6IkhvdyBtYW55IGtpbmRzIG9mIGxpZ2h0LWRldGVjdGluZyBjZWxscyBkb2VzIHRoZSBwYXNzYWdlIHNheSBhbiBvY3RvcHVzIGV5ZSBoYXM/IiwiYSI6MywibyI6WyJOb25lIiwiVGhyZWUiLCJNaWxsaW9ucyIsIk9uZSJdfSx7InMiOiJJbmZlcmVuY2UiLCJxIjoiV2h5IHdvdWxkIGEgYnJvd24gb2N0b3B1cyBvbiBhIGNvcmFsIHJlZWYgc3RpbGwgYmUgbm90aWNlZCB3aXRob3V0IGNoYW5naW5nIGl0cyB0ZXh0dXJlPyIsImEiOjEsIm8iOlsiQnJvd24gaXMgYSBjb2xvciB0aGF0IHJlZWZzIG5ldmVyIGNvbnRhaW4uIiwiQSBzbW9vdGggc3VyZmFjZSBsb29rcyB3cm9uZyBhZ2FpbnN0IGEgcm91Z2ggb25lLiIsIlByZWRhdG9ycyBhcmUgZHJhd24gdG8gbW92ZW1lbnQgbW9yZSB0aGFuIGNvbG9yLiIsIlRoZSBvY3RvcHVzIGNhbm5vdCBob2xkIG9uZSBjb2xvciBmb3IgdmVyeSBsb25nLiJdfSx7InMiOiJUZXh0IHN0cnVjdHVyZSIsInEiOiJXaGljaCBiZXN0IGRlc2NyaWJlcyBob3cgdGhlIHdob2xlIHBhc3NhZ2UgaXMgb3JnYW5pemVkPyIsImEiOjIsIm8iOlsiRXZlbnRzIHRvbGQgaW4gdGhlIG9yZGVyIHRoZXkgaGFwcGVuZWQiLCJUd28gYW5pbWFscyBjb21wYXJlZCBzaWRlIGJ5IHNpZGUiLCJBIHByb2JsZW0sIHRoZW4gdGhlIGRlZmVuc2VzIHRoYXQgYW5zd2VyIGl0IiwiQSBjbGFpbSBmb2xsb3dlZCBieSByZWFzb25zIHRvIGRpc2FncmVlIHdpdGggaXQiXX0seyJzIjoiTWFpbiBpZGVhIiwicSI6IldoaWNoIHRpdGxlIGZpdHMgdGhlIHBhc3NhZ2UgYmVzdD8iLCJhIjowLCJvIjpbIlZhbmlzaGluZzogSG93IGEgU29mdCBBbmltYWwgU3Vydml2ZXMgYSBIYXJkIE9jZWFuIiwiSW5rOiBUaGUgT2NlYW7igJlzIERlYWRsaWVzdCBXZWFwb24iLCJXaHkgT2N0b3B1c2VzIERvIE5vdCBMaXZlIExvbmciLCJJbnNpZGUgdGhlIEV5ZSBvZiB0aGUgT2N0b3B1cyJdfV0="), c => c.charCodeAt(0))));
+
+const pick = new Array(Q.length).fill(null);
+let i = 0;
+
+const $ = id => document.getElementById(id);
+const LET = ["A","B","C","D"];
+
+function start(){ $("s-intro").classList.add("hide"); $("s-test").classList.remove("hide"); draw(); }
+
+function draw(){
+  const q = Q[i];
+  $("prog").textContent = `Question ${i+1} of ${Q.length}`;
+  $("ans").textContent  = `${pick.filter(v=>v!==null).length} answered`;
+  $("progbar").style.width = ((i)/Q.length*100) + "%";
+  $("qtext").textContent = q.q;
+  $("opts").innerHTML = "";
+  q.o.forEach((t,n)=>{
+    const b = document.createElement("button");
+    b.className = "opt" + (pick[i]===n ? " sel" : "");
+    b.innerHTML = `<b>${LET[n]}</b>${t.replace(/&/g,"&amp;").replace(/</g,"&lt;")}`;
+    b.onclick = ()=>{ pick[i]=n; draw(); };
+    $("opts").appendChild(b);
+  });
+  $("back").disabled = i===0;
+  $("next").disabled = pick[i]===null;
+  $("next").textContent = i===Q.length-1 ? "Finish" : "Next";
+  /* the passage now runs full length above, so jump to the question, not the top of the page.
+     the passage stays one scroll away for re-reading. */
+  $("qtext").closest(".card").scrollIntoView({block:"start",behavior:"smooth"});
+}
+
+function go(d){
+  if(d===1 && i===Q.length-1) return finish();
+  i += d; draw();
+}
+
+function finish(){
+  let right = 0;
+  const by = {};
+  Q.forEach((q,n)=>{
+    const ok = pick[n]===q.a;
+    if(ok) right++;
+    (by[q.s] = by[q.s] || {ok:0,total:0}).total++;
+    if(ok) by[q.s].ok++;
+  });
+  const pct = Math.round(right/Q.length*100);
+
+  $("s-test").classList.add("hide");
+  $("s-done").classList.remove("hide");
+
+  /* score AND percentage — standing rule */
+  $("scoreline").innerHTML = `${right} / ${Q.length} <span>&middot; ${pct}%</span>`;
+
+  let v;
+  if(pct >= 85){
+    v = `<b>Grade 6 comprehension is solid.</b> Move up to Level C (grade 7) to find where it
+         actually stops. This score does not place him yet — it only rules out grade 6 as the ceiling.`;
+  } else if(pct >= 60){
+    v = `<b>Placed at grade 6.</b> This is a real reading level, not a failure. Look at the skill
+         rows below to see what to teach — the total on its own does not tell you.`;
+  } else {
+    v = `<b>Below grade 6.</b> Run Level A (grade 5) before concluding anything. A low score here
+         can mean grade 5 is the true level, or that one skill collapsed and dragged the rest down.
+         The skill rows tell you which.`;
+  }
+  $("verdict").innerHTML = v;
+
+  const order = ["Main idea","Inference","Vocabulary in context","Supporting detail","Text structure","Author’s purpose"];
+  $("skills").innerHTML = order.filter(k=>by[k]).map(k=>{
+    const d = by[k], p = d.ok/d.total*100;
+    const c = p>=80 ? "var(--good)" : p>=50 ? "var(--warn)" : "var(--bad)";
+    return `<tr><td>${k}</td>
+      <td><div class="sk"><i style="width:${p}%;background:${c}"></i></div></td>
+      <td class="n">${d.ok} / ${d.total}</td></tr>`;
+  }).join("");
+
+  $("readnote").innerHTML = `<b>Read the rows, not the total.</b> Missing every inference question
+    while scoring everything else means something completely different from scattered misses.
+    Supporting detail and vocabulary teach back quickly. Inference and text structure are the two
+    that decide 9th-grade re-entry.`;
+
+  const missed = Q.map((q,n)=>({q,n})).filter(({q,n})=>pick[n]!==q.a);
+  if(!missed.length){
+    $("missbox").innerHTML = "<h2>Questions missed</h2><p class='miss'>None. Every question correct.</p>";
+  } else {
+    $("misses").innerHTML = missed.map(({q,n})=>`
+      <div class="missq">
+        <span class="tag">${q.s}</span>
+        <div>${q.q}</div>
+        <p class="miss">Chose <b>${LET[pick[n]]}. ${q.o[pick[n]]}</b><br>
+           Correct <b>${LET[q.a]}. ${q.o[q.a]}</b></p>
+      </div>`).join("");
+  }
+
+  /* keep the result so it is not lost if the tab closes */
+  try{
+    localStorage.setItem("nexstudents.placement.readingB", JSON.stringify({
+      date:new Date().toISOString(), right, total:Q.length, pct,
+      skills:by, answers:pick
+    }));
+  }catch(e){}
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>

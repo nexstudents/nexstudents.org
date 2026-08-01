@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NexStudents — Free Placement Assessment</title>
+<style>
+  :root{
+    --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --line:#2a2f3a;
+    --text:#e8eaed; --dim:#9aa2b1; --accent:#4c8dff; --good:#3ecf8e; --warn:#f5a524;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f7f9; --surface:#fff; --surface2:#f0f2f5; --line:#dfe3e8;
+           --text:#1a1d23; --dim:#5d6673; --accent:#2f6fe0; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:860px;margin:0 auto;padding:0 18px 72px}
+
+  header{padding:26px 0 8px;display:flex;align-items:center;gap:10px}
+  .logo{font-weight:700;letter-spacing:-.02em;font-size:17px}
+  .logo i{color:var(--accent);font-style:normal}
+  .pill{margin-left:auto;font-size:12px;color:var(--dim);border:1px solid var(--line);
+        border-radius:20px;padding:4px 11px}
+
+  .hero{padding:44px 0 30px;border-bottom:1px solid var(--line)}
+  h1{font-size:40px;line-height:1.12;letter-spacing:-.03em;margin:0 0 16px;max-width:16ch}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lede{font-size:18px;color:var(--dim);margin:0 0 26px;max-width:58ch}
+  .badges{display:flex;flex-wrap:wrap;gap:8px}
+  .badge{font-size:13px;background:var(--surface2);border:1px solid var(--line);
+         border-radius:8px;padding:6px 12px;color:var(--dim)}
+  .badge b{color:var(--text);font-weight:600}
+
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);
+     margin:44px 0 16px;font-weight:600}
+
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;
+        display:flex;flex-direction:column}
+  .card h3{margin:0 0 4px;font-size:18px;letter-spacing:-.01em}
+  .card .lvl{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+  .card p{margin:0 0 18px;color:var(--dim);font-size:15px;flex:1}
+  .go{display:inline-block;text-align:center;font-weight:600;background:var(--accent);color:#fff;
+      border-radius:10px;padding:12px 18px}
+  .go.soon{background:var(--surface2);color:var(--dim);border:1px solid var(--line)}
+  .card.ready{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:1px}
+  .dot.on{background:var(--good)} .dot.off{background:var(--dim);opacity:.5}
+
+  .how{display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step{display:flex;gap:16px;padding:18px 20px;border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:0}
+  .step .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--surface2);
+           border:1px solid var(--line);display:grid;place-items:center;font-size:13px;
+           font-weight:700;color:var(--accent)}
+  .step div p{margin:4px 0 0;color:var(--dim);font-size:15px}
+  .step div b{font-size:16px}
+
+  .honest{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--warn);
+          border-radius:12px;padding:20px 22px;margin-top:14px}
+  .honest b{display:block;margin-bottom:8px}
+  .honest p{margin:0 0 12px;color:var(--dim);font-size:15px}
+  .honest p:last-child{margin:0}
+
+  footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);
+         color:var(--dim);font-size:13px;display:flex;flex-wrap:wrap;gap:8px}
+  footer span{margin-left:auto}
+  @media (max-width:560px){ h1{font-size:31px} .lede{font-size:17px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">Nex<i>Students</i></div>
+    <div class="pill">Prototype</div>
+  </header>
+
+  <section class="hero">
+    <h1>A placement test that actually <em>places</em>.</h1>
+    <p class="lede">
+      Free, online, scored the moment your student finishes. No printing, no answer key to mark by
+      hand, no card, no sales call. You get the level and the skills behind it.
+    </p>
+    <div class="badges">
+      <span class="badge"><b>Free</b> — no account</span>
+      <span class="badge"><b>Auto-scored</b> — instant result</span>
+      <span class="badge"><b>Skill breakdown</b>, not just a number</span>
+      <span class="badge">About <b>20 minutes</b></span>
+    </div>
+  </section>
+
+  <h2>Reading comprehension</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Level A</h3>
+      <div class="lvl"><span class="dot off"></span>Grade 5</div>
+      <p>Use this if Level B came in under 60%. It finds the floor rather than confirming a guess.</p>
+      <span class="go soon">Coming next</span>
+    </div>
+    <div class="card ready">
+      <h3>Level B</h3>
+      <div class="lvl"><span class="dot on"></span>Grade 6 &middot; Start here</div>
+      <p>One passage, 12 questions across six comprehension skills. Begin at the level your student
+         has just finished — the result tells you which way to move.</p>
+      <a class="go" href="placement-exam.html">Start Level B</a>
+    </div>
+    <div class="card">
+      <h3>Level C</h3>
+      <div class="lvl"><span class="dot off"></span>Grade 7</div>
+      <p>Use this if Level B came in at 85% or above. Grade 6 was not the ceiling, so keep climbing.</p>
+      <span class="go soon">Coming next</span>
+    </div>
+  </div>
+
+  <h2>How the placing works</h2>
+  <div class="how">
+    <div class="step"><div class="n">1</div><div>
+      <b>Start at the level just finished</b>
+      <p>Not the level you hope for. Level B is grade 6.</p></div></div>
+    <div class="step"><div class="n">2</div><div>
+      <b>The score picks the next move</b>
+      <p>85% or above, climb a level. Under 60%, drop one. In between, that is the placement.</p></div></div>
+    <div class="step"><div class="n">3</div><div>
+      <b>Read the skill rows</b>
+      <p>Main idea, inference, vocabulary in context, supporting detail, text structure, author's
+         purpose — each scored separately. Missing all three inference questions means something
+         very different from three scattered misses.</p></div></div>
+    <div class="step"><div class="n">4</div><div>
+      <b>Teach the gap, not the grade</b>
+      <p>Supporting detail and vocabulary come back quickly. Inference and text structure are the
+         slow ones, and the ones that matter most later.</p></div></div>
+  </div>
+
+  <h2>What this does not do</h2>
+  <div class="honest">
+    <b>No percentile, and we are not going to pretend otherwise.</b>
+    <p>Saying "your child reads at a 6.4 level" requires a tested reference population of thousands
+       of students. We do not have one. That norming is the actual product the paid tests are
+       selling, and inventing a number without it would be dishonest.</p>
+    <p>What this gives you instead: where your student holds up and where they stop, measured
+       against a published skill sequence and against their own earlier results. For deciding what
+       to teach on Monday, that is the more useful of the two.</p>
+    <p>If you need a normed score on paper for your state, a proctored standardized test is still
+       the right tool. This is not trying to replace that.</p>
+  </div>
+
+  <footer>
+    NexStudents &middot; free placement assessment
+    <span>Prototype build 2026-08-01</span>
+  </footer>
+
+</div>
+</body>
+</html>
