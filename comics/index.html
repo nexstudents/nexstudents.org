@@ -34,18 +34,27 @@
 
 <div class="wrap phead">
   <p class="crumb"><a href="/preview-home/">Home</a> &rsaquo; Comics</p>
-  <h1>The Adventures of Donut Boy: The Hole Wonder</h1>
-  <p>Our first comic, in progress. Short episodes your student reads right here, one after another, with no download and no account. More strips will follow it.</p>
+  <h1>Comics worth coming back for.</h1>
+  <p>Short strips your student reads right here on the page. Pick a series and read straight through - no download, no account, and no reason to stop at one.</p>
 </div>
 
 <div class="band"><div class="wrap">
-  <div class="tile" style="min-height:230px;align-items:center;justify-content:center;text-align:center">
-    <div>
-      <h4 style="font-size:1.35rem">Nothing here yet</h4>
-      <p style="max-width:46ch;margin-top:8px">Episode 1 is being drawn. It will be readable here on the page as soon as it is finished.</p>
-    </div>
+  <p class="kick">Pick a comic</p>
+  <div class="series" id="series">
+    <button class="ser" data-ser="donut" aria-pressed="true"><div class="cover">Cover</div><h3>The Adventures of Donut Boy: The Hole Wonder</h3><p>Our first strip. A hero with a hole in the middle and a habit of falling through things.</p><span class="st">In progress</span></button>
+    <div class="ser" aria-disabled="true" style="opacity:.45"><div class="cover">More soon</div><h3>More strips</h3><p>Other series will appear here as they are drawn.</p><span class="st">Not started</span></div>
   </div>
+  <div class="eps" data-eps="donut"><div class="ep"><div class="pg">Being drawn</div><div class="cap"><b>Episode 1</b><span>The Adventures of Donut Boy</span></div></div></div>
+  <p class="h2s" style="margin-top:30px">Episodes read straight on the page. Nothing to download and no account to make &mdash; your student just reads the next one.</p>
 </div></div>
+
+<script>
+document.getElementById("series").addEventListener("click", e => {
+  const b = e.target.closest("button.ser"); if(!b) return;
+  document.querySelectorAll("button.ser").forEach(x => x.setAttribute("aria-pressed", x===b));
+  document.querySelectorAll("[data-eps]").forEach(p => p.hidden = p.dataset.eps !== b.dataset.ser);
+});
+</script>
 
 <footer><div class="wrap">
   <div class="fbot">
