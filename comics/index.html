@@ -41,19 +41,82 @@
 <div class="band"><div class="wrap">
   <p class="kick">Pick a comic</p>
   <div class="series" id="series">
-    <button class="ser" data-ser="donut" aria-pressed="true"><div class="cover">Cover</div><h3>The Adventures of Donut Boy: The Hole Wonder</h3><p>Our first strip. A hero with a hole in the middle and a habit of falling through things.</p><span class="st">In progress</span></button>
+    <button class="ser" data-ser="donut" aria-pressed="true"><picture class="cover art"><source srcset="/assets/comics/donut-boy-cover.webp" type="image/webp"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy: The Hole Wonder cover art" width="960" height="640" loading="lazy" decoding="async"></picture><h3>The Adventures of Donut Boy: The Hole Wonder</h3><p>Our first strip. A hero with a hole in the middle and a habit of falling through things.</p><span class="st">8 episodes</span></button>
     <div class="ser" aria-disabled="true" style="opacity:.45"><div class="cover">More soon</div><h3>More strips</h3><p>Other series will appear here as they are drawn.</p><span class="st">Not started</span></div>
   </div>
-  <div class="eps" data-eps="donut"><div class="ep"><div class="pg">Being drawn</div><div class="cap"><b>Episode 1</b><span>The Adventures of Donut Boy</span></div></div></div>
+  <div class="reader" data-eps="donut"><div class="rframe"><div class="rslot"></div></div><div class="rbar"><button class="rnav" data-go="-1" aria-label="Previous episode">&#8249;</button><div class="rmeta"><b></b><span></span></div><button class="rnav" data-go="1" aria-label="Next episode">&#8250;</button></div></div>
   <p class="h2s" style="margin-top:30px">Episodes read straight on the page. Nothing to download and no account to make &mdash; your student just reads the next one.</p>
 </div></div>
 
 <script>
+const SERIES = [{"id":"donut","title":"The Adventures of Donut Boy: The Hole Wonder","episodes":[{"n":"Episode 1","title":"","img":"/assets/comics/donut-boy-ep1"},{"n":"Episode 2","title":"","img":"/assets/comics/donut-boy-ep2"},{"n":"Episode 3","title":"","img":"/assets/comics/donut-boy-ep3"},{"n":"Episode 4","title":"","img":"/assets/comics/donut-boy-ep4"},{"n":"Episode 5","title":"","img":"/assets/comics/donut-boy-ep5"},{"n":"Episode 6","title":"","img":"/assets/comics/donut-boy-ep6"},{"n":"Episode 7","title":"","img":"/assets/comics/donut-boy-ep7"},{"n":"Episode 8","title":"","img":"/assets/comics/donut-boy-ep8"}]}];
+const at = {};   // current episode index per series
+
+function render(id){
+  const s = SERIES.find(x => x.id === id); if(!s) return;
+  const box = document.querySelector('[data-eps="' + id + '"]');
+  const i = at[id] || 0, ep = s.episodes[i];
+  const slot = box.querySelector(".rslot");
+  slot.innerHTML = ep.img
+    ? '<picture><source srcset="' + ep.img + '.webp" type="image/webp">' +
+      '<img src="' + ep.img + '.jpg" alt="' + s.title + ', ' + ep.n + '" decoding="async"></picture>'
+    : '<div class="rsoon">Being drawn</div>';
+  box.querySelector(".rmeta b").textContent = ep.n;
+  box.querySelector(".rmeta span").textContent =
+    (ep.title ? ep.title + " \u00b7 " : "") + (i+1) + " of " + s.episodes.length;
+  box.querySelectorAll(".rnav").forEach(btn => {
+    const next = i + Number(btn.dataset.go);
+    btn.disabled = next < 0 || next >= s.episodes.length;
+  });
+  /* preload the next page so the flip is instant */
+  const nxt = s.episodes[i+1];
+  if (nxt && nxt.img) { const p = new Image(); p.src = nxt.img + ".webp"; }
+}
+
+function step(id, dir){
+  const s = SERIES.find(x => x.id === id);
+  const n = (at[id] || 0) + dir;
+  if (n < 0 || n >= s.episodes.length) return;
+  at[id] = n; render(id);
+}
+
+function current(){
+  const open = [...document.querySelectorAll("[data-eps]")].find(p => !p.hidden);
+  return open ? open.dataset.eps : null;
+}
+
 document.getElementById("series").addEventListener("click", e => {
   const b = e.target.closest("button.ser"); if(!b) return;
   document.querySelectorAll("button.ser").forEach(x => x.setAttribute("aria-pressed", x===b));
   document.querySelectorAll("[data-eps]").forEach(p => p.hidden = p.dataset.eps !== b.dataset.ser);
+  render(b.dataset.ser);
 });
+
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".rnav"); if(!btn) return;
+  step(btn.closest("[data-eps]").dataset.eps, Number(btn.dataset.go));
+});
+
+/* arrow keys flip pages, which is what anyone reading a comic reaches for */
+addEventListener("keydown", e => {
+  const id = current(); if(!id) return;
+  if (e.key === "ArrowLeft")  step(id, -1);
+  if (e.key === "ArrowRight") step(id,  1);
+});
+
+/* swipe on touch */
+document.querySelectorAll(".rframe").forEach(f => {
+  let x0 = null;
+  f.addEventListener("touchstart", e => { x0 = e.changedTouches[0].clientX; }, {passive:true});
+  f.addEventListener("touchend", e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) < 45) return;
+    step(f.closest("[data-eps]").dataset.eps, dx < 0 ? 1 : -1);
+  }, {passive:true});
+});
+
+SERIES.forEach(s => render(s.id));
 </script>
 
 <footer><div class="wrap">
