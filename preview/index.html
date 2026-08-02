@@ -197,7 +197,13 @@ body.nav-open .drawer{transform:none}
 .nv .btn{margin-left:auto;padding:10px 20px;font-size:14px}
 
 /* ── 1. HERO — full-bleed, tall, cinematic ── */
-.hero{min-height:660px;display:flex;align-items:center;padding:70px 0;position:relative}
+/* ⚠️ The hero element carries BOTH .wrap and .hero. `padding:70px 0` here was
+   overwriting .wrap's `padding:0 28px` entirely, so the whole hero sat flush
+   against the screen edge with no side gutter - invisible on a wide desktop,
+   glaring on a phone. Use padding-block so the horizontal gutter survives.
+   Any future class combined with .wrap must do the same. */
+.hero{min-height:660px;display:flex;align-items:center;
+  padding-block:70px 100px;position:relative}
 .hero:before{content:"";position:absolute;z-index:-1;inset:0;
   background:radial-gradient(70% 90% at 78% 40%,rgba(34,211,238,.13),transparent 62%)}
 .hg{display:grid;grid-template-columns:1.06fr .94fr;gap:64px;align-items:center}
@@ -221,7 +227,17 @@ h1 u{text-decoration:none;color:var(--a)}
 .big s{text-decoration:none;color:var(--dim);font-size:1.05rem;font-weight:600;margin-left:8px}
 .tagr{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
   border:1px solid var(--line);border-radius:var(--pill);padding:7px 12px}
-.rw{display:grid;grid-template-columns:1fr 92px 42px;align-items:center;gap:14px;padding:9px 0}
+/* minmax(0,1fr) not 1fr: a plain 1fr track refuses to shrink below its
+   content, so "Supporting detail" plus the two fixed columns forced the card
+   wider than a 320px screen. minmax(0,…) lets the label truncate instead. */
+.rw{display:grid;grid-template-columns:minmax(0,1fr) 92px 42px;align-items:center;gap:14px;padding:9px 0}
+.rw b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:380px){
+  .rw{grid-template-columns:minmax(0,1fr) 58px 36px;gap:10px}
+  .card{padding:20px}
+  .ctop{flex-wrap:wrap;gap:10px}
+  .big{font-size:2.3rem}
+}
 .rw b{font-weight:500;font-size:.93rem}
 .tk{height:6px;background:var(--panel-2);border-radius:var(--pill);overflow:hidden}
 .tk i{display:block;height:100%;border-radius:var(--pill);background:var(--ok);transform:scaleX(0);
@@ -308,8 +324,13 @@ h2{font-size:clamp(1.9rem,3.6vw,2.8rem);margin-bottom:16px;max-width:20ch}
 .escape .pc{font-size:2.4rem;font-weight:800;letter-spacing:-.04em;line-height:1.1;color:var(--fg)}
 .escape p{color:var(--dim);font-size:.86rem;margin:6px 0 0;font-weight:400}
 @media(max-width:1000px){
-  .escape{position:static;width:auto;margin:30px 0 -80px;box-shadow:none}
-  .state{margin-bottom:100px}
+  /* .state is display:flex and holds BOTH .wrap and .escape. The moment
+     .escape stops being absolute it becomes a second flex item in the same
+     row, so the band tried to lay out two columns on a 305px screen and
+     overflowed by 60px. Stack them instead. */
+  .state{display:block;padding:64px 0;margin-bottom:0;min-height:0}
+  .escape{position:static;width:auto;margin:26px 0 0;box-shadow:none}
+  .state .wrap .btn{width:100%;justify-content:center}
 }
 
 /* ── 5. THE ROLLING BANNER — measured off lttstore: a 332px full-bleed band
