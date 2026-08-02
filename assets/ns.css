@@ -305,12 +305,17 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    black bars, art as large as it can be. The frame height therefore varies
    between pages; that is the honest trade and it is the one that makes the
    art fit. */
+/* All eight pages are 1536x1024 (3:2) as of 2026-08-02, so the frame can be
+   fixed again and the page no longer resizes as you flip. aspect-ratio does
+   the work - no magic pixel height, and it stays correct at every width.
+   ⚠️ If a future page is a different shape it will letterbox here. Keep new
+   pages at 3:2, or drop back to the natural-height version in git history. */
 .rframe{background:#000;border:1px solid var(--line);border-radius:var(--r);
-  overflow:hidden;display:block;
+  overflow:hidden;display:block;aspect-ratio:3/2;
   touch-action:pan-y}                     /* lets vertical scroll through, we take the swipe */
-.rslot{width:100%;line-height:0}
-.rslot picture{display:block;width:100%}
-.rslot img{width:100%;height:auto;display:block}   /* no cap, no object-fit: the
+.rslot{width:100%;height:100%;line-height:0}
+.rslot picture{display:block;width:100%;height:100%}
+.rslot img{width:100%;height:100%;object-fit:contain;display:block}   /* no cap, no object-fit: the
    image simply is its own shape at full column width. A portrait page is
    tall and you scroll it, which is how comics read anyway. Capping the
    height put black bars down the sides of the portrait page. */
