@@ -349,6 +349,18 @@ h2{font-size:clamp(1.9rem,3.6vw,2.8rem);margin-bottom:16px;max-width:20ch}
 @keyframes slide{ to{ transform:translateX(-50%) } }
 @media(hover:hover){ .mq:hover div{animation-play-state:paused} }
 
+/* ── the exam section: compact two-column band, deliberately smaller than
+      worksheets and games so it reads as a signpost, not the headline ── */
+.exam-row{display:grid;grid-template-columns:1.25fr .75fr;gap:56px;align-items:center}
+@media(max-width:860px){ .exam-row{grid-template-columns:1fr;gap:32px} }
+.exam-row .h2s{margin-bottom:28px}
+.exam-facts{list-style:none;margin:0;padding:0;display:grid;gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.exam-facts li{background:var(--bg);padding:16px 20px;font-size:.92rem;color:var(--dim);
+  display:flex;align-items:baseline;gap:12px}
+.exam-facts b{font-size:1.5rem;font-weight:800;color:var(--fg);letter-spacing:-.03em;
+  min-width:38px;font-variant-numeric:tabular-nums}
+
 .final{padding:var(--rhythm) 0;text-align:center}
 .final h2{margin:0 auto 16px;max-width:17ch}
 .final p{color:var(--dim);max-width:44ch;margin:0 auto 32px}
@@ -395,13 +407,13 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.84rem;color:va
 <!-- 1 ── hero -->
 <div class="wrap hero"><div class="hg">
   <div>
-    <div class="tagline rv"><i>FREE</i> Reading Level B &middot; marked the moment you finish</div>
-    <h1 class="rv d1">Find the <u>gap</u>, not just the score.</h1>
-    <p class="sub rv d2">A twenty-minute reading assessment that tells you which skill gave way,
-      so you know what to teach on Monday.</p>
-    <div class="acts rv d3"><a class="btn" href="#">Start the exam</a>
-      <a class="btn ghost" href="#">See how it marks</a></div>
-    <p class="tiny rv d3">One passage &middot; 12 questions &middot; marked instantly</p>
+    <div class="tagline rv"><i>FREE</i> Worksheets &middot; games &middot; one placement exam</div>
+    <h1 class="rv d1">Reading practice, aimed at the <u>gap</u>.</h1>
+    <p class="sub rv d2">Printable worksheets and practice games for the six comprehension
+      skills. Not sure which your student needs? One short exam will tell you.</p>
+    <div class="acts rv d3"><a class="btn" href="#worksheets">Browse the worksheets</a>
+      <a class="btn ghost" href="#exam">Take the placement exam</a></div>
+    <p class="tiny rv d3">Free to download &middot; nothing to buy</p>
   </div>
   <div class="rv d2">
     <div class="card" id="card" role="img" aria-label="Example result: 8 of 12, 67 percent. Inference 0 of 3 is the gap.">
@@ -413,8 +425,8 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.84rem;color:va
       <div class="rw"><b>Supporting detail</b><div class="tk"><i style="--w:1"></i></div><div class="nm">2/2</div></div>
       <div class="rw"><b>Text structure</b><div class="tk"><i class="bad" style="--w:.5"></i></div><div class="nm">1/2</div></div>
       <div class="rw"><b>Author&rsquo;s purpose</b><div class="tk"><i style="--w:1"></i></div><div class="nm">1/1</div></div>
-      <p class="flag"><b>Inference is the gap.</b> Six scattered misses would mean something
-        completely different. That is why one number is useless.</p>
+      <p class="flag"><b>Inference is the gap.</b> So that is the worksheet to print. The exam
+        exists to point you at the right sheet &mdash; nothing more.</p>
     </div>
   </div>
 </div></div>
@@ -429,51 +441,10 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.84rem;color:va
   <div class="tile"><n>06</n><div><h3>Purpose</h3><p>Why the writer wrote it at all.</p></div><i class="bar" style="--w:100%"></i></div>
 </div>
 
-<!-- 3 ── THE LEVELS: 4-across square grid, section header with a right link -->
-<div class="band"><div class="wrap">
-  <div class="shead rv">
-    <div>
-      <p class="kick">The ladder</p>
-      <h2>Four levels, so a result has somewhere to send you.</h2>
-    </div>
-    <a class="lnk" href="#">See all levels <i>&rarr;</i></a>
-  </div>
-  <div class="grid4">
-    <a class="lv rv" href="#"><div class="sqr">
-      <div><span class="g">Grade 5</span><div class="n">A</div><span class="st soon">Coming next</span></div>
-      <div><h4>The floor</h4><p>Use if Level B lands under 60%.</p></div></div></a>
-    <a class="lv rv d1" href="#"><div class="sqr">
-      <div><span class="g">Grade 6</span><div class="n">B</div><span class="st">Live now</span></div>
-      <div><h4>Start here</h4><p>The level most students have just finished.</p></div></div></a>
-    <a class="lv rv d2" href="#"><div class="sqr">
-      <div><span class="g">Grade 7</span><div class="n">C</div><span class="st soon">Coming next</span></div>
-      <div><h4>The climb</h4><p>Use if Level B lands at 85% or above.</p></div></div></a>
-    <a class="lv rv d3" href="#"><div class="sqr">
-      <div><span class="g">Grade 8</span><div class="n">D</div><span class="st soon">Later</span></div>
-      <div><h4>The ceiling</h4><p>For students already reading past their year.</p></div></div></a>
-  </div>
-</div></div>
-
-<!-- 4 ── the ladder rules, ON LIGHT -->
-<div class="band light"><div class="wrap">
-  <p class="kick rv">How it places</p>
-  <h2 class="rv d1">The score picks the next move.</h2>
-  <p class="h2s rv d2">Start at the level your student just finished. Where they stop holding up
-    is where they actually are.</p>
-  <div class="sq">
-    <div class="qcell rv d1"><em>Climb</em><div><div class="pc">85%+</div>
-      <p>Not the ceiling. Go up a level and keep going until it bites.</p></div></div>
-    <div class="qcell rv d2"><em>Hold</em><div><div class="pc">60&ndash;84%</div>
-      <p>That is the placement. Read the skill rows to see what to teach first.</p></div></div>
-    <div class="qcell rv d3"><em>Drop</em><div><div class="pc">&lt;60%</div>
-      <p>Go down a level first. One collapsed skill drags everything else down.</p></div></div>
-  </div>
-</div></div>
-
-<!-- 5 ── FREE WORKSHEETS: carousel with arrow selectors.
+<!-- 3 ── FREE WORKSHEETS: the headline product, first section after the strip.
         PLACEHOLDER. Nothing is downloadable yet, so the cards say so plainly
         and carry no href - a dead download link is worse than an honest one. -->
-<div class="band"><div class="wrap">
+<div class="band" id="worksheets"><div class="wrap">
   <div class="shead rv">
     <div>
       <p class="kick">Free worksheets</p>
@@ -519,7 +490,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.84rem;color:va
   </div>
 </div></div>
 
-<!-- ── GAMES: sits directly under the worksheets offer ── -->
+<!-- 4 ── GAMES: sits directly under the worksheets offer ── -->
 <div class="band"><div class="wrap">
   <div class="shead rv">
     <div>
@@ -544,20 +515,43 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.84rem;color:va
   </div>
 </div></div>
 
+<!-- 5 ── THE EXAM. Deliberately ONE compact section, not the two full-height
+        ones it used to own. It is a signpost to the worksheets, not the
+        product. Paul: "the exam is just one resource". -->
+<div class="band" id="exam"><div class="wrap">
+  <div class="exam-row rv">
+    <div>
+      <p class="kick">Not sure where to start?</p>
+      <h2>One exam. It tells you which sheet to print.</h2>
+      <p class="h2s">Twenty minutes, marked the moment your student finishes, broken down by
+        the same six skills the worksheets are organised around. Reading Level B is live;
+        A and C are next.</p>
+      <div class="acts">
+        <a class="btn ghost" href="/placement-exam.html">Take the placement exam</a>
+      </div>
+    </div>
+    <ul class="exam-facts">
+      <li><b>12</b> questions, one passage</li>
+      <li><b>6</b> skills scored separately</li>
+      <li><b>20</b> minutes, marked instantly</li>
+      <li><b>0</b> cost, now and later</li>
+    </ul>
+  </div>
+</div></div>
+
 <!-- 6 ── THE BIG MID-PAGE CTA. vivid, full-bleed, with a card breaking out
         past its bottom edge -->
 <div class="state">
   <div class="wrap">
-    <h2 class="rv">No percentile. Ever.</h2>
-    <p class="rv d1">Saying a child reads at a 6.4 level needs a tested population of thousands.
-      We do not have one, and that norming is the actual product the paid tests sell. You get
-      the more useful thing instead: which skill to teach on Monday.</p>
-    <a class="btn rv d2" href="#">Start the exam</a>
+    <h2 class="rv">Everything here is free.</h2>
+    <p class="rv d1">Worksheets, games and the placement exam. No cart, no card, no catch &mdash;
+      the whole shelf is open. Take what fits the skill your student needs.</p>
+    <a class="btn rv d2" href="/resources/">Browse all resources</a>
   </div>
   <div class="escape rv d2">
-    <em>What you get instead</em>
-    <div class="pc">6 skills</div>
-    <p>Scored separately, with every missed question shown and explained.</p>
+    <em>On the shelf</em>
+    <div class="pc">3 kinds</div>
+    <p>Printable worksheets, practice games, and one placement exam to point you at the right one.</p>
   </div>
 </div>
 
