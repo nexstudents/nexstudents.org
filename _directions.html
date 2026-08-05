@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three directions — pick one</title>
+<!-- MOCKUP ONLY. Same content, same layout, three visual directions. -->
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#eee;
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.page{max-width:1120px;margin:0 auto;padding:40px 26px 80px}
+.lead{color:#9aa0a8;max-width:62ch;margin:0 0 40px}
+h1.top{font-size:24px;letter-spacing:-.02em;margin:0 0 8px}
+
+.dir{margin-bottom:52px;border-radius:18px;overflow:hidden;border:1px solid #2a2a2a}
+.dirhead{display:flex;align-items:baseline;gap:14px;padding:16px 22px;background:#191919;
+  border-bottom:1px solid #2a2a2a;flex-wrap:wrap}
+.dirhead b{font-size:15px;letter-spacing:.02em}
+.dirhead span{color:#8a9098;font-size:13px}
+.dirhead .pick{margin-left:auto;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:#6f767e;font-weight:800}
+.swrow{display:flex;gap:0;height:6px}
+.swrow i{flex:1}
+
+/* ── shared skeleton, themed by CSS vars per direction ── */
+.demo{padding:44px 40px;display:grid;grid-template-columns:1fr .92fr;gap:44px;align-items:center;
+  background:var(--bg);color:var(--fg)}
+@media(max-width:860px){ .demo{grid-template-columns:1fr;gap:28px;padding:30px 22px} }
+.eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 14px}
+.demo h2{font-family:var(--display);font-size:clamp(1.9rem,3.4vw,2.75rem);font-weight:var(--dw);
+  letter-spacing:var(--dt);line-height:1.08;margin:0 0 16px;color:var(--fg)}
+.demo h2 em{font-style:var(--emstyle);color:var(--hi);background:var(--hibg);
+  box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:var(--hipad)}
+.demo p.l{color:var(--dim);margin:0 0 22px;max-width:40ch;font-size:1.02rem}
+.cta{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:var(--rad);
+  background:var(--act);color:var(--actink);font-weight:800;font-size:.95rem;text-decoration:none;
+  border:2px solid var(--act)}
+.cta2{display:inline-flex;align-items:center;padding:14px 22px;border-radius:var(--rad);
+  background:transparent;color:var(--fg);font-weight:700;font-size:.95rem;text-decoration:none;
+  border:2px solid var(--line);margin-left:10px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--crad);padding:22px 24px;
+  box-shadow:var(--shadow)}
+.ctop{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:12px;
+  margin-bottom:12px;border-bottom:1px solid var(--line)}
+.sc{font-family:var(--display);font-size:2rem;font-weight:var(--dw);letter-spacing:-.03em;line-height:1}
+.sc small{font-size:.9rem;color:var(--dim);font-weight:700;margin-left:4px}
+.cmeta{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.r{display:grid;grid-template-columns:1fr 84px 38px;align-items:center;gap:11px;padding:7px 0}
+.r b{font-weight:600;font-size:.88rem}
+.tr{height:6px;background:var(--track);border-radius:99px;overflow:hidden}
+.tr i{display:block;height:100%;border-radius:99px;background:var(--ok)}
+.tr i.bad{background:var(--gap)}
+.num{font-size:.8rem;color:var(--dim);text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.callout{margin-top:14px;padding:11px 13px;border-radius:var(--nrad);font-size:.85rem;
+  background:var(--gapbg);border-left:2px solid var(--gap);line-height:1.5}
+.callout b{color:var(--gap)}
+
+/* ══ A — SCHOOLHOUSE ══ deep board green, chalk, warm chalk accents ══ */
+.a{--bg:#16241f; --fg:#f2efe6; --dim:#9fb0a6; --card:#1d2e28; --line:#31463e;
+   --track:#2a3d36; --act:#f0c05a; --actink:#16241f; --ok:#7fc7a4; --gap:#f08d7a;
+   --gapbg:rgba(240,141,122,.12); --hi:#f0c05a; --hibg:none; --hipad:0;
+   --display:Georgia,'Iowan Old Style','Times New Roman',serif; --dw:700; --dt:-.02em;
+   --emstyle:italic; --rad:10px; --crad:12px; --nrad:8px;
+   --shadow:0 20px 44px -28px rgba(0,0,0,.8)}
+
+/* ══ B — INK & AMBER ══ warm paper, deep ink, one amber, teal ticks ══ */
+.b{--bg:#faf6ef; --fg:#1d2430; --dim:#67707e; --card:#ffffff; --line:#e6ded1;
+   --track:#efe8dc; --act:#1d2430; --actink:#faf6ef; --ok:#127a6e; --gap:#c8622a;
+   --gapbg:rgba(200,98,42,.09); --hi:#1d2430; --hibg:#f6cf76; --hipad:0 .12em;
+   --display:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; --dw:900; --dt:-.04em;
+   --emstyle:normal; --rad:999px; --crad:16px; --nrad:10px;
+   --shadow:0 22px 44px -30px rgba(29,36,48,.4)}
+
+/* ══ C — RISO ══ off-white, two flat print inks, no gradients, hard edges ══ */
+.c{--bg:#f4f2ec; --fg:#15171a; --dim:#5d626b; --card:#ffffff; --line:#15171a;
+   --track:#e6e3db; --act:#e4453f; --actink:#ffffff; --ok:#1f5fa8; --gap:#e4453f;
+   --gapbg:rgba(228,69,63,.08); --hi:#15171a; --hibg:#ffd447; --hipad:0 .1em;
+   --display:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; --dw:900; --dt:-.045em;
+   --emstyle:normal; --rad:0px; --crad:0px; --nrad:0;
+   --shadow:6px 6px 0 #15171a}
+.c .card{border-width:2px}
+.c .cta,.c .cta2{border-width:2px}
+.c .cta{box-shadow:4px 4px 0 #15171a}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="top">Three directions</h1>
+  <p class="lead">
+    Same words, same layout, same readout. Only the visual direction changes, so
+    what you are judging is the direction and nothing else. Pick one and I will
+    build the real page in it.
+  </p>
+
+  <!-- ═══ A ═══ -->
+  <div class="dir">
+    <div class="dirhead">
+      <b>A &middot; Schoolhouse</b>
+      <span>Board green, chalk, serif display. Calm and a bit academic.</span>
+      <span class="pick">Direction A</span>
+    </div>
+    <div class="swrow"><i style="background:#16241f"></i><i style="background:#f2efe6"></i><i style="background:#f0c05a"></i><i style="background:#7fc7a4"></i><i style="background:#f08d7a"></i></div>
+    <div class="demo a">
+      <div>
+        <p class="eyebrow">Free placement assessment</p>
+        <h2>A number tells you nothing. <em>This tells you what to teach.</em></h2>
+        <p class="l">One passage, twelve questions, twenty minutes. Marked the moment your student finishes.</p>
+        <a class="cta" href="#">Start the exam &rarr;</a><a class="cta2" href="#">How it marks</a>
+      </div>
+      <div class="card">
+        <div class="ctop"><div class="sc">8 / 12 <small>&middot; 67%</small></div><div class="cmeta">Reading &middot; Level B</div></div>
+        <div class="r"><b>Main idea</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Inference</b><div class="tr"><i class="bad" style="width:6%"></i></div><div class="num">0/3</div></div>
+        <div class="r"><b>Vocabulary</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Supporting detail</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Text structure</b><div class="tr"><i class="bad" style="width:50%"></i></div><div class="num">1/2</div></div>
+        <div class="callout"><b>Inference is the gap.</b> Six scattered misses would mean something else entirely.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ B ═══ -->
+  <div class="dir">
+    <div class="dirhead">
+      <b>B &middot; Ink &amp; Amber</b>
+      <span>Warm paper, near-black ink, one amber highlight. Quiet and grown-up.</span>
+      <span class="pick">Direction B</span>
+    </div>
+    <div class="swrow"><i style="background:#faf6ef"></i><i style="background:#1d2430"></i><i style="background:#f6cf76"></i><i style="background:#127a6e"></i><i style="background:#c8622a"></i></div>
+    <div class="demo b">
+      <div>
+        <p class="eyebrow">Free placement assessment</p>
+        <h2>A number tells you nothing. <em>This tells you what to teach.</em></h2>
+        <p class="l">One passage, twelve questions, twenty minutes. Marked the moment your student finishes.</p>
+        <a class="cta" href="#">Start the exam &rarr;</a><a class="cta2" href="#">How it marks</a>
+      </div>
+      <div class="card">
+        <div class="ctop"><div class="sc">8 / 12 <small>&middot; 67%</small></div><div class="cmeta">Reading &middot; Level B</div></div>
+        <div class="r"><b>Main idea</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Inference</b><div class="tr"><i class="bad" style="width:6%"></i></div><div class="num">0/3</div></div>
+        <div class="r"><b>Vocabulary</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Supporting detail</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Text structure</b><div class="tr"><i class="bad" style="width:50%"></i></div><div class="num">1/2</div></div>
+        <div class="callout"><b>Inference is the gap.</b> Six scattered misses would mean something else entirely.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ C ═══ -->
+  <div class="dir">
+    <div class="dirhead">
+      <b>C &middot; Riso</b>
+      <span>Flat print inks, hard black outlines, offset shadows. Bold and confident.</span>
+      <span class="pick">Direction C</span>
+    </div>
+    <div class="swrow"><i style="background:#f4f2ec"></i><i style="background:#15171a"></i><i style="background:#e4453f"></i><i style="background:#1f5fa8"></i><i style="background:#ffd447"></i></div>
+    <div class="demo c">
+      <div>
+        <p class="eyebrow">Free placement assessment</p>
+        <h2>A number tells you nothing. <em>This tells you what to teach.</em></h2>
+        <p class="l">One passage, twelve questions, twenty minutes. Marked the moment your student finishes.</p>
+        <a class="cta" href="#">Start the exam &rarr;</a><a class="cta2" href="#">How it marks</a>
+      </div>
+      <div class="card">
+        <div class="ctop"><div class="sc">8 / 12 <small>&middot; 67%</small></div><div class="cmeta">Reading &middot; Level B</div></div>
+        <div class="r"><b>Main idea</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Inference</b><div class="tr"><i class="bad" style="width:6%"></i></div><div class="num">0/3</div></div>
+        <div class="r"><b>Vocabulary</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Supporting detail</b><div class="tr"><i style="width:100%"></i></div><div class="num">2/2</div></div>
+        <div class="r"><b>Text structure</b><div class="tr"><i class="bad" style="width:50%"></i></div><div class="num">1/2</div></div>
+        <div class="callout"><b>Inference is the gap.</b> Six scattered misses would mean something else entirely.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

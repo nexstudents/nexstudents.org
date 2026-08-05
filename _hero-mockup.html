@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero mockup — the readout as the thesis</title>
+<!-- MOCKUP ONLY. Not linked from the site, not committed. Compare against / -->
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  /* ── The idea ────────────────────────────────────────────────────────────
+     The current hero is a headline with a ring round a word - inherited from
+     NexEdge, and it says nothing about assessment. This puts the ONE THING no
+     competitor gives away on the page instead: the skill breakdown, shown as
+     a real result, filling itself in on load. The pitch is made before anyone
+     reads a sentence.
+     ──────────────────────────────────────────────────────────────────────── */
+  .split{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;
+         padding:76px 0 84px}
+  @media(max-width:900px){ .split{grid-template-columns:1fr;gap:40px;padding:52px 0 60px} }
+
+  .split h1{font-size:clamp(2.4rem,5.6vw,4.05rem);text-transform:none;
+            letter-spacing:-.045em;line-height:1.03;margin:0 0 20px}
+  .split h1 .q{color:var(--muted);display:block;font-size:.42em;font-weight:800;
+               letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}
+  .split h1 em{font-style:normal;color:var(--accent)}
+  .split .lede{max-width:44ch}
+
+  /* ── the readout ── */
+  .readout{background:var(--bg-2);border:1px solid var(--line);border-radius:24px;
+           padding:26px 28px 22px;box-shadow:0 30px 60px -34px rgba(43,42,46,.34)}
+  .ro-top{display:flex;align-items:baseline;justify-content:space-between;
+          padding-bottom:16px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+  .ro-score{font-size:2.5rem;font-weight:900;letter-spacing:-.04em;line-height:1}
+  .ro-score span{font-size:1.05rem;color:var(--muted);font-weight:700;margin-left:6px}
+  .ro-when{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;
+           color:var(--muted);font-weight:700}
+
+  .ro-row{display:grid;grid-template-columns:1fr 96px 42px;align-items:center;
+          gap:14px;padding:9px 0}
+  .ro-name{font-size:.92rem;font-weight:600}
+  .ro-track{height:7px;background:var(--bg-3);border-radius:4px;overflow:hidden}
+  .ro-fill{display:block;height:100%;width:0;border-radius:4px;
+           animation:grow .9s cubic-bezier(.22,1,.36,1) forwards}
+  .ro-num{font-size:.84rem;color:var(--muted);text-align:right;
+          font-variant-numeric:tabular-nums;font-weight:700}
+  @keyframes grow{ to{ width:var(--w) } }
+  /* stagger: the rows fill top to bottom, so the eye is walked down the list */
+  .ro-row:nth-child(1) .ro-fill{animation-delay:.15s}
+  .ro-row:nth-child(2) .ro-fill{animation-delay:.28s}
+  .ro-row:nth-child(3) .ro-fill{animation-delay:.41s}
+  .ro-row:nth-child(4) .ro-fill{animation-delay:.54s}
+  .ro-row:nth-child(5) .ro-fill{animation-delay:.67s}
+  .ro-row:nth-child(6) .ro-fill{animation-delay:.80s}
+  @media(prefers-reduced-motion:reduce){
+    .ro-fill{animation:none;width:var(--w)}
+  }
+
+  /* The gap is the point, so it is called out rather than left to be noticed. */
+  .ro-call{margin-top:16px;padding:13px 15px;border-radius:14px;
+           background:var(--accent-2-soft);border:1px solid rgba(var(--accent-2-rgb),.28);
+           font-size:.88rem;line-height:1.5}
+  .ro-call b{color:var(--accent-2)}
+
+  .under{margin-top:18px;font-size:.8rem;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="nav-in">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="panel">
+      <i></i><i></i><i></i>
+    </button>
+    <a class="word" href="/">NEX<b>STUDENTS</b></a>
+    <div class="tabs">
+      <a class="on" href="/">Home</a>
+      <a href="/placement-exam.html">Placement Exam</a>
+      <a class="soon" href="/games/">Games</a>
+      <a class="soon" href="/resources/">Resources</a>
+    </div>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="panel" id="panel" aria-hidden="true" aria-label="Menu">
+  <div class="panel-top">
+    <span class="word">NEX<b>STUDENTS</b></span>
+    <button class="panel-close" id="panelClose" aria-label="Close menu">&times;</button>
+  </div>
+  <a class="pl" href="/">Home</a>
+  <a class="pl" href="/placement-exam.html">Placement Exam<small>Reading, Level B &middot; grade 6</small></a>
+</aside>
+
+<div class="wrap">
+  <header class="split">
+
+    <div>
+      <h1>
+        <span class="q">Free placement assessment</span>
+        A number tells you nothing.
+        <em>This tells you what to teach.</em>
+      </h1>
+      <p class="lede">
+        One passage, twelve questions, about twenty minutes. Scored the moment
+        your student finishes &mdash; broken down by skill, so you can see which
+        one gave way.
+      </p>
+      <div class="cta-row">
+        <a class="btn solid mag" href="/placement-exam.html">Start the exam &rarr;</a>
+        <a class="btn mag" href="#how">How it works</a>
+      </div>
+      <p class="microcopy">No account. No email. Nothing to print.</p>
+    </div>
+
+    <!-- The signature: a real result, filling itself in. -->
+    <div>
+      <div class="readout" role="img"
+           aria-label="Example result. 8 out of 12, 67 percent. Main idea 2 of 2, inference 0 of 3, vocabulary 2 of 2, supporting detail 2 of 2, text structure 1 of 2, author's purpose 1 of 1. Inference is the gap.">
+        <div class="ro-top">
+          <div class="ro-score">8 / 12 <span>&middot; 67%</span></div>
+          <div class="ro-when">Reading &middot; Level B</div>
+        </div>
+
+        <div class="ro-row"><div class="ro-name">Main idea</div>
+          <div class="ro-track"><i class="ro-fill" style="--w:100%;background:var(--accent-2)"></i></div>
+          <div class="ro-num">2/2</div></div>
+
+        <div class="ro-row"><div class="ro-name">Inference</div>
+          <div class="ro-track"><i class="ro-fill" style="--w:4%;background:var(--accent)"></i></div>
+          <div class="ro-num">0/3</div></div>
+
+        <div class="ro-row"><div class="ro-name">Vocabulary in context</div>
+          <div class="ro-track"><i class="ro-fill" style="--w:100%;background:var(--accent-2)"></i></div>
+          <div class="ro-num">2/2</div></div>
+
+        <div class="ro-row"><div class="ro-name">Supporting detail</div>
+          <div class="ro-track"><i class="ro-fill" style="--w:100%;background:var(--accent-2)"></i></div>
+          <div class="ro-num">2/2</div></div>
+
+        <div class="ro-row"><div class="ro-name">Text structure</div>
+          <div class="ro-track"><i class="ro-fill" style="--w:50%;background:var(--accent)"></i></div>
+          <div class="ro-num">1/2</div></div>
+
+        <div class="ro-row"><div class="ro-name">Author&rsquo;s purpose</div>
+          <div class="ro-track"><i class="ro-fill" style="--w:100%;background:var(--accent-2)"></i></div>
+          <div class="ro-num">1/1</div></div>
+
+        <p class="ro-call">
+          <b>Inference is the gap.</b> Six scattered misses would mean something
+          else entirely. That is the difference between a score and an answer.
+        </p>
+      </div>
+      <p class="under">An example result. Yours takes twenty minutes.</p>
+    </div>
+
+  </header>
+</div>
+
+<script src="/assets/site.js"></script>
+</body>
+</html>
