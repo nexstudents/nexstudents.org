@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Lewis and Clark — NexStudents</title>
-<meta name="description" content="A printable 7th grade history worksheet on the Corps of Discovery, with a reading passage, vocabulary, comprehension questions, a timeline and a free answer key.">
+<meta name="description" content="A printable 7th grade history worksheet on the Corps of Discovery: a brief history, a word list, five questions and a free answer key.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
@@ -74,13 +74,8 @@ h2{
 h2:first-of-type{margin-top:0}
 p{margin:0 0 14px}
 .passage p{text-indent:0}
-.art{
-  margin:18px 0;border:1px dashed var(--rule);border-radius:4px;
-  padding:26px;text-align:center;color:var(--ink-soft);
-  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;
-}
-.art img{display:block;max-width:100%;height:auto;margin:0 auto;border-radius:3px}
-.art.has-art{border:1px solid var(--rule);padding:10px}
+.art{margin:0 0 26px;padding:0;border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.art img{display:block;width:100%;height:auto}
 .vocab{display:grid;gap:10px;margin:0;padding:0;list-style:none}
 .vocab li{display:flex;gap:12px;align-items:baseline;font-size:16px}
 .vocab b{font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:600;min-width:112px}
@@ -152,6 +147,11 @@ ol.qs>li{margin-bottom:20px;font-size:16px}
     <span>Score <u></u></span>
   </div>
 
+  <figure class="art">
+    <img src="art.jpg" width="1536" height="1024"
+         alt="Lewis and Clark standing on a rocky bluff, one holding a map and the other pointing out across a river valley towards distant mountains, with members of the Corps behind them.">
+  </figure>
+
   <h2>A Brief History</h2>
   <div class="passage">
     <p>In 1803 the United States bought a piece of land so large it doubled the size of the country. It was called the Louisiana Purchase. The strange part is that almost nobody in the government knew what was in it. There were no reliable maps, rivers nobody had measured, and mountains nobody had crossed. President Thomas Jefferson wanted to know what he had just bought.</p>
@@ -165,9 +165,6 @@ ol.qs>li{margin-bottom:20px;font-size:16px}
     <p>What they found ended one dream and began another. There was no easy water route to the Pacific, so that hope was gone for good. But the maps were real, and settlers followed them west for the rest of the century. For the nations already living on that land, those same maps marked the beginning of enormous loss. Both of those things are true about the same expedition.</p>
   </div>
 
-  <div class="art" id="art">
-    Concept art goes here.
-  </div>
 
   <h2>Vocabulary — write what each word means</h2>
   <ol class="vocab" style="counter-reset:none">
@@ -212,20 +209,5 @@ ol.qs>li{margin-bottom:20px;font-size:16px}
 
 </div>
 
-<script>
-/* Concept art drops in as art.jpg (or art.webp) beside this page. Until one
-   exists the slot stays an honest placeholder rather than a broken image. */
-(function(){
-  var slot = document.getElementById("art");
-  var img = new Image();
-  img.onload = function(){
-    slot.className = "art has-art";
-    slot.innerHTML = "";
-    img.alt = "Concept art: the Corps of Discovery on the Missouri River";
-    slot.appendChild(img);
-  };
-  img.src = "art.jpg";
-})();
-</script>
 </body>
 </html>
