@@ -39,9 +39,32 @@
 </div>
 
 <div class="band"><div class="wrap">
-  <div class="tile" style="min-height:170px;align-items:center;justify-content:center;text-align:center">
-      <div><h4 style="font-size:1.2rem">Nothing here yet</h4>
-      <p style="max-width:44ch;margin-top:8px">The printables follow the lessons. They go up as each unit is finished.</p></div></div>
+  <div style="display:grid;gap:20px;
+    grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))">
+    <a class="tile" href="/worksheets/history/lewis-and-clark/" data-lesson="history/lewis-and-clark">
+      <span class="tick-done" aria-hidden="true">&check;</span>
+      <em>Printable &middot; answer key included</em>
+      <h4>Lewis and Clark: The Corps of Discovery</h4>
+      <p>A brief history of the expedition, a word list, and five questions whose answers are hiding in the reading. Answer key on the last page.</p>
+      <p style="margin-top:14px;font-size:.76rem;font-weight:700;color:var(--a)">Print or PDF &middot; grade 7</p>
+      <span class="tick-score"></span>
+    </a>
+  </div>
+  <script>
+(function(){
+  var cards = document.querySelectorAll("[data-lesson]");
+  for (var i = 0; i < cards.length; i++){
+    var c = cards[i], d = null;
+    try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
+    if (!d) continue;
+    c.classList.add("is-done");
+    var s = c.querySelector(".tick-score");
+    if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+    var t = c.querySelector(".tick-done");
+    if (t) t.setAttribute("title", "Completed");
+  }
+})();
+</script>
 </div></div>
 
 <footer><div class="wrap">
