@@ -220,8 +220,12 @@ a.sub-t{color:inherit;text-decoration:none}
 /* ── LESSON / WORKSHEET CARDS ──
    Small, several to a row. Thumbnail big enough to recognise, then a short
    description and a price. Blank slots sit alongside as placeholders. */
-.cardgrid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(215px,100%),1fr))}
-@media(max-width:430px){ .cardgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px} }
+/* Two side by side on ANY phone. A 215px min with auto-fill left a dead zone
+   between 431px and ~486px where one full-width card filled the screen -
+   which is exactly the width a large phone reports. Explicit columns instead
+   of trusting auto-fill to guess. */
+.cardgrid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr))}
+@media(max-width:680px){ .cardgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px} }
 
 .card{position:relative;display:flex;flex-direction:column;color:inherit;text-decoration:none;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
@@ -235,6 +239,16 @@ a.sub-t{color:inherit;text-decoration:none}
 @media(hover:hover){ a.card:hover .cthumb img{transform:scale(1.05)} }
 
 .cbody{display:flex;flex-direction:column;padding:12px 13px 13px;flex:1}
+@media(max-width:680px){
+  /* two-up on a phone means a ~180px card, so tighten everything inside it */
+  .cthumb{aspect-ratio:1/1}
+  .cbody{padding:9px 10px 10px}
+  .ctitle{font-size:.86rem;margin:4px 0 3px}
+  .cblurb{font-size:.72rem;line-height:1.4}
+  .cmeta{margin-top:8px;padding-top:7px;font-size:.66rem}
+  .cmeta u{font-size:.8rem}
+  .cbody em{font-size:.57rem;letter-spacing:.09em}
+}
 .cbody em{font-style:normal;font-size:.62rem;font-weight:800;letter-spacing:.11em;
   text-transform:uppercase;color:var(--dim)}
 .ctitle{display:block;margin:5px 0 4px;font-size:.94rem;font-weight:800;letter-spacing:-.02em;
