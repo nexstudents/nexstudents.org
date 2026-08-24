@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Subjects — NexStudents</title>
+<meta name="description" content="Every subject on NexStudents, with its lessons and worksheets.">
+<meta name="theme-color" content="#0a0b0d">
+<link rel="stylesheet" href="/assets/ns.css">
+</head>
+<body>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+  <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
+  <a href="/">Home</a>
+  <a href="/grades/">Grades<small>K through 8</small></a>
+  <a href="/worksheets/" class="on">Worksheets<small>Free and packets</small></a>
+  <a href="/games/">Games<small>Play in the browser</small></a>
+  <a href="/comics/">Comics<small>Read on the site</small></a>
+  <a href="/for-parents/">For Parents<small>Placement exams</small></a>
+  <a class="btn" href="/grades/">Pick a grade</a>
+</aside>
+
+<nav id="nav"><div class="nv">
+  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+    <i></i><i></i><i></i>
+  </button>
+  <a class="word" href="/">Nex<b>Students</b></a>
+  <div class="tabs"><a href="/grades/">Grades</a><a href="/worksheets/" class="on">Worksheets</a><a href="/games/">Games</a><a href="/comics/">Comics</a><a href="/for-parents/">For Parents</a></div>
+  <a class="btn" href="/grades/">Pick a grade</a>
+</div></nav>
+
+<div class="wrap phead">
+  <p class="crumb"><a href="/">Home</a> &rsaquo; Subjects</p>
+  <h1>Subjects.</h1>
+  <p>Four core subjects. Each one holds lessons that are worked through on screen and worksheets that get printed. What is built is at the top.</p>
+</div>
+
+<div class="band"><div class="wrap">
+  <div class="subj-list">
+  <section class="subj-row">
+      <div class="subj-head">
+        <n>01</n>
+        <div>
+          <h3>History <i>Live</i></h3>
+          <p>American and Biblical history, taught properly rather than skipped over.</p>
+        </div>
+      </div>
+      <div class="subj-sub">
+        <a class="minibox" href="/history/lessons/">
+          <b>Lessons</b><span>Worked through on screen</span>
+          <u>1 lesson &rarr;</u>
+        </a>
+        <a class="minibox" href="/history/worksheets/">
+          <b>Worksheets</b><span>Printed and written on</span>
+          <u>0 sheets &rarr;</u>
+        </a>
+      </div>
+    </section>
+  <section class="subj-row is-soon">
+      <div class="subj-head">
+        <n>02</n>
+        <div>
+          <h3>ELA <i>Soon</i></h3>
+          <p>Spelling, book reports, comprehension and reading lists worth actually reading.</p>
+        </div>
+      </div>
+      <div class="subj-sub">
+        <div class="minibox is-soon" aria-disabled="true">
+          <b>Lessons</b><span>Worked through on screen</span>
+          <u>Not built yet</u>
+        </div>
+        <div class="minibox is-soon" aria-disabled="true">
+          <b>Worksheets</b><span>Printed and written on</span>
+          <u>Not built yet</u>
+        </div>
+      </div>
+    </section>
+  <section class="subj-row is-soon">
+      <div class="subj-head">
+        <n>03</n>
+        <div>
+          <h3>Science <i>Soon</i></h3>
+          <p>Experiments you can run at home, with video walkthroughs and record sheets.</p>
+        </div>
+      </div>
+      <div class="subj-sub">
+        <div class="minibox is-soon" aria-disabled="true">
+          <b>Lessons</b><span>Worked through on screen</span>
+          <u>Not built yet</u>
+        </div>
+        <div class="minibox is-soon" aria-disabled="true">
+          <b>Worksheets</b><span>Printed and written on</span>
+          <u>Not built yet</u>
+        </div>
+      </div>
+    </section>
+  <section class="subj-row is-soon">
+      <div class="subj-head">
+        <n>04</n>
+        <div>
+          <h3>Maths <i>Soon</i></h3>
+          <p>Practice that teaches, without punishing a student for getting things wrong.</p>
+        </div>
+      </div>
+      <div class="subj-sub">
+        <div class="minibox is-soon" aria-disabled="true">
+          <b>Lessons</b><span>Worked through on screen</span>
+          <u>Not built yet</u>
+        </div>
+        <div class="minibox is-soon" aria-disabled="true">
+          <b>Worksheets</b><span>Printed and written on</span>
+          <u>Not built yet</u>
+        </div>
+      </div>
+    </section>
+  </div>
+  <p class="h2s" style="margin-top:30px">A subject goes live when it has enough in it to be worth
+    your time, not before. History is first because it is the one being taught in our own house
+    right now.</p>
+</div></div>
+
+<footer><div class="wrap">
+  <div class="fbot">
+    <span>&copy; 2026 NexEdge Studios</span>
+    <span>NexStudents is not affiliated with nexstudent.org</span>
+  </div>
+</div></footer>
+
+<script>
+const burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
+      scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
+function setNav(o){document.body.classList.toggle("nav-open",o);
+  burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
+  document.body.style.overflow=o?"hidden":"";}
+burger.onclick=()=>setNav(!document.body.classList.contains("nav-open"));
+scrim.onclick=dClose.onclick=()=>setNav(false);
+addEventListener("keydown",e=>{if(e.key==="Escape")setNav(false)});
+const nav=document.getElementById("nav");
+addEventListener("scroll",()=>nav.classList.toggle("stuck",scrollY>16),{passive:true});
+</script>
+</body>
+</html>

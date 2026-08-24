@@ -172,6 +172,31 @@ a.sub-t{color:inherit;text-decoration:none}
   .sub-t:hover p{opacity:1;transform:none}
 }
 
+/* ── SUBJECTS INDEX ── subject on top, lessons/worksheets boxes beneath ── */
+.subj-list{display:grid;gap:18px}
+.subj-row{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.subj-row.is-soon{opacity:.55}
+.subj-head{display:flex;gap:16px;align-items:flex-start}
+.subj-head n{display:block;font-size:.68rem;font-weight:800;letter-spacing:.16em;
+  color:var(--dim);padding-top:6px;flex:none}
+.subj-head h3{font-size:1.35rem;letter-spacing:-.03em;margin:0}
+.subj-head h3 i{font-style:normal;margin-left:9px;padding:3px 8px;border-radius:var(--pill);
+  font-size:.6rem;font-weight:800;letter-spacing:.1em;vertical-align:3px;
+  background:var(--panel-2);color:var(--dim)}
+.subj-row:not(.is-soon) .subj-head h3 i{background:var(--free);color:#052e16}
+.subj-head p{margin:6px 0 0;font-size:.86rem;color:var(--dim);line-height:1.45;max-width:56ch}
+.subj-sub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+@media(max-width:560px){ .subj-sub{grid-template-columns:minmax(0,1fr)} }
+.minibox{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);
+  padding:15px 16px;display:flex;flex-direction:column;gap:3px;
+  color:inherit;text-decoration:none;transition:border-color .24s ease,transform .24s var(--ease)}
+@media(hover:hover){ a.minibox:hover{border-color:var(--a);transform:translateY(-2px)} }
+.minibox b{font-size:1rem;font-weight:800;letter-spacing:-.02em}
+.minibox span{font-size:.76rem;color:var(--dim)}
+.minibox u{text-decoration:none;margin-top:8px;font-size:.74rem;font-weight:800;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--a)}
+.minibox.is-soon u{color:var(--dim)}
+
 /* ── 5. GAMES + 6. COMICS ── */
 .band{padding:var(--rhythm) 0}
 .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:36px 20px}
