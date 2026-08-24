@@ -76,7 +76,8 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
   .sheet h2{border-color:#000}
   .head,.key{border-color:#000}
   .note{background:transparent;border-left:2px solid #000}
-  .art{border:1px solid #999}
+  .art{border:1px solid #999;page-break-inside:avoid}
+  .art img{max-height:150mm;width:auto;margin:0 auto}
   .lines i,.vocab u,.namebar u{border-bottom:1px solid #000}
   .namebar{border-bottom:1px solid #000}
   .key{page-break-before:always;border-top:0}
