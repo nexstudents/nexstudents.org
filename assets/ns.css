@@ -217,6 +217,19 @@ a.sub-t{color:inherit;text-decoration:none}
   min-height:190px;display:flex;flex-direction:column;justify-content:space-between;
   transition:border-color .28s ease,transform .28s var(--ease)}
 @media(hover:hover){ .tile:hover{border-color:var(--a);transform:translateY(-4px)} }
+/* card thumbnail. Paper-shaped, matching the resource cards on the home page.
+   The art carries its own title, so the alt is empty and the card's own h4
+   does the announcing - otherwise a screen reader hears the title twice. */
+.tile.has-thumb{padding:0;overflow:hidden}
+.tile.has-thumb>*:not(.tthumb):not(.tick-done){margin-left:22px;margin-right:22px}
+.tile.has-thumb>em{margin-top:18px}
+.tile.has-thumb>.tick-score{margin-bottom:20px}
+.tile.has-thumb>p:last-of-type{margin-bottom:20px}
+.tthumb{display:block;aspect-ratio:3/4;overflow:hidden;background:var(--panel-2)}
+.tthumb img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;
+  transition:transform .4s var(--ease)}
+@media(hover:hover){ .tile.has-thumb:hover .tthumb img{transform:scale(1.04)} }
+
 /* completed-lesson tick, set from localStorage by the lesson list script */
 .tile{position:relative}
 .tile.is-done{border-color:var(--free)}
