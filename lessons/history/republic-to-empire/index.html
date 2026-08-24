@@ -205,6 +205,30 @@ h1{
 }
 .voicerow select{flex:0 1 auto;min-width:0;max-width:100%;font-size:13px}
 
+/* studio voice key */
+.linkbtn{
+  margin-left:auto;background:none;border:0;cursor:pointer;padding:4px 2px;
+  font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.04em;
+  color:var(--verdigris);text-decoration:underline;text-underline-offset:3px;
+}
+.linkbtn:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.keyrow{display:none;margin-top:9px;padding-top:9px;border-top:1px solid var(--rule)}
+.keyrow.show{display:block}
+.keyrow label{
+  display:block;font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px;
+}
+.keyfield{display:flex;gap:7px;flex-wrap:wrap}
+.keyfield input{
+  flex:1 1 180px;min-width:0;font-family:inherit;font-size:13px;
+  color:var(--control-ink);background:var(--control-bg);
+  border:1px solid var(--control-border);border-radius:3px;padding:9px 10px;
+}
+.keyfield input:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.keynote{font-size:12px;line-height:1.5;color:var(--ink-soft);margin:8px 0 0}
+.keynote.bad{color:var(--porphyry)}
+.keynote.good{color:var(--verdigris-ink)}
+
 /* colour picker */
 .themerow{
   display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:9px;
@@ -413,7 +437,7 @@ h2{
     <div class="eyebrow">
       <span>Intel Briefing</span><span class="dot"></span>
       <span>Unit 1 &middot; Lesson 1</span><span class="dot"></span>
-      <span>Leif the Lion</span>
+      <span>Ancient Rome</span>
     </div>
     <h1>From Republic to Empire</h1>
     <p class="dek">Rome spent five hundred years refusing to have a king. Then it got one, and almost nobody noticed the day it happened.</p>
@@ -447,6 +471,16 @@ h2{
     <div class="themerow" id="themerow">
       <span class="lbl">Colours</span>
       <div class="swatches" id="swatches"></div>
+      <button class="linkbtn" type="button" id="keyToggle">Studio voice</button>
+    </div>
+    <div class="keyrow" id="keyrow">
+      <label for="ttskey">Google Cloud Text-to-Speech API key</label>
+      <div class="keyfield">
+        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
+        <button class="btn" type="button" id="keySave">Save</button>
+        <button class="btn" type="button" id="keyClear">Clear</button>
+      </div>
+      <p class="keynote" id="keynote">Stored only in this browser, never sent anywhere but Google. Restrict the key to the Text-to-Speech API in your Cloud console.</p>
     </div>
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
   </div>
@@ -769,20 +803,86 @@ PARTS.forEach(function(part){
    AUDIO stays null until the clips are generated; the page runs on DEVICE until then. */
 var AUDIO = null;   /* { voice:"en-US-...", clips:[ { src:"data:audio/mpeg;base64,...", marks:[0,0.31,...] } ] } */
 
+/* Google Cloud voices, fetched live with the viewer's own key. Curated rather
+   than listed from the API: these are the ones that support SSML marks, which
+   is what gives exact per-word timing. British first, per Paul. */
+var GOOGLE_VOICES = [
+  { id:"en-GB-Neural2-B", label:"UK male (Neural2 B)" },
+  { id:"en-GB-Neural2-D", label:"UK male (Neural2 D)" },
+  { id:"en-GB-Neural2-A", label:"UK female (Neural2 A)" },
+  { id:"en-US-Neural2-D", label:"US male (Neural2 D)" },
+  { id:"en-US-Neural2-J", label:"US male (Neural2 J)" }
+];
+var ttsKey = load("ttskey", "");
+var clipCache = {};          // "voice|index" -> { src, marks }
+
+function hasKey(){ return !!ttsKey; }
+
 function hasStudio(){
   return !!(AUDIO && AUDIO.clips && AUDIO.clips.length === SENT.length);
+}
+
+function xmlEsc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+}
+
+/* One sentence -> MP3 + a start time per word. Cached, so replaying a sentence
+   or scrubbing back costs nothing and never bills twice. */
+function fetchClip(i, voiceId){
+  var ck = voiceId + "|" + i;
+  if (clipCache[ck]) return Promise.resolve(clipCache[ck]);
+  var words = SENT[i].text.split(" ");
+  var ssml = "<speak>" + words.map(function(w, k){
+    return '<mark name="w' + k + '"/>' + xmlEsc(w);
+  }).join(" ") + "</speak>";
+
+  return fetch("https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=" + encodeURIComponent(ttsKey), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: { ssml: ssml },
+      voice: { languageCode: voiceId.slice(0, 5), name: voiceId },
+      audioConfig: { audioEncoding: "MP3", speakingRate: rateVal() },
+      enableTimePointing: ["SSML_MARK"]
+    })
+  }).then(function(r){
+    return r.json().then(function(j){
+      if (!r.ok) throw new Error(j.error ? j.error.message : "HTTP " + r.status);
+      return j;
+    });
+  }).then(function(j){
+    var marks = new Array(words.length).fill(0);
+    (j.timepoints || []).forEach(function(tp){
+      var n = parseInt(String(tp.markName).slice(1), 10);
+      if (!isNaN(n) && n < marks.length) marks[n] = tp.timeSeconds;
+    });
+    var clip = { src: "data:audio/mpeg;base64," + j.audioContent, marks: marks };
+    clipCache[ck] = clip;
+    return clip;
+  });
 }
 
 var synth = window.speechSynthesis;
 var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
 var idx = 0, playing = false, gen = 0, voice = null;
-var useStudio = hasStudio();
+var engine = "device";       // "google" | "baked" | "device"
+var googleVoice = load("gvoice", GOOGLE_VOICES[0].id);
 var audioEl = null, rafId = null;
 var playBtn = document.getElementById("play");
 var scrub = document.getElementById("scrub");
 var posEl = document.getElementById("pos");
 
-if (!supported && !hasStudio()){
+function note(msg, kind){
+  var el = document.getElementById("keynote");
+  if (!el) return;
+  el.className = "keynote" + (kind ? " " + kind : "");
+  el.textContent = msg || "Stored only in this browser, never sent anywhere but Google. Restrict the key to the Text-to-Speech API in your Cloud console.";
+  if (msg && kind === "bad") document.getElementById("keyrow").classList.add("show");
+}
+window.syncVoiceUI = function(){};
+
+if (!supported && !hasStudio() && !hasKey()){
   document.getElementById("nospeech").style.display = "block";
   playBtn.disabled = true;
   playBtn.style.opacity = ".5";
@@ -821,49 +921,104 @@ if (!supported && !hasStudio()){
     voices = all.filter(function(v){ return /^en([-_]|$)/i.test(v.lang || ""); });
     if (!voices.length) voices = all.slice();
     voices.sort(function(a, b){ return rank(b) - rank(a); });
-
-    var want = saved();
-
-    // The studio track, when it exists, is the top entry and the default.
-    var studioFirst = hasStudio() && want !== "__device__" &&
-                      (!want || want === "__studio__" || !voices.filter(function(v){ return v.name === want; })[0]);
-    useStudio = hasStudio() && studioFirst;
-
-    if (voices.length){
-      var chosen = want ? voices.filter(function(v){ return v.name === want; })[0] : null;
-      voice = chosen || voices[0];
-    }
+    if (voices.length) voice = voices[0];
 
     voiceSel.innerHTML = "";
+
+    // Google Cloud voices, only once a key is saved
+    if (hasKey()){
+      var gg = document.createElement("optgroup");
+      gg.label = "Google Cloud (your key)";
+      GOOGLE_VOICES.forEach(function(g){
+        var o = document.createElement("option");
+        o.value = "g:" + g.id;
+        o.textContent = g.label;
+        gg.appendChild(o);
+      });
+      voiceSel.appendChild(gg);
+    }
     if (hasStudio()){
       var so = document.createElement("option");
       so.value = "__studio__";
-      so.textContent = "Studio voice  (best)";
-      so.selected = useStudio;
+      so.textContent = "Studio voice (built in)";
       voiceSel.appendChild(so);
     }
+    var dg = document.createElement("optgroup");
+    dg.label = "This device";
     voices.forEach(function(v, i){
       var o = document.createElement("option");
-      o.value = v.name;
-      var best = (i === 0 && !hasStudio()) ? "  (best available)" : "";
-      o.textContent = v.name.replace(/\s*\(.*?\)\s*$/, "") + best;
-      if (!useStudio && v === voice) o.selected = true;
-      voiceSel.appendChild(o);
+      o.value = "d:" + v.name;
+      o.textContent = v.name.replace(/\s*\(.*?\)\s*$/, "") + (i === 0 ? "  (best on this device)" : "");
+      dg.appendChild(o);
     });
-    if (voiceSel.options.length > 1) voiceRow.classList.add("show");
+    voiceSel.appendChild(dg);
+
+    // Restore the saved pick, falling back sensibly if it is not on this device
+    var want = saved();
+    if (!want || !selectValue(want)){
+      if (hasKey()) selectValue("g:" + googleVoice);
+      else if (hasStudio()) selectValue("__studio__");
+      else if (voices.length) selectValue("d:" + voices[0].name);
+    }
+    applyVoiceChoice(voiceSel.value, false);
+    if (voiceSel.options.length) voiceRow.classList.add("show");
   }
 
-  voiceSel.addEventListener("change", function(){
-    var val = voiceSel.value;
-    if (val === "__studio__"){
-      useStudio = true;
-      save("__studio__");
+  function selectValue(v){
+    var found = false;
+    [].forEach.call(voiceSel.querySelectorAll("option"), function(o){
+      if (o.value === v){ o.selected = true; found = true; }
+    });
+    return found;
+  }
+
+  function applyVoiceChoice(val, persist){
+    if (!val) return;
+    if (val.indexOf("g:") === 0){
+      engine = "google";
+      googleVoice = val.slice(2);
+      store("gvoice", googleVoice);
+    } else if (val === "__studio__"){
+      engine = "baked";
     } else {
-      useStudio = false;
-      voice = voices.filter(function(v){ return v.name === val; })[0] || voice;
-      save(val);
+      engine = "device";
+      voice = voices.filter(function(v){ return "d:" + v.name === val; })[0] || voice;
     }
+    if (persist) save(val);
+  }
+
+  window.syncVoiceUI = function(){
+    if (engine === "device" && voice) selectValue("d:" + voice.name);
+  };
+
+  voiceSel.addEventListener("change", function(){
+    applyVoiceChoice(voiceSel.value, true);
+    note("", "");
     if (playing) speak(idx);
+  });
+
+  /* ---- API key ---- */
+  var keyRow = document.getElementById("keyrow");
+  var keyIn = document.getElementById("ttskey");
+  document.getElementById("keyToggle").addEventListener("click", function(){
+    keyRow.classList.toggle("show");
+    if (keyRow.classList.contains("show")) keyIn.focus();
+  });
+  if (ttsKey) keyIn.value = ttsKey;
+  document.getElementById("keySave").addEventListener("click", function(){
+    var v = keyIn.value.trim();
+    if (!v){ note("Paste a key first.", "bad"); return; }
+    ttsKey = v; store("ttskey", v); clipCache = {};
+    note("Key saved. Google Cloud voices are now in the list.", "good");
+    loadVoices();
+    selectValue("g:" + googleVoice);
+    applyVoiceChoice(voiceSel.value, true);
+  });
+  document.getElementById("keyClear").addEventListener("click", function(){
+    ttsKey = ""; drop("ttskey"); clipCache = {}; keyIn.value = "";
+    engine = "device";
+    note("Key removed. Back to this device's voice.", "");
+    loadVoices();
   });
 
   loadVoices();
@@ -915,10 +1070,32 @@ function finished(mine){
   else { playing = false; clearWords(); paint(); }
 }
 
-// STUDIO: pre-rendered clip + word timings from Google's SSML timepoints
+// GOOGLE CLOUD: fetched live with the viewer's own key, then played like a clip.
+// Prefetches the next sentence so playback does not stall between sentences.
+function playGoogle(mine){
+  var v = googleVoice;
+  playBtn.textContent = "Loading…";
+  fetchClip(idx, v).then(function(clip){
+    if (mine !== gen) return;
+    playBtn.textContent = playing ? "Pause" : "Read to me";
+    playClipFrom(mine, clip);
+    if (idx + 1 < SENT.length) fetchClip(idx + 1, v).catch(function(){});
+  }).catch(function(err){
+    if (mine !== gen) return;
+    note(String(err.message || err), "bad");
+    engine = "device";
+    syncVoiceUI();
+    playSynth(mine);
+  });
+}
+
+// STUDIO: pre-rendered clip baked into the page at build time
 function playClip(mine){
+  playClipFrom(mine, AUDIO.clips[idx]);
+}
+
+function playClipFrom(mine, clip){
   var s = SENT[idx];
-  var clip = AUDIO.clips[idx];
   var marks = clip.marks || [];
   audioEl = new Audio(clip.src);
   audioEl.playbackRate = rateVal();
@@ -973,7 +1150,8 @@ function speak(i){
   var s = SENT[idx];
   try { s.el.scrollIntoView({ behavior:"smooth", block:"center" }); } catch(e){ s.el.scrollIntoView(); }
 
-  if (useStudio && hasStudio()) playClip(mine);
+  if (engine === "google" && hasKey()) playGoogle(mine);
+  else if (engine === "baked" && hasStudio()) playClip(mine);
   else playSynth(mine);
 }
 
@@ -1258,7 +1436,7 @@ document.getElementById("retake").addEventListener("click", function(){
    Proof the work was done: the five questions, what he answered, whether it was
    right, and the score. Not the story - this is the record, not the lesson. */
 var LESSON_TITLE = "From Republic to Empire";
-var LESSON_UNIT  = "Leif the Lion · Unit 1 · Lesson 1";
+var LESSON_UNIT  = "Ancient Rome · Unit 1 · Lesson 1";
 
 document.getElementById("printKey").addEventListener("click", function(){
   var d = readDone();

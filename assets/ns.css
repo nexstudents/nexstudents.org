@@ -284,7 +284,7 @@ footer ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 @media(hover:hover){ footer li a:hover{color:var(--fg)} }
 .fbot{border-top:1px solid var(--line);padding-top:22px;font-size:.82rem;color:var(--dim);
-  display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between}
+  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;text-align:center}
 .disc{font-size:.78rem;color:var(--dim);max-width:70ch;margin:0 0 18px}
 
 .rv{opacity:0;transform:translateY(16px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
