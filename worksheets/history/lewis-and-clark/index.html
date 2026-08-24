@@ -6,136 +6,100 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Lewis and Clark — NexStudents</title>
 <meta name="description" content="A printable 7th grade history worksheet on the Corps of Discovery: a brief history, a word list, five questions and a free answer key.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/ns.css">
 <style>
-:root{
-  --ground:#E7EDE4; --paper:#FFFFFF; --ink:#152018; --ink-soft:#48594D;
-  --rule:#C2CFBD; --accent:#25664A; --accent-soft:rgba(37,102,74,.10); --on-accent:#FFFFFF;
-  --line-ink:#9BAA9E;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ground:#0E1A13; --paper:#14251A; --ink:#E2EBE2; --ink-soft:#93A896;
-    --rule:#27402F; --accent:#66C293; --accent-soft:rgba(102,194,147,.14); --on-accent:#0B160F;
-    --line-ink:#4C6353;
-  }
-}
-:root[data-theme="dark"]{
-  --ground:#0E1A13; --paper:#14251A; --ink:#E2EBE2; --ink-soft:#93A896;
-  --rule:#27402F; --accent:#66C293; --accent-soft:rgba(102,194,147,.14); --on-accent:#0B160F;
-  --line-ink:#4C6353;
-}
-*,*::before,*::after{box-sizing:border-box}
-body{
-  margin:0;background:var(--ground);color:var(--ink);
-  font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.7;
-  -webkit-text-size-adjust:100%;
-}
+/* The worksheet wears the site's palette and typeface. The green belongs to
+   Kolten's lesson page, which is his own theme, not the site's.
+   ns.css supplies --bg/--panel/--line/--fg/--dim/--a, Archivo, and .btn. */
+:root{ --line-ink:#5b636c; }   /* the ruled writing lines */
+
+body{margin:0;background:var(--bg);color:var(--fg)}
+
 .bar{
-  max-width:820px;margin:0 auto;padding:16px 20px 0;
-  display:flex;gap:12px;align-items:center;
-  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;
+  max-width:880px;margin:0 auto;padding:18px 20px 0;
+  display:flex;gap:12px;align-items:center;font-size:13px;
 }
-.bar .back{color:var(--accent);text-decoration:none;font-weight:600;
+.bar .back{color:var(--dim);text-decoration:none;font-weight:600;
   min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bar .back:hover{text-decoration:underline}
-/* Actions stay together, top right, on every width. They never wrap and never
-   let the back link push them onto a second line. */
+.bar .back:hover{color:var(--fg)}
+/* Actions stay together, top right, at every width. */
 .acts{margin-left:auto;display:flex;gap:8px;flex:none}
-.btn{
-  font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;
-  background:var(--accent);color:var(--on-accent);border:0;border-radius:3px;padding:9px 14px;
-  display:inline-flex;align-items:center;gap:7px;text-decoration:none;line-height:1;
-}
-.btn.ghost{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1px var(--rule)}
-.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--accent)}
-.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.bar .btn{font-size:13px;padding:9px 14px;gap:7px;text-decoration:none;line-height:1}
 
 .sheet{
-  max-width:820px;margin:18px auto 60px;background:var(--paper);
-  border:1px solid var(--rule);border-radius:4px;padding:38px 44px;
+  max-width:880px;margin:18px auto 70px;background:var(--panel);
+  border:1px solid var(--line);border-radius:var(--r);padding:38px 44px;
 }
-.head{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:8px}
-.eyebrow{
-  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:11px;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0;
-}
-h1{font-family:Cinzel,Georgia,serif;font-size:30px;line-height:1.15;margin:8px 0 6px}
-.dek{margin:0;color:var(--ink-soft);font-size:15px}
-.namebar{
-  display:flex;gap:26px;flex-wrap:wrap;font-family:"IBM Plex Sans",system-ui,sans-serif;
-  font-size:13px;border-bottom:1px solid var(--rule);padding:12px 0;margin-bottom:26px;
-}
+.head{border-bottom:2px solid var(--fg);padding-bottom:14px;margin-bottom:8px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);margin:0}
+.sheet h1{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1.12;margin:9px 0 6px}
+.dek{margin:0;color:var(--dim);font-size:.95rem}
+.namebar{display:flex;gap:26px;flex-wrap:wrap;font-size:13px;
+  border-bottom:1px solid var(--line);padding:13px 0;margin-bottom:26px}
 .namebar span{display:flex;gap:8px;align-items:baseline}
-.namebar u{text-decoration:none;border-bottom:1px solid var(--line-ink);min-width:150px;display:inline-block}
-h2{
-  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:12px;font-weight:600;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
-  margin:32px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--rule);
-}
-h2:first-of-type{margin-top:0}
-p{margin:0 0 14px}
-.passage p{text-indent:0}
-.art{margin:0 0 26px;padding:0;border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.namebar u{text-decoration:none;border-bottom:1px solid var(--line-ink);
+  min-width:150px;display:inline-block}
+.sheet h2{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line);
+  max-width:none}
+.sheet h2:first-of-type{margin-top:0}
+.sheet p{margin:0 0 14px}
+.passage{font-size:1rem;line-height:1.75;color:var(--fg)}
+
+.art{margin:0 0 26px;padding:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .art img{display:block;width:100%;height:auto}
-.vocab{display:grid;gap:10px;margin:0;padding:0;list-style:none}
-.vocab li{display:flex;gap:12px;align-items:baseline;font-size:16px}
-.vocab b{font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:600;min-width:112px}
+
+.vocab{display:grid;gap:11px;margin:0;padding:0;list-style:none}
+.vocab li{display:flex;gap:12px;align-items:baseline;font-size:.95rem}
+.vocab b{font-weight:800;min-width:118px}
 .vocab u{text-decoration:none;flex:1;border-bottom:1px solid var(--line-ink);min-height:1.5em}
+
 ol{padding-left:22px;margin:0}
-ol.qs>li{margin-bottom:20px;font-size:16px}
-.lines{display:block;margin-top:6px}
-.lines i{display:block;border-bottom:1px solid var(--line-ink);height:1.55em}
-.timeline{display:grid;gap:9px;margin:0;padding:0;list-style:none}
-.timeline li{display:flex;gap:12px;align-items:flex-start;font-size:16px}
-.timeline u{
-  text-decoration:none;border:1px solid var(--line-ink);border-radius:3px;
-  width:34px;height:30px;flex:none;
-}
-.note{
-  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;color:var(--ink-soft);
-  background:var(--accent-soft);border-left:3px solid var(--accent);
-  padding:11px 14px;border-radius:0 3px 3px 0;margin:16px 0 0;
-}
-.key{margin-top:44px;padding-top:22px;border-top:2px solid var(--ink)}
+ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
+.lines{display:block;margin-top:7px}
+.lines i{display:block;border-bottom:1px solid var(--line-ink);height:1.6em}
+
+.note{font-size:.85rem;color:var(--dim);background:var(--panel-2);
+  border-left:3px solid var(--a);padding:12px 15px;border-radius:0 var(--r) var(--r) 0;margin:18px 0 0}
+.note b{color:var(--fg)}
+
+.key{margin-top:46px;padding-top:22px;border-top:2px solid var(--fg)}
 .key h2{margin-top:0}
-.key ol{font-size:15px}
-.key ol li{margin-bottom:9px}
-.key .kv{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:14px}
-.key .kv b{font-weight:600}
+.key ol{font-size:.9rem}
+.key ol li{margin-bottom:9px;line-height:1.5}
+.key .kv{font-size:.88rem;color:var(--fg)}
+.key .kv b{font-weight:800}
 
 @media print{
+  /* Printed sheets are black on white whatever the screen is doing. */
   body{background:#fff;color:#000;font-size:11pt;line-height:1.5}
   .bar{display:none}
   @page{margin:14mm}
   .sheet{max-width:none;margin:0;border:0;border-radius:0;padding:0;background:#fff}
-  h1{font-size:19pt}
-  h2{color:#000;border-color:#000}
-  .eyebrow{color:#000}
-  .note{background:transparent;border-left:2px solid #000;color:#000}
+  .sheet h1{font-size:19pt}
+  .sheet h2,.eyebrow,.dek,.passage,.key .kv,.note{color:#000}
+  .sheet h2{border-color:#000}
+  .head,.key{border-color:#000}
+  .note{background:transparent;border-left:2px solid #000}
   .art{border:1px solid #999}
   .lines i,.vocab u,.namebar u{border-bottom:1px solid #000}
-  .timeline u{border:1px solid #000}
+  .namebar{border-bottom:1px solid #000}
   .key{page-break-before:always;border-top:0}
-  ol.qs>li,.timeline li,.vocab li{page-break-inside:avoid}
+  ol.qs>li,.vocab li{page-break-inside:avoid}
 }
 @media (max-width:560px){
-  .sheet{padding:24px 20px;margin:12px 10px 40px}
-  h1{font-size:25px}
-  .vocab li{flex-direction:column;gap:4px}
+  .sheet{padding:24px 19px;margin:12px 10px 46px}
+  .sheet h1{font-size:1.5rem}
+  .vocab li{flex-direction:column;gap:5px}
   .vocab u{width:100%}
   .bar{padding:14px 14px 0;gap:10px}
 }
 @media (max-width:470px){
-  /* Icons only. The title attribute and aria-label still name each button, so
-     nothing is lost for a screen reader or a long press. */
-  .btn .lbl{
-    position:absolute;width:1px;height:1px;padding:0;margin:-1px;
-    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
-  }
-  .btn{padding:9px 11px}
+  /* Icons only. title and aria-label still name each button. */
+  .btn .lbl{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .bar .btn{padding:9px 11px}
 }
 </style>
 </head>
