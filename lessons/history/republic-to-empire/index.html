@@ -165,10 +165,19 @@ h1{
 .rate{
   font-family:inherit;font-size:13px;font-weight:500;
   color:var(--control-ink);
-  background:var(--control-bg);
+  background-color:var(--control-bg);
   border:1px solid var(--control-border);border-radius:3px;
-  padding:8px 9px;cursor:pointer;
+  cursor:pointer;
+  /* native arrow sits hard against the right edge, which leaves a gap on a wide
+     select. Own arrow, tucked just after the text. */
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  padding:8px 27px 8px 10px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 9px center;
+  background-size:11px 7px;
 }
+.rate::-ms-expand{display:none}
 .rate option{background:var(--control-bg);color:var(--control-ink)}
 .rate:hover{border-color:var(--verdigris)}
 .rate:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
@@ -194,7 +203,27 @@ h1{
   font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-faint);
 }
-.voicerow select{flex:1;min-width:0;font-size:13px}
+.voicerow select{flex:0 1 auto;min-width:0;max-width:100%;font-size:13px}
+
+/* colour picker */
+.themerow{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--rule);
+}
+.themerow .lbl{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.swatches{display:flex;gap:7px}
+.sw{
+  width:26px;height:26px;border-radius:50%;cursor:pointer;padding:0;
+  border:2px solid transparent;outline-offset:2px;
+  background-clip:padding-box;
+  transition:transform .15s,border-color .15s;
+}
+.sw:hover{transform:scale(1.12)}
+.sw[aria-pressed="true"]{border-color:var(--ink)}
+.sw:focus-visible{outline:2px solid var(--verdigris)}
 .nospeech{
   font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;
   color:var(--porphyry);margin-top:10px;display:none;line-height:1.5;
@@ -316,6 +345,26 @@ h2{
 .score .pct{font-size:15px;color:var(--ink-soft);margin-top:4px}
 .score .line{font-size:14px;color:var(--ink-soft);margin-top:14px;line-height:1.6}
 
+/* completion state */
+.status{
+  display:none;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-top:18px;padding:15px 18px;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+}
+.status.show{display:flex}
+.statusline{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
+.statusline .mark{
+  width:24px;height:24px;border-radius:50%;flex:none;
+  display:grid;place-items:center;
+  background:var(--verdigris);color:var(--on-accent);
+  font-size:14px;font-weight:700;line-height:1;
+}
+.status.partial .mark{background:var(--brass)}
+#statusText{font-size:14px;line-height:1.5;color:var(--ink)}
+#statusText b{font-weight:600}
+#statusText small{display:block;color:var(--ink-soft);font-size:12.5px;margin-top:2px}
+
 .done-note{
   font-family:"IBM Plex Sans",system-ui,sans-serif;
   font-size:14px;line-height:1.65;color:var(--ink-soft);
@@ -370,6 +419,10 @@ h2{
       <label for="voice">Voice</label>
       <select class="rate" id="voice" aria-label="Choose a reading voice"></select>
     </div>
+    <div class="themerow" id="themerow">
+      <span class="lbl">Colours</span>
+      <div class="swatches" id="swatches"></div>
+    </div>
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
   </div>
 
@@ -385,6 +438,14 @@ h2{
 
   <div class="score" id="score"></div>
 
+  <div class="status" id="status">
+    <div class="statusline">
+      <span class="mark" id="statusMark"></span>
+      <span id="statusText"></span>
+    </div>
+    <button class="btn" type="button" id="retake">Retake lesson</button>
+  </div>
+
   <div class="done-note">
     <b>When you finish:</b> write these five answers into the booklet in your own words &mdash; not copied word for word from the choices. Then photograph the page and upload it to your lesson in HomeschoolGrades.
   </div>
@@ -399,6 +460,128 @@ h2{
 <script>
 (function(){
 "use strict";
+
+/* ---------- saved settings and progress ----------
+   Keys are shared site-wide on purpose:
+     ns:voice / ns:speed / ns:theme   settings, so they carry to every lesson
+     ns:done:<lessonId>               progress, so the lesson list can tick it off
+   Same origin means /grade-7/ and /history/ read the very same store. */
+var LESSON_ID = "history/republic-to-empire";
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch(e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch(e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch(e){} }
+
+/* ---------- colour themes ---------- */
+/* Each theme carries a full light and dark set, so switching theme never leaves
+   half the page on the old palette. --control-bg stays dark in every theme because
+   the select arrow is a light-stroked SVG. */
+var THEMES = {
+  forest: { name:"Forest",
+    light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
+            accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
+            ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
+            brass:"#7E6A16",band:"rgba(158,138,40,.22)",word:"rgba(158,138,40,.48)" },
+    dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
+            accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
+            ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
+            brass:"#D8B355",band:"rgba(216,179,85,.16)",word:"rgba(216,179,85,.40)" } },
+
+  ocean: { name:"Ocean",
+    light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
+            accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
+            ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.20)",word:"rgba(196,132,24,.44)" },
+    dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
+            accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
+            ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.16)",word:"rgba(224,182,92,.40)" } },
+
+  ember: { name:"Ember",
+    light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
+            accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
+            ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
+            brass:"#6B5A11",band:"rgba(120,104,26,.20)",word:"rgba(120,104,26,.44)" },
+    dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
+            accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
+            ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
+            brass:"#D6C169",band:"rgba(214,193,105,.15)",word:"rgba(214,193,105,.38)" } },
+
+  violet: { name:"Violet",
+    light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
+            accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
+            ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
+            brass:"#7A6212",band:"rgba(150,122,26,.20)",word:"rgba(150,122,26,.44)" },
+    dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
+            accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
+            ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.15)",word:"rgba(220,187,99,.38)" } },
+
+  graphite: { name:"Graphite",
+    light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
+            accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
+            ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
+            brass:"#7A6318",band:"rgba(152,124,32,.20)",word:"rgba(152,124,32,.44)" },
+    dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
+            accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
+            ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
+            brass:"#D6BC66",band:"rgba(214,188,102,.15)",word:"rgba(214,188,102,.38)" } }
+};
+
+var VAR_MAP = {
+  ground:"--ground", surface:"--surface", s2:"--surface-2", ink:"--ink",
+  inkSoft:"--ink-soft", inkFaint:"--ink-faint", rule:"--rule",
+  accent:"--verdigris", accentInk:"--verdigris-ink", accentSoft:"--verdigris-soft",
+  onAccent:"--on-accent", ctlBg:"--control-bg", ctlInk:"--control-ink",
+  ctlBorder:"--control-border", tickNow:"--tick-now", tickDone:"--tick-done",
+  brass:"--brass", band:"--band", word:"--word"
+};
+
+var themeKey = load("theme", "forest");
+if (!THEMES[themeKey]) themeKey = "forest";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){
+    if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]);
+  }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+
+(function buildSwatches(){
+  var wrap = document.getElementById("swatches");
+  Object.keys(THEMES).forEach(function(k){
+    var b = document.createElement("button");
+    b.className = "sw";
+    b.type = "button";
+    b.setAttribute("data-t", k);
+    b.title = THEMES[k].name;
+    b.setAttribute("aria-label", THEMES[k].name + " colours");
+    var d = THEMES[k].dark;
+    b.style.background = "linear-gradient(135deg," + d.accent + " 0 50%," + d.ground + " 50% 100%)";
+    b.addEventListener("click", function(){
+      themeKey = k;
+      store("theme", k);
+      applyTheme();
+    });
+    wrap.appendChild(b);
+  });
+})();
+
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
 
 var PARTS = [
   { title:"Rome Without a King", s:[
@@ -584,27 +767,25 @@ if (!supported && !hasStudio()){
 
   function rank(v){
     var n = v.name || "";
+    // Paul's pick. Wins outright wherever Chrome ships it.
+    if (/^google uk english male$/i.test(n.trim())) return 1000;
     var score = 0;
     if (/natural/i.test(n)) score += 100;          // Windows 11 neural voices
     if (/neural/i.test(n)) score += 90;
     if (/^google/i.test(n)) score += 75;           // Chrome's own, clearly better than SAPI
     if (/online/i.test(n)) score += 55;
     if (/\b(ava|andrew|emma|brian|aria|guy|jenny|michelle|steffan|christopher|eric)\b/i.test(n)) score += 45;
-    if (/\b(samantha|alex|siri|evan|nathan|serena)\b/i.test(n)) score += 60;  // macOS / iOS
+    if (/\b(samantha|alex|siri|evan|nathan|serena|daniel|arthur|oliver)\b/i.test(n)) score += 60; // macOS / iOS
     if (/\b(david|zira|mark|hazel|susan|george|catherine)\b/i.test(n)) score -= 60; // legacy SAPI
     if (/compact|eloquence|espeak/i.test(n)) score -= 80;
     if (v.localService === false) score += 15;
-    if (/^en[-_]US/i.test(v.lang)) score += 12;
-    else if (/^en[-_]GB/i.test(v.lang)) score += 6;
+    if (/^en[-_]GB/i.test(v.lang)) score += 12;    // British first, per Paul
+    else if (/^en[-_]US/i.test(v.lang)) score += 6;
     return score;
   }
 
-  function saved(){
-    try { return window.localStorage.getItem("rte-voice"); } catch(e){ return null; }
-  }
-  function save(name){
-    try { window.localStorage.setItem("rte-voice", name); } catch(e){}
-  }
+  function saved(){ return load("voice", null); }
+  function save(name){ store("voice", name); }
 
   function loadVoices(){
     var all = supported ? (synth.getVoices() || []) : [];
@@ -788,7 +969,13 @@ document.getElementById("fwd").addEventListener("click", function(){
   var t = Math.min(SENT.length - 1, idx + 1);
   if (playing) speak(t); else { idx = t; paint(); SENT[idx].el.scrollIntoView({behavior:"smooth",block:"center"}); }
 });
-document.getElementById("rate").addEventListener("change", function(){
+var rateSel = document.getElementById("rate");
+(function restoreRate(){
+  var r = load("speed", null);
+  if (r && [].some.call(rateSel.options, function(o){ return o.value === r; })) rateSel.value = r;
+})();
+rateSel.addEventListener("change", function(){
+  store("speed", rateSel.value);
   if (playing) speak(idx);
 });
 
@@ -970,9 +1157,75 @@ function showScore(){
     '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal + '.<br>' +
     'Report this score in your student notes on HomeschoolGrades.</div>';
   el.classList.add("show");
+
+  // Keep the BEST attempt, not the latest - a retake should never cost him a score.
+  var prev = readDone();
+  if (!prev || right > prev.score){
+    store("done:" + LESSON_ID, JSON.stringify({
+      score: right, total: QUESTIONS.length, pct: pct,
+      found: foundFirstTry, hunts: huntTotal,
+      at: new Date().toISOString()
+    }));
+  }
+  paintStatus();
   el.scrollIntoView({ behavior:"smooth", block:"center" });
 }
 
+/* ---------- completed / retake ---------- */
+function readDone(){
+  try { return JSON.parse(load("done:" + LESSON_ID, "null")); } catch(e){ return null; }
+}
+
+function paintStatus(){
+  var d = readDone();
+  var box = document.getElementById("status");
+  if (!d){ box.classList.remove("show"); return; }
+  var when = "";
+  try {
+    when = new Date(d.at).toLocaleDateString(undefined, { month:"short", day:"numeric" });
+  } catch(e){}
+  box.classList.toggle("partial", d.pct < 60);
+  document.getElementById("statusMark").textContent = d.pct < 60 ? "!" : "✓";
+  document.getElementById("statusText").innerHTML =
+    "<b>Lesson completed</b> &middot; best score " + d.score + " / " + d.total + " (" + d.pct + "%)" +
+    "<small>" + (when ? "First finished " + when + ". " : "") +
+    "Retaking keeps your best score.</small>";
+  box.classList.add("show");
+}
+
+document.getElementById("retake").addEventListener("click", function(){
+  // Wipe the attempt, keep the record. Nothing about the saved score changes.
+  if (playing){ playing = false; stopEngines(); clearWords(); paint(); }
+  answered = [];
+  foundFirstTry = 0;
+  endHunt();
+  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
+  document.getElementById("score").classList.remove("show");
+  QUESTIONS.forEach(function(Q, qi){
+    var card = document.getElementById("q" + qi);
+    card.classList.toggle("locked", !!Q.find);
+    card.querySelector(".verdict").className = "verdict";
+    [].forEach.call(card.querySelectorAll(".choice"), function(b){
+      b.disabled = false;
+      b.classList.remove("right","wrong");
+    });
+    var stage = card.querySelector(".stage");
+    if (Q.find){
+      stage.innerHTML = '<strong>Step 1.</strong> Find the sentence in the story that answers this. ';
+      var go = document.createElement("button");
+      go.className = "btn";
+      go.type = "button";
+      go.textContent = "Find it in the story";
+      go.style.marginTop = "8px";
+      go.addEventListener("click", (function(i){ return function(){ startHunt(i); }; })(qi));
+      stage.appendChild(document.createElement("br"));
+      stage.appendChild(go);
+    }
+  });
+  document.getElementById("q0").scrollIntoView({ behavior:"smooth", block:"center" });
+});
+
+paintStatus();
 paint();
 })();
 </script>

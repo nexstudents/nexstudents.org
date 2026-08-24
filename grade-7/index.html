@@ -43,13 +43,30 @@
   <p style="margin:0 0 20px;color:var(--dim);font-size:.9rem;max-width:56ch">Everything built for this year so far, newest subject first. Each one opens straight into the lesson.</p>
   <div style="display:grid;gap:20px;
     grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))">
-    <a class="tile" href="/lessons/history/republic-to-empire/">
+    <a class="tile" href="/lessons/history/republic-to-empire/" data-lesson="history/republic-to-empire">
+      <span class="tick-done" aria-hidden="true">&check;</span>
       <em>History &middot; Unit 1 &middot; Lesson 1</em>
       <h4>From Republic to Empire</h4>
       <p>Rome spent five hundred years refusing to have a king, then got one and barely noticed. A read-aloud story, then hunt the answers in the text.</p>
       <p style="margin-top:14px;font-size:.76rem;font-weight:700;color:var(--a)">Interactive &middot; grade 7</p>
+      <span class="tick-score"></span>
     </a>
   </div>
+  <script>
+(function(){
+  var cards = document.querySelectorAll("[data-lesson]");
+  for (var i = 0; i < cards.length; i++){
+    var c = cards[i], d = null;
+    try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
+    if (!d) continue;
+    c.classList.add("is-done");
+    var s = c.querySelector(".tick-score");
+    if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+    var t = c.querySelector(".tick-done");
+    if (t) t.setAttribute("title", "Completed");
+  }
+})();
+</script>
 </div></div>
 
 <div class="wrap" style="padding-top:56px;padding-bottom:56px">
