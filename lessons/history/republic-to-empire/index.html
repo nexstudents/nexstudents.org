@@ -372,6 +372,31 @@ h2{
 }
 .done-note b{color:var(--ink)}
 
+/* ---------- printable answer sheet ---------- */
+#sheet{display:none}
+@media print{
+  /* Only the answer sheet prints. The story, player and quiz UI are screen things. */
+  body>*{display:none!important}
+  #sheet{display:block!important;color:#000;background:#fff;font-family:"IBM Plex Sans",system-ui,sans-serif}
+  @page{margin:16mm}
+  #sheet h1{font-family:Cinzel,Georgia,serif;font-size:20pt;margin:0 0 2mm}
+  #sheet .sub{font-size:10pt;color:#444;margin:0 0 6mm}
+  #sheet .idline{display:flex;gap:10mm;flex-wrap:wrap;font-size:10pt;
+    border-top:1px solid #000;border-bottom:1px solid #000;padding:3mm 0;margin-bottom:6mm}
+  #sheet .idline b{font-weight:700}
+  #sheet .scorebox{float:right;border:2px solid #000;padding:3mm 6mm;text-align:center;margin-left:6mm}
+  #sheet .scorebox .n{font-size:20pt;font-weight:800;line-height:1}
+  #sheet .scorebox .p{font-size:9pt;color:#333}
+  #sheet ol{padding-left:6mm;margin:0}
+  #sheet li{margin-bottom:5mm;font-size:10.5pt;line-height:1.45;page-break-inside:avoid}
+  #sheet .q{font-weight:700;margin-bottom:1.5mm}
+  #sheet .a{padding-left:3mm;border-left:2px solid #666}
+  #sheet .a .mk{font-weight:800;margin-right:2mm}
+  #sheet .foot{margin-top:8mm;padding-top:3mm;border-top:1px solid #999;font-size:9pt;color:#444}
+  #sheet .sign{margin-top:10mm;font-size:10pt}
+  #sheet .sign span{display:inline-block;border-bottom:1px solid #000;width:60mm;margin-left:3mm}
+}
+
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
 }
@@ -443,8 +468,12 @@ h2{
       <span class="mark" id="statusMark"></span>
       <span id="statusText"></span>
     </div>
+    <button class="btn" type="button" id="printKey">Print answer sheet</button>
     <button class="btn" type="button" id="retake">Retake lesson</button>
   </div>
+
+  <!-- Built when he prints. Screen-hidden; the print stylesheet shows only this. -->
+  <div id="sheet" aria-hidden="true"></div>
 
   <div class="done-note">
     <b>When you finish:</b> write these five answers into the booklet in your own words &mdash; not copied word for word from the choices. Then photograph the page and upload it to your lesson in HomeschoolGrades.
@@ -1223,6 +1252,53 @@ document.getElementById("retake").addEventListener("click", function(){
     }
   });
   document.getElementById("q0").scrollIntoView({ behavior:"smooth", block:"center" });
+});
+
+/* ---------- printable answer sheet ----------
+   Proof the work was done: the five questions, what he answered, whether it was
+   right, and the score. Not the story - this is the record, not the lesson. */
+var LESSON_TITLE = "From Republic to Empire";
+var LESSON_UNIT  = "Leif the Lion · Unit 1 · Lesson 1";
+
+document.getElementById("printKey").addEventListener("click", function(){
+  var d = readDone();
+  var right = 0;
+  QUESTIONS.forEach(function(Q, i){ if (answered[i] === Q.right) right++; });
+  var attempted = answered.filter(function(a){ return a !== undefined; }).length;
+  var pct = attempted ? Math.round(right / QUESTIONS.length * 100) : 0;
+  var now = new Date();
+  var dateStr = now.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
+
+  var rows = QUESTIONS.map(function(Q, i){
+    var pick = answered[i];
+    var ok = pick === Q.right;
+    var given = pick === undefined ? "(not answered)" : Q.choices[pick];
+    var mark = pick === undefined ? "–" : (ok ? "✓" : "✗");
+    var corrected = (pick !== undefined && !ok)
+      ? '<div class="a" style="margin-top:2mm"><span class="mk">→</span>Correct answer: ' + Q.choices[Q.right] + '</div>'
+      : "";
+    return '<li><div class="q">' + Q.q + '</div>' +
+           '<div class="a"><span class="mk">' + mark + '</span>' + given + '</div>' +
+           corrected + '</li>';
+  }).join("");
+
+  document.getElementById("sheet").innerHTML =
+    '<div class="scorebox"><div class="n">' + right + '/' + QUESTIONS.length + '</div>' +
+      '<div class="p">' + pct + '%</div></div>' +
+    '<h1>' + LESSON_TITLE + '</h1>' +
+    '<p class="sub">' + LESSON_UNIT + '</p>' +
+    '<div class="idline">' +
+      '<span><b>Student:</b> ______________________</span>' +
+      '<span><b>Completed:</b> ' + (d && d.at ? new Date(d.at).toLocaleDateString() : dateStr) + '</span>' +
+      '<span><b>Printed:</b> ' + dateStr + '</span>' +
+    '</div>' +
+    '<ol>' + rows + '</ol>' +
+    '<div class="foot">Sentences found in the text on the first try: ' + foundFirstTry + ' of ' + huntTotal + '.' +
+      (d ? '  Best recorded score: ' + d.score + '/' + d.total + ' (' + d.pct + '%).' : '') +
+    '</div>' +
+    '<div class="sign">Parent signature:<span></span></div>';
+
+  window.print();
 });
 
 paintStatus();
