@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Worksheets — NexStudents</title>
-<meta name="description" content="Every free worksheet and term packet, all grades and subjects, in one place.">
+<title>History Lessons — NexStudents</title>
+<meta name="description" content="Every history lesson on NexStudents, worked through on screen.">
 <meta name="theme-color" content="#0a0b0d">
 <link rel="stylesheet" href="/assets/ns.css">
 </head>
@@ -33,18 +33,38 @@
 </div></nav>
 
 <div class="wrap phead">
-  <p class="crumb"><a href="/">Home</a> &rsaquo; Worksheets</p>
-  <h1>Every sheet, in one place.</h1>
-  <p>Free printables and term packets across ELA, History, Science and Maths. Filter by grade, by subject, or by whether it costs anything. Answer keys are always included free.</p>
+  <p class="crumb"><a href="/">Home</a> &rsaquo; <a href="/history/">History</a> &rsaquo; Lessons</p>
+  <h1>History lessons.</h1>
+  <p>Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.</p>
 </div>
 
 <div class="band"><div class="wrap">
-  <div class="tile" style="min-height:230px;align-items:center;justify-content:center;text-align:center">
-    <div>
-      <h4 style="font-size:1.35rem">Nothing here yet</h4>
-      <p style="max-width:46ch;margin-top:8px">The shelf is being built. 7th grade goes up first, then the grades either side of it.</p>
-    </div>
+  <div style="display:grid;gap:20px;
+    grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))">
+    <a class="tile" href="/lessons/history/republic-to-empire/" data-lesson="history/republic-to-empire">
+      <span class="tick-done" aria-hidden="true">&check;</span>
+      <em>Unit 1 &middot; Lesson 1</em>
+      <h4>From Republic to Empire</h4>
+      <p>Rome spent five hundred years refusing to have a king, then got one and barely noticed. A read-aloud story, then hunt the answers in the text.</p>
+      <p style="margin-top:14px;font-size:.76rem;font-weight:700;color:var(--a)">Interactive &middot; grade 7</p>
+      <span class="tick-score"></span>
+    </a>
   </div>
+  <script>
+(function(){
+  var cards = document.querySelectorAll("[data-lesson]");
+  for (var i = 0; i < cards.length; i++){
+    var c = cards[i], d = null;
+    try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
+    if (!d) continue;
+    c.classList.add("is-done");
+    var s = c.querySelector(".tick-score");
+    if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+    var t = c.querySelector(".tick-done");
+    if (t) t.setAttribute("title", "Completed");
+  }
+})();
+</script>
 </div></div>
 
 <footer><div class="wrap">
