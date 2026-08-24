@@ -227,13 +227,26 @@ a.sub-t{color:inherit;text-decoration:none}
 .cardgrid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr))}
 @media(max-width:680px){ .cardgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px} }
 
-.card{position:relative;display:flex;flex-direction:column;color:inherit;text-decoration:none;
+.card{position:relative;display:flex;flex-direction:column;color:inherit;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
   transition:border-color .26s ease,transform .26s var(--ease)}
-@media(hover:hover){ a.card:hover{border-color:var(--a);transform:translateY(-3px)} }
-.card:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+@media(hover:hover){ .card:not(.is-slot):hover{border-color:var(--a);transform:translateY(-3px)} }
+.clink{display:flex;flex-direction:column;color:inherit;text-decoration:none;flex:1}
+.clink:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
 
-.cthumb{display:block;aspect-ratio:4/5;background:var(--panel-2);overflow:hidden;flex:none}
+/* what's inside — native disclosure, no JS */
+.cmore{border-top:1px solid var(--line);font-size:.74rem}
+.cmore summary{list-style:none;cursor:pointer;padding:8px 13px;color:var(--dim);
+  font-weight:700;letter-spacing:.03em;display:flex;align-items:center;gap:6px}
+.cmore summary::-webkit-details-marker{display:none}
+.cmore summary:before{content:"+";font-weight:800;font-size:.9rem;line-height:1;color:var(--a)}
+.cmore[open] summary:before{content:"\2212"}
+@media(hover:hover){ .cmore summary:hover{color:var(--fg)} }
+.cmore summary:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
+.cmore ul{margin:0;padding:0 13px 11px 28px;color:var(--dim);line-height:1.5}
+.cmore li{margin-bottom:5px}
+
+.cthumb{display:block;aspect-ratio:1/1;background:var(--panel-2);overflow:hidden;flex:none}
 .cthumb img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;
   transition:transform .4s var(--ease)}
 @media(hover:hover){ a.card:hover .cthumb img{transform:scale(1.05)} }
@@ -241,7 +254,7 @@ a.sub-t{color:inherit;text-decoration:none}
 .cbody{display:flex;flex-direction:column;padding:12px 13px 13px;flex:1}
 @media(max-width:680px){
   /* two-up on a phone means a ~180px card, so tighten everything inside it */
-  .cthumb{aspect-ratio:1/1}
+  .cthumb{aspect-ratio:4/3}
   .cbody{padding:9px 10px 10px}
   .ctitle{font-size:.86rem;margin:4px 0 3px}
   .cblurb{font-size:.72rem;line-height:1.4}
@@ -255,7 +268,7 @@ a.sub-t{color:inherit;text-decoration:none}
   line-height:1.25}
 .cblurb{display:block;font-size:.78rem;line-height:1.45;color:var(--dim);flex:1}
 .cmeta{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  margin-top:11px;padding-top:9px;border-top:1px solid var(--line);
+  padding:9px 13px 11px;border-top:1px solid var(--line);
   font-size:.72rem;font-weight:700;color:var(--dim)}
 .cmeta u{text-decoration:none;font-size:.88rem;font-weight:800}
 .cmeta u.free{color:var(--free)}
@@ -273,7 +286,7 @@ a.sub-t{color:inherit;text-decoration:none}
   background:var(--free);color:#052e16;display:none;place-items:center;z-index:2;
   font-size:13px;font-weight:800;line-height:1}
 .card.is-done .tick-done{display:grid}
-.card .tick-score{display:none;margin-top:7px;font-size:.66rem;font-weight:800;
+.card .tick-score{display:none;padding:0 13px 10px;margin-top:-4px;font-size:.66rem;font-weight:800;
   letter-spacing:.05em;text-transform:uppercase;color:var(--free)}
 .card.is-done .tick-score{display:block}
 .tile em{font-style:normal;font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
