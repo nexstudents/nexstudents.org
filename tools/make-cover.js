@@ -59,7 +59,22 @@ body{background:#555;display:flex;justify-content:center;padding:${OFF_Y}px 0;ma
 .bonus{border-color:#000}
 .bonus h3,.bonus .why,.notes b,.pts,.words li b,.bonus .row b{color:#000}
 .signoff{border-top-color:#000;color:#000}
+.weekpick,.head.is-flash{display:none}
+.cards,.fc{border-color:#000}
+.fc.label{background:transparent}
+.fc>span,.fc.label b,.wkhead,.fc.label span,.fc.is-bonus em,.cutnote,.wkfocus{color:#000}
 `;
+
+/* 🚨 THE ABOVE IS A COPY OF THE @media print RULES, NOT THE RULES THEMSELVES.
+   A screenshot never triggers print media, and headless Chrome cannot be told
+   to emulate it without driving the debug protocol, so the print block is
+   restated here. That means it can fall behind: a new sheet type whose print
+   rules are not repeated above renders in its SCREEN colours and the cover
+   shows something that will not come out of a printer. It has already
+   happened once, with the flashcard label card, which is a dark tile on
+   screen and plain paper in print.
+   ⚠️ Add a new sheet type's print rules here at the same time you add them to
+   worksheet.css. */
 
 const src = process.argv[2];
 if (!src) { console.error("usage: make-cover.js <worksheet index.html> [out.jpg]"); process.exit(1); }

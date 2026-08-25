@@ -41,8 +41,16 @@ const TYPES = {
   ".webp": "image/webp", ".svg": "image/svg+xml", ".woff2": "font/woff2",
 };
 
-const src = process.argv[2];
-if (!src) { console.error("usage: make-pdf.js <worksheet index.html> [out.pdf]"); process.exit(1); }
+/* --query=<querystring> is passed through to the page. The flashcards sheet
+   uses it (?print=all) to lay every week out at once, so the download is the
+   whole year while the page's own Print button stays a single sheet. */
+const args = process.argv.slice(2);
+const queryArg = args.find((a) => a.startsWith("--query="));
+const query = queryArg ? "?" + queryArg.slice(8) : "";
+const rest = args.filter((a) => !a.startsWith("--"));
+
+const src = rest[0];
+if (!src) { console.error("usage: make-pdf.js <worksheet index.html> [out.pdf] [--query=k=v]"); process.exit(1); }
 const abs = path.resolve(src);
 if (!fs.existsSync(abs)) { console.error("no such file: " + abs); process.exit(1); }
 
@@ -72,7 +80,7 @@ if (!root) {
 
 // Default name: the folder name, which is already the slug.
 const out = path.resolve(
-  process.argv[3] || path.join(path.dirname(abs), path.basename(path.dirname(abs)) + ".pdf")
+  rest[1] || path.join(path.dirname(abs), path.basename(path.dirname(abs)) + ".pdf")
 );
 
 const server = http.createServer((req, res) => {
@@ -89,7 +97,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(0, "127.0.0.1", () => {
   const url = "http://127.0.0.1:" + server.address().port + "/" +
-              path.relative(root, abs).replace(/\\/g, "/");
+              path.relative(root, abs).replace(/\\/g, "/") + query;
 
   execFile(chrome, [
     "--headless=new",

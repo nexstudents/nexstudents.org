@@ -226,3 +226,83 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
   .sheet h2.scored{flex-wrap:wrap;gap:8px}
   .pts{margin-left:0}
 }
+
+/* ══ CUT-OUT FLASHCARDS ══
+   Twelve cards on a Letter page: a label card, ten words, one bonus. Cut on
+   the dashed lines.
+
+   The label card is card one on purpose. A cut stack then carries its own
+   week and pattern, so week 1 and week 14 cannot end up shuffled together in
+   a drawer - which is exactly what happens to loose cards with only a word
+   on them.
+
+   One page holds all 36 weeks and shows one. The picker chooses which, and
+   Print gives that single sheet. The PDF is built with ?print=all, which
+   shows every week with a page break between, so the download is the whole
+   year and the button is still one page. */
+
+.weekpick{
+  display:grid;grid-template-columns:repeat(12,1fr);gap:6px;
+  margin:0 0 26px;padding:0 0 22px;border-bottom:1px solid var(--line);
+}
+.weekpick button{
+  font-family:inherit;font-size:13px;font-weight:800;padding:9px 0;cursor:pointer;
+  border:1px solid var(--line);border-radius:var(--r);
+  background:transparent;color:var(--dim);transition:color .18s,border-color .18s;
+}
+.weekpick button[aria-pressed="true"]{background:var(--a);color:var(--a-ink);border-color:var(--a)}
+/* The hover colour must not reach the button that is already chosen. It is
+   white-on-white if it does, and the week you just picked is exactly the
+   button the mouse is sitting on. */
+@media(hover:hover){
+  .weekpick button:not([aria-pressed="true"]):hover{color:var(--fg);border-color:var(--fg)}
+}
+
+.wk[hidden]{display:none}
+.wkhead{margin:0 0 4px;font-size:1.5rem;font-weight:800;letter-spacing:-.03em}
+.wkfocus{margin:0;color:var(--dim);font-size:.9rem}
+
+.cards{
+  display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:0;
+  margin:20px 0 0;
+  border-top:1px dashed var(--line-ink);border-left:1px dashed var(--line-ink);
+}
+.fc{
+  border-right:1px dashed var(--line-ink);border-bottom:1px dashed var(--line-ink);
+  min-height:196px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:14px 10px;text-align:center;
+}
+.fc>span{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;
+  overflow-wrap:anywhere}
+.fc.label{background:var(--panel-2)}
+.fc.label b{font-size:1.5rem;font-weight:800;letter-spacing:-.03em}
+.fc.label span{font-size:.78rem;font-weight:600;color:var(--dim);letter-spacing:0}
+.fc.is-bonus em{font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  font-style:normal;color:var(--dim)}
+.cutnote{margin:14px 0 0;font-size:.8rem;color:var(--dim);text-align:center}
+
+@media print{
+  .weekpick{display:none}
+  /* The page title and the week title say the same thing. On screen the page
+     title is the page; on paper it is a duplicate that pushed the twelfth
+     card onto a second sheet. */
+  .head.is-flash{display:none}
+  .cards,.fc{border-color:#000}
+  /* The label card is a tint on screen and plain paper in print. A block of
+     solid ink on every sheet is not a thing to hand a parent's printer. */
+  .fc.label{background:transparent}
+  .fc>span,.fc.label b,.wkhead{color:#000}
+  .fc.label span,.fc.is-bonus em,.cutnote,.wkfocus{color:#000}
+  .cards{page-break-inside:avoid}
+  .wk{page-break-inside:avoid}
+}
+/* Every week at once, one page each. Only the PDF build asks for this. */
+body.print-all .weekpick,
+body.print-all>.sheet>.head{display:none}
+body.print-all .wk{display:block!important}
+body.print-all .wk+.wk{page-break-before:always}
+
+@media (max-width:560px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .weekpick{grid-template-columns:repeat(6,1fr)}
+}

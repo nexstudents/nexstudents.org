@@ -259,6 +259,32 @@ const SHEETS = [
   signoff: "Every week is a fresh start. Keep going.",
 },
 
+/* ══════════════════════ 6. SPELLING FLASHCARDS ══════════════════════
+   The same 36 weeks as the spelling test, cut into cards. One page holds
+   every week and shows one, because 36 near-identical cards on the shelf
+   would be 36 things to scroll past for one thing to print. */
+{
+  /* 3rd grade only, unlike the blank test beside it. The test carries no words
+     so it serves any year; these cards ARE the words, and they are 3rd grade
+     words. Kolten works them at 7th, but that is his parent's choice to make
+     off the 3rd grade shelf, not a claim on the page that they suit 7th. */
+  slug: "spelling-flashcards", subject: "ELA", grade: 3, grades: [3],
+  kind: "flashcards", source: "spelling-words.js",
+  title: "Spelling Flashcards",
+  dek: "Pick a week, then press Print. Twelve cards a sheet, cut on the dashed lines.",
+  blurb: "Cut-out spelling flashcards, a sheet a week. Ten words, a bonus word, and a card naming the week.",
+  unit: "Printable &middot; 36 weeks, pick one",
+  contains: [
+    "36 weeks, one printable sheet each",
+    "Twelve cards a sheet: ten words, one bonus, one label card",
+    "The label card names the week, so a cut stack stays together",
+    "One PDF holding all 36 weeks",
+  ],
+  price: "$0", buy: null, art: false, thumb: true,
+  eyebrow: "Spelling &middot; Flashcards",
+  cutnote: "Card one names the week, so a cut stack never gets mixed with another one.",
+},
+
 ];
 
 module.exports = { SHEETS };

@@ -214,6 +214,104 @@ function blankHtml(s) {
 `;
 }
 
+/* FLASHCARDS. One page holding every week, showing one at a time.
+   36 near-identical cards on the shelf would be 36 things to scroll past for
+   one thing to print, so the week is a control on the page instead: pick it,
+   press Print, get that sheet. The PDF is built with ?print=all so the
+   download is the whole year while the button stays one page. */
+function flashHtml(s) {
+  const subjectSlug = s.subject.toLowerCase();
+  const { WEEKS } = require("./" + s.source);
+
+  const picker = WEEKS.map((w) =>
+    `<button type="button" data-wk="${w.n}" aria-pressed="${w.n === 1}">${w.n}</button>`
+  ).join("\n    ");
+
+  const sheets = WEEKS.map((w) => {
+    /* The label card first, then the ten, then the bonus: twelve on a page. */
+    const cards = [
+      `<div class="fc label"><b>Week ${w.n}</b><span>${w.focus}</span></div>`,
+      ...w.words.map((x) => `<div class="fc"><span>${x}</span></div>`),
+      `<div class="fc is-bonus"><em>Bonus</em><span>${w.bonus}</span></div>`,
+    ].join("\n      ");
+    return `<section class="wk" data-wk="${w.n}"${w.n === 1 ? "" : " hidden"}>
+    <h2 class="wkhead">Week ${w.n} Flashcards</h2>
+    <p class="wkfocus">${w.focus}. Cut along the dashed lines for twelve cards.</p>
+    <div class="cards">
+      ${cards}
+    </div>
+    <p class="cutnote">${s.cutnote}</p>
+  </section>`;
+  }).join("\n  ");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>${s.title} — NexStudents</title>
+<meta name="description" content="${s.blurb}">
+<link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
+<link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
+</head>
+<body>
+
+<div class="bar">
+  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  <div class="acts">
+    <button class="btn" type="button" onclick="window.print()" title="Print the week you picked" aria-label="Print this sheet">
+      ${ICON_PRINT}<span class="lbl">Print</span>
+    </button>
+    <a class="btn ghost" href="${s.slug}.pdf" download title="Save all ${WEEKS.length} weeks as one PDF" aria-label="Download the PDF">
+      ${ICON_DL}<span class="lbl">Download</span>
+    </a>
+  </div>
+</div>
+
+<div class="sheet">
+
+  <div class="head is-flash">
+    <p class="eyebrow">${s.subject} &middot; ${s.eyebrow}</p>
+    <h1>${s.title}</h1>
+    <p class="dek">${s.dek}</p>
+  </div>
+
+  <div class="weekpick" role="group" aria-label="Pick a week">
+    ${picker}
+  </div>
+
+  ${sheets}
+
+</div>
+
+<script>
+/* Pick a week, print that week. Print takes whatever is on screen, so
+   showing one week IS the print selection - no separate print setting to get
+   out of step with what the parent is looking at.
+   ?print=all is how the PDF build asks for every week at once. */
+(function(){
+  if (new URLSearchParams(location.search).get("print") === "all") {
+    document.body.classList.add("print-all");
+    return;
+  }
+  var picks = document.querySelectorAll(".weekpick button");
+  var weeks = document.querySelectorAll(".wk");
+  picks.forEach(function(b){
+    b.onclick = function(){
+      var n = b.dataset.wk;
+      picks.forEach(function(x){ x.setAttribute("aria-pressed", x.dataset.wk === n); });
+      weeks.forEach(function(w){ w.hidden = w.dataset.wk !== n; });
+      scrollTo({ top: 0, behavior: "smooth" });
+    };
+  });
+})();
+</script>
+</body>
+</html>
+`;
+}
+
 function sheetHtml(s) {
   const subjectSlug = s.subject.toLowerCase();
   return `<!doctype html>
@@ -316,9 +414,10 @@ for (const s of SHEETS) {
     process.exit(1);
   }
 
-  const html = s.kind === "blank" ? blankHtml(s)
-             : isPaid(s)          ? bundleHtml(s)
-             :                      sheetHtml(s);
+  const html = s.kind === "blank"      ? blankHtml(s)
+             : s.kind === "flashcards" ? flashHtml(s)
+             : isPaid(s)               ? bundleHtml(s)
+             :                           sheetHtml(s);
   if (html.includes("undefined")) { console.error("FAIL: undefined in " + s.slug); process.exit(1); }
   fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
   written.push(s.slug);
