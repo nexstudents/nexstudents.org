@@ -338,7 +338,6 @@ h2{
 .choice:disabled{cursor:default}
 .choice.right{background:var(--verdigris-soft);border-color:var(--verdigris);font-weight:600}
 .choice.wrong{background:var(--porphyry-soft);border-color:var(--porphyry)}
-.locked .choices{opacity:.4;pointer-events:none}
 .verdict{font-size:14px;line-height:1.6;margin-top:12px;display:none}
 .verdict.show{display:block}
 .verdict.good{color:var(--verdigris-ink)}
@@ -1265,14 +1264,14 @@ var hunt = null;            // { qi, tries }
 var huntBar = document.getElementById("huntbar");
 var huntLabel = document.getElementById("huntlabel");
 var answered = [];
-var skipped = [];   // questions answered without hunting
+var hunted = [];    // questions where Find was actually used
 var foundFirstTry = 0, huntTotal = 0;
 var qEl = document.getElementById("questions");
 
 QUESTIONS.forEach(function(Q, qi){
   if (Q.find) huntTotal++;
   var card = document.createElement("div");
-  card.className = "q" + (Q.find ? " locked" : "");
+  card.className = "q";          // never locked: answering is the default path
   card.id = "q" + qi;
 
   var num = document.createElement("div");
@@ -1290,27 +1289,14 @@ QUESTIONS.forEach(function(Q, qi){
   card.appendChild(stage);
 
   if (Q.find){
-    stage.innerHTML = '<strong>Two ways to do this.</strong> Hunt for the sentence that answers it, or go straight to the answer if you already know it. Hunting is worth more.';
-    var row = document.createElement("div");
-    row.className = "route";
+    stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
     var go = document.createElement("button");
-    go.className = "btn";
+    go.className = "btn ghost";
     go.type = "button";
     go.textContent = "Find it in the story";
+    go.style.marginTop = "9px";
     go.addEventListener("click", function(){ startHunt(qi); });
-    var skip = document.createElement("button");
-    skip.className = "btn ghost";
-    skip.type = "button";
-    skip.textContent = "Just answer";
-    skip.addEventListener("click", function(){
-      skipped[qi] = true;
-      card.classList.remove("locked");
-      stage.innerHTML = '<strong>Answering straight off.</strong> If you get stuck, the sentence is still in the story above.';
-      card.scrollIntoView({ behavior:"smooth", block:"center" });
-    });
-    row.appendChild(go);
-    row.appendChild(skip);
-    stage.appendChild(row);
+    stage.appendChild(go);
   } else {
     stage.innerHTML = "<strong>No hunting on this one.</strong> " + Q.note;
   }
@@ -1335,6 +1321,7 @@ QUESTIONS.forEach(function(Q, qi){
 });
 
 function startHunt(qi){
+  hunted[qi] = true;
   hunt = { qi: qi, tries: 0 };
   if (playing){ playing = false; gen++; if (supported) synth.cancel(); clearWords(); paint(); }
   document.body.classList.add("hunting");
@@ -1375,14 +1362,12 @@ storyEl.addEventListener("click", function(e){
     target.classList.add("hit");
     if (hunt.tries === 1) foundFirstTry++;
     stage.innerHTML = '<strong>Found it.</strong> Now say it in your own words &mdash; pick the choice that matches the sentence you found.';
-    card.classList.remove("locked");
     endHunt();
     card.scrollIntoView({ behavior:"smooth", block:"center" });
   } else if (hunt.tries >= 3){
     target.classList.add("miss");
     Q.find.forEach(function(k){ SENT[k].el.classList.add("shown"); });
     stage.innerHTML = '<strong>Here it is.</strong> The highlighted sentence is the one. Read it again, then pick your answer below.';
-    card.classList.remove("locked");
     endHunt();
     SENT[Q.find[0]].el.scrollIntoView({ behavior:"smooth", block:"center" });
   } else {
@@ -1424,7 +1409,7 @@ function showScore(){
     '<div class="big">' + right + ' / ' + QUESTIONS.length + '</div>' +
     '<div class="pct">' + pct + '%</div>' +
     '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-    ' &middot; answered without hunting: ' + skipped.filter(Boolean).length + '.<br>' +
+    ' &middot; answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find;}).length - hunted.filter(Boolean).length) + '.<br>' +
     'Report this score in your student notes on HomeschoolGrades.</div>';
   el.classList.add("show");
 
@@ -1467,14 +1452,13 @@ document.getElementById("retake").addEventListener("click", function(){
   // Wipe the attempt, keep the record. Nothing about the saved score changes.
   if (playing){ playing = false; stopEngines(); clearWords(); paint(); }
   answered = [];
-  skipped = [];
+  hunted = [];
   foundFirstTry = 0;
   endHunt();
   SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
   document.getElementById("score").classList.remove("show");
   QUESTIONS.forEach(function(Q, qi){
     var card = document.getElementById("q" + qi);
-    card.classList.toggle("locked", !!Q.find);
     card.querySelector(".verdict").className = "verdict";
     [].forEach.call(card.querySelectorAll(".choice"), function(b){
       b.disabled = false;
@@ -1482,27 +1466,14 @@ document.getElementById("retake").addEventListener("click", function(){
     });
     var stage = card.querySelector(".stage");
     if (Q.find){
-      stage.innerHTML = '<strong>Two ways to do this.</strong> Hunt for the sentence that answers it, or go straight to the answer if you already know it. Hunting is worth more.';
-      var row = document.createElement("div");
-      row.className = "route";
-      var go = document.createElement("button");
-      go.className = "btn";
-      go.type = "button";
-      go.textContent = "Find it in the story";
-      go.addEventListener("click", (function(i){ return function(){ startHunt(i); }; })(qi));
-      var skip = document.createElement("button");
-      skip.className = "btn ghost";
-      skip.type = "button";
-      skip.textContent = "Just answer";
-      skip.addEventListener("click", function(){
-        skipped[qi] = true;
-        card.classList.remove("locked");
-        stage.innerHTML = '<strong>Answering straight off.</strong> If you get stuck, the sentence is still in the story above.';
-        card.scrollIntoView({ behavior:"smooth", block:"center" });
-      });
-      row.appendChild(go);
-      row.appendChild(skip);
-      stage.appendChild(row);
+      stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
+    var go = document.createElement("button");
+    go.className = "btn ghost";
+    go.type = "button";
+    go.textContent = "Find it in the story";
+    go.style.marginTop = "9px";
+    go.addEventListener("click", function(){ startHunt(qi); });
+    stage.appendChild(go);
     }
   });
   document.getElementById("q0").scrollIntoView({ behavior:"smooth", block:"center" });
@@ -1548,7 +1519,7 @@ document.getElementById("printKey").addEventListener("click", function(){
     '</div>' +
     '<ol>' + rows + '</ol>' +
     '<div class="foot">Sentences found in the text on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-      '.  Answered without hunting: ' + skipped.filter(Boolean).length + '.' +
+      '.  Answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find;}).length - hunted.filter(Boolean).length) + '.' +
       (d ? '  Best recorded score: ' + d.score + '/' + d.total + ' (' + d.pct + '%).' : '') +
     '</div>' +
     '<div class="sign">Parent signature:<span></span></div>';
