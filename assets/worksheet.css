@@ -269,7 +269,7 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
 }
 .fc{
   border-right:1px dashed var(--line-ink);border-bottom:1px dashed var(--line-ink);
-  min-height:196px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:172px;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:6px;padding:14px 10px;text-align:center;
 }
 .fc>span{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;
@@ -293,8 +293,15 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
   .fc.label{background:transparent}
   .fc>span,.fc.label b,.wkhead{color:#000}
   .fc.label span,.fc.is-bonus em,.cutnote,.wkfocus{color:#000}
-  .cards{page-break-inside:avoid}
-  .wk{page-break-inside:avoid}
+  /* 🚨 DO NOT put page-break-inside:avoid on .cards or .wk.
+     It was here and it is what makes a printer spit out a blank sheet. The
+     grid is most of a page tall; tell the browser it may not be split and
+     any small loss of room - a printer with bigger hardware margins, a scale
+     above 100%, A4 instead of Letter - makes it move the WHOLE grid to page
+     two and hand you an empty page one. Kept only on the individual card,
+     which is small enough to always fit, so the worst case is now a grid
+     that breaks between rows rather than a blank sheet. */
+  .fc{page-break-inside:avoid}
 }
 /* Every week at once, one page each. Only the PDF build asks for this. */
 body.print-all .weekpick,
@@ -306,3 +313,9 @@ body.print-all .wk+.wk{page-break-before:always}
   .cards{grid-template-columns:repeat(2,1fr)}
   .weekpick{grid-template-columns:repeat(6,1fr)}
 }
+
+/* The whole-year download, offered as a line rather than a second button, so
+   Download stays one obvious thing: the week you are looking at. */
+.allyear{font-size:.85rem;color:var(--dim);margin:-8px 0 24px}
+.allyear a{color:var(--fg)}
+@media print{ .allyear{display:none} }

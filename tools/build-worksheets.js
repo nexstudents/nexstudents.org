@@ -263,7 +263,7 @@ function flashHtml(s) {
     <button class="btn" type="button" onclick="window.print()" title="Print the week you picked" aria-label="Print this sheet">
       ${ICON_PRINT}<span class="lbl">Print</span>
     </button>
-    <a class="btn ghost" href="${s.slug}.pdf" download title="Save all ${WEEKS.length} weeks as one PDF" aria-label="Download the PDF">
+    <a class="btn ghost" id="dl" href="week-01.pdf" download title="Save the week you picked as a PDF" aria-label="Download this week">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
   </div>
@@ -281,6 +281,9 @@ function flashHtml(s) {
     ${picker}
   </div>
 
+  <p class="allyear">Download gives you the week you picked, on its own.
+    <a href="${s.slug}.pdf" download>Or save all ${WEEKS.length} weeks as one file.</a></p>
+
   ${sheets}
 
 </div>
@@ -291,20 +294,33 @@ function flashHtml(s) {
    out of step with what the parent is looking at.
    ?print=all is how the PDF build asks for every week at once. */
 (function(){
-  if (new URLSearchParams(location.search).get("print") === "all") {
+  var qs = new URLSearchParams(location.search);
+  var picks = document.querySelectorAll(".weekpick button");
+  var weeks = document.querySelectorAll(".wk");
+  var dl = document.getElementById("dl");
+
+  /* ?print=all lays every week out at once. Only the PDF build asks for it. */
+  if (qs.get("print") === "all") {
     document.body.classList.add("print-all");
     return;
   }
-  var picks = document.querySelectorAll(".weekpick button");
-  var weeks = document.querySelectorAll(".wk");
+
+  function show(n){
+    picks.forEach(function(x){ x.setAttribute("aria-pressed", x.dataset.wk === String(n)); });
+    weeks.forEach(function(w){ w.hidden = w.dataset.wk !== String(n); });
+    /* Download hands over the week on screen, not the whole year. A parent who
+       picked week 4 and got 36 pages has been handed the wrong thing. */
+    dl.setAttribute("href", "week-" + String(n).padStart(2, "0") + ".pdf");
+  }
+
   picks.forEach(function(b){
-    b.onclick = function(){
-      var n = b.dataset.wk;
-      picks.forEach(function(x){ x.setAttribute("aria-pressed", x.dataset.wk === n); });
-      weeks.forEach(function(w){ w.hidden = w.dataset.wk !== n; });
-      scrollTo({ top: 0, behavior: "smooth" });
-    };
+    b.onclick = function(){ show(b.dataset.wk); scrollTo({ top: 0, behavior: "smooth" }); };
   });
+
+  /* ?week=N picks a week from the address, which is how the per-week PDFs are
+     built and how a link to one week can be shared. */
+  var w = parseInt(qs.get("week"), 10);
+  show(w >= 1 && w <= weeks.length ? w : 1);
 })();
 </script>
 </body>
