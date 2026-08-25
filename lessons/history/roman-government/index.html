@@ -279,6 +279,19 @@ h2{
 .sent.shown{background:var(--band);box-shadow:inset 0 -2px 0 var(--brass)}
 
 /* ---------- words ---------- */
+.daysec{margin-top:54px;padding-top:26px;border-top:2px solid var(--rule)}
+.daytag{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--verdigris);margin:0 0 4px;
+}
+.sub-head{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint);margin:30px 0 14px;
+  padding-bottom:6px;border-bottom:1px solid var(--rule);
+}
+.daysec .section-head{margin-top:0}
 .section-head{
   font-family:Cinzel,Georgia,serif;font-weight:600;
   font-size:22px;letter-spacing:.03em;
@@ -369,6 +382,16 @@ h2{
   font-variant-numeric:tabular-nums;line-height:1.1;
 }
 .score .pct{font-size:15px;color:var(--ink-soft);margin-top:4px}
+.score .split{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;
+}
+.score .split span{
+  display:flex;flex-direction:column;gap:2px;align-items:center;
+  border:1px solid var(--rule);border-radius:4px;padding:9px 16px;min-width:120px;
+}
+.score .split b{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--verdigris)}
+.score .split span{font-size:12px;color:var(--ink-soft)}
+.score .split i{font-style:normal;font-size:17px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .score .line{font-size:14px;color:var(--ink-soft);margin-top:14px;line-height:1.6}
 
 /* completion state */
@@ -489,13 +512,21 @@ h2{
 
   <main id="story"></main>
 
-  <h2 class="section-head">Four Words to Know</h2>
-  <p class="section-note">The booklet lists these words but never tells you what they mean. Here they are. Tap a card.</p>
-  <div class="cards" id="cards"></div>
+  <div class="daysec" id="day1">
+    <p class="daytag">Day One</p>
+    <h2 class="section-head">The Questions</h2>
+    <p class="section-note">Four questions about the story you just read. Pick your answer straight off, or press Find it in the story if you would rather hunt for the sentence first.</p>
+    <div id="questions1"></div>
+  </div>
 
-  <h2 class="section-head">Answer Hunt</h2>
-  <p class="section-note">Five questions, same five as the booklet. For each one you find the sentence first, then pick the answer. Finding it before saying it is the whole trick.</p>
-  <div id="questions"></div>
+  <div class="daysec" id="day2">
+    <p class="daytag">Day Two</p>
+    <h2 class="section-head">The Words</h2>
+    <p class="section-note">Four words the booklet lists but never explains. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
+    <div class="cards" id="cards"></div>
+    <h3 class="sub-head">Vocabulary Check</h3>
+    <div id="questions2"></div>
+  </div>
 
   <div class="score" id="score"></div>
 
@@ -1266,7 +1297,8 @@ var huntLabel = document.getElementById("huntlabel");
 var answered = [];
 var hunted = [];    // questions where Find was actually used
 var foundFirstTry = 0, huntTotal = 0;
-var qEl = document.getElementById("questions");
+var qEl1 = document.getElementById("questions1");
+var qEl2 = document.getElementById("questions2");
 
 QUESTIONS.forEach(function(Q, qi){
   if (Q.find) huntTotal++;
@@ -1281,7 +1313,7 @@ QUESTIONS.forEach(function(Q, qi){
 
   var qt = document.createElement("div");
   qt.className = "qtext";
-  qt.textContent = Q.q;
+  qt.innerHTML = Q.q;   // our own strings; italics in vocabulary questions are intentional
   card.appendChild(qt);
 
   var stage = document.createElement("div");
@@ -1317,7 +1349,7 @@ QUESTIONS.forEach(function(Q, qi){
   v.className = "verdict";
   card.appendChild(v);
 
-  qEl.appendChild(card);
+  (Q.day === 2 ? qEl2 : qEl1).appendChild(card);
 });
 
 function startHunt(qi){
@@ -1395,21 +1427,42 @@ function answer(qi, ci){
     ? "Correct. Write that into the booklet in your own words."
     : "Not quite. The correct answer is marked above — read it, then write it into the booklet in your own words.";
 
-  var count = 0;
-  for (var i = 0; i < QUESTIONS.length; i++) if (answered[i] !== undefined) count++;
-  if (count === QUESTIONS.length) showScore();
+  // Show the running score as soon as EITHER day is finished, because the two
+  // days happen on different days and he should not have to wait until Day 2
+  // to see how Day 1 went.
+  var d1 = dayStats(1), d2 = dayStats(2);
+  if (d1.done === d1.total || d2.done === d2.total) showScore();
+}
+
+function dayStats(day){
+  var total = 0, right = 0, done = 0;
+  QUESTIONS.forEach(function(Q, i){
+    if ((Q.day || 1) !== day) return;
+    total++;
+    if (answered[i] !== undefined) done++;
+    if (answered[i] === Q.right) right++;
+  });
+  return { total: total, right: right, done: done,
+           pct: total ? Math.round(right / total * 100) : 0 };
 }
 
 function showScore(){
-  var right = 0;
-  QUESTIONS.forEach(function(Q, i){ if (answered[i] === Q.right) right++; });
-  var pct = Math.round(right / QUESTIONS.length * 100);
+  var d1 = dayStats(1), d2 = dayStats(2);
+  var right = d1.right + d2.right;
+  var total = d1.total + d2.total;
+  var pct = Math.round(right / total * 100);
+  var missed = QUESTIONS.filter(function(Q){ return Q.find; }).length - hunted.filter(Boolean).length;
+
   var el = document.getElementById("score");
   el.innerHTML =
-    '<div class="big">' + right + ' / ' + QUESTIONS.length + '</div>' +
+    '<div class="big">' + right + ' / ' + total + '</div>' +
     '<div class="pct">' + pct + '%</div>' +
+    '<div class="split">' +
+      '<span><b>Day 1</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>' +
+      '<span><b>Day 2</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>' +
+    '</div>' +
     '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-    ' &middot; answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find;}).length - hunted.filter(Boolean).length) + '.<br>' +
+    ' &middot; answered without hunting: ' + missed + '.<br>' +
     'Report this score in your student notes on HomeschoolGrades.</div>';
   el.classList.add("show");
 
@@ -1417,7 +1470,8 @@ function showScore(){
   var prev = readDone();
   if (!prev || right > prev.score){
     store("done:" + LESSON_ID, JSON.stringify({
-      score: right, total: QUESTIONS.length, pct: pct,
+      score: right, total: total, pct: pct,
+      d1: d1.right, d1t: d1.total, d2: d2.right, d2t: d2.total,
       found: foundFirstTry, hunts: huntTotal,
       at: new Date().toISOString()
     }));
