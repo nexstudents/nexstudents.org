@@ -279,6 +279,16 @@ h2{
 .sent.shown{background:var(--band);box-shadow:inset 0 -2px 0 var(--brass)}
 
 /* ---------- words ---------- */
+.dayhead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.dayprog{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-soft);
+  white-space:nowrap;
+}
+.dayprog.done{color:var(--verdigris);font-weight:700}
+.daybar{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden;margin:12px 0 4px}
+.daybar i{display:block;height:100%;width:0;background:var(--verdigris);
+  border-radius:2px;transition:width .35s var(--ease,ease)}
 .daysec{margin-top:54px;padding-top:26px;border-top:2px solid var(--rule)}
 .daytag{
   font-family:"IBM Plex Sans",system-ui,sans-serif;
@@ -513,15 +523,27 @@ h2{
   <main id="story"></main>
 
   <div class="daysec" id="day1">
-    <p class="daytag">Day One</p>
-    <h2 class="section-head">The Questions</h2>
+    <div class="dayhead">
+      <div>
+        <p class="daytag">Day One</p>
+        <h2 class="section-head">The Questions</h2>
+      </div>
+      <span class="dayprog" id="prog1">0 of 0</span>
+    </div>
+    <div class="daybar"><i id="bar1"></i></div>
     <p class="section-note">Four questions about the story you just read. Pick your answer straight off, or press Find it in the story if you would rather hunt for the sentence first.</p>
     <div id="questions1"></div>
   </div>
 
   <div class="daysec" id="day2">
-    <p class="daytag">Day Two</p>
-    <h2 class="section-head">The Words</h2>
+    <div class="dayhead">
+      <div>
+        <p class="daytag">Day Two</p>
+        <h2 class="section-head">The Words</h2>
+      </div>
+      <span class="dayprog" id="prog2">0 of 0</span>
+    </div>
+    <div class="daybar"><i id="bar2"></i></div>
     <p class="section-note">Four words the booklet lists but never explains. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
     <div class="cards" id="cards"></div>
     <h3 class="sub-head">Vocabulary Check</h3>
@@ -543,7 +565,7 @@ h2{
   <div id="sheet" aria-hidden="true"></div>
 
   <div class="done-note">
-    <b>When you finish:</b> write these five answers into the booklet in your own words &mdash; not copied word for word from the choices. Then photograph the page and upload it to your lesson in HomeschoolGrades.
+    <b>When you finish:</b> write the answers out in your own words &mdash; not copied word for word from the choices. Saying it your own way is the part that proves you understood it. Then use <b>Print answer sheet</b> for a one-page record of what was answered and scored.
   </div>
 
 </div>
@@ -1428,6 +1450,16 @@ function answer(qi, ci){
     ? "Correct. Write that into the booklet in your own words."
     : "Not quite. The correct answer is marked above — read it, then write it into the booklet in your own words.";
 
+  paintProgress();
+
+  // A light progress record on every answer, so the lesson card on the shelf
+  // knows how far in he is without the lesson having to be finished first.
+  var d1p = dayStats(1), d2p = dayStats(2);
+  store("prog:" + LESSON_ID, JSON.stringify({
+    done: d1p.done + d2p.done, total: d1p.total + d2p.total,
+    d1: d1p.done, d1t: d1p.total, d2: d2p.done, d2t: d2p.total
+  }));
+
   // Show the running score as soon as EITHER day is finished, because the two
   // days happen on different days and he should not have to wait until Day 2
   // to see how Day 1 went.
@@ -1447,6 +1479,19 @@ function dayStats(day){
            pct: total ? Math.round(right / total * 100) : 0 };
 }
 
+function paintProgress(){
+  [1, 2].forEach(function(day){
+    var st = dayStats(day);
+    var label = document.getElementById("prog" + day);
+    var bar = document.getElementById("bar" + day);
+    if (label){
+      label.textContent = st.done + " of " + st.total + (st.done === st.total && st.total ? " — done" : " answered");
+      label.classList.toggle("done", st.total > 0 && st.done === st.total);
+    }
+    if (bar) bar.style.width = (st.total ? (st.done / st.total * 100) : 0) + "%";
+  });
+}
+
 function showScore(){
   var d1 = dayStats(1), d2 = dayStats(2);
   var right = d1.right + d2.right;
@@ -1464,15 +1509,20 @@ function showScore(){
     '</div>' +
     '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
     ' &middot; answered without hunting: ' + missed + '.<br>' +
-    'Report this score in your student notes on HomeschoolGrades.</div>';
+    'Use Print answer sheet for a record of this attempt.</div>';
   el.classList.add("show");
 
-  // Keep the BEST attempt, not the latest - a retake should never cost him a score.
+  // A lesson counts as complete only when BOTH days are answered. Finishing
+  // Day 1 saves progress, it does not finish the lesson.
+  var complete = (d1.done === d1.total) && (d2.done === d2.total);
   var prev = readDone();
-  if (!prev || right > prev.score){
+  var better = !prev || right > prev.score;
+  // never let a part-finished retake overwrite a completed record
+  if (better || (complete && !(prev && prev.complete))){
     store("done:" + LESSON_ID, JSON.stringify({
-      score: right, total: total, pct: pct,
+      score: right, total: total, pct: pct, complete: complete,
       d1: d1.right, d1t: d1.total, d2: d2.right, d2t: d2.total,
+      d1done: d1.done === d1.total, d2done: d2.done === d2.total,
       found: foundFirstTry, hunts: huntTotal,
       at: new Date().toISOString()
     }));
@@ -1494,11 +1544,15 @@ function paintStatus(){
   try {
     when = new Date(d.at).toLocaleDateString(undefined, { month:"short", day:"numeric" });
   } catch(e){}
-  box.classList.toggle("partial", d.pct < 60);
-  document.getElementById("statusMark").textContent = d.pct < 60 ? "!" : "✓";
+  var done = d.complete !== false;
+  box.classList.toggle("partial", !done || d.pct < 60);
+  document.getElementById("statusMark").textContent = !done ? "…" : (d.pct < 60 ? "!" : "✓");
   document.getElementById("statusText").innerHTML =
-    "<b>Lesson completed</b> &middot; best score " + d.score + " / " + d.total + " (" + d.pct + "%)" +
-    "<small>" + (when ? "First finished " + when + ". " : "") +
+    (done
+      ? "<b>Lesson completed</b> &middot; best score " + d.score + " / " + d.total + " (" + d.pct + "%)"
+      : "<b>" + (d.d1done ? "Day 1 finished" : "Day 2 finished") + "</b> &middot; " +
+        d.score + " / " + d.total + " so far &mdash; the other day is still to do") +
+    "<small>" + (when ? "Last worked " + when + ". " : "") +
     "Retaking keeps your best score.</small>";
   box.classList.add("show");
 }
@@ -1508,6 +1562,7 @@ document.getElementById("retake").addEventListener("click", function(){
   if (playing){ playing = false; stopEngines(); clearWords(); paint(); }
   answered = [];
   hunted = [];
+  drop("prog:" + LESSON_ID);
   foundFirstTry = 0;
   endHunt();
   SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
@@ -1531,6 +1586,7 @@ document.getElementById("retake").addEventListener("click", function(){
     stage.appendChild(go);
     }
   });
+  paintProgress();
   document.getElementById("q0").scrollIntoView({ behavior:"smooth", block:"center" });
 });
 
@@ -1583,6 +1639,7 @@ document.getElementById("printKey").addEventListener("click", function(){
 });
 
 paintStatus();
+paintProgress();
 paint();
 })();
 </script>

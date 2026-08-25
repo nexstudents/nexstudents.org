@@ -7,7 +7,7 @@
 <title>History Lessons — NexStudents</title>
 <meta name="description" content="Every history lesson on NexStudents, worked through on screen.">
 <meta name="theme-color" content="#0a0b0d">
-<link rel="stylesheet" href="/assets/ns.css?v=a8f9c992">
+<link rel="stylesheet" href="/assets/ns.css?v=6f916aa5">
 </head>
 <body>
 
@@ -109,9 +109,25 @@
 (function(){
   var cards = document.querySelectorAll("[data-lesson]");
   for (var i = 0; i < cards.length; i++){
-    var c = cards[i], d = null;
+    var c = cards[i], d = null, pr = null;
     try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
-    if (!d) continue;
+    try { pr = JSON.parse(localStorage.getItem("ns:prog:" + c.dataset.lesson)); } catch(e){}
+
+    // part-finished: show how far in, and stop before the completed styling
+    var finished = d && d.complete !== false;
+    if (!finished && pr && pr.done > 0){
+      c.classList.add("is-part");
+      var ps = c.querySelector(".tick-score");
+      if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
+      var pb = document.createElement("span");
+      pb.className = "cbar";
+      pb.innerHTML = '<i style="width:' + Math.round(pr.done / pr.total * 100) + '%"></i>';
+      var body = c.querySelector(".cbody");
+      if (body) body.appendChild(pb);
+      continue;
+    }
+    if (!finished) continue;
+
     c.classList.add("is-done");
     var s = c.querySelector(".tick-score");
     if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";

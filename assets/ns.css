@@ -447,3 +447,10 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
   display:grid;place-items:center;transition:border-color .22s,background .22s,opacity .22s}
 @media(hover:hover){ .rnav:not(:disabled):hover{border-color:var(--fg);background:rgba(241,243,245,.07)} }
 .rnav:disabled{opacity:.25;cursor:default}
+
+/* a lesson with one of its two days done is in progress, not complete */
+.card.is-part{border-color:var(--dim)}
+.card.is-part .tick-score{display:block;color:var(--dim)}
+.card .cbar{display:block;height:4px;border-radius:2px;background:var(--panel);
+  overflow:hidden;margin-top:8px}
+.card .cbar i{display:block;height:100%;background:var(--free);border-radius:2px}
