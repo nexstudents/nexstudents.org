@@ -269,7 +269,7 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
 }
 .fc{
   border-right:1px dashed var(--line-ink);border-bottom:1px dashed var(--line-ink);
-  min-height:172px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:152px;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:6px;padding:14px 10px;text-align:center;
 }
 .fc>span{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;
@@ -280,9 +280,20 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
 .fc.is-bonus em{font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
   font-style:normal;color:var(--dim)}
 .cutnote{margin:14px 0 0;font-size:.8rem;color:var(--dim);text-align:center}
+.howto{margin:8px 0 0;padding-top:8px;border-top:1px solid var(--line);font-size:.76rem;
+  line-height:1.5;color:var(--dim)}
+.howto b{color:var(--fg)}
+.cutline{margin:2px 0 0;font-size:.86rem;color:var(--dim)}
+@media print{ .howto{border-top-color:#000;color:#000} .howto b{color:#000} .cutline{color:#000} }
 
 @media print{
   .weekpick{display:none}
+  /* 🚨 The right and bottom cut lines used to sit exactly on the edge of the
+     printable area, and any printer with a wider unprintable margin than ours
+     just dropped them - Paul got sheets with no line down the right side. The
+     grid is pulled in a few millimetres so the outermost lines are always
+     inside what a printer can actually put ink on. */
+  .cards{margin-right:4mm;margin-bottom:3mm}
   /* The page title and the week title say the same thing. On screen the page
      title is the page; on paper it is a duplicate that pushed the twelfth
      card onto a second sheet. */
@@ -332,13 +343,14 @@ body.print-all .wk+.wk{page-break-before:always}
    it, which the "does this font have this character" check reports as fine.
    It lies; it only confirms the family loaded. Measured widths caught it. */
 .teach{border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;margin:0 0 4px}
-.teach h3{margin:0 0 3px;font-size:.76rem;font-weight:800;color:var(--fg)}
-.teach>p{margin:0 0 7px;font-size:.72rem;line-height:1.4;color:var(--dim)}
+.teach h3{margin:0 0 4px;font-size:.86rem;font-weight:800;color:var(--fg)}
+.teach>p{margin:0 0 8px;font-size:.8rem;line-height:1.45;color:var(--dim)}
 .teach>p b{color:var(--fg)}
 /* Three marks across, not stacked: the note is a key, not a lesson, and every
    line it costs comes straight off the height of the cards. */
-.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0;padding:0;list-style:none}
-.keys li{display:flex;align-items:baseline;gap:8px;font-size:.7rem;line-height:1.35;color:var(--dim)}
+.keys{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.keys li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;
+  font-size:.76rem;line-height:1.35;color:var(--dim)}
 .keys li b{color:var(--fg);display:block}
 /* Big enough that a drawn mark actually reads. At body size it rendered
    sub-pixel and vanished entirely. */
@@ -370,3 +382,11 @@ body.print-all .wk+.wk{page-break-before:always}
   .teach{border-color:#000;page-break-inside:avoid}
   .teach h3,.teach>p,.teach>p b,.keys li,.keys li b,.eg{color:#000}
 }
+
+/* The wordmark, and the way home. A worksheet page had only a back link into
+   its own subject, so a parent who landed on one from a search had no route to
+   the rest of the site at all. */
+.bar .word{font-weight:800;letter-spacing:-.03em;font-size:15px;color:var(--fg);
+  text-decoration:none;flex:none;margin-right:4px}
+.bar .word b{color:var(--a)}
+@media (max-width:470px){ .bar .word{font-size:14px} }

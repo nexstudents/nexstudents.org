@@ -73,6 +73,7 @@ function bundleHtml(s) {
 <body>
 
 <div class="bar">
+  <a class="word" href="/">Nex<b>Students</b></a>
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
 </div>
 
@@ -161,6 +162,7 @@ function blankHtml(s) {
 <body>
 
 <div class="bar">
+  <a class="word" href="/">Nex<b>Students</b></a>
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
@@ -236,11 +238,12 @@ function flashHtml(s) {
     ].join("\n      ");
     return `<section class="wk" data-wk="${w.n}"${w.n === 1 ? "" : " hidden"}>
     <h2 class="wkhead">Week ${w.n} Flashcards</h2>
-    <p class="wkfocus">${w.focus}. Cut along the dashed lines for twelve cards.</p>
+    <p class="wkfocus">${w.focus}</p>
+    <p class="cutline">&#9986;&#65039; Cut on the dashed lines &mdash; 12 cards:
+      ${w.words.length} spelling words, 1 bonus, 1 week label.</p>
     <div class="cards">
       ${cards}
     </div>
-    <p class="cutnote">${s.cutnote}</p>
   </section>`;
   }).join("\n  ");
 
@@ -258,6 +261,7 @@ function flashHtml(s) {
 <body>
 
 <div class="bar">
+  <a class="word" href="/">Nex<b>Students</b></a>
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print the week you picked" aria-label="Print this sheet">
@@ -282,6 +286,10 @@ function flashHtml(s) {
     <p>McGuffey&rsquo;s revised Readers printed marks so a student could <b>sound a word out</b>
       instead of memorising its shape. These cards are plain on purpose &mdash; mark them by hand,
       in front of your student, as you teach each word.</p>
+    <p class="howto"><b>How to use them.</b> Hold up a card and have your student sound it out,
+      then <b>write it three times in a row</b> while saying each sound. Work the stack through
+      the week. On the last day, print the <b>Weekly Spelling Test</b> and read the words aloud
+      to test what stuck.</p>
     <ul class="keys">
       <li><span class="eg">br<span class="mk long">a</span>ve</span>
         <span><b>Long vowel</b>says its own name</span></li>
@@ -295,7 +303,7 @@ function flashHtml(s) {
     ${picker}
   </div>
 
-  <p class="allyear">Download gives you the week you picked, on its own.
+  <p class="allyear">Select your lesson, then print or download that week&rsquo;s sheet.
     <a href="${s.slug}.pdf" download>Or save all ${WEEKS.length} weeks as one file.</a></p>
 
   ${sheets}
@@ -358,6 +366,7 @@ function sheetHtml(s) {
 <body>
 
 <div class="bar">
+  <a class="word" href="/">Nex<b>Students</b></a>
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
