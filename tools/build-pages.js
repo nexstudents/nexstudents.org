@@ -253,7 +253,7 @@ const empty = (line) => `<div class="band"><div class="wrap">
 /* The grade picker, as its own page. Each grade needs a real URL eventually -
    /grade-7/ is exactly the sort of page that can rank against nexstudent.org. */
 const gradeGrid = () => {
-  const LIVE = ["7", "8"];
+  const LIVE = ["3", "7", "8"];
   const cells = ["K","1","2","3","4","5","6","7","8"].map(g =>
     LIVE.includes(g)
       ? '<a class="gr live" href="/grade-' + g + '/"><b>' + g + '</b><span>Live</span></a>'
@@ -349,7 +349,11 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
   href: "/worksheets/" + w.subject.toLowerCase() + "/" + w.slug + "/",
   id: w.subject.toLowerCase() + "/" + w.slug,
   subject: w.subject, grade: w.grade,
-  unit: "Printable &middot; answer key included",
+  /* A blank sheet serves more than one year. grades is every shelf it belongs
+     on; grade stays the primary one, so nothing that reads it has to change. */
+  grades: w.grades || [w.grade],
+  /* A blank sheet has no answer key, so it says so rather than claiming one. */
+  unit: w.unit || "Printable &middot; answer key included",
   title: w.title, blurb: w.blurb, contains: w.contains,
   thumb: w.thumb ? "/worksheets/" + w.subject.toLowerCase() + "/" + w.slug + "/thumb.jpg" : null,
   meta: "Print or PDF", price: w.price,
@@ -361,7 +365,7 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
 const SUBJECTS = [
   { name: "History", slug: "history", live: true,
     blurb: "American and Biblical history, taught properly rather than skipped over." },
-  { name: "ELA", slug: "ela", live: false,
+  { name: "ELA", slug: "ela", live: true,
     blurb: "Spelling, book reports, comprehension and reading lists worth actually reading." },
   { name: "Science", slug: "science", live: false,
     blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
@@ -371,7 +375,7 @@ const SUBJECTS = [
 
 const bySubject = (s) => LESSONS.filter(l => l.subject === s);
 const byGrade   = (g) => LESSONS.filter(l => l.grade === g);
-const sheetsByGrade   = (g) => WORKSHEETS.filter(w => w.grade === g);
+const sheetsByGrade   = (g) => WORKSHEETS.filter(w => w.grades.includes(g));
 const sheetsBySubject = (s) => WORKSHEETS.filter(w => w.subject === s);
 
 const group = (heading, note, cards) => `<h2 class="h2s" style="margin:0 0 4px">${heading}</h2>
@@ -660,7 +664,7 @@ const subjectRows = (grade) => {
   return `<div class="subj-list">
   ${rows.map((s, i) => {
     const nLes = bySubject(s.name).filter(l => grade == null || l.grade === grade).length;
-    const nWk  = sheetsBySubject(s.name).filter(w => grade == null || w.grade === grade).length;
+    const nWk  = sheetsBySubject(s.name).filter(w => grade == null || w.grades.includes(grade)).length;
     const box = (label, note, n, one, many, href) => href
       ? `<a class="minibox" href="${href}">
           <b>${label}</b><span>${note}</span>
@@ -762,6 +766,30 @@ const pages = [
     lead: "Four core subjects. Each one holds lessons that are worked through on screen and worksheets that get printed. What is built is at the top.",
     body: subjectsPage() },
 
+  /* Grade 3 exists for the spelling sheet. It is deliberately thin: the sheet
+     is blank, so it serves any year, and a 3rd grade shelf is where a parent
+     looking for spelling practice actually goes. */
+  { dir: "grade-3", active: "gr",
+    title: "3rd Grade — NexStudents",
+    desc: "3rd grade worksheets and printables, organised by subject.",
+    crumb: "3rd Grade", h1: "3rd Grade.",
+    lead: "The 3rd grade shelf is just getting started. What is here now is spelling practice you can use with any word list, week after week.",
+    body: gradeLanding(3) },
+
+  { dir: "grade-3/lessons", active: "gr",
+    title: "3rd Grade Lessons — NexStudents",
+    desc: "Every 3rd grade lesson, worked through on screen.",
+    crumb: '<a href="/grade-3/">3rd Grade</a> &rsaquo; Lessons', h1: "3rd Grade Lessons.",
+    lead: "Nothing on screen for this year yet. The printables came first, because spelling is worked on paper.",
+    body: gradeLessons(3) },
+
+  { dir: "grade-3/worksheets", active: "gr",
+    title: "3rd Grade Worksheets — NexStudents",
+    desc: "Every 3rd grade printable worksheet.",
+    crumb: '<a href="/grade-3/">3rd Grade</a> &rsaquo; Worksheets', h1: "3rd Grade Worksheets.",
+    lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
+    body: gradeSheets(3) },
+
   { dir: "grade-7", active: "gr",
     title: "7th Grade — NexStudents",
     desc: "Every 7th grade lesson and worksheet on NexStudents.",
@@ -803,6 +831,27 @@ const pages = [
     crumb: '<a href="/grade-8/">8th Grade</a> &rsaquo; Worksheets', h1: "8th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
     body: gradeSheets(8) },
+
+  { dir: "ela", active: "w",
+    title: "ELA — NexStudents",
+    desc: "Spelling, reading and writing worksheets you print and work on paper.",
+    crumb: "ELA", h1: "ELA.",
+    lead: "Spelling, book reports, comprehension and reading lists worth actually reading. The spelling test is blank on purpose, so it works with whatever list you are teaching from.",
+    body: subjectLanding("ELA") },
+
+  { dir: "ela/lessons", active: "w",
+    title: "ELA Lessons — NexStudents",
+    desc: "ELA lessons worked through on screen.",
+    crumb: '<a href="/ela/">ELA</a> &rsaquo; Lessons', h1: "ELA Lessons.",
+    lead: "Nothing on screen for ELA yet. The printables came first, because spelling and writing are worked on paper.",
+    body: subjectLessons("ELA") },
+
+  { dir: "ela/worksheets", active: "w",
+    title: "ELA Worksheets — NexStudents",
+    desc: "Printable ELA worksheets, including a blank weekly spelling test.",
+    crumb: '<a href="/ela/">ELA</a> &rsaquo; Worksheets', h1: "ELA Worksheets.",
+    lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
+    body: subjectSheets("ELA") },
 
   { dir: "history", active: "w",
     title: "History — NexStudents",

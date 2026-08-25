@@ -26,6 +26,18 @@
      scripture { ref, text, connection } - the verse and how it bears on the
                history. Written to make the student THINK about the history,
                never to hand them a moral to copy out.
+     unit      overrides the card's second line. Defaults to "answer key
+               included", which is a lie on a sheet that has no answer key.
+
+   A BLANK SHEET - kind: "blank" - is a reusable sheet with nothing written on
+   it. The parent supplies the content, the student fills the lines. It skips
+   passage, vocab, questions, note and scripture entirely and takes instead:
+     eyebrow      the line above the title, after the subject
+     heading      the scored section heading
+     count        how many numbered lines. The section scores out of this
+     bonus        { label, why } - one extra line, boxed, scored out of 1
+     notesLines   ruled lines for the parent at the foot of the sheet
+     signoff      the italic line in the footer
    ───────────────────────────────────────────────────────────────────────── */
 
 const SHEETS = [
@@ -208,6 +220,43 @@ const SHEETS = [
     "Historians usually sort them into three regions, because geography pushed each one into a different way of making a living. New England, in the north, had thin rocky soil and a short growing season, so farms stayed small and families turned to the sea instead: fishing, whaling, shipbuilding and trade. The Middle Colonies had better soil and longer summers, and grew so much wheat and grain that they were nicknamed the breadbasket colonies.",
   ],
   vocab: [], questions: [], note: "",
+},
+
+/* ═══════════════════ 5. WEEKLY SPELLING TEST (BLANK) ════════════════════
+   One sheet on two shelves. A blank test does not care what year the student
+   is in, so "grades" lists every grade page it belongs on while the page,
+   the folder and the PDF stay single. Listed at 3 and at 7 because the words
+   come from the parent's own list, so a 7th grader working a 3rd grade list
+   uses the very same paper.
+
+   Two entries were tried first and were wrong: the ELA shelf is not filtered
+   by grade, so the same sheet appeared on it twice with nothing to tell the
+   two cards apart. */
+{
+  slug: "weekly-spelling-test", subject: "ELA", grade: 3, grades: [3, 7], kind: "blank",
+  title: "Weekly Spelling Test",
+  dek: "Ten words and one bonus word. Works with any word list, any week, any grade.",
+  blurb: "A blank weekly spelling test. Ten words out of ten, one bonus word worth one extra.",
+  unit: "Printable &middot; blank, use it every week",
+  contains: [
+    "Ten numbered lines, scored out of ten",
+    "A bonus word in its own box, scored out of one",
+    "Name, date and week number across the top",
+    "Notes space for the parent, and a one-page PDF",
+  ],
+  /* thumb.jpg is the sheet itself, printed. A blank sheet has no art to show
+     and none is wanted: what the parent is deciding is whether this paper is
+     the paper they need, so the cover is the paper. Rendered from the page by
+     tools/make-cover.js, so it can never drift from what actually prints. */
+  price: "$0", buy: null, art: false, thumb: true,
+  eyebrow: "Spelling &middot; Weekly Test",
+  heading: "Spelling Words &mdash; 1 to 10",
+  count: 10, notesLines: 2,
+  bonus: {
+    label: "Bonus Word",
+    why: "One extra word, worth one extra point. A miss here costs nothing.",
+  },
+  signoff: "Every week is a fresh start. Keep going.",
 },
 
 ];

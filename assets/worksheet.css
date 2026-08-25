@@ -158,3 +158,71 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
   .verse p,.verse cite,.verse-note{color:#000}
   .verse,.verse-note{page-break-inside:avoid}
 }
+
+/* ══ BLANK SHEET ══
+   A reusable sheet with nothing written on it: the parent supplies the words,
+   the student fills the lines. No passage, no vocabulary, no answer key.
+
+   Line heights are set to fill a Letter page rather than to be compact. A
+   spelling test is written on by hand, often by a student whose handwriting
+   is the reason for the test, so the lines are deliberately generous. */
+
+/* A section heading can carry its own points box, so a block of answers is
+   scored where it is written instead of at the foot of the page. */
+.sheet h2.scored{display:flex;align-items:center;gap:14px}
+.pts{
+  margin-left:auto;display:inline-flex;align-items:baseline;gap:6px;flex:none;
+  font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:none;color:var(--fg);
+}
+.pts u{text-decoration:none;border-bottom:1px solid var(--line-ink);
+  display:inline-block;min-width:40px}
+
+/* Numbered ruled lines, two columns on paper, one column on a phone. */
+.words{
+  display:grid;grid-template-columns:1fr 1fr;column-gap:46px;row-gap:0;
+  margin:0;padding:0;list-style:none;
+}
+.words li{display:flex;gap:12px;align-items:baseline;font-size:1rem;padding:22px 0 0}
+.words li b{font-weight:800;min-width:26px;text-align:right;color:var(--fg)}
+.words li u{text-decoration:none;flex:1;border-bottom:1px solid var(--line-ink);min-height:2.5em}
+
+/* The bonus word gets a box so it reads as its own thing, not one more word
+   on a longer list. It is scored on its own, because a miss on a bonus must
+   never cost a point off the ten that count. */
+.bonus{border:2px solid var(--line);border-radius:var(--r);padding:18px 24px 20px;margin:26px 0 0}
+.bonus .top{display:flex;align-items:baseline;gap:14px;margin-bottom:2px}
+.bonus h3{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--fg);margin:0}
+.bonus .why{font-size:.83rem;color:var(--dim);margin:0 0 14px}
+.bonus .row{display:flex;gap:12px;align-items:baseline}
+.bonus .row b{font-weight:800;min-width:26px;text-align:right}
+.bonus .row u{text-decoration:none;flex:1;border-bottom:1px solid var(--line-ink);min-height:2.5em}
+
+.notes{margin:30px 0 0}
+.notes b{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.notes .lines{margin-top:10px}
+.notes .lines i{height:2.3em}
+
+/* One footer row: the encouragement on the left, the copyright on the right.
+   One row rather than two lines, so the footer costs the page no extra height. */
+.signoff{
+  display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;
+  margin:22px 0 0;padding-top:14px;border-top:1px solid var(--line);
+  font-size:.83rem;color:var(--dim);
+}
+.signoff em{font-style:italic}
+.signoff small{margin-left:auto;font-size:.83rem}
+
+@media print{
+  .words li u,.bonus .row u,.pts u{border-bottom-color:#000}
+  .bonus{border-color:#000;page-break-inside:avoid}
+  /* Grey reads as ink-saver on paper. Everything on a printed sheet is black. */
+  .bonus h3,.bonus .why,.notes b,.pts,.words li b,.bonus .row b{color:#000}
+  .signoff{border-top-color:#000;color:#000}
+  .notes{page-break-inside:avoid}
+}
+@media (max-width:560px){
+  .words{grid-template-columns:1fr;column-gap:0}
+  .sheet h2.scored{flex-wrap:wrap;gap:8px}
+  .pts{margin-left:0}
+}

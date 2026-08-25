@@ -20,9 +20,16 @@ if (!fs.existsSync(path.join(ROOT, "assets/ns.css"))) {
   process.exit(1);
 }
 
-/* Cache buster, same scheme as build-pages.js. */
+/* Cache buster, same scheme as build-pages.js.
+   BOTH stylesheets go into the hash. It used to hash ns.css alone and stamp
+   that same ?v= on the worksheet.css link too, so a change to worksheet.css
+   shipped behind an unchanged version string and every returning visitor kept
+   the old one out of cache. GitHub Pages caches hard, so that is invisible
+   locally and wrong in production. */
 const CSS_V = require("crypto")
-  .createHash("sha1").update(fs.readFileSync(path.join(ROOT, "assets/ns.css")))
+  .createHash("sha1")
+  .update(fs.readFileSync(path.join(ROOT, "assets/ns.css")))
+  .update(fs.readFileSync(path.join(ROOT, "assets/worksheet.css")))
   .digest("hex").slice(0, 8);
 
 const ICON_PRINT = '<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M6 3h8v3H6V3zm-3 5h14a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2v-3H5v3H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zm3 6h8v3H6v-3z"/></svg>';
@@ -114,6 +121,88 @@ function bundleHtml(s) {
     </div>
     <div class="buyright">${buyBlock(s)}</div>
   </div>
+
+</div>
+</body>
+</html>
+`;
+}
+
+/* BLANK SHEET. A reusable sheet with nothing written on it: the parent supplies
+   the words, the student fills the lines. It has no passage, no vocabulary and
+   no answer key, so it takes the shell and the ruled lines and nothing else.
+
+   The numbered lines run DOWN each column, not across the row, because a
+   student reads 1-2-3-4-5 down the left before crossing to 6. The CSS grid
+   fills across, so the markup is interleaved 1,6,2,7 to come out right. */
+function blankHtml(s) {
+  const subjectSlug = s.subject.toLowerCase();
+  const half = Math.ceil(s.count / 2);
+  const cells = [];
+  for (let i = 0; i < half; i++) {
+    cells.push(i + 1);
+    if (i + half < s.count) cells.push(i + half + 1);
+  }
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>${s.title} — NexStudents</title>
+<meta name="description" content="${s.blurb}">
+<link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
+<link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
+</head>
+<body>
+
+<div class="bar">
+  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  <div class="acts">
+    <button class="btn ghost" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
+      ${ICON_PRINT}<span class="lbl">Print</span>
+    </button>
+    <a class="btn" href="${s.slug}.pdf" download title="Download the PDF" aria-label="Download the PDF">
+      ${ICON_DL}<span class="lbl">Download</span>
+    </a>
+  </div>
+</div>
+
+<div class="sheet">
+
+  <div class="head">
+    <p class="eyebrow">${s.subject} &middot; ${s.eyebrow}</p>
+    <h1>${s.title}</h1>
+    <p class="dek">${s.dek}</p>
+  </div>
+
+  <div class="namebar">
+    <span>Name <u></u></span>
+    <span>Date <u></u></span>
+    <span>Week # <u style="min-width:58px"></u></span>
+  </div>
+
+  <h2 class="scored">${s.heading} <span class="pts"><u></u> / ${s.count}</span></h2>
+  <ul class="words">
+    ${cells.map((n) => `<li><b>${n}.</b><u></u></li>`).join("\n    ")}
+  </ul>
+
+  <div class="bonus">
+    <div class="top">
+      <h3>${s.bonus.label}</h3>
+      <span class="pts"><u></u> / 1</span>
+    </div>
+    <p class="why">${s.bonus.why}</p>
+    <div class="row"><b>${s.count + 1}.</b><u></u></div>
+  </div>
+
+  <div class="notes">
+    <b>Notes</b>
+    ${lines(s.notesLines)}
+  </div>
+
+  <p class="signoff"><em>${s.signoff}</em>
+    <small>Copyright &copy; NexEdge Studios</small></p>
 
 </div>
 </body>
@@ -223,7 +312,9 @@ for (const s of SHEETS) {
     process.exit(1);
   }
 
-  const html = isPaid(s) ? bundleHtml(s) : sheetHtml(s);
+  const html = s.kind === "blank" ? blankHtml(s)
+             : isPaid(s)          ? bundleHtml(s)
+             :                      sheetHtml(s);
   if (html.includes("undefined")) { console.error("FAIL: undefined in " + s.slug); process.exit(1); }
   fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
   written.push(s.slug);
