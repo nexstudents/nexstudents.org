@@ -32,7 +32,11 @@ const CSS_V = require("crypto")
   .update(fs.readFileSync(path.join(ROOT, "assets/worksheet.css")))
   .digest("hex").slice(0, 8);
 
-const ICON_PRINT = '<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M6 3h8v3H6V3zm-3 5h14a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2v-3H5v3H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zm3 6h8v3H6v-3z"/></svg>';
+/* Print is the solid button and Download is the outlined one, in that order of
+   weight: these are sheets whose whole purpose is to come out of a printer.
+   Download is the second door, for saving the PDF once and printing it again
+   later without coming back to the site. */
+const ICON_PRINT ='<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M6 3h8v3H6V3zm-3 5h14a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2v-3H5v3H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zm3 6h8v3H6v-3z"/></svg>';
 const ICON_DL = '<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M9 2h2v7h3l-4 5-4-5h3V2zM3 15h14v3H3v-3z"/></svg>';
 
 const lines = (n) => '<span class="lines">' + '<i></i>'.repeat(n) + '</span>';
@@ -159,10 +163,10 @@ function blankHtml(s) {
 <div class="bar">
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
   <div class="acts">
-    <button class="btn ghost" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
+    <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
       ${ICON_PRINT}<span class="lbl">Print</span>
     </button>
-    <a class="btn" href="${s.slug}.pdf" download title="Download the PDF" aria-label="Download the PDF">
+    <a class="btn ghost" href="${s.slug}.pdf" download title="Save the PDF so you can print it again without coming back" aria-label="Download the PDF">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
   </div>
@@ -228,10 +232,10 @@ function sheetHtml(s) {
 <div class="bar">
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
   <div class="acts">
-    <button class="btn ghost" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
+    <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
       ${ICON_PRINT}<span class="lbl">Print</span>
     </button>
-    <a class="btn" href="${s.slug}.pdf" download title="Download the PDF" aria-label="Download the PDF">
+    <a class="btn ghost" href="${s.slug}.pdf" download title="Save the PDF so you can print it again without coming back" aria-label="Download the PDF">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
   </div>
