@@ -454,3 +454,38 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .card .cbar{display:block;height:4px;border-radius:2px;background:var(--panel);
   overflow:hidden;margin-top:8px}
 .card .cbar i{display:block;height:100%;background:var(--free);border-radius:2px}
+
+/* ══ UNIT PAGER ══
+   One unit of lessons at a time. Fifty cards on a page is unusable, so the
+   shelf pages through units: arrows, the unit's name and how much of it is
+   built, and numbered buttons to jump. It remembers where you were. */
+.unithead{display:flex;align-items:center;gap:18px;margin-bottom:24px}
+.unitmid{flex:1;min-width:0;text-align:center}
+.unittag{font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);margin:0}
+.unitname{font-size:1.25rem;font-weight:800;letter-spacing:-.02em;margin:5px 0 4px;
+  line-height:1.25;text-wrap:balance}
+.unitcount{font-size:.78rem;color:var(--dim);margin:0}
+.unitnav{flex:none;width:44px;height:44px;border-radius:50%;cursor:pointer;
+  background:var(--panel);color:var(--fg);border:1px solid var(--line);
+  font-size:22px;line-height:1;display:grid;place-items:center;
+  transition:border-color .2s,background .2s,opacity .2s}
+@media(hover:hover){ .unitnav:hover:not(:disabled){border-color:var(--a);background:var(--panel-2)} }
+.unitnav:disabled{opacity:.3;cursor:default}
+.unitnav:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+
+.unitdots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+.unitdot{width:38px;height:38px;border-radius:var(--r);cursor:pointer;
+  background:var(--panel);color:var(--dim);border:1px solid var(--line);
+  font-family:inherit;font-size:14px;font-weight:800;
+  transition:all .2s}
+@media(hover:hover){ .unitdot:hover{border-color:var(--a);color:var(--fg)} }
+.unitdot[aria-current="true"]{background:var(--a);color:var(--a-ink);border-color:var(--a)}
+.unitdot:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+
+@media(max-width:560px){
+  .unithead{gap:10px}
+  .unitnav{width:38px;height:38px;font-size:19px}
+  .unitname{font-size:1.05rem}
+  .unitdot{width:34px;height:34px;font-size:13px}
+}
