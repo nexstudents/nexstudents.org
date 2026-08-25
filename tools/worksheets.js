@@ -270,9 +270,12 @@ const SHEETS = [
      off the 3rd grade shelf, not a claim on the page that they suit 7th. */
   slug: "spelling-flashcards", subject: "ELA", grade: 3, grades: [3],
   kind: "flashcards", source: "spelling-words.js",
-  title: "Spelling Flashcards",
-  dek: "Pick a week, then press Print. Twelve cards a sheet, cut on the dashed lines.",
-  blurb: "Cut-out spelling flashcards, a sheet a week. Ten words, a bonus word, and a card naming the week.",
+  /* The grade is in the name. A parent searching for spelling practice is
+     searching by year, and "Spelling Flashcards" alone says nothing about who
+     they are for. */
+  title: "3rd Grade Spelling Flashcards",
+  dek: "Pick a week, then print or download it. Twelve cards a sheet, cut on the dashed lines.",
+  blurb: "Cut-out 3rd grade spelling flashcards, a sheet a week. Ten words, a bonus word, and a card naming the week.",
   unit: "Printable &middot; 36 weeks, pick one",
   contains: [
     "36 weeks, one printable sheet each",
