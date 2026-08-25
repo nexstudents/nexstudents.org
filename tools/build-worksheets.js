@@ -277,6 +277,20 @@ function flashHtml(s) {
     <p class="dek">${s.dek}</p>
   </div>
 
+  <div class="teach">
+    <h3>Teaching note &mdash; marking words the McGuffey way</h3>
+    <p>McGuffey&rsquo;s revised Readers printed marks so a student could <b>sound a word out</b>
+      instead of memorising its shape. These cards are plain on purpose &mdash; mark them by hand,
+      in front of your student, as you teach each word.</p>
+    <ul class="keys">
+      <li><span class="eg">br<span class="mk long">a</span>ve</span>
+        <span><b>Long vowel</b>says its own name</span></li>
+      <li><span class="eg">l<span class="mk short">a</span>st</span>
+        <span><b>Short vowel</b>the short sound</span></li>
+      <li><span class="eg"><span class="sil">k</span>nife</span>
+        <span><b>Silent letter</b>makes no sound</span></li>
+    </ul>
+  </div>
   <div class="weekpick" role="group" aria-label="Pick a week">
     ${picker}
   </div>

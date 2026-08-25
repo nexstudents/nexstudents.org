@@ -319,3 +319,54 @@ body.print-all .wk+.wk{page-break-before:always}
 .allyear{font-size:.85rem;color:var(--dim);margin:-8px 0 24px}
 .allyear a{color:var(--fg)}
 @media print{ .allyear{display:none} }
+
+/* ══ TEACHING NOTE ON A FLASHCARD SHEET ══
+   The cards themselves stay PLAIN. The marks live here, in the heading, as a
+   key the parent works from - they mark the card by hand, in front of the
+   student, as each word is taught. That was Paul's call, 2026-08-25, and it is
+   the right one twice over: printed marks would clutter a card a buyer may not
+   want them on, and marking by hand turns the mark into the lesson.
+
+   🚨 ALL THREE MARKS ARE DRAWN, NEVER TYPED. The site font carries the long
+   bar but NOT the short cup - the browser silently swaps another font in for
+   it, which the "does this font have this character" check reports as fine.
+   It lies; it only confirms the family loaded. Measured widths caught it. */
+.teach{border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;margin:0 0 4px}
+.teach h3{margin:0 0 3px;font-size:.76rem;font-weight:800;color:var(--fg)}
+.teach>p{margin:0 0 7px;font-size:.72rem;line-height:1.4;color:var(--dim)}
+.teach>p b{color:var(--fg)}
+/* Three marks across, not stacked: the note is a key, not a lesson, and every
+   line it costs comes straight off the height of the cards. */
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0;padding:0;list-style:none}
+.keys li{display:flex;align-items:baseline;gap:8px;font-size:.7rem;line-height:1.35;color:var(--dim)}
+.keys li b{color:var(--fg);display:block}
+/* Big enough that a drawn mark actually reads. At body size it rendered
+   sub-pixel and vanished entirely. */
+.eg{font-size:1.45rem;font-weight:800;letter-spacing:-.02em;line-height:1;
+  min-width:0;display:inline-block;flex:none;color:var(--fg)}
+
+.mk{position:relative;display:inline-block}
+/* Measured UP FROM THE BASELINE, not down from the top of the box. The box top
+   is the font's full ascent, so on a letter with no riser - e, a, o - the mark
+   floated far above, and on "theme" it left the sheet altogether. */
+.mk::before{content:"";position:absolute;left:50%;transform:translateX(-50%);
+  bottom:0.80em;width:0.42em}
+.long::before{height:0;border-top:0.09em solid currentColor}
+.short::before{height:0.18em;border:0.09em solid currentColor;border-top:0;
+  border-radius:0 0 50% 50%/0 0 100% 100%}
+
+/* The silent-letter slash. A BORDER WITH REAL HEIGHT.
+   🚨 It was first drawn as the top edge of a zero-height box, then rotated -
+   which collapses to nothing. It measured 0px tall and was invisible even
+   blown up five times, while I described it as working. A filled background
+   would show, but browsers drop backgrounds when printing, and this sheet
+   exists to be printed. A border does both. */
+.sil{position:relative;display:inline-block}
+.sil::after{content:"";position:absolute;left:50%;bottom:0;width:0;height:0.80em;
+  border-left:0.085em solid currentColor;
+  transform:translateX(-50%) rotate(26deg);transform-origin:bottom center}
+
+@media print{
+  .teach{border-color:#000;page-break-inside:avoid}
+  .teach h3,.teach>p,.teach>p b,.keys li,.keys li b,.eg{color:#000}
+}

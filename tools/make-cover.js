@@ -59,7 +59,9 @@ body{background:#555;display:flex;justify-content:center;padding:${OFF_Y}px 0;ma
 .bonus{border-color:#000}
 .bonus h3,.bonus .why,.notes b,.pts,.words li b,.bonus .row b{color:#000}
 .signoff{border-top-color:#000;color:#000}
-.weekpick,.head.is-flash{display:none}
+.weekpick,.head.is-flash,.allyear{display:none}
+.teach{border-color:#000}
+.teach h3,.teach>p,.teach>p b,.keys li,.keys li b,.eg{color:#000}
 .cards,.fc{border-color:#000}
 .fc.label{background:transparent}
 .fc>span,.fc.label b,.wkhead,.fc.label span,.fc.is-bonus em,.cutnote,.wkfocus{color:#000}
