@@ -213,7 +213,7 @@ const SHEETS = [
     ["Unit 4", "Building a Government"],
     ["Unit 5", "Westward Expansion and the Corps of Discovery"],
   ],
-  price: "$14", buy: null, art: false, thumb: false,
+  price: "$14", buy: null, art: false, thumb: true,
   previewOf: "The Thirteen Colonies",
   passage: [
     "The thirteen colonies were never one plan. They were founded across more than a century, by different people, for reasons that had almost nothing to do with each other. Virginia was started in 1607 by a company hoping to make money. Massachusetts was settled by Puritans who wanted to worship their own way. Pennsylvania was founded by William Penn as a refuge where Quakers and others would be left alone. Georgia began partly as a place to give debtors a second chance. Calling them one country in 1700 would have puzzled everybody living in them.",
