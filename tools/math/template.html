@@ -37,13 +37,40 @@ h1{margin:0 0 6px}
 .cell.under{border-bottom:2px solid var(--fg)}
 .cell.drop{color:var(--a);animation:drop .35s ease}
 @keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
-.cell input{width:100%;height:100%;background:transparent;border:1px dashed var(--line);border-radius:6px;
+/* An empty box has to LOOK like somewhere to write. On the dark ground a
+   dashed hairline vanished, so a box he can type in gets a real fill. These
+   two come from the palette, never a white alpha, so a light theme still works. */
+.cell input{width:100%;height:100%;background:var(--boxfill);
+  border:1.5px solid var(--boxline);border-radius:7px;
   color:var(--fg);font:inherit;text-align:center;padding:0}
-.cell input:focus{outline:none;border-color:var(--a);border-style:solid}
-.cell input:disabled{border-color:transparent;opacity:.4}
-.cell input.ok{border-color:transparent;color:var(--free);font-weight:700;opacity:1}
+.cell input:focus{outline:none;border-color:var(--a);
+  box-shadow:0 0 0 3px var(--pill)}
+/* not his turn yet: still visible, clearly not live */
+.cell input:disabled{background:transparent;border-color:var(--line);
+  border-style:dashed;color:var(--dim)}
+.cell input.ok{background:transparent;border-color:transparent;border-style:solid;
+  color:var(--free);font-weight:700}
+.cell input.wrong{background:transparent;border-color:#e5484d;border-style:solid;color:#e5484d;font-weight:700}
 .cell input.bad{border-color:#e5484d;animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* Fallbacks. applyTheme() overwrites all of these the moment it runs. */
+:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38)}
+
+/* ---- colour swatches, the same five the history lessons use ---- */
+.themerow{display:flex;align-items:center;gap:10px;margin:0 0 18px}
+.themerow .lbl{color:var(--dim);font-size:.85rem}
+.swatches{display:flex;gap:7px}
+.sw{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);
+  padding:0;cursor:pointer}
+.sw[aria-pressed="true"]{border-color:var(--a);transform:scale(1.12)}
+
+/* ---- practice / test tabs ---- */
+.tabs{display:flex;gap:6px;margin:0 0 12px}
+.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
+  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
+.tab:hover{color:var(--fg)}
+.tab.on{background:var(--pill);border-color:var(--a);color:var(--fg);font-weight:700}
 
 /* ---- problems ---- */
 .prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:0 0 16px}
@@ -81,6 +108,10 @@ h1{margin:0 0 6px}
     </select>
     <span class="tag" id="stepPos"></span>
   </div>
+  <div class="themerow">
+    <span class="lbl">Colours</span>
+    <div class="swatches" id="swatches"></div>
+  </div>
   <div class="panel">
     <div class="gridwrap"><div class="dgrid" id="demo"></div></div>
     <p class="caption" id="caption"></p>
@@ -95,8 +126,14 @@ h1{margin:0 0 6px}
 
   <h2 class="section-head">Your Turn</h2>
   <p class="section-note">Type a digit in every box. Top row first, then the row you multiply, then the row you subtract. A box turns green when it is right, and the next digit drops down on its own once the subtraction is done. None of these have a remainder.</p>
+  <div class="tabs" role="tablist">
+    <button class="tab on" type="button" id="tabPractice" role="tab" aria-selected="true">Practice</button>
+    <button class="tab" type="button" id="tabTest" role="tab" aria-selected="false">Test</button>
+  </div>
+  <p class="section-note" id="modenote"></p>
   <div class="pbar">
     <button class="btn" type="button" id="reroll">New problems</button>
+    <button class="btn" type="button" id="check" hidden>Check my work</button>
     <span class="tag" id="setinfo"></span>
   </div>
   <div id="problems"></div>
@@ -111,6 +148,64 @@ h1{margin:0 0 6px}
 var DEMO = __DEMO__;
 var SPEC = __SPEC__;
 var LESSON_ID = "__ID__";
+
+/* ── colours ───────────────────────────────────────────────────────────────
+   The same five palettes the history lessons use, spliced in from
+   lesson-template.html at build time so there is one source of truth, and
+   stored under the same ns:theme key so a choice made in one lesson is
+   already made in the other.
+   ------------------------------------------------------------------------ */
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+
+__THEMES__
+
+/* ns.css names its variables differently from the history template, so the
+   same palette is mapped onto the names this page actually uses. */
+var VAR_MAP = {
+  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
+  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
+  accent:"--a", accentSoft:"--pill"
+};
+
+var themeKey = load("theme", "forest");
+if (!THEMES[themeKey]) themeKey = "forest";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+(function buildSwatches(){
+  var wrap = document.getElementById("swatches");
+  Object.keys(THEMES).forEach(function(k){
+    var b = document.createElement("button");
+    b.className = "sw";
+    b.type = "button";
+    b.setAttribute("data-t", k);
+    b.title = THEMES[k].name;
+    b.setAttribute("aria-label", THEMES[k].name + " colours");
+    var d = THEMES[k].dark;
+    b.style.background = "linear-gradient(135deg," + d.accent + " 0 50%," + d.ground + " 50% 100%)";
+    b.addEventListener("click", function(){ themeKey = k; store("theme", k); applyTheme(); });
+    wrap.appendChild(b);
+  });
+})();
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+document.body.style.background = "var(--bg)";
 
 /* ── where the problems come from ──────────────────────────────────────────
    Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
@@ -315,11 +410,23 @@ var host = document.getElementById("problems");
 var solved = 0;
 var PROBLEMS = [];
 
+/* Two modes, the same bracket.
+   PRACTICE catches a wrong digit at the digit, which is how you build the
+   habit. TEST lets every wrong digit stand and marks the paper at the end,
+   which is how you find out you never really had it. Paul, 2026-08-26. */
+var MODE = "practice";
+var BOXES = [];                       /* every input on the page, for marking */
+
 function renderSet(list, label){
   PROBLEMS = list;
   solved = 0;
+  BOXES = [];
   host.innerHTML = "";
   document.getElementById("setinfo").textContent = label;
+  document.getElementById("check").hidden = MODE !== "test";
+  document.getElementById("modenote").textContent = MODE === "practice"
+    ? "A wrong digit clears itself and tells you which of the four steps you are on. The next digit drops down once the subtraction is done."
+    : "Nothing is checked as you go. Fill the whole bracket, wrong digits and all, then press Check my work. This is the one that tells you what you actually know.";
   list.forEach(addProblem);
   paintScore();
 }
@@ -328,6 +435,7 @@ function addProblem(P, pi){
   var PS = solve(P.dividend, P.divisor);
   var box = document.createElement("div");
   box.className = "prob";
+  box.setAttribute("data-i", pi);
   box.innerHTML =
     '<div class="probhead"><span class="probnum">Problem ' + (pi + 1) + '</span>' +
     '<span class="tag">' + P.dividend + " ÷ " + P.divisor + '</span></div>' +
@@ -355,15 +463,21 @@ function addProblem(P, pi){
   });
 
   queue.forEach(function(q){
-    if (q.bring) return;
+    if (q.bring){
+      /* In test mode nothing is waited on, and the digit to bring down is just
+         the next dividend digit, so all of them are on the page from the start. */
+      if (MODE === "test"){ q.cell.textContent = q.want; }
+      return;
+    }
     var inp = document.createElement("input");
     inp.type = "text";
     inp.inputMode = "numeric";
     inp.maxLength = 1;
     inp.setAttribute("aria-label", "digit");
-    inp.disabled = true;
+    inp.disabled = MODE === "practice";
     q.el = inp;
     q.cell.appendChild(inp);
+    if (MODE === "test"){ BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P }); return; }
     inp.addEventListener("input", function(){
       var v = inp.value.replace(/[^0-9]/g, "");
       inp.value = v;
@@ -420,16 +534,88 @@ function addProblem(P, pi){
     paintScore();
   }
 
+  if (MODE === "test"){
+    nudge.textContent = "";
+    return;
+  }
   queue[0].el.disabled = false;
   nudge.textContent = queue[0].ask;
 }
 
-/* Today's set, and a button for a fresh one. */
-renderSet(makeSet(today()), "Today's set");
+/* ── marking the test ─────────────────────────────────────────────────── */
+function markTest(){
+  var right = 0, blank = 0;
+  var perBox = {};
+  BOXES.forEach(function(b){
+    var v = b.el.value.replace(/[^0-9]/g, "");
+    b.el.classList.remove("ok", "wrong");
+    if (v === ""){ blank++; }
+    else if (Number(v) === b.want){ b.el.classList.add("ok"); right++; }
+    else { b.el.classList.add("wrong"); }
+    b.el.disabled = true;
+    var key = b.box.getAttribute("data-i");
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box, PS: b.PS, P: b.P };
+    if (v === "" || Number(v) !== b.want) perBox[key].ok = false;
+  });
+
+  solved = 0;
+  Object.keys(perBox).forEach(function(k){
+    var r = perBox[k];
+    var tag = r.box.querySelector(".tag");
+    var nudge = r.box.querySelector(".nudge");
+    if (r.ok){
+      solved++;
+      r.box.classList.add("solved");
+      tag.classList.add("done");
+      tag.textContent = r.P.dividend + " ÷ " + r.P.divisor + " = " + r.PS.quotient;
+      nudge.classList.remove("warn");
+      nudge.textContent = "Right the whole way down.";
+    } else {
+      nudge.classList.add("warn");
+      nudge.textContent = "The answer is " + r.PS.quotient +
+        ". Every red digit is where it went off. Work that one again in Practice.";
+    }
+  });
+
+  document.getElementById("check").disabled = true;
+  save();
+  var el = document.getElementById("scorebar");
+  el.innerHTML = "<b>" + solved + " of " + PROBLEMS.length + " problems fully right.</b>" +
+    '<p style="margin:6px 0 0;color:var(--dim)">' + right + " of " + BOXES.length +
+    " digits correct" + (blank ? ", " + blank + " left blank" : "") +
+    ". Press New problems for another test.</p>";
+}
+
+/* Today's set, a button for a fresh one, and the two modes. */
+var currentSeed = today(), currentLabel = "Today's set";
+
+function reload(seed, label){
+  currentSeed = seed; currentLabel = label;
+  document.getElementById("check").disabled = false;
+  renderSet(makeSet(seed), label);
+}
+
+reload(currentSeed, currentLabel);
+
 document.getElementById("reroll").addEventListener("click", function(){
-  renderSet(makeSet(String(Date.now())), "A fresh set");
+  reload(String(Date.now()), "A fresh set");
   host.scrollIntoView({ behavior: "smooth", block: "start" });
 });
+document.getElementById("check").addEventListener("click", markTest);
+
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m;
+  var pt = document.getElementById("tabPractice"), tt = document.getElementById("tabTest");
+  pt.classList.toggle("on", m === "practice");
+  tt.classList.toggle("on", m === "test");
+  pt.setAttribute("aria-selected", String(m === "practice"));
+  tt.setAttribute("aria-selected", String(m === "test"));
+  /* Same problems in both modes, so a test can be worked again in practice. */
+  reload(currentSeed, currentLabel);
+}
+document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
+document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
 
 /* ── progress, stored the way the other lessons store it ──────────────── */
 function save(){

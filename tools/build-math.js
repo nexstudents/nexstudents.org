@@ -19,6 +19,21 @@ const ROOT = process.argv[2] || ".";
 const TPL = path.join(__dirname, "math", "template.html");
 const template = fs.readFileSync(TPL, "utf8");
 
+/* The five colour palettes are DEFINED in the history template and lifted from
+   it here, so the two lesson types can never drift apart on colour. Paul,
+   2026-08-26: "maybe you can also add the theme color like history". */
+function themesBlock() {
+  const src = fs.readFileSync(path.join(__dirname, "lesson-template.html"), "utf8");
+  const a = src.indexOf("var THEMES = {");
+  const b = src.indexOf("\n};", a);
+  if (a < 0 || b < 0) fail("could not lift THEMES out of lesson-template.html");
+  const block = src.slice(a, b + 3);
+  for (const key of ["forest", "ocean", "ember", "graphite"]) {
+    if (!block.includes(key + ":")) fail("THEMES block is missing " + key);
+  }
+  return block;
+}
+
 /* The bracket layout only handles a problem with no remainder whose quotient
    fills the top row exactly. Anything else is a bug, not a harder question. */
 function check(dividend, divisor, where) {
@@ -61,10 +76,11 @@ for (const L of MATH) {
     .replace(/__DEK__/g, L.dek)
     .replace(/__ID__/g, L.id)
     .replace("__DEMO__", JSON.stringify(L.demo))
-    .replace("__SPEC__", JSON.stringify(L.practice));
+    .replace("__SPEC__", JSON.stringify(L.practice))
+    .replace("__THEMES__", themesBlock);
 
-  if (h.includes("__DEMO__") || h.includes("__SPEC__") || h.includes("__TITLE__")) {
-    fail("unfilled slot in " + L.slug);
+  for (const slot of ["__DEMO__", "__SPEC__", "__TITLE__", "__THEMES__"]) {
+    if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
   }
 
   const dir = path.join(ROOT, "lessons", ...L.id.split("/"));
