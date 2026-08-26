@@ -33,6 +33,9 @@ function shell(o) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- DO NOT REMOVE: Google Search Console verification. Google re-checks
+     periodically and the property silently drops if this disappears. -->
+<meta name="google-site-verification" content="bsZnURtv4LFARU3XuxGED8inYJB45arSOPHbTJSqgIQ">
 <link rel="canonical" href="${SITE}/${o.dir}/">
 <title>${o.title}</title>
 <meta name="description" content="${o.desc}">
@@ -1028,6 +1031,22 @@ newHome = newHome
    pointed at the worksheet shelf had to stop calling itself that. */
 newHome = newHome.split('<a class="btn rv d2" href="/worksheets/">Browse all resources</a>')
   .join('<a class="btn rv d2" href="/worksheets/">Browse all worksheets</a>');
+
+/* The verification tag on the home page itself. Google checks the URL the
+   property was created with, so the home page is the one that must carry it. */
+{
+  const VIEWPORT = '<meta name="viewport" content="width=device-width, initial-scale=1">';
+  const GSC = '<!-- DO NOT REMOVE: Google Search Console verification. Google re-checks\n' +
+              '     periodically and the property silently drops if this disappears. -->\n' +
+              '<meta name="google-site-verification" content="bsZnURtv4LFARU3XuxGED8inYJB45arSOPHbTJSqgIQ">';
+  if (!newHome.includes("google-site-verification")) {
+    newHome = newHome.replace(VIEWPORT, VIEWPORT + "\n" + GSC);
+  }
+  if (!newHome.includes("google-site-verification")) {
+    console.error("FAIL: could not place the Search Console tag on the home page");
+    process.exit(1);
+  }
+}
 
 /* Everything else on the hand-written home that still said ELA. */
 newHome = newHome
