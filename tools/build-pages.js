@@ -1021,6 +1021,13 @@ newHome = newHome
    gets for free: the boot script in <head>, so a reader who chose light never
    sees the dark page flash first, and the toggle behaviour, since the home
    carries its own nav script rather than the shared one. */
+/* 🚨 The home page's cache-buster was hand-written and had gone stale, so
+   browsers kept serving the OLD ns.css. That is how day/night shipped working
+   on every generated page and dead on the home page: the attribute flipped,
+   the stylesheet that knew what to do with it was months out of date. The
+   generator owns this now. */
+newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
+
 {
   const cssLink = newHome.match(/<link rel="stylesheet" href="\/assets\/ns\.css[^>]*>/);
   if (!cssLink) { console.error("FAIL: home has no ns.css link to anchor the mode boot"); process.exit(1); }
