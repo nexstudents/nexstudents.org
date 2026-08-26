@@ -272,14 +272,19 @@ h1{
   color:var(--ink-faint);
 }
 .swatches{display:flex;gap:7px}
+/* `background-clip:padding-box` with a TRANSPARENT border meant the gradient
+   stopped short and a 2px ring of the dark page showed through every swatch.
+   Paul, 2026-08-26: "can you make the theme colors not have a black spare
+   outline ... compare it to the math one". The maths swatches never had it,
+   because the gradient runs to the edge and the border is drawn on top. Same
+   here now: the ring only appears on the one that is selected. */
 .sw{
   width:26px;height:26px;border-radius:50%;cursor:pointer;padding:0;
-  border:2px solid transparent;outline-offset:2px;
-  background-clip:padding-box;
+  border:2px solid var(--rule);outline-offset:2px;
   transition:transform .15s,border-color .15s;
 }
 .sw:hover{transform:scale(1.12)}
-.sw[aria-pressed="true"]{border-color:var(--ink)}
+.sw[aria-pressed="true"]{border-color:var(--verdigris);transform:scale(1.12)}
 .sw:focus-visible{outline:2px solid var(--verdigris)}
 .nospeech{
   font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;
