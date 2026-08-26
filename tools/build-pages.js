@@ -373,16 +373,25 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
 /* The core subjects, in the order they appear everywhere on the site.
    `live` gates whether the subject gets its own pages: a subject with nothing
    in it gets a Soon badge and no link, rather than three empty pages. */
+/* Fixed order, alphabetical: English, History, Maths, Science. Paul,
+   2026-08-26. It used to sort live subjects to the top, which meant the list
+   reshuffled itself every time something went live.
+
+   Paul, 2026-08-26: "I really don't like the ELA name", then "change Ela to
+   English across the board of the whole website." So the label, the data tag
+   and the URL all say English, and every old /ela/ path is left behind as a
+   redirect rather than a 404. */
 const SUBJECTS = [
+  { name: "English", slug: "english", live: true,
+    blurb: "Spelling, book reports, comprehension and reading lists worth actually reading." },
   { name: "History", slug: "history", live: true,
     blurb: "American and Biblical history, taught properly rather than skipped over." },
-  { name: "ELA", slug: "ela", live: true,
-    blurb: "Spelling, book reports, comprehension and reading lists worth actually reading." },
-  { name: "Science", slug: "science", live: false,
-    blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
   { name: "Maths", slug: "maths", live: true,
     blurb: "Practice that teaches, without punishing a student for getting things wrong." },
+  { name: "Science", slug: "science", live: false,
+    blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
 ];
+const keyOf = (s) => s.key || s.name;
 
 const bySubject = (s) => LESSONS.filter(l => l.subject === s);
 const byGrade   = (g) => LESSONS.filter(l => l.grade === g);
@@ -578,8 +587,8 @@ const progressScript = `<script>
 
 /* Subject landing: same two doors as a grade landing, so both paths through the
    site have the same shape. Lessons and worksheets are different jobs. */
-const subjectLanding = (s) => {
-  const slug = s.toLowerCase();
+const subjectLanding = (s, slugIn) => {
+  const slug = slugIn || s.toLowerCase();
   const lessons = bySubject(s), sheets = sheetsBySubject(s);
   const grades = [...new Set(lessons.map(l => l.grade))].sort((a, b) => a - b);
   return `<div class="band"><div class="wrap">
@@ -671,11 +680,11 @@ const gradeSheets = (g) => `<div class="band"><div class="wrap">
    then pick lessons or worksheets" looks the same wherever you meet it.
    grade = null means every grade; a number scopes the counts to that year. */
 const subjectRows = (grade) => {
-  const rows = [...SUBJECTS].sort((a, b) => (b.live ? 1 : 0) - (a.live ? 1 : 0));
+  const rows = SUBJECTS;          /* fixed order, never re-sorted by liveness */
   return `<div class="subj-list">
   ${rows.map((s, i) => {
-    const nLes = bySubject(s.name).filter(l => grade == null || l.grade === grade).length;
-    const nWk  = sheetsBySubject(s.name).filter(w => grade == null || w.grades.includes(grade)).length;
+    const nLes = bySubject(keyOf(s)).filter(l => grade == null || l.grade === grade).length;
+    const nWk  = sheetsBySubject(keyOf(s)).filter(w => grade == null || w.grades.includes(grade)).length;
     const box = (label, note, n, one, many, href) => href
       ? `<a class="minibox" href="${href}">
           <b>${label}</b><span>${note}</span>
@@ -753,7 +762,7 @@ const pages = [
     title: "Worksheets — NexStudents",
     desc: "Every free worksheet and term packet, all grades and subjects, in one place.",
     crumb: "Worksheets", h1: "Every Sheet, in One Place.",
-    lead: "Free printables and term packets across ELA, History, Science and Maths. Filter by grade, by subject, or by whether it costs anything. Answer keys are always included free.",
+    lead: "Free printables and term packets across English, History, Maths and Science. Filter by grade, by subject, or by whether it costs anything. Answer keys are always included free.",
     body: empty("The shelf is being built. 7th grade goes up first, then the grades either side of it.") },
 
   { dir: "games", active: "g",
@@ -864,26 +873,26 @@ const pages = [
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
     body: gradeSheets(8) },
 
-  { dir: "ela", active: "w",
-    title: "ELA — NexStudents",
+  { dir: "english", active: "w",
+    title: "English — NexStudents",
     desc: "Spelling, reading and writing worksheets you print and work on paper.",
-    crumb: "ELA", h1: "ELA.",
+    crumb: "English", h1: "English.",
     lead: "Spelling, book reports, comprehension and reading lists worth actually reading. The spelling test is blank on purpose, so it works with whatever list you are teaching from.",
-    body: subjectLanding("ELA") },
+    body: subjectLanding("English") },
 
-  { dir: "ela/lessons", active: "w",
-    title: "ELA Lessons — NexStudents",
-    desc: "ELA lessons worked through on screen.",
-    crumb: '<a href="/ela/">ELA</a> &rsaquo; Lessons', h1: "ELA Lessons.",
-    lead: "Nothing on screen for ELA yet. The printables came first, because spelling and writing are worked on paper.",
-    body: subjectLessons("ELA") },
+  { dir: "english/lessons", active: "w",
+    title: "English Lessons — NexStudents",
+    desc: "English lessons worked through on screen.",
+    crumb: '<a href="/english/">English</a> &rsaquo; Lessons', h1: "English Lessons.",
+    lead: "Nothing on screen for English yet. The printables came first, because spelling and writing are worked on paper.",
+    body: subjectLessons("English") },
 
-  { dir: "ela/worksheets", active: "w",
-    title: "ELA Worksheets — NexStudents",
-    desc: "Printable ELA worksheets, including a blank weekly spelling test.",
-    crumb: '<a href="/ela/">ELA</a> &rsaquo; Worksheets', h1: "ELA Worksheets.",
+  { dir: "english/worksheets", active: "w",
+    title: "English Worksheets — NexStudents",
+    desc: "Printable English worksheets, including a blank weekly spelling test.",
+    crumb: '<a href="/english/">English</a> &rsaquo; Worksheets', h1: "English Worksheets.",
     lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
-    body: subjectSheets("ELA") },
+    body: subjectSheets("English") },
 
   { dir: "history", active: "w",
     title: "History — NexStudents",
@@ -956,8 +965,63 @@ if (a < 0) { console.error("FAIL: home grade picker not found"); process.exit(1)
 const b = home.indexOf(CLOSE, a + OPEN.length);
 if (b < 0) { console.error("FAIL: home grade picker not closed"); process.exit(1); }
 const picker = OPEN + "\n    " + gradeCells(liveGrades()) + "\n  ";
-const newHome = home.slice(0, a) + picker + home.slice(b);
+let newHome = home.slice(0, a) + picker + home.slice(b);
+
+/* The home subject tiles were hand-kept too, and had gone stale the same way:
+   English and Maths both said "Soon" long after they went live, and it still
+   said ELA. Generated from SUBJECTS now, in the same fixed order. */
+const S_OPEN = '<div class="subs">', S_CLOSE = "\n</div>";
+const sa = newHome.indexOf(S_OPEN);
+if (sa < 0) { console.error("FAIL: home subject tiles not found"); process.exit(1); }
+const sb = newHome.indexOf(S_CLOSE, sa + S_OPEN.length);
+if (sb < 0) { console.error("FAIL: home subject tiles not closed"); process.exit(1); }
+const tiles = SUBJECTS.map((s, i) =>
+  `  <a class="sub-t is-${s.live ? "live" : "soon"}" href="${s.live ? "/" + s.slug + "/" : "/subjects/"}">` +
+  `<n>${String(i + 1).padStart(2, "0")} <i>${s.live ? "Live" : "Soon"}</i></n><div><h3>${s.name}</h3>\n` +
+  `    <p>${s.blurb}</p></div></a>`
+).join("\n");
+newHome = newHome.slice(0, sa) + S_OPEN + "\n" + tiles + newHome.slice(sb);
+
+/* Everything else on the hand-written home that still said ELA. */
+newHome = newHome
+  .split('data-f="ela">ELA<').join('data-f="ela">English<')
+  .split("<em>ELA</em>").join("<em>English</em>")
+  .split('<li><a href="/worksheets/">ELA</a></li>').join('<li><a href="/english/">English</a></li>')
+  .split("across ELA, History, Science and Maths").join("across English, History, Maths and Science");
 if (newHome !== home) fs.writeFileSync(homeFile, newHome, "utf8");
 
-console.log(JSON.stringify({ written, navEntries: NAV.length,
+/* ELA became English on 2026-08-26. Anything already pointing at /ela/ - a
+   bookmark, a search result, a printed worksheet footer - is redirected rather
+   than 404'd. GitHub Pages has no redirect rules, so these are real pages. */
+const REDIRECTS = [
+  ["ela", "/english/"],
+  ["ela/lessons", "/english/lessons/"],
+  ["ela/worksheets", "/english/worksheets/"],
+  ["worksheets/ela/weekly-spelling-test", "/worksheets/english/weekly-spelling-test/"],
+  ["worksheets/ela/spelling-flashcards", "/worksheets/english/spelling-flashcards/"],
+];
+const redirects = [];
+for (const [from, to] of REDIRECTS) {
+  const dir = path.join(ROOT, from);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, "index.html"),
+`<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="${to}">
+<meta http-equiv="refresh" content="0;url=${to}">
+<title>Moved to ${to}</title>
+</head>
+<body>
+<p>This page is now at <a href="${to}">${to}</a>.</p>
+<script>location.replace(${JSON.stringify(to)});</script>
+</body>
+</html>
+`, "utf8");
+  redirects.push(from + " -> " + to);
+}
+
+console.log(JSON.stringify({ written, redirects, navEntries: NAV.length,
   liveGrades: liveGrades(), homePickerUpdated: newHome !== home }, null, 1));

@@ -229,11 +229,11 @@ const SHEETS = [
    come from the parent's own list, so a 7th grader working a 3rd grade list
    uses the very same paper.
 
-   Two entries were tried first and were wrong: the ELA shelf is not filtered
+   Two entries were tried first and were wrong: the English shelf is not filtered
    by grade, so the same sheet appeared on it twice with nothing to tell the
    two cards apart. */
 {
-  slug: "weekly-spelling-test", subject: "ELA", grade: 3, grades: [3, 7], kind: "blank",
+  slug: "weekly-spelling-test", subject: "English", grade: 3, grades: [3, 7], kind: "blank",
   title: "Weekly Spelling Test",
   dek: "Ten words and one bonus word. Works with any word list, any week, any grade.",
   blurb: "A blank weekly spelling test. Ten words out of ten, one bonus word worth one extra.",
@@ -268,7 +268,7 @@ const SHEETS = [
      so it serves any year; these cards ARE the words, and they are 3rd grade
      words. Kolten works them at 7th, but that is his parent's choice to make
      off the 3rd grade shelf, not a claim on the page that they suit 7th. */
-  slug: "spelling-flashcards", subject: "ELA", grade: 3, grades: [3],
+  slug: "spelling-flashcards", subject: "English", grade: 3, grades: [3],
   kind: "flashcards", source: "spelling-words.js",
   /* The grade is in the name. A parent searching for spelling practice is
      searching by year, and "Spelling Flashcards" alone says nothing about who
