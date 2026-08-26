@@ -37,20 +37,24 @@ h1{margin:0 0 6px}
 .cell.under{border-bottom:2px solid var(--fg)}
 .cell.drop{color:var(--a);animation:drop .35s ease}
 @keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
-/* An empty box has to LOOK like somewhere to write. On the dark ground a
-   dashed hairline vanished, so a box he can type in gets a real fill. These
-   two come from the palette, never a white alpha, so a light theme still works. */
-.cell input{width:100%;height:100%;background:var(--boxfill);
-  border:1.5px solid var(--boxline);border-radius:7px;
-  color:var(--fg);font:inherit;text-align:center;padding:0}
-.cell input:focus{outline:none;border-color:var(--a);
-  box-shadow:0 0 0 3px var(--pill)}
-/* not his turn yet: still visible, clearly not live */
+/* Only the box he is in should read as live. Paul, 2026-08-26: with every box
+   filled and outlined the page was noise. So a waiting box is a faint hairline,
+   and the focused one gets the fill and the accent ring. Both colours come from
+   the palette, never a white alpha, so a light theme still works. */
+.cell input{width:100%;height:100%;background:transparent;
+  border:1px solid var(--line);border-radius:7px;
+  color:var(--fg);font:inherit;text-align:center;padding:0;
+  transition:background .12s,border-color .12s,box-shadow .12s}
+.cell input:focus{outline:none;background:var(--boxfill);
+  border:2px solid var(--a);box-shadow:0 0 0 3px var(--pill)}
+/* not his turn yet: barely there */
 .cell input:disabled{background:transparent;border-color:var(--line);
-  border-style:dashed;color:var(--dim)}
+  border-style:dashed;opacity:.45;color:var(--dim)}
+/* A marked digit is never faded, even though marking disables the box. */
 .cell input.ok{background:transparent;border-color:transparent;border-style:solid;
-  color:var(--free);font-weight:700}
-.cell input.wrong{background:transparent;border-color:#e5484d;border-style:solid;color:#e5484d;font-weight:700}
+  color:var(--free);font-weight:700;opacity:1}
+.cell input.wrong{background:transparent;border-color:#e5484d;border-style:solid;
+  color:#e5484d;font-weight:700;opacity:1}
 .cell input.bad{border-color:#e5484d;animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
@@ -71,6 +75,15 @@ h1{margin:0 0 6px}
   color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
 .tab:hover{color:var(--fg)}
 .tab.on{background:var(--pill);border-color:var(--a);color:var(--fg);font-weight:700}
+
+/* The two actions read as buttons, not as tabs: same pill, filled. Side by
+   side on a phone, never stacked. Paul, 2026-08-26. */
+.actions{display:flex;flex-wrap:nowrap;gap:8px;margin:0 0 18px}
+.tab.act{flex:1 1 0;min-width:0;color:var(--fg);border-color:var(--boxline);
+  background:var(--boxfill);font-weight:600;white-space:nowrap;
+  padding:11px 10px;font-size:.88rem}
+.tab.act:hover{border-color:var(--a)}
+.tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
 
 /* ---- problems ---- */
 .prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:0 0 16px}
@@ -131,10 +144,9 @@ h1{margin:0 0 6px}
     <button class="tab" type="button" id="tabTest" role="tab" aria-selected="false">Test</button>
   </div>
   <p class="section-note" id="modenote"></p>
-  <div class="pbar">
-    <button class="btn" type="button" id="reroll">New problems</button>
-    <button class="btn" type="button" id="check" hidden>Check my work</button>
-    <span class="tag" id="setinfo"></span>
+  <div class="actions">
+    <button class="tab act" type="button" id="reroll">New problems</button>
+    <button class="tab act" type="button" id="check" hidden>Check my work</button>
   </div>
   <div id="problems"></div>
 
@@ -465,14 +477,29 @@ var PROBLEMS = [];
    habit. TEST lets every wrong digit stand and marks the paper at the end,
    which is how you find out you never really had it. Paul, 2026-08-26. */
 var MODE = "practice";
-var BOXES = [];                       /* every input on the page, for marking */
+var BOXES = [];                       /* every input on the page, in answer order */
+
+/* Test mode moves the cursor along for him but never judges the digit. Paul,
+   2026-08-26: "practice should lead you through all the boxes while test
+   doesn't lead you." Leading here means the cursor, not the answer. */
+function stepTo(from, dir){
+  var i = -1;
+  for (var k = 0; k < BOXES.length; k++){ if (BOXES[k].el === from){ i = k; break; } }
+  if (i < 0) return;
+  var next = BOXES[i + (dir || 1)];
+  if (!next) return;
+  next.el.focus();
+  if (next.el.parentElement.scrollIntoView) {
+    next.el.parentElement.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+}
 
 function renderSet(list, label){
   PROBLEMS = list;
   solved = 0;
   BOXES = [];
   host.innerHTML = "";
-  document.getElementById("setinfo").textContent = label;
+  /* Check my work belongs to Test only. Practice already checks every digit. */
   document.getElementById("check").hidden = MODE !== "test";
   document.getElementById("modenote").textContent = MODE === "practice"
     ? "A wrong digit clears itself and tells you which of the four steps you are on. The next digit drops down once the subtraction is done."
@@ -513,12 +540,11 @@ function addProblem(P, pi){
   });
 
   queue.forEach(function(q){
-    if (q.bring){
-      /* In test mode nothing is waited on, and the digit to bring down is just
-         the next dividend digit, so all of them are on the page from the start. */
-      if (MODE === "test"){ q.cell.textContent = q.want; }
-      return;
-    }
+    /* In PRACTICE the bring-down is something to watch, so it drops in on its
+       own. In TEST he writes it himself: Paul, 2026-08-26, "they should write
+       both numbers not just the first one." */
+    if (q.bring && MODE === "practice") return;
+
     var inp = document.createElement("input");
     inp.type = "text";
     inp.inputMode = "numeric";
@@ -527,7 +553,22 @@ function addProblem(P, pi){
     inp.disabled = MODE === "practice";
     q.el = inp;
     q.cell.appendChild(inp);
-    if (MODE === "test"){ BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P }); return; }
+
+    if (MODE === "test"){
+      BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P });
+      /* Tap any box to go back and change it, and typing replaces what is
+         there rather than being swallowed by maxLength. */
+      inp.addEventListener("focus", function(){ inp.select(); });
+      inp.addEventListener("input", function(){
+        var v = inp.value.replace(/[^0-9]/g, "");
+        inp.value = v;
+        if (v !== "") stepTo(inp);      /* no marking, just move the cursor on */
+      });
+      inp.addEventListener("keydown", function(e){
+        if (e.key === "Backspace" && inp.value === "") stepTo(inp, -1);
+      });
+      return;
+    }
     inp.addEventListener("input", function(){
       var v = inp.value.replace(/[^0-9]/g, "");
       inp.value = v;
