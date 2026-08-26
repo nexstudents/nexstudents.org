@@ -239,13 +239,21 @@ const empty = (line) => `<div class="band"><div class="wrap">
 
 /* The grade picker, as its own page. Each grade needs a real URL eventually -
    /grade-7/ is exactly the sort of page that can rank against nexstudent.org. */
+/* Which grades are live, derived from the two registries rather than listed by
+   hand. Used by /grades/ and by the home page picker, so the two can never
+   disagree the way they did before 2026-08-26 (home said 7 only). */
+const liveGrades = () => [...new Set(
+  LESSONS.map(l => l.grade).concat(WORKSHEETS.flatMap(w => w.grades))
+)].sort((a, b) => a - b).map(String);
+
+const gradeCells = (live, cls) => ["K","1","2","3","4","5","6","7","8"].map(g =>
+  live.includes(g)
+    ? '<a class="gr live" href="/grade-' + g + '/"><b>' + g + '</b><span>Live</span></a>'
+    : '<span class="gr soon"><b>' + g + '</b><span>Soon</span></span>'
+).join("\n    " + (cls || ""));
+
 const gradeGrid = () => {
-  const LIVE = ["3", "7", "8"];
-  const cells = ["K","1","2","3","4","5","6","7","8"].map(g =>
-    LIVE.includes(g)
-      ? '<a class="gr live" href="/grade-' + g + '/"><b>' + g + '</b><span>Live</span></a>'
-      : '<span class="gr soon"><b>' + g + '</b><span>Soon</span></span>'
-  ).join("\n    ");
+  const cells = gradeCells(liveGrades());
   return `<div class="band"><div class="wrap">
   <div class="grades">
     ${cells}
@@ -327,6 +335,22 @@ const LESSONS = [
     title: "Roman Government and Citizenship",
     blurb: "Offices, consuls and citizenship, and why one-year terms mattered.",
     meta: "Interactive", price: "$0" },
+
+  /* Maths starts in grade 6 on purpose: the foundations unit is the catch-up
+     set that grade 7 leans on. See tools/curriculum/. */
+  { href: "/lessons/maths/long-division/",
+    id: "maths/long-division",
+    contains: [
+      "The four steps, read aloud with the words highlighted",
+      "A full worked example, one line at a time",
+      "Day 1: four questions with the answer findable in the text",
+      "Day 2: a vocabulary check and a printable answer sheet",
+    ],
+    subject: "Maths", grade: 6,
+    unit: "Foundations &middot; Unit 0 &middot; Lesson 1",
+    title: "Long Division",
+    blurb: "Divide, multiply, subtract, bring down. Worked through one digit at a time.",
+    meta: "Interactive", price: "$0" },
 ];
 
 /* Printables. Empty on purpose - an honest empty state beats a fake card. */
@@ -356,7 +380,7 @@ const SUBJECTS = [
     blurb: "Spelling, book reports, comprehension and reading lists worth actually reading." },
   { name: "Science", slug: "science", live: false,
     blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
-  { name: "Maths", slug: "maths", live: false,
+  { name: "Maths", slug: "maths", live: true,
     blurb: "Practice that teaches, without punishing a student for getting things wrong." },
 ];
 
@@ -777,6 +801,27 @@ const pages = [
     lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
     body: gradeSheets(3) },
 
+  { dir: "grade-6", active: "gr",
+    title: "6th Grade — NexStudents",
+    desc: "Every 6th grade lesson and worksheet on NexStudents.",
+    crumb: "6th Grade", h1: "6th Grade.",
+    lead: "The year before 7th, and the one worth going back to when something is still shaky. Lessons are worked through on screen; worksheets get printed. Pick whichever you need.",
+    body: gradeLanding(6) },
+
+  { dir: "grade-6/lessons", active: "gr",
+    title: "6th Grade Lessons — NexStudents",
+    desc: "Every 6th grade lesson, worked through on screen.",
+    crumb: '<a href="/grade-6/">6th Grade</a> &rsaquo; Lessons', h1: "6th Grade Lessons.",
+    lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
+    body: gradeLessons(6) },
+
+  { dir: "grade-6/worksheets", active: "gr",
+    title: "6th Grade Worksheets — NexStudents",
+    desc: "Every 6th grade printable worksheet and term packet.",
+    crumb: '<a href="/grade-6/">6th Grade</a> &rsaquo; Worksheets', h1: "6th Grade Worksheets.",
+    lead: "Printables and term packets for working on paper. Answer keys are always included free.",
+    body: gradeSheets(6) },
+
   { dir: "grade-7", active: "gr",
     title: "7th Grade — NexStudents",
     desc: "Every 7th grade lesson and worksheet on NexStudents.",
@@ -861,6 +906,27 @@ const pages = [
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
     body: subjectSheets("History") },
 
+  { dir: "maths", active: "w",
+    title: "Maths — NexStudents",
+    desc: "Maths lessons and worksheets, worked through on screen.",
+    crumb: "Maths", h1: "Maths.",
+    lead: "Practice that teaches, without punishing a student for getting things wrong. Lessons are worked through on screen with the explanation read aloud; worksheets get printed.",
+    body: subjectLanding("Maths") },
+
+  { dir: "maths/lessons", active: "w",
+    title: "Maths Lessons — NexStudents",
+    desc: "Every maths lesson on NexStudents, worked through on screen.",
+    crumb: '<a href="/maths/">Maths</a> &rsaquo; Lessons', h1: "Maths Lessons.",
+    lead: "Each one opens straight away. The method is read aloud one step at a time, with a full worked example, and the questions send your student back into the steps rather than leaving them to guess.",
+    body: subjectLessons("Maths") },
+
+  { dir: "maths/worksheets", active: "w",
+    title: "Maths Worksheets — NexStudents",
+    desc: "Printable maths worksheets and practice sets.",
+    crumb: '<a href="/maths/">Maths</a> &rsaquo; Worksheets', h1: "Maths Worksheets.",
+    lead: "Printables and practice sets for working on paper. Answer keys are always included free.",
+    body: subjectSheets("Maths") },
+
   { dir: "for-parents", active: "p",
     title: "For Parents — NexStudents",
     desc: "Placement exams and planning tools for the parent doing the teaching.",
@@ -879,4 +945,19 @@ for (const p of pages) {
   fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
   written.push(p.dir);
 }
-console.log(JSON.stringify({ written, navEntries: NAV.length }, null, 1));
+/* The home page is hand-written except for its grade picker, which is spliced
+   from liveGrades() so it matches /grades/. Paul, 2026-08-26: he could not
+   navigate from home because the picker still showed 7 as the only live year. */
+const homeFile = path.join(ROOT, "index.html");
+const home = fs.readFileSync(homeFile, "utf8");
+const OPEN = '<div class="grades rv d1">', CLOSE = "</div>";
+const a = home.indexOf(OPEN);
+if (a < 0) { console.error("FAIL: home grade picker not found"); process.exit(1); }
+const b = home.indexOf(CLOSE, a + OPEN.length);
+if (b < 0) { console.error("FAIL: home grade picker not closed"); process.exit(1); }
+const picker = OPEN + "\n    " + gradeCells(liveGrades()) + "\n  ";
+const newHome = home.slice(0, a) + picker + home.slice(b);
+if (newHome !== home) fs.writeFileSync(homeFile, newHome, "utf8");
+
+console.log(JSON.stringify({ written, navEntries: NAV.length,
+  liveGrades: liveGrades(), homePickerUpdated: newHome !== home }, null, 1));
