@@ -302,6 +302,9 @@ PROBLEMS.forEach(function(P, pi){
       inp.value = v;
       if (v === "") return;
       if (Number(v) === q.want){
+        /* Kill any pending wrong-answer wipe first. Without this, a wrong digit
+           followed quickly by the right one erased the right one 320ms later. */
+        clearTimeout(q.timer);
         inp.classList.remove("bad");
         inp.classList.add("ok");
         inp.disabled = true;
@@ -311,7 +314,11 @@ PROBLEMS.forEach(function(P, pi){
         inp.classList.add("bad");
         nudge.classList.add("warn");
         nudge.textContent = "Not that one. " + q.ask;
-        setTimeout(function(){ inp.classList.remove("bad"); inp.value = ""; }, 320);
+        clearTimeout(q.timer);
+        q.timer = setTimeout(function(){
+          inp.classList.remove("bad");
+          if (!inp.classList.contains("ok")) inp.value = "";
+        }, 320);
       }
     });
   });
