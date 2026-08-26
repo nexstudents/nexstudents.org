@@ -41,7 +41,12 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 .sheet p{margin:0 0 14px}
 .passage{font-size:1rem;line-height:1.75;color:var(--fg)}
 
-.art{margin:0 0 26px;padding:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+/* Art on the sheet is square from 2026-08-26. A square at the full column
+   width would be ~700px tall and swallow the page, so it is capped and
+   centred. Anything not yet replaced keeps its own shape rather than being
+   cropped into a square it was never drawn for. */
+.art{margin:0 auto 26px;padding:0;max-width:min(100%,440px);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .art img{display:block;width:100%;height:auto}
 
 .vocab{display:grid;gap:11px;margin:0;padding:0;list-style:none}
