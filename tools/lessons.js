@@ -205,6 +205,99 @@ const LESSONS = [
         "It predicts that Rome would grant citizenship to everyone in 212 AD."
       ], right: 0 }
   ]
+},
+
+/* ═══════════ MATHS · Foundations Unit 0 Lesson 1 — Long Division ══════════ */
+{
+  id: "maths/long-division",
+  slug: "long-division",
+  title: "Long Division",
+  unit: "Foundations &middot; Unit 0 &middot; Lesson 1",
+  eyebrow: ["Math Lesson", "Unit 0 &middot; Lesson 1", "Foundations"],
+  dek: "Four steps, repeated until you run out of digits. That is the whole method.",
+  parts: [
+    { title: "What Division Really Asks", s: [
+      "Division asks one simple question: how many times does this number fit into that one?",
+      "When you see 852 divided by 4, you are asking how many groups of 4 fit inside 852.",
+      "The number you are breaking up, 852, is called the dividend.",
+      "The number you are dividing by, 4, is called the divisor.",
+      "The answer you get is called the quotient.",
+      "Long division is just a way to keep track of that question one digit at a time."
+    ]},
+    { title: "The Four Steps, In Order", s: [
+      "Long division repeats the same four steps until you run out of digits.",
+      "Step one, divide: how many times does the divisor fit into the digit you are looking at?",
+      "Step two, multiply: multiply that answer by the divisor.",
+      "Step three, subtract: take that product away from the digits above it.",
+      "Step four, bring down: bring down the next digit and start again.",
+      "Divide, multiply, subtract, bring down, and then repeat."
+    ]},
+    { title: "A Worked Example: 852 Divided by 4", s: [
+      "Start with the first digit of 852, which is 8.",
+      "Four fits into 8 exactly 2 times, so write 2 above the 8.",
+      "Multiply 2 times 4 to get 8, write that under the 8, and subtract to get 0.",
+      "Bring down the next digit, 5.",
+      "Four fits into 5 one time, so write 1 above the 5.",
+      "Multiply 1 times 4 to get 4, subtract that from 5, and you are left with 1.",
+      "Bring down the last digit, 2, which sits beside the 1 to make 12.",
+      "Four fits into 12 exactly 3 times, so write 3 above the 2.",
+      "Multiply 3 times 4 to get 12, subtract, and you are left with 0.",
+      "The digits on top read 213, so 852 divided by 4 is 213."
+    ]},
+    { title: "When It Does Not Come Out Even", s: [
+      "Sometimes the last subtraction does not leave 0.",
+      "Whatever is left over at the end is called the remainder.",
+      "If you divide 47 by 5, five fits into 47 nine times, which is 45.",
+      "Subtracting 45 from 47 leaves 2, so the answer is 9 remainder 2.",
+      "A remainder is not a mistake, it just means the groups did not come out even."
+    ]},
+    { title: "Checking Your Own Work", s: [
+      "You can check any division answer without asking anyone.",
+      "Multiply the quotient by the divisor, then add the remainder.",
+      "If you get the dividend back, your answer is right.",
+      "For 852 divided by 4, multiply 213 by 4 and you get 852, so it checks out."
+    ]}
+  ],
+  words: [
+    ["Dividend", "The number being broken up. In 852 divided by 4, the dividend is 852."],
+    ["Divisor", "The number you are dividing by. In 852 divided by 4, the divisor is 4."],
+    ["Quotient", "The answer to a division problem. For 852 divided by 4, the quotient is 213."],
+    ["Remainder", "What is left over when the groups do not come out even. 47 divided by 5 is 9 remainder 2."]
+  ],
+  questions: [
+    { q: "What are the four steps of long division, in order?", find: [11],
+      hint: "Look for the sentence that lists all four steps in a row.",
+      choices: [
+        "Divide, multiply, subtract, bring down, and then repeat.",
+        "Multiply, divide, add, bring down, and then repeat.",
+        "Subtract, divide, multiply, carry, and then repeat.",
+        "Divide, add, subtract, bring down, and then stop."
+      ], right: 0 },
+    { q: "In 852 divided by 4, what goes above the 8, and why?", find: [13],
+      hint: "Look in the worked example, at the very first step.",
+      choices: [
+        "Four fits into 8 exactly 2 times, so write 2 above the 8.",
+        "Four fits into 8 exactly 4 times, so write 4 above the 8.",
+        "Eight fits into 4 exactly 2 times, so write 2 above the 8.",
+        "Four fits into 8 exactly 2 times, so write 8 above the 2."
+      ], right: 0 },
+    { q: "What is 47 divided by 5?", find: [25],
+      hint: "Look in the section about answers that do not come out even.",
+      choices: [
+        "Subtracting 45 from 47 leaves 2, so the answer is 9 remainder 2.",
+        "Subtracting 45 from 47 leaves 2, so the answer is 2 remainder 9.",
+        "Five fits into 47 eight times, so the answer is 8 remainder 7.",
+        "Five fits into 47 exactly 9 times, with no remainder at all."
+      ], right: 0 },
+    { q: "How can you check a division answer by yourself?", find: [28, 29],
+      hint: "Look in the last section, at the two sentences that tell you what to multiply.",
+      choices: [
+        "Multiply the quotient by the divisor, add the remainder, and see if you get the dividend back.",
+        "Multiply the dividend by the divisor, and see if you get the quotient back.",
+        "Add the quotient to the divisor, and see if you get the dividend back.",
+        "Divide the quotient by the remainder, and see if you get the divisor back."
+      ], right: 0 }
+  ]
 }
 
 ];

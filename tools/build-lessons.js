@@ -117,7 +117,10 @@ for (const L of LESSONS) {
   h = h.replace(/<p class="dek">[\s\S]*?<\/p>/, '<p class="dek">' + L.dek + "</p>");
   h = h.replace(/<span>Unit 1 &middot; Lesson \d<\/span>/, "<span>" + L.eyebrow[1] + "</span>");
 
-  const dir = path.join(ROOT, "lessons", "history", L.slug);
+  /* Subject comes from the id prefix ("history/..." , "maths/...") so a new
+     subject needs no change here, only an id. */
+  const subject = L.id.split("/")[0];
+  const dir = path.join(ROOT, "lessons", subject, L.slug);
   fs.mkdirSync(dir, { recursive: true });
   /* The template contains "undefined" as a JS keyword, so only the GENERATED
      data and the swapped headings are checked. */

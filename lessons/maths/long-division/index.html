@@ -1,0 +1,1648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Long Division — NexStudents</title>
+<meta name="description" content="A NexStudents history lesson: read along, then find the answers in the text.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+  /* the reset the artifact host normally provides */
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%}
+  /* back link to the subject hub, in the lesson's own palette */
+  .ns-back{
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    max-width:660px;margin:0 auto;padding:18px 22px 0;
+    font-size:13px;font-weight:600;letter-spacing:.04em;
+  }
+  .ns-back a{color:var(--verdigris);text-decoration:none;display:inline-flex;gap:7px;align-items:center}
+  .ns-back a:hover{text-decoration:underline}
+  .ns-back a:focus-visible{outline:2px solid var(--verdigris);outline-offset:3px;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="ns-back"><a href="/history/">&larr; History</a></div>
+<style>
+:root{
+  --ground:#E7EDE4;
+  --surface:#F2F7EF;
+  --surface-2:#D8E2D2;
+  --ink:#152018;
+  --ink-soft:#48594D;
+  --ink-faint:#7B8C7F;
+  --rule:#C2CFBD;
+  --verdigris:#25664A;
+  --verdigris-ink:#174630;
+  --verdigris-soft:rgba(37,102,74,.12);
+  --porphyry:#8A2F3F;
+  --porphyry-soft:rgba(138,47,63,.10);
+  --brass:#7E6A16;
+  --band:rgba(158,138,40,.22);
+  --word:rgba(158,138,40,.48);
+  --on-accent:#F2F7EF;
+  --control-bg:#1F5A41;
+  --control-ink:#EDF4EA;
+  --control-border:#164630;
+  --tick-now:#14432E;
+  --tick-done:rgba(37,102,74,.30);
+  --shadow:0 1px 2px rgba(21,32,24,.07),0 8px 24px rgba(21,32,24,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1A13;
+    --surface:#14251A;
+    --surface-2:#1C3123;
+    --ink:#E2EBE2;
+    --ink-soft:#93A896;
+    --ink-faint:#6B8071;
+    --rule:#27402F;
+    --verdigris:#66C293;
+    --verdigris-ink:#93D9B2;
+    --verdigris-soft:rgba(102,194,147,.16);
+    --porphyry:#E08497;
+    --porphyry-soft:rgba(224,132,151,.16);
+    --brass:#D8B355;
+    --band:rgba(216,179,85,.16);
+    --word:rgba(216,179,85,.40);
+    --on-accent:#0B160F;
+    --control-bg:#17301F;
+    --control-ink:#DCEADF;
+    --control-border:#345A41;
+    --tick-now:#3F9B69;
+    --tick-done:rgba(102,194,147,.28);
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.32);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1A13;
+  --surface:#14251A;
+  --surface-2:#1C3123;
+  --ink:#E2EBE2;
+  --ink-soft:#93A896;
+  --ink-faint:#6B8071;
+  --rule:#27402F;
+  --verdigris:#66C293;
+  --verdigris-ink:#93D9B2;
+  --verdigris-soft:rgba(102,194,147,.16);
+  --porphyry:#E08497;
+  --porphyry-soft:rgba(224,132,151,.16);
+  --brass:#D8B355;
+  --band:rgba(216,179,85,.16);
+  --word:rgba(216,179,85,.40);
+  --on-accent:#0B160F;
+  --control-bg:#17301F;
+  --control-ink:#DCEADF;
+  --control-border:#345A41;
+  --tick-now:#3F9B69;
+  --tick-done:rgba(102,194,147,.28);
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.32);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:20px;
+  line-height:1.85;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:660px;margin:0 auto;padding:0 22px 96px}
+
+/* ---------- masthead ---------- */
+.mast{padding:44px 0 24px;border-bottom:1px solid var(--rule)}
+.eyebrow{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;font-weight:600;line-height:1.4;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--verdigris);
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+}
+.eyebrow .dot{width:4px;height:4px;border-radius:50%;background:var(--ink-faint)}
+h1{
+  font-family:Cinzel,Georgia,serif;
+  font-weight:600;font-size:clamp(30px,7vw,44px);line-height:1.15;
+  letter-spacing:.01em;text-wrap:balance;
+  margin:14px 0 10px;
+}
+.dek{color:var(--ink-soft);font-size:17px;line-height:1.65;margin:0;max-width:52ch}
+
+/* ---------- player ---------- */
+.player{
+  position:sticky;top:0;z-index:40;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  box-shadow:var(--shadow);
+  padding:14px 16px 12px;
+  margin:22px 0 34px;
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+}
+.pcontrols{display:flex;align-items:center;gap:10px}
+.btn{
+  font-family:inherit;font-size:14px;font-weight:500;
+  background:transparent;color:var(--ink);
+  border:1px solid var(--rule);border-radius:3px;
+  padding:9px 12px;cursor:pointer;line-height:1;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.btn:hover{background:var(--surface-2);border-color:var(--ink-faint)}
+.btn:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.btn.primary{
+  background:var(--verdigris);border-color:var(--verdigris);
+  color:var(--on-accent);font-weight:600;min-width:104px;justify-content:center;
+}
+.btn.primary:hover{filter:brightness(1.06);background:var(--verdigris)}
+.btn svg{display:block}
+.pspacer{flex:1}
+.rate{
+  font-family:inherit;font-size:13px;font-weight:500;
+  color:var(--control-ink);
+  background-color:var(--control-bg);
+  border:1px solid var(--control-border);border-radius:3px;
+  cursor:pointer;
+  /* native arrow sits hard against the right edge, which leaves a gap on a wide
+     select. Own arrow, tucked just after the text. */
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  padding:8px 27px 8px 10px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 9px center;
+  background-size:11px 7px;
+}
+.rate::-ms-expand{display:none}
+.rate option{background:var(--control-bg);color:var(--control-ink)}
+.rate:hover{border-color:var(--verdigris)}
+.rate:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+
+.scrub{
+  margin-top:12px;display:flex;gap:2px;height:16px;align-items:stretch;cursor:pointer;
+}
+.tick{flex:1;background:var(--surface-2);border-radius:1px;transition:background .18s}
+.tick.done{background:var(--tick-done)}
+.tick.now{background:var(--tick-now)}
+.tick:hover{background:var(--verdigris)}
+.pmeta{
+  display:flex;justify-content:space-between;
+  font-size:12px;color:var(--ink-faint);margin-top:7px;
+  font-variant-numeric:tabular-nums;letter-spacing:.02em;
+}
+.voicerow{
+  display:none;align-items:center;gap:9px;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--rule);
+}
+.voicerow.show{display:flex}
+.voicerow label{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.voicerow select{flex:0 1 auto;min-width:0;max-width:100%;font-size:13px}
+
+/* studio voice key */
+.linkbtn{
+  margin-left:auto;background:none;border:0;cursor:pointer;padding:4px 2px;
+  font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.04em;
+  color:var(--verdigris);text-decoration:underline;text-underline-offset:3px;
+}
+.linkbtn:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.keyrow{display:none;margin-top:9px;padding-top:9px;border-top:1px solid var(--rule)}
+.keyrow.show{display:block}
+.keyrow label{
+  display:block;font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px;
+}
+.keyfield{display:flex;gap:7px;flex-wrap:wrap}
+.keyfield input{
+  flex:1 1 180px;min-width:0;font-family:inherit;font-size:13px;
+  color:var(--control-ink);background:var(--control-bg);
+  border:1px solid var(--control-border);border-radius:3px;padding:9px 10px;
+}
+.keyfield input:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.keynote{font-size:12px;line-height:1.5;color:var(--ink-soft);margin:8px 0 0}
+.keynote.bad{color:var(--porphyry)}
+.keynote.good{color:var(--verdigris-ink)}
+
+/* colour picker */
+.themerow{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--rule);
+}
+.themerow .lbl{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.swatches{display:flex;gap:7px}
+.sw{
+  width:26px;height:26px;border-radius:50%;cursor:pointer;padding:0;
+  border:2px solid transparent;outline-offset:2px;
+  background-clip:padding-box;
+  transition:transform .15s,border-color .15s;
+}
+.sw:hover{transform:scale(1.12)}
+.sw[aria-pressed="true"]{border-color:var(--ink)}
+.sw:focus-visible{outline:2px solid var(--verdigris)}
+.nospeech{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;
+  color:var(--porphyry);margin-top:10px;display:none;line-height:1.5;
+}
+
+/* ---------- story ---------- */
+.part{margin:0 0 30px}
+h2{
+  font-family:Cinzel,Georgia,serif;font-weight:500;
+  font-size:13px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--rule);
+}
+.para{margin:0}
+.sent{
+  border-radius:3px;padding:1px 0;
+  transition:background .2s;
+  scroll-margin-top:180px;
+}
+.sent.reading{background:var(--band)}
+.w.on{background:var(--word);border-radius:2px}
+.hunting .sent{
+  cursor:pointer;
+  box-shadow:inset 0 -1px 0 var(--ink-faint);
+}
+.hunting .sent:hover{background:var(--verdigris-soft);box-shadow:inset 0 -1px 0 var(--verdigris)}
+.sent.hit{background:var(--verdigris-soft);box-shadow:inset 0 -2px 0 var(--verdigris)}
+.sent.miss{background:var(--porphyry-soft);box-shadow:inset 0 -2px 0 var(--porphyry)}
+.sent.shown{background:var(--band);box-shadow:inset 0 -2px 0 var(--brass)}
+
+/* ---------- words ---------- */
+.dayhead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.dayprog{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-soft);
+  white-space:nowrap;
+}
+.dayprog.done{color:var(--verdigris);font-weight:700}
+.daybar{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden;margin:12px 0 4px}
+.daybar i{display:block;height:100%;width:0;background:var(--verdigris);
+  border-radius:2px;transition:width .35s var(--ease,ease)}
+.daysec{margin-top:54px;padding-top:26px;border-top:2px solid var(--rule)}
+.daytag{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--verdigris);margin:0 0 4px;
+}
+.sub-head{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint);margin:30px 0 14px;
+  padding-bottom:6px;border-bottom:1px solid var(--rule);
+}
+.daysec .section-head{margin-top:0}
+.section-head{
+  font-family:Cinzel,Georgia,serif;font-weight:600;
+  font-size:22px;letter-spacing:.03em;
+  margin:52px 0 6px;
+}
+.section-note{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 20px;
+}
+.cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.card{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;text-align:left;
+  background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+  padding:14px;cursor:pointer;color:var(--ink);
+  transition:border-color .15s,background .15s;
+}
+.card:hover{border-color:var(--verdigris)}
+.card:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.card .term{
+  font-family:Cinzel,Georgia,serif;font-size:16px;font-weight:600;
+  letter-spacing:.04em;display:block;
+}
+.card .prompt{font-size:12px;color:var(--verdigris);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.card .def{font-size:14px;line-height:1.55;color:var(--ink-soft);margin-top:7px;display:none}
+.card.open .def{display:block}
+.card.open .prompt{display:none}
+
+/* ---------- questions ---------- */
+.q{
+  background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+  padding:18px;margin-bottom:14px;
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+}
+.qnum{
+  font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--verdigris);
+}
+.qtext{font-family:"Source Serif 4",Georgia,serif;font-size:19px;line-height:1.5;margin:6px 0 14px}
+.stage{
+  font-size:13px;color:var(--ink-soft);line-height:1.6;
+  border-left:2px solid var(--rule);padding-left:12px;margin-bottom:12px;
+}
+.stage strong{color:var(--ink);font-weight:600}
+.route{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn.ghost{background:transparent;color:var(--verdigris);box-shadow:inset 0 0 0 1px var(--rule)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--verdigris);background:transparent}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{
+  font-family:inherit;font-size:15px;line-height:1.5;text-align:left;
+  background:var(--surface-2);color:var(--ink);
+  border:1px solid transparent;border-radius:3px;
+  padding:12px 14px;cursor:pointer;
+  transition:border-color .15s,background .15s;
+}
+.choice:hover:not(:disabled){border-color:var(--verdigris)}
+.choice:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.choice:disabled{cursor:default}
+.choice.right{background:var(--verdigris-soft);border-color:var(--verdigris);font-weight:600}
+.choice.wrong{background:var(--porphyry-soft);border-color:var(--porphyry)}
+.verdict{font-size:14px;line-height:1.6;margin-top:12px;display:none}
+.verdict.show{display:block}
+.verdict.good{color:var(--verdigris-ink)}
+.verdict.bad{color:var(--porphyry)}
+
+/* ---------- hunt banner ---------- */
+.hunt-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:var(--surface);border-top:1px solid var(--verdigris);
+  box-shadow:0 -6px 24px rgba(0,0,0,.12);
+  padding:13px 20px;
+  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:14px;
+  display:none;align-items:center;gap:14px;
+}
+.hunt-bar.show{display:flex}
+.hunt-bar .label{flex:1;line-height:1.45;color:var(--ink)}
+.hunt-bar .label b{color:var(--verdigris);font-weight:600}
+
+/* ---------- score ---------- */
+.score{
+  border:1px solid var(--rule);border-top:3px solid var(--verdigris);
+  border-radius:4px;background:var(--surface);
+  padding:22px;margin-top:26px;text-align:center;
+  font-family:"IBM Plex Sans",system-ui,sans-serif;display:none;
+}
+.score.show{display:block}
+.score .big{
+  font-family:Cinzel,Georgia,serif;font-size:38px;font-weight:600;
+  font-variant-numeric:tabular-nums;line-height:1.1;
+}
+.score .pct{font-size:15px;color:var(--ink-soft);margin-top:4px}
+.score .split{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;
+}
+.score .split span{
+  display:flex;flex-direction:column;gap:2px;align-items:center;
+  border:1px solid var(--rule);border-radius:4px;padding:9px 16px;min-width:120px;
+}
+.score .split b{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--verdigris)}
+.score .split span{font-size:12px;color:var(--ink-soft)}
+.score .split i{font-style:normal;font-size:17px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.score .line{font-size:14px;color:var(--ink-soft);margin-top:14px;line-height:1.6}
+
+/* completion state */
+.status{
+  display:none;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-top:18px;padding:15px 18px;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+}
+.status.show{display:flex}
+.statusline{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
+.statusline .mark{
+  width:24px;height:24px;border-radius:50%;flex:none;
+  display:grid;place-items:center;
+  background:var(--verdigris);color:var(--on-accent);
+  font-size:14px;font-weight:700;line-height:1;
+}
+.status.partial .mark{background:var(--brass)}
+#statusText{font-size:14px;line-height:1.5;color:var(--ink)}
+#statusText b{font-weight:600}
+#statusText small{display:block;color:var(--ink-soft);font-size:12.5px;margin-top:2px}
+
+.done-note{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:14px;line-height:1.65;color:var(--ink-soft);
+  border:1px dashed var(--rule);border-radius:4px;padding:16px;margin-top:22px;
+}
+.done-note b{color:var(--ink)}
+
+/* ---------- printable answer sheet ---------- */
+#sheet{display:none}
+@media print{
+  /* Only the answer sheet prints. The story, player and quiz UI are screen things. */
+  body>*{display:none!important}
+  #sheet{display:block!important;color:#000;background:#fff;font-family:"IBM Plex Sans",system-ui,sans-serif}
+  @page{margin:16mm}
+  #sheet h1{font-family:Cinzel,Georgia,serif;font-size:20pt;margin:0 0 2mm}
+  #sheet .sub{font-size:10pt;color:#444;margin:0 0 6mm}
+  #sheet .idline{display:flex;gap:10mm;flex-wrap:wrap;font-size:10pt;
+    border-top:1px solid #000;border-bottom:1px solid #000;padding:3mm 0;margin-bottom:6mm}
+  #sheet .idline b{font-weight:700}
+  #sheet .scorebox{float:right;border:2px solid #000;padding:3mm 6mm;text-align:center;margin-left:6mm}
+  #sheet .scorebox .n{font-size:20pt;font-weight:800;line-height:1}
+  #sheet .scorebox .p{font-size:9pt;color:#333}
+  #sheet ol{padding-left:6mm;margin:0}
+  #sheet li{margin-bottom:5mm;font-size:10.5pt;line-height:1.45;page-break-inside:avoid}
+  #sheet .q{font-weight:700;margin-bottom:1.5mm}
+  #sheet .a{padding-left:3mm;border-left:2px solid #666}
+  #sheet .a .mk{font-weight:800;margin-right:2mm}
+  #sheet .foot{margin-top:8mm;padding-top:3mm;border-top:1px solid #999;font-size:9pt;color:#444}
+  #sheet .sign{margin-top:10mm;font-size:10pt}
+  #sheet .sign span{display:inline-block;border-bottom:1px solid #000;width:60mm;margin-left:3mm}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+@media (max-width:420px){
+  body{font-size:19px}
+  .btn.primary{min-width:88px}
+  .btn{padding:9px 10px}
+}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">
+      <span>Intel Briefing</span><span class="dot"></span>
+      <span>Unit 0 &middot; Lesson 1</span><span class="dot"></span>
+      <span>Ancient Rome</span>
+    </div>
+    <h1>Long Division</h1>
+    <p class="dek">Four steps, repeated until you run out of digits. That is the whole method.</p>
+  </header>
+
+  <div class="player" id="player">
+    <div class="pcontrols">
+      <button class="btn" id="back" title="Back one sentence" aria-label="Back one sentence">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13 2.5v11L5.5 8 13 2.5zM4 2.5h1.6v11H4z"/></svg>
+      </button>
+      <button class="btn primary" id="play">Read to me</button>
+      <button class="btn" id="fwd" title="Forward one sentence" aria-label="Forward one sentence">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 2.5v11L10.5 8 3 2.5zM10.4 2.5H12v11h-1.6z"/></svg>
+      </button>
+      <span class="pspacer"></span>
+      <select class="rate" id="rate" aria-label="Reading speed">
+        <option value="0.7">Slow</option>
+        <option value="0.85" selected>Normal</option>
+        <option value="1">Fast</option>
+      </select>
+    </div>
+    <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Jump to a sentence" aria-valuemin="1" aria-valuemax="26" aria-valuenow="1"></div>
+    <div class="pmeta">
+      <span id="pos">Sentence 1 of 26</span>
+      <span>Tap any sentence to start reading there</span>
+    </div>
+    <div class="voicerow" id="voicerow">
+      <label for="voice">Voice</label>
+      <select class="rate" id="voice" aria-label="Choose a reading voice"></select>
+    </div>
+    <div class="themerow" id="themerow">
+      <span class="lbl">Colours</span>
+      <div class="swatches" id="swatches"></div>
+      <button class="linkbtn" type="button" id="keyToggle">Studio voice</button>
+    </div>
+    <div class="keyrow" id="keyrow">
+      <label for="ttskey">Google Cloud Text-to-Speech API key</label>
+      <div class="keyfield">
+        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
+        <button class="btn" type="button" id="keySave">Save</button>
+        <button class="btn" type="button" id="keyClear">Clear</button>
+      </div>
+      <p class="keynote" id="keynote">Stored only in this browser, never sent anywhere but Google. Restrict the key to the Text-to-Speech API in your Cloud console.</p>
+    </div>
+    <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
+  </div>
+
+  <main id="story"></main>
+
+  <div class="daysec" id="day1">
+    <div class="dayhead">
+      <div>
+        <p class="daytag">Day One</p>
+        <h2 class="section-head">The Questions</h2>
+      </div>
+      <span class="dayprog" id="prog1">0 of 0</span>
+    </div>
+    <div class="daybar"><i id="bar1"></i></div>
+    <p class="section-note">Four questions about the story you just read. Pick your answer straight off, or press Find it in the story if you would rather hunt for the sentence first.</p>
+    <div id="questions1"></div>
+  </div>
+
+  <div class="daysec" id="day2">
+    <div class="dayhead">
+      <div>
+        <p class="daytag">Day Two</p>
+        <h2 class="section-head">The Words</h2>
+      </div>
+      <span class="dayprog" id="prog2">0 of 0</span>
+    </div>
+    <div class="daybar"><i id="bar2"></i></div>
+    <p class="section-note">Four words the booklet lists but never explains. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
+    <div class="cards" id="cards"></div>
+    <h3 class="sub-head">Vocabulary Check</h3>
+    <div id="questions2"></div>
+  </div>
+
+  <div class="score" id="score"></div>
+
+  <div class="status" id="status">
+    <div class="statusline">
+      <span class="mark" id="statusMark"></span>
+      <span id="statusText"></span>
+    </div>
+    <button class="btn" type="button" id="printKey">Print answer sheet</button>
+    <button class="btn" type="button" id="retake">Retake lesson</button>
+  </div>
+
+  <!-- Built when he prints. Screen-hidden; the print stylesheet shows only this. -->
+  <div id="sheet" aria-hidden="true"></div>
+
+  <div class="done-note">
+    <b>When you finish:</b> write the answers out in your own words &mdash; not copied word for word from the choices. Saying it your own way is the part that proves you understood it. Then use <b>Print answer sheet</b> for a one-page record of what was answered and scored.
+  </div>
+
+</div>
+
+<div class="hunt-bar" id="huntbar">
+  <span class="label" id="huntlabel"></span>
+  <button class="btn" id="huntcancel">Cancel</button>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- saved settings and progress ----------
+   Keys are shared site-wide on purpose:
+     ns:voice / ns:speed / ns:theme   settings, so they carry to every lesson
+     ns:done:<lessonId>               progress, so the lesson list can tick it off
+   Same origin means /grade-7/ and /history/ read the very same store. */
+var LESSON_ID = "maths/long-division";
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch(e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch(e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch(e){} }
+
+/* ---------- colour themes ---------- */
+/* Each theme carries a full light and dark set, so switching theme never leaves
+   half the page on the old palette. --control-bg stays dark in every theme because
+   the select arrow is a light-stroked SVG. */
+var THEMES = {
+  forest: { name:"Forest",
+    light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
+            accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
+            ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
+            brass:"#7E6A16",band:"rgba(158,138,40,.22)",word:"rgba(158,138,40,.48)" },
+    dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
+            accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
+            ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
+            brass:"#D8B355",band:"rgba(216,179,85,.16)",word:"rgba(216,179,85,.40)" } },
+
+  ocean: { name:"Ocean",
+    light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
+            accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
+            ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.20)",word:"rgba(196,132,24,.44)" },
+    dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
+            accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
+            ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.16)",word:"rgba(224,182,92,.40)" } },
+
+  ember: { name:"Ember",
+    light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
+            accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
+            ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
+            brass:"#6B5A11",band:"rgba(120,104,26,.20)",word:"rgba(120,104,26,.44)" },
+    dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
+            accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
+            ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
+            brass:"#D6C169",band:"rgba(214,193,105,.15)",word:"rgba(214,193,105,.38)" } },
+
+  violet: { name:"Violet",
+    light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
+            accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
+            ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
+            brass:"#7A6212",band:"rgba(150,122,26,.20)",word:"rgba(150,122,26,.44)" },
+    dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
+            accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
+            ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.15)",word:"rgba(220,187,99,.38)" } },
+
+  graphite: { name:"Graphite",
+    light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
+            accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
+            ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
+            brass:"#7A6318",band:"rgba(152,124,32,.20)",word:"rgba(152,124,32,.44)" },
+    dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
+            accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
+            ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
+            brass:"#D6BC66",band:"rgba(214,188,102,.15)",word:"rgba(214,188,102,.38)" } }
+};
+
+var VAR_MAP = {
+  ground:"--ground", surface:"--surface", s2:"--surface-2", ink:"--ink",
+  inkSoft:"--ink-soft", inkFaint:"--ink-faint", rule:"--rule",
+  accent:"--verdigris", accentInk:"--verdigris-ink", accentSoft:"--verdigris-soft",
+  onAccent:"--on-accent", ctlBg:"--control-bg", ctlInk:"--control-ink",
+  ctlBorder:"--control-border", tickNow:"--tick-now", tickDone:"--tick-done",
+  brass:"--brass", band:"--band", word:"--word"
+};
+
+var themeKey = load("theme", "forest");
+if (!THEMES[themeKey]) themeKey = "forest";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){
+    if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]);
+  }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+
+(function buildSwatches(){
+  var wrap = document.getElementById("swatches");
+  Object.keys(THEMES).forEach(function(k){
+    var b = document.createElement("button");
+    b.className = "sw";
+    b.type = "button";
+    b.setAttribute("data-t", k);
+    b.title = THEMES[k].name;
+    b.setAttribute("aria-label", THEMES[k].name + " colours");
+    var d = THEMES[k].dark;
+    b.style.background = "linear-gradient(135deg," + d.accent + " 0 50%," + d.ground + " 50% 100%)";
+    b.addEventListener("click", function(){
+      themeKey = k;
+      store("theme", k);
+      applyTheme();
+    });
+    wrap.appendChild(b);
+  });
+})();
+
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+
+var PARTS = [
+  { title: "What Division Really Asks", s: [
+    "Division asks one simple question: how many times does this number fit into that one?",
+    "When you see 852 divided by 4, you are asking how many groups of 4 fit inside 852.",
+    "The number you are breaking up, 852, is called the dividend.",
+    "The number you are dividing by, 4, is called the divisor.",
+    "The answer you get is called the quotient.",
+    "Long division is just a way to keep track of that question one digit at a time."
+  ] },
+  { title: "The Four Steps, In Order", s: [
+    "Long division repeats the same four steps until you run out of digits.",
+    "Step one, divide: how many times does the divisor fit into the digit you are looking at?",
+    "Step two, multiply: multiply that answer by the divisor.",
+    "Step three, subtract: take that product away from the digits above it.",
+    "Step four, bring down: bring down the next digit and start again.",
+    "Divide, multiply, subtract, bring down, and then repeat."
+  ] },
+  { title: "A Worked Example: 852 Divided by 4", s: [
+    "Start with the first digit of 852, which is 8.",
+    "Four fits into 8 exactly 2 times, so write 2 above the 8.",
+    "Multiply 2 times 4 to get 8, write that under the 8, and subtract to get 0.",
+    "Bring down the next digit, 5.",
+    "Four fits into 5 one time, so write 1 above the 5.",
+    "Multiply 1 times 4 to get 4, subtract that from 5, and you are left with 1.",
+    "Bring down the last digit, 2, which sits beside the 1 to make 12.",
+    "Four fits into 12 exactly 3 times, so write 3 above the 2.",
+    "Multiply 3 times 4 to get 12, subtract, and you are left with 0.",
+    "The digits on top read 213, so 852 divided by 4 is 213."
+  ] },
+  { title: "When It Does Not Come Out Even", s: [
+    "Sometimes the last subtraction does not leave 0.",
+    "Whatever is left over at the end is called the remainder.",
+    "If you divide 47 by 5, five fits into 47 nine times, which is 45.",
+    "Subtracting 45 from 47 leaves 2, so the answer is 9 remainder 2.",
+    "A remainder is not a mistake, it just means the groups did not come out even."
+  ] },
+  { title: "Checking Your Own Work", s: [
+    "You can check any division answer without asking anyone.",
+    "Multiply the quotient by the divisor, then add the remainder.",
+    "If you get the dividend back, your answer is right.",
+    "For 852 divided by 4, multiply 213 by 4 and you get 852, so it checks out."
+  ] }
+];
+
+var WORDS = [
+  ["Dividend", "The number being broken up. In 852 divided by 4, the dividend is 852."],
+  ["Divisor", "The number you are dividing by. In 852 divided by 4, the divisor is 4."],
+  ["Quotient", "The answer to a division problem. For 852 divided by 4, the quotient is 213."],
+  ["Remainder", "What is left over when the groups do not come out even. 47 divided by 5 is 9 remainder 2."]
+];
+
+var QUESTIONS = [
+  {
+    day: 1,
+    q: "What are the four steps of long division, in order?",
+    find: [11],
+    hint: "Look for the sentence that lists all four steps in a row.",
+    choices: [
+    "Subtract, divide, multiply, carry, and then repeat.",
+    "Multiply, divide, add, bring down, and then repeat.",
+    "Divide, add, subtract, bring down, and then stop.",
+    "Divide, multiply, subtract, bring down, and then repeat."
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "In 852 divided by 4, what goes above the 8, and why?",
+    find: [13],
+    hint: "Look in the worked example, at the very first step.",
+    choices: [
+    "Four fits into 8 exactly 2 times, so write 2 above the 8.",
+    "Four fits into 8 exactly 4 times, so write 4 above the 8.",
+    "Four fits into 8 exactly 2 times, so write 8 above the 2.",
+    "Eight fits into 4 exactly 2 times, so write 2 above the 8."
+  ],
+    right: 0
+  },
+  {
+    day: 1,
+    q: "What is 47 divided by 5?",
+    find: [25],
+    hint: "Look in the section about answers that do not come out even.",
+    choices: [
+    "Subtracting 45 from 47 leaves 2, so the answer is 2 remainder 9.",
+    "Five fits into 47 exactly 9 times, with no remainder at all.",
+    "Five fits into 47 eight times, so the answer is 8 remainder 7.",
+    "Subtracting 45 from 47 leaves 2, so the answer is 9 remainder 2."
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "How can you check a division answer by yourself?",
+    find: [28, 29],
+    hint: "Look in the last section, at the two sentences that tell you what to multiply.",
+    choices: [
+    "Add the quotient to the divisor, and see if you get the dividend back.",
+    "Multiply the quotient by the divisor, add the remainder, and see if you get the dividend back.",
+    "Multiply the dividend by the divisor, and see if you get the quotient back.",
+    "Divide the quotient by the remainder, and see if you get the divisor back."
+  ],
+    right: 1
+  },
+  {
+    day: 2,
+    q: "What does <i>dividend</i> mean?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "What is left over when the groups do not come out even. 47 divided by 5 is 9 remainder 2.",
+    "The number you are dividing by. In 852 divided by 4, the divisor is 4.",
+    "The answer to a division problem. For 852 divided by 4, the quotient is 213.",
+    "The number being broken up. In 852 divided by 4, the dividend is 852."
+  ],
+    right: 3
+  },
+  {
+    day: 2,
+    q: "What does <i>divisor</i> mean?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "The number being broken up. In 852 divided by 4, the dividend is 852.",
+    "What is left over when the groups do not come out even. 47 divided by 5 is 9 remainder 2.",
+    "The answer to a division problem. For 852 divided by 4, the quotient is 213.",
+    "The number you are dividing by. In 852 divided by 4, the divisor is 4."
+  ],
+    right: 3
+  },
+  {
+    day: 2,
+    q: "What does <i>quotient</i> mean?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "The number you are dividing by. In 852 divided by 4, the divisor is 4.",
+    "The number being broken up. In 852 divided by 4, the dividend is 852.",
+    "What is left over when the groups do not come out even. 47 divided by 5 is 9 remainder 2.",
+    "The answer to a division problem. For 852 divided by 4, the quotient is 213."
+  ],
+    right: 3
+  },
+  {
+    day: 2,
+    q: "What does <i>remainder</i> mean?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "The number being broken up. In 852 divided by 4, the dividend is 852.",
+    "The number you are dividing by. In 852 divided by 4, the divisor is 4.",
+    "What is left over when the groups do not come out even. 47 divided by 5 is 9 remainder 2.",
+    "The answer to a division problem. For 852 divided by 4, the quotient is 213."
+  ],
+    right: 2
+  }
+];
+
+/* ---------- build the story ---------- */
+var SENT = [];
+var storyEl = document.getElementById("story");
+
+PARTS.forEach(function(part){
+  var sec = document.createElement("section");
+  sec.className = "part";
+  var h = document.createElement("h2");
+  h.textContent = part.title;
+  sec.appendChild(h);
+  var p = document.createElement("p");
+  p.className = "para";
+  part.s.forEach(function(text){
+    var i = SENT.length;
+    var span = document.createElement("span");
+    span.className = "sent";
+    span.id = "s" + i;
+    span.setAttribute("data-i", i);
+    // word spans with char offsets, so speech boundaries can light them up
+    var offsets = [];
+    var cursor = 0;
+    text.split(" ").forEach(function(w, k){
+      if (k > 0) { span.appendChild(document.createTextNode(" ")); cursor += 1; }
+      var ws = document.createElement("span");
+      ws.className = "w";
+      ws.textContent = w;
+      span.appendChild(ws);
+      offsets.push({ el: ws, start: cursor, end: cursor + w.length });
+      cursor += w.length;
+    });
+    p.appendChild(span);
+    p.appendChild(document.createTextNode(" "));
+    SENT.push({ text: text, el: span, words: offsets });
+  });
+  sec.appendChild(p);
+  storyEl.appendChild(sec);
+});
+
+/* ---------- read aloud ---------- */
+/* Two engines.
+   STUDIO  — pre-rendered Google Cloud TTS clips, embedded below as data URIs, with a
+             per-word timing array from Google's SSML timepoints. Best quality, no network.
+   DEVICE  — the browser's own speechSynthesis. Always present, always the fallback.
+   AUDIO stays null until the clips are generated; the page runs on DEVICE until then. */
+var AUDIO = null;   /* { voice:"en-US-...", clips:[ { src:"data:audio/mpeg;base64,...", marks:[0,0.31,...] } ] } */
+
+/* Google Cloud voices, fetched live with the viewer's own key. Curated rather
+   than listed from the API: these are the ones that support SSML marks, which
+   is what gives exact per-word timing. British first, per Paul. */
+var GOOGLE_VOICES = [
+  { id:"en-GB-Neural2-B", label:"UK male (Neural2 B)" },
+  { id:"en-GB-Neural2-D", label:"UK male (Neural2 D)" },
+  { id:"en-GB-Neural2-A", label:"UK female (Neural2 A)" },
+  { id:"en-US-Neural2-D", label:"US male (Neural2 D)" },
+  { id:"en-US-Neural2-J", label:"US male (Neural2 J)" }
+];
+var ttsKey = load("ttskey", "");
+var clipCache = {};          // "voice|index" -> { src, marks }
+
+function hasKey(){ return !!ttsKey; }
+
+function hasStudio(){
+  return !!(AUDIO && AUDIO.clips && AUDIO.clips.length === SENT.length);
+}
+
+function xmlEsc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+}
+
+/* One sentence -> MP3 + a start time per word. Cached, so replaying a sentence
+   or scrubbing back costs nothing and never bills twice. */
+function fetchClip(i, voiceId){
+  var ck = voiceId + "|" + i;
+  if (clipCache[ck]) return Promise.resolve(clipCache[ck]);
+  var words = SENT[i].text.split(" ");
+  var ssml = "<speak>" + words.map(function(w, k){
+    return '<mark name="w' + k + '"/>' + xmlEsc(w);
+  }).join(" ") + "</speak>";
+
+  return fetch("https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=" + encodeURIComponent(ttsKey), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: { ssml: ssml },
+      voice: { languageCode: voiceId.slice(0, 5), name: voiceId },
+      audioConfig: { audioEncoding: "MP3", speakingRate: rateVal() },
+      enableTimePointing: ["SSML_MARK"]
+    })
+  }).then(function(r){
+    return r.json().then(function(j){
+      if (!r.ok) throw new Error(j.error ? j.error.message : "HTTP " + r.status);
+      return j;
+    });
+  }).then(function(j){
+    var marks = new Array(words.length).fill(0);
+    (j.timepoints || []).forEach(function(tp){
+      var n = parseInt(String(tp.markName).slice(1), 10);
+      if (!isNaN(n) && n < marks.length) marks[n] = tp.timeSeconds;
+    });
+    var clip = { src: "data:audio/mpeg;base64," + j.audioContent, marks: marks };
+    clipCache[ck] = clip;
+    return clip;
+  });
+}
+
+var synth = window.speechSynthesis;
+var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
+var idx = 0, playing = false, gen = 0, voice = null;
+var engine = "device";       // "google" | "baked" | "device"
+var googleVoice = load("gvoice", GOOGLE_VOICES[0].id);
+var audioEl = null, rafId = null;
+var playBtn = document.getElementById("play");
+var scrub = document.getElementById("scrub");
+var posEl = document.getElementById("pos");
+
+function note(msg, kind){
+  var el = document.getElementById("keynote");
+  if (!el) return;
+  el.className = "keynote" + (kind ? " " + kind : "");
+  el.textContent = msg || "Stored only in this browser, never sent anywhere but Google. Restrict the key to the Text-to-Speech API in your Cloud console.";
+  if (msg && kind === "bad") document.getElementById("keyrow").classList.add("show");
+}
+window.syncVoiceUI = function(){};
+
+if (!supported && !hasStudio() && !hasKey()){
+  document.getElementById("nospeech").style.display = "block";
+  playBtn.disabled = true;
+  playBtn.style.opacity = ".5";
+} else {
+  // The default browser voice on Windows is usually Microsoft David or Zira, the old
+  // robotic SAPI pair. The good free voices are the non-local ones: Google's, and the
+  // Windows 11 "Natural" set. Rank by name so the best available wins, and let him pick.
+  var voiceSel = document.getElementById("voice");
+  var voiceRow = document.getElementById("voicerow");
+  var voices = [];
+
+  function rank(v){
+    var n = v.name || "";
+    // Paul's pick. Wins outright wherever Chrome ships it.
+    if (/^google uk english male$/i.test(n.trim())) return 1000;
+    var score = 0;
+    if (/natural/i.test(n)) score += 100;          // Windows 11 neural voices
+    if (/neural/i.test(n)) score += 90;
+    if (/^google/i.test(n)) score += 75;           // Chrome's own, clearly better than SAPI
+    if (/online/i.test(n)) score += 55;
+    if (/\b(ava|andrew|emma|brian|aria|guy|jenny|michelle|steffan|christopher|eric)\b/i.test(n)) score += 45;
+    if (/\b(samantha|alex|siri|evan|nathan|serena|daniel|arthur|oliver)\b/i.test(n)) score += 60; // macOS / iOS
+    if (/\b(david|zira|mark|hazel|susan|george|catherine)\b/i.test(n)) score -= 60; // legacy SAPI
+    if (/compact|eloquence|espeak/i.test(n)) score -= 80;
+    if (v.localService === false) score += 15;
+    if (/^en[-_]GB/i.test(v.lang)) score += 12;    // British first, per Paul
+    else if (/^en[-_]US/i.test(v.lang)) score += 6;
+    return score;
+  }
+
+  function saved(){ return load("voice", null); }
+  function save(name){ store("voice", name); }
+
+  function loadVoices(){
+    var all = supported ? (synth.getVoices() || []) : [];
+    voices = all.filter(function(v){ return /^en([-_]|$)/i.test(v.lang || ""); });
+    if (!voices.length) voices = all.slice();
+    voices.sort(function(a, b){ return rank(b) - rank(a); });
+    if (voices.length) voice = voices[0];
+
+    voiceSel.innerHTML = "";
+
+    // Google Cloud voices, only once a key is saved
+    if (hasKey()){
+      var gg = document.createElement("optgroup");
+      gg.label = "Google Cloud (your key)";
+      GOOGLE_VOICES.forEach(function(g){
+        var o = document.createElement("option");
+        o.value = "g:" + g.id;
+        o.textContent = g.label;
+        gg.appendChild(o);
+      });
+      voiceSel.appendChild(gg);
+    }
+    if (hasStudio()){
+      var so = document.createElement("option");
+      so.value = "__studio__";
+      so.textContent = "Studio voice (built in)";
+      voiceSel.appendChild(so);
+    }
+    var dg = document.createElement("optgroup");
+    dg.label = "This device";
+    voices.forEach(function(v, i){
+      var o = document.createElement("option");
+      o.value = "d:" + v.name;
+      o.textContent = v.name.replace(/\s*\(.*?\)\s*$/, "") + (i === 0 ? "  (best on this device)" : "");
+      dg.appendChild(o);
+    });
+    voiceSel.appendChild(dg);
+
+    // Restore the saved pick, falling back sensibly if it is not on this device
+    var want = saved();
+    if (!want || !selectValue(want)){
+      if (hasKey()) selectValue("g:" + googleVoice);
+      else if (hasStudio()) selectValue("__studio__");
+      else if (voices.length) selectValue("d:" + voices[0].name);
+    }
+    applyVoiceChoice(voiceSel.value, false);
+    if (voiceSel.options.length) voiceRow.classList.add("show");
+  }
+
+  function selectValue(v){
+    var found = false;
+    [].forEach.call(voiceSel.querySelectorAll("option"), function(o){
+      if (o.value === v){ o.selected = true; found = true; }
+    });
+    return found;
+  }
+
+  function applyVoiceChoice(val, persist){
+    if (!val) return;
+    if (val.indexOf("g:") === 0){
+      engine = "google";
+      googleVoice = val.slice(2);
+      store("gvoice", googleVoice);
+    } else if (val === "__studio__"){
+      engine = "baked";
+    } else {
+      engine = "device";
+      voice = voices.filter(function(v){ return "d:" + v.name === val; })[0] || voice;
+    }
+    if (persist) save(val);
+  }
+
+  window.syncVoiceUI = function(){
+    if (engine === "device" && voice) selectValue("d:" + voice.name);
+  };
+
+  voiceSel.addEventListener("change", function(){
+    applyVoiceChoice(voiceSel.value, true);
+    note("", "");
+    if (playing) speak(idx);
+  });
+
+  /* ---- API key ---- */
+  var keyRow = document.getElementById("keyrow");
+  var keyIn = document.getElementById("ttskey");
+  document.getElementById("keyToggle").addEventListener("click", function(){
+    keyRow.classList.toggle("show");
+    if (keyRow.classList.contains("show")) keyIn.focus();
+  });
+  if (ttsKey) keyIn.value = ttsKey;
+  document.getElementById("keySave").addEventListener("click", function(){
+    var v = keyIn.value.trim();
+    if (!v){ note("Paste a key first.", "bad"); return; }
+    ttsKey = v; store("ttskey", v); clipCache = {};
+    note("Key saved. Google Cloud voices are now in the list.", "good");
+    loadVoices();
+    selectValue("g:" + googleVoice);
+    applyVoiceChoice(voiceSel.value, true);
+  });
+  document.getElementById("keyClear").addEventListener("click", function(){
+    ttsKey = ""; drop("ttskey"); clipCache = {}; keyIn.value = "";
+    engine = "device";
+    note("Key removed. Back to this device's voice.", "");
+    loadVoices();
+  });
+
+  loadVoices();
+  // Chrome populates the list asynchronously, so this fires after the first empty read
+  if (supported && typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = loadVoices;
+}
+
+var ticks = SENT.map(function(_, i){
+  var t = document.createElement("span");
+  t.className = "tick";
+  t.setAttribute("data-i", i);
+  scrub.appendChild(t);
+  return t;
+});
+scrub.setAttribute("aria-valuemax", String(SENT.length));
+
+function paint(){
+  SENT.forEach(function(s, i){
+    s.el.classList.toggle("reading", i === idx && playing);
+    ticks[i].className = "tick" + (i < idx ? " done" : (i === idx ? " now" : ""));
+  });
+  posEl.textContent = "Sentence " + (idx + 1) + " of " + SENT.length;
+  scrub.setAttribute("aria-valuenow", String(idx + 1));
+  playBtn.textContent = playing ? "Pause" : "Read to me";
+}
+
+function clearWords(){
+  SENT.forEach(function(s){
+    s.words.forEach(function(w){ w.el.classList.remove("on"); });
+  });
+}
+
+function rateVal(){ return parseFloat(document.getElementById("rate").value); }
+
+function stopEngines(){
+  gen++;
+  if (supported){ try { synth.cancel(); } catch(e){} }
+  if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
+  if (audioEl){
+    try { audioEl.pause(); } catch(e){}
+    audioEl.onended = null;
+    audioEl = null;
+  }
+}
+
+function finished(mine){
+  if (mine !== gen || !playing) return;
+  if (idx < SENT.length - 1) speak(idx + 1);
+  else { playing = false; clearWords(); paint(); }
+}
+
+// GOOGLE CLOUD: fetched live with the viewer's own key, then played like a clip.
+// Prefetches the next sentence so playback does not stall between sentences.
+function playGoogle(mine){
+  var v = googleVoice;
+  playBtn.textContent = "Loading…";
+  fetchClip(idx, v).then(function(clip){
+    if (mine !== gen) return;
+    playBtn.textContent = playing ? "Pause" : "Read to me";
+    playClipFrom(mine, clip);
+    if (idx + 1 < SENT.length) fetchClip(idx + 1, v).catch(function(){});
+  }).catch(function(err){
+    if (mine !== gen) return;
+    note(String(err.message || err), "bad");
+    engine = "device";
+    syncVoiceUI();
+    playSynth(mine);
+  });
+}
+
+// STUDIO: pre-rendered clip baked into the page at build time
+function playClip(mine){
+  playClipFrom(mine, AUDIO.clips[idx]);
+}
+
+function playClipFrom(mine, clip){
+  var s = SENT[idx];
+  var marks = clip.marks || [];
+  audioEl = new Audio(clip.src);
+  audioEl.playbackRate = rateVal();
+
+  function tick(){
+    if (mine !== gen || !audioEl) return;
+    var t = audioEl.currentTime, k = -1;
+    for (var j = 0; j < marks.length; j++){
+      if (marks[j] <= t) k = j; else break;
+    }
+    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === k); });
+    rafId = requestAnimationFrame(tick);
+  }
+
+  audioEl.onended = function(){ finished(mine); };
+  var p = audioEl.play();
+  if (p && p.then){
+    p.then(function(){ rafId = requestAnimationFrame(tick); })
+     .catch(function(){ if (mine === gen) playSynth(mine); });   // clip broken -> device voice
+  } else {
+    rafId = requestAnimationFrame(tick);
+  }
+}
+
+// DEVICE: the browser's own voice, and the fallback for everything
+function playSynth(mine){
+  if (!supported) return;
+  var s = SENT[idx];
+  var u = new SpeechSynthesisUtterance(s.text);
+  u.rate = rateVal();
+  if (voice) u.voice = voice;
+  u.onboundary = function(ev){
+    if (mine !== gen) return;
+    var ci = ev.charIndex;
+    if (typeof ci !== "number") return;
+    s.words.forEach(function(w){
+      w.el.classList.toggle("on", ci >= w.start && ci < w.end);
+    });
+  };
+  u.onend = function(){ finished(mine); };
+  // Chrome drops long queues if the tab throttles; one sentence at a time avoids it
+  synth.speak(u);
+}
+
+function speak(i){
+  if (!supported && !hasStudio()) return;
+  stopEngines();
+  var mine = gen;
+  idx = Math.max(0, Math.min(SENT.length - 1, i));
+  clearWords();
+  paint();
+  var s = SENT[idx];
+  try { s.el.scrollIntoView({ behavior:"smooth", block:"center" }); } catch(e){ s.el.scrollIntoView(); }
+
+  if (engine === "google" && hasKey()) playGoogle(mine);
+  else if (engine === "baked" && hasStudio()) playClip(mine);
+  else playSynth(mine);
+}
+
+playBtn.addEventListener("click", function(){
+  if (!supported && !hasStudio()) return;
+  if (playing){
+    playing = false;
+    stopEngines();
+    clearWords();
+    paint();
+  } else {
+    playing = true;
+    speak(idx);
+  }
+});
+
+document.getElementById("back").addEventListener("click", function(){
+  var t = Math.max(0, idx - 1);
+  if (playing) speak(t); else { idx = t; paint(); SENT[idx].el.scrollIntoView({behavior:"smooth",block:"center"}); }
+});
+document.getElementById("fwd").addEventListener("click", function(){
+  var t = Math.min(SENT.length - 1, idx + 1);
+  if (playing) speak(t); else { idx = t; paint(); SENT[idx].el.scrollIntoView({behavior:"smooth",block:"center"}); }
+});
+var rateSel = document.getElementById("rate");
+(function restoreRate(){
+  var r = load("speed", null);
+  if (r && [].some.call(rateSel.options, function(o){ return o.value === r; })) rateSel.value = r;
+})();
+rateSel.addEventListener("change", function(){
+  store("speed", rateSel.value);
+  if (playing) speak(idx);
+});
+
+function seekFromEvent(e){
+  var r = scrub.getBoundingClientRect();
+  var x = (e.clientX - r.left) / r.width;
+  var t = Math.max(0, Math.min(SENT.length - 1, Math.floor(x * SENT.length)));
+  if (playing) speak(t); else { idx = t; paint(); SENT[idx].el.scrollIntoView({behavior:"smooth",block:"center"}); }
+}
+scrub.addEventListener("click", seekFromEvent);
+scrub.addEventListener("keydown", function(e){
+  if (e.key === "ArrowLeft"){ e.preventDefault(); document.getElementById("back").click(); }
+  if (e.key === "ArrowRight"){ e.preventDefault(); document.getElementById("fwd").click(); }
+});
+
+/* ---------- word cards ---------- */
+var cardsEl = document.getElementById("cards");
+WORDS.forEach(function(pair){
+  var b = document.createElement("button");
+  b.className = "card";
+  b.type = "button";
+  b.innerHTML = '<span class="term"></span><span class="prompt">What is it?</span><span class="def"></span>';
+  b.querySelector(".term").textContent = pair[0];
+  b.querySelector(".def").textContent = pair[1];
+  b.addEventListener("click", function(){ b.classList.toggle("open"); });
+  cardsEl.appendChild(b);
+});
+
+/* ---------- questions ---------- */
+var hunt = null;            // { qi, tries }
+var huntBar = document.getElementById("huntbar");
+var huntLabel = document.getElementById("huntlabel");
+var answered = [];
+var hunted = [];    // questions where Find was actually used
+var foundFirstTry = 0, huntTotal = 0;
+var qEl1 = document.getElementById("questions1");
+var qEl2 = document.getElementById("questions2");
+
+QUESTIONS.forEach(function(Q, qi){
+  if (Q.find) huntTotal++;
+  var card = document.createElement("div");
+  card.className = "q";          // never locked: answering is the default path
+  card.id = "q" + qi;
+
+  var num = document.createElement("div");
+  num.className = "qnum";
+  num.textContent = "Question " + (qi + 1);
+  card.appendChild(num);
+
+  var qt = document.createElement("div");
+  qt.className = "qtext";
+  qt.innerHTML = Q.q;   // our own strings; italics in vocabulary questions are intentional
+  card.appendChild(qt);
+
+  var stage = document.createElement("div");
+  stage.className = "stage";
+  card.appendChild(stage);
+
+  if (Q.find){
+    stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
+    var go = document.createElement("button");
+    go.className = "btn ghost";
+    go.type = "button";
+    go.textContent = "Find it in the story";
+    go.style.marginTop = "9px";
+    go.addEventListener("click", function(){ startHunt(qi); });
+    stage.appendChild(go);
+  } else {
+    stage.innerHTML = "<strong>No hunting on this one.</strong> " + Q.note;
+  }
+
+  var ch = document.createElement("div");
+  ch.className = "choices";
+  Q.choices.forEach(function(text, ci){
+    var b = document.createElement("button");
+    b.className = "choice";
+    b.type = "button";
+    b.textContent = text;
+    b.addEventListener("click", function(){ answer(qi, ci); });
+    ch.appendChild(b);
+  });
+  card.appendChild(ch);
+
+  var v = document.createElement("div");
+  v.className = "verdict";
+  card.appendChild(v);
+
+  (Q.day === 2 ? qEl2 : qEl1).appendChild(card);
+});
+
+function startHunt(qi){
+  hunted[qi] = true;
+  hunt = { qi: qi, tries: 0 };
+  if (playing){ playing = false; gen++; if (supported) synth.cancel(); clearWords(); paint(); }
+  document.body.classList.add("hunting");
+  storyEl.classList.add("hunting");
+  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
+  huntLabel.innerHTML = "<b>Question " + (qi + 1) + ".</b> Tap the sentence that answers it.";
+  huntBar.classList.add("show");
+  storyEl.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function endHunt(){
+  hunt = null;
+  document.body.classList.remove("hunting");
+  storyEl.classList.remove("hunting");
+  huntBar.classList.remove("show");
+}
+
+document.getElementById("huntcancel").addEventListener("click", endHunt);
+
+storyEl.addEventListener("click", function(e){
+  var target = e.target.closest ? e.target.closest(".sent") : null;
+  if (!target) return;
+  var i = parseInt(target.getAttribute("data-i"), 10);
+
+  if (!hunt){
+    // not hunting: tap a sentence to read from there
+    playing = true;
+    speak(i);
+    return;
+  }
+
+  var Q = QUESTIONS[hunt.qi];
+  var card = document.getElementById("q" + hunt.qi);
+  var stage = card.querySelector(".stage");
+  hunt.tries++;
+
+  if (Q.find.indexOf(i) !== -1){
+    target.classList.add("hit");
+    if (hunt.tries === 1) foundFirstTry++;
+    stage.innerHTML = '<strong>Found it.</strong> Now say it in your own words &mdash; pick the choice that matches the sentence you found.';
+    endHunt();
+    card.scrollIntoView({ behavior:"smooth", block:"center" });
+  } else if (hunt.tries >= 3){
+    target.classList.add("miss");
+    Q.find.forEach(function(k){ SENT[k].el.classList.add("shown"); });
+    stage.innerHTML = '<strong>Here it is.</strong> The highlighted sentence is the one. Read it again, then pick your answer below.';
+    endHunt();
+    SENT[Q.find[0]].el.scrollIntoView({ behavior:"smooth", block:"center" });
+  } else {
+    target.classList.add("miss");
+    huntLabel.innerHTML = "<b>Not that one.</b> " + Q.hint;
+  }
+});
+
+function answer(qi, ci){
+  if (answered[qi] !== undefined) return;
+  var Q = QUESTIONS[qi];
+  var card = document.getElementById("q" + qi);
+  var btns = card.querySelectorAll(".choice");
+  answered[qi] = ci;
+
+  btns.forEach(function(b, k){
+    b.disabled = true;
+    if (k === Q.right) b.classList.add("right");
+    else if (k === ci) b.classList.add("wrong");
+  });
+
+  var v = card.querySelector(".verdict");
+  v.className = "verdict show " + (ci === Q.right ? "good" : "bad");
+  v.textContent = ci === Q.right
+    ? "Correct. Write that into the booklet in your own words."
+    : "Not quite. The correct answer is marked above — read it, then write it into the booklet in your own words.";
+
+  paintProgress();
+
+  // A light progress record on every answer, so the lesson card on the shelf
+  // knows how far in he is without the lesson having to be finished first.
+  var d1p = dayStats(1), d2p = dayStats(2);
+  store("prog:" + LESSON_ID, JSON.stringify({
+    done: d1p.done + d2p.done, total: d1p.total + d2p.total,
+    d1: d1p.done, d1t: d1p.total, d2: d2p.done, d2t: d2p.total
+  }));
+
+  // Show the running score as soon as EITHER day is finished, because the two
+  // days happen on different days and he should not have to wait until Day 2
+  // to see how Day 1 went.
+  var d1 = dayStats(1), d2 = dayStats(2);
+  if (d1.done === d1.total || d2.done === d2.total) showScore();
+}
+
+function dayStats(day){
+  var total = 0, right = 0, done = 0;
+  QUESTIONS.forEach(function(Q, i){
+    if ((Q.day || 1) !== day) return;
+    total++;
+    if (answered[i] !== undefined) done++;
+    if (answered[i] === Q.right) right++;
+  });
+  return { total: total, right: right, done: done,
+           pct: total ? Math.round(right / total * 100) : 0 };
+}
+
+function paintProgress(){
+  [1, 2].forEach(function(day){
+    var st = dayStats(day);
+    var label = document.getElementById("prog" + day);
+    var bar = document.getElementById("bar" + day);
+    if (label){
+      label.textContent = st.done + " of " + st.total + (st.done === st.total && st.total ? " — done" : " answered");
+      label.classList.toggle("done", st.total > 0 && st.done === st.total);
+    }
+    if (bar) bar.style.width = (st.total ? (st.done / st.total * 100) : 0) + "%";
+  });
+}
+
+function showScore(){
+  var d1 = dayStats(1), d2 = dayStats(2);
+  var right = d1.right + d2.right;
+  var total = d1.total + d2.total;
+  var pct = Math.round(right / total * 100);
+  var missed = QUESTIONS.filter(function(Q){ return Q.find; }).length - hunted.filter(Boolean).length;
+
+  var el = document.getElementById("score");
+  el.innerHTML =
+    '<div class="big">' + right + ' / ' + total + '</div>' +
+    '<div class="pct">' + pct + '%</div>' +
+    '<div class="split">' +
+      '<span><b>Day 1</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>' +
+      '<span><b>Day 2</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>' +
+    '</div>' +
+    '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
+    ' &middot; answered without hunting: ' + missed + '.<br>' +
+    'Use Print answer sheet for a record of this attempt.</div>';
+  el.classList.add("show");
+
+  // A lesson counts as complete only when BOTH days are answered. Finishing
+  // Day 1 saves progress, it does not finish the lesson.
+  var complete = (d1.done === d1.total) && (d2.done === d2.total);
+  var prev = readDone();
+  var better = !prev || right > prev.score;
+  // never let a part-finished retake overwrite a completed record
+  if (better || (complete && !(prev && prev.complete))){
+    store("done:" + LESSON_ID, JSON.stringify({
+      score: right, total: total, pct: pct, complete: complete,
+      d1: d1.right, d1t: d1.total, d2: d2.right, d2t: d2.total,
+      d1done: d1.done === d1.total, d2done: d2.done === d2.total,
+      found: foundFirstTry, hunts: huntTotal,
+      at: new Date().toISOString()
+    }));
+  }
+  paintStatus();
+  el.scrollIntoView({ behavior:"smooth", block:"center" });
+}
+
+/* ---------- completed / retake ---------- */
+function readDone(){
+  try { return JSON.parse(load("done:" + LESSON_ID, "null")); } catch(e){ return null; }
+}
+
+function paintStatus(){
+  var d = readDone();
+  var box = document.getElementById("status");
+  if (!d){ box.classList.remove("show"); return; }
+  var when = "";
+  try {
+    when = new Date(d.at).toLocaleDateString(undefined, { month:"short", day:"numeric" });
+  } catch(e){}
+  var done = d.complete !== false;
+  box.classList.toggle("partial", !done || d.pct < 60);
+  document.getElementById("statusMark").textContent = !done ? "…" : (d.pct < 60 ? "!" : "✓");
+  document.getElementById("statusText").innerHTML =
+    (done
+      ? "<b>Lesson completed</b> &middot; best score " + d.score + " / " + d.total + " (" + d.pct + "%)"
+      : "<b>" + (d.d1done ? "Day 1 finished" : "Day 2 finished") + "</b> &middot; " +
+        d.score + " / " + d.total + " so far &mdash; the other day is still to do") +
+    "<small>" + (when ? "Last worked " + when + ". " : "") +
+    "Retaking keeps your best score.</small>";
+  box.classList.add("show");
+}
+
+document.getElementById("retake").addEventListener("click", function(){
+  // Wipe the attempt, keep the record. Nothing about the saved score changes.
+  if (playing){ playing = false; stopEngines(); clearWords(); paint(); }
+  answered = [];
+  hunted = [];
+  drop("prog:" + LESSON_ID);
+  foundFirstTry = 0;
+  endHunt();
+  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
+  document.getElementById("score").classList.remove("show");
+  QUESTIONS.forEach(function(Q, qi){
+    var card = document.getElementById("q" + qi);
+    card.querySelector(".verdict").className = "verdict";
+    [].forEach.call(card.querySelectorAll(".choice"), function(b){
+      b.disabled = false;
+      b.classList.remove("right","wrong");
+    });
+    var stage = card.querySelector(".stage");
+    if (Q.find){
+      stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
+    var go = document.createElement("button");
+    go.className = "btn ghost";
+    go.type = "button";
+    go.textContent = "Find it in the story";
+    go.style.marginTop = "9px";
+    go.addEventListener("click", function(){ startHunt(qi); });
+    stage.appendChild(go);
+    }
+  });
+  paintProgress();
+  document.getElementById("q0").scrollIntoView({ behavior:"smooth", block:"center" });
+});
+
+/* ---------- printable answer sheet ----------
+   Proof the work was done: the five questions, what he answered, whether it was
+   right, and the score. Not the story - this is the record, not the lesson. */
+var LESSON_TITLE = "Long Division";
+var LESSON_UNIT  = "Foundations · Unit 0 · Lesson 1";
+
+document.getElementById("printKey").addEventListener("click", function(){
+  var d = readDone();
+  var right = 0;
+  QUESTIONS.forEach(function(Q, i){ if (answered[i] === Q.right) right++; });
+  var attempted = answered.filter(function(a){ return a !== undefined; }).length;
+  var pct = attempted ? Math.round(right / QUESTIONS.length * 100) : 0;
+  var now = new Date();
+  var dateStr = now.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
+
+  var rows = QUESTIONS.map(function(Q, i){
+    var pick = answered[i];
+    var ok = pick === Q.right;
+    var given = pick === undefined ? "(not answered)" : Q.choices[pick];
+    var mark = pick === undefined ? "–" : (ok ? "✓" : "✗");
+    var corrected = (pick !== undefined && !ok)
+      ? '<div class="a" style="margin-top:2mm"><span class="mk">→</span>Correct answer: ' + Q.choices[Q.right] + '</div>'
+      : "";
+    return '<li><div class="q">' + Q.q + '</div>' +
+           '<div class="a"><span class="mk">' + mark + '</span>' + given + '</div>' +
+           corrected + '</li>';
+  }).join("");
+
+  document.getElementById("sheet").innerHTML =
+    '<div class="scorebox"><div class="n">' + right + '/' + QUESTIONS.length + '</div>' +
+      '<div class="p">' + pct + '%</div></div>' +
+    '<h1>' + LESSON_TITLE + '</h1>' +
+    '<p class="sub">' + LESSON_UNIT + '</p>' +
+    '<div class="idline">' +
+      '<span><b>Student:</b> ______________________</span>' +
+      '<span><b>Completed:</b> ' + (d && d.at ? new Date(d.at).toLocaleDateString() : dateStr) + '</span>' +
+      '<span><b>Printed:</b> ' + dateStr + '</span>' +
+    '</div>' +
+    '<ol>' + rows + '</ol>' +
+    '<div class="foot">Sentences found in the text on the first try: ' + foundFirstTry + ' of ' + huntTotal +
+      '.  Answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find;}).length - hunted.filter(Boolean).length) + '.' +
+      (d ? '  Best recorded score: ' + d.score + '/' + d.total + ' (' + d.pct + '%).' : '') +
+    '</div>' +
+    '<div class="sign">Parent signature:<span></span></div>';
+
+  window.print();
+});
+
+paintStatus();
+paintProgress();
+paint();
+})();
+</script>
+
+</body>
+</html>
