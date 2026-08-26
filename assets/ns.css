@@ -44,7 +44,7 @@
    near-black on white or every filled button becomes unreadable. The badge
    greens and oranges darken too, because #4ade80 on white fails contrast. */
 :root[data-theme="light"]{
-  --bg:#f7f8fa; --panel:#ffffff; --panel-2:#eef1f5; --line:#dde2e8;
+  --bg:#f7f8fa; --panel:#ffffff; --panel-2:#eef1f5; --line:#c6cfd9;
   --fg:#14171a; --dim:#5b646e;
   --a:#14171a; --a-ink:#ffffff;
   --free:#15803d;
@@ -166,6 +166,10 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .gr.live span{color:var(--on-a-soft)}
 @media(hover:hover){ .gr:hover{transform:translateY(-4px);border-color:var(--a)} }
 .gr.soon{opacity:.5}
+/* Light needs a firmer edge and less fade: the same .5 that reads as "dimmed"
+   on a dark tile reads as "barely there" on a white one. */
+:root[data-theme="light"] .gr{border-color:#b9c4d0}
+:root[data-theme="light"] .gr.soon{opacity:.75;border-color:#c6cfd9}
 
 /* ── 3. RESOURCE SHELF — carousel, free + paid together ── */
 .shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:32px}
