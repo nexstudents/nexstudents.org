@@ -10,7 +10,8 @@
 <title>Grades — NexStudents</title>
 <meta name="description" content="Free printable resources for K-8, organised by grade.">
 <meta name="theme-color" content="#0a0b0d">
-<link rel="stylesheet" href="/assets/ns.css?v=3f050c2d">
+<link rel="stylesheet" href="/assets/ns.css?v=e60d0a00">
+<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
 
@@ -26,6 +27,7 @@
   <a href="/about/">About<small>Who makes this</small></a>
   <a href="/contact/">Contact<small>Get in touch</small></a>
   <a class="btn" href="/grades/">Pick a grade</a>
+  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night"><span data-mode-icon>&#9790;</span><span data-mode-label>Night mode</span></button>
 </aside>
 
 <nav id="nav" class="ns-nav"><div class="nv">
@@ -34,6 +36,7 @@
   </button>
   <a class="word" href="/">Nex<b>Students</b></a>
   <div class="tabs"><a href="/">Home</a><a href="/grades/" class="on">Grades</a><a href="/resources/">Resources</a><a href="/games/">Games</a><a href="/comics/">Comics</a><a href="/for-parents/">For Parents</a></div>
+  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>
   <a class="btn" href="/grades/">Pick a grade</a>
 </div></nav>
 
@@ -67,6 +70,7 @@
 </div></footer>
 
 <script>
+
 const burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
       scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
 function setNav(o){document.body.classList.toggle("nav-open",o);
@@ -77,6 +81,27 @@ scrim.onclick=dClose.onclick=()=>setNav(false);
 addEventListener("keydown",e=>{if(e.key==="Escape")setNav(false)});
 const nav=document.getElementById("nav");
 addEventListener("scroll",()=>nav.classList.toggle("stuck",scrollY>16),{passive:true});
+
+/* Day and night. Default is dark: no attribute means dark, which is how the
+   site was drawn. The lesson pages watch this same attribute. */
+function nsMode(){ return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark"; }
+function nsPaintMode(){
+  var light = nsMode() === "light";
+  document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML = light ? "&#9788;" : "&#9790;"; });
+  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent = light ? "Day mode" : "Night mode"; });
+  document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
+    e.setAttribute("aria-label", light ? "Switch to night mode" : "Switch to day mode");
+  });
+}
+document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var next = nsMode() === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("ns:mode", next); } catch (e) {}
+    nsPaintMode();
+  });
+});
+nsPaintMode();
 </script>
 </body>
 </html>

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 __CANONICAL__
+__MODEBOOT__
 <title>From Republic to Empire — NexStudents</title>
 <meta name="description" content="A NexStudents history lesson: read along, then find the answers in the text.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1184,13 +1185,35 @@ function playClipFrom(mine, clip){
   }
 }
 
+/* ── picking the voice at SPEAK time, not at page load ──────────────────────
+   Paul, 2026-08-26: "the voices for desktop dont work if i select them on
+   mobile". Two Android behaviours cause that:
+     1. getVoices() is repopulated, so the object saved at load no longer
+        matches anything and the engine quietly uses its own default.
+     2. Android honours utterance.voice far more reliably when lang is set
+        to that voice s language as well.
+   So the choice is stored as a NAME and re-resolved every time we speak. */
+function resolveVoice(){
+  if (!supported) return null;
+  var want = voice && voice.name;
+  var all = synth.getVoices() || [];
+  if (want){
+    for (var i = 0; i < all.length; i++) if (all[i].name === want) return all[i];
+  }
+  return voice && all.indexOf(voice) >= 0 ? voice : null;
+}
+function applyVoiceTo(u){
+  var v = resolveVoice();
+  if (v){ u.voice = v; if (v.lang) u.lang = v.lang; }
+}
+
 // DEVICE: the browser's own voice, and the fallback for everything
 function playSynth(mine){
   if (!supported) return;
   var s = SENT[idx];
   var u = new SpeechSynthesisUtterance(s.text);
   u.rate = rateVal();
-  if (voice) u.voice = voice;
+  applyVoiceTo(u);
   u.onboundary = function(ev){
     if (mine !== gen) return;
     var ci = ev.charIndex;

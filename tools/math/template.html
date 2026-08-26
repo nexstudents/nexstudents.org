@@ -6,6 +6,7 @@
 <title>__TITLE__ — NexStudents</title>
 <meta name="description" content="__DEK__">
 __CANONICAL__
+__MODEBOOT__
 <link rel="stylesheet" href="/assets/ns.css">
 <link rel="stylesheet" href="/assets/lesson-nav.css">
 <style>
@@ -101,7 +102,7 @@ select.rate:focus{outline:none;border-color:var(--a)}
 /* An untouched box recedes; a typed digit stays at full strength. */
 .cell input:placeholder-shown{opacity:.4}
 .cell input:focus{outline:none;opacity:1;background:var(--boxfill);
-  border:2px solid var(--a);box-shadow:0 0 0 3px var(--pill)}
+  border:2px solid var(--a);box-shadow:0 0 0 3px var(--accent-soft)}
 /* not his turn yet: barely there */
 .cell input:disabled{background:transparent;border-color:var(--line);
   border-style:dashed;opacity:.45;color:var(--dim)}
@@ -114,12 +115,14 @@ select.rate:focus{outline:none;border-color:var(--a)}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
 /* Fallbacks. applyTheme() overwrites all of these the moment it runs. */
-:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38)}
+:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38);--accent-soft:rgba(255,255,255,.14)}
 
 /* The site nav reads six variables of its own (assets/lesson-nav.css). Mapping
    them onto this page's palette means the nav re-themes with the lesson. */
 :root{--nv-bg:var(--panel);--nv-fg:var(--fg);--nv-dim:var(--dim);
   --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
+/* NOTE: --pill belongs to ns.css and is a RADIUS (999px). Never map a colour
+   onto it here - that turned every pill in ns.css square on this page. */
 
 /* ---- colour swatches, the same five the history lessons use ---- */
 .themerow{display:flex;align-items:center;gap:10px;margin:0 0 18px}
@@ -134,7 +137,7 @@ select.rate:focus{outline:none;border-color:var(--a)}
 .tab{background:transparent;border:1px solid var(--line);border-radius:999px;
   color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
 .tab:hover{color:var(--fg)}
-.tab.on{background:var(--pill);border-color:var(--a);color:var(--fg);font-weight:700}
+.tab.on{background:var(--accent-soft);border-color:var(--a);color:var(--fg);font-weight:700}
 
 /* The two actions read as buttons, not as tabs: same pill, filled. Side by
    side on a phone, never stacked. Paul, 2026-08-26. */
@@ -258,7 +261,7 @@ __THEMES__
 var VAR_MAP = {
   ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
   inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
-  accent:"--a", accentSoft:"--pill", onAccent:"--on-accent"
+  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
 };
 
 var themeKey = load("theme", "forest");
@@ -539,12 +542,34 @@ function say(i){
   sayOnDevice(i, mine);
 }
 
+/* ── picking the voice at SPEAK time, not at page load ──────────────────────
+   Paul, 2026-08-26: "the voices for desktop dont work if i select them on
+   mobile". Two Android behaviours cause that:
+     1. getVoices() is repopulated, so the object saved at load no longer
+        matches anything and the engine quietly uses its own default.
+     2. Android honours utterance.voice far more reliably when lang is set
+        to that voice s language as well.
+   So the choice is stored as a NAME and re-resolved every time we speak. */
+function resolveVoice(){
+  if (!supported) return null;
+  var want = voice && voice.name;
+  var all = synth.getVoices() || [];
+  if (want){
+    for (var i = 0; i < all.length; i++) if (all[i].name === want) return all[i];
+  }
+  return voice && all.indexOf(voice) >= 0 ? voice : null;
+}
+function applyVoiceTo(u){
+  var v = resolveVoice();
+  if (v){ u.voice = v; if (v.lang) u.lang = v.lang; }
+}
+
 function sayOnDevice(i, mine){
   if (!supported){ stop(); return; }
   synth.cancel();
   var u = new SpeechSynthesisUtterance(CAPS[i].text);
   u.rate = rateVal();
-  if (voice) u.voice = voice;
+  applyVoiceTo(u);
   u.onend = function(){ stepDone(mine); };
   synth.speak(u);
 }

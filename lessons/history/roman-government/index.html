@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://nexstudents.org/lessons/history/roman-government/">
+<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 <title>Roman Government and Citizenship — NexStudents</title>
 <meta name="description" content="A NexStudents history lesson: read along, then find the answers in the text.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,6 +46,7 @@
   <a href="/about/">About<small>Who makes this</small></a>
   <a href="/contact/">Contact<small>Get in touch</small></a>
   <a class="navbtn" href="/grades/">Pick a grade</a>
+  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night"><span data-mode-icon>&#9790;</span><span data-mode-label>Night mode</span></button>
 </aside>
 
 <nav id="nav" class="ns-nav"><div class="nv">
@@ -53,6 +55,7 @@
   </button>
   <a class="word" href="/">Nex<b>Students</b></a>
   <div class="tabs"><a href="/">Home</a><a href="/grades/">Grades</a><a href="/resources/">Resources</a><a href="/games/">Games</a><a href="/comics/">Comics</a><a href="/for-parents/">For Parents</a></div>
+  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>
   <a class="navbtn" href="/grades/">Pick a grade</a>
 </div></nav>
 
@@ -1251,13 +1254,35 @@ function playClipFrom(mine, clip){
   }
 }
 
+/* ── picking the voice at SPEAK time, not at page load ──────────────────────
+   Paul, 2026-08-26: "the voices for desktop dont work if i select them on
+   mobile". Two Android behaviours cause that:
+     1. getVoices() is repopulated, so the object saved at load no longer
+        matches anything and the engine quietly uses its own default.
+     2. Android honours utterance.voice far more reliably when lang is set
+        to that voice s language as well.
+   So the choice is stored as a NAME and re-resolved every time we speak. */
+function resolveVoice(){
+  if (!supported) return null;
+  var want = voice && voice.name;
+  var all = synth.getVoices() || [];
+  if (want){
+    for (var i = 0; i < all.length; i++) if (all[i].name === want) return all[i];
+  }
+  return voice && all.indexOf(voice) >= 0 ? voice : null;
+}
+function applyVoiceTo(u){
+  var v = resolveVoice();
+  if (v){ u.voice = v; if (v.lang) u.lang = v.lang; }
+}
+
 // DEVICE: the browser's own voice, and the fallback for everything
 function playSynth(mine){
   if (!supported) return;
   var s = SENT[idx];
   var u = new SpeechSynthesisUtterance(s.text);
   u.rate = rateVal();
-  if (voice) u.voice = voice;
+  applyVoiceTo(u);
   u.onboundary = function(ev){
     if (mine !== gen) return;
     var ci = ev.charIndex;
@@ -1685,6 +1710,27 @@ scrim.onclick=dClose.onclick=()=>setNav(false);
 addEventListener("keydown",e=>{if(e.key==="Escape")setNav(false)});
 const nav=document.getElementById("nav");
 addEventListener("scroll",()=>nav.classList.toggle("stuck",scrollY>16),{passive:true});
+
+/* Day and night. Default is dark: no attribute means dark, which is how the
+   site was drawn. The lesson pages watch this same attribute. */
+function nsMode(){ return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark"; }
+function nsPaintMode(){
+  var light = nsMode() === "light";
+  document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML = light ? "&#9788;" : "&#9790;"; });
+  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent = light ? "Day mode" : "Night mode"; });
+  document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
+    e.setAttribute("aria-label", light ? "Switch to night mode" : "Switch to day mode");
+  });
+}
+document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var next = nsMode() === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("ns:mode", next); } catch (e) {}
+    nsPaintMode();
+  });
+});
+nsPaintMode();
 </script>
 </body>
 </html>

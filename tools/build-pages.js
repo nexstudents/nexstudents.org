@@ -22,7 +22,7 @@ const CSS_V = require("crypto")
    one. It lived here under a comment promising "ONE nav definition", which was
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
-const { NAV, tabs, drawerLinks, navMarkup } = require("./nav.js");
+const { NAV, tabs, drawerLinks, navMarkup, navScript, modeBoot } = require("./nav.js");
 
 /* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
 const SITE = "https://nexstudents.org";
@@ -41,6 +41,7 @@ function shell(o) {
 <meta name="description" content="${o.desc}">
 <meta name="theme-color" content="#0a0b0d">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
+${modeBoot()}
 </head>
 <body>
 
@@ -60,18 +61,7 @@ ${o.body}
   </div>
 </div></footer>
 
-<script>
-const burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
-      scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
-function setNav(o){document.body.classList.toggle("nav-open",o);
-  burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
-  document.body.style.overflow=o?"hidden":"";}
-burger.onclick=()=>setNav(!document.body.classList.contains("nav-open"));
-scrim.onclick=dClose.onclick=()=>setNav(false);
-addEventListener("keydown",e=>{if(e.key==="Escape")setNav(false)});
-const nav=document.getElementById("nav");
-addEventListener("scroll",()=>nav.classList.toggle("stuck",scrollY>16),{passive:true});
-</script>
+${navScript()}
 </body>
 </html>
 `;
@@ -1026,6 +1016,31 @@ if (fa >= 0 && fb2 >= 0) {
 newHome = newHome
   .split('<li><a href="mailto:contact@nexedgestudios.com">Contact</a></li>')
   .join('<li><a href="/contact/">Contact</a></li>\n      <li><a href="/about/">About</a></li>');
+
+/* Day and night on the hand-written home page. It needs two things the shell
+   gets for free: the boot script in <head>, so a reader who chose light never
+   sees the dark page flash first, and the toggle behaviour, since the home
+   carries its own nav script rather than the shared one. */
+{
+  const cssLink = newHome.match(/<link rel="stylesheet" href="\/assets\/ns\.css[^>]*>/);
+  if (!cssLink) { console.error("FAIL: home has no ns.css link to anchor the mode boot"); process.exit(1); }
+  if (!newHome.includes('localStorage.getItem("ns:mode")')) {
+    newHome = newHome.replace(cssLink[0], cssLink[0] + "\n" + modeBoot());
+  }
+  /* The toggle logic, appended inside the home's own closing script. */
+  if (!newHome.includes("nsPaintMode")) {
+    const toggleJs = navScript()
+      .replace(/^<script>\n/, "")
+      .replace(/<\/script>$/, "");
+    const cut = toggleJs.indexOf("/* Day and night.");
+    if (cut < 0) { console.error("FAIL: could not lift the toggle out of navScript"); process.exit(1); }
+    newHome = newHome.replace(/<\/script>\s*<\/body>/, "\n" + toggleJs.slice(cut) + "\n</script>\n</body>");
+  }
+  if (!newHome.includes("nsPaintMode")) {
+    console.error("FAIL: the home page did not get the day/night toggle");
+    process.exit(1);
+  }
+}
 
 /* "Resources" now means the recommendations page, so the shelf CTA that still
    pointed at the worksheet shelf had to stop calling itself that. */

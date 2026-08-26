@@ -23,7 +23,7 @@ const fs = require("fs");
 const path = require("path");
 const { LESSONS } = require("./lessons.js");
 /* The same nav every other page has. Paul, 2026-08-26. */
-const { navMarkup, navScript } = require("./nav.js");
+const { navMarkup, navScript, modeBoot } = require("./nav.js");
 
 const ROOT = process.argv[2];
 const TPL = process.argv[3];
@@ -112,6 +112,7 @@ for (const L of LESSONS) {
   h = swapBlock(h, "var QUESTIONS = [", "\n];", S.questions);
 
   h = h.replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">');
+  h = h.replace("__MODEBOOT__", modeBoot);
   h = h.replace("__NAV__", () => navMarkup(null, "navbtn"));
   h = h.replace("__NAVSCRIPT__", navScript);
   h = h.replace(/var LESSON_ID = "[^"]*";/, 'var LESSON_ID = "' + L.id + '";');

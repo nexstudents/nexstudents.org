@@ -63,6 +63,7 @@ const navMarkup = (active, btn) => {
   <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
 ${drawerLinks(active)}
   <a class="${b}" href="/grades/">Pick a grade</a>
+  ${modeButton(true)}
 </aside>
 
 <nav id="nav" class="ns-nav"><div class="nv">
@@ -71,9 +72,27 @@ ${drawerLinks(active)}
   </button>
   <a class="word" href="/">Nex<b>Students</b></a>
   <div class="tabs">${tabs(active)}</div>
+  ${modeButton()}
   <a class="${b}" href="/grades/">Pick a grade</a>
 </div></nav>`;
 };
+
+/* Day and night. One button, in the nav and again at the bottom of the drawer,
+   because on a phone the nav one is easy to miss. It writes `data-theme` on
+   <html>, which is the SAME attribute the lesson pages already read for their
+   own palettes, so one toggle moves the whole site including a lesson. */
+const modeButton = (inDrawer) => inDrawer
+  ? '<button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night">' +
+    '<span data-mode-icon>&#9790;</span><span data-mode-label>Night mode</span></button>'
+  : '<button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night">' +
+    '<span data-mode-icon>&#9790;</span></button>';
+
+/* Runs BEFORE the body paints, so a reader who chose light never sees a flash
+   of the dark page first. Inlined in <head> by every generator. */
+const modeBoot = () => "<scr" + "ipt>" +
+  '(function(){try{var m=localStorage.getItem("ns:mode");' +
+  'if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();' +
+  "</scr" + "ipt>";
 
 /* Split so a page can put the script at the end of the body, where it belongs.
    The tag is broken up because this string is embedded in template literals
@@ -89,6 +108,27 @@ scrim.onclick=dClose.onclick=()=>setNav(false);
 addEventListener("keydown",e=>{if(e.key==="Escape")setNav(false)});
 const nav=document.getElementById("nav");
 addEventListener("scroll",()=>nav.classList.toggle("stuck",scrollY>16),{passive:true});
+
+/* Day and night. Default is dark: no attribute means dark, which is how the
+   site was drawn. The lesson pages watch this same attribute. */
+function nsMode(){ return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark"; }
+function nsPaintMode(){
+  var light = nsMode() === "light";
+  document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML = light ? "&#9788;" : "&#9790;"; });
+  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent = light ? "Day mode" : "Night mode"; });
+  document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
+    e.setAttribute("aria-label", light ? "Switch to night mode" : "Switch to day mode");
+  });
+}
+document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var next = nsMode() === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("ns:mode", next); } catch (e) {}
+    nsPaintMode();
+  });
+});
+nsPaintMode();
 ` + "</scr" + "ipt>";
 
-module.exports = { NAV, tabs, drawerLinks, navMarkup, navScript };
+module.exports = { NAV, tabs, drawerLinks, navMarkup, navScript, modeButton, modeBoot };

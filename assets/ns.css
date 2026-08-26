@@ -9,15 +9,64 @@
    ══════════════════════════════════════════════════════════════════════ */
 @font-face{font-family:'Archivo';src:url('/assets/fonts/archivo-var.woff2') format('woff2-variations');
   font-weight:400 900;font-display:swap}
+/* ── DAY AND NIGHT, added 2026-08-26 ──────────────────────────────────────
+   DARK IS THE DEFAULT and stays the default. The site was designed dark and
+   flipping it based on the reader's operating system would change how it looks
+   for people who never asked. Light is opt-in, by the toggle in the nav.
+
+   Three states, stored under `ns:mode`:
+     (nothing)      dark, the design as drawn
+     data-theme=light   light, chosen
+     data-theme=dark    dark, chosen explicitly. Matters because the LESSON
+                        pages read this same attribute for their own palettes.
+
+   ⚠️ `--pill` here is a RADIUS (999px), not a colour. A lesson template once
+   mapped a colour onto it and turned every pill on the page square.
+   ------------------------------------------------------------------------ */
 :root{
   --bg:#0a0b0d; --panel:#16191d; --panel-2:#1f242a; --line:#2b3138;
   --fg:#f1f3f5; --dim:#98a1ab;
   --a:#ffffff; --a-ink:#0a0b0d;
   --free:#4ade80;        /* free badge - the thing they came for */
   --paid:#ff5c33;        /* paid badge. the only warm colour on the page */
+  --on-free:#052e16; --on-paid:#2b0a02;
+  --ann-bg:#000; --nav-bg:rgba(10,11,13,.92);
+  --hero-glow:rgba(255,255,255,.05);
+  --on-a-soft:rgba(10,11,13,.65);
+  --fg-28:rgba(241,243,245,.28); --fg-07:rgba(241,243,245,.07);
   --r:4px; --pill:999px; --rhythm:96px;
   --ease:cubic-bezier(.23,1,.32,1);
+  color-scheme:dark;
 }
+
+/* Light. Only ever applied when the reader asks for it.
+   The accent inverts: on dark it is white on near-black, on light it has to be
+   near-black on white or every filled button becomes unreadable. The badge
+   greens and oranges darken too, because #4ade80 on white fails contrast. */
+:root[data-theme="light"]{
+  --bg:#f7f8fa; --panel:#ffffff; --panel-2:#eef1f5; --line:#dde2e8;
+  --fg:#14171a; --dim:#5b646e;
+  --a:#14171a; --a-ink:#ffffff;
+  --free:#15803d;
+  --paid:#c2410c;
+  --on-free:#eafdf1; --on-paid:#fff3ee;
+  --ann-bg:#14171a; --nav-bg:rgba(247,248,250,.92);
+  --hero-glow:rgba(20,23,26,.05);
+  --on-a-soft:rgba(255,255,255,.72);
+  --fg-28:rgba(20,23,26,.28); --fg-07:rgba(20,23,26,.06);
+  color-scheme:light;
+}
+
+/* The toggle itself. Sits in the nav beside the button. */
+.modetog{background:none;border:1px solid var(--line);border-radius:var(--pill);
+  color:var(--dim);font:inherit;font-size:15px;line-height:1;cursor:pointer;
+  width:38px;height:38px;display:inline-grid;place-items:center;flex:none;
+  transition:color .2s,border-color .2s}
+.modetog:hover{color:var(--fg);border-color:var(--a)}
+.nv .modetog{margin-left:auto}
+.nv .modetog + .btn{margin-left:10px}
+.drawer .modetog{width:100%;height:auto;padding:13px;margin-top:14px;gap:9px;
+  display:flex;align-items:center;justify-content:center}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--fg);
@@ -32,14 +81,14 @@ h2{font-size:clamp(1.8rem,3.5vw,2.7rem);max-width:22ch}
 .h2s{color:var(--dim);max-width:52ch;margin:14px 0 0;font-size:1.02rem}
 
 /* ── announcement ── */
-.ann{background:#000;color:var(--fg);text-align:center;font-size:13.5px;font-weight:600;
+.ann{background:var(--ann-bg);color:var(--fg);text-align:center;font-size:13.5px;font-weight:600;
   padding:11px 44px 11px 20px;position:relative;border-bottom:1px solid var(--line)}
 .ann b{font-weight:800;text-decoration:underline;text-underline-offset:3px}
 .ann button{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;
   border:0;color:inherit;font-size:17px;cursor:pointer;line-height:1;padding:6px;opacity:.75}
 
 /* ── nav ── */
-nav{position:sticky;top:0;z-index:60;background:rgba(10,11,13,.92);backdrop-filter:blur(12px);
+nav{position:sticky;top:0;z-index:60;background:var(--nav-bg);backdrop-filter:blur(12px);
   border-bottom:1px solid transparent;transition:border-color .3s}
 nav.stuck{border-bottom-color:var(--line)}
 .nv{max-width:1180px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:26px}
@@ -96,7 +145,7 @@ body.nav-open .drawer{transform:none}
 /* ── 1. HERO — the shelf is visible immediately, Start here is the CTA ── */
 .hero{padding-block:64px 72px;position:relative}
 .hero:before{content:"";position:absolute;z-index:-1;inset:0;
-  background:radial-gradient(65% 80% at 70% 30%,rgba(255,255,255,.05),transparent 62%)}
+  background:radial-gradient(65% 80% at 70% 30%,var(--hero-glow),transparent 62%)}
 .htop{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:end;margin-bottom:44px}
 @media(max-width:940px){ .htop{grid-template-columns:1fr;gap:28px} }
 h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
@@ -114,7 +163,7 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .gr b{font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1}
 .gr span{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .gr.live{background:var(--a);color:var(--a-ink);border-color:var(--a)}
-.gr.live span{color:rgba(10,11,13,.65)}
+.gr.live span{color:var(--on-a-soft)}
 @media(hover:hover){ .gr:hover{transform:translateY(-4px);border-color:var(--a)} }
 .gr.soon{opacity:.5}
 
@@ -145,8 +194,8 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 @media(hover:hover){ .res:hover .thumb u{transform:scale(1.12)} }
 .badge{position:absolute;top:10px;left:10px;font-size:10px;font-weight:800;letter-spacing:.1em;
   text-transform:uppercase;padding:5px 10px;border-radius:var(--pill)}
-.badge.free{background:var(--free);color:#052e16}
-.badge.paid{background:var(--paid);color:#2b0a02}
+.badge.free{background:var(--free);color:var(--on-free)}
+.badge.paid{background:var(--paid);color:var(--on-paid)}
 .res .body{padding:16px 18px;display:flex;flex-direction:column;flex:1}
 .res h4{margin:0 0 5px;font-size:1.02rem;font-weight:800;letter-spacing:-.02em}
 .res p{margin:0 0 14px;font-size:.83rem;color:var(--dim);line-height:1.45;flex:1}
@@ -155,9 +204,9 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .res .meta b{color:var(--fg);font-size:.9rem}
 .arrows{display:flex;gap:10px}
 .arrows button{width:44px;height:44px;border-radius:50%;background:transparent;color:var(--fg);
-  border:1px solid rgba(241,243,245,.28);font-family:inherit;font-size:19px;cursor:pointer;
+  border:1px solid var(--fg-28);font-family:inherit;font-size:19px;cursor:pointer;
   display:grid;place-items:center;transition:all .22s}
-@media(hover:hover){ .arrows button:hover{border-color:var(--fg);background:rgba(241,243,245,.07)} }
+@media(hover:hover){ .arrows button:hover{border-color:var(--fg);background:var(--fg-07)} }
 .arrows button:disabled{opacity:.28;pointer-events:none}
 
 /* ── 4. SUBJECTS — four portrait tiles, touching ── */
@@ -173,7 +222,7 @@ a.sub-t{color:inherit;text-decoration:none}
 .sub-t n i{font-style:normal;margin-left:9px;padding:3px 8px;border-radius:var(--pill);
   font-size:.6rem;font-weight:800;letter-spacing:.1em;vertical-align:2px;
   background:var(--panel-2);color:var(--dim)}
-.sub-t.is-live n i{background:var(--free);color:#052e16}
+.sub-t.is-live n i{background:var(--free);color:var(--on-free)}
 .sub-t.is-soon{opacity:.5}
 @media(hover:hover){ .sub-t.is-soon:hover{background:transparent} }
 @media(hover:hover){ .sub-t:hover{background:var(--panel)} }
@@ -197,7 +246,7 @@ a.sub-t{color:inherit;text-decoration:none}
 .subj-head h3 i{font-style:normal;margin-left:9px;padding:3px 8px;border-radius:var(--pill);
   font-size:.6rem;font-weight:800;letter-spacing:.1em;vertical-align:3px;
   background:var(--panel-2);color:var(--dim)}
-.subj-row:not(.is-soon) .subj-head h3 i{background:var(--free);color:#052e16}
+.subj-row:not(.is-soon) .subj-head h3 i{background:var(--free);color:var(--on-free)}
 .subj-head p{margin:6px 0 0;font-size:.86rem;color:var(--dim);line-height:1.45;max-width:56ch}
 .subj-sub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
 @media(max-width:560px){ .subj-sub{grid-template-columns:minmax(0,1fr)} }
@@ -292,7 +341,7 @@ a.sub-t{color:inherit;text-decoration:none}
 /* completed tick, set from localStorage by the lesson list script */
 .card.is-done{border-color:var(--free)}
 .card .tick-done{position:absolute;top:9px;right:9px;width:23px;height:23px;border-radius:50%;
-  background:var(--free);color:#052e16;display:none;place-items:center;z-index:2;
+  background:var(--free);color:var(--on-free);display:none;place-items:center;z-index:2;
   font-size:13px;font-weight:800;line-height:1}
 .card.is-done .tick-done{display:grid}
 .card .tick-score{display:none;padding:0 13px 10px;margin-top:-4px;font-size:.66rem;font-weight:800;
@@ -320,8 +369,8 @@ a.sub-t{color:inherit;text-decoration:none}
 .plan.pick{border-color:var(--a)}
 .plan .tag{align-self:flex-start;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
   padding:5px 11px;border-radius:var(--pill);margin-bottom:18px}
-.plan.free .tag{background:var(--free);color:#052e16}
-.plan.pro .tag{background:var(--paid);color:#2b0a02}
+.plan.free .tag{background:var(--free);color:var(--on-free)}
+.plan.pro .tag{background:var(--paid);color:var(--on-paid)}
 .plan h3{font-size:1.45rem;margin-bottom:8px}
 .plan .price{font-size:2.2rem;font-weight:800;letter-spacing:-.04em;margin:14px 0 4px}
 .plan .price s{text-decoration:none;font-size:.9rem;color:var(--dim);font-weight:600;margin-left:6px}
@@ -334,7 +383,7 @@ a.sub-t{color:inherit;text-decoration:none}
 /* ── 8. shop CTA ── */
 .state{background:var(--a);color:var(--a-ink);padding:74px 0}
 .state h2{max-width:18ch}
-.state p{color:rgba(10,11,13,.75);max-width:52ch;margin:18px 0 28px;font-weight:500}
+.state p{color:var(--on-a-soft);max-width:52ch;margin:18px 0 28px;font-weight:500}
 .state .btn{background:var(--a-ink);color:var(--a)}
 
 .mq{height:250px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;
