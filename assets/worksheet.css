@@ -383,10 +383,10 @@ body.print-all .wk+.wk{page-break-before:always}
   .teach h3,.teach>p,.teach>p b,.keys li,.keys li b,.eg{color:#000}
 }
 
-/* The wordmark, and the way home. A worksheet page had only a back link into
-   its own subject, so a parent who landed on one from a search had no route to
-   the rest of the site at all. */
-.bar .word{font-weight:800;letter-spacing:-.03em;font-size:15px;color:var(--fg);
-  text-decoration:none;flex:none;margin-right:4px}
-.bar .word b{color:var(--a)}
-@media (max-width:470px){ .bar .word{font-size:14px} }
+/* A worksheet page carries the SAME nav as the rest of the site - it is built
+   from tools/nav.js by both generators. Before this it had only a back link
+   into its own subject, so a parent landing from a search could reach nothing.
+   None of it prints: a printed sheet is a sheet, not a web page. */
+@media print{
+  nav#nav,.drawer,.scrim{display:none!important}
+}

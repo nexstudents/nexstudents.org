@@ -12,6 +12,9 @@
 const fs = require("fs");
 const path = require("path");
 const { SHEETS } = require("./worksheets.js");
+/* The same nav the site pages use. A worksheet lives under Worksheets, so it
+   passes "w" and that tab shows as current. */
+const { navMarkup, navScript } = require("./nav.js");
 
 const ROOT = process.argv[2];
 if (!ROOT) { console.error("usage: node build-worksheets.js <site root>"); process.exit(1); }
@@ -72,8 +75,9 @@ function bundleHtml(s) {
 </head>
 <body>
 
+${navMarkup("w")}
+
 <div class="bar">
-  <a class="word" href="/">Nex<b>Students</b></a>
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
 </div>
 
@@ -128,6 +132,7 @@ function bundleHtml(s) {
   </div>
 
 </div>
+${navScript()}
 </body>
 </html>
 `;
@@ -161,8 +166,9 @@ function blankHtml(s) {
 </head>
 <body>
 
+${navMarkup("w")}
+
 <div class="bar">
-  <a class="word" href="/">Nex<b>Students</b></a>
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
@@ -211,6 +217,7 @@ function blankHtml(s) {
     <small>Copyright &copy; NexEdge Studios</small></p>
 
 </div>
+${navScript()}
 </body>
 </html>
 `;
@@ -260,8 +267,9 @@ function flashHtml(s) {
 </head>
 <body>
 
+${navMarkup("w")}
+
 <div class="bar">
-  <a class="word" href="/">Nex<b>Students</b></a>
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print the week you picked" aria-label="Print this sheet">
@@ -345,6 +353,7 @@ function flashHtml(s) {
   show(w >= 1 && w <= weeks.length ? w : 1);
 })();
 </script>
+${navScript()}
 </body>
 </html>
 `;
@@ -365,8 +374,9 @@ function sheetHtml(s) {
 </head>
 <body>
 
+${navMarkup("w")}
+
 <div class="bar">
-  <a class="word" href="/">Nex<b>Students</b></a>
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
@@ -433,6 +443,7 @@ ${s.scripture ? `
   </div>
 
 </div>
+${navScript()}
 </body>
 </html>
 `;

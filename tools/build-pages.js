@@ -18,24 +18,11 @@ const CSS_V = require("crypto")
   .digest("hex")
   .slice(0, 8);
 
-/* ONE nav definition. Every entry is a real page - no in-page anchors, because
-   a slide-out menu that scrolls instead of navigating is what Paul kept hitting. */
-const NAV = [
-  { href: "/grades/",           label: "Grades",     note: "K through 8",        key: "gr" },
-  { href: "/worksheets/",       label: "Worksheets", note: "Free and packets",   key: "w"  },
-  { href: "/games/",            label: "Games",      note: "Play in the browser",key: "g"  },
-  { href: "/comics/",           label: "Comics",     note: "Read on the site",   key: "c"  },
-  { href: "/for-parents/",      label: "For Parents",note: "Placement exams",    key: "p"  },
-];
-
-const tabs = (active) => NAV
-  .map(n => '<a href="' + n.href + '"' + (active === n.key ? ' class="on"' : '') + '>' + n.label + '</a>')
-  .join("");
-
-const drawerLinks = (active) => NAV
-  .map(n => '  <a href="' + n.href + '"' + (active === n.key ? ' class="on"' : '') +
-            '>' + n.label + '<small>' + n.note + '</small></a>')
-  .join("\n");
+/* The nav moved to tools/nav.js so the WORKSHEET generator can use the same
+   one. It lived here under a comment promising "ONE nav definition", which was
+   only ever true of the pages this file builds - worksheet pages had no nav at
+   all, and a parent landing on one from a search could not reach the site. */
+const { NAV, tabs, drawerLinks } = require("./nav.js");
 
 function shell(o) {
   return `<!doctype html>

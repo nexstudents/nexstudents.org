@@ -6,13 +6,33 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Weekly Spelling Test — NexStudents</title>
 <meta name="description" content="A blank weekly spelling test. Ten words out of ten, one bonus word worth one extra.">
-<link rel="stylesheet" href="/assets/ns.css?v=318115a0">
-<link rel="stylesheet" href="/assets/worksheet.css?v=318115a0">
+<link rel="stylesheet" href="/assets/ns.css?v=47e1f084">
+<link rel="stylesheet" href="/assets/worksheet.css?v=47e1f084">
 </head>
 <body>
 
-<div class="bar">
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+  <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
+  <a href="/">Home</a>
+  <a href="/grades/">Grades<small>K through 8</small></a>
+  <a href="/worksheets/" class="on">Worksheets<small>Free and packets</small></a>
+  <a href="/games/">Games<small>Play in the browser</small></a>
+  <a href="/comics/">Comics<small>Read on the site</small></a>
+  <a href="/for-parents/">For Parents<small>Placement exams</small></a>
+  <a class="btn" href="/grades/">Pick a grade</a>
+</aside>
+
+<nav id="nav"><div class="nv">
+  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+    <i></i><i></i><i></i>
+  </button>
   <a class="word" href="/">Nex<b>Students</b></a>
+  <div class="tabs"><a href="/grades/">Grades</a><a href="/worksheets/" class="on">Worksheets</a><a href="/games/">Games</a><a href="/comics/">Comics</a><a href="/for-parents/">For Parents</a></div>
+  <a class="btn" href="/grades/">Pick a grade</a>
+</div></nav>
+
+<div class="bar">
   <a class="back" href="/ela/worksheets/">&larr; ELA Worksheets</a>
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
@@ -70,5 +90,18 @@
     <small>Copyright &copy; NexEdge Studios</small></p>
 
 </div>
+<script>
+
+const burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
+      scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
+function setNav(o){document.body.classList.toggle("nav-open",o);
+  burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
+  document.body.style.overflow=o?"hidden":"";}
+burger.onclick=()=>setNav(!document.body.classList.contains("nav-open"));
+scrim.onclick=dClose.onclick=()=>setNav(false);
+addEventListener("keydown",e=>{if(e.key==="Escape")setNav(false)});
+const nav=document.getElementById("nav");
+addEventListener("scroll",()=>nav.classList.toggle("stuck",scrollY>16),{passive:true});
+</script>
 </body>
 </html>
