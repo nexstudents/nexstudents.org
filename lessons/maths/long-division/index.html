@@ -23,10 +23,16 @@ h1{margin:0 0 6px}
 .player{display:flex;flex-direction:column;align-items:center;gap:10px;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:16px 12px;margin:0 0 18px;text-align:center}
-/* ns.css .btn is a flex box with no justify-content, so giving it a min-width
-   parked the label on the left of its own button. Same bug as the drawer. */
-.playmain{cursor:pointer;min-width:180px;font-size:1.02rem;padding:12px 26px;
-  justify-content:center;text-align:center}
+/* One button shape on this page. Play was ns.css's square .btn sitting right
+   above two pills, which is the mismatch Paul photographed. Play keeps the
+   filled accent because it is the primary action; the shape is now the same
+   pill as everything else.
+   It is also a flex box with no justify-content, so a min-width parked the
+   label on its own left edge. Same bug as the drawer button. */
+.playmain{cursor:pointer;min-width:190px;font-size:1.02rem;padding:13px 28px;
+  border-radius:999px;border:1px solid var(--a);background:var(--a);color:var(--on-accent,#0b160f);
+  font-weight:700;justify-content:center;text-align:center}
+.playmain:hover{filter:brightness(1.06)}
 .steprow{display:flex;gap:8px;justify-content:center;width:100%;max-width:420px}
 .steprow .tab.act{flex:1 1 0}
 .playmeta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
@@ -293,7 +299,7 @@ var THEMES = {
 var VAR_MAP = {
   ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
   inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
-  accent:"--a", accentSoft:"--pill"
+  accent:"--a", accentSoft:"--pill", onAccent:"--on-accent"
 };
 
 var themeKey = load("theme", "forest");
