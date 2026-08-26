@@ -67,7 +67,7 @@ function bundleHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://nexstudents.org/worksheets/${s.subject.toLowerCase()}/${s.slug}/">
 <title>${s.title} — NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
@@ -158,7 +158,7 @@ function blankHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://nexstudents.org/worksheets/${s.subject.toLowerCase()}/${s.slug}/">
 <title>${s.title} — NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
@@ -259,7 +259,7 @@ function flashHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://nexstudents.org/worksheets/${s.subject.toLowerCase()}/${s.slug}/">
 <title>${s.title} — NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
@@ -366,7 +366,7 @@ function sheetHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://nexstudents.org/worksheets/${s.subject.toLowerCase()}/${s.slug}/">
 <title>${s.title} — NexStudents</title>
 <meta name="description" content="A printable grade ${s.grade} ${s.subject.toLowerCase()} worksheet. ${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">

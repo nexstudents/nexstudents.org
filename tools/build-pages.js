@@ -24,13 +24,16 @@ const CSS_V = require("crypto")
    all, and a parent landing on one from a search could not reach the site. */
 const { NAV, tabs, drawerLinks, navMarkup } = require("./nav.js");
 
+/* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
+const SITE = "https://nexstudents.org";
+
 function shell(o) {
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="${SITE}/${o.dir}/">
 <title>${o.title}</title>
 <meta name="description" content="${o.desc}">
 <meta name="theme-color" content="#0a0b0d">
@@ -1044,6 +1047,26 @@ const REDIRECTS = [
   ["worksheets/ela/weekly-spelling-test", "/worksheets/english/weekly-spelling-test/"],
   ["worksheets/ela/spelling-flashcards", "/worksheets/english/spelling-flashcards/"],
 ];
+/* GitHub Pages serves /404.html for any path it does not have. Without one it
+   shows its own generic page, which has no nav, so a bad link is a dead end.
+   Built from the same shell, so it carries the drawer like everything else.
+   noindex on purpose: a 404 must never be in the index. */
+{
+  const page = {
+    dir: "", active: null,
+    title: "Page not found — NexStudents",
+    desc: "That page does not exist.",
+    crumb: "Not found", h1: "That page is not here.",
+    lead: "The link may be old, or something moved. Everything on the site is reachable from the menu, or start with a grade.",
+    body: empty('Try <a href="/grades/">picking a grade</a>, or <a href="/">go back to the home page</a>.'),
+  };
+  let h = shell(page)
+    .replace('<link rel="canonical" href="' + SITE + '//">',
+             '<meta name="robots" content="noindex">');
+  if (h.includes("canonical")) { console.error("FAIL: 404 kept a canonical"); process.exit(1); }
+  fs.writeFileSync(path.join(ROOT, "404.html"), h, "utf8");
+}
+
 const redirects = [];
 for (const [from, to] of REDIRECTS) {
   const dir = path.join(ROOT, from);

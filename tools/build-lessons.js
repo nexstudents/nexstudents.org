@@ -111,6 +111,7 @@ for (const L of LESSONS) {
   h = swapBlock(h, "var WORDS = [", "\n];", S.words);
   h = swapBlock(h, "var QUESTIONS = [", "\n];", S.questions);
 
+  h = h.replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">');
   h = h.replace("__NAV__", () => navMarkup(null, "navbtn"));
   h = h.replace("__NAVSCRIPT__", navScript);
   h = h.replace(/var LESSON_ID = "[^"]*";/, 'var LESSON_ID = "' + L.id + '";');

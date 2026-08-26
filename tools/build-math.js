@@ -81,10 +81,11 @@ for (const L of MATH) {
     .replace("__DEMO__", JSON.stringify(L.demo))
     .replace("__SPEC__", JSON.stringify(L.practice))
     .replace("__THEMES__", themesBlock)
+    .replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">')
     .replace("__NAV__", () => navMarkup(null, "navbtn"))
     .replace("__NAVSCRIPT__", navScript);
 
-  for (const slot of ["__DEMO__", "__SPEC__", "__TITLE__", "__THEMES__", "__NAV__", "__NAVSCRIPT__"]) {
+  for (const slot of ["__DEMO__", "__SPEC__", "__TITLE__", "__THEMES__", "__NAV__", "__NAVSCRIPT__", "__CANONICAL__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
   }
 
