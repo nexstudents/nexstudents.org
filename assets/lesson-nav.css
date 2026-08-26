@@ -1,0 +1,72 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   THE SITE NAV, for pages that are NOT built from the ns.css shell.
+
+   Lesson pages carry their own design systems: the history template has its
+   own palette (--ground / --ink / --rule), the maths template runs on ns.css
+   variables. Both needed the same nav. Paul, 2026-08-26: *"we need access to
+   the home side menu on all our pages and resources ... this is what makes
+   the website feel like a website."*
+
+   So this file styles the nav against FIVE variables of its own, and each
+   template maps its palette onto them. One nav, one stylesheet, no duplicated
+   rules, and a theme change in either lesson type carries the nav with it.
+
+     --nv-bg      the bar and drawer background
+     --nv-fg      text at full strength
+     --nv-dim     secondary text
+     --nv-line    borders
+     --nv-accent  the button fill
+     --nv-on      text ON the button
+   ───────────────────────────────────────────────────────────────────────── */
+
+.ns-nav{position:sticky;top:0;z-index:60;background:var(--nv-bg);
+  border-bottom:1px solid transparent;transition:border-color .3s}
+.ns-nav.stuck{border-bottom-color:var(--nv-line)}
+.ns-nav a{text-decoration:none}
+.nv{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:22px}
+.nv .word{font-weight:800;font-size:19px;letter-spacing:-.03em;color:var(--nv-dim)}
+.nv .word b{color:var(--nv-fg)}
+.nv .tabs{display:flex;gap:20px}
+.nv .tabs a{font-size:14px;font-weight:500;color:var(--nv-dim);transition:color .18s}
+.nv .tabs a.on{color:var(--nv-fg)}
+@media(hover:hover){ .nv .tabs a:hover{color:var(--nv-fg)} }
+@media(max-width:940px){ .nv .tabs{display:none} }
+
+.nv .navbtn{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;
+  white-space:nowrap;text-align:center;line-height:1.1;
+  font-family:inherit;font-weight:700;font-size:14px;padding:10px 20px;
+  border-radius:999px;border:0;cursor:pointer;
+  background:var(--nv-accent);color:var(--nv-on)}
+@media(hover:hover){ .nv .navbtn:hover{filter:brightness(1.08)} }
+
+.burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:42px;height:38px;
+  padding:0 9px;margin-left:-9px;background:none;border:0;cursor:pointer}
+.burger i{display:block;height:2px;background:var(--nv-fg);border-radius:2px;
+  transition:transform .3s ease,opacity .2s}
+.burger i:nth-child(2){width:72%;align-self:flex-end}
+body.nav-open .burger i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+body.nav-open .burger i:nth-child(2){opacity:0}
+body.nav-open .burger i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:940px){ .burger{display:inline-flex} }
+
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70;opacity:0;visibility:hidden;
+  transition:opacity .3s ease,visibility .3s}
+body.nav-open .scrim{opacity:1;visibility:visible}
+
+.drawer{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);z-index:80;
+  background:var(--nv-bg);border-right:1px solid var(--nv-line);
+  transform:translateX(-100%);transition:transform .38s ease;
+  display:flex;flex-direction:column;padding:22px;overflow-y:auto}
+body.nav-open .drawer{transform:none}
+.drawer .x{align-self:flex-end;background:none;border:0;color:var(--nv-dim);
+  font-size:26px;line-height:1;cursor:pointer;padding:4px 8px}
+.drawer a{display:block;padding:14px 0;font-size:1.05rem;font-weight:700;letter-spacing:-.02em;
+  color:var(--nv-fg);text-decoration:none;border-bottom:1px solid var(--nv-line)}
+.drawer a.on{color:var(--nv-accent)}
+.drawer a small{display:block;font-size:.62rem;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--nv-dim);margin-top:4px}
+/* Centred, because `.drawer a` is display:block and would otherwise leave the
+   label hard left in a full-width button. That bug shipped once already. */
+.drawer .navbtn{margin-top:auto;margin-left:0;display:flex;align-items:center;
+  justify-content:center;text-align:center;border-bottom:0;
+  background:var(--nv-accent);color:var(--nv-on);border-radius:999px;padding:14px 20px}

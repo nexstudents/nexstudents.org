@@ -22,7 +22,7 @@ const CSS_V = require("crypto")
    one. It lived here under a comment promising "ONE nav definition", which was
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
-const { NAV, tabs, drawerLinks } = require("./nav.js");
+const { NAV, tabs, drawerLinks, navMarkup } = require("./nav.js");
 
 function shell(o) {
   return `<!doctype html>
@@ -38,22 +38,7 @@ function shell(o) {
 </head>
 <body>
 
-<div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
-  <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
-  <a href="/">Home</a>
-${drawerLinks(o.active)}
-  <a class="btn" href="/grades/">Pick a grade</a>
-</aside>
-
-<nav id="nav"><div class="nv">
-  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-    <i></i><i></i><i></i>
-  </button>
-  <a class="word" href="/">Nex<b>Students</b></a>
-  <div class="tabs">${tabs(o.active)}</div>
-  <a class="btn" href="/grades/">Pick a grade</a>
-</div></nav>
+${navMarkup(o.active)}
 
 <div class="wrap phead">
   <p class="crumb"><a href="/">Home</a> &rsaquo; ${o.crumb}</p>
@@ -935,6 +920,30 @@ const pages = [
     crumb: '<a href="/maths/">Maths</a> &rsaquo; Worksheets', h1: "Maths Worksheets.",
     lead: "Printables and practice sets for working on paper. Answer keys are always included free.",
     body: subjectSheets("Maths") },
+
+  /* Three new top-level pages, 2026-08-26. Real pages from the start, even
+     while two of them are empty, because a nav link to nowhere is worse than
+     an honest empty page. */
+  { dir: "resources", active: "r",
+    title: "Resources — NexStudents",
+    desc: "The books, tools and supplies we actually use for homeschooling.",
+    crumb: "Resources", h1: "What We Actually Use.",
+    lead: "Books, tools and supplies from our own shelf, not a list copied off somebody else's blog. Worksheets and lessons are not here; those live under each grade, beside one another.",
+    body: empty("The first recommendations are being written up. Anything listed here will be something used in this house, and any affiliate link will be marked as one.") },
+
+  { dir: "about", active: "a",
+    title: "About — NexStudents",
+    desc: "Who makes NexStudents, and why.",
+    crumb: "About", h1: "About NexStudents.",
+    lead: "A homeschool family building the resources it needed and could not find, then leaving them up for everyone else.",
+    body: empty("This page is being written.") },
+
+  { dir: "contact", active: "ct",
+    title: "Contact — NexStudents",
+    desc: "How to reach NexStudents.",
+    crumb: "Contact", h1: "Get in Touch.",
+    lead: "Questions about a worksheet, a broken link, or something you would like built. We read everything.",
+    body: empty("The contact form is being set up. An address will go here as soon as there is one worth publishing.") },
 
   { dir: "for-parents", active: "p",
     title: "For Parents — NexStudents",

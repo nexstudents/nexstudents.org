@@ -16,15 +16,32 @@
    ───────────────────────────────────────────────────────────────────────── */
 "use strict";
 
+/* Paul, 2026-08-26:
+   - **Home belongs in the list**, not only on the wordmark. It is the first
+     entry in both the top bar and the drawer now.
+   - **Worksheets came out and Resources went in.** Worksheets already live
+     inside Grades, beside Lessons. `/worksheets/` is still a real page and
+     still linked from every grade and subject page; it just stopped being a
+     top-level destination. `/resources/` is the new one, for affiliate links.
+   - **About and Contact** are what make it read as a site rather than a pile
+     of pages.
+
+   `top:false` keeps an entry out of the desktop tab bar while leaving it in
+   the drawer and the footer. Eight tabs across the top is a scroll bar, not a
+   nav; About and Contact are the two that belong further down. */
 const NAV = [
-  { href: "/grades/",      label: "Grades",      note: "K through 8",         key: "gr" },
-  { href: "/worksheets/",  label: "Worksheets",  note: "Free and packets",    key: "w"  },
-  { href: "/games/",       label: "Games",       note: "Play in the browser", key: "g"  },
-  { href: "/comics/",      label: "Comics",      note: "Read on the site",    key: "c"  },
-  { href: "/for-parents/", label: "For Parents", note: "Placement exams",     key: "p"  },
+  { href: "/",             label: "Home",        note: "Start here",          key: "h",  top: true },
+  { href: "/grades/",      label: "Grades",      note: "K through 8",         key: "gr", top: true },
+  { href: "/resources/",   label: "Resources",   note: "Tools we use",        key: "r",  top: true },
+  { href: "/games/",       label: "Games",       note: "Play in the browser", key: "g",  top: true },
+  { href: "/comics/",      label: "Comics",      note: "Read on the site",    key: "c",  top: true },
+  { href: "/for-parents/", label: "For Parents", note: "Placement exams",     key: "p",  top: true },
+  { href: "/about/",       label: "About",       note: "Who makes this",      key: "a",  top: false },
+  { href: "/contact/",     label: "Contact",     note: "Get in touch",        key: "ct", top: false },
 ];
 
 const tabs = (active) => NAV
+  .filter(n => n.top)
   .map(n => '<a href="' + n.href + '"' + (active === n.key ? ' class="on"' : '') + '>' + n.label + '</a>')
   .join("");
 
@@ -33,23 +50,30 @@ const drawerLinks = (active) => NAV
             '>' + n.label + '<small>' + n.note + '</small></a>')
   .join("\n");
 
-/* The drawer, the scrim and the top bar, in the order they must appear. */
-const navMarkup = (active) => `<div class="scrim" id="scrim"></div>
+/* The drawer, the scrim and the top bar, in the order they must appear.
+
+   `btn` is the class the button takes. Pages built on ns.css want ".btn";
+   lesson pages carry their own design systems and want ".navbtn", styled by
+   assets/lesson-nav.css. Same markup either way, so the nav can never drift
+   between a lesson and the rest of the site. */
+const navMarkup = (active, btn) => {
+  const b = btn || "btn";
+  return `<div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
   <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
-  <a href="/">Home</a>
 ${drawerLinks(active)}
-  <a class="btn" href="/grades/">Pick a grade</a>
+  <a class="${b}" href="/grades/">Pick a grade</a>
 </aside>
 
-<nav id="nav"><div class="nv">
+<nav id="nav" class="ns-nav"><div class="nv">
   <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
     <i></i><i></i><i></i>
   </button>
   <a class="word" href="/">Nex<b>Students</b></a>
   <div class="tabs">${tabs(active)}</div>
-  <a class="btn" href="/grades/">Pick a grade</a>
+  <a class="${b}" href="/grades/">Pick a grade</a>
 </div></nav>`;
+};
 
 /* Split so a page can put the script at the end of the body, where it belongs.
    The tag is broken up because this string is embedded in template literals

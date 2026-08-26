@@ -22,6 +22,8 @@
 const fs = require("fs");
 const path = require("path");
 const { LESSONS } = require("./lessons.js");
+/* The same nav every other page has. Paul, 2026-08-26. */
+const { navMarkup, navScript } = require("./nav.js");
 
 const ROOT = process.argv[2];
 const TPL = process.argv[3];
@@ -109,6 +111,8 @@ for (const L of LESSONS) {
   h = swapBlock(h, "var WORDS = [", "\n];", S.words);
   h = swapBlock(h, "var QUESTIONS = [", "\n];", S.questions);
 
+  h = h.replace("__NAV__", () => navMarkup(null, "navbtn"));
+  h = h.replace("__NAVSCRIPT__", navScript);
   h = h.replace(/var LESSON_ID = "[^"]*";/, 'var LESSON_ID = "' + L.id + '";');
   h = h.replace(/var LESSON_TITLE = "[^"]*";/, 'var LESSON_TITLE = "' + esc(L.title) + '";');
   h = h.replace(/var LESSON_UNIT\s*= "[^"]*";/, 'var LESSON_UNIT  = "' + L.unit.replace(/&middot;/g, "·") + '";');

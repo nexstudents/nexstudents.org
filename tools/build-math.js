@@ -14,6 +14,9 @@
 const fs = require("fs");
 const path = require("path");
 const { MATH } = require("./math-lessons.js");
+/* Same nav as every other page. Paul, 2026-08-26: a lesson with no way back
+   into the site is what stops it feeling like a website. */
+const { navMarkup, navScript } = require("./nav.js");
 
 const ROOT = process.argv[2] || ".";
 const TPL = path.join(__dirname, "math", "template.html");
@@ -77,9 +80,11 @@ for (const L of MATH) {
     .replace(/__ID__/g, L.id)
     .replace("__DEMO__", JSON.stringify(L.demo))
     .replace("__SPEC__", JSON.stringify(L.practice))
-    .replace("__THEMES__", themesBlock);
+    .replace("__THEMES__", themesBlock)
+    .replace("__NAV__", () => navMarkup(null, "navbtn"))
+    .replace("__NAVSCRIPT__", navScript);
 
-  for (const slot of ["__DEMO__", "__SPEC__", "__TITLE__", "__THEMES__"]) {
+  for (const slot of ["__DEMO__", "__SPEC__", "__TITLE__", "__THEMES__", "__NAV__", "__NAVSCRIPT__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
   }
 

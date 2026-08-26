@@ -24,9 +24,18 @@
   .ns-back a:hover{text-decoration:underline}
   .ns-back a:focus-visible{outline:2px solid var(--verdigris);outline-offset:3px;border-radius:2px}
 </style>
+<link rel="stylesheet" href="/assets/lesson-nav.css">
+<style>
+  /* The site nav reads six variables of its own; map them onto this page's
+     palette so the nav re-themes with the lesson. */
+  :root{--nv-bg:var(--surface);--nv-fg:var(--ink);--nv-dim:var(--ink-soft);
+    --nv-line:var(--rule);--nv-accent:var(--verdigris);--nv-on:var(--on-accent)}
+</style>
 </head>
 <body>
-<div class="ns-back"><a href="/history/">&larr; History</a></div>
+__NAV__
+
+  <div class="ns-back"><a href="/history/">&larr; History</a></div>
 <style>
 :root{
   --ground:#E7EDE4;
@@ -1597,5 +1606,6 @@ paint();
 })();
 </script>
 
+__NAVSCRIPT__
 </body>
 </html>
