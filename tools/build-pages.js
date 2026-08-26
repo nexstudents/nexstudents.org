@@ -991,6 +991,41 @@ const tiles = SUBJECTS.map((s, i) =>
 ).join("\n");
 newHome = newHome.slice(0, sa) + S_OPEN + "\n" + tiles + newHome.slice(sb);
 
+/* The home page kept its OWN copy of the nav, hand-written, so it still had
+   Worksheets in the tab bar and no Home, About or Contact. Paul, 2026-08-26:
+   "so the homepage still is set up for the old layout not the new one."
+   Spliced from nav.js now, like the grade picker and the subject tiles. */
+const N_OPEN = '<div class="scrim" id="scrim"></div>', N_CLOSE = "</div></nav>";
+const na = newHome.indexOf(N_OPEN);
+if (na < 0) { console.error("FAIL: home nav not found"); process.exit(1); }
+const nb = newHome.indexOf(N_CLOSE, na);
+if (nb < 0) { console.error("FAIL: home nav not closed"); process.exit(1); }
+newHome = newHome.slice(0, na) + navMarkup("h") + newHome.slice(nb + N_CLOSE.length);
+
+/* The footer link columns, same reason: hand-kept and stale. Science is not a
+   live subject, so it points at /subjects/ rather than pretending. */
+const F_OPEN = '<div><h5>Resources</h5>', F_CLOSE = "</ul></div>\n    <div><h5>Studios</h5>";
+const fa = newHome.indexOf(F_OPEN);
+const fb2 = newHome.indexOf(F_CLOSE, fa);
+if (fa >= 0 && fb2 >= 0) {
+  newHome = newHome.slice(0, fa) +
+    '<div><h5>Resources</h5><ul>\n' +
+    '      <li><a href="/resources/">What we use</a></li><li><a href="/worksheets/">Worksheets</a></li>\n' +
+    '      <li><a href="/games/">Games</a></li><li><a href="/comics/">Comics</a></li></ul></div>\n' +
+    '    <div><h5>Subjects</h5><ul>\n' +
+    '      <li><a href="/english/">English</a></li><li><a href="/history/">History</a></li>\n' +
+    '      <li><a href="/maths/">Maths</a></li><li><a href="/subjects/">Science</a></li>' +
+    newHome.slice(fb2);
+}
+newHome = newHome
+  .split('<li><a href="mailto:contact@nexedgestudios.com">Contact</a></li>')
+  .join('<li><a href="/contact/">Contact</a></li>\n      <li><a href="/about/">About</a></li>');
+
+/* "Resources" now means the recommendations page, so the shelf CTA that still
+   pointed at the worksheet shelf had to stop calling itself that. */
+newHome = newHome.split('<a class="btn rv d2" href="/worksheets/">Browse all resources</a>')
+  .join('<a class="btn rv d2" href="/worksheets/">Browse all worksheets</a>');
+
 /* Everything else on the hand-written home that still said ELA. */
 newHome = newHome
   .split('data-f="ela">ELA<').join('data-f="ela">English<')
