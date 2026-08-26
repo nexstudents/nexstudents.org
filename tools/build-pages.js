@@ -343,7 +343,7 @@ const LESSONS = [
     contains: [
       "A worked example that fills the bracket in step by step, read aloud",
       "Back a step and next step, so a step can be replayed as often as needed",
-      "Five problems solved in a real division bracket, digit by digit",
+      "Five problems in a real division bracket, new ones every day",
       "Every row typed in: the quotient, the multiply, the subtract",
     ],
     subject: "Maths", grade: 6,

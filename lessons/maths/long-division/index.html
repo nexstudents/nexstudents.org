@@ -95,6 +95,10 @@ h1{margin:0 0 6px}
 
   <h2 class="section-head">Your Turn</h2>
   <p class="section-note">Type a digit in every box. Top row first, then the row you multiply, then the row you subtract. A box turns green when it is right, and the next digit drops down on its own once the subtraction is done. None of these have a remainder.</p>
+  <div class="pbar">
+    <button class="btn" type="button" id="reroll">New problems</button>
+    <span class="tag" id="setinfo"></span>
+  </div>
   <div id="problems"></div>
 
   <div class="scorebar" id="scorebar"></div>
@@ -105,8 +109,61 @@ h1{margin:0 0 6px}
 "use strict";
 
 var DEMO = {"dividend":564,"divisor":3};
-var PROBLEMS = [{"dividend":852,"divisor":4},{"dividend":738,"divisor":6},{"dividend":917,"divisor":7},{"dividend":675,"divisor":5},{"dividend":968,"divisor":8}];
+var SPEC = {"count":5,"digits":3,"divisors":[3,4,5,6,7,8,9],"allowZeroDigit":false};
 var LESSON_ID = "maths/long-division";
+
+/* ── where the problems come from ──────────────────────────────────────────
+   Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
+   doesn't help improve." The set is rolled from SPEC, seeded by the date, so
+   it holds still all day and changes tomorrow. New problems reseeds by hand.
+   ------------------------------------------------------------------------ */
+function rng(seed){                       /* mulberry32, small and repeatable */
+  var a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function seedFromString(s){
+  var h = 2166136261;
+  for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function today(){
+  var d = new Date();
+  return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+}
+
+/* One problem. Pick the ANSWER first, then multiply back to get the dividend.
+   That is what keeps it clean: no remainder, and the quotient fills the top
+   row exactly, which is the only case the bracket layout is built for. */
+function makeProblem(rand){
+  for (var tries = 0; tries < 500; tries++){
+    var divisor = SPEC.divisors[Math.floor(rand() * SPEC.divisors.length)];
+    var lo = Math.pow(10, SPEC.digits - 1), hi = Math.pow(10, SPEC.digits) - 1;
+    var quotient = lo + Math.floor(rand() * (hi - lo + 1));
+    if (!SPEC.allowZeroDigit && String(quotient).indexOf("0") >= 0) continue;
+    var dividend = quotient * divisor;
+    if (String(dividend).length !== SPEC.digits) continue;   /* must fill the top row */
+    return { dividend: dividend, divisor: divisor };
+  }
+  return { dividend: 852, divisor: 4 };     /* only if the spec is impossible */
+}
+function makeSet(seedStr){
+  var rand = rng(seedFromString(LESSON_ID + "|" + seedStr));
+  var out = [], seen = {};
+  var guard = 0;
+  while (out.length < SPEC.count && guard++ < 2000){
+    var p = makeProblem(rand);
+    var k = p.dividend + "/" + p.divisor;
+    if (seen[k]) continue;                  /* never the same one twice on a page */
+    seen[k] = true;
+    out.push(p);
+  }
+  return out;
+}
 
 /* ── the arithmetic, one entry per step ────────────────────────────────── */
 function solve(dividend, divisor){
@@ -256,8 +313,18 @@ paintDemo(0);
 /* ── the problems he fills in ─────────────────────────────────────────── */
 var host = document.getElementById("problems");
 var solved = 0;
+var PROBLEMS = [];
 
-PROBLEMS.forEach(function(P, pi){
+function renderSet(list, label){
+  PROBLEMS = list;
+  solved = 0;
+  host.innerHTML = "";
+  document.getElementById("setinfo").textContent = label;
+  list.forEach(addProblem);
+  paintScore();
+}
+
+function addProblem(P, pi){
   var PS = solve(P.dividend, P.divisor);
   var box = document.createElement("div");
   box.className = "prob";
@@ -336,6 +403,8 @@ PROBLEMS.forEach(function(P, pi){
     var q = queue[pos];
     q.el.disabled = false;
     q.el.focus();
+    /* On a phone the next box is often below the keyboard. Keep it on screen. */
+    if (q.cell.scrollIntoView) q.cell.scrollIntoView({ block: "center", behavior: "smooth" });
     nudge.classList.remove("warn");
     nudge.textContent = q.ask;
   }
@@ -353,6 +422,13 @@ PROBLEMS.forEach(function(P, pi){
 
   queue[0].el.disabled = false;
   nudge.textContent = queue[0].ask;
+}
+
+/* Today's set, and a button for a fresh one. */
+renderSet(makeSet(today()), "Today's set");
+document.getElementById("reroll").addEventListener("click", function(){
+  renderSet(makeSet(String(Date.now())), "A fresh set");
+  host.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 /* ── progress, stored the way the other lessons store it ──────────────── */
