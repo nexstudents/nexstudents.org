@@ -17,10 +17,38 @@ h1{margin:0 0 6px}
 .section-head{margin:34px 0 4px;font-size:1.35rem}
 .section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
 
-/* ---- read-aloud bar ---- */
+/* ---- read-aloud player ----
+   Play on its own line, the two step buttons centred under it. Paul,
+   2026-08-26: on the phone Back and Next sat BEFORE Play, which reads wrong. */
+.player{display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 12px;margin:0 0 18px;text-align:center}
+.playmain{cursor:pointer;min-width:180px;font-size:1.02rem;padding:12px 26px}
+.steprow{display:flex;gap:8px;justify-content:center;width:100%;max-width:420px}
+.steprow .tab.act{flex:1 1 0}
+.playmeta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
 .pbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin:0 0 18px}
 .pbar .btn{cursor:pointer}
+
+/* ---- voice picker and the API key ---- */
+.voicerow{display:none;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;max-width:100%}
+.voicerow.show{display:flex}
+.voicerow label{color:var(--dim);font-size:.85rem}
+.voicerow select{max-width:100%;font-size:13px}
+.linkbtn{background:none;border:0;color:var(--dim);font:inherit;font-size:.82rem;
+  text-decoration:underline;cursor:pointer;padding:0}
+.linkbtn:hover{color:var(--fg)}
+.keyrow{display:none;width:100%;max-width:460px;text-align:left}
+.keyrow.show{display:block}
+.keyrow label{display:block;color:var(--dim);font-size:.82rem;margin-bottom:6px}
+.keyfield{display:flex;gap:6px}
+.keyfield input{flex:1 1 auto;min-width:0;background:var(--boxfill);color:var(--fg);
+  border:1px solid var(--boxline);border-radius:999px;padding:9px 14px;font:inherit;font-size:.88rem}
+.keyfield input:focus{outline:none;border-color:var(--a)}
+.keynote{color:var(--dim);font-size:.78rem;margin:8px 0 0}
+.keynote.bad{color:#e5484d}
+.keynote.good{color:var(--free)}
 .caption{margin-top:10px;color:var(--fg);font-size:1rem;line-height:1.5;min-height:3em}
 .caption b{color:var(--a)}
 .nospeech{display:none;color:var(--dim);font-size:.85rem;margin:8px 0 0}
@@ -112,20 +140,38 @@ h1{margin:0 0 6px}
   <h2 class="section-head">How It Works</h2>
   <p class="section-note">Press play and watch the same four steps repeat. Back a step replays the one before it.</p>
 
-  <div class="pbar">
-    <button class="btn" type="button" id="prev">&larr; Back a step</button>
-    <button class="btn" type="button" id="play">&#9654; Play</button>
-    <button class="btn" type="button" id="next">Next step &rarr;</button>
-    <select class="rate" id="rate" aria-label="Reading speed">
-      <option value="0.7">Slow</option>
-      <option value="0.85" selected>Normal</option>
-      <option value="1">Fast</option>
-    </select>
-    <span class="tag" id="stepPos"></span>
-  </div>
-  <div class="themerow">
-    <span class="lbl">Colours</span>
-    <div class="swatches" id="swatches"></div>
+  <div class="player">
+    <button class="btn playmain" type="button" id="play">&#9654; Play</button>
+    <div class="steprow">
+      <button class="tab act" type="button" id="prev">&larr; Back a step</button>
+      <button class="tab act" type="button" id="next">Next step &rarr;</button>
+    </div>
+    <div class="playmeta">
+      <select class="rate" id="rate" aria-label="Reading speed">
+        <option value="0.7">Slow</option>
+        <option value="0.85" selected>Normal</option>
+        <option value="1">Fast</option>
+      </select>
+      <span class="tag" id="stepPos"></span>
+    </div>
+    <div class="voicerow" id="voicerow">
+      <label for="voice">Voice</label>
+      <select class="rate" id="voice" aria-label="Choose a reading voice"></select>
+    </div>
+    <div class="themerow">
+      <span class="lbl">Colours</span>
+      <div class="swatches" id="swatches"></div>
+      <button class="linkbtn" type="button" id="keyToggle">Studio voice</button>
+    </div>
+    <div class="keyrow" id="keyrow">
+      <label for="ttskey">Google Cloud Text-to-Speech API key</label>
+      <div class="keyfield">
+        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
+        <button class="tab act" type="button" id="keySave">Save</button>
+        <button class="tab act" type="button" id="keyClear">Clear</button>
+      </div>
+      <p class="keynote" id="keynote">Stored only in this browser, never sent anywhere but Google. Restrict the key to the Text-to-Speech API in your Cloud console.</p>
+    </div>
   </div>
   <div class="panel">
     <div class="gridwrap"><div class="dgrid" id="demo"></div></div>
@@ -171,6 +217,7 @@ var LESSON_ID = "maths/long-division";
    ------------------------------------------------------------------------ */
 function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
 function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch (e){} }
 
 var THEMES = {
   forest: { name:"Forest",
@@ -432,22 +479,101 @@ function paintDemo(upto){
   posEl.textContent = "Step " + (upto + 1) + " of " + CAPS.length;
 }
 
+/* ── the voice, the same two engines the history lessons use ───────────────
+   GOOGLE  Google Cloud TTS, fetched live with the viewer's own key, cached
+           per step so replaying never bills twice.
+   DEVICE  the browser's own speechSynthesis. Always there, always the fallback.
+   British first in both, per Paul.
+   ------------------------------------------------------------------------ */
+var GOOGLE_VOICES = [
+  { id:"en-GB-Neural2-B", label:"UK male (Neural2 B)" },
+  { id:"en-GB-Neural2-D", label:"UK male (Neural2 D)" },
+  { id:"en-GB-Neural2-A", label:"UK female (Neural2 A)" },
+  { id:"en-US-Neural2-D", label:"US male (Neural2 D)" },
+  { id:"en-US-Neural2-J", label:"US male (Neural2 J)" }
+];
+var ttsKey = load("ttskey", "");
+var googleVoice = load("gvoice", GOOGLE_VOICES[0].id);
+var engine = "device";                 /* "google" | "device" */
+var voice = null, voices = [], clipCache = {}, audioEl = null;
+
+function hasKey(){ return !!ttsKey; }
+function rateVal(){ return parseFloat(document.getElementById("rate").value) || 0.85; }
+function note(msg, kind){
+  var el = document.getElementById("keynote");
+  if (!el) return;
+  el.className = "keynote" + (kind ? " " + kind : "");
+  el.textContent = msg || "Stored only in this browser, never sent anywhere but Google. Restrict the key to the Text-to-Speech API in your Cloud console.";
+  if (msg && kind === "bad") document.getElementById("keyrow").classList.add("show");
+}
+
+/* One caption -> one MP3. Cached by voice, step and speed. */
+function fetchClip(i){
+  var ck = googleVoice + "|" + i + "|" + rateVal();
+  if (clipCache[ck]) return Promise.resolve(clipCache[ck]);
+  return fetch("https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=" + encodeURIComponent(ttsKey), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: { text: CAPS[i].text },
+      voice: { languageCode: googleVoice.slice(0, 5), name: googleVoice },
+      audioConfig: { audioEncoding: "MP3", speakingRate: rateVal() }
+    })
+  }).then(function(r){
+    return r.json().then(function(j){
+      if (!r.ok) throw new Error(j.error ? j.error.message : "HTTP " + r.status);
+      return j;
+    });
+  }).then(function(j){
+    var src = "data:audio/mpeg;base64," + j.audioContent;
+    clipCache[ck] = src;
+    return src;
+  });
+}
+
+/* Whatever the engine, finishing a step moves to the next one. */
+function stepDone(mine){
+  if (!playing || mine !== gen) return;
+  if (at < CAPS.length - 1){ at++; paintDemo(at); say(at); }
+  else stop();
+}
+
 function say(i){
-  if (!supported) return;
+  var mine = ++gen;
+  silence();
+  if (engine === "google" && hasKey()){
+    fetchClip(i).then(function(src){
+      if (!playing || mine !== gen) return;
+      audioEl = new Audio(src);
+      audioEl.onended = function(){ stepDone(mine); };
+      audioEl.play().catch(function(){ sayOnDevice(i, mine); });
+    }).catch(function(e){
+      note(String(e.message || e), "bad");
+      engine = "device";
+      sayOnDevice(i, mine);
+    });
+    return;
+  }
+  sayOnDevice(i, mine);
+}
+
+function sayOnDevice(i, mine){
+  if (!supported){ stop(); return; }
   synth.cancel();
   var u = new SpeechSynthesisUtterance(CAPS[i].text);
-  u.rate = parseFloat(document.getElementById("rate").value);
-  var mine = ++gen;
-  u.onend = function(){
-    if (!playing || mine !== gen) return;
-    if (at < CAPS.length - 1){ at++; paintDemo(at); say(at); }
-    else stop();
-  };
+  u.rate = rateVal();
+  if (voice) u.voice = voice;
+  u.onend = function(){ stepDone(mine); };
   synth.speak(u);
+}
+
+function silence(){
+  if (audioEl){ audioEl.pause(); audioEl.onended = null; audioEl = null; }
+  if (supported) synth.cancel();
 }
 function stop(){
   playing = false; gen++;
-  if (supported) synth.cancel();
+  silence();
   document.getElementById("play").innerHTML = "&#9654; Play";
 }
 
@@ -465,9 +591,138 @@ document.getElementById("prev").addEventListener("click", function(){
   stop(); if (at > 0) at--; paintDemo(at);
 });
 document.getElementById("rate").addEventListener("change", function(){
-  if (playing){ gen++; say(at); }
+  if (playing) say(at);
 });
 paintDemo(0);
+
+/* ── choosing the voice ───────────────────────────────────────────────────
+   The default browser voice on Windows is usually Microsoft David or Zira, the
+   old robotic SAPI pair. Rank by name so the best available wins, British
+   first, and let him pick anything he likes from the list.
+   ------------------------------------------------------------------------ */
+(function voicePicker(){
+  var voiceSel = document.getElementById("voice");
+  var voiceRow = document.getElementById("voicerow");
+
+  if (!supported && !hasKey()){
+    document.getElementById("nospeech").classList.add("show");
+  }
+
+  function rank(v){
+    var n = (v.name || "").trim();
+    if (/^google uk english male$/i.test(n)) return 1000;   /* Paul's pick */
+    var score = 0;
+    if (/natural/i.test(n)) score += 100;
+    if (/neural/i.test(n)) score += 90;
+    if (/^google/i.test(n)) score += 75;
+    if (/online/i.test(n)) score += 55;
+    if (/\b(arthur|oliver|daniel|serena)\b/i.test(n)) score += 60;
+    if (/\b(david|zira|mark|hazel|susan|george|catherine)\b/i.test(n)) score -= 60;
+    if (/compact|eloquence|espeak/i.test(n)) score -= 80;
+    if (v.localService === false) score += 15;
+    if (/^en[-_]GB/i.test(v.lang)) score += 40;             /* British first */
+    else if (/^en[-_]US/i.test(v.lang)) score += 6;
+    return score;
+  }
+  function selectValue(v){
+    var found = false;
+    [].forEach.call(voiceSel.querySelectorAll("option"), function(o){
+      if (o.value === v){ o.selected = true; found = true; }
+    });
+    return found;
+  }
+  function applyChoice(val, persist){
+    if (!val) return;
+    if (val.indexOf("g:") === 0){
+      engine = "google";
+      googleVoice = val.slice(2);
+      store("gvoice", googleVoice);
+    } else {
+      engine = "device";
+      voice = voices.filter(function(v){ return "d:" + v.name === val; })[0] || voice;
+    }
+    if (persist) store("voice", val);
+  }
+
+  function loadVoices(){
+    var all = supported ? (synth.getVoices() || []) : [];
+    voices = all.filter(function(v){ return /^en([-_]|$)/i.test(v.lang || ""); });
+    if (!voices.length) voices = all.slice();
+    voices.sort(function(a, b){ return rank(b) - rank(a); });
+    if (voices.length) voice = voices[0];
+
+    voiceSel.innerHTML = "";
+    if (hasKey()){
+      var gg = document.createElement("optgroup");
+      gg.label = "Google Cloud (your key)";
+      GOOGLE_VOICES.forEach(function(g){
+        var o = document.createElement("option");
+        o.value = "g:" + g.id;
+        o.textContent = g.label;
+        gg.appendChild(o);
+      });
+      voiceSel.appendChild(gg);
+    }
+    var dg = document.createElement("optgroup");
+    dg.label = "This device";
+    voices.forEach(function(v, i){
+      var o = document.createElement("option");
+      o.value = "d:" + v.name;
+      o.textContent = v.name.replace(/\s*\(.*?\)\s*$/, "") + (i === 0 ? "  (best on this device)" : "");
+      dg.appendChild(o);
+    });
+    voiceSel.appendChild(dg);
+
+    var want = load("voice", null);
+    if (!want || !selectValue(want)){
+      /* No saved pick: Google's UK voice if there is a key, else the best
+         British voice this device has. */
+      if (hasKey()) selectValue("g:" + googleVoice);
+      else if (voices.length) selectValue("d:" + voices[0].name);
+    }
+    applyChoice(voiceSel.value, false);
+    if (voiceSel.options.length) voiceRow.classList.add("show");
+  }
+
+  voiceSel.addEventListener("change", function(){
+    applyChoice(voiceSel.value, true);
+    note("", "");
+    if (playing) say(at);
+  });
+
+  /* ---- the API key ---- */
+  var keyRow = document.getElementById("keyrow");
+  var keyIn = document.getElementById("ttskey");
+  document.getElementById("keyToggle").addEventListener("click", function(){
+    keyRow.classList.toggle("show");
+    if (keyRow.classList.contains("show")) keyIn.focus();
+  });
+  if (ttsKey) keyIn.value = ttsKey;
+  document.getElementById("keySave").addEventListener("click", function(){
+    var v = keyIn.value.trim();
+    if (!v){ note("Paste a key first.", "bad"); return; }
+    ttsKey = v; store("ttskey", v); clipCache = {};
+    note("Key saved. Google Cloud voices are now in the list.", "good");
+    loadVoices();
+    selectValue("g:" + googleVoice);
+    applyChoice(voiceSel.value, true);
+  });
+  document.getElementById("keyClear").addEventListener("click", function(){
+    ttsKey = ""; drop("ttskey"); clipCache = {}; keyIn.value = "";
+    engine = "device";
+    note("Key removed. Back to this device's voice.", "");
+    loadVoices();
+  });
+
+  loadVoices();
+  /* Chrome fills the voice list asynchronously, so the first read comes back
+     empty and this fires once it is ready. */
+  if (supported && typeof synth.addEventListener === "function"){
+    synth.addEventListener("voiceschanged", loadVoices);
+  } else if (supported){
+    synth.onvoiceschanged = loadVoices;
+  }
+})();
 
 /* ── the problems he fills in ─────────────────────────────────────────── */
 var host = document.getElementById("problems");
