@@ -45,7 +45,9 @@ h1{margin:0 0 6px}
   border:1px solid var(--line);border-radius:7px;
   color:var(--fg);font:inherit;text-align:center;padding:0;
   transition:background .12s,border-color .12s,box-shadow .12s}
-.cell input:focus{outline:none;background:var(--boxfill);
+/* An untouched box recedes; a typed digit stays at full strength. */
+.cell input:placeholder-shown{opacity:.4}
+.cell input:focus{outline:none;opacity:1;background:var(--boxfill);
   border:2px solid var(--a);box-shadow:0 0 0 3px var(--pill)}
 /* not his turn yet: barely there */
 .cell input:disabled{background:transparent;border-color:var(--line);
@@ -138,7 +140,7 @@ h1{margin:0 0 6px}
   </div>
 
   <h2 class="section-head">Your Turn</h2>
-  <p class="section-note">Type a digit in every box. Top row first, then the row you multiply, then the row you subtract. A box turns green when it is right, and the next digit drops down on its own once the subtraction is done. None of these have a remainder.</p>
+  <p class="section-note">Type a digit in every box: the answer on top, then the row you multiply, then the row you subtract. None of these have a remainder.</p>
   <div class="tabs" role="tablist">
     <button class="tab on" type="button" id="tabPractice" role="tab" aria-selected="true">Practice</button>
     <button class="tab" type="button" id="tabTest" role="tab" aria-selected="false">Test</button>
@@ -550,6 +552,9 @@ function addProblem(P, pi){
     inp.inputMode = "numeric";
     inp.maxLength = 1;
     inp.setAttribute("aria-label", "digit");
+    /* A space placeholder is what lets :placeholder-shown mean "still empty",
+       which is how an untouched box is faded without fading a typed digit. */
+    inp.placeholder = " ";
     inp.disabled = MODE === "practice";
     q.el = inp;
     q.cell.appendChild(inp);
