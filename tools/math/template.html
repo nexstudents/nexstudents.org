@@ -23,7 +23,10 @@ h1{margin:0 0 6px}
 .player{display:flex;flex-direction:column;align-items:center;gap:10px;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:16px 12px;margin:0 0 18px;text-align:center}
-.playmain{cursor:pointer;min-width:180px;font-size:1.02rem;padding:12px 26px}
+/* ns.css .btn is a flex box with no justify-content, so giving it a min-width
+   parked the label on the left of its own button. Same bug as the drawer. */
+.playmain{cursor:pointer;min-width:180px;font-size:1.02rem;padding:12px 26px;
+  justify-content:center;text-align:center}
 .steprow{display:flex;gap:8px;justify-content:center;width:100%;max-width:420px}
 .steprow .tab.act{flex:1 1 0}
 .playmeta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
@@ -35,7 +38,21 @@ h1{margin:0 0 6px}
 .voicerow{display:none;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;max-width:100%}
 .voicerow.show{display:flex}
 .voicerow label{color:var(--dim);font-size:.85rem}
-.voicerow select{max-width:100%;font-size:13px}
+/* The selects are the SAME control as the history lessons: same size, same
+   3px corner, same hand-drawn arrow. Paul, 2026-08-26: the maths dropdown
+   "looks way too different", and it did, because I styled it from scratch
+   instead of matching what already existed. */
+select.rate{
+  font-family:inherit;font-size:13px;font-weight:500;
+  color:var(--fg);background-color:var(--boxfill);
+  border:1px solid var(--boxline);border-radius:3px;
+  cursor:pointer;max-width:100%;
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  padding:8px 27px 8px 10px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;background-size:11px 7px;
+}
+select.rate:focus{outline:none;border-color:var(--a)}
 .linkbtn{background:none;border:0;color:var(--dim);font:inherit;font-size:.82rem;
   text-decoration:underline;cursor:pointer;padding:0}
 .linkbtn:hover{color:var(--fg)}

@@ -88,7 +88,10 @@ body.nav-open .drawer{transform:none}
 .drawer .x{align-self:flex-end;background:none;border:0;color:var(--dim);font-size:26px;line-height:1;cursor:pointer;padding:4px 8px}
 .drawer a{display:block;padding:14px 0;font-size:1.05rem;font-weight:700;letter-spacing:-.02em;border-bottom:1px solid var(--line)}
 .drawer a small{display:block;font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-top:4px}
-.drawer .btn{margin-top:auto;justify-content:center}
+/* `.drawer a` above sets display:block, which beat the .btn flex and left
+   justify-content doing nothing, so the label sat hard left in a full-width
+   button. Paul spotted it on the phone, 2026-08-26. */
+.drawer .btn{margin-top:auto;display:flex;align-items:center;justify-content:center;text-align:center}
 
 /* ── 1. HERO — the shelf is visible immediately, Start here is the CTA ── */
 .hero{padding-block:64px 72px;position:relative}
