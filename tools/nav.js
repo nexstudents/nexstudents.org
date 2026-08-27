@@ -107,10 +107,10 @@ const MENUS = {
     body: '<div class="mg-cols">' + SUBJECTS.map(s => col(s.name, s.live
       ? [{ label: "Lessons", href: "/" + s.slug + "/lessons/" },
          { label: "Worksheets", href: "/" + s.slug + "/worksheets/" }]
-      : [{ label: "Being built" }])).join("") +
+      : [{ label: "Being Built" }])).join("") +
       col("Everything", [
-        { label: "All worksheets", href: "/worksheets/" },
-        { label: "What we use", href: "/resources/" },
+        { label: "All Worksheets", href: "/worksheets/" },
+        { label: "What We Use", href: "/resources/" },
       ]) + "</div>",
     promo: { href: "/worksheets/history/lewis-and-clark/",
              img: "/worksheets/history/lewis-and-clark/thumb.jpg",
@@ -130,8 +130,8 @@ const MENUS = {
   c: {
     body: '<div class="mg-cols">' +
       col("Donut Boy", [
-        { label: "Start at episode 1", href: "/comics/" },
-        { label: "All 8 episodes", href: "/comics/" },
+        { label: "Start at Episode 1", href: "/comics/" },
+        { label: "All 8 Episodes", href: "/comics/" },
       ]) +
       col("More strips", [{ label: "Being drawn" }]) + "</div>" +
       '<p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p>',
@@ -141,9 +141,9 @@ const MENUS = {
   },
   p: {
     body: '<div class="mg-cols">' +
-      col("Placement", [{ label: "Reading placement exam", href: "/placement-exam.html" }]) +
+      col("Placement", [{ label: "Reading Placement Exam", href: "/placement-exam.html" }]) +
       col("Planning", [
-        { label: "What we use", href: "/resources/" },
+        { label: "What We Use", href: "/resources/" },
         { label: "About NexStudents", href: "/about/" },
         { label: "Contact", href: "/contact/" },
       ]) + "</div>",
@@ -194,7 +194,7 @@ SHEETS.gr = { title: "Grades", parent: null, promo: MENUS.gr.promo, rows:
 
 SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS.r.promo, rows:
   SUBJECTS.map(s => s.live ? { label: s.name, sub: "r-" + s.slug } : { label: s.name, soon: true })
-    .concat([{ label: "All worksheets", href: "/worksheets/", note: "Every printable" }])
+    .concat([{ label: "All Worksheets", href: "/worksheets/", note: "Every Printable" }])
 };
 
 SHEETS.g = { title: "Games", parent: null, view: "/games/", rows: [
@@ -205,12 +205,12 @@ SHEETS.g = { title: "Games", parent: null, view: "/games/", rows: [
 
 SHEETS.c = { title: "Comics", parent: null, view: "/comics/", promo: MENUS.c.promo, rows: [
   { label: "Donut Boy", href: "/comics/", note: "8 episodes" },
-  { label: "More strips", soon: true },
+  { label: "More Strips", soon: true },
 ]};
 
 SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
-  { label: "Reading placement exam", href: "/placement-exam.html" },
-  { label: "What we use", href: "/resources/" },
+  { label: "Reading Placement Exam", href: "/placement-exam.html" },
+  { label: "What We Use", href: "/resources/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
 ]};
@@ -261,7 +261,7 @@ const navMarkup = (active, btn) => {
 <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
   <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
 ${drawerLinks(active)}
-  <a class="${b}" href="${SUPPORT_URL}" target="_blank" rel="noopener">Support us</a>
+  <a class="${b}" href="${SUPPORT_URL}" target="_blank" rel="noopener">Support Us</a>
   ${modeButton(true)}
 </aside>
 ${drawerSubs()}
@@ -273,7 +273,7 @@ ${drawerSubs()}
   <a class="word" href="/">Nex<b>Students</b></a>
   <div class="tabs">${tabs(active)}</div>
   ${modeButton()}
-  <a class="${b}" href="/#grades">Pick a grade</a>
+  <a class="${b}" href="/#grades">Pick a Grade</a>
 </div>
 ${megaPanel()}
 </nav>`;
@@ -281,7 +281,7 @@ ${megaPanel()}
 
 const modeButton = (inDrawer) => inDrawer
   ? '<button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night">' +
-    "<span data-mode-icon>&#9790;</span><span data-mode-label>Night mode</span></button>"
+    "<span data-mode-icon>&#9790;</span><span data-mode-label>Night Mode</span></button>"
   : '<button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night">' +
     "<span data-mode-icon>&#9790;</span></button>";
 
@@ -316,7 +316,7 @@ function nsMode(){ return document.documentElement.getAttribute("data-theme")===
 function nsPaintMode(){
   var light=nsMode()==="light";
   document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML=light?"&#9788;":"&#9790;"; });
-  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent=light?"Day mode":"Night mode"; });
+  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent=light?"Day Mode":"Night Mode"; });
   document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
     e.setAttribute("aria-label", light?"Switch to night mode":"Switch to day mode"); });
 }
