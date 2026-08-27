@@ -44,16 +44,27 @@
    near-black on white or every filled button becomes unreadable. The badge
    greens and oranges darken too, because #4ade80 on white fails contrast. */
 :root[data-theme="light"]{
-  --bg:#f7f8fa; --panel:#ffffff; --panel-2:#eef1f5; --line:#c6cfd9;
-  --fg:#14171a; --dim:#5b646e;
-  --a:#14171a; --a-ink:#ffffff;
+  /* Softened 2026-08-27. Paul: "our light mode theme is a bit too weird on the
+     objects on our main pages. it just looks too black and white ... something
+     to help it feel not as in your face."
+
+     The culprit was the accent: it was #14171a, so every filled tile and button
+     landed as a HARD BLACK BLOCK on white. It is a deep slate now - still 12:1
+     against white, so nothing gets harder to read, but it stops reading as ink
+     stamped on paper. The greys carry a trace of blue rather than being neutral
+     mud, and the page ground sits a shade off pure white so panels have
+     somewhere to be white AGAINST. Borders stay firm; that was a separate note
+     of his and it still holds. */
+  --bg:#f2f4f7; --panel:#ffffff; --panel-2:#e8ecf1; --line:#c6cfd9;
+  --fg:#1b2229; --dim:#5d6874;
+  --a:#27313f; --a-ink:#ffffff;
   --free:#15803d;
   --paid:#c2410c;
   --on-free:#eafdf1; --on-paid:#fff3ee;
-  --ann-bg:#14171a; --nav-bg:rgba(247,248,250,.92);
-  --hero-glow:rgba(20,23,26,.05);
-  --on-a-soft:rgba(255,255,255,.72);
-  --fg-28:rgba(20,23,26,.28); --fg-07:rgba(20,23,26,.06);
+  --ann-bg:#27313f; --nav-bg:rgba(242,244,247,.92);
+  --hero-glow:rgba(39,49,63,.06);
+  --on-a-soft:rgba(255,255,255,.74);
+  --fg-28:rgba(27,34,41,.26); --fg-07:rgba(27,34,41,.055);
   color-scheme:light;
 }
 
