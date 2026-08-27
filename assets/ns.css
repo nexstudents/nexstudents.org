@@ -843,7 +843,11 @@ body.sub-open .drawer{transform:translateX(-100%)}
    :focus-visible rule below keeps a real outline for keyboard users, which is
    the part that actually matters for getting around without a mouse.
    -------------------------------------------------------------------------- */
-.menucol,.menucol *{-webkit-tap-highlight-color:transparent}
+/* 🚨 This was scoped to .menucol, so the burger itself and every link on every
+   page still flashed. Paul, 2026-08-27: "if we can get rid of that across the
+   entire site when tapping." It belongs on the ROOT - the property inherits,
+   so one declaration covers the whole document including the nav bar. */
+html{-webkit-tap-highlight-color:transparent}
 .menucol a:focus,.menucol button:focus{outline:none}
 .menucol a:focus-visible,.menucol button:focus-visible{
   outline:2px solid var(--a);outline-offset:-2px;border-radius:var(--r,4px)}

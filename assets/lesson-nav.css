@@ -347,7 +347,9 @@ body.sub-open .drawer{transform:translateX(-100%)}
    :focus-visible rule below keeps a real outline for keyboard users, which is
    the part that actually matters for getting around without a mouse.
    -------------------------------------------------------------------------- */
-.menucol,.menucol *{-webkit-tap-highlight-color:transparent}
+/* On the root, not on .menucol - see the note in ns.css. Lesson pages load this
+   file INSTEAD of ns.css, so the declaration has to exist in both. */
+html{-webkit-tap-highlight-color:transparent}
 .menucol a:focus,.menucol button:focus{outline:none}
 .menucol a:focus-visible,.menucol button:focus-visible{
   outline:2px solid var(--nv-accent);outline-offset:-2px;border-radius:var(--r,4px)}
