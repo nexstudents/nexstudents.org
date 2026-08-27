@@ -7,32 +7,35 @@
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 <title>The Boston Tea Party — NexStudents</title>
 <meta name="description" content="A printable grade 8 history worksheet. Cheaper tea, an angry city, and why the price was never the point. Answer key included.">
-<link rel="stylesheet" href="/assets/ns.css?v=72cdb979">
-<link rel="stylesheet" href="/assets/worksheet.css?v=72cdb979">
+<link rel="stylesheet" href="/assets/ns.css?v=3db79d45">
+<link rel="stylesheet" href="/assets/worksheet.css?v=3db79d45">
 </head>
 <body>
 
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
   <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
-  <a href="/">Home<small>Start here</small></a>
-  <a href="/grades/">Grades<small>K through 8</small></a>
-  <a href="/resources/">Resources<small>Tools we use</small></a>
-  <a href="/games/">Games<small>Play in the browser</small></a>
-  <a href="/comics/">Comics<small>Read on the site</small></a>
-  <a href="/for-parents/">For Parents<small>Placement exams</small></a>
-  <a href="/about/">About<small>Who makes this</small></a>
-  <a href="/contact/">Contact<small>Get in touch</small></a>
+  <a class="dl" href="/">Home<small>Start here</small></a>
+  <div class="dl-row"><a class="dl" href="/grades/">Grades<small>K through 8</small></a><button class="dl-more" type="button" data-sub="gr" aria-label="Open Grades">&#8250;</button></div>
+  <div class="dl-row"><a class="dl" href="/resources/">Resources<small>Tools we use</small></a><button class="dl-more" type="button" data-sub="r" aria-label="Open Resources">&#8250;</button></div>
+  <div class="dl-row"><a class="dl" href="/games/">Games<small>Play in the browser</small></a><button class="dl-more" type="button" data-sub="g" aria-label="Open Games">&#8250;</button></div>
+  <a class="dl" href="/comics/">Comics<small>Read on the site</small></a>
+  <a class="dl" href="/for-parents/">For Parents<small>Placement exams</small></a>
+  <a class="dl" href="/about/">About<small>Who makes this</small></a>
+  <a class="dl" href="/contact/">Contact<small>Get in touch</small></a>
   <a class="btn" href="/grades/">Pick a grade</a>
   <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night"><span data-mode-icon>&#9790;</span><span data-mode-label>Night mode</span></button>
 </aside>
+<aside class="dsub" data-subpanel="gr" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back>&#8249; Menu</button><h3>Grades</h3><div class="dsub-body"><div class="mg-grades"><span class="mg-grade soon"><b>K</b><span>Soon</span></span><span class="mg-grade soon"><b>1</b><span>Soon</span></span><span class="mg-grade soon"><b>2</b><span>Soon</span></span><a class="mg-grade live" href="/grade-3/"><b>3</b><span>Live</span></a><span class="mg-grade soon"><b>4</b><span>Soon</span></span><span class="mg-grade soon"><b>5</b><span>Soon</span></span><a class="mg-grade live" href="/grade-6/"><b>6</b><span>Live</span></a><a class="mg-grade live" href="/grade-7/"><b>7</b><span>Live</span></a><a class="mg-grade live" href="/grade-8/"><b>8</b><span>Live</span></a></div><p class="mg-note">Everything is organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p></div><a class="dsub-all" href="/grades/">All grades &rarr;</a></aside>
+<aside class="dsub" data-subpanel="r" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back>&#8249; Menu</button><h3>Resources</h3><div class="dsub-body"><div class="mg-cols"><div class="mg-col"><h4>English</h4><ul><li><a href="/english/lessons/">Lessons</a></li><li><a href="/english/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><a href="/history/lessons/">Lessons</a></li><li><a href="/history/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>Maths</h4><ul><li><a href="/maths/lessons/">Lessons</a></li><li><a href="/maths/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><span class="mg-soon">Being built</span></li></ul></div><div class="mg-col"><h4>Everything</h4><ul><li><a href="/worksheets/">All worksheets</a></li><li><a href="/resources/">What we use</a></li><li><a href="/grades/">Pick a grade</a></li></ul></div></div></div><a class="dsub-all" href="/resources/">All resources &rarr;</a></aside>
+<aside class="dsub" data-subpanel="g" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back>&#8249; Menu</button><h3>Games</h3><div class="dsub-body"><div class="mg-cols"><div class="mg-col"><h4>In the browser</h4><ul><li><span class="mg-soon">The first games are being built</span></li></ul></div><div class="mg-col"><h4>Instead, try</h4><ul><li><a href="/comics/">Comics</a></li><li><a href="/grades/">Interactive lessons</a></li></ul></div></div></div><a class="dsub-all" href="/games/">All games &rarr;</a></aside>
 
 <nav id="nav" class="ns-nav"><div class="nv">
   <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
     <i></i><i></i><i></i>
   </button>
   <a class="word" href="/">Nex<b>Students</b></a>
-  <div class="tabs"><a href="/">Home</a><a href="/grades/">Grades</a><a href="/resources/">Resources</a><a href="/games/">Games</a><a href="/comics/">Comics</a><a href="/for-parents/">For Parents</a></div>
+  <div class="tabs"><a class="mg-top" href="/">Home</a><details class="mega"><summary class="mg-top">Grades</summary><div class="mg-panel"><div class="mg-inner"><div class="mg-body"><div class="mg-grades"><span class="mg-grade soon"><b>K</b><span>Soon</span></span><span class="mg-grade soon"><b>1</b><span>Soon</span></span><span class="mg-grade soon"><b>2</b><span>Soon</span></span><a class="mg-grade live" href="/grade-3/"><b>3</b><span>Live</span></a><span class="mg-grade soon"><b>4</b><span>Soon</span></span><span class="mg-grade soon"><b>5</b><span>Soon</span></span><a class="mg-grade live" href="/grade-6/"><b>6</b><span>Live</span></a><a class="mg-grade live" href="/grade-7/"><b>7</b><span>Live</span></a><a class="mg-grade live" href="/grade-8/"><b>8</b><span>Live</span></a></div><p class="mg-note">Everything is organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" loading="lazy" decoding="async"><b>8th Grade US History &middot; Units 1-5</b></a><p class="mg-all"><a href="/grades/">All grades &rarr;</a></p></div></div></details><details class="mega"><summary class="mg-top">Resources</summary><div class="mg-panel"><div class="mg-inner"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>English</h4><ul><li><a href="/english/lessons/">Lessons</a></li><li><a href="/english/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><a href="/history/lessons/">Lessons</a></li><li><a href="/history/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>Maths</h4><ul><li><a href="/maths/lessons/">Lessons</a></li><li><a href="/maths/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><span class="mg-soon">Being built</span></li></ul></div><div class="mg-col"><h4>Everything</h4><ul><li><a href="/worksheets/">All worksheets</a></li><li><a href="/resources/">What we use</a></li><li><a href="/grades/">Pick a grade</a></li></ul></div></div></div><p class="mg-all"><a href="/resources/">All resources &rarr;</a></p></div></div></details><details class="mega"><summary class="mg-top">Games</summary><div class="mg-panel"><div class="mg-inner"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>In the browser</h4><ul><li><span class="mg-soon">The first games are being built</span></li></ul></div><div class="mg-col"><h4>Instead, try</h4><ul><li><a href="/comics/">Comics</a></li><li><a href="/grades/">Interactive lessons</a></li></ul></div></div></div><p class="mg-all"><a href="/games/">All games &rarr;</a></p></div></div></details><a class="mg-top" href="/comics/">Comics</a><a class="mg-top" href="/for-parents/">For Parents</a></div>
   <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>
   <a class="btn" href="/grades/">Pick a grade</a>
 </div></nav>
@@ -150,6 +153,44 @@ document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
   });
 });
 nsPaintMode();
+
+/* The drawer second sheets. Opening one covers the drawer; Back and Escape
+   close it. The chevron only opens the sheet - the label beside it is still a
+   plain link to the section, so nothing is trapped behind a disclosure. */
+function nsCloseSubs(){
+  document.querySelectorAll("[data-subpanel]").forEach(function(p){
+    p.classList.remove("open"); p.setAttribute("aria-hidden", "true");
+  });
+}
+document.querySelectorAll("[data-sub]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var p = document.querySelector('[data-subpanel="' + btn.getAttribute("data-sub") + '"]');
+    if (!p) return;
+    nsCloseSubs();
+    p.classList.add("open"); p.setAttribute("aria-hidden", "false");
+  });
+});
+document.querySelectorAll("[data-sub-back]").forEach(function(b){ b.addEventListener("click", nsCloseSubs); });
+addEventListener("keydown", function(e){ if (e.key === "Escape") nsCloseSubs(); });
+scrim.addEventListener("click", nsCloseSubs);
+
+/* A mega panel is a <details>: it opens on hover on a pointer device, and on
+   click everywhere. Close the others so only one band is ever open. */
+var megas = [].slice.call(document.querySelectorAll("details.mega"));
+function nsCloseMegas(except){ megas.forEach(function(d){ if (d !== except) d.open = false; }); }
+megas.forEach(function(d){
+  d.addEventListener("toggle", function(){ if (d.open) nsCloseMegas(d); });
+  if (matchMedia("(hover:hover)").matches){
+    d.addEventListener("mouseenter", function(){ d.open = true; });
+    d.addEventListener("mouseleave", function(){ d.open = false; });
+    d.querySelector("summary").addEventListener("click", function(e){
+      /* the label is a destination, not just a toggle */
+      e.preventDefault();
+      location.href = d.querySelector(".mg-all a").getAttribute("href");
+    });
+  }
+});
+addEventListener("keydown", function(e){ if (e.key === "Escape") nsCloseMegas(null); });
 </script>
 </body>
 </html>

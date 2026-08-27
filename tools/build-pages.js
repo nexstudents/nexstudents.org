@@ -22,7 +22,7 @@ const CSS_V = require("crypto")
    one. It lived here under a comment promising "ONE nav definition", which was
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
-const { NAV, tabs, drawerLinks, navMarkup, navScript, modeBoot } = require("./nav.js");
+const { NAV, SUBJECTS, LIVE_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot } = require("./nav.js");
 
 /* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
 const SITE = "https://nexstudents.org";
@@ -227,6 +227,7 @@ const liveGrades = () => [...new Set(
   LESSONS.map(l => l.grade).concat(WORKSHEETS.flatMap(w => w.grades))
 )].sort((a, b) => a - b).map(String);
 
+
 const gradeCells = (live, cls) => ["K","1","2","3","4","5","6","7","8"].map(g =>
   live.includes(g)
     ? '<a class="gr live" href="/grade-' + g + '/"><b>' + g + '</b><span>Live</span></a>'
@@ -362,16 +363,8 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
    English across the board of the whole website." So the label, the data tag
    and the URL all say English, and every old /ela/ path is left behind as a
    redirect rather than a 404. */
-const SUBJECTS = [
-  { name: "English", slug: "english", live: true,
-    blurb: "Spelling, book reports, comprehension and reading lists worth actually reading." },
-  { name: "History", slug: "history", live: true,
-    blurb: "American and Biblical history, taught properly rather than skipped over." },
-  { name: "Maths", slug: "maths", live: true,
-    blurb: "Practice that teaches, without punishing a student for getting things wrong." },
-  { name: "Science", slug: "science", live: false,
-    blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
-];
+/* SUBJECTS moved to tools/nav.js: the NAV needs it on every page, and one
+   copy means the dropdown and the subject pages cannot disagree. */
 const keyOf = (s) => s.key || s.name;
 
 const bySubject = (s) => LESSONS.filter(l => l.subject === s);
@@ -948,6 +941,18 @@ const pages = [
     lead: "A placement exam, taken online, marked the moment your student finishes. Results appear on screen and land in your inbox. One short version that costs nothing, one fuller version that covers every subject.",
     body: parents() },
 ];
+
+/* nav.js mirrors the live-grade list for the dropdown. If the registries move
+   and that mirror is not updated, the nav would quietly point at a dead grade.
+   Fail the build instead. */
+(function checkLiveGrades(){
+  const derived = liveGrades().join(",");
+  if (derived !== LIVE_GRADES.join(",")) {
+    console.error("FAIL: LIVE_GRADES in tools/nav.js says [" + LIVE_GRADES.join(",") +
+      "] but the registries derive [" + derived + "]. Update nav.js.");
+    process.exit(1);
+  }
+})();
 
 const written = [];
 for (const p of pages) {

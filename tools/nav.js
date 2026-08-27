@@ -40,15 +40,132 @@ const NAV = [
   { href: "/contact/",     label: "Contact",     note: "Get in touch",        key: "ct", top: false },
 ];
 
+/* ── THE DROPDOWN PANELS ───────────────────────────────────────────────────
+   Paul, 2026-08-26, after studying lttstore: a band that opens under the nav
+   on hover, each section showing its own contents, with a promo picture on the
+   right. Built here rather than copied: the disclosure is a native
+   <details>/<summary>, so it works with a keyboard and without JavaScript.
+
+   Only sections with REAL second-level structure get one. A dropdown holding
+   one link is worse than no dropdown.
+
+   ⚠️ SUBJECTS and LIVE_GRADES live here because the NAV is what needs them on
+   every page. build-pages.js imports SUBJECTS from here and asserts its own
+   derived live-grade list matches LIVE_GRADES, so these cannot drift apart
+   silently - the build fails instead.
+   ------------------------------------------------------------------------ */
+const SUBJECTS = [
+  { name: "English", slug: "english", live: true,
+    blurb: "Spelling, book reports, comprehension and reading lists worth actually reading." },
+  { name: "History", slug: "history", live: true,
+    blurb: "American and Biblical history, taught properly rather than skipped over." },
+  { name: "Maths", slug: "maths", live: true,
+    blurb: "Practice that teaches, without punishing a student for getting things wrong." },
+  { name: "Science", slug: "science", live: false,
+    blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
+];
+
+/* Which grades have something real in them. Derived in build-pages.js from the
+   lesson and worksheet registries; mirrored here for the nav, and checked. */
+const LIVE_GRADES = ["3", "6", "7", "8"];
+
+const ALL_GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
+
+const gradeTiles = () => ALL_GRADES.map(g => LIVE_GRADES.includes(g)
+  ? '<a class="mg-grade live" href="/grade-' + g + '/"><b>' + g + '</b><span>Live</span></a>'
+  : '<span class="mg-grade soon"><b>' + g + '</b><span>Soon</span></span>'
+).join("");
+
+const col = (heading, links) =>
+  '<div class="mg-col"><h4>' + heading + '</h4><ul>' +
+  links.map(l => l.href
+    ? '<li><a href="' + l.href + '">' + l.label + '</a></li>'
+    : '<li><span class="mg-soon">' + l.label + '</span></li>').join("") +
+  "</ul></div>";
+
+/* A promo is optional per panel, and only ever points at something real. */
+const promo = (p) => p
+  ? '<a class="mg-promo" href="' + p.href + '">' +
+    '<img src="' + p.img + '" alt="' + p.alt + '" loading="lazy" decoding="async">' +
+    "<b>" + p.label + "</b></a>"
+  : "";
+
+const MENUS = {
+  gr: {
+    body: '<div class="mg-grades">' + gradeTiles() + "</div>" +
+          '<p class="mg-note">Everything is organised by grade first, then subject. ' +
+          "A grade goes live when there is enough in it to be worth your time.</p>",
+    promo: { href: "/worksheets/history/us-history-semester-1/",
+             img: "/worksheets/history/us-history-semester-1/thumb.jpg",
+             alt: "Complete 8th Grade US History, Units 1 to 5 bundle",
+             label: "8th Grade US History &middot; Units 1-5" },
+  },
+  r: {
+    body: '<div class="mg-cols">' + SUBJECTS.map(s => col(s.name, s.live
+      ? [{ label: "Lessons", href: "/" + s.slug + "/lessons/" },
+         { label: "Worksheets", href: "/" + s.slug + "/worksheets/" }]
+      : [{ label: "Being built" }])).join("") +
+      col("Everything", [
+        { label: "All worksheets", href: "/worksheets/" },
+        { label: "What we use", href: "/resources/" },
+        { label: "Pick a grade", href: "/grades/" },
+      ]) + "</div>",
+  },
+  g: {
+    /* No games are built yet, and inventing names would put fake products on
+       the site. Honest until Paul says what the first ones are. */
+    body: '<div class="mg-cols">' +
+      col("In the browser", [{ label: "The first games are being built" }]) +
+      col("Instead, try", [
+        { label: "Comics", href: "/comics/" },
+        { label: "Interactive lessons", href: "/grades/" },
+      ]) + "</div>",
+  },
+};
+
 const tabs = (active) => NAV
   .filter(n => n.top)
-  .map(n => '<a href="' + n.href + '"' + (active === n.key ? ' class="on"' : '') + '>' + n.label + '</a>')
+  .map(n => {
+    const on = active === n.key ? " on" : "";
+    const m = MENUS[n.key];
+    if (!m) return '<a class="mg-top' + on + '" href="' + n.href + '">' + n.label + "</a>";
+    return '<details class="mega"><summary class="mg-top' + on + '">' + n.label +
+      '</summary><div class="mg-panel"><div class="mg-inner">' +
+      '<div class="mg-body">' + m.body + "</div>" + promo(m.promo) +
+      '<p class="mg-all"><a href="' + n.href + '">All ' + n.label.toLowerCase() + " &rarr;</a></p>" +
+      "</div></div></details>";
+  })
   .join("");
 
+/* On a phone an item with a panel gets a chevron and pushes a SECOND sheet in
+   from the left, rather than trying to squeeze a mega menu onto a 390px
+   screen. The link itself still goes to the section, so nothing is trapped
+   behind the chevron. */
 const drawerLinks = (active) => NAV
-  .map(n => '  <a href="' + n.href + '"' + (active === n.key ? ' class="on"' : '') +
-            '>' + n.label + '<small>' + n.note + '</small></a>')
+  .map(n => {
+    const on = active === n.key ? " on" : "";
+    if (!MENUS[n.key]) {
+      return '  <a class="dl' + on + '" href="' + n.href + '">' + n.label +
+             "<small>" + n.note + "</small></a>";
+    }
+    return '  <div class="dl-row">' +
+      '<a class="dl' + on + '" href="' + n.href + '">' + n.label +
+      "<small>" + n.note + "</small></a>" +
+      '<button class="dl-more" type="button" data-sub="' + n.key + '" ' +
+      'aria-label="Open ' + n.label + '">&#8250;</button></div>';
+  })
   .join("\n");
+
+/* The second sheets themselves. They sit beside the drawer and slide over it. */
+const drawerSubs = () => Object.keys(MENUS).map(k => {
+  const n = NAV.filter(x => x.key === k)[0];
+  return '<aside class="dsub" data-subpanel="' + k + '" aria-hidden="true">' +
+    '<button class="dsub-back" type="button" data-sub-back>&#8249; Menu</button>' +
+    "<h3>" + n.label + "</h3>" +
+    '<div class="dsub-body">' + MENUS[k].body + "</div>" +
+    '<a class="dsub-all" href="' + n.href + '">All ' + n.label.toLowerCase() + " &rarr;</a>" +
+    "</aside>";
+}).join("\n");
 
 /* The drawer, the scrim and the top bar, in the order they must appear.
 
@@ -65,6 +182,7 @@ ${drawerLinks(active)}
   <a class="${b}" href="/grades/">Pick a grade</a>
   ${modeButton(true)}
 </aside>
+${drawerSubs()}
 
 <nav id="nav" class="ns-nav"><div class="nv">
   <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
@@ -129,6 +247,45 @@ document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
   });
 });
 nsPaintMode();
+
+/* The drawer second sheets. Opening one covers the drawer; Back and Escape
+   close it. The chevron only opens the sheet - the label beside it is still a
+   plain link to the section, so nothing is trapped behind a disclosure. */
+function nsCloseSubs(){
+  document.querySelectorAll("[data-subpanel]").forEach(function(p){
+    p.classList.remove("open"); p.setAttribute("aria-hidden", "true");
+  });
+}
+document.querySelectorAll("[data-sub]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var p = document.querySelector('[data-subpanel="' + btn.getAttribute("data-sub") + '"]');
+    if (!p) return;
+    nsCloseSubs();
+    p.classList.add("open"); p.setAttribute("aria-hidden", "false");
+  });
+});
+document.querySelectorAll("[data-sub-back]").forEach(function(b){ b.addEventListener("click", nsCloseSubs); });
+addEventListener("keydown", function(e){ if (e.key === "Escape") nsCloseSubs(); });
+scrim.addEventListener("click", nsCloseSubs);
+
+/* A mega panel is a <details>: it opens on hover on a pointer device, and on
+   click everywhere. Close the others so only one band is ever open. */
+var megas = [].slice.call(document.querySelectorAll("details.mega"));
+function nsCloseMegas(except){ megas.forEach(function(d){ if (d !== except) d.open = false; }); }
+megas.forEach(function(d){
+  d.addEventListener("toggle", function(){ if (d.open) nsCloseMegas(d); });
+  if (matchMedia("(hover:hover)").matches){
+    d.addEventListener("mouseenter", function(){ d.open = true; });
+    d.addEventListener("mouseleave", function(){ d.open = false; });
+    d.querySelector("summary").addEventListener("click", function(e){
+      /* the label is a destination, not just a toggle */
+      e.preventDefault();
+      location.href = d.querySelector(".mg-all a").getAttribute("href");
+    });
+  }
+});
+addEventListener("keydown", function(e){ if (e.key === "Escape") nsCloseMegas(null); });
 ` + "</scr" + "ipt>";
 
-module.exports = { NAV, tabs, drawerLinks, navMarkup, navScript, modeButton, modeBoot };
+module.exports = { NAV, SUBJECTS, LIVE_GRADES, MENUS, tabs, drawerLinks, drawerSubs,
+                   navMarkup, navScript, modeButton, modeBoot };

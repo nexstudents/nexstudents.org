@@ -70,3 +70,91 @@ body.nav-open .drawer{transform:none}
 .drawer .navbtn{margin-top:auto;margin-left:0;display:flex;align-items:center;
   justify-content:center;text-align:center;border-bottom:0;
   background:var(--nv-accent);color:var(--nv-on);border-radius:999px;padding:14px 20px}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MEGA MENU — a band that opens under the nav, one section at a time.
+   Paul, 2026-08-26, after studying lttstore.
+
+   The disclosure is a native <details>/<summary>, so it opens with a keyboard
+   and without JavaScript. The script only adds hover-to-open and closes the
+   others, which is enhancement, not the mechanism.
+
+   The panel escapes the tab row and spans the whole bar because `nav` is
+   position:sticky, which makes it the containing block, and `details.mega`
+   stays static so the panel measures against the bar rather than the label.
+   ══════════════════════════════════════════════════════════════════════ */
+details.mega{position:static}
+details.mega > summary{list-style:none;cursor:pointer}
+details.mega > summary::-webkit-details-marker{display:none}
+details.mega > summary::marker{content:""}
+
+/* The label, and the line that draws under whichever one you are on. */
+.mg-top{position:relative;font-size:14px;font-weight:500;color:var(--nv-dim);
+  padding-block:6px;transition:color .18s}
+.mg-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:currentColor;transform:scaleX(0);transform-origin:left;
+  transition:transform .22s var(--ease,ease)}
+.mg-top:hover,.mg-top.on,details.mega[open] > .mg-top{color:var(--nv-fg)}
+.mg-top.on::after,details.mega[open] > .mg-top::after{transform:none}
+@media(hover:hover){ .mg-top:hover::after{transform:none} }
+
+.mg-panel{position:absolute;left:0;right:0;top:100%;z-index:59;
+  background:var(--nv-bg);border-top:1px solid var(--nv-line);
+  border-bottom:1px solid var(--nv-line);
+  box-shadow:0 18px 40px -24px rgba(0,0,0,.55)}
+.mg-inner{max-width:1180px;margin:0 auto;padding:26px 28px 24px;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:34px;align-items:start}
+.mg-body{min-width:0}
+.mg-all{grid-column:1/-1;margin:6px 0 0}
+.mg-all a{font-size:13px;font-weight:700;color:var(--nv-accent)}
+
+/* Grades: the same nine tiles as the grades page, in miniature. */
+.mg-grades{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px}
+.mg-grade{aspect-ratio:1/1;border:1px solid var(--nv-line);border-radius:var(--r,4px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  transition:transform .2s,border-color .2s}
+.mg-grade b{font-size:1.15rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.mg-grade span{font-size:.5rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
+.mg-grade.live{background:var(--nv-accent);color:var(--nv-on);border-color:var(--nv-accent)}
+.mg-grade.soon{color:var(--nv-dim);opacity:.6}
+@media(hover:hover){ .mg-grade.live:hover{transform:translateY(-3px)} }
+.mg-note{color:var(--nv-dim);font-size:.82rem;margin:14px 0 0;max-width:60ch}
+
+/* Subjects and anything else: plain columns of links. */
+.mg-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:22px}
+.mg-col h4{margin:0 0 9px;font-size:.68rem;font-weight:800;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--nv-dim)}
+.mg-col ul{list-style:none;margin:0;padding:0}
+.mg-col li{margin-bottom:6px}
+.mg-col a{font-size:.92rem;font-weight:600;color:var(--nv-fg)}
+@media(hover:hover){ .mg-col a:hover{text-decoration:underline;text-underline-offset:3px} }
+.mg-soon{font-size:.92rem;color:var(--nv-dim)}
+
+/* The promo. Square, because the artwork is square. */
+.mg-promo{display:block;width:190px;flex:none}
+.mg-promo img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:var(--r,4px);border:1px solid var(--nv-line)}
+.mg-promo b{display:block;margin-top:8px;font-size:.74rem;font-weight:700;
+  letter-spacing:.04em;color:var(--nv-dim)}
+@media(hover:hover){ .mg-promo:hover b{color:var(--nv-fg)} }
+@media(max-width:1040px){ .mg-promo{display:none} }
+
+/* ── the drawer's second sheets, for phones ── */
+.dl-row{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--nv-line)}
+.dl-row .dl{flex:1 1 auto;border-bottom:0}
+.dl-more{flex:none;background:none;border:0;color:var(--nv-dim);font-size:24px;
+  line-height:1;cursor:pointer;padding:10px 6px}
+.dl-more:hover{color:var(--nv-fg)}
+.dsub{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);z-index:81;
+  background:var(--nv-bg);border-right:1px solid var(--nv-line);padding:22px;
+  transform:translateX(-100%);transition:transform .32s var(--ease,ease);
+  display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.dsub.open{transform:none}
+.dsub-back{align-self:flex-start;background:none;border:0;color:var(--nv-dim);
+  font:inherit;font-size:.9rem;cursor:pointer;padding:4px 0}
+.dsub-back:hover{color:var(--nv-fg)}
+.dsub h3{margin:0;font-size:1.3rem}
+.dsub .mg-grades{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dsub .mg-cols{grid-template-columns:1fr;gap:16px}
+.dsub .mg-note{display:none}
+.dsub-all{margin-top:auto;font-size:.82rem;font-weight:700;color:var(--nv-accent)}
