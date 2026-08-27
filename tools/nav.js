@@ -287,7 +287,14 @@ const modeBoot = () => "<scr" + "ipt>" +
   'if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();' +
   "</scr" + "ipt>";
 
-const navScript = () => "<scr" + "ipt>\n" + `
+/* 🚨 WRAPPED IN AN IIFE, and it must stay that way.
+   Its top-level names would otherwise land in the global scope and collide
+   with whatever the host page already declared. The home page declares its
+   own `burger`, and a redeclaration is a PARSE error, so the whole nav script
+   silently never ran there: the markup was present, every chevron was dead,
+   and nothing showed in the console until it was looked for. Paul,
+   2026-08-26: "the sub nav are not opening when i press the right arrows." */
+const navScript = () => "<scr" + "ipt>\n" + "(function(){\n" + `
 var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
     scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
 function setNav(o){document.body.classList.toggle("nav-open",o);
@@ -402,7 +409,7 @@ if(panel){
     });
   }
 }
-` + "</scr" + "ipt>";
+` + "\n})();\n" + "</scr" + "ipt>";
 
 module.exports = { NAV, SUBJECTS, LIVE_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs,
                    megaPanel, navMarkup, navScript, modeButton, modeBoot };
