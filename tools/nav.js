@@ -107,14 +107,22 @@ const MENUS = {
              ratio: "1/1", label: "8th Grade US History" },
   },
   r: {
-    body: '<div class="mg-cols">' + SUBJECTS.map(s => col(s.name, s.live
-      ? [{ label: "Lessons", href: "/" + s.slug + "/lessons/" },
-         { label: "Worksheets", href: "/" + s.slug + "/worksheets/" }]
-      : [{ label: "Being Built" }])).join("") +
-      col("Everything", [
-        { label: "All Worksheets", href: "/worksheets/" },
-        { label: "What We Use", href: "/resources/" },
-      ]) + "</div>",
+    /* Extras only. Lessons and printables live under Grades - see the note at
+       the top of tools/fix-resources-menu.js. */
+    body: '<div class="mg-cols">' +
+      col("What We Use", [
+        { label: "Books and Readers", href: "/resources/" },
+        { label: "Tools and Supplies", href: "/resources/" },
+      ]) +
+      col("Extras", [
+        { label: "Science Experiments" },
+        { label: "Reading Lists" },
+      ]) +
+      col("Writing", [
+        { label: "Blog" },
+        { label: "More Coming" },
+      ]) + "</div>" +
+      '<p class="mg-note">Things we actually use, not a list copied off somebody else&rsquo;s blog. Any affiliate link is marked as one. Lessons and printables are not here &mdash; they live under each grade.</p>',
     promo: { href: "/worksheets/history/lewis-and-clark/",
              img: "/worksheets/history/lewis-and-clark/thumb.jpg",
              alt: "Lewis and Clark, the Corps of Discovery worksheet",
@@ -220,10 +228,12 @@ SHEETS.gr = { title: "Grades", parent: null, grid: true, promo: MENUS.gr.promo, 
     : { label: gradeName(g), short: g, soon: true })
 };
 
-SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS.r.promo, rows:
-  SUBJECTS.map(s => s.live ? { label: s.name, sub: "r-" + s.slug } : { label: s.name, soon: true })
-    .concat([{ label: "All Worksheets", href: "/worksheets/", note: "Every Printable" }])
-};
+SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS.r.promo, rows: [
+  { label: "What We Use", href: "/resources/", note: "Books, tools and supplies" },
+  { label: "Science Experiments", soon: true },
+  { label: "Reading Lists", soon: true },
+  { label: "Blog", soon: true },
+]};
 
 SHEETS.g = { title: "Games", parent: null, view: "/games/", rows: [
   { label: "Remainder race", soon: true }, { label: "Fraction match", soon: true },
@@ -243,12 +253,6 @@ SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
   { label: "Contact", href: "/contact/" },
 ]};
 
-SUBJECTS.filter(s => s.live).forEach(s => {
-  SHEETS["r-" + s.slug] = { title: s.name, parent: "r", view: "/" + s.slug + "/", rows: [
-    { label: "Lessons", href: "/" + s.slug + "/lessons/", note: "Worked through on screen" },
-    { label: "Worksheets", href: "/" + s.slug + "/worksheets/", note: "Printed and written on" },
-  ]};
-});
 
 /* A section with a panel is a BUTTON in the drawer, never a link: tapping the
    label must open the sheet, not navigate away. */
