@@ -645,7 +645,7 @@ nav:not(.js-nav) .mg-top.on::after,
   font-style:normal;font-size:22px;line-height:1;color:var(--dim)}
 .dl-open.on{color:var(--a)}
 
-.dsub{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);z-index:81;
+.dsub{position:absolute;inset:0;
   background:var(--panel);border-right:1px solid var(--line);padding:22px;
   transform:translateX(100%);opacity:0;visibility:hidden;pointer-events:none;
   transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .2s ease,visibility .34s;
@@ -677,3 +677,18 @@ nav:not(.js-nav) .mg-top.on::after,
    Invisible to the reader - it never paints, it is only read. */
 .mg-panel.measuring{height:auto!important;transition:none!important}
 .mg-panel.measuring .mg-inner{position:static!important;opacity:0!important}
+
+/* ── the column the sheets live in ───────────────────────────────────────
+   Read off lttstore 2026-08-26: every panel is a sibling inside ONE wrapper
+   with overflow:hidden, and the sub-panels are absolutely positioned inside
+   it. That clip is the whole trick. Without it a sheet parked to the right
+   of the drawer travels ACROSS the page on its way in, which is what Paul
+   saw: "you have them flying in across the home screen instead of only
+   inside of the side menu."
+   -------------------------------------------------------------------------- */
+.dsubs{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);
+  z-index:81;overflow:hidden;pointer-events:none;
+  background:transparent;visibility:hidden}
+body.nav-open .dsubs{visibility:visible}
+.dsubs .dsub{background:var(--panel);border-right:1px solid var(--line)}
+.dsubs .dsub.open{pointer-events:auto}

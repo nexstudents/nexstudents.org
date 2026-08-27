@@ -240,19 +240,19 @@ const drawerLinks = (active) => NAV.map(n => {
     n.label + "<small>" + n.note + '</small><i aria-hidden="true">&#8250;</i></button>';
 }).join("\n");
 
-const drawerSubs = () => Object.keys(SHEETS).map(id => {
+const drawerSubs = () => '<div class="dsubs" id="dsubs">' + Object.keys(SHEETS).map(id => {
   const sh = SHEETS[id];
   const back = sh.parent ? SHEETS[sh.parent].title : "Menu";
   return '<aside class="dsub" data-subpanel="' + id + '" aria-hidden="true">' +
     '<button class="dsub-back" type="button" data-sub-back="' + (sh.parent || "") + '">&#8249; ' + back + "</button>" +
     "<h3>" + sh.title + "</h3>" +
     '<div class="dsub-body">' +
-      (sh.view ? '<a class="dsr view" href="' + sh.view + '">View ' + sh.title.toLowerCase() + "</a>" : "") +
+      (sh.view ? '<a class="dsr view" href="' + sh.view + '">View ' + sh.title + "</a>" : "") +
       sh.rows.map(dsRow).join("") +
     "</div>" +
     (sh.promo ? promo(sh.promo) : "") +
     "</aside>";
-}).join("\n");
+}).join("\n") + "</div>";
 
 /* ── MARKUP ─────────────────────────────────────────────────────────────── */
 const navMarkup = (active, btn) => {
