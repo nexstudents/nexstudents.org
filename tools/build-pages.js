@@ -617,6 +617,19 @@ const subjectSheets = (s) => `<div class="band"><div class="wrap">
 
 const countLabel = (n, one, many) => n + " " + (n === 1 ? one : many);
 
+/* A grade has two shelves and both counts belong on both of them. `here` is
+   "l" or "w" - whichever page is being rendered - so the current shelf reads as
+   a plain fact and the other as somewhere to go. */
+const gradeSwitch = (g, here) => {
+  const nl = byGrade(g).length, nw = sheetsByGrade(g).length;
+  const les = countLabel(nl, "lesson", "lessons");
+  const wks = countLabel(nw, "sheet", "sheets");
+  const link = (label, href) => '<a href="' + href + '">' + label + "</a>";
+  return (here === "l" ? "<b>" + les + "</b>" : link(les, "/grade-" + gslug(g) + "/lessons/"))
+    + '<i aria-hidden="true">&middot;</i>'
+    + (here === "w" ? "<b>" + wks + "</b>" : link(wks, "/grade-" + gslug(g) + "/worksheets/"));
+};
+
 const emptyTile = (line) => `<div class="tile" style="min-height:170px;align-items:center;justify-content:center;text-align:center">
       <div><h4 style="font-size:1.2rem">Nothing here yet</h4>
       <p style="max-width:44ch;margin-top:8px">${line}</p></div></div>`;
@@ -803,14 +816,14 @@ const pages = [
     desc: "Kindergarten lessons worked through on screen.",
     crumb: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Lessons', h1: "Kindergarten Lessons.",
     lead: "Nothing on screen for this year yet. At this age the work belongs on paper with a pencil in hand, so the printables came first.",
-    count: countLabel(byGrade("K").length, "lesson", "lessons") + " available", body: gradeLessons("K") },
+    count: gradeSwitch("K", "l"), body: gradeLessons("K") },
 
   { dir: "grade-k/worksheets", active: "gr",
     title: "Kindergarten Worksheets — NexStudents",
     desc: "Free kindergarten printables, starting with handwriting.",
     crumb: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Worksheets', h1: "Kindergarten Worksheets.",
     lead: "Print these at full size and work one letter at a time. All free.",
-    count: countLabel(sheetsByGrade("K").length, "sheet", "sheets") + " available", body: gradeSheets("K") },
+    count: gradeSwitch("K", "w"), body: gradeSheets("K") },
 
   /* Grade 3 exists for the spelling sheet. It is deliberately thin: the sheet
      is blank, so it serves any year, and a 3rd grade shelf is where a parent
@@ -827,14 +840,14 @@ const pages = [
     desc: "Every 3rd grade lesson, worked through on screen.",
     crumb: '<a href="/grade-3/">3rd Grade</a> &rsaquo; Lessons', h1: "3rd Grade Lessons.",
     lead: "Nothing on screen for this year yet. The printables came first, because spelling is worked on paper.",
-    count: countLabel(byGrade(3).length, "lesson", "lessons") + " available", body: gradeLessons(3) },
+    count: gradeSwitch(3, "l"), body: gradeLessons(3) },
 
   { dir: "grade-3/worksheets", active: "gr",
     title: "3rd Grade Worksheets — NexStudents",
     desc: "Every 3rd grade printable worksheet.",
     crumb: '<a href="/grade-3/">3rd Grade</a> &rsaquo; Worksheets', h1: "3rd Grade Worksheets.",
     lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
-    count: countLabel(sheetsByGrade(3).length, "sheet", "sheets") + " available", body: gradeSheets(3) },
+    count: gradeSwitch(3, "w"), body: gradeSheets(3) },
 
   { dir: "grade-6", active: "gr",
     title: "6th Grade — NexStudents",
@@ -848,14 +861,14 @@ const pages = [
     desc: "Every 6th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-6/">6th Grade</a> &rsaquo; Lessons', h1: "6th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
-    count: countLabel(byGrade(6).length, "lesson", "lessons") + " available", body: gradeLessons(6) },
+    count: gradeSwitch(6, "l"), body: gradeLessons(6) },
 
   { dir: "grade-6/worksheets", active: "gr",
     title: "6th Grade Worksheets — NexStudents",
     desc: "Every 6th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-6/">6th Grade</a> &rsaquo; Worksheets', h1: "6th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
-    count: countLabel(sheetsByGrade(6).length, "sheet", "sheets") + " available", body: gradeSheets(6) },
+    count: gradeSwitch(6, "w"), body: gradeSheets(6) },
 
   { dir: "grade-7", active: "gr",
     title: "7th Grade — NexStudents",
@@ -869,14 +882,14 @@ const pages = [
     desc: "Every 7th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Lessons', h1: "7th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
-    count: countLabel(byGrade(7).length, "lesson", "lessons") + " available", body: gradeLessons(7) },
+    count: gradeSwitch(7, "l"), body: gradeLessons(7) },
 
   { dir: "grade-7/worksheets", active: "gr",
     title: "7th Grade Worksheets — NexStudents",
     desc: "Every 7th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Worksheets', h1: "7th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
-    count: countLabel(sheetsByGrade(7).length, "sheet", "sheets") + " available", body: gradeSheets(7) },
+    count: gradeSwitch(7, "w"), body: gradeSheets(7) },
 
   { dir: "grade-8", active: "gr",
     title: "8th Grade — NexStudents",
@@ -890,14 +903,14 @@ const pages = [
     desc: "Every 8th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-8/">8th Grade</a> &rsaquo; Lessons', h1: "8th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
-    count: countLabel(byGrade(8).length, "lesson", "lessons") + " available", body: gradeLessons(8) },
+    count: gradeSwitch(8, "l"), body: gradeLessons(8) },
 
   { dir: "grade-8/worksheets", active: "gr",
     title: "8th Grade Worksheets — NexStudents",
     desc: "Every 8th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-8/">8th Grade</a> &rsaquo; Worksheets', h1: "8th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
-    count: countLabel(sheetsByGrade(8).length, "sheet", "sheets") + " available", body: gradeSheets(8) },
+    count: gradeSwitch(8, "w"), body: gradeSheets(8) },
 
   { dir: "english", active: "w",
     title: "English — NexStudents",

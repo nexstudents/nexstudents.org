@@ -267,7 +267,10 @@ a.sub-t{color:inherit;text-decoration:none}
 .subj-row:not(.is-soon) .subj-head h3 i{background:var(--free);color:var(--on-free)}
 .subj-head p{margin:6px 0 0;font-size:.86rem;color:var(--dim);line-height:1.45;max-width:56ch}
 .subj-sub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
-@media(max-width:560px){ .subj-sub{grid-template-columns:minmax(0,1fr)} }
+/* ⚠️ The phone rules for .subj-sub and .minibox are at the BOTTOM of this file,
+   not here. They override .minibox, which is declared just below, and an
+   equal-specificity rule only wins if it comes later. */
+
 .minibox{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);
   padding:15px 16px;display:flex;flex-direction:column;gap:3px;
   color:inherit;text-decoration:none;transition:border-color .24s ease,transform .24s var(--ease)}
@@ -961,3 +964,28 @@ nav{border-bottom:1px solid var(--line)}
 .phead .shelfcount{margin-top:10px;font-size:.78rem;font-weight:800;
   letter-spacing:.06em;text-transform:uppercase;color:var(--a)}
 :root[data-theme="light"] .phead .shelfcount{color:var(--a)}
+
+/* 🚨 The two boxes STAY SIDE BY SIDE on a phone. Paul, 2026-08-27: "on
+   desktop you can see all the subjects but on mobile I only have no subjects but
+   just two options worksheets and lessons."
+
+   Stacking them doubled the height of every subject row, so a 390px screen held
+   one subject and its two boxes and nothing else - the list of four subjects
+   read as a page about Lessons and Worksheets. They are small boxes; two across
+   at 390px is about 165px each, which is plenty for a label, a note and a count,
+   and it puts the next subject back on screen. */
+@media(max-width:560px){
+  .subj-sub{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+  .subj-row{padding:16px}
+  .subj-head p{display:none}
+  .minibox{padding:12px 12px}
+  .minibox b{font-size:.95rem}
+  .minibox span{font-size:.72rem}
+}
+
+/* The two shelf counts sit on one line: the one you are on in plain type, the
+   other as a link across. */
+.phead .shelfcount a{color:var(--a);text-decoration:none;border-bottom:1px solid transparent}
+.phead .shelfcount a:hover{border-bottom-color:currentColor}
+.phead .shelfcount b{color:var(--fg)}
+.phead .shelfcount i{font-style:normal;opacity:.45;margin:0 9px}
