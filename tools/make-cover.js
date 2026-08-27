@@ -47,6 +47,7 @@ const OFF_X = (WIN_W - PAGE_W) / 2, OFF_Y = 20;
 const PROOF_CSS = `
 body{background:#555;display:flex;justify-content:center;padding:${OFF_Y}px 0;margin:0}
 .bar{display:none!important}
+nav,.ns-nav{display:none!important}
 .page{width:${PAGE_W}px;height:${PAGE_H}px;background:#fff;padding:${PAD}px;
   box-sizing:border-box;overflow:hidden}
 .sheet{max-width:none;margin:0;border:0;border-radius:0;padding:0;background:#fff;

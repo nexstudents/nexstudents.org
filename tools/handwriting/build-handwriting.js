@@ -471,7 +471,7 @@ const LETTER_CSS = `
      reader is in. The print block below then overrides the lot, because a
      worksheet has to come off the printer black on white no matter what. */
   .hw{--rule:var(--line)}
-  .hw .cell{width:58px;height:75px;flex:none;overflow:visible}
+  .hw .cell{width:57px;height:74px;flex:none;overflow:visible}
   .hw .row{display:flex;align-items:flex-end;margin-bottom:7px}
   .hw .grp{display:flex}
   .hw .grp + .grp{margin-left:10px}
