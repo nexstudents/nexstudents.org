@@ -688,8 +688,24 @@ const subjectRows = (grade) => {
         </div>
       </div>
       <div class="subj-sub">
-        ${box("Lessons", "Worked through on screen", nLes, "lesson", "lessons", s.live ? "/" + s.slug + "/lessons/" : null)}
-        ${box("Worksheets", "Printed and written on", nWk, "sheet", "sheets", s.live ? "/" + s.slug + "/worksheets/" : null)}
+        ${/* 🚨 ON A GRADE PAGE THE LINK MUST STAY INSIDE THE GRADE.
+              Paul, 2026-08-27: "I tried going to kindergarten worksheets and for
+              some reason I have the spelling test and spelling third grade words
+              in the kindergarten."
+
+              The counts here were already grade-filtered - Kindergarten English
+              correctly said 1 sheet - but the href went to the whole-subject
+              shelf, /english/worksheets/, which holds the 3rd grade spelling
+              material. So the box promised one sheet and delivered a shelf of
+              another year's work.
+
+              With a grade in hand the box now points at that grade's own shelf.
+              On /subjects/, where there is no grade, it still points at the
+              subject shelf, which is correct there. */""}
+        ${box("Lessons", "Worked through on screen", nLes, "lesson", "lessons",
+          !s.live ? null : grade == null ? "/" + s.slug + "/lessons/" : "/grade-" + gslug(grade) + "/lessons/")}
+        ${box("Worksheets", "Printed and written on", nWk, "sheet", "sheets",
+          !s.live ? null : grade == null ? "/" + s.slug + "/worksheets/" : "/grade-" + gslug(grade) + "/worksheets/")}
       </div>
     </section>`;
   }).join("\n  ")}
