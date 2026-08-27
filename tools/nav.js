@@ -288,7 +288,8 @@ ${drawerSubs()}
   <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
     <i></i><i></i><i></i>
   </button>
-  <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async">Nex<b>Students</b></a>
+  <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
+  ${navIcons()}
   <div class="tabs">${tabs(active)}</div>
   ${modeButton()}
   <a class="${b}" href="/#grades">Pick a Grade</a>
@@ -304,6 +305,21 @@ const faviconTags = () =>
   '<link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">\n' +
   '<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">\n' +
   '<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">';
+
+const navIcons = () =>
+  '<div class="navicons">' +
+  '<button class="navicon" type="button" aria-disabled="true" ' +
+  'aria-label="Account, not built yet" title="Accounts are being built">' +
+  '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" ' +
+  'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></button>' +
+  '<button class="navicon" type="button" aria-disabled="true" ' +
+  'aria-label="Cart, not built yet" title="The shop is being built">' +
+  '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" ' +
+  'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/>' +
+  '<circle cx="17" cy="19" r="1.4"/></svg></button>' +
+  "</div>";
 
 const modeButton = (inDrawer) => inDrawer
   ? '<button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night">' +
