@@ -760,3 +760,40 @@ body.sub-open .drawer{transform:translateX(-100%)}
 .word{display:inline-flex;align-items:center;gap:9px}
 .word img{height:clamp(22px,4.4vw,28px);width:auto;display:block}
 @media(max-width:380px){ .word img{height:22px} }
+
+/* ── THE BURGER MUST NOT SHRINK ───────────────────────────────────────────
+   Adding the logo widened .word, and the burger had no flex:none, so flex
+   squeezed it from 42px to 18px and its three bars collapsed to 1px wide -
+   present, visible, and invisible. Paul, 2026-08-27: "i dont see the hamburger
+   side menu icon anymore."
+   -------------------------------------------------------------------------- */
+.burger{flex:none}
+.burger i{width:100%;min-width:22px}
+.burger i:nth-child(2){width:72%;min-width:16px}
+.nv .word{flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap}
+
+/* ── ONE ROW HEIGHT ON EVERY LEVEL ────────────────────────────────────────
+   Paul, 2026-08-27: "we have lines between our menu options on the side menu
+   they are different sizes so you can visually see its not seemless."
+
+   Measured: drawer rows were 70px, sheet rows 47px, and rows with a note were
+   66px. Three rhythms. When one level slides out and the next slides in, the
+   dividers land in different places and the eye reads it as a different thing
+   arriving rather than the same menu continuing.
+
+   So every row - drawer link, drawer button, sheet row - is the same height,
+   with the label centred whether or not it carries a note.
+   -------------------------------------------------------------------------- */
+.menucol{--row-h:clamp(54px,8vh,70px)}
+.menucol .dl,
+.menucol .dl-open,
+.menucol .dsr{
+  min-height:var(--row-h);
+  display:flex;flex-direction:column;justify-content:center;
+  padding-block:0;
+  border-bottom:1px solid var(--line)}
+.menucol .dl-open,.menucol .dsr{position:relative}
+.menucol .dl-open i,.menucol .dsr i{position:absolute;right:2px;top:50%;transform:translateY(-50%)}
+.menucol .dsr.view{min-height:var(--row-h)}
+/* the tile grid is not a row list, so it keeps its own rhythm */
+.menucol .dst-grid{margin-block:10px}

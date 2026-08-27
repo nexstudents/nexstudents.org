@@ -1072,6 +1072,15 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
   const stale = /<script>\s*(?:\(function\(\)\{)?\s*var burger=document[\s\S]*?<\/script>/g;
   newHome = newHome.replace(stale, "");
 
+  /* 🚨 And the FIRST attempt, which spliced only the day/night part INTO the
+     home page's own script. That copy survived every later sweep because it
+     does not begin with `var burger`, so the page carried TWO toggle handlers.
+     One click fired both - dark to light and straight back to dark - which
+     looked exactly like a dead button. Paul, 2026-08-27: "night mode and light
+     mode isnt working i press the button and its not changing."
+     Removing it here means a rebuild always leaves exactly one. */
+  newHome = newHome.replace(/\n?\/\* Day and night\. Default is dark[\s\S]*?(?=<\/script>)/, "\n");
+
   newHome = newHome.replace(/<\/body>/,
     S_OPEN + "\n" + navScript() + "\n" + S_END + "\n</body>");
 

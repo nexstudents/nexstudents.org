@@ -35,7 +35,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=c57b7e33">
+<link rel="stylesheet" href="/assets/ns.css?v=48ffddc3">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -376,28 +376,9 @@ fbar.addEventListener('click',e=>{
   rail.scrollTo({left:0,behavior:'auto'}); ends();
 });
 
-/* Day and night. Default is dark: no attribute means dark, which is how the
-   site was drawn. The lesson pages watch this same attribute. */
-function nsMode(){ return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark"; }
-function nsPaintMode(){
-  var light = nsMode() === "light";
-  document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML = light ? "&#9788;" : "&#9790;"; });
-  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent = light ? "Day mode" : "Night mode"; });
-  document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
-    e.setAttribute("aria-label", light ? "Switch to night mode" : "Switch to day mode");
-  });
-}
-document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
-  btn.addEventListener("click", function(){
-    var next = nsMode() === "light" ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("ns:mode", next); } catch (e) {}
-    nsPaintMode();
-  });
-});
-nsPaintMode();
-
 </script>
+
+
 
 
 
