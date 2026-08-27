@@ -227,10 +227,20 @@ SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
 ]};
 
 LIVE_GRADES.forEach(g => {
+  /* 🚨 A GRADE OPENS ONTO ITS SUBJECTS, not just its two shelves.
+     Paul, 2026-08-27: "on mobile I only have no subjects but just two options
+     worksheets and lessons ... specifically when I open up the grades on
+     mobile." The drawer sheet for a grade had exactly two rows, so on a phone
+     the whole idea of picking a subject inside a year was missing - the note on
+     the desktop panel even says "organised by grade first, then subject", and
+     the phone offered no second step.
+     Each subject lands on that year page at its own row. */
   SHEETS["gr-" + g] = { title: gradeName(g), parent: "gr", view: "/grade-" + gslug(g) + "/", rows: [
-    { label: "Lessons", href: "/grade-" + gslug(g) + "/lessons/", note: "Worked through on screen" },
-    { label: "Worksheets", href: "/grade-" + gslug(g) + "/worksheets/", note: "Printed and written on" },
-  ]};
+    { label: "All Lessons", href: "/grade-" + gslug(g) + "/lessons/", note: "Worked through on screen" },
+    { label: "All Worksheets", href: "/grade-" + gslug(g) + "/worksheets/", note: "Printed and written on" },
+  ].concat(SUBJECTS.map(s => s.live
+    ? { label: s.name, href: "/grade-" + gslug(g) + "/#subj-" + s.slug, note: "This year" }
+    : { label: s.name, soon: true }))};
 });
 SUBJECTS.filter(s => s.live).forEach(s => {
   SHEETS["r-" + s.slug] = { title: s.name, parent: "r", view: "/" + s.slug + "/", rows: [

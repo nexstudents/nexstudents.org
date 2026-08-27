@@ -692,7 +692,7 @@ const subjectRows = (grade) => {
           <b>${label}</b><span>${note}</span>
           <u>Not built yet</u>
         </div>`;
-    return `<section class="subj-row${s.live ? "" : " is-soon"}">
+    return `<section id="subj-${s.slug}" class="subj-row${s.live ? "" : " is-soon"}">
       <div class="subj-head">
         <n>${String(i + 1).padStart(2, "0")}</n>
         <div>
