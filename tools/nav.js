@@ -184,12 +184,20 @@ const dsRow = (r) => {
     (r.note ? "<small>" + r.note + "</small>" : "") + "</a>";
 };
 
+const dsTile = (r) => r.soon
+  ? '<span class="dst soon"><b>' + r.short + "</b></span>"
+  : '<button class="dst" type="button" data-sub="' + r.sub + '" aria-label="' +
+    r.label + '"><b>' + r.short + "</b></button>";
+
 const SHEETS = {};
 
-SHEETS.gr = { title: "Grades", parent: null, promo: MENUS.gr.promo, rows:
+/* grid:true renders these as tiles, not rows. Nine full-width rows did not
+   fit a phone and the panel grew a scrollbar, which then slid along with the
+   panel and broke the hand-off. Paul, 2026-08-27. */
+SHEETS.gr = { title: "Grades", parent: null, grid: true, promo: MENUS.gr.promo, rows:
   ALL_GRADES.map(g => LIVE_GRADES.includes(g)
-    ? { label: gradeName(g), sub: "gr-" + g }
-    : { label: gradeName(g), soon: true })
+    ? { label: gradeName(g), short: g, sub: "gr-" + g }
+    : { label: gradeName(g), short: g, soon: true })
 };
 
 SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS.r.promo, rows:
@@ -248,7 +256,9 @@ const drawerSubs = () => '<div class="dsubs" id="dsubs">' + Object.keys(SHEETS).
     "<h3>" + sh.title + "</h3>" +
     '<div class="dsub-body">' +
       (sh.view ? '<a class="dsr view" href="' + sh.view + '">View ' + sh.title + "</a>" : "") +
-      sh.rows.map(dsRow).join("") +
+      (sh.grid
+        ? '<div class="dst-grid">' + sh.rows.map(dsTile).join("") + "</div>"
+        : sh.rows.map(dsRow).join("")) +
     "</div>" +
     (sh.promo ? promo(sh.promo) : "") +
     "</aside>";

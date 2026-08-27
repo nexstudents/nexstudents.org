@@ -719,3 +719,35 @@ body.sub-open .drawer{transform:translateX(-100%)}
 .menucol .dsub.exit{transform:translateX(-100%);visibility:visible;pointer-events:none}
 .menucol .dsub{border-top:0}
 .menucol .dsub h3{border-bottom:1px solid var(--line);padding-bottom:12px}
+
+/* ── EVERY LEVEL FITS ONE SCREEN ──────────────────────────────────────────
+   Paul, 2026-08-27: "when you tap the arrow the scroll line swipes left also
+   so it doesnt feel seemless ... make all the menu items fit on one screen and
+   make it have a size for all kinds of mobile devices."
+
+   A scrollbar inside a sliding panel travels with it and gives the trick away.
+   So the content is sized to fit instead: Grades became a tile grid, the promo
+   steps aside on short screens, and the spacing scales with the viewport.
+   The bar itself is hidden too, so a long list on a very small phone still
+   scrolls but never draws a line mid-slide.
+   -------------------------------------------------------------------------- */
+.drawer,.dsub,.dsub-body{scrollbar-width:none;-ms-overflow-style:none}
+.drawer::-webkit-scrollbar,.dsub::-webkit-scrollbar,.dsub-body::-webkit-scrollbar{width:0;height:0;display:none}
+
+/* spacing that shrinks with the screen rather than a fixed 22px */
+.menucol .drawer,.menucol .dsub{padding:clamp(12px,3.2vh,22px) clamp(14px,4vw,22px)}
+.menucol .dl,.menucol .dl-open{padding-block:clamp(8px,1.5vh,14px)}
+.menucol .dsr{padding-block:clamp(8px,1.4vh,13px)}
+.menucol .dsub h3{font-size:clamp(1.05rem,4.4vw,1.3rem)}
+
+/* Grades as tiles: three across, so nine years cost three rows not nine. */
+.dst-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}
+.dst{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  background:none;border:1px solid var(--line);border-radius:var(--r,4px);
+  color:var(--fg);font:inherit;cursor:pointer;padding:0}
+.dst b{font-size:clamp(1.1rem,5vw,1.5rem);font-weight:800;letter-spacing:-.03em}
+.dst:not(.soon):hover{border-color:var(--a)}
+.dst.soon{color:var(--dim);opacity:.45;cursor:default}
+
+/* The promo is the first thing to go when the screen is short. */
+@media(max-height:760px){ .menucol .mg-promo{display:none} }
