@@ -647,9 +647,14 @@ nav:not(.js-nav) .mg-top.on::after,
 
 .dsub{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);z-index:81;
   background:var(--panel);border-right:1px solid var(--line);padding:22px;
-  transform:translateX(100%);transition:transform .34s cubic-bezier(.22,.61,.36,1);
+  transform:translateX(100%);opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .2s ease,visibility .34s;
   display:flex;flex-direction:column;gap:12px;overflow-y:auto}
-.dsub.open{transform:none}
+/* 🚨 The closed sheet sits at translateX(100%), which is x=320..640 - ON
+   SCREEN, not off it, because the sheet is anchored left:0. Sliding in from
+   the right therefore REQUIRES hiding it when closed, or it just sits there
+   beside the drawer in plain view. Paul caught it immediately. */
+.dsub.open{transform:none;opacity:1;visibility:visible;pointer-events:auto}
 .dsub-back{align-self:flex-start;background:none;border:0;color:var(--dim);
   font:inherit;font-size:.9rem;cursor:pointer;padding:4px 0}
 .dsub-back:hover{color:var(--fg)}
