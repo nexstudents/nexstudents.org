@@ -187,8 +187,15 @@ const dsRow = (r) => {
     (r.note ? "<small>" + r.note + "</small>" : "") + "</a>";
 };
 
+/* A tile is a LINK when it has an href and a sub-sheet button when it has a
+   sub. It only knew how to be a button, so pointing the grades straight at
+   their pages produced data-sub="undefined" on every tile - caught by the
+   build-worksheets guard that fails on the word undefined in a page. */
 const dsTile = (r) => r.soon
   ? '<span class="dst soon"><b>' + r.short + "</b></span>"
+  : r.href
+  ? '<a class="dst" href="' + r.href + '" aria-label="' + r.label + '"><b>' +
+    r.short + "</b></a>"
   : '<button class="dst" type="button" data-sub="' + r.sub + '" aria-label="' +
     r.label + '"><b>' + r.short + "</b></button>";
 
@@ -197,9 +204,19 @@ const SHEETS = {};
 /* grid:true renders these as tiles, not rows. Nine full-width rows did not
    fit a phone and the panel grew a scrollbar, which then slid along with the
    panel and broke the hand-off. Paul, 2026-08-27. */
+/* 🚨 A GRADE GOES STRAIGHT TO ITS PAGE. Paul, 2026-08-27: "you are creating a
+   side tab that isnt needed after you select grades ... you select the grade and
+   it directs you to the page for all the subjects with both lessons and
+   worksheets."
+
+   It used to open a SECOND sheet listing that grade shelves, which is a step
+   that answers nothing - the year page already lists every subject with its
+   lessons and its worksheets, and it does it better than a menu can. The tile
+   is a link now, exactly as it already was on desktop, so the two behave the
+   same and the menu stops competing with the page it leads to. */
 SHEETS.gr = { title: "Grades", parent: null, grid: true, promo: MENUS.gr.promo, rows:
   ALL_GRADES.map(g => LIVE_GRADES.includes(g)
-    ? { label: gradeName(g), short: g, sub: "gr-" + g }
+    ? { label: gradeName(g), short: g, href: "/grade-" + gslug(g) + "/" }
     : { label: gradeName(g), short: g, soon: true })
 };
 
@@ -226,22 +243,6 @@ SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
   { label: "Contact", href: "/contact/" },
 ]};
 
-LIVE_GRADES.forEach(g => {
-  /* 🚨 A GRADE OPENS ONTO ITS SUBJECTS, not just its two shelves.
-     Paul, 2026-08-27: "on mobile I only have no subjects but just two options
-     worksheets and lessons ... specifically when I open up the grades on
-     mobile." The drawer sheet for a grade had exactly two rows, so on a phone
-     the whole idea of picking a subject inside a year was missing - the note on
-     the desktop panel even says "organised by grade first, then subject", and
-     the phone offered no second step.
-     Each subject lands on that year page at its own row. */
-  SHEETS["gr-" + g] = { title: gradeName(g), parent: "gr", view: "/grade-" + gslug(g) + "/", rows: [
-    { label: "All Lessons", href: "/grade-" + gslug(g) + "/lessons/", note: "Worked through on screen" },
-    { label: "All Worksheets", href: "/grade-" + gslug(g) + "/worksheets/", note: "Printed and written on" },
-  ].concat(SUBJECTS.map(s => s.live
-    ? { label: s.name, href: "/grade-" + gslug(g) + "/#subj-" + s.slug, note: "This year" }
-    : { label: s.name, soon: true }))};
-});
 SUBJECTS.filter(s => s.live).forEach(s => {
   SHEETS["r-" + s.slug] = { title: s.name, parent: "r", view: "/" + s.slug + "/", rows: [
     { label: "Lessons", href: "/" + s.slug + "/lessons/", note: "Worked through on screen" },
