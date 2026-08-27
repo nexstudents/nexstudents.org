@@ -1037,18 +1037,24 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
   if (!newHome.includes('localStorage.getItem("ns:mode")')) {
     newHome = newHome.replace(cssLink[0], cssLink[0] + "\n" + modeBoot());
   }
-  /* The toggle logic, appended inside the home's own closing script. */
-  if (!newHome.includes("nsPaintMode")) {
-    const toggleJs = navScript()
-      .replace(/^<script>\n/, "")
-      .replace(/<\/script>$/, "");
-    const cut = toggleJs.indexOf("/* Day and night.");
-    if (cut < 0) { console.error("FAIL: could not lift the toggle out of navScript"); process.exit(1); }
-    newHome = newHome.replace(/<\/script>\s*<\/body>/, "\n" + toggleJs.slice(cut) + "\n</script>\n</body>");
+  /* 🚨 The home page needs the WHOLE nav script, not a slice of it.
+     It used to get only the day/night part lifted out, which is why the home
+     page had the menu markup but none of its behaviour: the drawer chevrons
+     did nothing and the mega panel never opened, while every generated page
+     worked. Found 2026-08-26 by clicking Grades on the live home page and
+     getting `nsOpenSub is not defined`.
+
+     Appending it whole is safe: the home's own script assigns burger/scrim
+     handlers with `onclick =`, so this simply replaces them with the same
+     behaviour rather than double-binding. */
+  if (!newHome.includes("nsOpenSub")) {
+    newHome = newHome.replace(/<\/body>/, navScript() + "\n</body>");
   }
-  if (!newHome.includes("nsPaintMode")) {
-    console.error("FAIL: the home page did not get the day/night toggle");
-    process.exit(1);
+  for (const must of ["nsPaintMode", "nsOpenSub", "megapanel"]) {
+    if (!newHome.includes(must)) {
+      console.error("FAIL: the home page is missing " + must + " - nav markup without its behaviour");
+      process.exit(1);
+    }
   }
 }
 

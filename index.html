@@ -393,5 +393,122 @@ document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
 nsPaintMode();
 
 </script>
+<script>
+
+var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
+    scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
+function setNav(o){document.body.classList.toggle("nav-open",o);
+  burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
+  document.body.style.overflow=o?"hidden":"";
+  if(!o) nsCloseSubs();}
+burger.onclick=function(){setNav(!document.body.classList.contains("nav-open"));};
+scrim.onclick=dClose.onclick=function(){setNav(false);};
+var nav=document.getElementById("nav");
+addEventListener("scroll",function(){nav.classList.toggle("stuck",scrollY>16);},{passive:true});
+
+/* ── day and night ── */
+function nsMode(){ return document.documentElement.getAttribute("data-theme")==="light"?"light":"dark"; }
+function nsPaintMode(){
+  var light=nsMode()==="light";
+  document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML=light?"&#9788;":"&#9790;"; });
+  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent=light?"Day mode":"Night mode"; });
+  document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
+    e.setAttribute("aria-label", light?"Switch to night mode":"Switch to day mode"); });
+}
+document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var next=nsMode()==="light"?"dark":"light";
+    document.documentElement.setAttribute("data-theme",next);
+    try{localStorage.setItem("ns:mode",next);}catch(e){}
+    nsPaintMode();
+  });
+});
+nsPaintMode();
+
+/* ── phone sheets ── */
+function nsCloseSubs(){
+  document.querySelectorAll("[data-subpanel]").forEach(function(p){
+    p.classList.remove("open"); p.setAttribute("aria-hidden","true"); });
+}
+function nsOpenSub(id){
+  var p=document.querySelector('[data-subpanel="'+id+'"]');
+  if(!p) return;
+  nsCloseSubs();
+  p.classList.add("open"); p.setAttribute("aria-hidden","false");
+}
+document.querySelectorAll("[data-sub]").forEach(function(b){
+  b.addEventListener("click",function(){ nsOpenSub(b.getAttribute("data-sub")); });
+});
+document.querySelectorAll("[data-sub-back]").forEach(function(b){
+  b.addEventListener("click",function(){
+    var parent=b.getAttribute("data-sub-back");
+    nsCloseSubs();
+    if(parent) nsOpenSub(parent);   /* step up one level, not all the way out */
+  });
+});
+
+/* ── ONE mega panel ──────────────────────────────────────────────────────
+   Stays open while the pointer moves along the bar; only the contents
+   cross-fade and the height eases. Closing is on a timer that any tab or the
+   panel cancels, because the pointer crosses dead space on the way down and a
+   hard mouseleave kills the menu mid-reach. */
+var panel=document.getElementById("megapanel");
+var tabEls=[].slice.call(document.querySelectorAll(".mg-top[data-menu]"));
+var onTab=document.querySelector(".mg-top.on");
+var closeTimer=null,current=null;
+
+function nsMark(el){
+  document.querySelectorAll(".mg-top.mg-live").forEach(function(t){ t.classList.remove("mg-live"); });
+  if(el) el.classList.add("mg-live");
+}
+function nsShow(key){
+  if(!panel) return;
+  clearTimeout(closeTimer);
+  var inner=panel.querySelector('[data-for="'+key+'"]');
+  if(!inner) return;
+  panel.classList.add("open");
+  panel.setAttribute("aria-hidden","false");
+  if(current!==key){
+    current=key;
+    panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.toggle("on", i===inner); });
+    panel.style.height=inner.offsetHeight+"px";
+    tabEls.forEach(function(t){ t.setAttribute("aria-expanded", String(t.getAttribute("data-menu")===key)); });
+    nsMark(document.querySelector('.mg-top[data-menu="'+key+'"]'));
+  }
+}
+function nsHide(){
+  if(!panel) return;
+  current=null;
+  panel.classList.remove("open");
+  panel.setAttribute("aria-hidden","true");
+  panel.style.height="";
+  panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.remove("on"); });
+  tabEls.forEach(function(t){ t.setAttribute("aria-expanded","false"); });
+  nsMark(onTab);
+}
+function nsLater(){ clearTimeout(closeTimer); closeTimer=setTimeout(nsHide,220); }
+function nsKeep(){ clearTimeout(closeTimer); }
+
+if(panel){
+  nav.classList.add("js-nav");
+  nsMark(onTab);
+  if(matchMedia("(hover:hover)").matches){
+    tabEls.forEach(function(t){
+      t.addEventListener("mouseenter",function(){ nsShow(t.getAttribute("data-menu")); });
+      t.addEventListener("focus",function(){ nsShow(t.getAttribute("data-menu")); });
+      /* the label drives the panel; it is not a click-through */
+      t.addEventListener("click",function(e){ e.preventDefault(); });
+    });
+    var tabsBox=document.querySelector(".tabs");
+    if(tabsBox){ tabsBox.addEventListener("mouseenter",nsKeep); tabsBox.addEventListener("mouseleave",nsLater); }
+    panel.addEventListener("mouseenter",nsKeep);
+    panel.addEventListener("mouseleave",nsLater);
+    addEventListener("keydown",function(e){ if(e.key==="Escape") nsHide(); });
+    addEventListener("resize",function(){
+      if(current){ var i=panel.querySelector('[data-for="'+current+'"]'); if(i) panel.style.height=i.offsetHeight+"px"; }
+    });
+  }
+}
+</script>
 </body>
 </html>
