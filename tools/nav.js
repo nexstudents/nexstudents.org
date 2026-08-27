@@ -86,7 +86,7 @@ const col = (heading, links) =>
 /* A promo is optional per panel, and only ever points at something real. */
 const promo = (p) => p
   ? '<a class="mg-promo" href="' + p.href + '">' +
-    '<img src="' + p.img + '" alt="' + p.alt + '" loading="lazy" decoding="async">' +
+    '<img src="' + p.img + '" alt="' + p.alt + '" decoding="async">' +
     "<b>" + p.label + "</b></a>"
   : "";
 
@@ -131,8 +131,9 @@ const tabs = (active) => NAV
     if (!m) return '<a class="mg-top' + on + '" href="' + n.href + '">' + n.label + "</a>";
     return '<details class="mega"><summary class="mg-top' + on + '">' + n.label +
       '</summary><div class="mg-panel"><div class="mg-inner">' +
-      '<div class="mg-body">' + m.body + "</div>" + promo(m.promo) +
-      '<p class="mg-all"><a href="' + n.href + '">All ' + n.label.toLowerCase() + " &rarr;</a></p>" +
+      '<div class="mg-body">' + m.body +
+      '<p class="mg-all"><a href="' + n.href + '">All ' + n.label.toLowerCase() + " &rarr;</a></p></div>" +
+      promo(m.promo) +
       "</div></div></details>";
   })
   .join("");
