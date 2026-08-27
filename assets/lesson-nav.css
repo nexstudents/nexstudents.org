@@ -139,9 +139,9 @@ nav:not(.js-nav) .mg-top.on::after,
 
 /* The promo: caption OVER the picture, so the panel does not grow a text row
    under every image. Square, because the artwork is square. */
-.mg-promo{position:relative;display:block;width:186px;flex:none;
+.mg-promo{position:relative;display:block;width:230px;flex:none;
   border-radius:var(--r,4px);overflow:hidden;text-decoration:none}
-.mg-promo img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+.mg-promo img{display:block;width:100%;aspect-ratio:var(--promo-ratio,3/2);object-fit:cover;object-position:center top}
 .mg-promo b{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 10px;
   font-size:.74rem;font-weight:800;letter-spacing:.03em;color:#fff;
   background:linear-gradient(transparent,rgba(0,0,0,.78))}
@@ -166,7 +166,7 @@ nav:not(.js-nav) .mg-top.on::after,
 
 .dsub{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);z-index:81;
   background:var(--nv-bg);border-right:1px solid var(--nv-line);padding:22px;
-  transform:translateX(-100%);transition:transform .3s var(--ease,ease);
+  transform:translateX(100%);transition:transform .34s cubic-bezier(.22,.61,.36,1);
   display:flex;flex-direction:column;gap:12px;overflow-y:auto}
 .dsub.open{transform:none}
 .dsub-back{align-self:flex-start;background:none;border:0;color:var(--nv-dim);
@@ -186,3 +186,8 @@ nav:not(.js-nav) .mg-top.on::after,
   font-style:normal;font-size:21px;line-height:1;color:var(--nv-dim)}
 .dsr.soon{opacity:.45;font-weight:600;cursor:default}
 .dsr.view{color:var(--nv-accent)}
+
+/* Measuring pass: all inners briefly laid out so the tallest can be found.
+   Invisible to the reader - it never paints, it is only read. */
+.mg-panel.measuring{height:auto!important;transition:none!important}
+.mg-panel.measuring .mg-inner{position:static!important;opacity:0!important}

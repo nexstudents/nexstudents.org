@@ -80,7 +80,8 @@ const col = (heading, links) =>
 /* The promo. Caption sits OVER the picture, as on lttstore, so the panel does
    not grow a text row under every image. Only ever points at something real. */
 const promo = (p) => p
-  ? '<a class="mg-promo" href="' + p.href + '">' +
+  ? '<a class="mg-promo" href="' + p.href + '"' +
+    (p.ratio ? ' style="--promo-ratio:' + p.ratio + '"' : '') + '>' +
     '<img src="' + p.img + '" alt="' + p.alt + '" decoding="async">' +
     "<b>" + p.label + "</b></a>"
   : "";
@@ -96,7 +97,7 @@ const MENUS = {
     promo: { href: "/worksheets/history/us-history-semester-1/",
              img: "/worksheets/history/us-history-semester-1/thumb.jpg",
              alt: "Complete 8th Grade US History, Units 1 to 5 bundle",
-             label: "8th Grade US History" },
+             ratio: "1/1", label: "8th Grade US History" },
   },
   r: {
     body: '<div class="mg-cols">' + SUBJECTS.map(s => col(s.name, s.live
@@ -110,7 +111,7 @@ const MENUS = {
     promo: { href: "/worksheets/history/lewis-and-clark/",
              img: "/worksheets/history/lewis-and-clark/thumb.jpg",
              alt: "Lewis and Clark, the Corps of Discovery worksheet",
-             label: "Free &middot; Lewis and Clark" },
+             ratio: "1/1", label: "Free &middot; Lewis and Clark" },
   },
   g: {
     /* The six the home page already lists. None are built, and every one says
@@ -132,7 +133,7 @@ const MENUS = {
       '<p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p>',
     promo: { href: "/comics/", img: "/assets/comics/donut-boy-cover.jpg",
              alt: "The Adventures of Donut Boy cover",
-             label: "Donut Boy &middot; 8 episodes" },
+             ratio: "3/2", label: "Donut Boy &middot; 8 episodes" },
   },
   p: {
     body: '<div class="mg-cols">' +
@@ -361,17 +362,34 @@ function nsMark(el){
   document.querySelectorAll(".mg-top.mg-live").forEach(function(t){ t.classList.remove("mg-live"); });
   if(el) el.classList.add("mg-live");
 }
+/* ONE height for every section, measured from the tallest.
+   Paul, 2026-08-26: "the dropdown for games is shorter in height than the
+   rest and its noticable." Animating height per section also meant the first
+   hover measured BEFORE the promo image had loaded and the panel jumped a
+   moment later - the glitch that cleared itself on reload. A fixed height
+   removes both: nothing resizes, so nothing can resize wrongly. */
+var panelH=0;
+function nsMeasure(){
+  if(!panel) return;
+  var was=panel.className;
+  panel.classList.add("measuring");
+  var max=0;
+  panel.querySelectorAll(".mg-inner").forEach(function(i){ max=Math.max(max,i.offsetHeight); });
+  panel.className=was;
+  if(max>0){ panelH=max; if(panel.classList.contains("open")) panel.style.height=panelH+"px"; }
+}
 function nsShow(key){
   if(!panel) return;
   clearTimeout(closeTimer);
   var inner=panel.querySelector('[data-for="'+key+'"]');
   if(!inner) return;
+  if(!panelH) nsMeasure();
   panel.classList.add("open");
   panel.setAttribute("aria-hidden","false");
+  panel.style.height=panelH+"px";
   if(current!==key){
     current=key;
     panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.toggle("on", i===inner); });
-    panel.style.height=inner.offsetHeight+"px";
     tabEls.forEach(function(t){ t.setAttribute("aria-expanded", String(t.getAttribute("data-menu")===key)); });
     nsMark(document.querySelector('.mg-top[data-menu="'+key+'"]'));
   }
@@ -404,9 +422,12 @@ if(panel){
     panel.addEventListener("mouseenter",nsKeep);
     panel.addEventListener("mouseleave",nsLater);
     addEventListener("keydown",function(e){ if(e.key==="Escape") nsHide(); });
-    addEventListener("resize",function(){
-      if(current){ var i=panel.querySelector('[data-for="'+current+'"]'); if(i) panel.style.height=i.offsetHeight+"px"; }
+    addEventListener("resize",function(){ panelH=0; nsMeasure(); });
+    /* the promo images decide the height, so re-measure as each one lands */
+    panel.querySelectorAll("img").forEach(function(im){
+      if(!im.complete) im.addEventListener("load",function(){ panelH=0; nsMeasure(); });
     });
+    addEventListener("load",function(){ panelH=0; nsMeasure(); });
   }
 }
 ` + "\n})();\n" + "</scr" + "ipt>";
