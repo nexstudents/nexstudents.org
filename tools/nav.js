@@ -69,8 +69,11 @@ const LIVE_GRADES = ["K", "3", "6", "7", "8"];
 const ALL_GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
 const gradeName = (g) => (g === "K" ? "Kindergarten" : "Grade " + g);
 
+/* A grade's URL is its label lowercased: "K" lives at /grade-k/. */
+const gslug = (g) => String(g).toLowerCase();
+
 const gradeTiles = () => ALL_GRADES.map(g => LIVE_GRADES.includes(g)
-  ? '<a class="mg-grade live" href="/grade-' + g + '/"><b>' + g + '</b><span>Live</span></a>'
+  ? '<a class="mg-grade live" href="/grade-' + gslug(g) + '/"><b>' + g + '</b><span>Live</span></a>'
   : '<span class="mg-grade soon"><b>' + g + '</b><span>Soon</span></span>'
 ).join("");
 
@@ -224,9 +227,9 @@ SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
 ]};
 
 LIVE_GRADES.forEach(g => {
-  SHEETS["gr-" + g] = { title: gradeName(g), parent: "gr", view: "/grade-" + g + "/", rows: [
-    { label: "Lessons", href: "/grade-" + g + "/lessons/", note: "Worked through on screen" },
-    { label: "Worksheets", href: "/grade-" + g + "/worksheets/", note: "Printed and written on" },
+  SHEETS["gr-" + g] = { title: gradeName(g), parent: "gr", view: "/grade-" + gslug(g) + "/", rows: [
+    { label: "Lessons", href: "/grade-" + gslug(g) + "/lessons/", note: "Worked through on screen" },
+    { label: "Worksheets", href: "/grade-" + gslug(g) + "/worksheets/", note: "Printed and written on" },
   ]};
 });
 SUBJECTS.filter(s => s.live).forEach(s => {

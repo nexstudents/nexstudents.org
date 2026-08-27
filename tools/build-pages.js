@@ -234,9 +234,13 @@ const liveGrades = () => [...new Set(
 )].map(String).sort((a, b) => GRADE_ORDER.indexOf(a) - GRADE_ORDER.indexOf(b));
 
 
+/* A grade's URL is its label lowercased: "K" lives at /grade-k/. Build a
+   grade href ANY other way and Kindergarten 404s - see tools/fix-grade-slug.js. */
+const gslug = (g) => String(g).toLowerCase();
+
 const gradeCells = (live, cls) => ["K","1","2","3","4","5","6","7","8"].map(g =>
   live.includes(g)
-    ? '<a class="gr live" href="/grade-' + g + '/"><b>' + g + '</b><span>Live</span></a>'
+    ? '<a class="gr live" href="/grade-' + gslug(g) + '/"><b>' + g + '</b><span>Live</span></a>'
     : '<span class="gr soon"><b>' + g + '</b><span>Soon</span></span>'
 ).join("\n    " + (cls || ""));
 
@@ -592,7 +596,7 @@ const subjectLanding = (s, slugIn) => {
   ${group("Or Jump to a Grade", "The years this subject has something built for so far.",
     grades.length
       ? `<div class="grades">
-    ${grades.map(g => `<a class="gr live" href="/grade-${g}/"><b>${g}</b><span>Live</span></a>`).join("\n    ")}
+    ${grades.map(g => `<a class="gr live" href="/grade-${gslug(g)}/"><b>${g}</b><span>Live</span></a>`).join("\n    ")}
     </div>`
       : emptyTile("Grades appear here as lessons are added."))}
 </div>`;
@@ -626,11 +630,11 @@ const gradeLanding = (g) => `<div class="band"><div class="wrap">
 <div class="wrap" style="padding-top:56px;padding-bottom:56px">
   ${group("Or Take the Whole Year at Once", "Everything built for this grade, all subjects together.",
     `<div class="subj-sub">
-      <a class="minibox" href="/grade-${g}/lessons/">
+      <a class="minibox" href="/grade-${gslug(g)}/lessons/">
         <b>All lessons</b><span>Worked through on screen</span>
         <u>${countLabel(byGrade(g).length, "lesson", "lessons")} &rarr;</u>
       </a>
-      <a class="minibox" href="/grade-${g}/worksheets/">
+      <a class="minibox" href="/grade-${gslug(g)}/worksheets/">
         <b>All worksheets</b><span>Printed and written on</span>
         <u>${countLabel(sheetsByGrade(g).length, "sheet", "sheets")} &rarr;</u>
       </a>
