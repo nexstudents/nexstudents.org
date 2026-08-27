@@ -1,0 +1,1323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://nexstudents.org/worksheets/english/manuscript-alphabet/">
+<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
+<link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
+<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
+<title>Manuscript Alphabet: Stroke Order and Direction — NexStudents</title>
+<meta name="description" content="All 52 letterforms with stroke-order arrows, then a faded copy of each to trace.">
+<link rel="stylesheet" href="/assets/ns.css?v=5d503dfd">
+<link rel="stylesheet" href="/assets/worksheet.css?v=5d503dfd">
+<style>
+  /* 🚨 ON SCREEN the letters follow the SITE THEME; ON PAPER they are forced
+     back to ink on white. Hardcoding near-black ink made every model letter
+     invisible in dark mode, which is the site default - the page showed the
+     faded tracing pair and an empty space where the demonstration should be.
+     The model is --fg, the tracing copies are the same colour at low opacity,
+     and the knocked-out arrow is --bg, so all three follow whichever theme the
+     reader is in. The print block below then overrides the lot, because a
+     worksheet has to come off the printer black on white no matter what. */
+  .hw{--rule:var(--line)}
+  .hw .cell{width:58px;height:75px;flex:none;overflow:visible}
+  .hw .row{display:flex;align-items:flex-end;margin-bottom:7px}
+  .hw .grp{display:flex}
+  .hw .grp + .grp{margin-left:10px}
+  .hw .rule{stroke:var(--rule);stroke-width:1.4;fill:none}
+  .hw .rule.solid{opacity:.72} .hw .rule.dash{stroke-dasharray:7 7;opacity:.55}
+  .hw .rule.faint{opacity:.26}
+  .hw .ink{fill:none;stroke:var(--fg);opacity:.30;stroke-width:11;
+    stroke-linecap:round;stroke-linejoin:round}
+  .hw .ink.solid{opacity:1}
+  .hw .ink.dt{fill:var(--fg);stroke:none}
+  .hw .ink.ghost{opacity:.15}
+  .hw .guide{fill:none;stroke:var(--fg);stroke-width:1.7;stroke-linecap:round}
+  .hw .guide.on-ink{stroke:var(--bg);stroke-width:1.9}
+  .hw .grid{display:grid;grid-template-columns:repeat(4,max-content);gap:12px 22px}
+  .hw .two{display:flex}
+  .hwh{font-size:15px;margin:26px 0 6px}
+  @media print{
+    /* Paper is white whatever the reader had on screen, so the theme colours
+       are overridden outright rather than hoped about. */
+    .hw .ink{stroke:#111;opacity:.28}
+    .hw .ink.solid{stroke:#111;opacity:1}
+    .hw .ink.dt{fill:#111}
+    .hw .ink.ghost{opacity:.14}
+    .hw .guide{stroke:#111}
+    .hw .guide.on-ink{stroke:#fff}
+    .hw .rule{stroke:#8fa2b8}
+    /* one ROW at a time, never the sheet - a block most of a page tall gets
+       moved whole to the next page and hands you a blank one */
+    .hw .row{break-inside:avoid;page-break-inside:avoid}
+    /* 🚨 THREE SHEETS, THREE PAGES. Paul, 2026-08-27: "this will be the entire
+       template for the entire worksheet so they can print all three sheets at
+       once or on the printer select one at a time." That only works if each
+       section starts its own printed page - otherwise the wall chart lands
+       halfway down page 1 and "print page 2" gets a parent half of each.
+       .hwh sits only on the second and third headings, so this breaks before
+       them and leaves the letters as page 1. */
+    .hwh{break-before:page;page-break-before:always}
+    .hw .grid{break-inside:avoid;page-break-inside:avoid}
+  }</style>
+</head>
+<body>
+
+<div class="scrim" id="scrim"></div>
+<div class="menucol" id="menucol">
+<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+  <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
+  <a class="dl" href="/">Home<small>Start here</small></a>
+  <button class="dl dl-open" type="button" data-sub="gr">Grades<small>K through 8</small><i aria-hidden="true">&#8250;</i></button>
+  <button class="dl dl-open" type="button" data-sub="r">Resources<small>Tools we use</small><i aria-hidden="true">&#8250;</i></button>
+  <button class="dl dl-open" type="button" data-sub="g">Games<small>Play in the browser</small><i aria-hidden="true">&#8250;</i></button>
+  <button class="dl dl-open" type="button" data-sub="c">Comics<small>Read on the site</small><i aria-hidden="true">&#8250;</i></button>
+  <button class="dl dl-open" type="button" data-sub="p">For Parents<small>Placement exams</small><i aria-hidden="true">&#8250;</i></button>
+  <a class="dl" href="/about/">About<small>Who makes this</small></a>
+  <a class="dl" href="/contact/">Contact<small>Get in touch</small></a>
+  <a class="btn" href="https://www.paypal.com/donate/?hosted_button_id=PZ9D8N9KVURDA" target="_blank" rel="noopener">Support Us</a>
+  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night"><span data-mode-icon>&#9790;</span><span data-mode-label>Night Mode</span></button>
+</aside>
+<div class="dsubs" id="dsubs"><aside class="dsub" data-subpanel="gr" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Grades</h3><div class="dsub-body"><div class="dst-grid"><button class="dst" type="button" data-sub="gr-K" aria-label="Kindergarten"><b>K</b></button><span class="dst soon"><b>1</b></span><span class="dst soon"><b>2</b></span><button class="dst" type="button" data-sub="gr-3" aria-label="Grade 3"><b>3</b></button><span class="dst soon"><b>4</b></span><span class="dst soon"><b>5</b></span><button class="dst" type="button" data-sub="gr-6" aria-label="Grade 6"><b>6</b></button><button class="dst" type="button" data-sub="gr-7" aria-label="Grade 7"><b>7</b></button><button class="dst" type="button" data-sub="gr-8" aria-label="Grade 8"><b>8</b></button></div></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></aside>
+<aside class="dsub" data-subpanel="r" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Resources</h3><div class="dsub-body"><a class="dsr view" href="/resources/">View Resources</a><button class="dsr dsr-open" type="button" data-sub="r-english">English<i aria-hidden="true">&#8250;</i></button><button class="dsr dsr-open" type="button" data-sub="r-history">History<i aria-hidden="true">&#8250;</i></button><button class="dsr dsr-open" type="button" data-sub="r-maths">Maths<i aria-hidden="true">&#8250;</i></button><span class="dsr soon">Science<small>Being built</small></span><a class="dsr" href="/worksheets/">All Worksheets<small>Every Printable</small></a></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></aside>
+<aside class="dsub" data-subpanel="g" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Games</h3><div class="dsub-body"><a class="dsr view" href="/games/">View Games</a><span class="dsr soon">Remainder race<small>Being built</small></span><span class="dsr soon">Fraction match<small>Being built</small></span><span class="dsr soon">Spelling ladder<small>Being built</small></span><span class="dsr soon">Comma catcher<small>Being built</small></span><span class="dsr soon">Place the state<small>Being built</small></span><span class="dsr soon">Sort the mixture<small>Being built</small></span></div></aside>
+<aside class="dsub" data-subpanel="c" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Comics</h3><div class="dsub-body"><a class="dsr view" href="/comics/">View Comics</a><a class="dsr" href="/comics/">Donut Boy<small>8 episodes</small></a><span class="dsr soon">More Strips<small>Being built</small></span></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></aside>
+<aside class="dsub" data-subpanel="p" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>For Parents</h3><div class="dsub-body"><a class="dsr view" href="/for-parents/">View For Parents</a><a class="dsr" href="/placement-exam.html">Reading Placement Exam</a><a class="dsr" href="/resources/">What We Use</a><a class="dsr" href="/about/">About</a><a class="dsr" href="/contact/">Contact</a></div></aside>
+<aside class="dsub" data-subpanel="gr-K" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="gr">&#8249; Grades</button><h3>Kindergarten</h3><div class="dsub-body"><a class="dsr view" href="/grade-K/">View Kindergarten</a><a class="dsr" href="/grade-K/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/grade-K/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
+<aside class="dsub" data-subpanel="gr-3" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="gr">&#8249; Grades</button><h3>Grade 3</h3><div class="dsub-body"><a class="dsr view" href="/grade-3/">View Grade 3</a><a class="dsr" href="/grade-3/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/grade-3/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
+<aside class="dsub" data-subpanel="gr-6" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="gr">&#8249; Grades</button><h3>Grade 6</h3><div class="dsub-body"><a class="dsr view" href="/grade-6/">View Grade 6</a><a class="dsr" href="/grade-6/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/grade-6/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
+<aside class="dsub" data-subpanel="gr-7" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="gr">&#8249; Grades</button><h3>Grade 7</h3><div class="dsub-body"><a class="dsr view" href="/grade-7/">View Grade 7</a><a class="dsr" href="/grade-7/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/grade-7/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
+<aside class="dsub" data-subpanel="gr-8" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="gr">&#8249; Grades</button><h3>Grade 8</h3><div class="dsub-body"><a class="dsr view" href="/grade-8/">View Grade 8</a><a class="dsr" href="/grade-8/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/grade-8/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
+<aside class="dsub" data-subpanel="r-english" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="r">&#8249; Resources</button><h3>English</h3><div class="dsub-body"><a class="dsr view" href="/english/">View English</a><a class="dsr" href="/english/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/english/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
+<aside class="dsub" data-subpanel="r-history" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="r">&#8249; Resources</button><h3>History</h3><div class="dsub-body"><a class="dsr view" href="/history/">View History</a><a class="dsr" href="/history/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/history/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
+<aside class="dsub" data-subpanel="r-maths" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="r">&#8249; Resources</button><h3>Maths</h3><div class="dsub-body"><a class="dsr view" href="/maths/">View Maths</a><a class="dsr" href="/maths/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/maths/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside></div>
+</div>
+
+<nav id="nav" class="ns-nav"><div class="nv">
+  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+    <i></i><i></i><i></i>
+  </button>
+  <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
+  <div class="navicons"><button class="navicon" type="button" aria-disabled="true" aria-label="Account, not built yet" title="Accounts are being built"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></button><button class="navicon" type="button" aria-disabled="true" aria-label="Cart, not built yet" title="The shop is being built"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg></button></div>
+  <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a></div>
+  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>
+  <a class="btn" href="/#grades">Pick a Grade</a>
+</div>
+<div class="mg-panel" id="megapanel" aria-hidden="true"><div class="mg-inner" data-for="gr"><div class="mg-body"><div class="mg-grades"><a class="mg-grade live" href="/grade-K/"><b>K</b><span>Live</span></a><span class="mg-grade soon"><b>1</b><span>Soon</span></span><span class="mg-grade soon"><b>2</b><span>Soon</span></span><a class="mg-grade live" href="/grade-3/"><b>3</b><span>Live</span></a><span class="mg-grade soon"><b>4</b><span>Soon</span></span><span class="mg-grade soon"><b>5</b><span>Soon</span></span><a class="mg-grade live" href="/grade-6/"><b>6</b><span>Live</span></a><a class="mg-grade live" href="/grade-7/"><b>7</b><span>Live</span></a><a class="mg-grade live" href="/grade-8/"><b>8</b><span>Live</span></a></div><p class="mg-note">Organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></div><div class="mg-inner" data-for="r"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>English</h4><ul><li><a href="/english/lessons/">Lessons</a></li><li><a href="/english/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><a href="/history/lessons/">Lessons</a></li><li><a href="/history/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>Maths</h4><ul><li><a href="/maths/lessons/">Lessons</a></li><li><a href="/maths/worksheets/">Worksheets</a></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><span class="mg-soon">Being Built</span></li></ul></div><div class="mg-col"><h4>Everything</h4><ul><li><a href="/worksheets/">All Worksheets</a></li><li><a href="/resources/">What We Use</a></li></ul></div></div><p class="mg-all"><a href="/resources/">All resources &rarr;</a></p></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></div><div class="mg-inner" data-for="g"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Maths</h4><ul><li><span class="mg-soon">Remainder race</span></li><li><span class="mg-soon">Fraction match</span></li></ul></div><div class="mg-col"><h4>English</h4><ul><li><span class="mg-soon">Spelling ladder</span></li><li><span class="mg-soon">Comma catcher</span></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><span class="mg-soon">Place the state</span></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><span class="mg-soon">Sort the mixture</span></li></ul></div></div><p class="mg-note">None of these are playable yet. They go up as they are built.</p><p class="mg-all"><a href="/games/">All games &rarr;</a></p></div></div><div class="mg-inner" data-for="c"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Donut Boy</h4><ul><li><a href="/comics/">Start at Episode 1</a></li><li><a href="/comics/">All 8 Episodes</a></li></ul></div><div class="mg-col"><h4>More strips</h4><ul><li><span class="mg-soon">Being drawn</span></li></ul></div></div><p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p><p class="mg-all"><a href="/comics/">All comics &rarr;</a></p></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></div><div class="mg-inner" data-for="p"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Placement</h4><ul><li><a href="/placement-exam.html">Reading Placement Exam</a></li></ul></div><div class="mg-col"><h4>Planning</h4><ul><li><a href="/resources/">What We Use</a></li><li><a href="/about/">About NexStudents</a></li><li><a href="/contact/">Contact</a></li></ul></div></div><p class="mg-all"><a href="/for-parents/">All for parents &rarr;</a></p></div></div></div>
+</nav>
+
+<div class="bar">
+  <a class="back" href="/english/worksheets/">&larr; English Worksheets</a>
+</div>
+
+<div class="sheet">
+
+  <div class="head">
+    <p class="eyebrow">English &middot; Kindergarten &middot; Handwriting</p>
+    <h1>Manuscript Alphabet: Stroke Order and Direction</h1>
+    <p class="dek">Every letter, capital and lowercase, with arrows showing where each stroke starts and which way the pencil goes.</p>
+  </div>
+
+  <div class="note">
+    <p><b>Tip:</b> say each stroke out loud together while they trace &mdash;
+    &ldquo;down, around, down again&rdquo; &mdash; and follow the arrows in order.
+    Hearing the moves helps as much as seeing them.</p>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- 🚨 A POINTED dart, not a squat triangle. Paul, 2026-08-27: "make the ends
+       of the arrows look a little bit more pointy ... I can't really tell even
+       zooming in." The head was 6.5 long by 6.5 tall - as wide as it was long,
+       so at worksheet size it read as a dot with no direction in it. 15 long by
+       7 tall is better than twice as long as it is wide, and the tail is swept
+       BACK to a notch (the 3.5,3.5 waypoints) so the whole shape leans forward.
+       It still fits inside the 11-unit letter stroke it sits in. -->
+  <marker id="ahead" viewBox="0 0 15 7" refX="14" refY="3.5" markerUnits="userSpaceOnUse"
+          markerWidth="15" markerHeight="7" orient="auto">
+    <path d="M0,0 L15,3.5 L0,7 L3.5,3.5 z" fill="#14181d"/>
+  </marker>
+  <marker id="ahead-i" viewBox="0 0 15 7" refX="14" refY="3.5" markerUnits="userSpaceOnUse"
+          markerWidth="15" markerHeight="7" orient="auto">
+    <path d="M0,0 L15,3.5 L0,7 L3.5,3.5 z" fill="#fff"/>
+  </marker></defs></svg>
+  <div class="hw">
+    <div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 L27,130 M70,10 L113,130 M38.5,98 L101.5,98"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.58,30.71 L51.78,60.83"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M77.42,30.71 L88.22,60.83"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M38.5,98 L72.5,98"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.92,78.08 A31,31 0 0 0 49.91,70.69"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,70 L91,104"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M70,10 L27,130 M70,10 L113,130 M38.5,98 L101.5,98"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,130"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M30.5,10 L30.5,130 M30.5,10 A79,30 0 0 1 30.5,70 M30.5,70 A79,30 0 0 1 30.5,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M30.5,10 L30.5,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.63,12.59 A79,30 0 0 1 94.41,22.37"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.63,72.59 A79,30 0 0 1 94.41,82.37"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L29,130 M29,100 A31,31 0 1 1 29.12,102.7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L29,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,69 A31,31 0 0 1 87.86,86.41"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M30.5,10 L30.5,130 M30.5,10 A79,30 0 0 1 30.5,70 M30.5,70 A79,30 0 0 1 30.5,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,10 L29,130 M29,100 A31,31 0 1 1 29.12,102.7"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M97.64,24.04 A43,60 0 1 0 97.64,115.96"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M97.64,24.04 A43,60 0 0 0 52.51,15.19"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M79.93,76.25 A31,31 0 1 0 79.93,123.75"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M79.93,76.25 A31,31 0 0 0 47.39,71.68"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M97.64,24.04 A43,60 0 1 0 97.64,115.96"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M79.93,76.25 A31,31 0 1 0 79.93,123.75"/></svg></div></div>
+<div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M27,10 L27,130 M27,10 A86,60 0 0 1 27,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L27,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M59.22,14.37 A86,60 0 0 1 90.91,29.85"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,10 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.92,78.08 A31,31 0 0 0 49.91,70.69"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,10 L91,44"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M27,10 L27,130 M27,10 A86,60 0 0 1 27,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,10 L91,130"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M34,10 L34,130 M34,10 L106,10 M34,70 L96,70 M34,130 L106,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,10 L34,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,10 L68,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,70 L68,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,130 L68,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,100 L91,100 M91,100 A31,31 0 1 0 86,116.88"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,100 L63,100"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,100 A31,31 0 0 0 73.59,72.14"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M34,10 L34,130 M34,10 L106,10 M34,70 L96,70 M34,130 L106,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,100 L91,100 M91,100 A31,31 0 1 0 86,116.88"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M35,10 L35,130 M35,10 L105,10 M35,70 L95,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M35,10 L35,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M35,10 L69,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M35,70 L69,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M65,27 A17,17 0 0 0 31,27 M31,27 L31,130 M16,70 L56,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M65,27 A17,17 0 0 0 55.45,11.72"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M16,70 L50,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M35,10 L35,130 M35,10 L105,10 M35,70 L95,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M65,27 A17,17 0 0 0 31,27 M31,27 L31,130 M16,70 L56,70"/></svg></div></div>
+<div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M99.25,24.04 A45.5,60 0 1 0 115.5,70 M81.5,70 L115.5,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M99.25,24.04 A45.5,60 0 0 0 51.49,15.19"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.5,70 L110.5,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,146 M91,146 A22,22 0 0 1 69,168 M69,168 L40,168"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.92,78.08 A31,31 0 0 0 49.91,70.69"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,70 L91,104"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M99.25,24.04 A45.5,60 0 1 0 115.5,70 M81.5,70 L115.5,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,146 M91,146 A22,22 0 0 1 69,168 M69,168 L40,168"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M27,10 L27,130 M113,10 L113,130 M27,70 L113,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L27,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M113,10 L113,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,70 L61,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L29,130 M29,100 A31,31 0 0 1 91,100 M91,100 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L29,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,100 A31,31 0 0 1 46.41,72.14"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M27,10 L27,130 M113,10 L113,130 M27,70 L113,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,10 L29,130 M29,100 A31,31 0 0 1 91,100 M91,100 L91,130"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 L70,130 M46,10 L94,10 M46,130 L94,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,10 L70,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M46,10 L80,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M46,130 L80,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M60,70 L60,130"/><circle class="ink solid dt" cx="60" cy="50" r="7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,70 L60,104"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M70,10 L70,130 M46,10 L94,10 M46,130 L94,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M60,70 L60,130"/><circle class="ink dt" cx="60" cy="50" r="7"/></svg></div></div>
+<div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M84,10 L84,100 M84,100 A27,30 0 0 1 30,100 M60,10 L108,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M84,10 L84,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,10 L94,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M64,70 L64,146 M64,146 A22,22 0 0 1 42,168 M42,168 L26,168"/><circle class="ink solid dt" cx="64" cy="50" r="7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M64,70 L64,104"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M84,10 L84,100 M84,100 A27,30 0 0 1 30,100 M60,10 L108,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M64,70 L64,146 M64,146 A22,22 0 0 1 42,168 M42,168 L26,168"/><circle class="ink dt" cx="64" cy="50" r="7"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L29,130 M111,10 L32,74 M32,74 L111,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L29,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M111,10 L84.58,31.4"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M32,74 L59.74,93.66"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L29,130 M80,70 L33,96 M33,96 L82,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L29,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M80,70 L50.25,86.46"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M33,96 L60.93,115.38"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,10 L29,130 M111,10 L32,74 M32,74 L111,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,10 L29,130 M80,70 L33,96 M33,96 L82,130"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M36.5,10 L36.5,130 M36.5,130 L103.5,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M36.5,10 L36.5,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M36.5,130 L70.5,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M60,10 L60,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,10 L60,44"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M36.5,10 L36.5,130 M36.5,130 L103.5,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M60,10 L60,130"/></svg></div></div>
+<div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M17,10 L17,130 M17,10 L70,82 M70,82 L123,10 M123,10 L123,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M17,10 L17,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M17,10 L37.16,37.38"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,82 L90.16,54.62"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M123,10 L123,44"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M22,70 L22,130 M22,100 A24,31 0 0 1 70,100 M70,100 L70,130 M70,100 A24,31 0 0 1 118,100 M118,100 L118,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M22,70 L22,104"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M22,100 A24,31 0 0 1 35.48,72.14"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,100 A24,31 0 0 1 83.48,72.14"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M17,10 L17,130 M17,10 L70,82 M70,82 L123,10 M123,10 L123,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M22,70 L22,130 M22,100 A24,31 0 0 1 70,100 M70,100 L70,130 M70,100 A24,31 0 0 1 118,100 M118,100 L118,130"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M27,10 L27,130 M27,10 L113,130 M113,130 L113,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L27,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L46.81,37.64"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M113,130 L113,96"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,70 L29,130 M29,100 A31,31 0 0 1 91,100 M91,100 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,70 L29,104"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,100 A31,31 0 0 1 46.41,72.14"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M27,10 L27,130 M27,10 L113,130 M113,130 L113,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,70 L29,130 M29,100 A31,31 0 0 1 91,100 M91,100 L91,130"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 A47,60 0 1 0 74.1,10.23"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,10 A47,60 0 0 0 27.76,43.7"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M60,69 A31,31 0 1 0 62.7,69.12"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,69 A31,31 0 0 0 32.14,86.41"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M70,10 A47,60 0 1 0 74.1,10.23"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M60,69 A31,31 0 1 0 62.7,69.12"/></svg></div></div>
+<div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31.5,10 L31.5,130 M31.5,10 A77,33 0 0 1 31.5,76"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31.5,10 L31.5,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.82,12.85 A77,33 0 0 1 93.79,23.6"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,70 L29,170 M29,100 A31,31 0 1 1 29.12,102.7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,70 L29,104"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,69 A31,31 0 0 1 87.86,86.41"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M31.5,10 L31.5,130 M31.5,10 A77,33 0 0 1 31.5,76"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,70 L29,170 M29,100 A31,31 0 1 1 29.12,102.7"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 A47,60 0 1 0 74.1,10.23 M90,104 L118,138"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,10 A47,60 0 0 0 27.76,43.7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M90,104 L111.61,130.25"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,150 M91,150 A13,13 0 0 0 104,163 M104,163 L110,163"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.92,78.08 A31,31 0 0 0 49.91,70.69"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,70 L91,104"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M70,10 A47,60 0 1 0 74.1,10.23 M90,104 L118,138"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,150 M91,150 A13,13 0 0 0 104,163 M104,163 L110,163"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M30.5,10 L30.5,130 M30.5,10 A79,31 0 0 1 30.5,72 M34.5,72 L109.5,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M30.5,10 L30.5,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.63,12.68 A79,31 0 0 1 94.41,22.78"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34.5,72 L61.4,92.8"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M34,70 L34,130 M34,92 A26,24 0 0 1 69.74,69.75"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,70 L34,104"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,92 A26,24 0 0 1 48.6,70.43"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M30.5,10 L30.5,130 M30.5,10 A79,31 0 0 1 30.5,72 M34.5,72 L109.5,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M34,70 L34,130 M34,92 A26,24 0 0 1 69.74,69.75"/></svg></div></div>
+<div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M104.77,29.74 A37,30 0 1 0 70,70 M70,70 A37,30 0 1 1 35.23,110.26"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M104.77,29.74 A37,30 0 0 0 73.87,10.16"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M77.62,78.01 A19,16 0 1 0 60,100 M60,100 A21,16 0 1 1 40.53,121.99"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M77.62,78.01 A19,16 0 0 0 61.33,68.04"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M104.77,29.74 A37,30 0 1 0 70,70 M70,70 A37,30 0 1 1 35.23,110.26"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M77.62,78.01 A19,16 0 1 0 60,100 M60,100 A21,16 0 1 1 40.53,121.99"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 L70,130 M31.5,10 L108.5,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,10 L70,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31.5,10 L65.5,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M60,30 L60,130 M36,70 L84,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,30 L60,64"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M36,70 L70,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M70,10 L70,130 M31.5,10 L108.5,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M60,30 L60,130 M36,70 L84,70"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M27,10 L27,88 M27,88 A43,42 0 0 0 113,88 M113,88 L113,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L27,44"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,70 L29,100 M29,100 A31,31 0 0 0 91,100 M91,100 L91,70 M91,70 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,70 L29,95"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,70 L91,104"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M27,10 L27,88 M27,88 A43,42 0 0 0 113,88 M113,88 L113,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,70 L29,100 M29,100 A31,31 0 0 0 91,100 M91,100 L91,70 M91,70 L91,130"/></svg></div></div>
+<div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M28,10 L70,130 M70,130 L112,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M28,10 L39.23,42.09"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,130 L81.23,97.91"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31,70 L60,130 M60,130 L89,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,70 L45.8,100.61"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,130 L74.8,99.39"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M28,10 L70,130 M70,130 L112,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M31,70 L60,130 M60,130 L89,70"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M10,10 L39,130 M39,130 L70,46 M70,46 L101,130 M101,130 L130,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M10,10 L17.99,43.05"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M39,130 L50.77,98.1"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,46 L81.77,77.9"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M101,130 L108.99,96.95"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M16,70 L38,130 M38,130 L60,86 M60,86 L82,130 M82,130 L104,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M16,70 L27.7,101.92"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M38,130 L53.21,99.59"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,86 L75.21,116.41"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M82,130 L93.7,98.08"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M10,10 L39,130 M39,130 L70,46 M70,46 L101,130 M101,130 L130,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M16,70 L38,130 M38,130 L60,86 M60,86 L82,130 M82,130 L104,70"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M28,10 L112,130 M112,10 L28,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M28,10 L47.5,37.85"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M112,10 L92.5,37.85"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31,70 L89,130 M89,70 L31,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,70 L54.63,94.45"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M89,70 L65.37,94.45"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M28,10 L112,130 M112,10 L28,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M31,70 L89,130 M89,70 L31,130"/></svg></div></div>
+<div class="row"><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L70,74 M111,10 L70,74 M70,74 L70,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L47.34,38.63"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M111,10 L92.66,38.63"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,74 L70,108"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31,70 L60,124 M89,70 L38,170"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,70 L47.09,99.95"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M89,70 L73.55,100.29"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M29,10 L70,74 M111,10 L70,74 M70,74 L70,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M31,70 L60,124 M89,70 L38,170"/></svg></div><div class="grp"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31.5,10 L108.5,10 M108.5,10 L31.5,130 M31.5,130 L108.5,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31.5,10 L65.5,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M108.5,10 L90.14,38.62"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31.5,130 L65.5,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31,70 L89,70 M89,70 L31,130 M31,130 L89,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,70 L65,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M89,70 L65.37,94.45"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,130 L65,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M31.5,10 L108.5,10 M108.5,10 L31.5,130 M31.5,130 L108.5,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M31,70 L89,70 M89,70 L31,130 M31,130 L89,130"/></svg></div></div>
+  </div>
+
+  <p class="dek" style="margin-top:18px"><b>Tip:</b> alphabetical is not the easiest
+  order. The straight-line letters &mdash; l, t, i, L, T, I, F, E, H &mdash; make the
+  gentlest start, the round ones come next, and diagonals like v, w, x, K, M and N are
+  worth saving for last.</p>
+
+  <h2 class="hwh">Put this one on the fridge</h2>
+  <div class="hw"><div class="grid">
+    <div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 L27,130 M70,10 L113,130 M38.5,98 L101.5,98"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.58,30.71 L51.78,60.83"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M77.42,30.71 L88.22,60.83"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M38.5,98 L72.5,98"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.92,78.08 A31,31 0 0 0 49.91,70.69"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,70 L91,104"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M30.5,10 L30.5,130 M30.5,10 A79,30 0 0 1 30.5,70 M30.5,70 A79,30 0 0 1 30.5,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M30.5,10 L30.5,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.63,12.59 A79,30 0 0 1 94.41,22.37"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.63,72.59 A79,30 0 0 1 94.41,82.37"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L29,130 M29,100 A31,31 0 1 1 29.12,102.7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L29,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,69 A31,31 0 0 1 87.86,86.41"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M97.64,24.04 A43,60 0 1 0 97.64,115.96"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M97.64,24.04 A43,60 0 0 0 52.51,15.19"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M79.93,76.25 A31,31 0 1 0 79.93,123.75"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M79.93,76.25 A31,31 0 0 0 47.39,71.68"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M27,10 L27,130 M27,10 A86,60 0 0 1 27,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L27,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M59.22,14.37 A86,60 0 0 1 90.91,29.85"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,10 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.92,78.08 A31,31 0 0 0 49.91,70.69"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,10 L91,44"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M34,10 L34,130 M34,10 L106,10 M34,70 L96,70 M34,130 L106,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,10 L34,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,10 L68,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,70 L68,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,130 L68,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,100 L91,100 M91,100 A31,31 0 1 0 86,116.88"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,100 L63,100"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,100 A31,31 0 0 0 73.59,72.14"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M35,10 L35,130 M35,10 L105,10 M35,70 L95,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M35,10 L35,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M35,10 L69,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M35,70 L69,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M65,27 A17,17 0 0 0 31,27 M31,27 L31,130 M16,70 L56,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M65,27 A17,17 0 0 0 55.45,11.72"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M16,70 L50,70"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M99.25,24.04 A45.5,60 0 1 0 115.5,70 M81.5,70 L115.5,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M99.25,24.04 A45.5,60 0 0 0 51.49,15.19"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.5,70 L110.5,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,146 M91,146 A22,22 0 0 1 69,168 M69,168 L40,168"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.92,78.08 A31,31 0 0 0 49.91,70.69"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,70 L91,104"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M27,10 L27,130 M113,10 L113,130 M27,70 L113,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L27,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M113,10 L113,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,70 L61,70"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L29,130 M29,100 A31,31 0 0 1 91,100 M91,100 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L29,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,100 A31,31 0 0 1 46.41,72.14"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 L70,130 M46,10 L94,10 M46,130 L94,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,10 L70,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M46,10 L80,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M46,130 L80,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M60,70 L60,130"/><circle class="ink solid dt" cx="60" cy="50" r="7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,70 L60,104"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M84,10 L84,100 M84,100 A27,30 0 0 1 30,100 M60,10 L108,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M84,10 L84,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,10 L94,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M64,70 L64,146 M64,146 A22,22 0 0 1 42,168 M42,168 L26,168"/><circle class="ink solid dt" cx="64" cy="50" r="7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M64,70 L64,104"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L29,130 M111,10 L32,74 M32,74 L111,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L29,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M111,10 L84.58,31.4"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M32,74 L59.74,93.66"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L29,130 M80,70 L33,96 M33,96 L82,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L29,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M80,70 L50.25,86.46"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M33,96 L60.93,115.38"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M36.5,10 L36.5,130 M36.5,130 L103.5,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M36.5,10 L36.5,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M36.5,130 L70.5,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M60,10 L60,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,10 L60,44"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M17,10 L17,130 M17,10 L70,82 M70,82 L123,10 M123,10 L123,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M17,10 L17,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M17,10 L37.16,37.38"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,82 L90.16,54.62"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M123,10 L123,44"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M22,70 L22,130 M22,100 A24,31 0 0 1 70,100 M70,100 L70,130 M70,100 A24,31 0 0 1 118,100 M118,100 L118,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M22,70 L22,104"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M22,100 A24,31 0 0 1 35.48,72.14"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,100 A24,31 0 0 1 83.48,72.14"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M27,10 L27,130 M27,10 L113,130 M113,130 L113,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L27,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L46.81,37.64"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M113,130 L113,96"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,70 L29,130 M29,100 A31,31 0 0 1 91,100 M91,100 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,70 L29,104"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,100 A31,31 0 0 1 46.41,72.14"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 A47,60 0 1 0 74.1,10.23"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,10 A47,60 0 0 0 27.76,43.7"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M60,69 A31,31 0 1 0 62.7,69.12"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,69 A31,31 0 0 0 32.14,86.41"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31.5,10 L31.5,130 M31.5,10 A77,33 0 0 1 31.5,76"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31.5,10 L31.5,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.82,12.85 A77,33 0 0 1 93.79,23.6"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,70 L29,170 M29,100 A31,31 0 1 1 29.12,102.7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,70 L29,104"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,69 A31,31 0 0 1 87.86,86.41"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 A47,60 0 1 0 74.1,10.23 M90,104 L118,138"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,10 A47,60 0 0 0 27.76,43.7"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M90,104 L111.61,130.25"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M81.92,78.08 A31,31 0 1 0 83.75,80.07 M91,70 L91,150 M91,150 A13,13 0 0 0 104,163 M104,163 L110,163"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M81.92,78.08 A31,31 0 0 0 49.91,70.69"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,70 L91,104"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M30.5,10 L30.5,130 M30.5,10 A79,31 0 0 1 30.5,72 M34.5,72 L109.5,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M30.5,10 L30.5,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M62.63,12.68 A79,31 0 0 1 94.41,22.78"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34.5,72 L61.4,92.8"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M34,70 L34,130 M34,92 A26,24 0 0 1 69.74,69.75"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,70 L34,104"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M34,92 A26,24 0 0 1 48.6,70.43"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M104.77,29.74 A37,30 0 1 0 70,70 M70,70 A37,30 0 1 1 35.23,110.26"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M104.77,29.74 A37,30 0 0 0 73.87,10.16"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M77.62,78.01 A19,16 0 1 0 60,100 M60,100 A21,16 0 1 1 40.53,121.99"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M77.62,78.01 A19,16 0 0 0 61.33,68.04"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M70,10 L70,130 M31.5,10 L108.5,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,10 L70,44"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31.5,10 L65.5,10"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M60,30 L60,130 M36,70 L84,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,30 L60,64"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M36,70 L70,70"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M27,10 L27,88 M27,88 A43,42 0 0 0 113,88 M113,88 L113,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M27,10 L27,44"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,70 L29,100 M29,100 A31,31 0 0 0 91,100 M91,100 L91,70 M91,70 L91,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,70 L29,95"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M91,70 L91,104"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M28,10 L70,130 M70,130 L112,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M28,10 L39.23,42.09"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,130 L81.23,97.91"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31,70 L60,130 M60,130 L89,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,70 L45.8,100.61"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,130 L74.8,99.39"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M10,10 L39,130 M39,130 L70,46 M70,46 L101,130 M101,130 L130,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M10,10 L17.99,43.05"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M39,130 L50.77,98.1"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,46 L81.77,77.9"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M101,130 L108.99,96.95"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M16,70 L38,130 M38,130 L60,86 M60,86 L82,130 M82,130 L104,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M16,70 L27.7,101.92"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M38,130 L53.21,99.59"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M60,86 L75.21,116.41"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M82,130 L93.7,98.08"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M28,10 L112,130 M112,10 L28,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M28,10 L47.5,37.85"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M112,10 L92.5,37.85"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31,70 L89,130 M89,70 L31,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,70 L54.63,94.45"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M89,70 L65.37,94.45"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M29,10 L70,74 M111,10 L70,74 M70,74 L70,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M29,10 L47.34,38.63"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M111,10 L92.66,38.63"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M70,74 L70,108"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31,70 L60,124 M89,70 L38,170"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,70 L47.09,99.95"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M89,70 L73.55,100.29"/></svg></div><div class="two">
+  <svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31.5,10 L108.5,10 M108.5,10 L31.5,130 M31.5,130 L108.5,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31.5,10 L65.5,10"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M108.5,10 L90.14,38.62"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31.5,130 L65.5,130"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink solid" d="M31,70 L89,70 M89,70 L31,130 M31,130 L89,130"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,70 L65,70"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M89,70 L65.37,94.45"/><path class="guide on-ink" marker-end="url(#ahead-i)" d="M31,130 L65,130"/></svg></div>
+  </div></div>
+
+  <h2 class="hwh">Practice sheet</h2>
+  <p class="dek">Ruled the same way as the letters above, so nothing changes under them
+  when they stop tracing and start writing.</p>
+  <div class="hw">
+    <div class="row"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg></div>
+<div class="row"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg></div>
+<div class="row"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg></div>
+<div class="row"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg></div>
+<div class="row"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg></div>
+<div class="row"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg></div>
+<div class="row"><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg><svg viewBox="0 0 140 182" class="cell">
+  <line class="rule solid" x1="0" y1="10"  x2="140" y2="10"/>
+  <line class="rule dash"  x1="0" y1="70"  x2="140" y2="70"/>
+  <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
+  <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
+    scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
+function setNav(o){document.body.classList.toggle("nav-open",o);
+  burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
+  document.body.style.overflow=o?"hidden":"";
+  if(!o) nsCloseSubs();}
+burger.onclick=function(){setNav(!document.body.classList.contains("nav-open"));};
+scrim.onclick=dClose.onclick=function(){setNav(false);};
+var nav=document.getElementById("nav");
+addEventListener("scroll",function(){nav.classList.toggle("stuck",scrollY>16);},{passive:true});
+
+/* ── day and night ── */
+function nsMode(){ return document.documentElement.getAttribute("data-theme")==="light"?"light":"dark"; }
+function nsPaintMode(){
+  var light=nsMode()==="light";
+  document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML=light?"&#9788;":"&#9790;"; });
+  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent=light?"Day Mode":"Night Mode"; });
+  document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
+    e.setAttribute("aria-label", light?"Switch to night mode":"Switch to day mode"); });
+}
+document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var next=nsMode()==="light"?"dark":"light";
+    document.documentElement.setAttribute("data-theme",next);
+    try{localStorage.setItem("ns:mode",next);}catch(e){}
+    nsPaintMode();
+  });
+});
+nsPaintMode();
+
+/* ── phone sheets: a STACK, not a pile ───────────────────────────────────
+   Levels move together. Opening a child slides the level above it out to the
+   left while the child comes in from the right; Back reverses it. A stack of
+   ids is the whole state, so any depth unwinds correctly. */
+var subStack=[];
+function nsRender(){
+  document.querySelectorAll("[data-subpanel]").forEach(function(p){
+    var id=p.getAttribute("data-subpanel");
+    var i=subStack.indexOf(id);
+    p.classList.toggle("open", i>=0);
+    /* every level except the top one has moved off to the left */
+    p.classList.toggle("exit", i>=0 && i<subStack.length-1);
+    p.setAttribute("aria-hidden", i>=0 ? "false" : "true");
+  });
+  /* the drawer is level zero, so it leaves the moment any sheet is up */
+  document.body.classList.toggle("sub-open", subStack.length>0);
+}
+function nsOpenSub(id){
+  var p=document.querySelector('[data-subpanel="'+id+'"]');
+  if(!p) return;
+  var back=p.querySelector("[data-sub-back]");
+  var parent=back?back.getAttribute("data-sub-back"):"";
+  var at=parent?subStack.indexOf(parent):-1;
+  subStack = parent && at>=0 ? subStack.slice(0,at+1) : (parent?[parent]:[]);
+  subStack.push(id);
+  nsRender();
+}
+function nsCloseSubs(){ subStack=[]; nsRender(); }
+function nsBack(){ subStack.pop(); nsRender(); }
+document.querySelectorAll("[data-sub]").forEach(function(b){
+  b.addEventListener("click",function(){ nsOpenSub(b.getAttribute("data-sub")); });
+});
+document.querySelectorAll("[data-sub-back]").forEach(function(b){
+  b.addEventListener("click", nsBack);
+});
+
+/* ── ONE mega panel ──────────────────────────────────────────────────────
+   Stays open while the pointer moves along the bar; only the contents
+   cross-fade and the height eases. Closing is on a timer that any tab or the
+   panel cancels, because the pointer crosses dead space on the way down and a
+   hard mouseleave kills the menu mid-reach. */
+var panel=document.getElementById("megapanel");
+var tabEls=[].slice.call(document.querySelectorAll(".mg-top[data-menu]"));
+var onTab=document.querySelector(".mg-top.on");
+var closeTimer=null,current=null;
+
+function nsMark(el){
+  document.querySelectorAll(".mg-top.mg-live").forEach(function(t){ t.classList.remove("mg-live"); });
+  if(el) el.classList.add("mg-live");
+}
+/* ONE height for every section, measured from the tallest.
+   Paul, 2026-08-26: "the dropdown for games is shorter in height than the
+   rest and its noticable." Animating height per section also meant the first
+   hover measured BEFORE the promo image had loaded and the panel jumped a
+   moment later - the glitch that cleared itself on reload. A fixed height
+   removes both: nothing resizes, so nothing can resize wrongly. */
+var panelH=0;
+function nsMeasure(){
+  if(!panel) return;
+  var was=panel.className;
+  panel.classList.add("measuring");
+  var max=0;
+  panel.querySelectorAll(".mg-inner").forEach(function(i){ max=Math.max(max,i.offsetHeight); });
+  panel.className=was;
+  if(max>0){ panelH=max; if(panel.classList.contains("open")) panel.style.height=panelH+"px"; }
+}
+function nsShow(key){
+  if(!panel) return;
+  clearTimeout(closeTimer);
+  var inner=panel.querySelector('[data-for="'+key+'"]');
+  if(!inner) return;
+  if(!panelH) nsMeasure();
+  panel.classList.add("open");
+  panel.setAttribute("aria-hidden","false");
+  panel.style.height=panelH+"px";
+  if(current!==key){
+    current=key;
+    panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.toggle("on", i===inner); });
+    tabEls.forEach(function(t){ t.setAttribute("aria-expanded", String(t.getAttribute("data-menu")===key)); });
+    nsMark(document.querySelector('.mg-top[data-menu="'+key+'"]'));
+  }
+}
+function nsHide(){
+  if(!panel) return;
+  current=null;
+  panel.classList.remove("open");
+  panel.setAttribute("aria-hidden","true");
+  panel.style.height="";
+  panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.remove("on"); });
+  tabEls.forEach(function(t){ t.setAttribute("aria-expanded","false"); });
+  nsMark(onTab);
+}
+function nsLater(){ clearTimeout(closeTimer); closeTimer=setTimeout(nsHide,220); }
+function nsKeep(){ clearTimeout(closeTimer); }
+
+if(panel){
+  nav.classList.add("js-nav");
+  nsMark(onTab);
+  if(matchMedia("(hover:hover)").matches){
+    tabEls.forEach(function(t){
+      t.addEventListener("mouseenter",function(){ nsShow(t.getAttribute("data-menu")); });
+      t.addEventListener("focus",function(){ nsShow(t.getAttribute("data-menu")); });
+      /* the label drives the panel; it is not a click-through */
+      t.addEventListener("click",function(e){ e.preventDefault(); });
+    });
+    var tabsBox=document.querySelector(".tabs");
+    if(tabsBox){ tabsBox.addEventListener("mouseenter",nsKeep); tabsBox.addEventListener("mouseleave",nsLater); }
+    panel.addEventListener("mouseenter",nsKeep);
+    panel.addEventListener("mouseleave",nsLater);
+    addEventListener("keydown",function(e){ if(e.key==="Escape") nsHide(); });
+    addEventListener("resize",function(){ panelH=0; nsMeasure(); });
+    /* the promo images decide the height, so re-measure as each one lands */
+    panel.querySelectorAll("img").forEach(function(im){
+      if(!im.complete) im.addEventListener("load",function(){ panelH=0; nsMeasure(); });
+    });
+    addEventListener("load",function(){ panelH=0; nsMeasure(); });
+  }
+}
+
+})();
+</script>
+</body>
+</html>

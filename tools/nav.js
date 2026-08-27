@@ -65,7 +65,7 @@ const SUBJECTS = [
     blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
 ];
 
-const LIVE_GRADES = ["3", "6", "7", "8"];
+const LIVE_GRADES = ["K", "3", "6", "7", "8"];
 const ALL_GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
 const gradeName = (g) => (g === "K" ? "Kindergarten" : "Grade " + g);
 

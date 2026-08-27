@@ -224,9 +224,14 @@ const empty = (line) => `<div class="band"><div class="wrap">
 /* Which grades are live, derived from the two registries rather than listed by
    hand. Used by /grades/ and by the home page picker, so the two can never
    disagree the way they did before 2026-08-26 (home said 7 only). */
+/* ⚠️ Sorted against the real grade order, NOT numerically. "K" - 3 is NaN, and
+   a comparator that returns NaN leaves the array in whatever order it happened
+   to be in - which would then disagree with LIVE_GRADES and fail the build for
+   no visible reason. */
+const GRADE_ORDER = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
 const liveGrades = () => [...new Set(
   LESSONS.map(l => l.grade).concat(WORKSHEETS.flatMap(w => w.grades))
-)].sort((a, b) => a - b).map(String);
+)].map(String).sort((a, b) => GRADE_ORDER.indexOf(a) - GRADE_ORDER.indexOf(b));
 
 
 const gradeCells = (live, cls) => ["K","1","2","3","4","5","6","7","8"].map(g =>
@@ -758,6 +763,33 @@ const pages = [
     crumb: "Subjects", h1: "Subjects.",
     lead: "Four core subjects. Each one holds lessons that are worked through on screen and worksheets that get printed. What is built is at the top.",
     body: subjectsPage() },
+
+  /* 🚨 Kindergarten. Paul, 2026-08-27: "everything preschool ... and
+     kindergarten will be free. everything from first grade will have a few
+     options free resources and more paid packs." So this shelf never carries a
+     price, and the copy says so plainly rather than leaving a parent to guess.
+     LIVE_GRADES in nav.js lists "K" first, so these three pages MUST exist -
+     without them the grade picker links at nothing. */
+  { dir: "grade-k", active: "gr",
+    title: "Kindergarten — NexStudents",
+    desc: "Free kindergarten printables. Handwriting, letters and early practice.",
+    crumb: "Kindergarten", h1: "Kindergarten.",
+    lead: "Everything on the kindergarten shelf is free, and stays free. This is where a child meets letters for the first time, and that should not sit behind a price.",
+    body: gradeLanding("K") },
+
+  { dir: "grade-k/lessons", active: "gr",
+    title: "Kindergarten Lessons — NexStudents",
+    desc: "Kindergarten lessons worked through on screen.",
+    crumb: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Lessons', h1: "Kindergarten Lessons.",
+    lead: "Nothing on screen for this year yet. At this age the work belongs on paper with a pencil in hand, so the printables came first.",
+    body: gradeLessons("K") },
+
+  { dir: "grade-k/worksheets", active: "gr",
+    title: "Kindergarten Worksheets — NexStudents",
+    desc: "Free kindergarten printables, starting with handwriting.",
+    crumb: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Worksheets', h1: "Kindergarten Worksheets.",
+    lead: "Print these at full size and work one letter at a time. All free.",
+    body: gradeSheets("K") },
 
   /* Grade 3 exists for the spelling sheet. It is deliberately thin: the sheet
      is blank, so it serves any year, and a 3rd grade shelf is where a parent

@@ -20,9 +20,41 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 .acts{margin-left:auto;display:flex;gap:8px;flex:none}
 .bar .btn{font-size:13px;padding:9px 14px;gap:7px;text-decoration:none;line-height:1}
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   🚨 THE SHEET IS ALWAYS PAPER, IN EITHER THEME.
+
+   Paul, 2026-08-27: "for a lot of these worksheets you have theme in dark and
+   they seem to not look like worksheets at all ... make it look like an actual
+   page if you are going to display it and possibly not in black."
+
+   He is right, and it is not only a look: this page is a preview of something
+   that comes out of a printer on white paper. Showing it dark misrepresents
+   the product, and a parent cannot tell what they are about to print.
+
+   The fix REDEFINES THE THEME TOKENS on .sheet rather than setting a background
+   colour. Custom properties inherit, so every descendant - including anything a
+   sheet type adds later, which is the part that matters - picks up the paper
+   palette automatically and can never end up light-on-light. Setting only
+   `background:#fff` would have left the text at the dark theme's near-white and
+   made every worksheet unreadable.
+
+   The nav, the breadcrumb bar and the buttons live OUTSIDE .sheet and stay
+   themed, so the site chrome still answers the day/night toggle.
+   ═══════════════════════════════════════════════════════════════════════════ */
 .sheet{
-  max-width:880px;margin:18px auto 70px;background:var(--panel);
+  --bg:#ffffff;
+  --panel:#ffffff;
+  --panel-2:#f4f6f8;
+  --line:#ccd5df;
+  --line-ink:#8b98a6;
+  --fg:#161b21;
+  --dim:#5a6773;
+  --a:#27313f;
+  --a-ink:#ffffff;
+
+  max-width:880px;margin:18px auto 70px;background:var(--panel);color:var(--fg);
   border:1px solid var(--line);border-radius:var(--r);padding:38px 44px;
+  box-shadow:0 2px 10px rgba(8,11,15,.16);
 }
 .head{border-bottom:2px solid var(--fg);padding-bottom:14px;margin-bottom:8px}
 .eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;

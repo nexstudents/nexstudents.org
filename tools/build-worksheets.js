@@ -15,6 +15,7 @@ const { SHEETS } = require("./worksheets.js");
 /* The same nav the site pages use. A worksheet lives under Worksheets, so it
    passes "w" and that tab shows as current. */
 const { navMarkup, navScript , modeBoot, faviconTags } = require("./nav.js");
+const HW = require("./handwriting/build-handwriting.js");
 
 const ROOT = process.argv[2];
 if (!ROOT) { console.error("usage: node build-worksheets.js <site root>"); process.exit(1); }
@@ -457,6 +458,79 @@ ${navScript()}
 `;
 }
 
+/* THE HANDWRITING SHEET. The letters come from tools/handwriting/, which is the
+   single source for all 52 forms and for their stroke order - see the note at
+   the top of that file. This function only supplies the page around them, so
+   the sheet gets the same nav, the same canonical and the same print behaviour
+   as every other printable. */
+function handwritingHtml(s) {
+  const subjectSlug = s.subject.toLowerCase();
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://nexstudents.org/worksheets/${subjectSlug}/${s.slug}/">
+${modeBoot()}
+${faviconTags()}
+<title>${s.title} — NexStudents</title>
+<meta name="description" content="${s.blurb}">
+<link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
+<link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
+<style>${HW.LETTER_CSS}</style>
+</head>
+<body>
+
+${navMarkup("w")}
+
+<div class="bar">
+  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+</div>
+
+<div class="sheet">
+
+  <div class="head">
+    <p class="eyebrow">${s.subject} &middot; Kindergarten &middot; Handwriting</p>
+    <h1>${s.title}</h1>
+    <p class="dek">${s.dek}</p>
+  </div>
+
+  <div class="note">
+    <p><b>Tip:</b> say each stroke out loud together while they trace &mdash;
+    &ldquo;down, around, down again&rdquo; &mdash; and follow the arrows in order.
+    Hearing the moves helps as much as seeing them.</p>
+  </div>
+
+  ${HW.DEFS}
+  <div class="hw">
+    ${HW.wsRows()}
+  </div>
+
+  <p class="dek" style="margin-top:18px"><b>Tip:</b> alphabetical is not the easiest
+  order. The straight-line letters &mdash; l, t, i, L, T, I, F, E, H &mdash; make the
+  gentlest start, the round ones come next, and diagonals like v, w, x, K, M and N are
+  worth saving for last.</p>
+
+  <h2 class="hwh">Put this one on the fridge</h2>
+  <div class="hw"><div class="grid">
+    ${HW.AZ.map(HW.chartCell).join("")}
+  </div></div>
+
+  <h2 class="hwh">Practice sheet</h2>
+  <p class="dek">Ruled the same way as the letters above, so nothing changes under them
+  when they stop tracing and start writing.</p>
+  <div class="hw">
+    ${HW.practiceRows()}
+  </div>
+
+</div>
+
+${navScript()}
+</body>
+</html>
+`;
+}
+
 const written = [];
 for (const s of SHEETS) {
   const dir = path.join(ROOT, "worksheets", s.subject.toLowerCase(), s.slug);
@@ -472,7 +546,8 @@ for (const s of SHEETS) {
     process.exit(1);
   }
 
-  const html = s.kind === "blank"      ? blankHtml(s)
+  const html = s.kind === "handwriting" ? handwritingHtml(s)
+             : s.kind === "blank"      ? blankHtml(s)
              : s.kind === "flashcards" ? flashHtml(s)
              : isPaid(s)               ? bundleHtml(s)
              :                           sheetHtml(s);

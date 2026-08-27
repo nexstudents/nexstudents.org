@@ -42,6 +42,26 @@
 
 const SHEETS = [
 
+/* ═══════════════════ 0. MANUSCRIPT ALPHABET (handwriting) ═══════════════════
+   kind "handwriting" - the page is rendered from tools/handwriting/, which owns
+   the 52 letterforms. build-worksheets.js delegates rather than duplicating
+   them, so the printable and the review preview can never drift apart. */
+{
+  slug: "manuscript-alphabet", subject: "English", grade: "K",
+  kind: "handwriting",
+  title: "Manuscript Alphabet: Stroke Order and Direction",
+  dek: "Every letter, capital and lowercase, with arrows showing where each stroke starts and which way the pencil goes.",
+  blurb: "All 52 letterforms with stroke-order arrows, then a faded copy of each to trace.",
+  contains: [
+    "All 26 letters, capital and lowercase, on one page",
+    "Arrows showing where every stroke starts and which way it travels",
+    "A faded copy of each letter to trace over",
+    "Ruled lines with a dashed midline, the way handwriting paper is ruled",
+  ],
+  unit: "Printable &middot; no answer key needed",
+  price: "$0", buy: null, art: false, thumb: true,
+},
+
 /* ══════════════════════════ 1. LEWIS AND CLARK ══════════════════════════ */
 {
   slug: "lewis-and-clark", subject: "History", grade: 8,
