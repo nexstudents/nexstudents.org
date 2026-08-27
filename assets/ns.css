@@ -797,3 +797,28 @@ body.sub-open .drawer{transform:translateX(-100%)}
 .menucol .dsr.view{min-height:var(--row-h)}
 /* the tile grid is not a row list, so it keeps its own rhythm */
 .menucol .dst-grid{margin-block:10px}
+
+/* ── NO DIVIDER LINES IN THE MENU ─────────────────────────────────────────
+   lttstore has none: checked their stylesheet and there is not a single
+   border declaration on a menu row, only gap spacing. Lines were also what
+   made the hand-off look wrong - a row of horizontal rules sliding sideways
+   draws the eye to the movement, and any mismatch in rhythm becomes obvious.
+   Whitespace does the same job and survives the slide.
+   -------------------------------------------------------------------------- */
+.menucol .dl,
+.menucol .dl-open,
+.menucol .dsr,
+.menucol .drawer a,
+.menucol .dsub h3{border-bottom:0}
+.menucol .drawer,
+.menucol .dsub-body{gap:2px}
+/* the label block keeps its own breathing room now that no rule separates them */
+.menucol .dl,
+.menucol .dl-open,
+.menucol .dsr{padding-inline:10px;border-radius:var(--r,4px)}
+.menucol .dl-open i,.menucol .dsr i{right:10px}
+@media(hover:hover){
+  .menucol .dl:hover,
+  .menucol .dl-open:hover,
+  .menucol .dsr:not(.soon):hover{background:var(--line)}
+}
