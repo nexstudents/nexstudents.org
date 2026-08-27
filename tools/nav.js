@@ -34,6 +34,10 @@
 
    `top:false` keeps an entry out of the desktop bar while leaving it in the
    drawer and the footer. */
+/* Paul's own PayPal donate button, the same one MyWika uses. Verified in
+   Projects/mywika/mywika-app/index.html - not a placeholder. */
+const SUPPORT_URL = "https://www.paypal.com/donate/?hosted_button_id=PZ9D8N9KVURDA";
+
 const NAV = [
   { href: "/",             label: "Home",        note: "Start here",          key: "h",  top: true },
   { href: null,            label: "Grades",      note: "K through 8",         key: "gr", top: true,
@@ -257,7 +261,7 @@ const navMarkup = (active, btn) => {
 <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
   <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
 ${drawerLinks(active)}
-  <a class="${b}" href="/#grades">Pick a grade</a>
+  <a class="${b}" href="${SUPPORT_URL}" target="_blank" rel="noopener">Support us</a>
   ${modeButton(true)}
 </aside>
 ${drawerSubs()}
