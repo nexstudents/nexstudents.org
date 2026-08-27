@@ -257,7 +257,14 @@ const drawerSubs = () => '<div class="dsubs" id="dsubs">' + Object.keys(SHEETS).
 /* ── MARKUP ─────────────────────────────────────────────────────────────── */
 const navMarkup = (active, btn) => {
   const b = btn || "btn";
+  /* 🚨 The drawer AND every sheet live in ONE clipped column.
+     Paul, 2026-08-27: "it feels like the previous menu is moving away to the
+     right and the new menu moves in ... you seem to be layering one over the
+     other." He was right. Sliding a new sheet OVER a stationary drawer reads
+     as a stack; the levels have to move together, and both have to be masked
+     by the same column or the motion spills onto the page. */
   return `<div class="scrim" id="scrim"></div>
+<div class="menucol" id="menucol">
 <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
   <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
 ${drawerLinks(active)}
@@ -265,6 +272,7 @@ ${drawerLinks(active)}
   ${modeButton(true)}
 </aside>
 ${drawerSubs()}
+</div>
 
 <nav id="nav" class="ns-nav"><div class="nv">
   <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
@@ -330,26 +338,40 @@ document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
 });
 nsPaintMode();
 
-/* ── phone sheets ── */
-function nsCloseSubs(){
+/* ── phone sheets: a STACK, not a pile ───────────────────────────────────
+   Levels move together. Opening a child slides the level above it out to the
+   left while the child comes in from the right; Back reverses it. A stack of
+   ids is the whole state, so any depth unwinds correctly. */
+var subStack=[];
+function nsRender(){
   document.querySelectorAll("[data-subpanel]").forEach(function(p){
-    p.classList.remove("open"); p.setAttribute("aria-hidden","true"); });
+    var id=p.getAttribute("data-subpanel");
+    var i=subStack.indexOf(id);
+    p.classList.toggle("open", i>=0);
+    /* every level except the top one has moved off to the left */
+    p.classList.toggle("exit", i>=0 && i<subStack.length-1);
+    p.setAttribute("aria-hidden", i>=0 ? "false" : "true");
+  });
+  /* the drawer is level zero, so it leaves the moment any sheet is up */
+  document.body.classList.toggle("sub-open", subStack.length>0);
 }
 function nsOpenSub(id){
   var p=document.querySelector('[data-subpanel="'+id+'"]');
   if(!p) return;
-  nsCloseSubs();
-  p.classList.add("open"); p.setAttribute("aria-hidden","false");
+  var back=p.querySelector("[data-sub-back]");
+  var parent=back?back.getAttribute("data-sub-back"):"";
+  var at=parent?subStack.indexOf(parent):-1;
+  subStack = parent && at>=0 ? subStack.slice(0,at+1) : (parent?[parent]:[]);
+  subStack.push(id);
+  nsRender();
 }
+function nsCloseSubs(){ subStack=[]; nsRender(); }
+function nsBack(){ subStack.pop(); nsRender(); }
 document.querySelectorAll("[data-sub]").forEach(function(b){
   b.addEventListener("click",function(){ nsOpenSub(b.getAttribute("data-sub")); });
 });
 document.querySelectorAll("[data-sub-back]").forEach(function(b){
-  b.addEventListener("click",function(){
-    var parent=b.getAttribute("data-sub-back");
-    nsCloseSubs();
-    if(parent) nsOpenSub(parent);   /* step up one level, not all the way out */
-  });
+  b.addEventListener("click", nsBack);
 });
 
 /* ── ONE mega panel ──────────────────────────────────────────────────────

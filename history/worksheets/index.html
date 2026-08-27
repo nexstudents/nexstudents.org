@@ -10,12 +10,13 @@
 <title>History Worksheets — NexStudents</title>
 <meta name="description" content="Printable history worksheets and term packets.">
 <meta name="theme-color" content="#0a0b0d">
-<link rel="stylesheet" href="/assets/ns.css?v=c012d82c">
+<link rel="stylesheet" href="/assets/ns.css?v=063a79b6">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
 
 <div class="scrim" id="scrim"></div>
+<div class="menucol" id="menucol">
 <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
   <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
   <a class="dl" href="/">Home<small>Start here</small></a>
@@ -41,6 +42,7 @@
 <aside class="dsub" data-subpanel="r-english" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="r">&#8249; Resources</button><h3>English</h3><div class="dsub-body"><a class="dsr view" href="/english/">View English</a><a class="dsr" href="/english/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/english/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
 <aside class="dsub" data-subpanel="r-history" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="r">&#8249; Resources</button><h3>History</h3><div class="dsub-body"><a class="dsr view" href="/history/">View History</a><a class="dsr" href="/history/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/history/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside>
 <aside class="dsub" data-subpanel="r-maths" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="r">&#8249; Resources</button><h3>Maths</h3><div class="dsub-body"><a class="dsr view" href="/maths/">View Maths</a><a class="dsr" href="/maths/lessons/">Lessons<small>Worked through on screen</small></a><a class="dsr" href="/maths/worksheets/">Worksheets<small>Printed and written on</small></a></div></aside></div>
+</div>
 
 <nav id="nav" class="ns-nav"><div class="nv">
   <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
@@ -431,26 +433,40 @@ document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
 });
 nsPaintMode();
 
-/* ── phone sheets ── */
-function nsCloseSubs(){
+/* ── phone sheets: a STACK, not a pile ───────────────────────────────────
+   Levels move together. Opening a child slides the level above it out to the
+   left while the child comes in from the right; Back reverses it. A stack of
+   ids is the whole state, so any depth unwinds correctly. */
+var subStack=[];
+function nsRender(){
   document.querySelectorAll("[data-subpanel]").forEach(function(p){
-    p.classList.remove("open"); p.setAttribute("aria-hidden","true"); });
+    var id=p.getAttribute("data-subpanel");
+    var i=subStack.indexOf(id);
+    p.classList.toggle("open", i>=0);
+    /* every level except the top one has moved off to the left */
+    p.classList.toggle("exit", i>=0 && i<subStack.length-1);
+    p.setAttribute("aria-hidden", i>=0 ? "false" : "true");
+  });
+  /* the drawer is level zero, so it leaves the moment any sheet is up */
+  document.body.classList.toggle("sub-open", subStack.length>0);
 }
 function nsOpenSub(id){
   var p=document.querySelector('[data-subpanel="'+id+'"]');
   if(!p) return;
-  nsCloseSubs();
-  p.classList.add("open"); p.setAttribute("aria-hidden","false");
+  var back=p.querySelector("[data-sub-back]");
+  var parent=back?back.getAttribute("data-sub-back"):"";
+  var at=parent?subStack.indexOf(parent):-1;
+  subStack = parent && at>=0 ? subStack.slice(0,at+1) : (parent?[parent]:[]);
+  subStack.push(id);
+  nsRender();
 }
+function nsCloseSubs(){ subStack=[]; nsRender(); }
+function nsBack(){ subStack.pop(); nsRender(); }
 document.querySelectorAll("[data-sub]").forEach(function(b){
   b.addEventListener("click",function(){ nsOpenSub(b.getAttribute("data-sub")); });
 });
 document.querySelectorAll("[data-sub-back]").forEach(function(b){
-  b.addEventListener("click",function(){
-    var parent=b.getAttribute("data-sub-back");
-    nsCloseSubs();
-    if(parent) nsOpenSub(parent);   /* step up one level, not all the way out */
-  });
+  b.addEventListener("click", nsBack);
 });
 
 /* ── ONE mega panel ──────────────────────────────────────────────────────

@@ -53,11 +53,10 @@ body.nav-open .burger i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   transition:opacity .3s ease,visibility .3s}
 body.nav-open .scrim{opacity:1;visibility:visible}
 
-.drawer{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);z-index:80;
-  background:var(--nv-bg);border-right:1px solid var(--nv-line);
-  transform:translateX(-100%);transition:transform .38s ease;
+.drawer{position:absolute;inset:0;background:var(--nv-bg);
+  transform:none;transition:transform .34s cubic-bezier(.22,.61,.36,1);
   display:flex;flex-direction:column;padding:22px;overflow-y:auto}
-body.nav-open .drawer{transform:none}
+
 .drawer .x{align-self:flex-end;background:none;border:0;color:var(--nv-dim);
   font-size:26px;line-height:1;cursor:pointer;padding:4px 8px}
 .drawer a{display:block;padding:14px 0;font-size:1.05rem;font-weight:700;letter-spacing:-.02em;
@@ -197,17 +196,41 @@ nav:not(.js-nav) .mg-top.on::after,
 .mg-panel.measuring{height:auto!important;transition:none!important}
 .mg-panel.measuring .mg-inner{position:static!important;opacity:0!important}
 
-/* ── the column the sheets live in ───────────────────────────────────────
-   Read off lttstore 2026-08-26: every panel is a sibling inside ONE wrapper
-   with overflow:hidden, and the sub-panels are absolutely positioned inside
-   it. That clip is the whole trick. Without it a sheet parked to the right
-   of the drawer travels ACROSS the page on its way in, which is what Paul
-   saw: "you have them flying in across the home screen instead of only
-   inside of the side menu."
-   -------------------------------------------------------------------------- */
-.dsubs{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);
-  z-index:81;overflow:hidden;pointer-events:none;
-  background:transparent;visibility:hidden}
-body.nav-open .dsubs{visibility:visible}
-.dsubs .dsub{background:var(--nv-bg);border-right:1px solid var(--nv-line)}
-.dsubs .dsub.open{pointer-events:auto}
+
+/* ══════════════════════════════════════════════════════════════════════
+   THE PHONE MENU IS ONE COLUMN
+   Paul, 2026-08-27: "it feels like the previous menu is moving away to the
+   right and the new menu moves in ... you seem to be layering one over the
+   other", and "their side menu covers the entire screen while ours only
+   covers 75 or 80%".
+
+   Both were right. Sliding a sheet OVER a stationary drawer reads as a stack.
+   The levels have to travel together, and every one of them has to be masked
+   by the same column or the motion spills across the page.
+
+   So: .menucol is the menu. It slides in as a whole, clips everything, and is
+   FULL WIDTH on a phone. Inside it each level is absolutely positioned:
+     level 0  the drawer      at 0, leaves to -100% when a sheet opens
+     level n  a .dsub sheet   waits at +100%, sits at 0, leaves to -100%
+   Nothing overlaps; each level hands off to the next.
+   ══════════════════════════════════════════════════════════════════════ */
+.menucol{position:fixed;top:0;left:0;height:100dvh;z-index:80;
+  width:min(380px,86vw);overflow:hidden;
+  transform:translateX(-100%);visibility:hidden;
+  transition:transform .38s cubic-bezier(.22,.61,.36,1),visibility .38s}
+body.nav-open .menucol{transform:none;visibility:visible}
+/* On a phone it takes the whole screen, as theirs does. */
+@media(max-width:560px){ .menucol{width:100vw} }
+
+/* level 0 */
+body.sub-open .drawer{transform:translateX(-100%)}
+
+/* levels 1..n */
+.menucol .dsub{position:absolute;inset:0;width:100%;
+  background:var(--nv-bg);border-right:0;
+  transform:translateX(100%);visibility:hidden;pointer-events:none;
+  transition:transform .34s cubic-bezier(.22,.61,.36,1),visibility .34s}
+.menucol .dsub.open{transform:none;visibility:visible;pointer-events:auto;opacity:1}
+.menucol .dsub.exit{transform:translateX(-100%);visibility:visible;pointer-events:none}
+.menucol .dsub{border-top:0}
+.menucol .dsub h3{border-bottom:1px solid var(--nv-line);padding-bottom:12px}
