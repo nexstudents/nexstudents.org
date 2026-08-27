@@ -52,6 +52,7 @@ ${navMarkup(o.active)}
   <p class="crumb"><a href="/">Home</a> &rsaquo; ${o.crumb}</p>
   <h1>${o.h1}</h1>
   <p>${o.lead}</p>
+  ${o.count ? '<p class="shelfcount">' + o.count + "</p>" : ""}
 </div>
 
 ${o.body}
@@ -359,7 +360,7 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
   unit: w.unit || "Printable &middot; answer key included",
   title: w.title, blurb: w.blurb, contains: w.contains,
   thumb: w.thumb ? "/worksheets/" + w.subject.toLowerCase() + "/" + w.slug + "/thumb.jpg" : null,
-  meta: "Print or PDF", price: w.price,
+  meta: "Print or Download", price: w.price,
 }));
 
 /* The core subjects, in the order they appear everywhere on the site.
@@ -786,14 +787,14 @@ const pages = [
     desc: "Kindergarten lessons worked through on screen.",
     crumb: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Lessons', h1: "Kindergarten Lessons.",
     lead: "Nothing on screen for this year yet. At this age the work belongs on paper with a pencil in hand, so the printables came first.",
-    body: gradeLessons("K") },
+    count: countLabel(byGrade("K").length, "lesson", "lessons") + " available", body: gradeLessons("K") },
 
   { dir: "grade-k/worksheets", active: "gr",
     title: "Kindergarten Worksheets — NexStudents",
     desc: "Free kindergarten printables, starting with handwriting.",
     crumb: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Worksheets', h1: "Kindergarten Worksheets.",
     lead: "Print these at full size and work one letter at a time. All free.",
-    body: gradeSheets("K") },
+    count: countLabel(sheetsByGrade("K").length, "sheet", "sheets") + " available", body: gradeSheets("K") },
 
   /* Grade 3 exists for the spelling sheet. It is deliberately thin: the sheet
      is blank, so it serves any year, and a 3rd grade shelf is where a parent
@@ -810,14 +811,14 @@ const pages = [
     desc: "Every 3rd grade lesson, worked through on screen.",
     crumb: '<a href="/grade-3/">3rd Grade</a> &rsaquo; Lessons', h1: "3rd Grade Lessons.",
     lead: "Nothing on screen for this year yet. The printables came first, because spelling is worked on paper.",
-    body: gradeLessons(3) },
+    count: countLabel(byGrade(3).length, "lesson", "lessons") + " available", body: gradeLessons(3) },
 
   { dir: "grade-3/worksheets", active: "gr",
     title: "3rd Grade Worksheets — NexStudents",
     desc: "Every 3rd grade printable worksheet.",
     crumb: '<a href="/grade-3/">3rd Grade</a> &rsaquo; Worksheets', h1: "3rd Grade Worksheets.",
     lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
-    body: gradeSheets(3) },
+    count: countLabel(sheetsByGrade(3).length, "sheet", "sheets") + " available", body: gradeSheets(3) },
 
   { dir: "grade-6", active: "gr",
     title: "6th Grade — NexStudents",
@@ -831,14 +832,14 @@ const pages = [
     desc: "Every 6th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-6/">6th Grade</a> &rsaquo; Lessons', h1: "6th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
-    body: gradeLessons(6) },
+    count: countLabel(byGrade(6).length, "lesson", "lessons") + " available", body: gradeLessons(6) },
 
   { dir: "grade-6/worksheets", active: "gr",
     title: "6th Grade Worksheets — NexStudents",
     desc: "Every 6th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-6/">6th Grade</a> &rsaquo; Worksheets', h1: "6th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
-    body: gradeSheets(6) },
+    count: countLabel(sheetsByGrade(6).length, "sheet", "sheets") + " available", body: gradeSheets(6) },
 
   { dir: "grade-7", active: "gr",
     title: "7th Grade — NexStudents",
@@ -852,14 +853,14 @@ const pages = [
     desc: "Every 7th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Lessons', h1: "7th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
-    body: gradeLessons(7) },
+    count: countLabel(byGrade(7).length, "lesson", "lessons") + " available", body: gradeLessons(7) },
 
   { dir: "grade-7/worksheets", active: "gr",
     title: "7th Grade Worksheets — NexStudents",
     desc: "Every 7th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Worksheets', h1: "7th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
-    body: gradeSheets(7) },
+    count: countLabel(sheetsByGrade(7).length, "sheet", "sheets") + " available", body: gradeSheets(7) },
 
   { dir: "grade-8", active: "gr",
     title: "8th Grade — NexStudents",
@@ -873,14 +874,14 @@ const pages = [
     desc: "Every 8th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-8/">8th Grade</a> &rsaquo; Lessons', h1: "8th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
-    body: gradeLessons(8) },
+    count: countLabel(byGrade(8).length, "lesson", "lessons") + " available", body: gradeLessons(8) },
 
   { dir: "grade-8/worksheets", active: "gr",
     title: "8th Grade Worksheets — NexStudents",
     desc: "Every 8th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-8/">8th Grade</a> &rsaquo; Worksheets', h1: "8th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
-    body: gradeSheets(8) },
+    count: countLabel(sheetsByGrade(8).length, "sheet", "sheets") + " available", body: gradeSheets(8) },
 
   { dir: "english", active: "w",
     title: "English — NexStudents",
@@ -894,14 +895,14 @@ const pages = [
     desc: "English lessons worked through on screen.",
     crumb: '<a href="/english/">English</a> &rsaquo; Lessons', h1: "English Lessons.",
     lead: "Nothing on screen for English yet. The printables came first, because spelling and writing are worked on paper.",
-    body: subjectLessons("English") },
+    count: countLabel(bySubject("English").length, "lesson", "lessons") + " available", body: subjectLessons("English") },
 
   { dir: "english/worksheets", active: "w",
     title: "English Worksheets — NexStudents",
     desc: "Printable English worksheets, including a blank weekly spelling test.",
     crumb: '<a href="/english/">English</a> &rsaquo; Worksheets', h1: "English Worksheets.",
     lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
-    body: subjectSheets("English") },
+    count: countLabel(sheetsBySubject("English").length, "sheet", "sheets") + " available", body: subjectSheets("English") },
 
   { dir: "history", active: "w",
     title: "History — NexStudents",
@@ -915,14 +916,14 @@ const pages = [
     desc: "Every history lesson on NexStudents, worked through on screen.",
     crumb: '<a href="/history/">History</a> &rsaquo; Lessons', h1: "History Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
-    body: subjectLessons("History") },
+    count: countLabel(bySubject("History").length, "lesson", "lessons") + " available", body: subjectLessons("History") },
 
   { dir: "history/worksheets", active: "w",
     title: "History Worksheets — NexStudents",
     desc: "Printable history worksheets and term packets.",
     crumb: '<a href="/history/">History</a> &rsaquo; Worksheets', h1: "History Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
-    body: subjectSheets("History") },
+    count: countLabel(sheetsBySubject("History").length, "sheet", "sheets") + " available", body: subjectSheets("History") },
 
   { dir: "maths", active: "w",
     title: "Maths — NexStudents",
@@ -936,14 +937,14 @@ const pages = [
     desc: "Every maths lesson on NexStudents, worked through on screen.",
     crumb: '<a href="/maths/">Maths</a> &rsaquo; Lessons', h1: "Maths Lessons.",
     lead: "Each one opens straight away. The method is read aloud one step at a time, with a full worked example, and the questions send your student back into the steps rather than leaving them to guess.",
-    body: subjectLessons("Maths") },
+    count: countLabel(bySubject("Maths").length, "lesson", "lessons") + " available", body: subjectLessons("Maths") },
 
   { dir: "maths/worksheets", active: "w",
     title: "Maths Worksheets — NexStudents",
     desc: "Printable maths worksheets and practice sets.",
     crumb: '<a href="/maths/">Maths</a> &rsaquo; Worksheets', h1: "Maths Worksheets.",
     lead: "Printables and practice sets for working on paper. Answer keys are always included free.",
-    body: subjectSheets("Maths") },
+    count: countLabel(sheetsBySubject("Maths").length, "sheet", "sheets") + " available", body: subjectSheets("Maths") },
 
   /* Three new top-level pages, 2026-08-26. Real pages from the start, even
      while two of them are empty, because a nav link to nowhere is worse than

@@ -485,9 +485,17 @@ ${navMarkup("w")}
 
 <div class="bar">
   <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  <div class="acts">
+    <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
+      ${ICON_PRINT}<span class="lbl">Print</span>
+    </button>
+    <a class="btn ghost" href="${s.slug}.pdf" download title="Save the PDF so you can print it again without coming back" aria-label="Download the PDF">
+      ${ICON_DL}<span class="lbl">Download</span>
+    </a>
+  </div>
 </div>
 
-<div class="sheet">
+<div class="sheet hwsheet">
 
   <div class="head">
     <p class="eyebrow">${s.subject} &middot; Kindergarten &middot; Handwriting</p>
@@ -506,10 +514,6 @@ ${navMarkup("w")}
     ${HW.wsRows()}
   </div>
 
-  <p class="dek" style="margin-top:18px"><b>Tip:</b> alphabetical is not the easiest
-  order. The straight-line letters &mdash; l, t, i, L, T, I, F, E, H &mdash; make the
-  gentlest start, the round ones come next, and diagonals like v, w, x, K, M and N are
-  worth saving for last.</p>
 
   <h2 class="hwh">Put this one on the fridge</h2>
   <div class="hw"><div class="grid">
@@ -522,6 +526,11 @@ ${navMarkup("w")}
   <div class="hw">
     ${HW.practiceRows()}
   </div>
+
+  <p class="dek" style="margin-top:18px"><b>Tip:</b> alphabetical is not the easiest
+  order. The straight-line letters &mdash; l, t, i, L, T, I, F, E, H &mdash; make the
+  gentlest start, the round ones come next, and diagonals like v, w, x, K, M and N are
+  worth saving for last.</p>
 
 </div>
 

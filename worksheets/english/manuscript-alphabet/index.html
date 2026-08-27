@@ -61,7 +61,7 @@
     .hw .rule{stroke:#8fa2b8}
     /* one ROW at a time, never the sheet - a block most of a page tall gets
        moved whole to the next page and hands you a blank one */
-    .hw .row{break-inside:avoid;page-break-inside:avoid}
+    .hw .row{break-inside:avoid;page-break-inside:avoid;margin-bottom:4px}
     /* 🚨 THREE SHEETS, THREE PAGES. Paul, 2026-08-27: "this will be the entire
        template for the entire worksheet so they can print all three sheets at
        once or on the printer select one at a time." That only works if each
@@ -71,6 +71,17 @@
        them and leaves the letters as page 1. */
     .hwh{break-before:page;page-break-before:always}
     .hw .grid{break-inside:avoid;page-break-inside:avoid}
+    /* 🚨 MEASURED, not guessed: the letters block ended at 1001px against the
+       ~950px a Letter page allows inside its margins, so page one spilled and
+       the PDF came out FOUR pages for three sheets. The header, the tip box and
+       the row rhythm all give a little back here. Scoped to .hwsheet so no
+       other worksheet's typography moves. */
+    .hwsheet .head{padding-bottom:8px;margin-bottom:4px}
+    .hwsheet h1{font-size:17pt;margin:4px 0 4px}
+    .hwsheet .dek{font-size:.85rem}
+    .hwsheet .note{padding:8px 12px;margin:0 0 10px}
+    .hwsheet .note p{margin:0;font-size:.85rem}
+    .hwsheet .hw .row{margin-bottom:2px}
   }</style>
 </head>
 <body>
@@ -120,9 +131,17 @@
 
 <div class="bar">
   <a class="back" href="/english/worksheets/">&larr; English Worksheets</a>
+  <div class="acts">
+    <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
+      <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M6 3h8v3H6V3zm-3 5h14a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2v-3H5v3H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zm3 6h8v3H6v-3z"/></svg><span class="lbl">Print</span>
+    </button>
+    <a class="btn ghost" href="manuscript-alphabet.pdf" download title="Save the PDF so you can print it again without coming back" aria-label="Download the PDF">
+      <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M9 2h2v7h3l-4 5-4-5h3V2zM3 15h14v3H3v-3z"/></svg><span class="lbl">Download</span>
+    </a>
+  </div>
 </div>
 
-<div class="sheet">
+<div class="sheet hwsheet">
 
   <div class="head">
     <p class="eyebrow">English &middot; Kindergarten &middot; Handwriting</p>
@@ -580,10 +599,6 @@
   <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/><path class="ink" d="M31,70 L89,70 M89,70 L31,130 M31,130 L89,130"/></svg></div></div>
   </div>
 
-  <p class="dek" style="margin-top:18px"><b>Tip:</b> alphabetical is not the easiest
-  order. The straight-line letters &mdash; l, t, i, L, T, I, F, E, H &mdash; make the
-  gentlest start, the round ones come next, and diagonals like v, w, x, K, M and N are
-  worth saving for last.</p>
 
   <h2 class="hwh">Put this one on the fridge</h2>
   <div class="hw"><div class="grid">
@@ -1172,6 +1187,11 @@
   <line class="rule solid" x1="0" y1="130" x2="140" y2="130"/>
   <line class="rule faint" x1="0" y1="170" x2="140" y2="170"/></svg></div>
   </div>
+
+  <p class="dek" style="margin-top:18px"><b>Tip:</b> alphabetical is not the easiest
+  order. The straight-line letters &mdash; l, t, i, L, T, I, F, E, H &mdash; make the
+  gentlest start, the round ones come next, and diagonals like v, w, x, K, M and N are
+  worth saving for last.</p>
 
 </div>
 

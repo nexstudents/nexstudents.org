@@ -953,3 +953,11 @@ html{-webkit-tap-highlight-color:transparent}
 .ann b{color:var(--ann-fg)}
 .ann button{color:var(--ann-fg)}
 nav{border-bottom:1px solid var(--line)}
+
+/* The count of what is actually on a shelf, under its lead. Paul, 2026-08-27:
+   "on the worksheet or lessons pages it should show how many are inside
+   available." Derived from the same registry that fills the page, so it cannot
+   claim a number the shelf does not have. */
+.phead .shelfcount{margin-top:10px;font-size:.78rem;font-weight:800;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--a)}
+:root[data-theme="light"] .phead .shelfcount{color:var(--a)}

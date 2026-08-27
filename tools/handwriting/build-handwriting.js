@@ -510,7 +510,7 @@ const LETTER_CSS = `
     .hw .rule{stroke:#8fa2b8}
     /* one ROW at a time, never the sheet - a block most of a page tall gets
        moved whole to the next page and hands you a blank one */
-    .hw .row{break-inside:avoid;page-break-inside:avoid}
+    .hw .row{break-inside:avoid;page-break-inside:avoid;margin-bottom:4px}
     /* 🚨 THREE SHEETS, THREE PAGES. Paul, 2026-08-27: "this will be the entire
        template for the entire worksheet so they can print all three sheets at
        once or on the printer select one at a time." That only works if each
@@ -520,6 +520,17 @@ const LETTER_CSS = `
        them and leaves the letters as page 1. */
     .hwh{break-before:page;page-break-before:always}
     .hw .grid{break-inside:avoid;page-break-inside:avoid}
+    /* 🚨 MEASURED, not guessed: the letters block ended at 1001px against the
+       ~950px a Letter page allows inside its margins, so page one spilled and
+       the PDF came out FOUR pages for three sheets. The header, the tip box and
+       the row rhythm all give a little back here. Scoped to .hwsheet so no
+       other worksheet's typography moves. */
+    .hwsheet .head{padding-bottom:8px;margin-bottom:4px}
+    .hwsheet h1{font-size:17pt;margin:4px 0 4px}
+    .hwsheet .dek{font-size:.85rem}
+    .hwsheet .note{padding:8px 12px;margin:0 0 10px}
+    .hwsheet .note p{margin:0;font-size:.85rem}
+    .hwsheet .hw .row{margin-bottom:2px}
   }`;
 
 module.exports = { UPPER, LOWER, glyph, DEFS, wsRows, practiceRows, chartCell, LETTER_CSS, AZ };
