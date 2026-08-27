@@ -1047,14 +1047,36 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
      Appending it whole is safe: the home's own script assigns burger/scrim
      handlers with `onclick =`, so this simply replaces them with the same
      behaviour rather than double-binding. */
-  if (!newHome.includes("nsOpenSub")) {
-    newHome = newHome.replace(/<\/body>/, navScript() + "\n</body>");
+  /* 🚨 REPLACE, never "append if missing".
+     The first version only appended when nsOpenSub was absent. Once a copy
+     of the script was in index.html, every later build saw it as present and
+     left it alone - so a STALE, broken copy sat there through several fixes
+     while the generated pages were fine. The home page is hand-maintained, so
+     anything injected into it has to be delimited and rewritten every time. */
+  const S_OPEN = "<!-- ns:nav-script -->", S_END = "<!-- /ns:nav-script -->";
+  const oldA = newHome.indexOf(S_OPEN);
+  if (oldA >= 0) {
+    const oldB = newHome.indexOf(S_END, oldA);
+    if (oldB < 0) { console.error("FAIL: home nav script block not closed"); process.exit(1); }
+    newHome = newHome.slice(0, oldA) + newHome.slice(oldB + S_END.length);
   }
-  for (const must of ["nsPaintMode", "nsOpenSub", "megapanel"]) {
+  /* Sweep out any copy injected before the sentinels existed. Matched by the
+     line the nav script always opens with, wrapped or not. */
+  const stale = /<script>\s*(?:\(function\(\)\{)?\s*var burger=document[\s\S]*?<\/script>/g;
+  newHome = newHome.replace(stale, "");
+
+  newHome = newHome.replace(/<\/body>/,
+    S_OPEN + "\n" + navScript() + "\n" + S_END + "\n</body>");
+
+  for (const must of ["nsPaintMode", "nsOpenSub", "megapanel", S_OPEN]) {
     if (!newHome.includes(must)) {
-      console.error("FAIL: the home page is missing " + must + " - nav markup without its behaviour");
+      console.error("FAIL: the home page is missing " + must);
       process.exit(1);
     }
+  }
+  if ((newHome.match(/nsOpenSub/g) || []).length > 4) {
+    console.error("FAIL: the home page has more than one copy of the nav script");
+    process.exit(1);
   }
 }
 
