@@ -288,7 +288,7 @@ ${drawerSubs()}
   <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
     <i></i><i></i><i></i>
   </button>
-  <a class="word" href="/">Nex<b>Students</b></a>
+  <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async">Nex<b>Students</b></a>
   <div class="tabs">${tabs(active)}</div>
   ${modeButton()}
   <a class="${b}" href="/#grades">Pick a Grade</a>
@@ -296,6 +296,14 @@ ${drawerSubs()}
 ${megaPanel()}
 </nav>`;
 };
+
+/* Favicon set. One source image, three sizes, so a browser tab, an Android
+   home screen and an iOS bookmark each get something sharp instead of a
+   1500px PNG scaled down on the fly. */
+const faviconTags = () =>
+  '<link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">\n' +
+  '<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">\n' +
+  '<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">';
 
 const modeButton = (inDrawer) => inDrawer
   ? '<button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night">' +
@@ -468,5 +476,5 @@ if(panel){
 }
 ` + "\n})();\n" + "</scr" + "ipt>";
 
-module.exports = { NAV, SUBJECTS, LIVE_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs,
+module.exports = { NAV, SUBJECTS, LIVE_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
                    megaPanel, navMarkup, navScript, modeButton, modeBoot };

@@ -22,7 +22,7 @@ const CSS_V = require("crypto")
    one. It lived here under a comment promising "ONE nav definition", which was
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
-const { NAV, SUBJECTS, LIVE_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot } = require("./nav.js");
+const { NAV, SUBJECTS, LIVE_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
 
 /* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
 const SITE = "https://nexstudents.org";
@@ -40,6 +40,7 @@ function shell(o) {
 <title>${o.title}</title>
 <meta name="description" content="${o.desc}">
 <meta name="theme-color" content="#0a0b0d">
+${faviconTags()}
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 ${modeBoot()}
 </head>
@@ -1036,6 +1037,12 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
   if (!cssLink) { console.error("FAIL: home has no ns.css link to anchor the mode boot"); process.exit(1); }
   if (!newHome.includes('localStorage.getItem("ns:mode")')) {
     newHome = newHome.replace(cssLink[0], cssLink[0] + "\n" + modeBoot());
+  }
+  /* The favicon too. The home page is hand-written, so every <head> addition
+     has to be spliced in here as well as put in the shell - the mode boot was
+     missed the same way once already. */
+  if (!newHome.includes("apple-touch-icon")) {
+    newHome = newHome.replace(cssLink[0], faviconTags() + "\n" + cssLink[0]);
   }
   /* 🚨 The home page needs the WHOLE nav script, not a slice of it.
      It used to get only the day/night part lifted out, which is why the home
