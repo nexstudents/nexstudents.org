@@ -553,141 +553,117 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   MEGA MENU — a band that opens under the nav, one section at a time.
-   Paul, 2026-08-26, after studying lttstore.
+   MEGA MENU — ONE panel, contents cross-fade
+   Rewritten 2026-08-26 after watching lttstore with Paul.
 
-   The disclosure is a native <details>/<summary>, so it opens with a keyboard
-   and without JavaScript. The script only adds hover-to-open and closes the
-   others, which is enhancement, not the mechanism.
+   The first version gave every tab its own <details> with its own panel, so
+   moving toward the menu left the element controlling it and the menu died
+   mid-reach, and moving between tabs closed one and opened another with a
+   jump. One panel fixes both: it stays open along the whole bar, only the
+   inner swaps, and the height eases to the new content.
 
-   The panel escapes the tab row and spans the whole bar because `nav` is
-   position:sticky, which makes it the containing block, and `details.mega`
-   stays static so the panel measures against the bar rather than the label.
+   The panel is a child of the NAV, not of a tab, so it spans the full bar.
+   Nothing here closes it — that is a JS timer, because the pointer crosses
+   dead space on the way down.
    ══════════════════════════════════════════════════════════════════════ */
-details.mega{position:static}
-details.mega > summary{list-style:none;cursor:pointer}
-details.mega > summary::-webkit-details-marker{display:none}
-details.mega > summary::marker{content:""}
-
-/* The label, and the line that draws under whichever one you are on. */
 .mg-top{position:relative;font-size:14px;font-weight:500;color:var(--dim);
-  padding-block:6px;transition:color .18s}
+  padding-block:6px;text-decoration:none;transition:color .18s}
 .mg-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
   background:currentColor;transform:scaleX(0);transform-origin:left;
   transition:transform .22s var(--ease,ease)}
+.mg-top:hover,.mg-top.mg-live,.mg-top.on{color:var(--fg)}
+/* ONE rule draws the line. With JS the nav is .js-nav and exactly one tab
+   carries .mg-live; without JS the current page draws its own. */
+.js-nav .mg-top.mg-live::after{transform:none}
+nav:not(.js-nav) .mg-top.on::after,
+.ns-nav:not(.js-nav) .mg-top.on::after{transform:none}
 
-
-
-
-.mg-panel{position:absolute;left:0;right:0;top:100%;z-index:59;
-  background:var(--panel);border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-  box-shadow:0 18px 40px -24px rgba(0,0,0,.55)}
-.mg-inner{max-width:1180px;margin:0 auto;padding:24px 28px 22px;
-  display:flex;gap:34px;align-items:flex-start}
+.mg-panel{position:absolute;left:0;right:0;top:100%;z-index:59;overflow:hidden;
+  background:var(--panel);border-bottom:1px solid var(--line);
+  box-shadow:0 18px 40px -24px rgba(0,0,0,.55);
+  height:0;opacity:0;visibility:hidden;pointer-events:none;
+  transition:height .26s var(--ease,ease),opacity .18s ease,visibility .18s}
+.mg-panel.open{opacity:1;visibility:visible;pointer-events:auto;
+  border-top:1px solid var(--line)}
+/* Inners are stacked in the same box so one can fade out while the next fades
+   in. Only the shown one takes pointer events. */
+.mg-inner{position:absolute;left:0;right:0;top:0;
+  max-width:1180px;margin:0 auto;padding:24px 28px 22px;
+  display:flex;gap:34px;align-items:flex-start;
+  opacity:0;pointer-events:none;transition:opacity .2s ease}
+.mg-inner.on{opacity:1;pointer-events:auto}
 .mg-body{flex:1 1 auto;min-width:0}
-/* Inside the body, NOT spanning the promo: as a full-width row it sat below
-   whichever column was taller and left a hole under the links. */
 .mg-all{margin:16px 0 0}
-.mg-all a{font-size:13px;font-weight:700;color:var(--a)}
+.mg-all a{font-size:13px;font-weight:700;color:var(--a);text-decoration:none}
 
-/* Grades: the same nine tiles as the grades page, in miniature. */
+/* Grades: the nine tiles, in miniature. */
 .mg-grades{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px}
 .mg-grade{aspect-ratio:1/1;border:1px solid var(--line);border-radius:var(--r,4px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  transition:transform .2s,border-color .2s}
+  text-decoration:none;transition:transform .2s,border-color .2s}
 .mg-grade b{font-size:1.15rem;font-weight:800;letter-spacing:-.03em;line-height:1}
 .mg-grade span{font-size:.5rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
 .mg-grade.live{background:var(--a);color:var(--a-ink);border-color:var(--a)}
 .mg-grade.soon{color:var(--dim);opacity:.6}
 @media(hover:hover){ .mg-grade.live:hover{transform:translateY(-3px)} }
-.mg-note{color:var(--dim);font-size:.82rem;margin:14px 0 0;max-width:60ch}
+.mg-note{color:var(--dim);font-size:.82rem;margin:14px 0 0;max-width:62ch}
 
-/* Subjects and anything else: plain columns of links. */
-.mg-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:22px}
+/* Columns reflow to whatever the section needs, as theirs do. */
+.mg-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:22px}
 .mg-col h4{margin:0 0 9px;font-size:.68rem;font-weight:800;letter-spacing:.13em;
   text-transform:uppercase;color:var(--dim)}
 .mg-col ul{list-style:none;margin:0;padding:0}
 .mg-col li{margin-bottom:6px}
-.mg-col a{font-size:.92rem;font-weight:600;color:var(--fg)}
+.mg-col a{font-size:.92rem;font-weight:600;color:var(--fg);text-decoration:none}
 @media(hover:hover){ .mg-col a:hover{text-decoration:underline;text-underline-offset:3px} }
 .mg-soon{font-size:.92rem;color:var(--dim)}
 
-/* The promo. Square, because the artwork is square. */
-.mg-promo{display:block;width:168px;flex:none}
-.mg-promo img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;
-  border-radius:var(--r,4px);border:1px solid var(--line)}
-.mg-promo b{display:block;margin-top:8px;font-size:.74rem;font-weight:700;
-  letter-spacing:.04em;color:var(--dim)}
-@media(hover:hover){ .mg-promo:hover b{color:var(--fg)} }
+/* The promo: caption OVER the picture, so the panel does not grow a text row
+   under every image. Square, because the artwork is square. */
+.mg-promo{position:relative;display:block;width:186px;flex:none;
+  border-radius:var(--r,4px);overflow:hidden;text-decoration:none}
+.mg-promo img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+.mg-promo b{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 10px;
+  font-size:.74rem;font-weight:800;letter-spacing:.03em;color:#fff;
+  background:linear-gradient(transparent,rgba(0,0,0,.78))}
+@media(hover:hover){ .mg-promo:hover img{transform:scale(1.04);transition:transform .4s} }
 @media(max-width:1040px){ .mg-promo{display:none} }
+@media(max-width:940px){ .mg-panel{display:none} }
 
-/* ── the drawer's second sheets, for phones ── */
-.dl-row{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}
-.dl-row .dl{flex:1 1 auto;border-bottom:0}
-.dl-more{flex:none;background:none;border:0;color:var(--dim);font-size:24px;
-  line-height:1;cursor:pointer;padding:10px 6px}
-.dl-more:hover{color:var(--fg)}
+/* ── PHONE: a stack of sheets ─────────────────────────────────────────────
+   The ROW opens the sheet. The section's own page is a "View …" row inside,
+   which is how the destination stays reachable without the label stealing the
+   tap. Paul, 2026-08-26.
+   -------------------------------------------------------------------------- */
+.dl-open{width:100%;text-align:left;background:none;border:0;font:inherit;cursor:pointer;
+  display:block;position:relative;padding:14px 26px 14px 0;
+  font-size:1.05rem;font-weight:700;letter-spacing:-.02em;color:var(--fg);
+  border-bottom:1px solid var(--line)}
+.dl-open small{display:block;font-size:.62rem;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--dim);margin-top:4px}
+.dl-open i{position:absolute;right:2px;top:50%;transform:translateY(-50%);
+  font-style:normal;font-size:22px;line-height:1;color:var(--dim)}
+.dl-open.on{color:var(--a)}
+
 .dsub{position:fixed;top:0;left:0;height:100dvh;width:min(320px,82vw);z-index:81;
   background:var(--panel);border-right:1px solid var(--line);padding:22px;
-  transform:translateX(-100%);transition:transform .32s var(--ease,ease);
-  display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+  transform:translateX(-100%);transition:transform .3s var(--ease,ease);
+  display:flex;flex-direction:column;gap:12px;overflow-y:auto}
 .dsub.open{transform:none}
 .dsub-back{align-self:flex-start;background:none;border:0;color:var(--dim);
   font:inherit;font-size:.9rem;cursor:pointer;padding:4px 0}
 .dsub-back:hover{color:var(--fg)}
 .dsub h3{margin:0;font-size:1.3rem}
-.dsub .mg-grades{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.dsub .mg-cols{grid-template-columns:1fr;gap:16px}
-.dsub .mg-note{display:none}
-.dsub-all{margin-top:auto;font-size:.82rem;font-weight:700;color:var(--a)}
+.dsub-body{display:flex;flex-direction:column}
+.dsub .mg-promo{display:block;width:100%;margin-top:auto}
 
-/* Only ONE underline at a time. Paul, 2026-08-26: "it highlights multiples and
-   the line under stays drawn even though you hovered over another one."
-   The page you are on keeps its line until you reach for the nav; while you
-   are pointing at the bar, or a panel is open, only that one is marked. */
-
-
-
-
-
-/* ── phone sheet rows ──────────────────────────────────────────────────────
-   A stack of sheets, not one drawer with a tile grid. Every row that goes
-   deeper carries a chevron; every row that is a destination is a plain link.
-   -------------------------------------------------------------------------- */
-.dsub-body{display:flex;flex-direction:column;overflow-y:auto}
-.dsr{display:block;padding:13px 0;font-size:1rem;font-weight:700;letter-spacing:-.02em;
-  border-bottom:1px solid var(--line);text-decoration:none}
+.dsr{display:block;position:relative;width:100%;text-align:left;
+  background:none;border:0;font:inherit;cursor:pointer;text-decoration:none;
+  padding:13px 26px 13px 0;font-size:1rem;font-weight:700;letter-spacing:-.02em;
+  color:var(--fg);border-bottom:1px solid var(--line)}
 .dsr small{display:block;font-size:.6rem;font-weight:700;letter-spacing:.13em;
-  text-transform:uppercase;margin-top:3px}
-.dsr.soon{opacity:.45;font-weight:600}
-.dsr-row{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}
-.dsr-row .dsr{flex:1 1 auto;border-bottom:0}
-.dsr-more{flex:none;background:none;border:0;font:inherit;font-size:22px;line-height:1;
-  cursor:pointer;padding:10px 6px}
-
-.dsr{color:var(--fg)}
-.dsr small{color:var(--dim)}
-.dsr-more{color:var(--dim)}
-.dsr-more:hover{color:var(--fg)}
-
-/* The underline is driven by ONE class. Paul, 2026-08-26: two lines showed at
-   once because "page you are on" and "tab you are pointing at" were separate
-   rules fighting over specificity. With JS, .js-nav stops .on drawing itself
-   and .mg-live is the single marker. Without JS, .on still works alone. */
-
-
-
-/* ── WHICH TAB IS UNDERLINED ───────────────────────────────────────────────
-   Exactly ONE rule draws the line, so nothing can fight over it. Paul,
-   2026-08-26: two showed at once, and out-specifying the loser only moved the
-   argument. The competing rules are gone instead.
-     with JS     the nav gets .js-nav and JS marks one tab .mg-live
-     without JS  the active tab and any open panel draw their own line
-   -------------------------------------------------------------------------- */
-.mg-top:hover,.mg-top.on,.mg-top.mg-live,details.mega[open] > .mg-top{color:var(--fg)}
-.js-nav .mg-top.mg-live::after{transform:none}
-nav:not(.js-nav) .mg-top.on::after{transform:none}
-nav:not(.js-nav) details.mega[open] > .mg-top::after{transform:none}
-.ns-nav:not(.js-nav) .mg-top.on::after{transform:none}
-.ns-nav:not(.js-nav) details.mega[open] > .mg-top::after{transform:none}
+  text-transform:uppercase;color:var(--dim);margin-top:3px}
+.dsr i{position:absolute;right:2px;top:50%;transform:translateY(-50%);
+  font-style:normal;font-size:21px;line-height:1;color:var(--dim)}
+.dsr.soon{opacity:.45;font-weight:600;cursor:default}
+.dsr.view{color:var(--a)}

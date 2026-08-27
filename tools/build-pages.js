@@ -725,12 +725,10 @@ const parents = () => `<div class="band"><div class="wrap">
 </div></div>`;
 
 const pages = [
-  { dir: "grades", active: "gr",
-    title: "Grades — NexStudents",
-    desc: "Free printable resources for K-8, organised by grade.",
-    crumb: "Grades", h1: "Pick a Grade.",
-    lead: "Everything on the site is organised by grade first, then subject. Pick the year your student is working in and you will see every worksheet, packet, game and reading list for it.",
-    body: gradeGrid() },
+  /* /grades/ was DELETED on 2026-08-26. Paul: "get rid of the grades tab and
+     replace it with the nav panel." The dropdown lists every grade and the
+     home page still carries the picker at #grades, so the page had no job
+     left. It redirects rather than 404s - see REDIRECTS below. */
 
   { dir: "worksheets", active: "w",
     title: "Worksheets — NexStudents",
@@ -996,7 +994,7 @@ newHome = newHome.slice(0, sa) + S_OPEN + "\n" + tiles + newHome.slice(sb);
    Worksheets in the tab bar and no Home, About or Contact. Paul, 2026-08-26:
    "so the homepage still is set up for the old layout not the new one."
    Spliced from nav.js now, like the grade picker and the subject tiles. */
-const N_OPEN = '<div class="scrim" id="scrim"></div>', N_CLOSE = "</div></nav>";
+const N_OPEN = '<div class="scrim" id="scrim"></div>', N_CLOSE = "</nav>";
 const na = newHome.indexOf(N_OPEN);
 if (na < 0) { console.error("FAIL: home nav not found"); process.exit(1); }
 const nb = newHome.indexOf(N_CLOSE, na);
@@ -1087,6 +1085,7 @@ if (newHome !== home) fs.writeFileSync(homeFile, newHome, "utf8");
    bookmark, a search result, a printed worksheet footer - is redirected rather
    than 404'd. GitHub Pages has no redirect rules, so these are real pages. */
 const REDIRECTS = [
+  ["grades", "/#grades"],
   ["ela", "/english/"],
   ["ela/lessons", "/english/lessons/"],
   ["ela/worksheets", "/english/worksheets/"],
@@ -1104,7 +1103,7 @@ const REDIRECTS = [
     desc: "That page does not exist.",
     crumb: "Not found", h1: "That page is not here.",
     lead: "The link may be old, or something moved. Everything on the site is reachable from the menu, or start with a grade.",
-    body: empty('Try <a href="/grades/">picking a grade</a>, or <a href="/">go back to the home page</a>.'),
+    body: empty('Try <a href="/#grades">picking a grade</a>, or <a href="/">go back to the home page</a>.'),
   };
   let h = shell(page)
     .replace('<link rel="canonical" href="' + SITE + '//">',
@@ -1123,7 +1122,7 @@ for (const [from, to] of REDIRECTS) {
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
-<link rel="canonical" href="${to}">
+<link rel="canonical" href="${SITE}${to.split("#")[0]}">
 <meta http-equiv="refresh" content="0;url=${to}">
 <title>Moved to ${to}</title>
 </head>
