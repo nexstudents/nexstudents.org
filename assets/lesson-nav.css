@@ -337,3 +337,60 @@ body.sub-open .drawer{transform:translateX(-100%)}
   .menucol .dl-open:hover,
   .menucol .dsr:not(.soon):hover{background:var(--nv-line)}
 }
+
+/* ── NO TAP FLASH ─────────────────────────────────────────────────────────
+   Paul, 2026-08-27: "when i click i see a blue box that moves where i pressed
+   ... i dont see that when i tap on their nav."
+
+   That box is the browser's own tap highlight, drawn on any tappable element
+   unless a page turns it off. Killing it does NOT remove the focus ring: the
+   :focus-visible rule below keeps a real outline for keyboard users, which is
+   the part that actually matters for getting around without a mouse.
+   -------------------------------------------------------------------------- */
+.menucol,.menucol *{-webkit-tap-highlight-color:transparent}
+.menucol a:focus,.menucol button:focus{outline:none}
+.menucol a:focus-visible,.menucol button:focus-visible{
+  outline:2px solid var(--nv-accent);outline-offset:-2px;border-radius:var(--r,4px)}
+
+/* ── THE SHEET SETTLES IN ─────────────────────────────────────────────────
+   Paul: "their sub menu nav page section have a animation where they fade in
+   from the top. the titles themselves i believe."
+
+   The panel slides, then its contents drop the last few pixels into place, a
+   beat behind and staggered. That second, smaller movement is what stops the
+   panel reading as one flat rectangle sliding by.
+   -------------------------------------------------------------------------- */
+@keyframes ns-row-in{
+  from{opacity:0;transform:translateY(-9px)}
+  to{opacity:1;transform:none}
+}
+.menucol .dsub.open .dsub-back,
+.menucol .dsub.open h3,
+.menucol .dsub.open .dsub-body > *,
+.menucol .dsub.open .dst-grid,
+.menucol .dsub.open .mg-promo{
+  animation:ns-row-in .3s both cubic-bezier(.22,.61,.36,1)}
+.menucol .dsub.open .dsub-back{animation-delay:.06s}
+.menucol .dsub.open h3{animation-delay:.10s}
+.menucol .dsub.open .dsub-body > *:nth-child(1){animation-delay:.14s}
+.menucol .dsub.open .dsub-body > *:nth-child(2){animation-delay:.18s}
+.menucol .dsub.open .dsub-body > *:nth-child(3){animation-delay:.21s}
+.menucol .dsub.open .dsub-body > *:nth-child(4){animation-delay:.24s}
+.menucol .dsub.open .dsub-body > *:nth-child(5){animation-delay:.27s}
+.menucol .dsub.open .dsub-body > *:nth-child(6){animation-delay:.29s}
+.menucol .dsub.open .dsub-body > *:nth-child(n+7){animation-delay:.31s}
+.menucol .dsub.open .mg-promo{animation-delay:.34s}
+/* A level that has been pushed aside must not re-run its entrance. */
+.menucol .dsub.exit .dsub-back,
+.menucol .dsub.exit h3,
+.menucol .dsub.exit .dsub-body > *,
+.menucol .dsub.exit .dst-grid,
+.menucol .dsub.exit .mg-promo{animation:none}
+
+@media(prefers-reduced-motion:reduce){
+  .menucol .dsub.open .dsub-back,
+  .menucol .dsub.open h3,
+  .menucol .dsub.open .dsub-body > *,
+  .menucol .dsub.open .dst-grid,
+  .menucol .dsub.open .mg-promo{animation:none}
+}
