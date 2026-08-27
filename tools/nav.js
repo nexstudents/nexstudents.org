@@ -112,14 +112,14 @@ const MENUS = {
       ]) + "</div>",
   },
   g: {
-    /* No games are built yet, and inventing names would put fake products on
-       the site. Honest until Paul says what the first ones are. */
+    /* The same six the home page already lists. None are built; every one
+       says so rather than pretending to be a link. */
     body: '<div class="mg-cols">' +
-      col("In the browser", [{ label: "The first games are being built" }]) +
-      col("Instead, try", [
-        { label: "Comics", href: "/comics/" },
-        { label: "Interactive lessons", href: "/grades/" },
-      ]) + "</div>",
+      col("Maths", [{ label: "Remainder race" }, { label: "Fraction match" }]) +
+      col("English", [{ label: "Spelling ladder" }, { label: "Comma catcher" }]) +
+      col("History", [{ label: "Place the state" }]) +
+      col("Science", [{ label: "Sort the mixture" }]) + "</div>" +
+      '<p class="mg-note">None of these are playable yet. They go up as they are built.</p>',
   },
 };
 
@@ -158,13 +158,89 @@ const drawerLinks = (active) => NAV
   .join("\n");
 
 /* The second sheets themselves. They sit beside the drawer and slide over it. */
-const drawerSubs = () => Object.keys(MENUS).map(k => {
-  const n = NAV.filter(x => x.key === k)[0];
-  return '<aside class="dsub" data-subpanel="' + k + '" aria-hidden="true">' +
-    '<button class="dsub-back" type="button" data-sub-back>&#8249; Menu</button>' +
-    "<h3>" + n.label + "</h3>" +
-    '<div class="dsub-body">' + MENUS[k].body + "</div>" +
-    '<a class="dsub-all" href="' + n.href + '">All ' + n.label.toLowerCase() + " &rarr;</a>" +
+/* ── THE PHONE SHEETS ──────────────────────────────────────────────────────
+   Paul, 2026-08-26: "it shows another side menu after you click the arrow like
+   grades and has like a sub menu on the side ... this will cut down on the
+   different pages we dont really need if they can navigate to the right grade
+   menu."
+
+   So the drawer is a STACK of sheets, not a drawer with one tile grid stapled
+   to it. Grades opens a list of grades; a grade opens its own doors. Every row
+   that goes deeper carries a chevron, and every row that is a destination is a
+   plain link, so nothing is reachable only by disclosure.
+
+   SHEETS is a flat map of id -> { title, parent, rows }. `parent` is what Back
+   returns to, which is what makes the stack work without tracking history.
+   ------------------------------------------------------------------------ */
+const row = (r) => {
+  if (r.soon) return '<span class="dsr soon">' + r.label + "<small>Being built</small></span>";
+  const link = '<a class="dsr" href="' + r.href + '">' + r.label +
+    (r.note ? "<small>" + r.note + "</small>" : "") + "</a>";
+  return r.sub
+    ? '<div class="dsr-row">' + link +
+      '<button class="dsr-more" type="button" data-sub="' + r.sub +
+      '" aria-label="Open ' + r.label + '">&#8250;</button></div>'
+    : link;
+};
+
+const SHEETS = {};
+
+/* Level 2: the three sections. */
+SHEETS.gr = { title: "Grades", parent: null, all: "/grades/", rows:
+  ALL_GRADES.map(g => LIVE_GRADES.includes(g)
+    ? { label: g === "K" ? "Kindergarten" : "Grade " + g, href: "/grade-" + g + "/", sub: "gr-" + g }
+    : { label: g === "K" ? "Kindergarten" : "Grade " + g, soon: true })
+};
+
+SHEETS.r = { title: "Resources", parent: null, all: "/resources/", rows:
+  SUBJECTS.map(s => s.live
+    ? { label: s.name, href: "/" + s.slug + "/", sub: "r-" + s.slug }
+    : { label: s.name, soon: true })
+  .concat([{ label: "What we use", href: "/resources/", note: "Books and tools" },
+           { label: "All worksheets", href: "/worksheets/", note: "Every printable" }])
+};
+
+/* The game names are the ones already listed on the home page. Not invented
+   here, and not built yet either - every row says so. */
+SHEETS.g = { title: "Games", parent: null, all: "/games/", rows: [
+  { label: "Remainder race", soon: true },
+  { label: "Fraction match", soon: true },
+  { label: "Spelling ladder", soon: true },
+  { label: "Comma catcher", soon: true },
+  { label: "Place the state", soon: true },
+  { label: "Sort the mixture", soon: true },
+]};
+
+/* Level 3: one sheet per live grade, and one per live subject. */
+LIVE_GRADES.forEach(g => {
+  SHEETS["gr-" + g] = {
+    title: g === "K" ? "Kindergarten" : "Grade " + g,
+    parent: "gr", all: "/grade-" + g + "/",
+    rows: [
+      { label: "Lessons", href: "/grade-" + g + "/lessons/", note: "Worked through on screen" },
+      { label: "Worksheets", href: "/grade-" + g + "/worksheets/", note: "Printed and written on" },
+    ],
+  };
+});
+SUBJECTS.filter(s => s.live).forEach(s => {
+  SHEETS["r-" + s.slug] = {
+    title: s.name, parent: "r", all: "/" + s.slug + "/",
+    rows: [
+      { label: "Lessons", href: "/" + s.slug + "/lessons/", note: "Worked through on screen" },
+      { label: "Worksheets", href: "/" + s.slug + "/worksheets/", note: "Printed and written on" },
+    ],
+  };
+});
+
+const drawerSubs = () => Object.keys(SHEETS).map(id => {
+  const sh = SHEETS[id];
+  const backLabel = sh.parent ? SHEETS[sh.parent].title : "Menu";
+  return '<aside class="dsub" data-subpanel="' + id + '" aria-hidden="true">' +
+    '<button class="dsub-back" type="button" data-sub-back="' + (sh.parent || "") + '">' +
+    "&#8249; " + backLabel + "</button>" +
+    "<h3>" + sh.title + "</h3>" +
+    '<div class="dsub-body">' + sh.rows.map(row).join("") + "</div>" +
+    '<a class="dsub-all" href="' + sh.all + '">Open ' + sh.title.toLowerCase() + " &rarr;</a>" +
     "</aside>";
 }).join("\n");
 
@@ -257,34 +333,56 @@ function nsCloseSubs(){
     p.classList.remove("open"); p.setAttribute("aria-hidden", "true");
   });
 }
+function nsOpenSub(id){
+  var p = document.querySelector('[data-subpanel="' + id + '"]');
+  if (!p) return;
+  nsCloseSubs();
+  p.classList.add("open"); p.setAttribute("aria-hidden", "false");
+}
 document.querySelectorAll("[data-sub]").forEach(function(btn){
-  btn.addEventListener("click", function(){
-    var p = document.querySelector('[data-subpanel="' + btn.getAttribute("data-sub") + '"]');
-    if (!p) return;
+  btn.addEventListener("click", function(){ nsOpenSub(btn.getAttribute("data-sub")); });
+});
+document.querySelectorAll("[data-sub-back]").forEach(function(b){
+  b.addEventListener("click", function(){
+    var parent = b.getAttribute("data-sub-back");
     nsCloseSubs();
-    p.classList.add("open"); p.setAttribute("aria-hidden", "false");
+    if (parent) nsOpenSub(parent);   /* step back up the stack, not all the way out */
   });
 });
-document.querySelectorAll("[data-sub-back]").forEach(function(b){ b.addEventListener("click", nsCloseSubs); });
 addEventListener("keydown", function(e){ if (e.key === "Escape") nsCloseSubs(); });
 scrim.addEventListener("click", nsCloseSubs);
 
-/* A mega panel is a <details>: it opens on hover on a pointer device, and on
-   click everywhere. Close the others so only one band is ever open. */
+/* A mega panel is a <details>, so it works with a keyboard and with JS off.
+   On a pointer device it should open on HOVER, which is the whole point.
+   Paul, 2026-08-26: "i wanted it to open after highlighting the nav tabs but
+   you have it when i click on it".
+
+   Listening on the NAV rather than on each <details> is what makes that
+   reliable: one mouseover handler sees every crossing, including the moment
+   the pointer slides from one tab straight onto the next, which per-element
+   mouseenter misses often enough to feel broken. */
 var megas = [].slice.call(document.querySelectorAll("details.mega"));
 function nsCloseMegas(except){ megas.forEach(function(d){ if (d !== except) d.open = false; }); }
-megas.forEach(function(d){
-  d.addEventListener("toggle", function(){ if (d.open) nsCloseMegas(d); });
-  if (matchMedia("(hover:hover)").matches){
-    d.addEventListener("mouseenter", function(){ d.open = true; });
-    d.addEventListener("mouseleave", function(){ d.open = false; });
-    d.querySelector("summary").addEventListener("click", function(e){
+if (megas.length){
+  var bar = megas[0].closest("nav");
+  var fine = matchMedia("(hover:hover)").matches;
+  megas.forEach(function(d){
+    d.addEventListener("toggle", function(){ if (d.open) nsCloseMegas(d); });
+    if (fine) d.querySelector("summary").addEventListener("click", function(e){
       /* the label is a destination, not just a toggle */
       e.preventDefault();
       location.href = d.querySelector(".mg-all a").getAttribute("href");
     });
+  });
+  if (fine && bar){
+    bar.addEventListener("mouseover", function(e){
+      var d = e.target.closest ? e.target.closest("details.mega") : null;
+      if (d){ if (!d.open) d.open = true; nsCloseMegas(d); }
+      else nsCloseMegas(null);   /* over the bar but not a tab: close */
+    });
+    bar.addEventListener("mouseleave", function(){ nsCloseMegas(null); });
   }
-});
+}
 addEventListener("keydown", function(e){ if (e.key === "Escape") nsCloseMegas(null); });
 ` + "</scr" + "ipt>";
 

@@ -160,3 +160,33 @@ details.mega > summary::marker{content:""}
 .dsub .mg-cols{grid-template-columns:1fr;gap:16px}
 .dsub .mg-note{display:none}
 .dsub-all{margin-top:auto;font-size:.82rem;font-weight:700;color:var(--nv-accent)}
+
+/* Only ONE underline at a time. Paul, 2026-08-26: "it highlights multiples and
+   the line under stays drawn even though you hovered over another one."
+   The page you are on keeps its line until you reach for the nav; while you
+   are pointing at the bar, or a panel is open, only that one is marked. */
+.tabs:hover .mg-top.on::after{transform:scaleX(0)}
+nav:has(details.mega[open]) .mg-top.on::after,
+.ns-nav:has(details.mega[open]) .mg-top.on::after{transform:scaleX(0)}
+@media(hover:hover){ .tabs .mg-top:hover::after{transform:none} }
+details.mega[open] > .mg-top::after{transform:none}
+
+/* ── phone sheet rows ──────────────────────────────────────────────────────
+   A stack of sheets, not one drawer with a tile grid. Every row that goes
+   deeper carries a chevron; every row that is a destination is a plain link.
+   -------------------------------------------------------------------------- */
+.dsub-body{display:flex;flex-direction:column;overflow-y:auto}
+.dsr{display:block;padding:13px 0;font-size:1rem;font-weight:700;letter-spacing:-.02em;
+  border-bottom:1px solid var(--nv-line);text-decoration:none}
+.dsr small{display:block;font-size:.6rem;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;margin-top:3px}
+.dsr.soon{opacity:.45;font-weight:600}
+.dsr-row{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--nv-line)}
+.dsr-row .dsr{flex:1 1 auto;border-bottom:0}
+.dsr-more{flex:none;background:none;border:0;font:inherit;font-size:22px;line-height:1;
+  cursor:pointer;padding:10px 6px}
+
+.dsr{color:var(--nv-fg)}
+.dsr small{color:var(--nv-dim)}
+.dsr-more{color:var(--nv-dim)}
+.dsr-more:hover{color:var(--nv-fg)}
