@@ -1044,6 +1044,27 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
   if (!newHome.includes("apple-touch-icon")) {
     newHome = newHome.replace(cssLink[0], faviconTags() + "\n" + cssLink[0]);
   }
+
+  /* 🚨 The announcement used to be dismissed with a bare .remove(), so it came
+     straight back on the next page load - and clicking the logo IS a page load.
+     Paul, 2026-08-27: "when you press the logo it shows 7th grade is live now
+     ... that should take you home." The choice is remembered now. */
+  newHome = newHome.replace(
+    /<button aria-label="Dismiss"[^>]*>&times;<\/button>/,
+    '<button aria-label="Dismiss" data-ann-close>&times;</button>'
+  );
+  if (!newHome.includes("ns:ann")) {
+    newHome = newHome.replace(/<\/body>/,
+      "<scr" + "ipt>(function(){var a=document.getElementById('ann');if(!a)return;" +
+      "try{if(localStorage.getItem('ns:ann')==='off'){a.remove();return;}}catch(e){}" +
+      "var b=a.querySelector('[data-ann-close]');if(b)b.addEventListener('click',function(){" +
+      "try{localStorage.setItem('ns:ann','off');}catch(e){}a.remove();});})();</scr" + "ipt>\n</body>");
+  }
+  if (!newHome.includes("ns:ann")) {
+    console.error("FAIL: the announcement dismissal script did not land");
+    process.exit(1);
+  }
+
   /* 🚨 The home page needs the WHOLE nav script, not a slice of it.
      It used to get only the day/night part lifted out, which is why the home
      page had the menu markup but none of its behaviour: the drawer chevrons

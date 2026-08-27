@@ -30,7 +30,7 @@
   --free:#4ade80;        /* free badge - the thing they came for */
   --paid:#ff5c33;        /* paid badge. the only warm colour on the page */
   --on-free:#052e16; --on-paid:#2b0a02;
-  --ann-bg:#000; --nav-bg:rgba(10,11,13,.92);
+  --ann-bg:#1c2126; --ann-fg:#eef1f4; --nav-bg:rgba(10,11,13,.92);
   --hero-glow:rgba(255,255,255,.05);
   --on-a-soft:rgba(10,11,13,.65);
   --fg-28:rgba(241,243,245,.28); --fg-07:rgba(241,243,245,.07);
@@ -61,7 +61,7 @@
   --free:#15803d;
   --paid:#c2410c;
   --on-free:#eafdf1; --on-paid:#fff3ee;
-  --ann-bg:#27313f; --nav-bg:rgba(242,244,247,.92);
+  --ann-bg:#2f3945; --ann-fg:#f4f6f8; --nav-bg:rgba(242,244,247,.92);
   --hero-glow:rgba(39,49,63,.06);
   --on-a-soft:rgba(255,255,255,.74);
   --fg-28:rgba(27,34,41,.26); --fg-07:rgba(27,34,41,.055);
@@ -92,7 +92,7 @@ h2{font-size:clamp(1.8rem,3.5vw,2.7rem);max-width:22ch}
 .h2s{color:var(--dim);max-width:52ch;margin:14px 0 0;font-size:1.02rem}
 
 /* ── announcement ── */
-.ann{background:var(--ann-bg);color:var(--fg);text-align:center;font-size:13.5px;font-weight:600;
+.ann{background:var(--ann-bg);color:var(--ann-fg);text-align:center;font-size:13.5px;font-weight:600;
   padding:11px 44px 11px 20px;position:relative;border-bottom:1px solid var(--line)}
 .ann b{font-weight:800;text-decoration:underline;text-underline-offset:3px}
 .ann button{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;
@@ -933,3 +933,19 @@ body.sub-open .drawer{transform:translateX(-100%)}
   .nv .word img{height:34px;width:34px}
   .navicon{padding:6px}
 }
+
+/* ── THE ANNOUNCEMENT AND THE HEADER RULE ─────────────────────────────────
+   Paul, 2026-08-27: "its too dark in light mode", and "their header is like a
+   dark grey not black".
+
+   It was inheriting --fg for its text, which in light mode is near-black ON a
+   dark bar - unreadable. It carries its own --ann-fg now, and the bar itself
+   is a dark grey in both themes rather than pure black.
+
+   The header keeps a hairline at all times, not only once scrolled, which is
+   the separation he spotted on theirs.
+   -------------------------------------------------------------------------- */
+.ann{color:var(--ann-fg)}
+.ann b{color:var(--ann-fg)}
+.ann button{color:var(--ann-fg)}
+nav{border-bottom:1px solid var(--line)}

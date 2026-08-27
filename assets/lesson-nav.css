@@ -437,3 +437,5 @@ body.sub-open .drawer{transform:translateX(-100%)}
   .nv .word img{height:34px;width:34px}
   .navicon{padding:6px}
 }
+
+.ns-nav{border-bottom:1px solid var(--nv-line)}

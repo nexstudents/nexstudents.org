@@ -35,14 +35,14 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=464f205b">
+<link rel="stylesheet" href="/assets/ns.css?v=67ae6546">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
 
 <div class="ann" id="ann">
   7th grade is live now &mdash; the other grades are being built. <b>See what is ready</b>
-  <button aria-label="Dismiss" onclick="document.getElementById('ann').remove()">&times;</button>
+  <button aria-label="Dismiss" data-ann-close>&times;</button>
 </div>
 
 <div class="scrim" id="scrim"></div>
@@ -395,6 +395,9 @@ fbar.addEventListener('click',e=>{
 
 
 
+
+
+<script>(function(){var a=document.getElementById('ann');if(!a)return;try{if(localStorage.getItem('ns:ann')==='off'){a.remove();return;}}catch(e){}var b=a.querySelector('[data-ann-close]');if(b)b.addEventListener('click',function(){try{localStorage.setItem('ns:ann','off');}catch(e){}a.remove();});})();</script>
 <!-- ns:nav-script -->
 <script>
 (function(){
