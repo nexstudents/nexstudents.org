@@ -94,9 +94,9 @@ details.mega > summary::marker{content:""}
 .mg-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
   background:currentColor;transform:scaleX(0);transform-origin:left;
   transition:transform .22s var(--ease,ease)}
-.mg-top:hover,.mg-top.on,details.mega[open] > .mg-top{color:var(--nv-fg)}
-.mg-top.on::after,details.mega[open] > .mg-top::after{transform:none}
-@media(hover:hover){ .mg-top:hover::after{transform:none} }
+
+
+
 
 .mg-panel{position:absolute;left:0;right:0;top:100%;z-index:59;
   background:var(--nv-bg);border-top:1px solid var(--nv-line);
@@ -165,11 +165,10 @@ details.mega > summary::marker{content:""}
    the line under stays drawn even though you hovered over another one."
    The page you are on keeps its line until you reach for the nav; while you
    are pointing at the bar, or a panel is open, only that one is marked. */
-.tabs:hover .mg-top.on::after{transform:scaleX(0)}
-nav:has(details.mega[open]) .mg-top.on::after,
-.ns-nav:has(details.mega[open]) .mg-top.on::after{transform:scaleX(0)}
-@media(hover:hover){ .tabs .mg-top:hover::after{transform:none} }
-details.mega[open] > .mg-top::after{transform:none}
+
+
+
+
 
 /* ── phone sheet rows ──────────────────────────────────────────────────────
    A stack of sheets, not one drawer with a tile grid. Every row that goes
@@ -195,5 +194,19 @@ details.mega[open] > .mg-top::after{transform:none}
    once because "page you are on" and "tab you are pointing at" were separate
    rules fighting over specificity. With JS, .js-nav stops .on drawing itself
    and .mg-live is the single marker. Without JS, .on still works alone. */
-.js-nav .mg-top.on::after{transform:scaleX(0)}
+
+
+
+/* ── WHICH TAB IS UNDERLINED ───────────────────────────────────────────────
+   Exactly ONE rule draws the line, so nothing can fight over it. Paul,
+   2026-08-26: two showed at once, and out-specifying the loser only moved the
+   argument. The competing rules are gone instead.
+     with JS     the nav gets .js-nav and JS marks one tab .mg-live
+     without JS  the active tab and any open panel draw their own line
+   -------------------------------------------------------------------------- */
+.mg-top:hover,.mg-top.on,.mg-top.mg-live,details.mega[open] > .mg-top{color:var(--nv-fg)}
 .js-nav .mg-top.mg-live::after{transform:none}
+nav:not(.js-nav) .mg-top.on::after{transform:none}
+nav:not(.js-nav) details.mega[open] > .mg-top::after{transform:none}
+.ns-nav:not(.js-nav) .mg-top.on::after{transform:none}
+.ns-nav:not(.js-nav) details.mega[open] > .mg-top::after{transform:none}
