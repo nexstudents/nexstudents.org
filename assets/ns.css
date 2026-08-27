@@ -671,3 +671,10 @@ details.mega[open] > .mg-top::after{transform:none}
 .dsr small{color:var(--dim)}
 .dsr-more{color:var(--dim)}
 .dsr-more:hover{color:var(--fg)}
+
+/* The underline is driven by ONE class. Paul, 2026-08-26: two lines showed at
+   once because "page you are on" and "tab you are pointing at" were separate
+   rules fighting over specificity. With JS, .js-nav stops .on drawing itself
+   and .mg-live is the single marker. Without JS, .on still works alone. */
+.js-nav .mg-top.on::after{transform:scaleX(0)}
+.js-nav .mg-top.mg-live::after{transform:none}

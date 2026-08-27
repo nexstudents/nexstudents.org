@@ -10,7 +10,7 @@
 <title>History Lessons — NexStudents</title>
 <meta name="description" content="Every history lesson on NexStudents, worked through on screen.">
 <meta name="theme-color" content="#0a0b0d">
-<link rel="stylesheet" href="/assets/ns.css?v=1aebd832">
+<link rel="stylesheet" href="/assets/ns.css?v=5bd8a211">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -685,13 +685,26 @@ if (megas.length){
       location.href = d.querySelector(".mg-all a").getAttribute("href");
     });
   });
+  /* One class decides which tab is underlined, so there is no specificity
+     race between "page you are on" and "tab you are pointing at". The nav is
+     tagged js-nav, which is also what tells CSS to stop drawing the .on line
+     by itself. Without JS, .on keeps working on its own. */
+  if (bar) bar.classList.add("js-nav");
+  var onTab = document.querySelector(".mg-top.on");
+  function nsMark(el){
+    document.querySelectorAll(".mg-top.mg-live").forEach(function(t){ t.classList.remove("mg-live"); });
+    if (el) el.classList.add("mg-live");
+  }
+  nsMark(onTab);
   if (fine && bar){
     bar.addEventListener("mouseover", function(e){
       var d = e.target.closest ? e.target.closest("details.mega") : null;
-      if (d){ if (!d.open) d.open = true; nsCloseMegas(d); }
-      else nsCloseMegas(null);   /* over the bar but not a tab: close */
+      var top = e.target.closest ? e.target.closest(".mg-top") : null;
+      if (d){ if (!d.open) d.open = true; nsCloseMegas(d); nsMark(d.querySelector(".mg-top")); }
+      else if (top){ nsCloseMegas(null); nsMark(top); }
+      else { nsCloseMegas(null); nsMark(onTab); }   /* over the bar but not a tab */
     });
-    bar.addEventListener("mouseleave", function(){ nsCloseMegas(null); });
+    bar.addEventListener("mouseleave", function(){ nsCloseMegas(null); nsMark(onTab); });
   }
 }
 addEventListener("keydown", function(e){ if (e.key === "Escape") nsCloseMegas(null); });
