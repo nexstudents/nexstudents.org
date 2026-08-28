@@ -132,11 +132,12 @@ const MENUS = {
     /* The six the home page already lists. None are built, and every one says
        so rather than pretending to be a link. */
     body: '<div class="mg-cols">' +
-      col("Maths", [{ label: "Remainder race" }, { label: "Fraction match" }]) +
+      col("Maths", [{ label: "FlyBy Speed Run", href: "/games/flyby-speed-run/" },
+               { label: "Remainder race" }, { label: "Fraction match" }]) +
       col("English", [{ label: "Spelling ladder" }, { label: "Comma catcher" }]) +
       col("History", [{ label: "Show Me The States", href: "/games/show-me-the-states/" }]) +
       col("Science", [{ label: "Sort the mixture" }]) + "</div>" +
-      '<p class="mg-note">Show Me The States is playable now. The rest go up as they are built.</p>',
+      '<p class="mg-note">Two are playable now. The rest go up as they are built.</p>',
   },
   c: {
     body: '<div class="mg-cols">' +
@@ -236,6 +237,7 @@ SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS
 ]};
 
 SHEETS.g = { title: "Games", parent: null, view: "/games/", rows: [
+  { label: "FlyBy Speed Run", href: "/games/flyby-speed-run/", note: "Multiplication, timed" },
   { label: "Remainder race", soon: true }, { label: "Fraction match", soon: true },
   { label: "Spelling ladder", soon: true }, { label: "Comma catcher", soon: true },
   { label: "Show Me The States", href: "/games/show-me-the-states/", note: "Fifty states and capitals" },
