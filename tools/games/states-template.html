@@ -127,7 +127,44 @@
   tr.me td{color:var(--ok)}
   .hide{display:none!important}
   @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-  @media(max-width:760px){ #next{width:172px} .legend{display:none} }
+  /* 🚨 THE PANEL BECOMES A BAR ON A PHONE. As a column it was a cramped box in
+     the corner and it stole width the map badly needed. Across the bottom it
+     costs height, which a landscape phone has spare, and the map gets the rest. */
+  @media(max-width:820px), (max-height:520px){
+    #wrap{flex-direction:column}
+    /* ⚠️ min-height:0 or the map refuses to shrink and pushes the bar off the
+       bottom of the screen. A flex item defaults to min-height:auto, which
+       means "never smaller than my content" - and an SVG set to 100% height
+       counts as content. Same trap as min-width:0 in a row. */
+    #board{min-height:0}
+    #next{width:100%;flex-direction:row;justify-content:center;gap:16px;
+          border-left:0;border-top:1px solid var(--line);padding:8px 14px;
+          height:118px;flex:none}
+    #next h2{display:none}
+    #hint{min-height:0;max-width:15ch;text-align:left}
+    .legend{display:none}
+    header{gap:9px;padding:7px 10px}
+    h1{font-size:.85rem} .clock{font-size:1.2rem}
+    #round{display:none}
+  }
+  /* very short - a landscape phone - claws back every pixel */
+  @media(max-height:430px){
+    header{padding:4px 10px} h1{display:none}
+    #next{height:96px}
+  }
+  @media(max-width:820px){
+    /* the level names are long; the level is obvious once you play it */
+    #level{max-width:8.5em}
+    #board-btn{display:none}
+  }
+  #fs{display:none}
+  @media(max-width:820px), (max-height:520px){ #fs{display:inline-block} }
+
+  /* ── 4. THE HEAT RAIL ───────────────────────────────────────────────────
+     A finger sits ON the piece, so the piece's own colour is the one thing you
+     cannot see while dragging on a phone. The rail runs the full width under
+     the header and carries the same temperature, where no hand can cover it. */
+  #rail{height:6px;flex:none;background:var(--line);transition:background .12s linear}
 </style>
 </head>
 <body>
@@ -151,9 +188,11 @@
   </select>
   <button id="mute" type="button" aria-pressed="true">Voice off</button>
   <button id="board-btn" type="button">Leaderboard</button>
+  <button id="fs" type="button">Full screen</button>
   <button class="go" id="start" type="button">Start</button>
 </header>
 
+<div id="rail"></div>
 <div id="wrap">
   <div id="board">
     <svg id="map" viewBox="0 0 975 610" preserveAspectRatio="xMidYMid meet">
@@ -313,8 +352,15 @@ $("next").addEventListener("pointerdown", (e) => {
   fly.className = "piece flying";
   fly.style.width = r.width + "px"; fly.style.height = r.height + "px";
   document.body.appendChild(fly);
-  drag = { from: piece, fly, path: fly.querySelector("path"),
-    dx: e.clientX - r.left, dy: e.clientY - r.top,
+  /* 🚨 ON TOUCH THE PIECE RIDES ABOVE THE FINGER. Dragging with a mouse you
+     see the piece; dragging with a thumb your hand is on top of it, so both the
+     shape AND its temperature are hidden under the very thing moving it. Lifting
+     it clear is what makes warm-and-cold usable on a phone at all. The lift is
+     part of dy, so where you SEE the piece is where it is judged - the finger is
+     simply a handle below it. */
+  const lift = e.pointerType === "touch" ? Math.max(58, r.height * 0.75) : 0;
+  drag = { from: piece, fly, path: fly.querySelector("path"), lift,
+    dx: e.clientX - r.left, dy: e.clientY - r.top + lift,
     x: r.left, y: r.top, w: r.width, h: r.height,
     mapRect: map.getBoundingClientRect(), vb: map.viewBox.baseVal };
   piece.style.visibility = "hidden";
@@ -405,7 +451,9 @@ function paint() {
     const t = d <= NEAR ? 1
       : d <= tol ? EDGE + (BAND - EDGE) * (1 - (d - NEAR) / (tol - NEAR))
       : Math.max(0, EDGE * (1 - (d - tol) / 260));
-    drag.path.style.fill = heat(t);
+    const c = heat(t);
+    drag.path.style.fill = c;
+    $("rail").style.background = c;      /* where a hand cannot cover it */
   }
 }
 
@@ -414,10 +462,13 @@ $("next").addEventListener("pointerup", (e) => {
   drag.x = e.clientX - drag.dx; drag.y = e.clientY - drag.dy;
   const ok = distance() <= tolerance();
   const d = drag; drag = null;
+  $("rail").style.background = "";
   for (const n in slots) slots[n].classList.remove("hot");
   if (ok) land(d); else { streak = 0; goBack(d); }
 });
-$("next").addEventListener("pointercancel", () => { if (drag) { goBack(drag); drag = null; } });
+$("next").addEventListener("pointercancel", () => {
+  if (drag) { goBack(drag); drag = null; $("rail").style.background = ""; }
+});
 
 function land(d) {
   const s = current, r = d.mapRect, vb = d.vb;
@@ -526,6 +577,24 @@ function showBoard(hn, hs) {
     : "<tr><td>Nobody has finished a run yet.</td></tr>";
   $("lb-v").classList.remove("hide");
 }
+/* Full screen is the difference between a usable map and a postage stamp on a
+   phone. It has to be triggered by a real tap - browsers refuse it otherwise -
+   so it is a button rather than something clever on load. */
+$("fs").onclick = async () => {
+  try {
+    if (document.fullscreenElement) { await document.exitFullscreen(); return; }
+    await document.documentElement.requestFullscreen();
+    if (screen.orientation && screen.orientation.lock) {
+      /* landscape suits a map that is wider than it is tall. Allowed to fail:
+         most desktops and some phones refuse, and that is fine. */
+      try { await screen.orientation.lock("landscape"); } catch (e) {}
+    }
+  } catch (e) {}
+};
+document.addEventListener("fullscreenchange", () => {
+  $("fs").textContent = document.fullscreenElement ? "Exit full screen" : "Full screen";
+});
+
 $("board-btn").onclick = () => showBoard();
 $("lb-close").onclick = () => $("lb-v").classList.add("hide");
 
