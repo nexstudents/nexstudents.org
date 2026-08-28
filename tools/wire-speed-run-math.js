@@ -1,4 +1,4 @@
-/* FlyBy on the Games shelf and in the menu. */
+/* Speed Run Math on the Games shelf and in the menu. */
 const fs = require("fs");
 let n = 0;
 const edit = (f, pairs) => {
@@ -12,7 +12,7 @@ const edit = (f, pairs) => {
 
 edit("build-pages.js", [[
   '  { title: "Remainder race", subject: "Maths" },',
-  '  { title: "FlyBy Speed Run", href: "/games/flyby-speed-run/", subject: "Maths",\n' +
+  '  { title: "Speed Run Math", href: "/games/speed-run-math/", subject: "Maths",\n' +
   '    blurb: "A timed multiplication drill. Pick the tables you want to work on, answer against the clock, and earn a rank from Recruit to Pilot.",\n' +
   '    note: "Choose your tables &middot; 2 to 10 minutes" },\n' +
   '  { title: "Remainder race", subject: "Maths" },'
@@ -20,11 +20,11 @@ edit("build-pages.js", [[
 
 edit("nav.js", [[
   'col("Maths", [{ label: "Remainder race" }, { label: "Fraction match" }]) +',
-  'col("Maths", [{ label: "FlyBy Speed Run", href: "/games/flyby-speed-run/" },\n' +
+  'col("Maths", [{ label: "Speed Run Math", href: "/games/speed-run-math/" },\n' +
   '               { label: "Remainder race" }, { label: "Fraction match" }]) +'
 ], [
   '  { label: "Remainder race", soon: true }, { label: "Fraction match", soon: true },',
-  '  { label: "FlyBy Speed Run", href: "/games/flyby-speed-run/", note: "Multiplication, timed" },\n' +
+  '  { label: "Speed Run Math", href: "/games/speed-run-math/", note: "Multiplication, timed" },\n' +
   '  { label: "Remainder race", soon: true }, { label: "Fraction match", soon: true },'
 ], [
   "Show Me The States is playable now. The rest go up as they are built.",

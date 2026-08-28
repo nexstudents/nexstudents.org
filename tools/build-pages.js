@@ -769,7 +769,7 @@ const GAMES = [
   { title: "Show Me The States", href: "/games/show-me-the-states/", subject: "History",
     blurb: "Drag all fifty states onto the map against the clock, then place the capitals. Warm and cold guides you, and the map colours in by region as you go.",
     note: "Three levels &middot; 50 states &middot; 50 capitals" },
-  { title: "FlyBy Speed Run", href: "/games/flyby-speed-run/", subject: "Maths",
+  { title: "Speed Run Math", href: "/games/speed-run-math/", subject: "Maths",
     blurb: "A timed multiplication drill. Pick the tables you want to work on, answer against the clock, and earn a rank from Recruit to Pilot.",
     note: "Choose your tables &middot; 2 to 10 minutes" },
   { title: "Remainder race", subject: "Maths" },
