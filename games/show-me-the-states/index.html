@@ -131,17 +131,29 @@
      the corner and it stole width the map badly needed. Across the bottom it
      costs height, which a landscape phone has spare, and the map gets the rest. */
   @media(max-width:820px), (max-height:520px){
-    #wrap{flex-direction:column}
+    /* 🚨 A FLOATING CORNER BOX, not a bar. A bar costs the map a strip of
+       height it cannot spare on a phone; the box sits over water in the
+       bottom-right and costs nothing. It is sized ONCE to the largest state so
+       it never jumps about as pieces come and go - a panel that resizes under
+       your thumb is far worse than one that is slightly too big. */
+    #wrap{position:relative}
+    #board{position:absolute;inset:0}
+    #next{position:absolute;right:10px;bottom:10px;width:auto;height:auto;
+      flex:none;border:1px solid var(--line);border-top:1px solid var(--line);
+      border-radius:14px;background:rgba(22,28,35,.93);padding:10px 12px 8px;
+      box-shadow:0 10px 26px rgba(0,0,0,.55);gap:4px;z-index:5;overflow:visible;
+      flex-direction:column;justify-content:center}
     /* ⚠️ min-height:0 or the map refuses to shrink and pushes the bar off the
        bottom of the screen. A flex item defaults to min-height:auto, which
        means "never smaller than my content" - and an SVG set to 100% height
        counts as content. Same trap as min-width:0 in a row. */
     #board{min-height:0}
-    #next{width:100%;flex-direction:row;justify-content:center;gap:16px;
-          border-left:0;border-top:1px solid var(--line);padding:8px 14px;
-          height:118px;flex:none}
+    /* ⚠️ the old full-width BAR rule lived here and silently beat the corner
+       box above it - same selector, later in the same block, so it won.
+       Deleted rather than reordered: two #next rules fighting is how it got
+       overlooked in the first place. */
     #next h2{display:none}
-    #hint{min-height:0;max-width:15ch;text-align:left}
+    #hint{min-height:0;max-width:16ch;text-align:center;font-size:.72rem;margin:0}
     .legend{display:none}
     header{gap:9px;padding:7px 10px}
     h1{font-size:.85rem} .clock{font-size:1.2rem}
@@ -150,7 +162,8 @@
   /* very short - a landscape phone - claws back every pixel */
   @media(max-height:430px){
     header{padding:4px 10px} h1{display:none}
-    #next{height:96px}
+    #next{padding:8px 10px 6px}
+    #hint{display:none}          /* every pixel counts once the phone is flat */
   }
   @media(max-width:820px){
     /* the level names are long; the level is obvious once you play it */
@@ -294,11 +307,41 @@ function begin() {
   tick = setInterval(() => {
     $("clock").textContent = mmss(Math.floor((Date.now() - t0) / 1000));
   }, 200);
+  sizeBox();
   deal();
 }
 $("start").onclick = begin;
 
 /* ── one at a time ────────────────────────────────────────────────────── */
+/* The box is sized to the LARGEST state at the current map scale, so whatever
+   turns up fits without the panel resizing. Recomputed only when the map is,
+   because that is the only thing that changes it. */
+function sizeBox() {
+  const K = mapScale();
+  /* 🚨 NOT the largest state - that is Alaska, and a box built to hold Alaska
+     swallows half the map. Sized to the 75th percentile instead and capped to a
+     share of the board, with overflow left visible so the two or three giants
+     simply overhang it. The box is a backing panel, not a container: a piece
+     hanging over its edge looks fine, a box the size of Alaska does not. */
+  const ws = STATES.map(s => (s.b[2] - s.b[0]) * K).sort((a, b) => a - b);
+  const hs = STATES.map(s => (s.b[3] - s.b[1]) * K).sort((a, b) => a - b);
+  const pct = (arr, p) => arr[Math.floor(arr.length * p)];
+  const br = $("board").getBoundingClientRect();
+  /* a TYPICAL state, not a big one. Paul: "a small box in the corner not a box
+     covering the whole entire bottom side". Sized near the middle of the range
+     and capped hard, so it stays a corner box on any screen. */
+  let w = Math.max(84, Math.min(pct(ws, 0.55), br.width * 0.2));
+  let h = Math.max(74, Math.min(pct(hs, 0.55), br.height * 0.26));
+  const box = $("next");
+  const floating = getComputedStyle(box).position === "absolute";
+  if (floating) {
+    box.style.minWidth = Math.ceil(w) + 24 + "px";
+    box.style.minHeight = Math.ceil(h) + 34 + "px";
+  } else {
+    box.style.minWidth = ""; box.style.minHeight = "";
+  }
+}
+
 function deal() {
   holder.textContent = "";
   current = queue.shift();
@@ -325,6 +368,7 @@ function deal() {
     $("hint").innerHTML = "Where is the capital of<br><b>" + s.n + "</b>?";
   }
   holder.appendChild(box);
+  sizeBox();
   setTimeout(() => box.classList.remove("in"), 360);
 }
 
@@ -643,6 +687,7 @@ let rz = 0;
 addEventListener("resize", () => {
   clearTimeout(rz);
   rz = setTimeout(() => {
+    sizeBox();
     if (!running || !current || phase !== 1) return;
     queue.unshift(current);
     deal();
