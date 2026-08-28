@@ -220,44 +220,6 @@ const empty = (line) => `<div class="band"><div class="wrap">
   </div>
 </div></div>`;
 
-/* ── THE HOME RAIL ────────────────────────────────────────────────────────
-   Free first, then paid, so the strongest thing the site has leads. Only ever
-   what exists - see tools/add-home-rail.js for what this replaced. */
-const SUBJ_TOKEN = { English: "english", History: "history", Maths: "maths", Science: "science" };
-
-const railCard = (x) => {
-  const free = (x.price || "$0") === "$0";
-  return '<a class="res" href="' + x.href + '" data-kind="' + (free ? "free" : "paid") +
-    '" data-subject="' + (SUBJ_TOKEN[x.subject] || "") + '">' +
-    '<div class="thumb">' +
-    '<span class="badge ' + (free ? "free" : "paid") + '">' + (free ? "Free" : "Packet") + "</span>" +
-    (x.thumb ? '<img src="' + x.thumb + '" alt="" loading="lazy" decoding="async">' : "<u>Preview</u>") +
-    "</div>" +
-    '<div class="body"><h4>' + x.title + "</h4>" +
-    "<p>" + x.blurb + "</p>" +
-    '<div class="meta"><span>' + x.meta + "</span><b>" +
-    (free ? "Free" : x.price) + "</b></div></div></a>";
-};
-
-/* free first, then paid - the order IS the message */
-const railCards = () => {
-  const items = WORKSHEETS.slice().sort((a, b) => {
-    const fa = (a.price || "$0") === "$0", fb = (b.price || "$0") === "$0";
-    return fa === fb ? 0 : fa ? -1 : 1;
-  });
-  return items.map(railCard).join("\n    ");
-};
-
-const railFilters = () => {
-  const live = [...new Set(WORKSHEETS.map(w => w.subject))];
-  return ['<button aria-pressed="true" data-f="all">Everything</button>',
-    '<button aria-pressed="false" data-f="free">Free</button>',
-    '<button aria-pressed="false" data-f="paid">Packets</button>']
-    .concat(SUBJECTS.filter(s => live.includes(s.name))
-      .map(s => '<button aria-pressed="false" data-f="' + SUBJ_TOKEN[s.name] + '">' + s.name + "</button>"))
-    .join("\n    ");
-};
-
 /* The grade picker, as its own page. Each grade needs a real URL eventually -
    /grade-7/ is exactly the sort of page that can rank against nexstudent.org. */
 /* Which grades are live, derived from the two registries rather than listed by
@@ -763,32 +725,6 @@ const subjectRows = (grade) => {
   </div>`;
 };
 
-/* The games shelf. One real entry so far; the rest say plainly that they are
-   not built rather than pretending to be links. */
-const GAMES = [
-  { title: "Place the State", href: "/games/place-the-state/", subject: "History",
-    blurb: "Drag all fifty states onto the map against the clock, then place the capitals. Warm and cold guides you, and the map colours in by region as you go.",
-    note: "Three levels &middot; 50 states &middot; 50 capitals" },
-  { title: "Remainder race", subject: "Maths" },
-  { title: "Fraction match", subject: "Maths" },
-  { title: "Spelling ladder", subject: "English" },
-  { title: "Comma catcher", subject: "English" },
-  { title: "Sort the mixture", subject: "Science" },
-];
-
-const gameTile = (g) => g.href
-  ? '<a class="tile" href="' + g.href + '">' +
-    '<p class="kick">' + g.subject + "</p><h4>" + g.title + "</h4>" +
-    "<p>" + g.blurb + "</p><u>" + g.note + " &rarr;</u></a>"
-  : '<div class="tile is-soon" aria-disabled="true">' +
-    '<p class="kick">' + g.subject + "</p><h4>" + g.title + "</h4>" +
-    "<p>Not built yet.</p></div>";
-
-const gamesPage = () =>
-  '<div class="band"><div class="wrap"><div class="tiles">' +
-  GAMES.map(gameTile).join("") +
-  "</div></div></div>";
-
 const subjectsPage = () => `<div class="band"><div class="wrap">
   ${subjectRows(null)}
   <p class="h2s" style="margin-top:30px">A subject goes live when it has enough in it to be worth
@@ -846,7 +782,7 @@ const pages = [
     desc: "Browser games that practise the same skills as the worksheets.",
     crumb: "Games", h1: "Practice that does not feel like a worksheet.",
     lead: "Short browser games built around the same skills the worksheets cover. Nothing to install and nothing to sign up for, and getting one wrong never sends a student back to the start.",
-    body: gamesPage() },
+    body: empty("The first games are being built. They will appear here as they are finished.") },
 
   { dir: "comics", active: "c",
     title: "Comics — NexStudents",
@@ -1183,36 +1119,6 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
     /<button aria-label="Dismiss"[^>]*>&times;<\/button>/,
     '<button aria-label="Dismiss" data-ann-close>&times;</button>'
   );
-  /* THE RAIL. Sentinel-delimited and REPLACED, never appended - the nav script
-     taught us that an append-if-missing splice leaves the broken copy in place
-     and looks like the fix did not work. */
-  const R_OPEN = "<!-- ns:rail -->", R_END = "<!-- /ns:rail -->";
-  const railBlock = R_OPEN + "\n    " + railCards() + "\n  " + R_END;
-  if (newHome.includes(R_OPEN)) {
-    newHome = newHome.replace(new RegExp(R_OPEN + "[\\s\\S]*?" + R_END), railBlock);
-  } else {
-    newHome = newHome.replace(/(<div class="rail rv d1" id="rail">)[\s\S]*?(\n  <\/div>)/,
-      "$1\n  " + railBlock + "$2");
-  }
-
-  const F_OPEN = "<!-- ns:filters -->", F_END = "<!-- /ns:filters -->";
-  const filterBlock = F_OPEN + "\n    " + railFilters() + "\n  " + F_END;
-  if (newHome.includes(F_OPEN)) {
-    newHome = newHome.replace(new RegExp(F_OPEN + "[\\s\\S]*?" + F_END), filterBlock);
-  } else {
-    newHome = newHome.replace(/(<div class="filters rv" id="filters">)[\s\S]*?(\n  <\/div>)/,
-      "$1\n  " + filterBlock + "$2");
-  }
-
-  /* GUARD: the rail must hold only real, linked items. A card with no href is
-     how the fictional shelf survived for months. */
-  const cards = (newHome.match(/class="res"/g) || []).length;
-  const linked = (newHome.match(/<a class="res" href="\//g) || []).length;
-  if (!cards || cards !== linked) {
-    console.error("FAIL: home rail has " + cards + " cards but " + linked + " links");
-    process.exit(1);
-  }
-
   if (!newHome.includes("ns:ann")) {
     newHome = newHome.replace(/<\/body>/,
       "<scr" + "ipt>(function(){var a=document.getElementById('ann');if(!a)return;" +
