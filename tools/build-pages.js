@@ -766,7 +766,7 @@ const subjectRows = (grade) => {
 /* The games shelf. One real entry so far; the rest say plainly that they are
    not built rather than pretending to be links. */
 const GAMES = [
-  { title: "Place the State", href: "/games/place-the-state/", subject: "History",
+  { title: "Show Me The States", href: "/games/show-me-the-states/", subject: "History",
     blurb: "Drag all fifty states onto the map against the clock, then place the capitals. Warm and cold guides you, and the map colours in by region as you go.",
     note: "Three levels &middot; 50 states &middot; 50 capitals" },
   { title: "Remainder race", subject: "Maths" },
