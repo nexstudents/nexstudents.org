@@ -72,9 +72,17 @@ const gradeName = (g) => (g === "K" ? "Kindergarten" : "Grade " + g);
 /* A grade's URL is its label lowercased: "K" lives at /grade-k/. */
 const gslug = (g) => String(g).toLowerCase();
 
-const gradeTiles = () => ALL_GRADES.map(g => LIVE_GRADES.includes(g)
-  ? '<a class="mg-grade live" href="/grade-' + gslug(g) + '/"><b>' + g + '</b><span>Live</span></a>'
-  : '<span class="mg-grade soon"><b>' + g + '</b><span>Soon</span></span>'
+/* 🚨 EVERY GRADE IS TAPPABLE. Paul, 2026-08-29: "why is 1, 2, 4, and 5 not
+   tappable on the homepage? i want this the entire site."
+
+   Every grade x subject shelf is now built, so all nine tiles are real links.
+   The Live / Soon badge still tells the truth about what is IN a year — a
+   parent can see at a glance where the depth is — but nothing on this site is
+   a dead tile any more. Nothing in ALL_GRADES may be unlinked. */
+const gradeTiles = () => ALL_GRADES.map(g =>
+  '<a class="mg-grade ' + (LIVE_GRADES.includes(g) ? "live" : "soon") +
+  '" href="/grade-' + gslug(g) + '/"><b>' + g + "</b><span>" +
+  (LIVE_GRADES.includes(g) ? "Live" : "Soon") + "</span></a>"
 ).join("");
 
 const col = (heading, links) =>
@@ -111,16 +119,15 @@ const MENUS = {
        the top of tools/fix-resources-menu.js. */
     body: '<div class="mg-cols">' +
       col("What We Use", [
-        { label: "Books and Readers", href: "/resources/" },
-        { label: "Tools and Supplies", href: "/resources/" },
+        { label: "Books and Readers", href: "/resources/books-and-readers/" },
+        { label: "Tools and Supplies", href: "/resources/tools-and-supplies/" },
       ]) +
       col("Extras", [
-        { label: "Science Experiments" },
-        { label: "Reading Lists" },
+        { label: "Science Experiments", href: "/resources/science-experiments/" },
+        { label: "Reading Lists", href: "/resources/reading-lists/" },
       ]) +
       col("Writing", [
-        { label: "Blog" },
-        { label: "More Coming" },
+        { label: "Blog", href: "/blog/" },
       ]) + "</div>" +
       '<p class="mg-note">Things we actually use, not a list copied off somebody else&rsquo;s blog. Any affiliate link is marked as one. Lessons and printables are not here &mdash; they live under each grade.</p>',
     promo: { href: "/worksheets/history/lewis-and-clark/",
@@ -129,15 +136,18 @@ const MENUS = {
              ratio: "1/1", label: "Free &middot; Lewis and Clark" },
   },
   g: {
-    /* The six the home page already lists. None are built, and every one says
-       so rather than pretending to be a link. */
+    /* Every game has a page. Two are playable; the other five open a page that
+       says what the game will be and what it is for, rather than a dead label.
+       Paul, 2026-08-29: "i want this the entire site." */
     body: '<div class="mg-cols">' +
       col("Maths", [{ label: "Speed Run Math", href: "/games/speed-run-math/" },
-               { label: "Remainder race" }, { label: "Fraction match" }]) +
-      col("English", [{ label: "Spelling ladder" }, { label: "Comma catcher" }]) +
+               { label: "Remainder Race", href: "/games/remainder-race/" },
+               { label: "Fraction Match", href: "/games/fraction-match/" }]) +
+      col("English", [{ label: "Spelling Ladder", href: "/games/spelling-ladder/" },
+               { label: "Comma Catcher", href: "/games/comma-catcher/" }]) +
       col("History", [{ label: "Show Me The States", href: "/games/show-me-the-states/" }]) +
-      col("Science", [{ label: "Sort the mixture" }]) + "</div>" +
-      '<p class="mg-note">Two are playable now. The rest go up as they are built.</p>',
+      col("Science", [{ label: "Sort the Mixture", href: "/games/sort-the-mixture/" }]) + "</div>" +
+      '<p class="mg-note">Two are playable now. The rest have a page saying what they will be.</p>',
   },
   c: {
     body: '<div class="mg-cols">' +
@@ -145,7 +155,7 @@ const MENUS = {
         { label: "Start at Episode 1", href: "/comics/" },
         { label: "All 8 Episodes", href: "/comics/" },
       ]) +
-      col("More strips", [{ label: "Being drawn" }]) + "</div>" +
+      col("More strips", [{ label: "What Is Coming", href: "/comics/more-strips/" }]) + "</div>" +
       '<p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p>',
     promo: { href: "/comics/", img: "/assets/comics/donut-boy-cover.jpg",
              alt: "The Adventures of Donut Boy cover",
@@ -188,8 +198,9 @@ const megaPanel = () => '<div class="mg-panel" id="megapanel" aria-hidden="true"
    A stack, not a drawer with a grid stapled on. The row opens the sheet; the
    section's page is a "View …" row inside it.
    ------------------------------------------------------------------------ */
+/* Same rule as dsTile: a row with an href is a link, whatever its badge says. */
 const dsRow = (r) => {
-  if (r.soon) return '<span class="dsr soon">' + r.label + "<small>Being built</small></span>";
+  if (!r.href && !r.sub) return '<span class="dsr soon">' + r.label + "<small>Being built</small></span>";
   if (r.sub) return '<button class="dsr dsr-open" type="button" data-sub="' + r.sub + '">' +
     r.label + (r.note ? "<small>" + r.note + "</small>" : "") + '<i aria-hidden="true">&#8250;</i></button>';
   return '<a class="dsr" href="' + r.href + '">' + r.label +
@@ -200,13 +211,18 @@ const dsRow = (r) => {
    sub. It only knew how to be a button, so pointing the grades straight at
    their pages produced data-sub="undefined" on every tile - caught by the
    build-worksheets guard that fails on the word undefined in a page. */
-const dsTile = (r) => r.soon
-  ? '<span class="dst soon"><b>' + r.short + "</b></span>"
-  : r.href
-  ? '<a class="dst" href="' + r.href + '" aria-label="' + r.label + '"><b>' +
-    r.short + "</b></a>"
-  : '<button class="dst" type="button" data-sub="' + r.sub + '" aria-label="' +
-    r.label + '"><b>' + r.short + "</b></button>";
+/* 🚨 href WINS OVER soon. `soon` is a BADGE describing how much is in there,
+   not a decision about whether you can go. It used to be tested first, which
+   silently swallowed the href on every grade tile and left them as dead
+   spans — the phone half of what Paul found on the home page 2026-08-29:
+   "why is 1, 2, 4, and 5 not tappable ... i want this the entire site." */
+const dsTile = (r) => r.href
+  ? '<a class="dst' + (r.soon ? " soon" : "") + '" href="' + r.href +
+    '" aria-label="' + r.label + '"><b>' + r.short + "</b></a>"
+  : r.sub
+  ? '<button class="dst" type="button" data-sub="' + r.sub + '" aria-label="' +
+    r.label + '"><b>' + r.short + "</b></button>"
+  : '<span class="dst soon"><b>' + r.short + "</b></span>";
 
 const SHEETS = {};
 
@@ -223,30 +239,38 @@ const SHEETS = {};
    lessons and its worksheets, and it does it better than a menu can. The tile
    is a link now, exactly as it already was on desktop, so the two behave the
    same and the menu stops competing with the page it leads to. */
+/* Every grade is a link on the phone too. Same rule as gradeTiles: the badge
+   reports depth, the tile always opens. */
 SHEETS.gr = { title: "Grades", parent: null, grid: true, promo: MENUS.gr.promo, rows:
-  ALL_GRADES.map(g => LIVE_GRADES.includes(g)
-    ? { label: gradeName(g), short: g, href: "/grade-" + gslug(g) + "/" }
-    : { label: gradeName(g), short: g, soon: true })
+  ALL_GRADES.map(g => ({
+    label: gradeName(g), short: g,
+    href: "/grade-" + gslug(g) + "/",
+    soon: !LIVE_GRADES.includes(g),
+  }))
 };
 
 SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS.r.promo, rows: [
   { label: "What We Use", href: "/resources/", note: "Books, tools and supplies" },
-  { label: "Science Experiments", soon: true },
-  { label: "Reading Lists", soon: true },
-  { label: "Blog", soon: true },
+  { label: "Books and Readers", href: "/resources/books-and-readers/", note: "What he actually reads" },
+  { label: "Tools and Supplies", href: "/resources/tools-and-supplies/", note: "Paper, pencils, the desk" },
+  { label: "Science Experiments", href: "/resources/science-experiments/", note: "Run them at home" },
+  { label: "Reading Lists", href: "/resources/reading-lists/", note: "By grade" },
+  { label: "Blog", href: "/blog/", note: "How we teach it" },
 ]};
 
 SHEETS.g = { title: "Games", parent: null, view: "/games/", rows: [
   { label: "Speed Run Math", href: "/games/speed-run-math/", note: "Multiplication, timed" },
-  { label: "Remainder race", soon: true }, { label: "Fraction match", soon: true },
-  { label: "Spelling ladder", soon: true }, { label: "Comma catcher", soon: true },
+  { label: "Remainder Race", href: "/games/remainder-race/", note: "Being built" },
+  { label: "Fraction Match", href: "/games/fraction-match/", note: "Being built" },
+  { label: "Spelling Ladder", href: "/games/spelling-ladder/", note: "Being built" },
+  { label: "Comma Catcher", href: "/games/comma-catcher/", note: "Being built" },
   { label: "Show Me The States", href: "/games/show-me-the-states/", note: "Fifty states and capitals" },
-  { label: "Sort the mixture", soon: true },
+  { label: "Sort the Mixture", href: "/games/sort-the-mixture/", note: "Being built" },
 ]};
 
 SHEETS.c = { title: "Comics", parent: null, view: "/comics/", promo: MENUS.c.promo, rows: [
   { label: "Donut Boy", href: "/comics/", note: "8 episodes" },
-  { label: "More Strips", soon: true },
+  { label: "More Strips", href: "/comics/more-strips/", note: "What is coming" },
 ]};
 
 SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
@@ -310,10 +334,13 @@ ${drawerSubs()}
     <i></i><i></i><i></i>
   </button>
   <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
-  ${navIcons()}
   <div class="tabs">${tabs(active)}</div>
   ${modeButton()}
-  <a class="${b}" href="/#grades">Pick a Grade</a>
+  ${/* Sign in and cart sit where "Pick a Grade" used to. Paul, 2026-08-29.
+       The button was redundant anyway: Grades is a nav tab with its own mega
+       panel holding all nine years, so the page already had two doors to the
+       same room and none to an account. */""}
+  ${navIcons()}
 </div>
 ${megaPanel()}
 </nav>`;
@@ -327,19 +354,25 @@ const faviconTags = () =>
   '<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">\n' +
   '<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">';
 
+/* 🚨 SIGN IN AND CART, and they are LINKS. Paul, 2026-08-29: "remove pick a
+   grade from the homepage and put in that spot the login and shopping cart."
+
+   They used to be aria-disabled buttons that did nothing. Neither the accounts
+   backend nor the cart exists yet (ROADMAP items 6 and 7), so each one opens a
+   page that says plainly where it stands and what it will do, rather than
+   being a control that visibly ignores you. A dead button is worse than an
+   honest page — that is the same rule that put a page behind every game. */
 const navIcons = () =>
   '<div class="navicons">' +
-  '<button class="navicon" type="button" aria-disabled="true" ' +
-  'aria-label="Account, not built yet" title="Accounts are being built">' +
+  '<a class="navicon" href="/account/" aria-label="Sign in" title="Sign in">' +
   '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" ' +
   'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-  '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></button>' +
-  '<button class="navicon" type="button" aria-disabled="true" ' +
-  'aria-label="Cart, not built yet" title="The shop is being built">' +
+  '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></a>' +
+  '<a class="navicon" href="/cart/" aria-label="Cart" title="Cart">' +
   '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" ' +
   'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
   '<path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/>' +
-  '<circle cx="17" cy="19" r="1.4"/></svg></button>' +
+  '<circle cx="17" cy="19" r="1.4"/></svg></a>' +
   "</div>";
 
 const modeButton = (inDrawer) => inDrawer

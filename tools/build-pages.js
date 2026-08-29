@@ -281,10 +281,13 @@ const liveGrades = () => [...new Set(
    grade href ANY other way and Kindergarten 404s - see tools/fix-grade-slug.js. */
 const gslug = (g) => String(g).toLowerCase();
 
+/* Every grade tile is a link — home page, /grades/ and the nav all agree.
+   Paul, 2026-08-29: "i want this the entire site." The badge still says
+   whether a year has depth; it no longer decides whether you can get in. */
 const gradeCells = (live, cls) => ["K","1","2","3","4","5","6","7","8"].map(g =>
-  live.includes(g)
-    ? '<a class="gr live" href="/grade-' + gslug(g) + '/"><b>' + g + '</b><span>Live</span></a>'
-    : '<span class="gr soon"><b>' + g + '</b><span>Soon</span></span>'
+  '<a class="gr ' + (live.includes(String(g)) ? "live" : "soon") +
+  '" href="/grade-' + gslug(g) + '/"><b>' + g + "</b><span>" +
+  (live.includes(String(g)) ? "Live" : "Soon") + "</span></a>"
 ).join("\n    " + (cls || ""));
 
 const gradeGrid = () => {
@@ -874,20 +877,27 @@ const GAMES = [
   { title: "Speed Run Math", href: "/games/speed-run-math/", subject: "Maths",
     blurb: "A timed multiplication drill. Pick the tables you want to work on, answer against the clock, and earn a rank from Recruit to Pilot.",
     note: "Choose your tables &middot; 2 to 10 minutes" },
-  { title: "Remainder race", subject: "Maths" },
-  { title: "Fraction match", subject: "Maths" },
-  { title: "Spelling ladder", subject: "English" },
-  { title: "Comma catcher", subject: "English" },
-  { title: "Sort the mixture", subject: "Science" },
+  /* Names are Title Case, matching their own pages and the nav. Every one has
+     a page explaining what the game is for — none of them is a dead label. */
+  { title: "Remainder Race", href: "/games/remainder-race/", subject: "Maths", soon: true,
+    blurb: "Division where the leftover is the answer, not a mistake. Follows the Long Division lesson." },
+  { title: "Fraction Match", href: "/games/fraction-match/", subject: "Maths", soon: true,
+    blurb: "Spot that 2/4, 3/6 and 1/2 are the same number wearing different clothes." },
+  { title: "Spelling Ladder", href: "/games/spelling-ladder/", subject: "English", soon: true,
+    blurb: "Climb a word one letter at a time, drawn from the week's own spelling list." },
+  { title: "Comma Catcher", href: "/games/comma-catcher/", subject: "English", soon: true,
+    blurb: "Fix the sentence that says the wrong thing, using one comma." },
+  { title: "Sort the Mixture", href: "/games/sort-the-mixture/", subject: "Science", soon: true,
+    blurb: "Filter, evaporate or magnet. Pick wrong and watch nothing separate." },
 ];
 
-const gameTile = (g) => g.href
-  ? '<a class="tile" href="' + g.href + '">' +
-    '<p class="kick">' + g.subject + "</p><h4>" + g.title + "</h4>" +
-    "<p>" + g.blurb + "</p><u>" + g.note + " &rarr;</u></a>"
-  : '<div class="tile is-soon" aria-disabled="true">' +
-    '<p class="kick">' + g.subject + "</p><h4>" + g.title + "</h4>" +
-    "<p>Not built yet.</p></div>";
+/* Every game is a tile you can open, built or not. An unbuilt one says so on
+   its badge and opens a page explaining what the game is for — Paul,
+   2026-08-29: "i want this the entire site." */
+const gameTile = (g) => '<a class="tile' + (g.soon ? " is-soon" : "") + '" href="' + g.href + '">' +
+  '<p class="kick">' + g.subject + "</p><h4>" + g.title + "</h4>" +
+  "<p>" + (g.blurb || "") + "</p>" +
+  "<u>" + (g.note || (g.soon ? "What it will be" : "Play")) + " &rarr;</u></a>";
 
 const gamesPage = () =>
   '<div class="band"><div class="wrap"><div class="tiles">' +
@@ -1266,6 +1276,172 @@ for (const g of ALL_GRADES) {
   if (!live) for (let i = from; i < pages.length; i++) pages[i].noindex = true;
 }
 
+/* ── EVERY REMAINING MENU ITEM GETS A REAL PAGE ────────────────────────────
+   Paul, 2026-08-29: "i want this the entire site claude. even the resources,
+   about, for parents, games, comics, blog" and "stop resisting."
+
+   Nothing in the nav, the mega menu or the drawer is a dead label any more.
+   Where the thing is not built, the page says what it will be and why it is
+   worth waiting for, which is a real answer. BEHAVIOR.md already said it: "A
+   nav link to nowhere is worse than an empty page."
+
+   A game that is not built does NOT claim to be playable. It gets a page that
+   explains the game and what it drills, so a parent can see whether it is the
+   thing their student needs. */
+const soonPage = (heading, what, why, when) => `<div class="band"><div class="wrap">
+  ${group(heading, what, `<div class="tile" style="display:block;padding:26px">
+    <p style="margin:0 0 14px;line-height:1.7;max-width:62ch">${why}</p>
+    <p style="margin:0;color:var(--dim);font-size:.92rem;max-width:62ch">${when}</p>
+  </div>`)}
+</div></div>`;
+
+const SOON_PAGES = [
+  { dir: "games/remainder-race", active: "g",
+    title: "Remainder Race — NexStudents",
+    desc: "A division game where the remainder is the point, not the mistake.",
+    crumb: '<a href="/games/">Games</a> &rsaquo; Remainder Race',
+    h1: "Remainder Race.",
+    lead: "Not built yet. Here is what it will be.",
+    body: soonPage("What This Game Is For",
+      "Division where the remainder is the answer, not an error.",
+      "Long Division on this site deliberately has no remainders, because \"how many 3s fit into 2\" is its own idea and belongs in its own lesson. This game is that lesson made playable: divide under a clock and the leftover is what you are racing to name. A student who has only ever seen clean division freezes the first time one does not come out even.",
+      "It follows the Long Division lesson. That lesson is live now.") },
+
+  { dir: "games/fraction-match", active: "g",
+    title: "Fraction Match — NexStudents",
+    desc: "Match fractions that look different and are worth the same.",
+    crumb: '<a href="/games/">Games</a> &rsaquo; Fraction Match',
+    h1: "Fraction Match.",
+    lead: "Not built yet. Here is what it will be.",
+    body: soonPage("What This Game Is For",
+      "Seeing that 2/4, 3/6 and 1/2 are the same number wearing different clothes.",
+      "Equivalence is the single idea the rest of fractions rests on. Adding, subtracting and comparing all quietly assume a student can see that two different-looking fractions are the same size. Matching them by sight, again and again, builds that faster than a rule about multiplying top and bottom ever does.",
+      "After the maths shelf covers fractions.") },
+
+  { dir: "games/spelling-ladder", active: "g",
+    title: "Spelling Ladder — NexStudents",
+    desc: "Climb a word one letter at a time, from the weekly spelling list.",
+    crumb: '<a href="/games/">Games</a> &rsaquo; Spelling Ladder',
+    h1: "Spelling Ladder.",
+    lead: "Not built yet. Here is what it will be.",
+    body: soonPage("What This Game Is For",
+      "Practising the week's actual spelling words instead of a generic list.",
+      "The 36-week phonics list already lives in the site's own data, so this game draws from the words a student is genuinely being tested on that week rather than words somebody else chose. Every word on that list is decodable by rule — no sight words — so climbing the ladder rewards knowing the pattern, not remembering a shape.",
+      "Cheapest of the games to build, because the word list already exists.") },
+
+  { dir: "games/comma-catcher", active: "g",
+    title: "Comma Catcher — NexStudents",
+    desc: "Find the missing comma before the sentence changes meaning.",
+    crumb: '<a href="/games/">Games</a> &rsaquo; Comma Catcher',
+    h1: "Comma Catcher.",
+    lead: "Not built yet. Here is what it will be.",
+    body: soonPage("What This Game Is For",
+      "Comma rules taught by consequence rather than by list.",
+      "Nobody remembers a list of eight comma rules. What sticks is watching a sentence change meaning when the comma moves. So the game shows a sentence that says the wrong thing, and the job is to fix it with one mark — the rule is learned from what went wrong, which is how the good grammar books did it.",
+      "After the parts of speech run, since it assumes clauses.") },
+
+  { dir: "games/sort-the-mixture", active: "g",
+    title: "Sort the Mixture — NexStudents",
+    desc: "Separate a mixture the way you actually would on a bench.",
+    crumb: '<a href="/games/">Games</a> &rsaquo; Sort the Mixture',
+    h1: "Sort the Mixture.",
+    lead: "Not built yet. Here is what it will be.",
+    body: soonPage("What This Game Is For",
+      "Choosing the right way to separate things, and seeing why the wrong one fails.",
+      "Filtering, evaporating, using a magnet, letting something settle: which one works depends on what is actually different about the two substances. Picking wrong and watching nothing separate teaches the property that matters far better than a labelled diagram does.",
+      "Waiting on the science shelf, which has nothing on it yet.") },
+
+  { dir: "comics/more-strips", active: "c",
+    title: "More Strips — NexStudents",
+    desc: "What is coming after Donut Boy.",
+    crumb: '<a href="/comics/">Comics</a> &rsaquo; More Strips',
+    h1: "More Strips.",
+    lead: "Donut Boy has eight episodes. Here is what comes next.",
+    body: soonPage("What Is Being Drawn",
+      "A second series, and more Donut Boy.",
+      "Comics are on this site for a plain reason: they are a reason to come back, and a student who returns reads more. Donut Boy runs to eight episodes with Kolten as the hero, and it keeps going. A second series has not been drawn yet.",
+      "New episodes go up as they are finished. Nothing to download, all read on the site.") },
+
+  { dir: "resources/books-and-readers", active: "r",
+    title: "Books and Readers — NexStudents",
+    desc: "The books we actually read, and the older readers we teach from.",
+    crumb: '<a href="/resources/">Resources</a> &rsaquo; Books and Readers',
+    h1: "Books and Readers.",
+    lead: "What we actually read here, including the older books that teach better than most of what is sold new.",
+    body: soonPage("Being Written Up",
+      "Real books, with a reason attached to each one.",
+      "A reading list with no reasoning on it is just a list. This page will say what each book is for, what reading level it actually sits at, and why it earned a place — including the public domain readers, like McGuffey, which teach phonics and reading together and cost nothing.",
+      "Being written up now. Any affiliate link will be marked as one.") },
+
+  { dir: "resources/tools-and-supplies", active: "r",
+    title: "Tools and Supplies — NexStudents",
+    desc: "The paper, pencils and gear we actually use.",
+    crumb: '<a href="/resources/">Resources</a> &rsaquo; Tools and Supplies',
+    h1: "Tools and Supplies.",
+    lead: "The unglamorous half of homeschooling: what to buy, and what not to bother with.",
+    body: soonPage("Being Written Up",
+      "What is worth buying, and what is not.",
+      "Most homeschool supply lists are aspirational. This one will be what is actually in use on the desk, including the cheap things that work as well as the expensive ones, and the things bought and regretted.",
+      "Being written up now. Any affiliate link will be marked as one.") },
+
+  { dir: "resources/science-experiments", active: "r",
+    title: "Science Experiments — NexStudents",
+    desc: "Experiments you can run at home with what is in the kitchen.",
+    crumb: '<a href="/resources/">Resources</a> &rsaquo; Science Experiments',
+    h1: "Science Experiments.",
+    lead: "Experiments that run on what is already in the kitchen, with a record sheet for each.",
+    body: soonPage("Being Written Up",
+      "Run it, watch it, write down what happened.",
+      "Science on a screen is not science. Each of these will be an experiment you can actually run at home, with a video walkthrough and a record sheet to write the observation on, because writing down what you saw is the part that turns a trick into a lesson.",
+      "Several are already run here and not yet written up: static electricity, surface tension, centre of mass.") },
+
+  { dir: "resources/reading-lists", active: "r",
+    title: "Reading Lists — NexStudents",
+    desc: "Reading lists by grade, with a reason attached to every book.",
+    crumb: '<a href="/resources/">Resources</a> &rsaquo; Reading Lists',
+    h1: "Reading Lists.",
+    lead: "By grade, and honest about level rather than flattering about it.",
+    body: soonPage("Being Written Up",
+      "Lists by year, with the real reading level stated.",
+      "A list that flatters a student's level is worse than no list, because it ends with a book abandoned at chapter two. These will say the actual level, and offer something at it as well as something to reach for.",
+      "Being written up now.") },
+
+  /* The two nav icons. Neither the accounts backend (ROADMAP 6) nor the cart
+     (ROADMAP 7) exists, so these say where things stand instead of being
+     buttons that ignore you. */
+  { dir: "account", active: "p",
+    title: "Sign In — NexStudents",
+    desc: "Accounts are being built. Here is what one will do.",
+    crumb: "Sign In", h1: "Sign In.",
+    lead: "There are no accounts yet. Here is what one will be for, and why it is taking a while.",
+    body: soonPage("What an Account Will Do",
+      "Carry progress between devices, and remember what you already bought.",
+      "Right now progress is saved in the browser you are using, which means it does not follow a student from the PC to the tablet, and there is no record of what a family has already paid for. An account fixes both. It is the first part of this site that needs a real server, which is why it is not a weekend job.",
+      "Accounts will be parent-owned, with students added underneath. A children's site holding children's own email addresses is a legal problem we are not going to create.") },
+
+  { dir: "cart", active: "p",
+    title: "Cart — NexStudents",
+    desc: "The cart is being built. Most of the site is free in the meantime.",
+    crumb: "Cart", h1: "Cart.",
+    lead: "Nothing in it, because there is no cart yet.",
+    body: soonPage("What the Shop Will Be",
+      "One payment, lifetime access. No subscription.",
+      "Most of this site is free and stays free. What gets paid for is the planning: a subject and a quarter, sequenced, with the pacing worked out. When the shop opens it will be a single payment that unlocks what you bought for good. There will be no subscription — that is a decision, not a placeholder.",
+      "Answer keys are always included free with the sheet, and are never sold separately.") },
+
+  { dir: "blog", active: "r",
+    title: "Blog — NexStudents",
+    desc: "Notes on teaching this material, from someone doing it.",
+    crumb: '<a href="/resources/">Resources</a> &rsaquo; Blog',
+    h1: "Blog.",
+    lead: "Notes from actually teaching this, not advice from someone who never has.",
+    body: soonPage("Nothing Posted Yet",
+      "Written while teaching, not after.",
+      "The first pieces are already obvious: why the workbooks stopped explaining things and what to do about it, what a 1990s teacher's edition had on every page that a modern one does not, and what actually moved the needle on reading. Written from a house where this is happening, not from a content calendar.",
+      "First post coming.") },
+];
+for (const p of SOON_PAGES) pages.push(p);
+
 /* 🚨 THE GUARD THAT KEEPS THE PROMISE HONEST.
    Every subject box on a grade page states a count and a destination. This
    walks the generated pages and fails the build if a box links somewhere that
@@ -1417,6 +1593,32 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
   } else {
     newHome = newHome.replace(/(<div class="rail rv d1" id="rail">)[\s\S]*?(\n  <\/div>)/,
       "$1\n  " + railBlock + "$2");
+  }
+
+  /* 🚨 THE GAMES RAIL WAS HAND-WRITTEN AND HAD GONE STALE, like everything
+     else on this page that was. It advertised six games, listed "Place the
+     state" — a name that has not existed since the game was renamed Show Me
+     The States — and did not mention EITHER of the two games that are actually
+     playable. Every card linked at /games/ rather than at a game.
+
+     Generated from the GAMES registry now, playable ones first, so the home
+     page cannot promise something the site does not have. That is the fifth
+     hand-kept block on this page found stale. */
+  const G_OPEN = "<!-- ns:games -->", G_END = "<!-- /ns:games -->";
+  /* Playable first, so the two real games are what a visitor meets. Every card
+     links at its own game, never at the shelf. */
+  const gameCards = [...GAMES].sort((a, b) => (a.soon ? 1 : 0) - (b.soon ? 1 : 0))
+    .map(g => '<a class="game" href="' + g.href + '">' +
+      '<div class="gart"><u>' + (g.soon ? "Soon" : "Play") + "</u></div>" +
+      '<div class="gbody"><em>' + g.subject + "</em><h4>" + g.title + "</h4>" +
+      "<p>" + (g.blurb || "") + "</p></div></a>")
+    .join("\n    ");
+  if (newHome.includes(G_OPEN)) {
+    newHome = newHome.replace(new RegExp(G_OPEN + "[\\s\\S]*?" + G_END),
+      G_OPEN + "\n    " + gameCards + "\n    " + G_END);
+  } else {
+    console.error("FAIL: the home page lost its <!-- ns:games --> markers.");
+    process.exit(1);
   }
 
   const F_OPEN = "<!-- ns:filters -->", F_END = "<!-- /ns:filters -->";
