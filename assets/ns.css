@@ -85,6 +85,32 @@ body{margin:0;background:var(--bg);color:var(--fg);
   font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
 a{color:inherit;text-decoration:none}
+
+/* ── RESOURCE CARD LINKS LOOK LIKE LINKS ───────────────────────────────────
+   Paul, 2026-08-29: "can you make the names look more like links with an
+   underline. i couldnt even tell they were links."
+
+   The global rule above strips colour and underline from every anchor, which
+   is right for nav tabs and whole-card links but wrong here: these are the one
+   place on the site where a link leaves for somewhere useful, and a reader has
+   to be able to SEE that before clicking. Accent colour and a real underline,
+   scoped so nothing else on the site changes.
+
+   The arrow marks it as leaving the site. It is on ::after so it never ends up
+   inside the link text a screen reader announces. */
+.res-card a{color:var(--a);text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1.5px;
+  transition:text-decoration-thickness .15s ease,filter .15s ease}
+.res-card h4 a{text-decoration-thickness:2px}
+.res-card a[target="_blank"]::after{content:"\2197";font-size:.82em;
+  margin-left:.28em;text-decoration:none;display:inline-block}
+@media(hover:hover){
+  .res-card a:hover{text-decoration-thickness:3px;filter:brightness(1.15)}
+}
+/* On light the accent alone is not enough separation from body text at this
+   size, so the underline carries a little more weight. */
+:root[data-theme="light"] .res-card a{text-decoration-thickness:2px}
+:root[data-theme="light"] .res-card h4 a{text-decoration-thickness:2.5px}
 h1,h2,h3{font-weight:800;letter-spacing:-.04em;line-height:1.03;margin:0}
 h2{font-size:clamp(1.8rem,3.5vw,2.7rem);max-width:22ch}
 .kick{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;

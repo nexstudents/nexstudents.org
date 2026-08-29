@@ -749,7 +749,7 @@ const fail = (msg) => { console.error("FAIL: " + msg); process.exit(1); };
    readers under one explanation beats six cards repeating the same paragraph.
    Every link opens in a new tab, because leaving the site mid-lesson to look
    at a book is not the same as navigating away from it. */
-const resourceCard = (r) => `<div class="tile" style="display:block;padding:24px">
+const resourceCard = (r) => `<div class="tile res-card" style="display:block;padding:24px">
     <p class="kick">${r.cost}${r.affiliate ? " &middot; affiliate link" : ""}</p>
     <h4 style="margin:6px 0 10px"><a href="${r.url}" target="_blank" rel="noopener">${r.title}</a></h4>
     <p style="margin:0 0 12px;line-height:1.65"><b>${r.what}</b></p>
