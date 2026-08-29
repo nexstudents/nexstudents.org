@@ -718,6 +718,77 @@ const emptyTile = (line) => `<div class="tile" style="min-height:170px;align-ite
       <div><h4 style="font-size:1.2rem">Nothing here yet</h4>
       <p style="max-width:44ch;margin-top:8px">${line}</p></div></div>`;
 
+/* ── RESOURCES ─────────────────────────────────────────────────────────────
+   Rendered from tools/resources.js, so a recommendation is added in one file
+   and lands on both its category page and the Resources index.
+
+   Every card carries WHY it earned a place, because a list with no reasoning
+   on it is just a list — the same argument as Ground Control on a lesson. */
+const { RESOURCES } = require("./resources.js");
+const fail = (msg) => { console.error("FAIL: " + msg); process.exit(1); };
+
+(function checkResources(){
+  const cats = new Set(["books-and-readers", "tools-and-supplies",
+                        "science-experiments", "reading-lists"]);
+  for (const r of RESOURCES) {
+    /* 🚨 `affiliate` must be EXPLICIT. BEHAVIOR.md: any affiliate link is
+       marked as one. Defaulting a missing value to false is how an unmarked
+       affiliate link ships by accident, so it fails the build instead. */
+    if (typeof r.affiliate !== "boolean")
+      fail("resource " + r.slug + " must set affiliate: true or false, explicitly");
+    if (!r.url || !/^https?:\/\//.test(r.url))
+      fail("resource " + r.slug + " needs a real URL — no placeholder links");
+    if (!r.why || r.why.length < 80)
+      fail("resource " + r.slug + " needs a real `why`. A link with no reasoning is just a list");
+    if (!cats.has(r.cat))
+      fail("resource " + r.slug + ' has cat "' + r.cat + '", which is not a resources page');
+  }
+})();
+
+const resourceCard = (r) => `<div class="tile" style="display:block;padding:24px">
+    <p class="kick">${r.cost}${r.affiliate ? " &middot; affiliate link" : ""}</p>
+    <h4 style="margin:6px 0 10px"><a href="${r.url}" target="_blank" rel="noopener">${r.title}</a></h4>
+    <p style="margin:0 0 12px;line-height:1.65"><b>${r.what}</b></p>
+    <p style="margin:0 0 12px;line-height:1.7">${r.why}</p>
+    <p style="margin:0;color:var(--dim);font-size:.9rem;line-height:1.6">${r.note}</p>
+  </div>`;
+
+const resourcesIn = (cat) => RESOURCES.filter((r) => r.cat === cat);
+
+const resourceList = (cat, emptyLine) => {
+  const list = resourcesIn(cat);
+  return `<div class="band"><div class="wrap">
+  ${list.length
+    ? '<div class="tiles">' + list.map(resourceCard).join("\n    ") + "</div>"
+    : emptyTile(emptyLine)}
+</div></div>`;
+};
+
+/* The index shows everything, grouped by category, so a parent who does not
+   know which sub-page they want still sees the lot. */
+const resourcesIndex = () => {
+  const groups = [
+    ["books-and-readers", "Books and Readers",
+     "Older books that teach better than most of what is sold new, and where to get them free."],
+    ["tools-and-supplies", "Tools and Supplies",
+     "What is actually in use here, including what we pay for."],
+    ["science-experiments", "Science Experiments",
+     "Experiments that run on what is already in the kitchen."],
+    ["reading-lists", "Reading Lists",
+     "By grade, honest about level rather than flattering about it."],
+  ].filter(([cat]) => resourcesIn(cat).length);
+
+  return `<div class="band"><div class="wrap">
+  ${groups.map(([cat, name, note]) =>
+    group(name, note, '<div class="tiles">' +
+      resourcesIn(cat).map(resourceCard).join("\n    ") + "</div>") +
+    '<p style="margin:14px 0 40px"><a href="/resources/' + cat + '/">All ' +
+      name.toLowerCase() + " &rarr;</a></p>").join("\n  ")}
+  <p class="h2s">Nothing is listed here because somebody paid for the slot. Anything that ever
+    is an affiliate link will say so on the card.</p>
+</div></div>`;
+};
+
 /* The grade landing: pick a grade, then pick lessons or worksheets.
    Two doors, because a lesson and a printable are different jobs -
    one is worked through on screen, the other gets printed. */
@@ -1174,8 +1245,8 @@ const pages = [
     title: "Resources — NexStudents",
     desc: "The books, tools and supplies we actually use for homeschooling.",
     crumb: "Resources", h1: "What We Actually Use.",
-    lead: "Books, tools and supplies from our own shelf, not a list copied off somebody else's blog. Worksheets and lessons are not here; those live under each grade, beside one another.",
-    body: empty("The first recommendations are being written up. Anything listed here will be something used in this house, and any affiliate link will be marked as one.") },
+    lead: "Books, tools and supplies from our own shelf, not a list copied off somebody else's blog. Every entry says why it earned a place, because a list with no reasoning on it is just a list. Worksheets and lessons are not here; those live under each grade.",
+    body: resourcesIndex() },
 
   { dir: "about", active: "a",
     title: "About — NexStudents",
@@ -1310,6 +1381,7 @@ const soonPage = (heading, what, why, when) => `<div class="band"><div class="wr
   </div>`)}
 </div></div>`;
 
+
 const SOON_PAGES = [
   { dir: "games/remainder-race", active: "g",
     title: "Remainder Race — NexStudents",
@@ -1382,22 +1454,18 @@ const SOON_PAGES = [
     desc: "The books we actually read, and the older readers we teach from.",
     crumb: '<a href="/resources/">Resources</a> &rsaquo; Books and Readers',
     h1: "Books and Readers.",
-    lead: "What we actually read here, including the older books that teach better than most of what is sold new.",
-    body: soonPage("Being Written Up",
-      "Real books, with a reason attached to each one.",
-      "A reading list with no reasoning on it is just a list. This page will say what each book is for, what reading level it actually sits at, and why it earned a place — including the public domain readers, like McGuffey, which teach phonics and reading together and cost nothing.",
-      "Being written up now. Any affiliate link will be marked as one.") },
+    lead: "What we actually read here, including the older books that teach better than most of what is sold new. Every one of these is free.",
+    body: resourceList("books-and-readers",
+      "The first books are being written up.") },
 
   { dir: "resources/tools-and-supplies", active: "r",
     title: "Tools and Supplies — NexStudents",
     desc: "The paper, pencils and gear we actually use.",
     crumb: '<a href="/resources/">Resources</a> &rsaquo; Tools and Supplies',
     h1: "Tools and Supplies.",
-    lead: "The unglamorous half of homeschooling: what to buy, and what not to bother with.",
-    body: soonPage("Being Written Up",
-      "What is worth buying, and what is not.",
-      "Most homeschool supply lists are aspirational. This one will be what is actually in use on the desk, including the cheap things that work as well as the expensive ones, and the things bought and regretted.",
-      "Being written up now. Any affiliate link will be marked as one.") },
+    lead: "The unglamorous half of homeschooling: what is actually in use here, including what we pay for.",
+    body: resourceList("tools-and-supplies",
+      "The first tools are being written up.") },
 
   { dir: "resources/science-experiments", active: "r",
     title: "Science Experiments — NexStudents",
