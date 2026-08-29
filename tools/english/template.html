@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ — NexStudents</title>
+<meta name="description" content="__DEK__">
+__CANONICAL__
+__MODEBOOT__
+__FAVICON__
+<link rel="stylesheet" href="/assets/ns.css">
+<link rel="stylesheet" href="/assets/lesson-nav.css">
+<style>
+.wrapx{max-width:900px;margin:0 auto;padding:0 20px}
+.ns-back{padding:18px 0}
+.ns-back a{color:var(--dim);text-decoration:none;font-size:.9rem}
+.ns-back a:hover{color:var(--fg)}
+h1{margin:0 0 6px}
+.dek{color:var(--dim);max-width:60ch;margin:0 0 22px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 22px}
+.section-head{margin:34px 0 4px;font-size:1.35rem}
+.section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
+
+/* Fallbacks. applyTheme() overwrites these the moment it runs. */
+:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38);--accent-soft:rgba(255,255,255,.14)}
+/* The site nav reads six variables of its own (assets/lesson-nav.css), mapped
+   onto this page's palette so the nav re-themes with the lesson.
+   NOTE: --pill belongs to ns.css and is a RADIUS. Never map a colour onto it. */
+:root{--nv-bg:var(--panel);--nv-fg:var(--fg);--nv-dim:var(--dim);
+  --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
+
+/* ── Ground Control ────────────────────────────────────────────────────────
+   The teacher panel, and the reason this page exists. It is deliberately the
+   FIRST thing on the page and deliberately shut by default: the parent opens
+   it before the lesson, the student never needs to. */
+.ground{border:1px solid var(--boxline);border-radius:var(--r);margin:0 0 26px;
+  background:var(--boxfill);overflow:hidden}
+.ground summary{cursor:pointer;padding:15px 18px;font-weight:700;list-style:none;
+  display:flex;align-items:center;gap:10px}
+.ground summary::-webkit-details-marker{display:none}
+.ground summary::after{content:"▾";margin-left:auto;color:var(--dim);
+  transition:transform .18s}
+.ground[open] summary::after{transform:rotate(180deg)}
+.ground summary:hover{color:var(--a)}
+.ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--dim);font-weight:600}
+.ground .gbody{padding:0 18px 18px;border-top:1px solid var(--line)}
+.ground h4{margin:18px 0 5px;font-size:.79rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--a)}
+.ground p{margin:0;line-height:1.6;max-width:68ch}
+.ground ul{margin:6px 0 0;padding-left:20px;line-height:1.65;max-width:68ch}
+.ground li{margin:0 0 7px}
+
+/* ── the rule ─────────────────────────────────────────────────────────────
+   A rule the student can point at. `.ruletest` is set apart on purpose: the
+   definition is what he is told, the test is what he can actually DO. */
+.rulebox{border:1px solid var(--a);border-radius:var(--r);padding:20px;margin:0 0 26px;
+  background:var(--accent-soft)}
+.rulebox .short{font-size:1.16rem;font-weight:700;margin:0 0 12px;line-height:1.45}
+.rulebox .long{margin:0;color:var(--fg);line-height:1.65;max-width:66ch}
+.ruletest{margin:16px 0 0;padding:14px 16px;border-radius:10px;
+  background:var(--panel);border:1px solid var(--boxline);line-height:1.6;max-width:66ch}
+.ruletest b:first-child{color:var(--a)}
+
+/* ── read-aloud ── */
+.player{display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 12px;margin:0 0 18px;text-align:center}
+.playmain{cursor:pointer;min-width:190px;font-size:1.02rem;padding:13px 28px;
+  border-radius:999px;border:1px solid var(--a);background:var(--a);color:var(--on-accent,#0b160f);
+  font-weight:700;justify-content:center;text-align:center}
+.playmain:hover{filter:brightness(1.06)}
+.playmeta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+select.rate{font-family:inherit;font-size:13px;font-weight:500;
+  color:var(--fg);background-color:var(--boxfill);
+  border:1px solid var(--boxline);border-radius:3px;cursor:pointer;max-width:100%;
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;padding:8px 27px 8px 10px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;background-size:11px 7px}
+select.rate:focus{outline:none;border-color:var(--a)}
+.nospeech{display:none;color:var(--dim);font-size:.85rem;margin:8px 0 0}
+.nospeech.show{display:block}
+.themerow{display:flex;align-items:center;gap:10px}
+.themerow .lbl{color:var(--dim);font-size:.85rem}
+.swatches{display:flex;gap:7px}
+.sw{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);padding:0;cursor:pointer}
+.sw[aria-pressed="true"]{border-color:var(--a);transform:scale(1.12)}
+
+/* ── taught prose ── */
+.part{margin:0 0 26px}
+.part h3{margin:0 0 8px;font-size:1.08rem}
+.part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
+.part p.on{background:var(--accent-soft);border-radius:6px;
+  box-shadow:0 0 0 6px var(--accent-soft)}
+
+/* ── worked examples ── */
+.ex{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;margin:0 0 12px}
+.ex .sent{font-size:1.1rem;line-height:1.6;margin:0 0 8px}
+.ex .sent u{text-decoration:none;color:var(--a);font-weight:700;
+  border-bottom:2px solid var(--a);padding-bottom:1px}
+.ex .why{margin:0;color:var(--dim);font-size:.93rem;line-height:1.6;max-width:66ch}
+
+/* ── practice: click the word ── */
+.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
+  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
+.tab:hover{color:var(--fg)}
+.actions{display:flex;flex-wrap:nowrap;gap:8px;margin:0 0 18px}
+.tab.act{flex:1 1 0;min-width:0;color:var(--fg);border-color:var(--boxline);
+  background:var(--boxfill);font-weight:600;white-space:nowrap;padding:11px 10px;font-size:.88rem}
+.tab.act:hover{border-color:var(--a)}
+.tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
+.prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:18px;margin:0 0 16px}
+.prob.solved{border-color:var(--free)}
+.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tag{font-size:.85rem;color:var(--dim)}
+.tag.done{color:var(--free);font-weight:700}
+.words{display:flex;flex-wrap:wrap;gap:6px}
+/* Every word is a target, so nothing about the layout hints at the answer.
+   A word that is not clickable would give it away. */
+.w{background:transparent;border:1px solid transparent;border-radius:7px;
+  color:var(--fg);font:inherit;font-size:1.06rem;padding:6px 8px;cursor:pointer;
+  transition:background .12s,border-color .12s}
+.w:hover{background:var(--boxfill);border-color:var(--boxline)}
+.w:disabled{cursor:default}
+.w.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
+.w.wrong{border-color:#e5484d;color:#e5484d}
+.w.reveal{border-color:var(--free);color:var(--free);font-weight:700}
+.nudge{margin-top:12px;font-size:.92rem;color:var(--dim);min-height:1.4em;line-height:1.6;max-width:66ch}
+.nudge.warn{color:#e5484d}
+.scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px;margin:22px 0 40px}
+.scorebar b{font-size:1.25rem}
+
+@media print{
+  .player,.themerow,.actions,.ns-back,.ground{display:none!important}
+  .prob{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+__NAV__
+
+<div class="wrapx">
+  <div class="ns-back"><a href="/english/">&larr; English</a></div>
+  <h1>__TITLE__</h1>
+  <p class="dek">__DEK__</p>
+
+  <details class="ground" id="ground">
+    <summary><span class="who">For the teacher</span> Ground Control</summary>
+    <div class="gbody">__GROUND__</div>
+  </details>
+
+  <div class="rulebox">
+    <p class="short">__RULE_SHORT__</p>
+    <p class="long">__RULE_LONG__</p>
+    __RULE_TEST__
+  </div>
+
+  <h2 class="section-head">The Lesson</h2>
+  <p class="section-note">Press play to have it read to you. The line being read lights up, so you can follow along.</p>
+
+  <div class="player">
+    <button class="btn playmain" type="button" id="play">&#9654; Read It To Me</button>
+    <div class="playmeta">
+      <select class="rate" id="rate" aria-label="Reading speed">
+        <option value="0.75">Slow</option>
+        <option value="0.9" selected>Normal</option>
+        <option value="1.05">Fast</option>
+      </select>
+      <span class="tag" id="stepPos"></span>
+    </div>
+    <div class="themerow">
+      <span class="lbl">Colours</span>
+      <div class="swatches" id="swatches"></div>
+    </div>
+    <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
+  </div>
+
+  <div id="parts">__PARTS_HTML__</div>
+
+  <h2 class="section-head">Worked Examples</h2>
+  <p class="section-note">Five done for you. The underlined word is the verb, and the line under it says how you could have known.</p>
+  <div id="examples">__EXAMPLES_HTML__</div>
+
+  <h2 class="section-head">Your Turn</h2>
+  <p class="section-note">__PRACTICE_NOTE__</p>
+  <div class="actions">
+    <button class="tab act" type="button" id="reset">Start Over</button>
+    <button class="tab act" type="button" id="reveal">Show Me The Answers</button>
+  </div>
+  <div id="problems"></div>
+  <div class="scorebar" id="scorebar"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var LESSON_ID = "__ID__";
+var PARTS     = __PARTS__;
+var PRACTICE  = __PRACTICE__;
+
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+
+__THEMES__
+
+/* ns.css names its variables differently from the history template, so the
+   same palette is mapped onto the names this page actually uses. Lifted
+   verbatim from the maths page so the three lesson types cannot drift.
+   Each palette carries its own light and dark set, so this page already
+   follows the visitor's mode. */
+var VAR_MAP = {
+  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
+  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
+  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
+};
+
+var themeKey = load("theme", "forest");
+if (!THEMES[themeKey]) themeKey = "forest";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+(function buildSwatches(){
+  var wrap = document.getElementById("swatches");
+  Object.keys(THEMES).forEach(function(k){
+    var b = document.createElement("button");
+    b.className = "sw";
+    b.type = "button";
+    b.setAttribute("data-t", k);
+    b.title = THEMES[k].name;
+    b.setAttribute("aria-label", THEMES[k].name + " colours");
+    var d = THEMES[k].dark;
+    b.style.background = "linear-gradient(135deg," + d.accent + " 0 50%," + d.ground + " 50% 100%)";
+    b.addEventListener("click", function(){ themeKey = k; store("theme", k); applyTheme(); });
+    wrap.appendChild(b);
+  });
+})();
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+document.body.style.background = "var(--bg)";
+
+/* ── read-aloud ────────────────────────────────────────────────────────────
+   One sentence at a time so the line being read can be highlighted. A student
+   who is behind in reading follows the voice with his eyes; losing his place
+   is the thing that stops him, not the words. */
+var LINES = [];
+(function collect(){
+  var ps = document.querySelectorAll("#parts p, #parts h3");
+  for (var i = 0; i < ps.length; i++) LINES.push(ps[i]);
+})();
+
+var synth = window.speechSynthesis, idx = -1, playing = false;
+var playBtn = document.getElementById("play");
+var pos = document.getElementById("stepPos");
+if (!synth) document.getElementById("nospeech").classList.add("show");
+
+function clearHi(){ for (var i = 0; i < LINES.length; i++) LINES[i].classList.remove("on"); }
+function showPos(){ pos.textContent = idx >= 0 && playing ? (idx + 1) + " / " + LINES.length : ""; }
+
+function speakFrom(i){
+  if (!synth || i >= LINES.length) { stop(); return; }
+  idx = i; clearHi();
+  LINES[i].classList.add("on");
+  LINES[i].scrollIntoView({ block: "center", behavior: "smooth" });
+  showPos();
+  var u = new SpeechSynthesisUtterance(LINES[i].textContent);
+  u.rate = parseFloat(document.getElementById("rate").value);
+  u.onend = function(){ if (playing) speakFrom(i + 1); };
+  synth.speak(u);
+}
+function stop(){
+  playing = false; idx = -1;
+  if (synth) synth.cancel();
+  clearHi(); showPos();
+  playBtn.innerHTML = "&#9654; Read It To Me";
+}
+playBtn.onclick = function(){
+  if (!synth) return;
+  if (playing) { stop(); return; }
+  playing = true;
+  playBtn.innerHTML = "&#9632; Stop";
+  speakFrom(0);
+};
+/* Chrome keeps speaking after a navigation unless it is told not to. */
+window.addEventListener("beforeunload", function(){ if (synth) synth.cancel(); });
+
+/* ── practice ─────────────────────────────────────────────────────────────
+   Click the word. Every word is a target so the layout gives nothing away,
+   and a wrong click is not fatal: it says WHY it is wrong and lets him go
+   again. Paul's standing rule for this site is no punishment for wrong.
+   Progress is stored per lesson so closing the tab does not lose the work. */
+var KEY = "prog:" + LESSON_ID;
+var state = {};
+try { state = JSON.parse(load(KEY, "{}")) || {}; } catch (e) { state = {}; }
+
+var wrap = document.getElementById("problems");
+var bar  = document.getElementById("scorebar");
+
+function save(){ store(KEY, JSON.stringify(state)); }
+
+function render(){
+  wrap.innerHTML = "";
+  PRACTICE.forEach(function(p, n){
+    var done = state[n] === true;
+    var box = document.createElement("div");
+    box.className = "prob" + (done ? " solved" : "");
+
+    var head = document.createElement("div");
+    head.className = "probhead";
+    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
+      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Found it" : "Click the verb") + '</span>';
+    box.appendChild(head);
+
+    var row = document.createElement("div");
+    row.className = "words";
+    var nudge = document.createElement("p");
+    nudge.className = "nudge";
+
+    p.sentence.split(" ").forEach(function(word, wi){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "w"; b.textContent = word;
+      if (done) {
+        b.disabled = true;
+        if (wi === p.answer) b.classList.add("ok");
+      } else {
+        b.onclick = function(){
+          if (wi === p.answer) {
+            state[n] = true; save();
+            render();
+            /* keep the explanation on screen after the re-render */
+            var fresh = wrap.children[n].querySelector(".nudge");
+            if (fresh) fresh.textContent = p.why;
+            score();
+          } else {
+            b.classList.add("wrong");
+            nudge.classList.add("warn");
+            nudge.textContent = wrongWhy(word, p);
+          }
+        };
+      }
+      row.appendChild(b);
+    });
+
+    box.appendChild(row);
+    if (done) { nudge.textContent = p.why; }
+    box.appendChild(nudge);
+    wrap.appendChild(box);
+  });
+  score();
+}
+
+/* A wrong answer gets a reason, not a buzzer. The two reasons cover the two
+   mistakes this lesson is actually about. */
+function wrongWhy(word, p){
+  var clean = word.replace(/[^A-Za-z']/g, "").toLowerCase();
+  var being = ["am","is","are","was","were","be","been","being"];
+  if (being.indexOf(clean) >= 0)
+    return "“" + clean + "” is a being verb, but it is not the one doing the work here. Try the time test again.";
+  return "Not that one. Put “Yesterday” at the front and read it again — which word has to change shape?";
+}
+
+function score(){
+  var got = 0;
+  for (var i = 0; i < PRACTICE.length; i++) if (state[i]) got++;
+  var pct = Math.round((got / PRACTICE.length) * 100);
+  bar.innerHTML = "<b>" + got + " / " + PRACTICE.length + "</b> · " + pct + "%" +
+    (got === PRACTICE.length ? " — all of them. Write the score in your notes." : "");
+}
+
+document.getElementById("reset").onclick = function(){
+  state = {}; save(); render();
+};
+document.getElementById("reveal").onclick = function(){
+  var boxes = wrap.children;
+  for (var i = 0; i < PRACTICE.length; i++) {
+    if (state[i]) continue;
+    var ws = boxes[i].querySelectorAll(".w");
+    for (var j = 0; j < ws.length; j++) {
+      ws[j].disabled = true;
+      if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");
+    }
+    var nd = boxes[i].querySelector(".nudge");
+    nd.classList.remove("warn");
+    nd.textContent = PRACTICE[i].why;
+  }
+};
+
+render();
+})();
+</script>
+
+__NAVSCRIPT__
+</body>
+</html>

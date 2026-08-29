@@ -382,6 +382,24 @@ const LESSONS = [
     title: "Long Division",
     blurb: "Divide, multiply, subtract, bring down. Worked through one digit at a time.",
     meta: "Interactive", price: "$0" },
+
+  /* English carries a Ground Control block written for the PARENT — what the
+     concept is, why it matters later, what the student will actually get
+     wrong, and what to SAY when he is stuck. That block is the half a
+     workbook leaves out, and it is why `contains` leads with it. */
+  { href: "/lessons/english/verbs-action-and-being/",
+    id: "english/verbs-action-and-being",
+    contains: [
+      "A Ground Control panel for the teacher: what to say when he gets stuck",
+      "The lesson read aloud, one line at a time, highlighted as it goes",
+      "A test the student can run himself, not a definition to memorise",
+      "Five worked examples, then ten sentences to try",
+    ],
+    subject: "English", grade: 7,
+    unit: "Parts of Speech &middot; Unit 1 &middot; Lesson 1",
+    title: "Verbs: Action and Being",
+    blurb: "Every sentence has an engine. Find it with a test that works even when nothing happens.",
+    meta: "Interactive", price: "$0" },
 ];
 
 /* Printables. Empty on purpose - an honest empty state beats a fake card. */
@@ -696,7 +714,20 @@ const gradeLanding = (g) => `<div class="band"><div class="wrap">
 /* Grade -> Lessons */
 const gradeLessons = (g) => {
   const list = byGrade(g);
-  if (g === 7) return `<div class="band"><div class="wrap">${unitPager("g7-lessons")}</div></div>`;
+  /* Grade 7 leads with the Leif unit pager, because fifty history lessons on
+     one page is not a shelf. ⚠️ That pager only knows about History: it is
+     driven by leif-units.js. So every OTHER subject in this grade is listed
+     under it as ordinary cards — without this, an English or Science lesson
+     builds, links from its subject page, and is invisible from its own grade.
+     Found 2026-08-29, when the first grade-7 English lesson went up. */
+  if (g === 7) {
+    const others = list.filter((l) => l.subject !== "History");
+    return `<div class="band"><div class="wrap">${unitPager("g7-lessons")}</div></div>` +
+      (others.length ? `<div class="band"><div class="wrap">
+  <h2 class="section-head">The Other Subjects</h2>
+  ${lessonCards(others, true, plannedFor(null, g, "lesson").filter(p => p.subject !== "History"))}
+</div></div>` : "");
+  }
   return `<div class="band"><div class="wrap">
   ${list.length ? lessonCards(list, true, plannedFor(null, g, "lesson"))
     : emptyTile("The first lessons for this year are being built.")}
