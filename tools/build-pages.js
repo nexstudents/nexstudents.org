@@ -282,12 +282,18 @@ const liveGrades = () => [...new Set(
 const gslug = (g) => String(g).toLowerCase();
 
 /* Every grade tile is a link — home page, /grades/ and the nav all agree.
-   Paul, 2026-08-29: "i want this the entire site." The badge still says
-   whether a year has depth; it no longer decides whether you can get in. */
+   Paul, 2026-08-29: "i want this the entire site."
+
+   🚨 NO "SOON" BADGE, AND NO DIMMING. Paul, 2026-08-29: "remove the soon from
+   the homepage grade icons and even perhaps the dropdown since they are
+   connected." Once every tile opens a real page, a Soon label sitting under a
+   half-faded tile reads as "this one is broken" — it argues with the tile's
+   own behaviour. A year with depth still gets the accent fill and says Live;
+   the rest are simply ordinary tiles. */
 const gradeCells = (live, cls) => ["K","1","2","3","4","5","6","7","8"].map(g =>
-  '<a class="gr ' + (live.includes(String(g)) ? "live" : "soon") +
-  '" href="/grade-' + gslug(g) + '/"><b>' + g + "</b><span>" +
-  (live.includes(String(g)) ? "Live" : "Soon") + "</span></a>"
+  '<a class="gr' + (live.includes(String(g)) ? " live" : "") +
+  '" href="/grade-' + gslug(g) + '/"><b>' + g + "</b>" +
+  (live.includes(String(g)) ? "<span>Live</span>" : "") + "</a>"
 ).join("\n    " + (cls || ""));
 
 const gradeGrid = () => {

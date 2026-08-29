@@ -179,11 +179,12 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .gr.live{background:var(--a);color:var(--a-ink);border-color:var(--a)}
 .gr.live span{color:var(--on-a-soft)}
 @media(hover:hover){ .gr:hover{transform:translateY(-4px);border-color:var(--a)} }
-.gr.soon{opacity:.5}
-/* Light needs a firmer edge and less fade: the same .5 that reads as "dimmed"
-   on a dark tile reads as "barely there" on a white one. */
+/* 🚨 `.gr.soon` and its 50% fade are GONE. Paul, 2026-08-29: "remove the soon
+   from the homepage grade icons ... since they are connected." Every grade tile
+   opens a real page now, and a half-faded tile reads as disabled no matter what
+   the label says. A year with depth keeps the accent fill; the rest are plain
+   tiles at full strength. */
 :root[data-theme="light"] .gr{border-color:#b9c4d0}
-:root[data-theme="light"] .gr.soon{opacity:.75;border-color:#c6cfd9}
 
 /* ── 3. RESOURCE SHELF — carousel, free + paid together ── */
 .shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:32px}
@@ -621,8 +622,9 @@ nav:not(.js-nav) .mg-top.on::after,
 .mg-grade b{font-size:1.15rem;font-weight:800;letter-spacing:-.03em;line-height:1}
 .mg-grade span{font-size:.5rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
 .mg-grade.live{background:var(--a);color:var(--a-ink);border-color:var(--a)}
-.mg-grade.soon{color:var(--dim);opacity:.6}
-@media(hover:hover){ .mg-grade.live:hover{transform:translateY(-3px)} }
+/* Same as .gr: no Soon state, and hover applies to EVERY tile — a tile that
+   does not respond to the pointer looks broken next to eight that do. */
+@media(hover:hover){ .mg-grade:hover{transform:translateY(-3px);border-color:var(--a)} }
 .mg-note{color:var(--dim);font-size:.82rem;margin:14px 0 0;max-width:62ch}
 
 /* Columns reflow to whatever the section needs, as theirs do. */

@@ -79,10 +79,12 @@ const gslug = (g) => String(g).toLowerCase();
    The Live / Soon badge still tells the truth about what is IN a year — a
    parent can see at a glance where the depth is — but nothing on this site is
    a dead tile any more. Nothing in ALL_GRADES may be unlinked. */
+/* No Soon badge and no dimming here either — the dropdown and the home page
+   picker have to agree, and both tiles go to a real page. */
 const gradeTiles = () => ALL_GRADES.map(g =>
-  '<a class="mg-grade ' + (LIVE_GRADES.includes(g) ? "live" : "soon") +
-  '" href="/grade-' + gslug(g) + '/"><b>' + g + "</b><span>" +
-  (LIVE_GRADES.includes(g) ? "Live" : "Soon") + "</span></a>"
+  '<a class="mg-grade' + (LIVE_GRADES.includes(g) ? " live" : "") +
+  '" href="/grade-' + gslug(g) + '/"><b>' + g + "</b>" +
+  (LIVE_GRADES.includes(g) ? "<span>Live</span>" : "") + "</a>"
 ).join("");
 
 const col = (heading, links) =>
@@ -217,7 +219,7 @@ const dsRow = (r) => {
    spans — the phone half of what Paul found on the home page 2026-08-29:
    "why is 1, 2, 4, and 5 not tappable ... i want this the entire site." */
 const dsTile = (r) => r.href
-  ? '<a class="dst' + (r.soon ? " soon" : "") + '" href="' + r.href +
+  ? '<a class="dst" href="' + r.href +
     '" aria-label="' + r.label + '"><b>' + r.short + "</b></a>"
   : r.sub
   ? '<button class="dst" type="button" data-sub="' + r.sub + '" aria-label="' +
