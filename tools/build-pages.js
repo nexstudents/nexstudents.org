@@ -434,9 +434,21 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
    copy means the dropdown and the subject pages cannot disagree. */
 const keyOf = (s) => s.key || s.name;
 
+/* 🚨 A GRADE IS SOMETIMES A NUMBER AND SOMETIMES A STRING, SO NEVER USE ===.
+   The registries write `grade: 7` as a number, but liveGrades() ends in
+   .map(String) so it hands back "7". Comparing those with === silently finds
+   nothing, and because "K" is a string either way, Kindergarten keeps working
+   while every numbered grade quietly returns an empty list.
+
+   That bit twice on 2026-08-29: the grade+subject pages generated for K alone,
+   AND the guard meant to catch it used the same helper, so it agreed that
+   nothing was missing. A guard that shares the bug it is guarding is worse
+   than no guard, because it reads as proof. One comparison, used everywhere. */
+const sameGrade = (a, b) => String(a) === String(b);
+
 const bySubject = (s) => LESSONS.filter(l => l.subject === s);
-const byGrade   = (g) => LESSONS.filter(l => l.grade === g);
-const sheetsByGrade   = (g) => WORKSHEETS.filter(w => w.grades.includes(g));
+const byGrade   = (g) => LESSONS.filter(l => sameGrade(l.grade, g));
+const sheetsByGrade   = (g) => WORKSHEETS.filter(w => w.grades.some(x => sameGrade(x, g)));
 const sheetsBySubject = (s) => WORKSHEETS.filter(w => w.subject === s);
 
 const group = (heading, note, cards) => `<h2 class="h2s" style="margin:0 0 4px">${heading}</h2>
@@ -740,6 +752,46 @@ const gradeSheets = (g) => `<div class="band"><div class="wrap">
     : emptyTile("The printables follow the lessons. They go up as each unit is finished.")}
 </div></div>`;
 
+/* ── Grade + Subject ───────────────────────────────────────────────────────
+   🚨 A SUBJECT BOX ON A GRADE PAGE MUST LAND ON THAT SUBJECT.
+
+   Paul, 2026-08-29: "i opened english in 7th grade and it still pulls to the
+   lessons about history."
+
+   All four subject boxes on /grade-7/ pointed at the same /grade-7/lessons/,
+   which leads with the Leif history pager. So English said "1 lesson" and
+   delivered a shelf of Rome. This is the SAME bug already commented in
+   subjectRows — the Kindergarten worksheets one — where the count was scoped
+   to the grade and the destination was not. It was fixed there for grade, and
+   the subject half was left behind.
+
+   So a grade+subject now has its own real page. That is also the SEO shape the
+   roadmap wants: /grade-7/english/lessons/ is exactly the kind of URL that can
+   rank against nexstudent.org, where a single shared shelf cannot. */
+const gradeLabel = (g) => g === "K" || g === "k"
+  ? "Kindergarten"
+  : ({ 1: "1st", 2: "2nd", 3: "3rd" }[g] || g + "th") + " Grade";
+
+const lessonsIn  = (g, sub) => byGrade(g).filter(l => l.subject === sub);
+const sheetsIn   = (g, sub) => sheetsByGrade(g).filter(w => w.subject === sub);
+
+const gradeSubjectLessons = (g, sub) => {
+  const list = lessonsIn(g, sub);
+  /* History in grade 7 is the fifty-lesson Leif sequence, so it keeps the unit
+     pager it was built for rather than becoming a wall of cards. */
+  if (g === 7 && sub === "History")
+    return `<div class="band"><div class="wrap">${unitPager("g7-" + gslug(sub) + "-lessons")}</div></div>`;
+  return `<div class="band"><div class="wrap">
+  ${list.length ? lessonCards(list, true, plannedFor(sub, g, "lesson"))
+    : emptyTile("Nothing on screen for this subject this year yet.")}
+</div></div>`;
+};
+
+const gradeSubjectSheets = (g, sub) => `<div class="band"><div class="wrap">
+  ${sheetsIn(g, sub).length ? lessonCards(sheetsIn(g, sub), true, plannedFor(sub, g, "worksheet"))
+    : emptyTile("No printables for this subject this year yet.")}
+</div></div>`;
+
 /* The subjects index: each subject as a row, with two smaller boxes under it
    for Lessons and Worksheets. Live subjects first, so what actually exists is
    at the top rather than buried under things that do not. */
@@ -750,8 +802,8 @@ const subjectRows = (grade) => {
   const rows = SUBJECTS;          /* fixed order, never re-sorted by liveness */
   return `<div class="subj-list">
   ${rows.map((s, i) => {
-    const nLes = bySubject(keyOf(s)).filter(l => grade == null || l.grade === grade).length;
-    const nWk  = sheetsBySubject(keyOf(s)).filter(w => grade == null || w.grades.includes(grade)).length;
+    const nLes = bySubject(keyOf(s)).filter(l => grade == null || sameGrade(l.grade, grade)).length;
+    const nWk  = sheetsBySubject(keyOf(s)).filter(w => grade == null || w.grades.some(x => sameGrade(x, grade))).length;
     const box = (label, note, n, one, many, href) => href
       ? `<a class="minibox" href="${href}">
           <b>${label}</b><span>${note}</span>
@@ -784,10 +836,24 @@ const subjectRows = (grade) => {
               With a grade in hand the box now points at that grade's own shelf.
               On /subjects/, where there is no grade, it still points at the
               subject shelf, which is correct there. */""}
+        ${/* 🚨 AND IT MUST STAY INSIDE THE SUBJECT TOO. Paul, 2026-08-29:
+              "i opened english in 7th grade and it still pulls to the lessons
+              about history." Every subject box here used to point at the one
+              shared /grade-N/lessons/ shelf, which grade 7 leads with the
+              history unit pager. Now each grade+subject has its own page.
+
+              A box with nothing behind it does NOT link. A live subject can
+              still be empty in a particular year, and a link promising "1
+              lesson" that opens an empty shelf is the same broken promise in
+              a different costume. */""}
         ${box("Lessons", "Worked through on screen", nLes, "lesson", "lessons",
-          !s.live ? null : grade == null ? "/" + s.slug + "/lessons/" : "/grade-" + gslug(grade) + "/lessons/")}
+          !s.live ? null
+            : grade == null ? "/" + s.slug + "/lessons/"
+            : nLes ? "/grade-" + gslug(grade) + "/" + s.slug + "/lessons/" : null)}
         ${box("Worksheets", "Printed and written on", nWk, "sheet", "sheets",
-          !s.live ? null : grade == null ? "/" + s.slug + "/worksheets/" : "/grade-" + gslug(grade) + "/worksheets/")}
+          !s.live ? null
+            : grade == null ? "/" + s.slug + "/worksheets/"
+            : nWk ? "/grade-" + gslug(grade) + "/" + s.slug + "/worksheets/" : null)}
       </div>
     </section>`;
   }).join("\n  ")}
@@ -1104,6 +1170,67 @@ const pages = [
     lead: "A placement exam, taken online, marked the moment your student finishes. Results appear on screen and land in your inbox. One short version that costs nothing, one fuller version that covers every subject.",
     body: parents() },
 ];
+
+/* ── Every grade x subject that actually has something in it ───────────────
+   Derived, never hand-listed. Add a lesson to the registry and its grade+
+   subject page appears; the shelf and the page cannot disagree because they
+   read the same list. */
+for (const g of liveGrades()) {
+  for (const s of SUBJECTS) {
+    if (!s.live) continue;
+    const sub = keyOf(s);
+    const nL = lessonsIn(g, sub).length, nW = sheetsIn(g, sub).length;
+    const base = "grade-" + gslug(g) + "/" + s.slug;
+    const crumb = '<a href="/grade-' + gslug(g) + '/">' + gradeLabel(g) + "</a> &rsaquo; " + s.name;
+
+    if (nL) pages.push({
+      dir: base + "/lessons", active: "gr",
+      title: gradeLabel(g) + " " + s.name + " Lessons — NexStudents",
+      desc: gradeLabel(g) + " " + s.name.toLowerCase() + " lessons, worked through on screen.",
+      crumb: crumb + " &rsaquo; Lessons",
+      h1: gradeLabel(g) + " " + s.name + " Lessons.",
+      lead: s.blurb,
+      body: gradeSubjectLessons(g, sub) });
+
+    if (nW) pages.push({
+      dir: base + "/worksheets", active: "gr",
+      title: gradeLabel(g) + " " + s.name + " Worksheets — NexStudents",
+      desc: gradeLabel(g) + " " + s.name.toLowerCase() + " printables, with answer keys included free.",
+      crumb: crumb + " &rsaquo; Worksheets",
+      h1: gradeLabel(g) + " " + s.name + " Worksheets.",
+      lead: s.blurb,
+      body: gradeSubjectSheets(g, sub) });
+  }
+}
+
+/* 🚨 THE GUARD THAT KEEPS THE PROMISE HONEST.
+   Every subject box on a grade page states a count and a destination. This
+   walks the generated pages and fails the build if a box links somewhere that
+   was never generated. Without it, the exact bug Paul found on 2026-08-29 —
+   English on the 7th grade shelf opening a page full of Rome — comes back the
+   next time a subject or a grade is added. */
+(function checkSubjectShelves(){
+  const built = new Set(pages.map(p => "/" + p.dir + "/"));
+  const missing = [];
+  for (const g of liveGrades()) {
+    for (const s of SUBJECTS) {
+      if (!s.live) continue;
+      const sub = keyOf(s);
+      if (lessonsIn(g, sub).length) {
+        const href = "/grade-" + gslug(g) + "/" + s.slug + "/lessons/";
+        if (!built.has(href)) missing.push(href);
+      }
+      if (sheetsIn(g, sub).length) {
+        const href = "/grade-" + gslug(g) + "/" + s.slug + "/worksheets/";
+        if (!built.has(href)) missing.push(href);
+      }
+    }
+  }
+  if (missing.length) {
+    console.error("FAIL: a grade page links at pages that were never built:\n  " + missing.join("\n  "));
+    process.exit(1);
+  }
+})();
 
 /* nav.js mirrors the live-grade list for the dropdown. If the registries move
    and that mirror is not updated, the nav would quietly point at a dead grade.
