@@ -513,5 +513,5 @@ if(panel){
 }
 ` + "\n})();\n" + "</scr" + "ipt>";
 
-module.exports = { NAV, SUBJECTS, LIVE_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
+module.exports = { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
                    megaPanel, navMarkup, navScript, modeButton, modeBoot };

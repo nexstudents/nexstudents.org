@@ -20,6 +20,19 @@ const LESSONS = [
   slug: "republic-to-empire",
   title: "From Republic to Empire",
   unit: "Ancient Rome &middot; Unit 1 &middot; Lesson 1",
+  /* `shelf` is what the site needs to put a card on a shelf. It lives here,
+     beside the lesson, so a lesson is added in ONE file. It used to be a
+     second hand-written entry in build-pages.js, which meant every lesson was
+     registered twice and the two could disagree. Worksheets never had that
+     problem because their cards were always derived from worksheets.js. */
+  shelf: { grade: 7, subject: "History",
+    blurb: "Republic to empire, read aloud, then five questions hidden in the text.",
+    contains: [
+      "A story-form reading, read aloud with the words highlighted",
+      "Four vocabulary words the textbooks list but never define",
+      "Five questions, four with the answer hidden in the text",
+      "A printable answer sheet with a parent signature line",
+    ] },
   eyebrow: ["Intel Briefing", "Unit 1 &middot; Lesson 1", "Ancient Rome"],
   dek: "Rome spent five hundred years refusing to have a king. Then it got one, and almost nobody noticed the day it happened.",
   scripture: {
@@ -117,6 +130,14 @@ const LESSONS = [
   slug: "roman-government",
   title: "Roman Government and Citizenship",
   unit: "Ancient Rome &middot; Unit 1 &middot; Lesson 2",
+  shelf: { grade: 7, subject: "History",
+    blurb: "Offices, consuls and citizenship, and why one-year terms mattered.",
+    contains: [
+      "A story-form reading, read aloud with the words highlighted",
+      "Four vocabulary words, each one defined inside the story",
+      "Day 1: four questions with the answer findable in the text",
+      "Day 2: a vocabulary check and a printable answer sheet",
+    ] },
   eyebrow: ["Intel Briefing", "Unit 1 &middot; Lesson 2", "Ancient Rome"],
   dek: "Rome ran on offices, laws and paperwork. That sounds dull until you notice how much of it we still use.",
   scripture: {

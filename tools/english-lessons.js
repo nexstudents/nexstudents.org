@@ -61,6 +61,14 @@ const ENGLISH = [
   unit: "Parts of Speech &middot; Unit 1 &middot; Lesson 1",
   eyebrow: ["Radio Comms", "Unit 1 &middot; Lesson 1", "Parts of Speech"],
   dek: "Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is.",
+  shelf: { grade: 7, subject: "English",
+    blurb: "Every sentence has an engine. Find it with a test that works even when nothing happens.",
+    contains: [
+      "A Ground Control panel for the teacher: what to say when he gets stuck",
+      "The lesson read aloud, one line at a time, highlighted as it goes",
+      "A test the student can run himself, not a definition to memorise",
+      "Five worked examples, then ten sentences to try",
+    ] },
 
   ground: {
     whatItIs:

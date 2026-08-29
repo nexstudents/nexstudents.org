@@ -28,6 +28,16 @@ const MATH = [
   slug: "long-division",
   title: "Long Division",
   unit: "Foundations &middot; Unit 0 &middot; Lesson 1",
+  /* Maths starts in grade 6 on purpose: the foundations unit is the catch-up
+     set that grade 7 leans on. See tools/curriculum/. */
+  shelf: { grade: 6, subject: "Maths",
+    blurb: "Divide, multiply, subtract, bring down. Worked through one digit at a time.",
+    contains: [
+      "A worked example that fills the bracket in step by step, read aloud",
+      "Back a step and next step, so a step can be replayed as often as needed",
+      "Five problems in a real division bracket, new ones every day",
+      "Every row typed in: the quotient, the multiply, the subtract",
+    ] },
   dek: "Divide, multiply, subtract, bring down. Four steps, over and over, until the digits run out.",
   demo: { dividend: 564, divisor: 3 },
   practice: {

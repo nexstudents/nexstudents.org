@@ -22,7 +22,7 @@ const CSS_V = require("crypto")
    one. It lived here under a comment promising "ONE nav definition", which was
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
-const { NAV, SUBJECTS, LIVE_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+const { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
 
 /* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
 const SITE = "https://nexstudents.org";
@@ -36,7 +36,11 @@ function shell(o) {
 <!-- DO NOT REMOVE: Google Search Console verification. Google re-checks
      periodically and the property silently drops if this disappears. -->
 <meta name="google-site-verification" content="bsZnURtv4LFARU3XuxGED8inYJB45arSOPHbTJSqgIQ">
-<link rel="canonical" href="${SITE}/${o.dir}/">
+<link rel="canonical" href="${SITE}/${o.dir}/">${o.noindex ? `
+<!-- An empty shelf for a year with nothing in it. Reachable, but not offered
+     to search until it holds something worth ranking. Drops off by itself the
+     moment the grade goes live. -->
+<meta name="robots" content="noindex,follow">` : ""}
 <title>${o.title}</title>
 <meta name="description" content="${o.desc}">
 <meta name="theme-color" content="#0a0b0d">
@@ -338,69 +342,65 @@ const plannedFor = (subject, grade, kind) => ALL_PLANNED.filter(x =>
   (grade == null || x.grade === grade) &&
   (kind == null || x.kind === kind));
 
-const LESSONS = [
-  { href: "/lessons/history/republic-to-empire/",
-    id: "history/republic-to-empire",
-    contains: [
-      "A story-form reading, read aloud with the words highlighted",
-      "Four vocabulary words the textbooks list but never define",
-      "Five questions, four with the answer hidden in the text",
-      "A printable answer sheet with a parent signature line",
-    ],
-    subject: "History", grade: 7,
-    unit: "Unit 1 &middot; Lesson 1",
-    title: "From Republic to Empire",
-    blurb: "Republic to empire, read aloud, then five questions hidden in the text.",
-    meta: "Interactive", price: "$0" },
+/* ── ONE REGISTRY, DERIVED FROM THE LESSON DATA FILES ──────────────────────
+   Paul, 2026-08-29: "build a lesson page and a worksheet page you can drop in
+   for each grade then build each page for that so it is ready to work" and
+   "foundation is key."
 
-  { href: "/lessons/history/roman-government/",
-    id: "history/roman-government",
-    contains: [
-      "A story-form reading, read aloud with the words highlighted",
-      "Four vocabulary words, each one defined inside the story",
-      "Day 1: four questions with the answer findable in the text",
-      "Day 2: a vocabulary check and a printable answer sheet",
-    ],
-    subject: "History", grade: 7,
-    unit: "Unit 1 &middot; Lesson 2",
-    title: "Roman Government and Citizenship",
-    blurb: "Offices, consuls and citizenship, and why one-year terms mattered.",
-    meta: "Interactive", price: "$0" },
+   A lesson used to be registered TWICE: once in its subject's data file, which
+   is what actually renders the page, and again in a hand-written array here,
+   which is what put a card on the shelf. Two sources for one fact, so they
+   could disagree - and the shelf card is the half a parent sees.
 
-  /* Maths starts in grade 6 on purpose: the foundations unit is the catch-up
-     set that grade 7 leans on. See tools/curriculum/. */
-  { href: "/lessons/maths/long-division/",
-    id: "maths/long-division",
-    contains: [
-      "A worked example that fills the bracket in step by step, read aloud",
-      "Back a step and next step, so a step can be replayed as often as needed",
-      "Five problems in a real division bracket, new ones every day",
-      "Every row typed in: the quotient, the multiply, the subtract",
-    ],
-    subject: "Maths", grade: 6,
-    unit: "Foundations &middot; Unit 0 &middot; Lesson 1",
-    title: "Long Division",
-    blurb: "Divide, multiply, subtract, bring down. Worked through one digit at a time.",
-    meta: "Interactive", price: "$0" },
+   Worksheets never had this problem: their cards were always derived from
+   worksheets.js. Lessons now work the same way. Add a lesson to its data file
+   with a `shelf` block and it appears on its subject shelf, its grade shelf,
+   its grade+subject shelf and the sitemap, with no change to this file.
 
-  /* English carries a Ground Control block written for the PARENT — what the
-     concept is, why it matters later, what the student will actually get
-     wrong, and what to SAY when he is stuck. That block is the half a
-     workbook leaves out, and it is why `contains` leads with it. */
-  { href: "/lessons/english/verbs-action-and-being/",
-    id: "english/verbs-action-and-being",
-    contains: [
-      "A Ground Control panel for the teacher: what to say when he gets stuck",
-      "The lesson read aloud, one line at a time, highlighted as it goes",
-      "A test the student can run himself, not a definition to memorise",
-      "Five worked examples, then ten sentences to try",
-    ],
-    subject: "English", grade: 7,
-    unit: "Parts of Speech &middot; Unit 1 &middot; Lesson 1",
-    title: "Verbs: Action and Being",
-    blurb: "Every sentence has an engine. Find it with a test that works even when nothing happens.",
-    meta: "Interactive", price: "$0" },
+   Adding a whole new SUBJECT still needs its data file required below - that
+   is one line, and it is the only line. */
+const LESSON_SOURCES = [
+  { file: "./lessons.js",         key: "LESSONS" },   /* history, story shape  */
+  { file: "./math-lessons.js",    key: "MATH"    },   /* maths, show-your-work */
+  { file: "./english-lessons.js", key: "ENGLISH" },   /* english, rule + test  */
 ];
+
+const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {
+  const rows = require(file)[key];
+  if (!Array.isArray(rows)) {
+    console.error("FAIL: " + file + " does not export " + key);
+    process.exit(1);
+  }
+  return rows.map((L) => {
+    /* A lesson with no shelf block would build a page nobody can reach. That
+       is the same failure Paul hit from the other direction on 2026-08-29, so
+       it fails the build rather than going quietly missing. */
+    if (!L.shelf || !L.shelf.grade || !L.shelf.subject) {
+      console.error("FAIL: " + L.id + " in " + file + " has no shelf block " +
+        "(needs at least { grade, subject }), so it would build a page with " +
+        "no way in.");
+      process.exit(1);
+    }
+    if (!Array.isArray(L.shelf.contains) || !L.shelf.contains.length) {
+      console.error("FAIL: " + L.id + " has no shelf.contains - the card would " +
+        "not say what is in the lesson.");
+      process.exit(1);
+    }
+    return {
+      href: "/lessons/" + L.id + "/",
+      id: L.id,
+      contains: L.shelf.contains,
+      subject: L.shelf.subject,
+      grade: L.shelf.grade,
+      unit: L.unit,
+      title: L.title,
+      blurb: L.shelf.blurb || L.dek,
+      meta: L.shelf.meta || "Interactive",
+      price: L.shelf.price || "$0",
+    };
+  });
+});
+
 
 /* Printables. Empty on purpose - an honest empty state beats a fake card. */
 /* Derived from worksheets.js, the same file build-worksheets.js renders the
@@ -846,14 +846,19 @@ const subjectRows = (grade) => {
               still be empty in a particular year, and a link promising "1
               lesson" that opens an empty shelf is the same broken promise in
               a different costume. */""}
+        ${/* On a GRADE page every subject box links, because every grade x
+              subject shelf is built (see the generator below). Paul,
+              2026-08-29: "build a lesson page and a worksheet page you can
+              drop in for each grade then build each page for that so it is
+              ready to work." An empty shelf says so plainly rather than
+              pretending. On /subjects/, where there is no grade, a subject
+              that is not live still has no page to point at. */""}
         ${box("Lessons", "Worked through on screen", nLes, "lesson", "lessons",
-          !s.live ? null
-            : grade == null ? "/" + s.slug + "/lessons/"
-            : nLes ? "/grade-" + gslug(grade) + "/" + s.slug + "/lessons/" : null)}
+          grade != null ? "/grade-" + gslug(grade) + "/" + s.slug + "/lessons/"
+            : s.live ? "/" + s.slug + "/lessons/" : null)}
         ${box("Worksheets", "Printed and written on", nWk, "sheet", "sheets",
-          !s.live ? null
-            : grade == null ? "/" + s.slug + "/worksheets/"
-            : nWk ? "/grade-" + gslug(grade) + "/" + s.slug + "/worksheets/" : null)}
+          grade != null ? "/grade-" + gslug(grade) + "/" + s.slug + "/worksheets/"
+            : s.live ? "/" + s.slug + "/worksheets/" : null)}
       </div>
     </section>`;
   }).join("\n  ")}
@@ -1171,19 +1176,70 @@ const pages = [
     body: parents() },
 ];
 
-/* ── Every grade x subject that actually has something in it ───────────────
-   Derived, never hand-listed. Add a lesson to the registry and its grade+
-   subject page appears; the shelf and the page cannot disagree because they
-   read the same list. */
-for (const g of liveGrades()) {
-  for (const s of SUBJECTS) {
-    if (!s.live) continue;
-    const sub = keyOf(s);
-    const nL = lessonsIn(g, sub).length, nW = sheetsIn(g, sub).length;
-    const base = "grade-" + gslug(g) + "/" + s.slug;
-    const crumb = '<a href="/grade-' + gslug(g) + '/">' + gradeLabel(g) + "</a> &rsaquo; " + s.name;
+/* ── THE WHOLE GRID: every grade x every subject, lessons and worksheets ────
+   Paul, 2026-08-29: "build a lesson page and a worksheet page you can drop in
+   for each grade then build each page for that so it is ready to work."
 
-    if (nL) pages.push({
+   So all nine grades get all four subjects, both shelves, whether or not there
+   is anything in them yet — 72 pages, most of them honestly empty for now. A
+   new lesson needs no build change at all: add it to its subject's data file
+   and its shelf is already standing, waiting for it.
+
+   ⚠️ This deliberately goes wider than "depth over breadth" in BEHAVIOR.md.
+   That rule is about what is ADVERTISED, and it still holds: LIVE_GRADES gates
+   the grade picker and the nav, so an empty year is reachable but not sold.
+   Paul's call, made with the trade-off in front of him.
+
+   Grades 1, 2, 4 and 5 have no hand-written landing page, so one is generated
+   for them here too — without it their subject shelves would have breadcrumbs
+   pointing at a 404. */
+const HAND_WRITTEN_GRADES = new Set(pages.map(p => p.dir).filter(d => /^grade-[^/]+$/.test(d)));
+const LIVE_NOW = liveGrades();
+
+for (const g of ALL_GRADES) {
+  const gs = gslug(g);
+  const live = LIVE_NOW.some(x => sameGrade(x, g));
+  const from = pages.length;   /* everything pushed below belongs to this grade */
+
+  if (!HAND_WRITTEN_GRADES.has("grade-" + gs)) {
+    pages.push({
+      dir: "grade-" + gs, active: "gr",
+      title: gradeLabel(g) + " — NexStudents",
+      desc: gradeLabel(g) + " lessons and printables, organised by subject.",
+      crumb: gradeLabel(g), h1: gradeLabel(g) + ".",
+      lead: "Nothing is built for this year yet. The shelves below are ready and fill up as each subject goes in — pick a subject to see where it stands.",
+      body: gradeLanding(g) });
+
+    /* The landing also offers "the whole year at once", which points at the
+       all-subject shelves. The hand-written grades have those already; a
+       generated grade needs them or its own landing page links at a 404.
+       Caught by tools/check-links.js on the first run, which is the entire
+       reason that checker exists. */
+    pages.push({
+      dir: "grade-" + gs + "/lessons", active: "gr",
+      title: gradeLabel(g) + " Lessons — NexStudents",
+      desc: gradeLabel(g) + " lessons, worked through on screen.",
+      crumb: '<a href="/grade-' + gs + '/">' + gradeLabel(g) + "</a> &rsaquo; Lessons",
+      h1: gradeLabel(g) + " Lessons.",
+      lead: "Nothing on screen for this year yet. Pick a subject from the year's page to see where each one stands.",
+      count: gradeSwitch(g, "l"), body: gradeLessons(g) });
+
+    pages.push({
+      dir: "grade-" + gs + "/worksheets", active: "gr",
+      title: gradeLabel(g) + " Worksheets — NexStudents",
+      desc: gradeLabel(g) + " printables, with answer keys included free.",
+      crumb: '<a href="/grade-' + gs + '/">' + gradeLabel(g) + "</a> &rsaquo; Worksheets",
+      h1: gradeLabel(g) + " Worksheets.",
+      lead: "No printables for this year yet. They go up as each unit is finished.",
+      count: gradeSwitch(g, "w"), body: gradeSheets(g) });
+  }
+
+  for (const s of SUBJECTS) {
+    const sub = keyOf(s);
+    const base = "grade-" + gs + "/" + s.slug;
+    const crumb = '<a href="/grade-' + gs + '/">' + gradeLabel(g) + "</a> &rsaquo; " + s.name;
+
+    pages.push({
       dir: base + "/lessons", active: "gr",
       title: gradeLabel(g) + " " + s.name + " Lessons — NexStudents",
       desc: gradeLabel(g) + " " + s.name.toLowerCase() + " lessons, worked through on screen.",
@@ -1192,7 +1248,7 @@ for (const g of liveGrades()) {
       lead: s.blurb,
       body: gradeSubjectLessons(g, sub) });
 
-    if (nW) pages.push({
+    pages.push({
       dir: base + "/worksheets", active: "gr",
       title: gradeLabel(g) + " " + s.name + " Worksheets — NexStudents",
       desc: gradeLabel(g) + " " + s.name.toLowerCase() + " printables, with answer keys included free.",
@@ -1201,6 +1257,13 @@ for (const g of liveGrades()) {
       lead: s.blurb,
       body: gradeSubjectSheets(g, sub) });
   }
+
+  /* A year with nothing in it should not be crawled as a wall of thin pages.
+     Every shelf generated for it is reachable, but noindex until the grade goes
+     live — which is how this stays compatible with "depth over breadth" in
+     BEHAVIOR.md while still being ready to work in. A grade going live drops
+     the flag automatically, because `live` is derived, not written down. */
+  if (!live) for (let i = from; i < pages.length; i++) pages[i].noindex = true;
 }
 
 /* 🚨 THE GUARD THAT KEEPS THE PROMISE HONEST.
