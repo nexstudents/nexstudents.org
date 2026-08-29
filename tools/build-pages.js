@@ -729,7 +729,7 @@ const fail = (msg) => { console.error("FAIL: " + msg); process.exit(1); };
 
 (function checkResources(){
   const cats = new Set(["books-and-readers", "tools-and-supplies",
-                        "science-experiments", "reading-lists"]);
+                        "science-experiments", "reading-lists", "placement-tests"]);
   for (const r of RESOURCES) {
     /* 🚨 `affiliate` must be EXPLICIT. BEHAVIOR.md: any affiliate link is
        marked as one. Defaulting a missing value to false is how an unmarked
@@ -745,12 +745,21 @@ const fail = (msg) => { console.error("FAIL: " + msg); process.exit(1); };
   }
 })();
 
+/* `links` lets one card carry several editions or volumes. Six McGuffey
+   readers under one explanation beats six cards repeating the same paragraph.
+   Every link opens in a new tab, because leaving the site mid-lesson to look
+   at a book is not the same as navigating away from it. */
 const resourceCard = (r) => `<div class="tile" style="display:block;padding:24px">
     <p class="kick">${r.cost}${r.affiliate ? " &middot; affiliate link" : ""}</p>
     <h4 style="margin:6px 0 10px"><a href="${r.url}" target="_blank" rel="noopener">${r.title}</a></h4>
     <p style="margin:0 0 12px;line-height:1.65"><b>${r.what}</b></p>
     <p style="margin:0 0 12px;line-height:1.7">${r.why}</p>
-    <p style="margin:0;color:var(--dim);font-size:.9rem;line-height:1.6">${r.note}</p>
+    <p style="margin:0 0 ${r.links ? "14px" : "0"};color:var(--dim);font-size:.9rem;line-height:1.6">${r.note}</p>${
+    r.links ? `
+    <ul style="margin:0;padding-left:18px;line-height:1.9;font-size:.94rem">
+      ${r.links.map(([label, href]) =>
+        '<li><a href="' + href + '" target="_blank" rel="noopener">' + label + "</a></li>").join("\n      ")}
+    </ul>` : ""}
   </div>`;
 
 const resourcesIn = (cat) => RESOURCES.filter((r) => r.cat === cat);
@@ -776,6 +785,8 @@ const resourcesIndex = () => {
      "Experiments that run on what is already in the kitchen."],
     ["reading-lists", "Reading Lists",
      "By grade, honest about level rather than flattering about it."],
+    ["placement-tests", "Placement Tests",
+     "Free ways to find out where a student actually is, before you buy a year of the wrong thing."],
   ].filter(([cat]) => resourcesIn(cat).length);
 
   return `<div class="band"><div class="wrap">
@@ -1477,6 +1488,15 @@ const SOON_PAGES = [
       "Run it, watch it, write down what happened.",
       "Science on a screen is not science. Each of these will be an experiment you can actually run at home, with a video walkthrough and a record sheet to write the observation on, because writing down what you saw is the part that turns a trick into a lesson.",
       "Several are already run here and not yet written up: static electricity, surface tension, centre of mass.") },
+
+  { dir: "resources/placement-tests", active: "r",
+    title: "Free Placement Tests — NexStudents",
+    desc: "Free placement tests for maths and reading, and how to read the results honestly.",
+    crumb: '<a href="/resources/">Resources</a> &rsaquo; Placement Tests',
+    h1: "Placement Tests.",
+    lead: "Find out where your student actually is before you buy a year of the wrong thing. All of these are free, and none of them is ours.",
+    body: resourceList("placement-tests",
+      "The placement tests are being written up.") },
 
   { dir: "resources/reading-lists", active: "r",
     title: "Reading Lists — NexStudents",

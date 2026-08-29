@@ -131,6 +131,7 @@ const MENUS = {
       ]) +
       col("Writing", [
         { label: "Blog", href: "/blog/" },
+        { label: "Placement Tests", href: "/resources/placement-tests/" },
       ]) + "</div>" +
       '<p class="mg-note">Things we actually use, not a list copied off somebody else&rsquo;s blog. Any affiliate link is marked as one. Lessons and printables are not here &mdash; they live under each grade.</p>',
     promo: { href: "/worksheets/history/lewis-and-clark/",
@@ -259,6 +260,7 @@ SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS
   { label: "Science Experiments", href: "/resources/science-experiments/", note: "Run them at home" },
   { label: "Reading Lists", href: "/resources/reading-lists/", note: "By grade" },
   { label: "Blog", href: "/blog/", note: "How we teach it" },
+  { label: "Placement Tests", href: "/resources/placement-tests/", note: "Free, and not ours" },
 ]};
 
 SHEETS.g = { title: "Games", parent: null, view: "/games/", rows: [
