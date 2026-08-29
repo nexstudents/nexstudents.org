@@ -290,10 +290,17 @@ const gslug = (g) => String(g).toLowerCase();
    half-faded tile reads as "this one is broken" — it argues with the tile's
    own behaviour. A year with depth still gets the accent fill and says Live;
    the rest are simply ordinary tiles. */
+/* 🚨 EVERY GRADE READS LIVE. Paul, 2026-08-29: "1, 2, 4, 5 make it say live and
+   make them white because i dont want to waste time changing them later. i know
+   they dont have content but we will get to that over the weeks."
+
+   His call, made knowing the years are still thin. The `live` argument is kept
+   in the signature rather than deleted, because it is still what decides
+   indexing elsewhere — this is a presentation decision, not a claim about
+   content. */
 const gradeCells = (live, cls) => ["K","1","2","3","4","5","6","7","8"].map(g =>
-  '<a class="gr' + (live.includes(String(g)) ? " live" : "") +
-  '" href="/grade-' + gslug(g) + '/"><b>' + g + "</b>" +
-  (live.includes(String(g)) ? "<span>Live</span>" : "") + "</a>"
+  '<a class="gr live" href="/grade-' + gslug(g) + '/"><b>' + g +
+  "</b><span>Live</span></a>"
 ).join("\n    " + (cls || ""));
 
 const gradeGrid = () => {
@@ -1274,12 +1281,14 @@ for (const g of ALL_GRADES) {
       body: gradeSubjectSheets(g, sub) });
   }
 
-  /* A year with nothing in it should not be crawled as a wall of thin pages.
-     Every shelf generated for it is reachable, but noindex until the grade goes
-     live — which is how this stays compatible with "depth over breadth" in
-     BEHAVIOR.md while still being ready to work in. A grade going live drops
-     the flag automatically, because `live` is derived, not written down. */
-  if (!live) for (let i = from; i < pages.length; i++) pages[i].noindex = true;
+  /* ⚠️ The noindex that used to go on an empty year is GONE. Once every grade
+     reads Live on the picker (Paul, 2026-08-29), telling search engines to
+     ignore half of them contradicts what the site says about itself. Paul,
+     the same day: "i dont think this matters because i think we are barely
+     getting traffic anyway right now. what we need is to keep building more
+     resources." Fair. `live` and `from` stay in scope because the loop still
+     reads them; nothing is gated on them now. */
+  void live; void from;
 }
 
 /* ── EVERY REMAINING MENU ITEM GETS A REAL PAGE ────────────────────────────

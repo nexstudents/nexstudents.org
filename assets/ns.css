@@ -115,7 +115,16 @@ nav.stuck{border-bottom-color:var(--line)}
   transition:transform 130ms var(--ease),filter 180ms ease}
 .btn:active{transform:scale(.975)}
 @media(hover:hover){ .btn:hover{filter:brightness(1.08)} }
-.btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+/* 🚨 A GHOST BUTTON IS SOLID WHITE ON THE DARK PAGE. Paul, 2026-08-29:
+   "browse by grade also needs to be a white button in darkmode."
+   A transparent button with a hairline outline reads as the disabled twin of
+   the accent button beside it, which is the opposite of what a second real
+   choice should look like. Dark is this site's default, so the white fill is
+   the DEFAULT rule and light mode is the override — never the other way round,
+   or the button is invisible until a theme is chosen. */
+.btn.ghost{background:#fff;color:#0a0b0d;box-shadow:none}
+:root[data-theme="light"] .btn.ghost{background:transparent;color:var(--fg);
+  box-shadow:inset 0 0 0 1.5px var(--line)}
 .nv .btn{margin-left:auto;padding:10px 20px;font-size:14px}
 /* The nav button was wrapping to two lines on a phone and sitting off-centre.
    Keep it on one line, centred, and readable at phone size. */

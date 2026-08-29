@@ -81,10 +81,11 @@ const gslug = (g) => String(g).toLowerCase();
    a dead tile any more. Nothing in ALL_GRADES may be unlinked. */
 /* No Soon badge and no dimming here either — the dropdown and the home page
    picker have to agree, and both tiles go to a real page. */
+/* Every grade reads Live here too, so the dropdown and the home picker match.
+   Paul, 2026-08-29. */
 const gradeTiles = () => ALL_GRADES.map(g =>
-  '<a class="mg-grade' + (LIVE_GRADES.includes(g) ? " live" : "") +
-  '" href="/grade-' + gslug(g) + '/"><b>' + g + "</b>" +
-  (LIVE_GRADES.includes(g) ? "<span>Live</span>" : "") + "</a>"
+  '<a class="mg-grade live" href="/grade-' + gslug(g) + '/"><b>' + g +
+  "</b><span>Live</span></a>"
 ).join("");
 
 const col = (heading, links) =>
