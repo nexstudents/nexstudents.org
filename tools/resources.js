@@ -162,6 +162,10 @@ const RESOURCES = [
     "The free plan covers one student with five subjects a year, which is a genuine free tier rather " +
     "than a trial. Paid plans start around $20 a year for five students. We pay for it and we are not " +
     "affiliated with them.",
+  links: [
+    ["HomeschoolGrades &middot; the main site", "https://homeschoolgrades.com/"],
+    ["Sign in to the app", "https://app.homeschoolgrades.com/"],
+  ],
 },
 
 /* ═══════════════════════ Placement testing ═══════════════════════════════ */
