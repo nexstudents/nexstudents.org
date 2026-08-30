@@ -47,11 +47,24 @@ const INTEGERS = [
   unit: "Integers &middot; Unit 1 &middot; Lesson 1",
   eyebrow: ["Maths", "Unit 1 &middot; Lesson 1", "Integers"],
   dek: "Two rules cover every addition. Which one you use depends on whether the signs match.",
-  /* Grade 7 only. Paul, 2026-08-30: "add it to the website for 7th grade",
-     and the standing rule from earlier the same day - "i need you to not put
-     two of the same lesson in two different grade." A grade 8 version would
-     be its own lesson with its own content, not this one relisted. */
-  shelf: { grades: [7], subject: "Maths",
+  /* ⚠️ GRADE 6, not 7, and the reasoning is worth keeping because the
+     standard disagrees.
+
+     Common Core puts adding and subtracting integers at 7.NS.A.1. Sixth
+     grade (6.NS.C) covers what a negative number IS - number line, ordering,
+     absolute value - without operating on them. By the book this is a 7th
+     grade lesson, and Spectrum Math Grade 7 opens on it.
+
+     But plenty of curricula teach the operations a year earlier, which is
+     where Kolten met them. Paul, 2026-08-30: "let's move adding and subtract
+     integers lessons to 6th grade instead since Kolten said he learned it
+     last year." Shelved at 6 because it is commonly taught at 6, NOT because
+     of one student - the rule is still that grades come from the skill.
+
+     🚨 7th grade maths is pre-algebra: 7.EE two-step equations, 7.RP
+     proportions and percent, 7.G circles and scale. That is what belongs on
+     the grade 7 shelf, and it is currently empty of it. */
+  shelf: { grades: [6], subject: "Maths",
     blurb: "Two rules cover every case. Which one you use depends on whether the signs match.",
     contains: [
       "Teacher Notes: the exact mistake to watch for, and what to say",
@@ -155,11 +168,24 @@ const INTEGERS = [
   unit: "Integers &middot; Unit 1 &middot; Lesson 2",
   eyebrow: ["Maths", "Unit 1 &middot; Lesson 2", "Integers"],
   dek: "No new arithmetic. Turn every subtraction into an addition, then use the rules you already have.",
-  /* Grade 7 only. Paul, 2026-08-30: "add it to the website for 7th grade",
-     and the standing rule from earlier the same day - "i need you to not put
-     two of the same lesson in two different grade." A grade 8 version would
-     be its own lesson with its own content, not this one relisted. */
-  shelf: { grades: [7], subject: "Maths",
+  /* ⚠️ GRADE 6, not 7, and the reasoning is worth keeping because the
+     standard disagrees.
+
+     Common Core puts adding and subtracting integers at 7.NS.A.1. Sixth
+     grade (6.NS.C) covers what a negative number IS - number line, ordering,
+     absolute value - without operating on them. By the book this is a 7th
+     grade lesson, and Spectrum Math Grade 7 opens on it.
+
+     But plenty of curricula teach the operations a year earlier, which is
+     where Kolten met them. Paul, 2026-08-30: "let's move adding and subtract
+     integers lessons to 6th grade instead since Kolten said he learned it
+     last year." Shelved at 6 because it is commonly taught at 6, NOT because
+     of one student - the rule is still that grades come from the skill.
+
+     🚨 7th grade maths is pre-algebra: 7.EE two-step equations, 7.RP
+     proportions and percent, 7.G circles and scale. That is what belongs on
+     the grade 7 shelf, and it is currently empty of it. */
+  shelf: { grades: [6], subject: "Maths",
     blurb: "No new arithmetic. Turn it into an addition, then use the rules you already have.",
     contains: [
       "Teacher Notes: why this is one step and not two",
