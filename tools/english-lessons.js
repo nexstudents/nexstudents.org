@@ -65,13 +65,13 @@ const ENGLISH = [
   unit: "Parts of Speech &middot; Unit 1 &middot; Lesson 1",
   eyebrow: ["English", "Unit 1 &middot; Lesson 1", "Parts of Speech"],
   dek: "Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.",
-  shelf: { grade: 7, subject: "English",
+  shelf: { grades: [3, 4], subject: "English",
     blurb: "Every sentence has an engine. Find it with a test that works even when nothing happens.",
     contains: [
       "A Ground Control panel for the teacher: what to say when a student is stuck",
       "The lesson read aloud, one line at a time, highlighted as it goes",
       "A test the student can run alone, not a definition to memorise",
-      "Five worked examples, then ten sentences to try",
+      "Five worked examples, then a two-part worksheet: find the verb, then name its kind",
     ] },
 
   ground: {
@@ -117,77 +117,82 @@ const ENGLISH = [
   },
 
   parts: [
-    { title: "How This Lesson Works", s: [
-      "Press the play button and this page will read the lesson to you.",
-      "Each sentence lights up as it is read, and the word being spoken is highlighted inside it.",
-      "The bar under the buttons is the whole lesson. Tap anywhere on it to jump, or drag along it to move through.",
-      "The two arrows either side of play step back and forward one sentence, so you can hear a line again as many times as you need.",
-      "Read the rule at the top first. Then work through the lesson, then the worked examples.",
-      "At the end there are ten sentences to try. Click the verb in each one.",
-      "If you click the wrong word nothing bad happens. The page tells you why it is wrong and lets you try again."
-    ] },
-    { title: "Every Sentence Has an Engine", s: [
-      "Take any sentence apart and one word is doing the work of holding it together.",
-      "\"The driver stopped the bus.\" Cross out stopped and there is no sentence left, only a driver and a bus sitting next to each other.",
-      "That working word is the verb, and every sentence in English has one.",
-      "This is worth knowing on its own. If you have written a group of words and something feels unfinished about it, check whether it has a verb. Usually it does not."
+    { title: "What a Verb Is", s: [
+      "Every sentence has one word that makes it work. That word is the verb.",
+      "",
+      "The driver stopped the bus.",
+      "",
+      "Cross out stopped and nothing is left. Just a driver and a bus.",
+      "",
+      "That word was the verb. Every sentence in English has one."
     ]},
 
-    { title: "The First Kind: Verbs That Do Something", s: [
-      "Most verbs are easy to spot, because something visibly happens.",
-      "\"She opened the window.\" Opened is the verb, and you can picture it.",
-      "\"The engine stalled.\" Stalled is the verb.",
-      "Not all action is physical, though, and this is where the usual definition starts to leak.",
-      "\"He remembered the address.\" Nobody can watch remembering happen, but remembered is still the verb, because it is still what the subject did.",
-      "So the first kind covers more than it looks like: running and building, but also thinking, hoping, forgetting and deciding."
+    { title: "Kind One. Action Verbs.", s: [
+      "An action verb is something happening. Something you could point a camera at.",
+      "",
+      "She opened the window.",
+      "",
+      "Opened is the verb. You can picture it.",
+      "",
+      "The engine stalled.",
+      "",
+      "Stalled is the verb.",
+      "",
+      "Some actions happen inside your head, and those count too.",
+      "",
+      "He remembered the address.",
+      "",
+      "Nobody can watch remembering happen. But remembered is what he did, so it is the verb."
     ]},
 
-    { title: "The Second Kind: Verbs That Do Not Do Anything", s: [
-      "Now look at this sentence: \"The road is wet.\"",
-      "Nothing happens in it. Nobody does anything. And yet it is a complete sentence, so by our own rule it must have a verb.",
-      "The verb is is.",
-      "This is the part most students never get told properly, so it is worth being slow about.",
-      "Words like am, is, are, was, were, be, been and being are called being verbs, and their job is not to act but to JOIN.",
-      "\"The road is wet\" hooks the road to wet. The road on one side, wet on the other, and is holding them together like an equals sign in a sum.",
-      "Try it without: \"The road wet.\" That is not a sentence. It is two ideas with nothing connecting them.",
-      "That is the whole job of a being verb. It does not describe an action, it makes a claim: this thing IS that thing.",
-      "There are only about eight of them and they turn up constantly, so they are worth knowing on sight: am, is, are, was, were, be, been, being."
+    { title: "Kind Two. Being Verbs.", s: [
+      "A being verb does not do anything. It joins two things together.",
+      "",
+      "The road is wet.",
+      "",
+      "Nothing happens here. Nobody does anything. The verb is is.",
+      "",
+      "It joins the road to wet, like an equals sign in a sum.",
+      "",
+      "Take it out and you get: The road wet. That is not a sentence any more.",
+      "",
+      "There are only eight being verbs in English. Learn these eight and you have learned the whole kind.",
+      "",
+      "Am. Is. Are. Was. Were. Be. Been. Being."
     ]},
 
-    { title: "Telling the Two Apart", s: [
-      "You do not have to guess which kind you are looking at.",
-      "Ask one question: does the sentence describe something happening, or does it describe how something IS?",
-      "\"The kettle boiled.\" Something happened. That is an action verb.",
-      "\"The kettle is empty.\" Nothing happened. The sentence just tells you the state the kettle is in. That is a being verb.",
-      "Both are verbs. Both are the engine of the sentence. They simply carry different cargo: one carries an event, the other carries a description."
+    { title: "The Two Side By Side", s: [
+      "Same kettle. Two sentences. Two different kinds of verb.",
+      "",
+      "The kettle boiled. Something happened. Boiled is an action verb.",
+      "",
+      "The kettle is empty. Nothing happened. Is is a being verb.",
+      "",
+      "One tells you what happened. The other tells you how something is."
     ]},
 
-    { title: "The Trap", s: [
-      "Here is the sentence that catches almost everybody.",
-      "\"The walk was long.\"",
-      "Walk looks like a verb. Walking is something you do. But in this sentence nobody is walking, and the walk is just a thing that happened to be long, like a rope or a film.",
+    { title: "The One That Fools People", s: [
+      "The walk was long.",
+      "",
+      "Walk looks like a verb. But nobody is walking here. The walk is just a thing, like a rope or a film.",
+      "",
       "The verb is was.",
-      "A word is not a verb because of what it looks like. It is a verb because of the job it is doing in that particular sentence, and the same word can do different jobs in different sentences.",
-      "\"They walk to school\" and \"the walk was long\" use the same word, and it is a verb in only one of them."
+      "",
+      "A word is a verb because of the job it does in that sentence. Not because of how it looks."
     ]},
-
-    { title: "The Test That Always Works", s: [
-      "You cannot pass this lesson by asking whether a word feels like an action, because is and was do not feel like anything.",
-      "So use a test instead of a feeling.",
-      "Put the word Yesterday at the front of the sentence and read it again. Exactly one word has to change shape, and that word is the verb.",
-      "\"The road is wet\" becomes \"Yesterday the road was wet.\" Is changed to was, so is was the verb.",
-      "\"The walk was long\" becomes \"Yesterday the walk was long.\" Walk did not move at all. Was is the verb, and walk never was one.",
-      "This test does not care whether anything happens in the sentence, which is exactly why it beats the definition most students are given."
-    ]},
-
-    { title: "Why This One Matters Later", s: [
-      "Almost everything ahead in grammar is really a lesson about verbs wearing a different name.",
-      "Tense is a verb changing to show when. Agreement is a verb changing to match who. Clauses are counted by counting verbs.",
-      "So the goal here is not to answer ten questions correctly today.",
-      "The goal is to reach the point where finding the verb takes no thought at all, because every later lesson quietly assumes you can already do it."
-    ]}
   ],
 
+  /* ⚠️ Five lines, and none of them re-teach the lesson. An earlier version
+     repeated the two kinds and the camera test here, which is the same
+     over-explaining Paul called out in the body. The instructions say the JOB.
+     The lesson is what taught it. */
+  todo: { title: "What To Do Now", s: [
+      "Now the ten sentences at the bottom. Click the verb in each one.",
+      "Then say which kind it is. That is the real job here.",
+      "Ask yourself one question. Could you film it?",
+      "If you could, it is an action verb. If you could not, it is a being verb.",
+      "If you click the wrong word nothing bad happens. The page tells you why, so read that before you try again."
+  ] },
   examples: [
     ["The mechanic tightened the bolt.", "tightened",
      "Something happens and you can picture it. Yesterday the mechanic TIGHTENED the bolt - the word already changed, so it is the verb."],
@@ -230,6 +235,36 @@ const ENGLISH = [
       why: "The trap again. Attempt is a thing that was perfect. Was is the verb." },
     { sentence: "Both engines started without trouble.", verb: "started", answer: 2, kind: "action",
       why: "Yesterday both engines STARTED. It changed, so it is the verb." }
+  ],
+
+  /* ── PART B. Which KIND of verb is it? ──────────────────────────────────
+     Paul, 2026-08-29: "make the questions also resemble that like kinds of
+     verbs and which is a verb together but in two different sections ... like
+     a worksheet does." Part A asks which WORD. This asks what that word DOES.
+
+     🚨 These are their own sentences, not the Part A ones re-labelled, and
+     that is deliberate. "Those instruments look expensive" is tagged action in
+     Part A, and for finding the verb that is fine - look IS the verb. But its
+     KIND is not action: there, look means seems, which makes it a linking
+     verb. In a lesson whose entire job is action against being, asking a
+     student to call it an action verb would teach the wrong thing. Linking
+     verbs beyond the eight forms of be are a later lesson, so nothing
+     ambiguous is allowed in this part.
+     ⚠️ `at` is the word's index in sentence.split(" ") - the page underlines
+     that word. build-english.js checks it points at a real verb. */
+  sort: [
+    { sentence: "The kettle boiled quickly.", at: 2, kind: "action",
+      why: "Something happened, and you could have filmed it. Boiled is an action verb." },
+    { sentence: "The classroom is quiet.", at: 2, kind: "being",
+      why: "Nothing happens. Is joins the classroom to quiet, so it is a being verb." },
+    { sentence: "He built a small shelf.", at: 1, kind: "action",
+      why: "He did something you could point a camera at. Built is an action verb." },
+    { sentence: "Those books were expensive.", at: 2, kind: "being",
+      why: "Nobody does anything. Were joins the books to expensive, so it is a being verb." },
+    { sentence: "The dog barked at the gate.", at: 2, kind: "action",
+      why: "You could hear it and film it. Barked is an action verb." },
+    { sentence: "I am ready now.", at: 1, kind: "being",
+      why: "Nothing is happening. Am joins I to ready, so it is a being verb." }
   ]
 },
 

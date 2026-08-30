@@ -87,6 +87,27 @@ h1{margin:0 0 6px}
   background:var(--boxfill);font-weight:600;white-space:nowrap;padding:11px 10px;font-size:.88rem}
 .tab.act:hover{border-color:var(--a)}
 .tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
+/* ── the two worksheet parts ──────────────────────────────────────────────
+   A printed worksheet says "Part A" with its own directions underneath, and a
+   rule across the page so you can see where one job stops and the next starts.
+   That rule is the whole reason this reads as two tasks rather than a list. */
+.wspart{margin:22px 0 0;padding-top:18px;border-top:2px solid var(--line)}
+.wspart:first-of-type{border-top:0;padding-top:0}
+.ws-head{margin:0 0 4px;font-size:1.06rem;letter-spacing:.01em}
+.ws-note{color:var(--dim);font-size:.9rem;margin:0 0 14px;max-width:62ch}
+
+/* Part B: the sentence, then two buttons. The verb is already underlined,
+   because the question is not which word it is - that was Part A. */
+.kverb{text-decoration:underline;text-underline-offset:3px;font-weight:700}
+.kpick{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
+.kbtn{font:inherit;font-size:.92rem;font-weight:600;padding:9px 17px;border-radius:999px;
+  background:transparent;border:1px solid var(--line);color:inherit;cursor:pointer}
+.kbtn:hover:not(:disabled){border-color:var(--a)}
+.kbtn.ok{background:var(--a);border-color:var(--a);color:var(--on-accent,#0b160f)}
+.kbtn.wrong{border-color:#c9503f}
+.kbtn.reveal{border-color:var(--a);border-style:dashed}
+.kbtn:disabled{cursor:default}
+
 .prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:18px;margin:0 0 16px}
 .prob.solved{border-color:var(--free)}
@@ -155,7 +176,24 @@ __NAV__
     <button class="tab act" type="button" id="reset">Start Over</button>
     <button class="tab act" type="button" id="reveal">Show Me The Answers</button>
   </div>
-  <div id="problems"></div>
+
+  <!-- 🚨 TWO PARTS, LIKE A WORKSHEET. Paul, 2026-08-29: "make the questions
+       also resemble that like kinds of verbs and which is a verb together but
+       in two different sections ... like a worksheet does."
+       Part A asks WHICH WORD. Part B asks WHICH KIND. They are two different
+       skills and running them together as one list of ten hid that. -->
+  <section class="wspart">
+    <h3 class="ws-head">Part A. Find The Verb.</h3>
+    <p class="ws-note">__NOTE_A__</p>
+    <div id="problems"></div>
+  </section>
+
+  <section class="wspart">
+    <h3 class="ws-head">Part B. Action Or Being?</h3>
+    <p class="ws-note">__NOTE_B__</p>
+    <div id="kinds"></div>
+  </section>
+
   <div class="scorebar" id="scorebar"></div>
 </div>
 
@@ -165,7 +203,8 @@ __NAV__
 
 var LESSON_ID = "__ID__";
 var PARTS     = __PARTS__;
-var PRACTICE  = __PRACTICE__;
+var PRACTICE  = __PRACTICE__;   /* Part A - which word is the verb */
+var SORT      = __SORT__;       /* Part B - which KIND of verb it is */
 
 __PLAYER_JS__
 /* ── practice ─────────────────────────────────────────────────────────────
@@ -177,15 +216,19 @@ var KEY = "prog:" + LESSON_ID;
 var state = {};
 try { state = JSON.parse(load(KEY, "{}")) || {}; } catch (e) { state = {}; }
 
-var wrap = document.getElementById("problems");
-var bar  = document.getElementById("scorebar");
+var wrap  = document.getElementById("problems");
+var kwrap = document.getElementById("kinds");
+var bar   = document.getElementById("scorebar");
 
 function save(){ store(KEY, JSON.stringify(state)); }
 
+/* ⚠️ Part A and Part B are stored under PREFIXED keys, "a3" and "b3", not bare
+   numbers. Two parts sharing one number would mark a Part B answer as a solved
+   Part A sentence, and the score would count work nobody did. */
 function render(){
   wrap.innerHTML = "";
   PRACTICE.forEach(function(p, n){
-    var done = state[n] === true;
+    var done = state["a" + n] === true;
     var box = document.createElement("div");
     box.className = "prob" + (done ? " solved" : "");
 
@@ -209,7 +252,7 @@ function render(){
       } else {
         b.onclick = function(){
           if (wi === p.answer) {
-            state[n] = true; save();
+            state["a" + n] = true; save();
             render();
             /* keep the explanation on screen after the re-render */
             var fresh = wrap.children[n].querySelector(".nudge");
@@ -230,6 +273,75 @@ function render(){
     box.appendChild(nudge);
     wrap.appendChild(box);
   });
+  renderKinds();
+}
+
+/* ── PART B. Which kind of verb is it? ────────────────────────────────────
+   The verb is already underlined here on purpose. Part A was "which word";
+   asking it again would test the same thing twice and hide the actual
+   question, which is what that word DOES. */
+function renderKinds(){
+  kwrap.innerHTML = "";
+  SORT.forEach(function(p, n){
+    var done = state["b" + n] === true;
+    var box = document.createElement("div");
+    box.className = "prob" + (done ? " solved" : "");
+
+    var head = document.createElement("div");
+    head.className = "probhead";
+    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
+      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Got it" : "Action or being") + '</span>';
+    box.appendChild(head);
+
+    /* the sentence, with the verb underlined */
+    var line = document.createElement("div");
+    line.className = "words";
+    p.sentence.split(" ").forEach(function(word, wi){
+      if (wi > 0) line.appendChild(document.createTextNode(" "));
+      var sp = document.createElement("span");
+      if (wi === p.at) sp.className = "kverb";
+      sp.textContent = word;
+      line.appendChild(sp);
+    });
+    box.appendChild(line);
+
+    var nudge = document.createElement("p");
+    nudge.className = "nudge";
+
+    var pick = document.createElement("div");
+    pick.className = "kpick";
+    ["action", "being"].forEach(function(kind){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "kbtn";
+      b.textContent = kind === "action" ? "Action verb" : "Being verb";
+      if (done) {
+        b.disabled = true;
+        if (kind === p.kind) b.classList.add("ok");
+      } else {
+        b.onclick = function(){
+          if (kind === p.kind) {
+            state["b" + n] = true; save();
+            render();
+            var fresh = kwrap.children[n].querySelector(".nudge");
+            if (fresh) fresh.textContent = p.why;
+            score();
+          } else {
+            /* Same rule as Part A: a reason, never a buzzer. */
+            b.classList.add("wrong");
+            nudge.classList.add("warn");
+            nudge.textContent = kind === "action"
+              ? "Not action. Try to film this sentence - if nothing happens that you could point a camera at, the verb is a being verb."
+              : "Not being. The being verbs are am, is, are, was, were, be, been and being. This underlined word is not one of them, so something is happening.";
+          }
+        };
+      }
+      pick.appendChild(b);
+    });
+    box.appendChild(pick);
+    if (done) { nudge.textContent = p.why; }
+    box.appendChild(nudge);
+    kwrap.appendChild(box);
+  });
   score();
 }
 
@@ -243,29 +355,51 @@ function wrongWhy(word, p){
   return "Not that one. Put “Yesterday” at the front and read it again — which word has to change shape?";
 }
 
+/* One score across BOTH parts, and it says the split, because "8 / 16" hides
+   whether he can find verbs and cannot name them, or the other way round.
+   Paul's rule from the quizzes: show the score AND the percentage. */
 function score(){
-  var got = 0;
-  for (var i = 0; i < PRACTICE.length; i++) if (state[i]) got++;
-  var pct = Math.round((got / PRACTICE.length) * 100);
-  bar.innerHTML = "<b>" + got + " / " + PRACTICE.length + "</b> · " + pct + "%" +
-    (got === PRACTICE.length ? " — all of them. Write the score in your notes." : "");
+  var a = 0, b = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
+  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
+  var got = a + b, all = PRACTICE.length + SORT.length;
+  var pct = Math.round((got / all) * 100);
+  bar.innerHTML = "<b>" + got + " / " + all + "</b> · " + pct + "%" +
+    " <span class=\"tag\">Part A " + a + "/" + PRACTICE.length +
+    " · Part B " + b + "/" + SORT.length + "</span>" +
+    (got === all ? " — all of them. Write the score in your notes." : "");
 }
 
 document.getElementById("reset").onclick = function(){
-  state = {}; save(); render();
+  state = {}; save(); render(); score();
 };
 document.getElementById("reveal").onclick = function(){
+  var i, j;
   var boxes = wrap.children;
-  for (var i = 0; i < PRACTICE.length; i++) {
-    if (state[i]) continue;
+  for (i = 0; i < PRACTICE.length; i++) {
+    if (state["a" + i]) continue;
     var ws = boxes[i].querySelectorAll(".pw");
-    for (var j = 0; j < ws.length; j++) {
+    for (j = 0; j < ws.length; j++) {
       ws[j].disabled = true;
       if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");
     }
     var nd = boxes[i].querySelector(".nudge");
     nd.classList.remove("warn");
     nd.textContent = PRACTICE[i].why;
+  }
+  /* ⚠️ Reveal has to cover Part B too. It used to walk one list, and after the
+     split that silently left half the worksheet unanswered. */
+  var kboxes = kwrap.children;
+  for (i = 0; i < SORT.length; i++) {
+    if (state["b" + i]) continue;
+    var kb = kboxes[i].querySelectorAll(".kbtn");
+    for (j = 0; j < kb.length; j++) {
+      kb[j].disabled = true;
+      if ((j === 0 ? "action" : "being") === SORT[i].kind) kb[j].classList.add("reveal");
+    }
+    var knd = kboxes[i].querySelector(".nudge");
+    knd.classList.remove("warn");
+    knd.textContent = SORT[i].why;
   }
 };
 

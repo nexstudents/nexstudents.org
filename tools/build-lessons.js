@@ -24,6 +24,10 @@ const path = require("path");
 const { LESSONS } = require("./lessons.js");
 /* The same nav every other page has. Paul, 2026-08-26. */
 const { navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+/* 🚨 partsFor() prepends the shared "how to use this page" and appends the
+   lesson's OWN closing instructions. bake-voice.js calls the same function, so
+   the audio cannot read something the page does not show. */
+const { partsFor, requireTodo } = require("./lesson-instructions.js");
 
 const ROOT = process.argv[2];
 const TPL = process.argv[3];
@@ -74,7 +78,8 @@ function buildQuestions(L) {
 }
 
 function serialise(L) {
-  const parts = "var PARTS = [\n" + L.parts.map((p) =>
+  requireTodo(L, L.id);
+  const parts = "var PARTS = [\n" + partsFor(L).map((p) =>
     '  { title: "' + esc(p.title) + '", s: ' + jsArr(p.s) + ' }').join(",\n") + "\n];";
 
   const words = "var WORDS = [\n" + L.words.map(([t, d]) =>

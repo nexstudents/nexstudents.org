@@ -65,7 +65,10 @@ const SUBJECTS = [
     blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
 ];
 
-const LIVE_GRADES = ["K", "3", "6", "7", "8"];
+/* 4 and 5 joined the list on 2026-08-29, when the lessons were re-shelved by
+   the level of the skill rather than the age of the student reading them:
+   verbs to 3-4, long division to 4-5, Rome to 6-7. */
+const LIVE_GRADES = ["K", "3", "4", "5", "6", "7", "8"];
 const ALL_GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
 const gradeName = (g) => (g === "K" ? "Kindergarten" : "Grade " + g);
 

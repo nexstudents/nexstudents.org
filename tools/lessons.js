@@ -25,7 +25,7 @@ const LESSONS = [
      second hand-written entry in build-pages.js, which meant every lesson was
      registered twice and the two could disagree. Worksheets never had that
      problem because their cards were always derived from worksheets.js. */
-  shelf: { grade: 7, subject: "History",
+  shelf: { grades: [6, 7], subject: "History",
     blurb: "Republic to empire, read aloud, then five questions hidden in the text.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",
@@ -40,14 +40,6 @@ const LESSONS = [
     text: "And he changeth the times and the seasons: he removeth kings, and setteth up kings.",
   },
   parts: [
-    { title: "How This Lesson Works", s: [
-      "Press the play button and this page will read the lesson to you.",
-      "Each sentence lights up as it is read, and the word being spoken is highlighted inside it.",
-      "The bar under the buttons is the whole lesson. Tap anywhere on it to jump, or drag along it to move through.",
-      "The two arrows either side of play step back and forward one sentence, so you can hear a line again as many times as you need.",
-      "You can also tap any sentence in the text to start reading from there.",
-      "After the lesson there are word cards and questions. Four of the questions have their answer hidden somewhere in the text, and the page will help you hunt for it."
-    ] },
     { title: "Rome Without a King", s: [
       "For almost five hundred years, Rome had no king.",
       "Roman citizens voted for the men who led them.",
@@ -90,6 +82,14 @@ const LESSONS = [
       "Rome's leaders believed they were the ones deciding who ruled, but Scripture says governments rise and fall under God's authority, no matter how permanent they look."
     ]}
   ],
+  todo: { title: "What To Do Now", s: [
+      "That is the reading done. There are two things left, and both of them send you back into the story.",
+      "First the word cards. Four words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
+      "Then four questions. The answer to every one of them is somewhere in the text above, not in your memory.",
+      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",
+      "Finding the answer in the story is the skill this lesson is teaching. Getting it right from memory is not the same thing.",
+      "The hardest question in this one is why nobody stopped it. Rome kept its Senate, its elections and its offices, so from the outside almost nothing looked different. Read The Quiet Takeover again before you answer it."
+  ] },
   words: [
     ["Republic", "People vote for leaders to represent them. No king. Rome ran this way for about 500 years."],
     ["Senate", "The council of powerful Romans who debated laws and advised the leaders. Something like a council of elders."],
@@ -138,7 +138,7 @@ const LESSONS = [
   slug: "roman-government",
   title: "Roman Government and Citizenship",
   unit: "Ancient Rome &middot; Unit 1 &middot; Lesson 2",
-  shelf: { grade: 7, subject: "History",
+  shelf: { grades: [6, 7], subject: "History",
     blurb: "Offices, consuls and citizenship, and why one-year terms mattered.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",
@@ -153,14 +153,6 @@ const LESSONS = [
     text: "There is no power but of God: the powers that be are ordained of God.",
   },
   parts: [
-    { title: "How This Lesson Works", s: [
-      "Press the play button and this page will read the lesson to you.",
-      "Each sentence lights up as it is read, and the word being spoken is highlighted inside it.",
-      "The bar under the buttons is the whole lesson. Tap anywhere on it to jump, or drag along it to move through.",
-      "The two arrows either side of play step back and forward one sentence, so you can hear a line again as many times as you need.",
-      "You can also tap any sentence in the text to start reading from there.",
-      "After the lesson there are word cards and questions. Four of the questions have their answer hidden somewhere in the text, and the page will help you hunt for it."
-    ] },
     { title: "A Government of Offices", s: [
       "Rome did not run on one man giving orders, at least not at first.",
       "It ran on offices, which are jobs with fixed powers and fixed time limits.",
@@ -202,6 +194,14 @@ const LESSONS = [
       "Scripture calls for respect toward lawful authority, and it also holds every authority answerable to God, which means order matters and justice matters more."
     ]}
   ],
+  todo: { title: "What To Do Now", s: [
+      "That is the reading done. There are two things left, and both of them send you back into the story.",
+      "First the word cards. Four words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
+      "Then four questions. The answer to every one of them is somewhere in the text above, not in your memory.",
+      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",
+      "Finding the answer in the story is the skill this lesson is teaching. Getting it right from memory is not the same thing.",
+      "The one to slow down on is who counted as Roman. The answer changes across the lesson, because Rome kept widening it. Go back to Who Counted as Roman and read it from the start."
+  ] },
   words: [
     ["Senate", "Rome's council of powerful men. It advised the leaders, argued about laws, and controlled the treasury."],
     ["Citizenship", "The legal status that gave you rights: to vote, to make contracts, to use the courts, and not to be punished without a trial."],

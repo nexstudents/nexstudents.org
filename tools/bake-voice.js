@@ -96,15 +96,23 @@ if (!KEY) {
    audio would play for the highlighted line. */
 function sentencesOf(parts) {
   const out = [];
-  parts.forEach((p) => (p.s || []).forEach((t) => out.push(t)));
+  /* 🚨 An empty string is a PARAGRAPH BREAK in the page, not a sentence, and it
+     never enters SENT there. Skip it here by the same rule or every clip after
+     the first break plays against the wrong line. Both rules are "is it blank
+     after trimming" - keep them identical. */
+  parts.forEach((p) => (p.s || []).forEach((t) => { if (String(t).trim()) out.push(t); }));
   return out;
 }
 
 function lessons() {
   const list = [];
   const push = (id, parts) => { if (parts && parts.length) list.push({ id, sentences: sentencesOf(parts) }); };
-  try { require("./lessons.js").LESSONS.forEach((L) => push(L.id, L.parts)); } catch (e) { fail("lessons.js: " + e.message); }
-  try { require("./english-lessons.js").ENGLISH.forEach((L) => push(L.id, L.parts)); } catch (e) { fail("english-lessons.js: " + e.message); }
+  /* 🚨 partsFor(), never L.parts. The closing instructions are appended by that
+     function, so reading L.parts here would bake audio that stops before the
+     student is told what to do. */
+  const { partsFor } = require("./lesson-instructions.js");
+  try { require("./lessons.js").LESSONS.forEach((L) => push(L.id, partsFor(L))); } catch (e) { fail("lessons.js: " + e.message); }
+  try { require("./english-lessons.js").ENGLISH.forEach((L) => push(L.id, partsFor(L))); } catch (e) { fail("english-lessons.js: " + e.message); }
   /* Maths used to be impossible to bake: its sentences were computed in the
      browser and existed nowhere on disk. tools/math-captions.js moved that
      arithmetic into the build, so the narration can be read here and spoken in
@@ -112,13 +120,27 @@ function lessons() {
   try {
     const { sentencesFor } = require("./math-captions.js");
     require("./math-lessons.js").MATH.forEach((L) => {
-      if (L.demo) list.push({ id: L.id, sentences: sentencesFor(L.demo) });
+      if (L.demo) list.push({ id: L.id, sentences: sentencesFor(L.demo, L) });
     });
   } catch (e) { fail("math-lessons.js: " + e.message); }
   return list;
 }
 
 const sha = (s) => crypto.createHash("sha1").update(s, "utf8").digest("hex").slice(0, 16);
+
+/* ⚠️ NOT sha1. This one has a twin, nsTextHash() in lesson-template.html, that
+   runs in the browser with no crypto available. FNV-1a over UTF-16 code units,
+   written the same way in both files. Change one and you must change the other,
+   or every lesson silently loses its baked voice. */
+function textHash(list) {
+  let h = 2166136261;
+  const s = list.join("\n");
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return ("0000000" + h.toString(16)).slice(-8);
+}
 const xmlEsc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
   .replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
@@ -205,7 +227,16 @@ async function synth(text, VOICE) {
     tracks.push({ id: T.id, label: T.label, voice: VOICE, clips: clips });
     }
 
-    fs.writeFileSync(manifestPath, JSON.stringify({ rate: RATE, tracks: tracks }, null, 1));
+    /* 🚨 The fingerprint of the text this was baked FROM. The page computes the
+       same hash over the sentences it renders and REFUSES the audio if they
+       differ, because a lesson edited after baking would otherwise play the old
+       words under the new text - and a matching sentence COUNT does not catch
+       that. It nearly shipped on 2026-08-29: the history lessons swapped a
+       six-line opening block for a six-line closing one, so the count was
+       identical and every clip was against the wrong line.
+       ⚠️ nsTextHash() in lesson-template.html must stay identical to this. */
+    fs.writeFileSync(manifestPath, JSON.stringify(
+      { rate: RATE, textHash: textHash(L.sentences), tracks: tracks }, null, 1));
     console.log("wrote " + L.id + "/voice.json  (" +
       tracks.map(function(t){ return t.id + ": " + t.clips.length; }).join(", ") + ")");
   }

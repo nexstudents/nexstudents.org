@@ -1258,6 +1258,20 @@ PARTS.forEach(function(part){
   var p = document.createElement("p");
   p.className = "para";
   part.s.forEach(function(text){
+    /* 🚨 AN EMPTY STRING IS A PARAGRAPH BREAK, not a sentence.
+       Paul, 2026-08-29: "i think you need to use paragraphs and make it simple
+       to understand." A section used to be ONE paragraph however long it ran,
+       which gave a struggling reader a nine-sentence wall with no landing spot.
+       ⚠️ It must NOT enter SENT. The clip index in voice.json is a position in
+       SENT, so counting a break as a sentence would play every line's audio one
+       place late. tools/bake-voice.js skips them by the same rule - if you
+       change the rule, change it in BOTH or the whole lesson goes off by one. */
+    if (!String(text).trim()) {
+      if (p.childNodes.length) sec.appendChild(p);
+      p = document.createElement("p");
+      p.className = "para";
+      return;
+    }
     var i = SENT.length;
     var span = document.createElement("span");
     span.className = "sent";
@@ -1279,7 +1293,8 @@ PARTS.forEach(function(part){
     p.appendChild(document.createTextNode(" "));
     SENT.push({ text: text, el: span, words: offsets });
   });
-  sec.appendChild(p);
+  /* the last paragraph, unless a stray break at the end left it empty */
+  if (p.childNodes.length) sec.appendChild(p);
   storyEl.appendChild(sec);
 });
 
@@ -1292,18 +1307,46 @@ PARTS.forEach(function(part){
 var AUDIO = null;        /* the ACTIVE baked track: { voice, clips:[...] } */
 var AUDIO_TRACKS = [];   /* every baked track for this lesson */
 
+/* Fingerprint of the text this page is actually showing, used to refuse audio
+   baked from a different version of the lesson.
+   🚨 tools/bake-voice.js runs the IDENTICAL function over the sentences it
+   bakes. If you change one you MUST change the other, or every lesson loses its
+   baked voice at once - the hashes would never match again. FNV-1a over UTF-16
+   code units: no crypto, works the same in Node and in a browser. */
+function nsTextHash(list){
+  var h = 2166136261;
+  var s = list.join("\n");
+  for (var i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return ("0000000" + h.toString(16)).slice(-8);
+}
+var TEXT_HASH = nsTextHash(SENT.map(function(s){ return s.text; }));
+
 (function loadBakedVoice(){
   fetch("voice.json", { cache: "force-cache" })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       var tr = (j && j.tracks) || [];
       if (!tr.length) return;
-      /* A stale manifest is worse than none: if a lesson gained or lost a
-         sentence since it was baked, the clips no longer line up and the wrong
-         audio would play for the highlighted line. Sentence count is the
-         cheapest honest check. */
-      /* A stale manifest is worse than none: if a lesson gained or lost a
-         sentence since it was baked, the clips no longer line up. */
+      /* 🚨 A STALE MANIFEST IS WORSE THAN NO AUDIO, because it is confidently
+         wrong: the highlight walks the new text while the voice reads the old.
+
+         ⚠️ COUNTING SENTENCES IS NOT ENOUGH, and this nearly shipped. On
+         2026-08-29 the history lessons lost a six-line opening block and gained
+         a six-line closing one. The count matched exactly, the count check
+         passed, and every clip would have played against a different sentence.
+
+         So the manifest carries a hash of the text it was baked FROM, and the
+         page carries the hash of the text it is showing. If they differ the
+         lesson has been edited since the bake and the audio is refused - the
+         page falls back to a device voice, which is always in step because it
+         reads what is actually on screen. */
+      if (j.textHash && TEXT_HASH && j.textHash !== TEXT_HASH){
+        AUDIO = null;
+        return;
+      }
       tr = tr.filter(function(t){ return t.clips && t.clips.length === SENT.length; });
       if (!tr.length){ AUDIO = null; return; }
       AUDIO_TRACKS = tr;

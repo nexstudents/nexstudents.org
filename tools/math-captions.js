@@ -49,14 +49,19 @@ function solve(dividend, divisor) {
 /* What gets said, and what gets read on screen. Kept deliberately plain: this
    is narration a student follows while watching the grid fill in, so every
    sentence names the number it is talking about rather than saying "it". */
-function captions(S) {
-  const out = [
-    { text: "Press the play button and this page will read each step to you." },
-    { text: "The numbers fill into the division bracket as they are spoken, so you can watch the working appear." },
-    { text: "The bar under the buttons is every step. Tap it to jump to a step, or drag along it to move through the working." },
-    { text: "The two arrows either side of play step back and forward one step, so you can watch a step as many times as you need." },
-    { text: "Underneath there are problems to solve yourself, and you type every row: the answer on top, the multiply, and the subtract." },
-    {
+/* 🚨 `L` is the lesson, and it is REQUIRED, because the closing instructions
+   are the lesson's own. Paul, 2026-08-29: "if there isnt some instruction build
+   one in the lesson." They land at the END, after the working has been shown,
+   because a student cannot act on "do all five" while the method is still being
+   explained. */
+function captions(S, L) {
+  if (!L || !L.todo || !Array.isArray(L.todo.s) || !L.todo.s.length) {
+    console.error("FAIL: captions() needs the lesson and its todo block");
+    process.exit(1);
+  }
+  /* 🚨 The lesson opens on the maths, not on an explanation of the buttons.
+     Paul, 2026-08-29: "you also need to remove the voice engine instructions." */
+  const out = [{
     text: "We are dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
           " sits outside the bracket, and " + S.dividend + " goes underneath it.",
   }];
@@ -76,12 +81,16 @@ function captions(S) {
     text: "The digits on top read " + S.quotient + ". So " + S.dividend + " divided by " +
           S.divisor + " is " + S.quotient + ".",
   });
+  /* ⚠️ No `step` or `phase` on these, so paintDemo() leaves the finished
+     bracket on screen while they are read. The student is being told what to do
+     next while still looking at the worked example. */
+  L.todo.s.forEach((text) => out.push({ text }));
   return out;
 }
 
 /* The sentences alone, in the order the player will speak them. */
-function sentencesFor(demo) {
-  return captions(solve(demo.dividend, demo.divisor)).map((c) => c.text);
+function sentencesFor(demo, L) {
+  return captions(solve(demo.dividend, demo.divisor), L).map((c) => c.text);
 }
 
 module.exports = { solve, captions, sentencesFor };

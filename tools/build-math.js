@@ -24,6 +24,7 @@ const player = require("./voice-player.js");
 /* One source for the narration, shared with tools/bake-voice.js so the words
    on the page and the words in the audio cannot drift apart. */
 const { captions, solve } = require("./math-captions.js");
+const { requireTodo } = require("./lesson-instructions.js");
 
 const ROOT = process.argv[2] || ".";
 const TPL = path.join(__dirname, "math", "template.html");
@@ -53,6 +54,25 @@ function check(dividend, divisor, where) {
 }
 function fail(msg) { console.error("FAIL: " + msg); process.exit(1); }
 
+/* ⚠️ The closing instructions SAY how many problems there are ("Do all five").
+   Change practice.count and that sentence quietly becomes a lie, which is worse
+   than saying nothing at all: the student stops when the voice says to stop.
+   Checked in words, because that is how it gets spoken. */
+const COUNT_WORDS = ["zero","one","two","three","four","five","six","seven","eight","nine","ten",
+                     "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen",
+                     "eighteen","nineteen","twenty"];
+function checkTodoCount(L) {
+  requireTodo(L, L.id);
+  const n = L.practice && L.practice.count;
+  if (!n) fail(L.id + ": no practice.count to check the instructions against");
+  const word = COUNT_WORDS[n];
+  const said = L.todo.s.join(" ").toLowerCase();
+  if (!word || (!said.includes(word) && !said.includes(String(n)))) {
+    fail(L.id + ": the instructions never say how many problems there are. practice.count is " +
+         n + ', so they need to say "' + word + '" (or "' + n + '") somewhere.');
+  }
+}
+
 /* Every problem the spec can ever produce, enumerated. Cheap at these sizes,
    and it means an impossible or thin spec fails here rather than on a page
    that quietly shows the same problem twice. */
@@ -72,6 +92,7 @@ function poolFor(spec) {
 
 const written = [];
 for (const L of MATH) {
+  checkTodoCount(L);
   check(L.demo.dividend, L.demo.divisor, L.slug + " demo");
 
   const pool = poolFor(L.practice);
@@ -86,7 +107,7 @@ for (const L of MATH) {
     .replace(/__DEK__/g, L.dek)
     .replace(/__ID__/g, L.id)
     .replace("__DEMO__", JSON.stringify(L.demo))
-    .replace("__CAPTIONS__", JSON.stringify(captions(solve(L.demo.dividend, L.demo.divisor))))
+    .replace("__CAPTIONS__", JSON.stringify(captions(solve(L.demo.dividend, L.demo.divisor), L)))
     .replace("__SPEC__", JSON.stringify(L.practice))
     .replace("__THEMES__", themesBlock)
     .replace("__PLAYER_CSS__", player.playerCss)

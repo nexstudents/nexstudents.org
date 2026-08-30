@@ -776,7 +776,7 @@ body.player-hidden .scrub{margin:0}
 "use strict";
 
 var DEMO = {"dividend":564,"divisor":3};
-var BAKED_CAPS = [{"text":"Press the play button and this page will read each step to you."},{"text":"The numbers fill into the division bracket as they are spoken, so you can watch the working appear."},{"text":"The bar under the buttons is every step. Tap it to jump to a step, or drag along it to move through the working."},{"text":"The two arrows either side of play step back and forward one step, so you can watch a step as many times as you need."},{"text":"Underneath there are problems to solve yourself, and you type every row: the answer on top, the multiply, and the subtract."},{"text":"We are dividing 564 by 3. The 3 sits outside the bracket, and 564 goes underneath it."},{"step":0,"phase":"divide","text":"Step 1. Divide. How many 3s fit into 5? 1. Write the 1 on top."},{"step":0,"phase":"multiply","text":"Multiply. 1 times 3 is 3. Write 3 underneath."},{"step":0,"phase":"subtract","text":"Subtract. 5 minus 3 is 2."},{"step":0,"phase":"bring","text":"Bring down the next digit, 6, to make 26."},{"step":1,"phase":"divide","text":"Step 2. Divide. How many 3s fit into 26? 8. Write the 8 on top."},{"step":1,"phase":"multiply","text":"Multiply. 8 times 3 is 24. Write 24 underneath."},{"step":1,"phase":"subtract","text":"Subtract. 26 minus 24 is 2."},{"step":1,"phase":"bring","text":"Bring down the next digit, 4, to make 24."},{"step":2,"phase":"divide","text":"Step 3. Divide. How many 3s fit into 24? 8. Write the 8 on top."},{"step":2,"phase":"multiply","text":"Multiply. 8 times 3 is 24. Write 24 underneath."},{"step":2,"phase":"subtract","text":"Subtract. 24 minus 24 is 0."},{"text":"The digits on top read 188. So 564 divided by 3 is 188."}];
+var BAKED_CAPS = [{"text":"We are dividing 564 by 3. The 3 sits outside the bracket, and 564 goes underneath it."},{"step":0,"phase":"divide","text":"Step 1. Divide. How many 3s fit into 5? 1. Write the 1 on top."},{"step":0,"phase":"multiply","text":"Multiply. 1 times 3 is 3. Write 3 underneath."},{"step":0,"phase":"subtract","text":"Subtract. 5 minus 3 is 2."},{"step":0,"phase":"bring","text":"Bring down the next digit, 6, to make 26."},{"step":1,"phase":"divide","text":"Step 2. Divide. How many 3s fit into 26? 8. Write the 8 on top."},{"step":1,"phase":"multiply","text":"Multiply. 8 times 3 is 24. Write 24 underneath."},{"step":1,"phase":"subtract","text":"Subtract. 26 minus 24 is 2."},{"step":1,"phase":"bring","text":"Bring down the next digit, 4, to make 24."},{"step":2,"phase":"divide","text":"Step 3. Divide. How many 3s fit into 24? 8. Write the 8 on top."},{"step":2,"phase":"multiply","text":"Multiply. 8 times 3 is 24. Write 24 underneath."},{"step":2,"phase":"subtract","text":"Subtract. 24 minus 24 is 0."},{"text":"The digits on top read 188. So 564 divided by 3 is 188."},{"text":"That is the whole method. Now it is your turn."},{"text":"Underneath the worked example there are five problems to solve."},{"text":"You type every row yourself. The answer digit on top, then the number you multiply, then the number that is left after you subtract."},{"text":"Practice mode checks each digit as you type it, so you find a mistake straight away. Test mode checks nothing until you ask it to, the way a real paper works."},{"text":"Do all five. Start in practice, and move to test when you stop needing to be told."},{"text":"If a digit will not go in, go back one step instead of guessing at that one. A subtract that will not work is almost always a multiply that went wrong before it."}];
 var SPEC = {"count":5,"digits":3,"divisors":[3,4,5,6,7,8,9],"allowZeroDigit":false};
 var LESSON_ID = "maths/long-division";
 
@@ -1211,6 +1211,20 @@ PARTS.forEach(function(part){
   var p = document.createElement("p");
   p.className = "para";
   part.s.forEach(function(text){
+    /* 🚨 AN EMPTY STRING IS A PARAGRAPH BREAK, not a sentence.
+       Paul, 2026-08-29: "i think you need to use paragraphs and make it simple
+       to understand." A section used to be ONE paragraph however long it ran,
+       which gave a struggling reader a nine-sentence wall with no landing spot.
+       ⚠️ It must NOT enter SENT. The clip index in voice.json is a position in
+       SENT, so counting a break as a sentence would play every line's audio one
+       place late. tools/bake-voice.js skips them by the same rule - if you
+       change the rule, change it in BOTH or the whole lesson goes off by one. */
+    if (!String(text).trim()) {
+      if (p.childNodes.length) sec.appendChild(p);
+      p = document.createElement("p");
+      p.className = "para";
+      return;
+    }
     var i = SENT.length;
     var span = document.createElement("span");
     span.className = "sent";
@@ -1232,7 +1246,8 @@ PARTS.forEach(function(part){
     p.appendChild(document.createTextNode(" "));
     SENT.push({ text: text, el: span, words: offsets });
   });
-  sec.appendChild(p);
+  /* the last paragraph, unless a stray break at the end left it empty */
+  if (p.childNodes.length) sec.appendChild(p);
   storyEl.appendChild(sec);
 });
 
@@ -1245,18 +1260,46 @@ PARTS.forEach(function(part){
 var AUDIO = null;        /* the ACTIVE baked track: { voice, clips:[...] } */
 var AUDIO_TRACKS = [];   /* every baked track for this lesson */
 
+/* Fingerprint of the text this page is actually showing, used to refuse audio
+   baked from a different version of the lesson.
+   🚨 tools/bake-voice.js runs the IDENTICAL function over the sentences it
+   bakes. If you change one you MUST change the other, or every lesson loses its
+   baked voice at once - the hashes would never match again. FNV-1a over UTF-16
+   code units: no crypto, works the same in Node and in a browser. */
+function nsTextHash(list){
+  var h = 2166136261;
+  var s = list.join("\n");
+  for (var i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return ("0000000" + h.toString(16)).slice(-8);
+}
+var TEXT_HASH = nsTextHash(SENT.map(function(s){ return s.text; }));
+
 (function loadBakedVoice(){
   fetch("voice.json", { cache: "force-cache" })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       var tr = (j && j.tracks) || [];
       if (!tr.length) return;
-      /* A stale manifest is worse than none: if a lesson gained or lost a
-         sentence since it was baked, the clips no longer line up and the wrong
-         audio would play for the highlighted line. Sentence count is the
-         cheapest honest check. */
-      /* A stale manifest is worse than none: if a lesson gained or lost a
-         sentence since it was baked, the clips no longer line up. */
+      /* 🚨 A STALE MANIFEST IS WORSE THAN NO AUDIO, because it is confidently
+         wrong: the highlight walks the new text while the voice reads the old.
+
+         ⚠️ COUNTING SENTENCES IS NOT ENOUGH, and this nearly shipped. On
+         2026-08-29 the history lessons lost a six-line opening block and gained
+         a six-line closing one. The count matched exactly, the count check
+         passed, and every clip would have played against a different sentence.
+
+         So the manifest carries a hash of the text it was baked FROM, and the
+         page carries the hash of the text it is showing. If they differ the
+         lesson has been edited since the bake and the audio is refused - the
+         page falls back to a device voice, which is always in step because it
+         reads what is actually on screen. */
+      if (j.textHash && TEXT_HASH && j.textHash !== TEXT_HASH){
+        AUDIO = null;
+        return;
+      }
       tr = tr.filter(function(t){ return t.clips && t.clips.length === SENT.length; });
       if (!tr.length){ AUDIO = null; return; }
       AUDIO_TRACKS = tr;

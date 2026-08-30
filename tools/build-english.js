@@ -30,6 +30,9 @@ const fs = require("fs");
 const path = require("path");
 const { ENGLISH } = require("./english-lessons.js");
 const { navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+/* The closing instructions, and the guard that a lesson has some. Shared with
+   history and maths so all three say the task the same way. */
+const { partsFor, requireTodo } = require("./lesson-instructions.js");
 /* 🚨 ONE PLAYER, EVERY LESSON TYPE. The reading voice is not re-implemented
    here; it is sliced out of lesson-template.html so English, maths, history
    and later science all run the identical engine. Paul, 2026-08-29: "i want
@@ -100,6 +103,56 @@ function verifyPractice(L) {
          "clicking the same position every time. Vary the length of the subjects.");
 }
 
+/* ── PART B: which KIND of verb ───────────────────────────────────────────
+   Two answers only, so the guessing floor is 50%. That makes the checks below
+   matter more than they would on a four-option question: an uneven mix, or a
+   run of the same answer, and the part measures nothing. */
+const BEING = ["am", "is", "are", "was", "were", "be", "been", "being"];
+
+function checkSort(L) {
+  if (!Array.isArray(L.sort) || L.sort.length < 4)
+    fail(L.slug + ": needs a `sort` array of at least four sentences for Part B");
+
+  L.sort.forEach((p, i) => {
+    const where = L.slug + " sort[" + i + "]";
+    const words = String(p.sentence).split(" ");
+    if (typeof p.at !== "number" || !words[p.at])
+      fail(where + ": `at` must be the index of the verb in the sentence");
+    if (p.kind !== "action" && p.kind !== "being")
+      fail(where + ': kind must be "action" or "being", not "' + p.kind + '"');
+    if (!p.why || p.why.length < 20)
+      fail(where + ": needs a real reason, not a label");
+
+    /* 🚨 The two kinds are checked against the word itself, because this is the
+       one place a typo becomes a wrong answer taught confidently. A being verb
+       has to BE one of the eight; an action verb must not be, or the lesson is
+       telling a student that "is" is an action. */
+    const w = words[p.at].replace(/[^A-Za-z']/g, "").toLowerCase();
+    const isBeing = BEING.indexOf(w) >= 0;
+    if (p.kind === "being" && !isBeing)
+      fail(where + ': "' + w + '" is marked being, but the being verbs are ' + BEING.join(", "));
+    if (p.kind === "action" && isBeing)
+      fail(where + ': "' + w + '" is marked action, but it is one of the eight being verbs');
+  });
+
+  const being = L.sort.filter((p) => p.kind === "being").length;
+  const action = L.sort.length - being;
+  if (!being || !action)
+    fail(L.slug + ": Part B is all " + (being ? "being" : "action") + " verbs. It has to have both.");
+  if (Math.max(being, action) / L.sort.length > 0.7)
+    fail(L.slug + ": Part B is " + Math.round(Math.max(being, action) / L.sort.length * 100) +
+         "% one kind. Answering the same way every time would score that, so even it up.");
+
+  /* ⚠️ An even count still reads as a pattern if it alternates or comes in one
+     long run. Three of the same answer in a row and a student stops reading. */
+  let run = 1;
+  for (let i = 1; i < L.sort.length; i++) {
+    run = L.sort[i].kind === L.sort[i - 1].kind ? run + 1 : 1;
+    if (run > 2) fail(L.slug + ": three Part B answers in a row are " + L.sort[i].kind +
+                      " (items " + (i - 2) + "-" + i + "). Break the run up.");
+  }
+}
+
 /* A worked example whose underlined word is not in its own sentence would
    render as plain text with nothing marked, and look like an oversight rather
    than a bug. */
@@ -158,11 +211,17 @@ for (const L of ENGLISH) {
   verifyGround(L);
   verifyExamples(L);
   verifyPractice(L);
+  checkSort(L);
 
   /* The page only ever needs the sentence, the index and the why. Shipping
      `verb` too would put the answer in plain sight in the page source. */
   const practiceForPage = L.practice.map((p) => ({
     sentence: p.sentence, answer: p.answer, why: p.why
+  }));
+  /* Part B needs the kind in the page, because that IS the answer and the page
+     has to check it. Nothing else about the item goes out. */
+  const sortForPage = L.sort.map((p) => ({
+    sentence: p.sentence, at: p.at, kind: p.kind, why: p.why
   }));
 
   let h = template
@@ -180,9 +239,19 @@ for (const L of ENGLISH) {
     .replace("__PLAYER_JS__", player.playerScript)
     .replace("__EXAMPLES_HTML__", examplesHtml(L.examples))
     .replace("__PRACTICE_NOTE__", L.practiceNote ||
-      "Ten sentences. Click the verb in each one. A wrong click tells you why it is wrong and lets you try again, so nothing here counts against you.")
-    .replace("__PARTS__", JSON.stringify(L.parts))
+      /* ⚠️ Do not put a COUNT in here. It used to say "Ten sentences", and the
+         moment the practice split into two parts that sentence was wrong on a
+         page that had not otherwise changed. Each part states its own count. */
+      "Two parts, like a worksheet. Part A asks which word is the verb. Part B asks what kind of verb it is. A wrong answer tells you why and lets you try again, so nothing here counts against you.")
+    /* Each part states its OWN count, and it comes from the data rather than
+       being typed, so it cannot drift when an item is added or removed. */
+    .replace("__NOTE_A__", L.noteA ||
+      (L.practice.length + " sentences. Click the verb in each one. A wrong click tells you why and lets you try again."))
+    .replace("__NOTE_B__", L.noteB ||
+      (L.sort.length + " more sentences, and the verb is underlined for you. Decide whether it is an action verb or a being verb."))
+    .replace("__PARTS__", JSON.stringify(partsFor(L)))
     .replace("__PRACTICE__", JSON.stringify(practiceForPage))
+    .replace("__SORT__", JSON.stringify(sortForPage))
     .replace("__THEMES__", themesBlock)
     .replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">')
     .replace("__MODEBOOT__", modeBoot)
@@ -192,7 +261,8 @@ for (const L of ENGLISH) {
 
   for (const slot of ["__TITLE__", "__DEK__", "__ID__", "__GROUND__", "__RULE_SHORT__",
                       "__RULE_LONG__", "__RULE_TEST__", "__PARTS_HTML__", "__EXAMPLES_HTML__",
-                      "__PRACTICE_NOTE__", "__PARTS__", "__PRACTICE__", "__THEMES__",
+                      "__PRACTICE_NOTE__", "__NOTE_A__", "__NOTE_B__",
+                      "__PARTS__", "__PRACTICE__", "__SORT__", "__THEMES__",
                       "__PLAYER_CSS__", "__FIELD_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__",
                       "__CANONICAL__", "__MODEBOOT__", "__FAVICON__", "__NAV__", "__NAVSCRIPT__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);

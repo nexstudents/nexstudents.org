@@ -30,7 +30,7 @@ const MATH = [
   unit: "Foundations &middot; Unit 0 &middot; Lesson 1",
   /* Maths starts in grade 6 on purpose: the foundations unit is the catch-up
      set that grade 7 leans on. See tools/curriculum/. */
-  shelf: { grade: 6, subject: "Maths",
+  shelf: { grades: [4, 5], subject: "Maths",
     blurb: "Divide, multiply, subtract, bring down. Worked through one digit at a time.",
     contains: [
       "A worked example that fills the bracket in step by step, read aloud",
@@ -40,6 +40,17 @@ const MATH = [
     ] },
   dek: "Divide, multiply, subtract, bring down. Four steps, over and over, until the digits run out.",
   demo: { dividend: 564, divisor: 3 },
+  /* 🚨 Paul, 2026-08-29: "in long division you say what they need to do like
+     answer all 10 questions or what ever amount." The count below is 5 and it
+     has to STAY in step with practice.count - build-math.js checks that. */
+  todo: { title: "What To Do Now", s: [
+      "That is the whole method. Now it is your turn.",
+      "Underneath the worked example there are five problems to solve.",
+      "You type every row yourself. The answer digit on top, then the number you multiply, then the number that is left after you subtract.",
+      "Practice mode checks each digit as you type it, so you find a mistake straight away. Test mode checks nothing until you ask it to, the way a real paper works.",
+      "Do all five. Start in practice, and move to test when you stop needing to be told.",
+      "If a digit will not go in, go back one step instead of guessing at that one. A subtract that will not work is almost always a multiply that went wrong before it."
+  ] },
   practice: {
     count: 5,
     digits: 3,

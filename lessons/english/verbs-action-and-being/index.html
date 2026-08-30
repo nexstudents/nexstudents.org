@@ -89,6 +89,27 @@ h1{margin:0 0 6px}
   background:var(--boxfill);font-weight:600;white-space:nowrap;padding:11px 10px;font-size:.88rem}
 .tab.act:hover{border-color:var(--a)}
 .tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
+/* ── the two worksheet parts ──────────────────────────────────────────────
+   A printed worksheet says "Part A" with its own directions underneath, and a
+   rule across the page so you can see where one job stops and the next starts.
+   That rule is the whole reason this reads as two tasks rather than a list. */
+.wspart{margin:22px 0 0;padding-top:18px;border-top:2px solid var(--line)}
+.wspart:first-of-type{border-top:0;padding-top:0}
+.ws-head{margin:0 0 4px;font-size:1.06rem;letter-spacing:.01em}
+.ws-note{color:var(--dim);font-size:.9rem;margin:0 0 14px;max-width:62ch}
+
+/* Part B: the sentence, then two buttons. The verb is already underlined,
+   because the question is not which word it is - that was Part A. */
+.kverb{text-decoration:underline;text-underline-offset:3px;font-weight:700}
+.kpick{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
+.kbtn{font:inherit;font-size:.92rem;font-weight:600;padding:9px 17px;border-radius:999px;
+  background:transparent;border:1px solid var(--line);color:inherit;cursor:pointer}
+.kbtn:hover:not(:disabled){border-color:var(--a)}
+.kbtn.ok{background:var(--a);border-color:var(--a);color:var(--on-accent,#0b160f)}
+.kbtn.wrong{border-color:#c9503f}
+.kbtn.reveal{border-color:var(--a);border-style:dashed}
+.kbtn:disabled{cursor:default}
+
 .prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:18px;margin:0 0 16px}
 .prob.solved{border-color:var(--free)}
@@ -800,12 +821,29 @@ body.player-hidden .scrub{margin:0}
 </div></div>
 
   <h2 class="section-head">Your Turn</h2>
-  <p class="section-note">Ten sentences. Click the verb in each one. A wrong click tells you why it is wrong and lets you try again, so nothing here counts against you.</p>
+  <p class="section-note">Two parts, like a worksheet. Part A asks which word is the verb. Part B asks what kind of verb it is. A wrong answer tells you why and lets you try again, so nothing here counts against you.</p>
   <div class="actions">
     <button class="tab act" type="button" id="reset">Start Over</button>
     <button class="tab act" type="button" id="reveal">Show Me The Answers</button>
   </div>
-  <div id="problems"></div>
+
+  <!-- 🚨 TWO PARTS, LIKE A WORKSHEET. Paul, 2026-08-29: "make the questions
+       also resemble that like kinds of verbs and which is a verb together but
+       in two different sections ... like a worksheet does."
+       Part A asks WHICH WORD. Part B asks WHICH KIND. They are two different
+       skills and running them together as one list of ten hid that. -->
+  <section class="wspart">
+    <h3 class="ws-head">Part A. Find The Verb.</h3>
+    <p class="ws-note">10 sentences. Click the verb in each one. A wrong click tells you why and lets you try again.</p>
+    <div id="problems"></div>
+  </section>
+
+  <section class="wspart">
+    <h3 class="ws-head">Part B. Action Or Being?</h3>
+    <p class="ws-note">6 more sentences, and the verb is underlined for you. Decide whether it is an action verb or a being verb.</p>
+    <div id="kinds"></div>
+  </section>
+
   <div class="scorebar" id="scorebar"></div>
 </div>
 
@@ -814,8 +852,9 @@ body.player-hidden .scrub{margin:0}
 "use strict";
 
 var LESSON_ID = "english/verbs-action-and-being";
-var PARTS     = [{"title":"How This Lesson Works","s":["Press the play button and this page will read the lesson to you.","Each sentence lights up as it is read, and the word being spoken is highlighted inside it.","The bar under the buttons is the whole lesson. Tap anywhere on it to jump, or drag along it to move through.","The two arrows either side of play step back and forward one sentence, so you can hear a line again as many times as you need.","Read the rule at the top first. Then work through the lesson, then the worked examples.","At the end there are ten sentences to try. Click the verb in each one.","If you click the wrong word nothing bad happens. The page tells you why it is wrong and lets you try again."]},{"title":"Every Sentence Has an Engine","s":["Take any sentence apart and one word is doing the work of holding it together.","\"The driver stopped the bus.\" Cross out stopped and there is no sentence left, only a driver and a bus sitting next to each other.","That working word is the verb, and every sentence in English has one.","This is worth knowing on its own. If you have written a group of words and something feels unfinished about it, check whether it has a verb. Usually it does not."]},{"title":"The First Kind: Verbs That Do Something","s":["Most verbs are easy to spot, because something visibly happens.","\"She opened the window.\" Opened is the verb, and you can picture it.","\"The engine stalled.\" Stalled is the verb.","Not all action is physical, though, and this is where the usual definition starts to leak.","\"He remembered the address.\" Nobody can watch remembering happen, but remembered is still the verb, because it is still what the subject did.","So the first kind covers more than it looks like: running and building, but also thinking, hoping, forgetting and deciding."]},{"title":"The Second Kind: Verbs That Do Not Do Anything","s":["Now look at this sentence: \"The road is wet.\"","Nothing happens in it. Nobody does anything. And yet it is a complete sentence, so by our own rule it must have a verb.","The verb is is.","This is the part most students never get told properly, so it is worth being slow about.","Words like am, is, are, was, were, be, been and being are called being verbs, and their job is not to act but to JOIN.","\"The road is wet\" hooks the road to wet. The road on one side, wet on the other, and is holding them together like an equals sign in a sum.","Try it without: \"The road wet.\" That is not a sentence. It is two ideas with nothing connecting them.","That is the whole job of a being verb. It does not describe an action, it makes a claim: this thing IS that thing.","There are only about eight of them and they turn up constantly, so they are worth knowing on sight: am, is, are, was, were, be, been, being."]},{"title":"Telling the Two Apart","s":["You do not have to guess which kind you are looking at.","Ask one question: does the sentence describe something happening, or does it describe how something IS?","\"The kettle boiled.\" Something happened. That is an action verb.","\"The kettle is empty.\" Nothing happened. The sentence just tells you the state the kettle is in. That is a being verb.","Both are verbs. Both are the engine of the sentence. They simply carry different cargo: one carries an event, the other carries a description."]},{"title":"The Trap","s":["Here is the sentence that catches almost everybody.","\"The walk was long.\"","Walk looks like a verb. Walking is something you do. But in this sentence nobody is walking, and the walk is just a thing that happened to be long, like a rope or a film.","The verb is was.","A word is not a verb because of what it looks like. It is a verb because of the job it is doing in that particular sentence, and the same word can do different jobs in different sentences.","\"They walk to school\" and \"the walk was long\" use the same word, and it is a verb in only one of them."]},{"title":"The Test That Always Works","s":["You cannot pass this lesson by asking whether a word feels like an action, because is and was do not feel like anything.","So use a test instead of a feeling.","Put the word Yesterday at the front of the sentence and read it again. Exactly one word has to change shape, and that word is the verb.","\"The road is wet\" becomes \"Yesterday the road was wet.\" Is changed to was, so is was the verb.","\"The walk was long\" becomes \"Yesterday the walk was long.\" Walk did not move at all. Was is the verb, and walk never was one.","This test does not care whether anything happens in the sentence, which is exactly why it beats the definition most students are given."]},{"title":"Why This One Matters Later","s":["Almost everything ahead in grammar is really a lesson about verbs wearing a different name.","Tense is a verb changing to show when. Agreement is a verb changing to match who. Clauses are counted by counting verbs.","So the goal here is not to answer ten questions correctly today.","The goal is to reach the point where finding the verb takes no thought at all, because every later lesson quietly assumes you can already do it."]}];
-var PRACTICE  = [{"sentence":"The bell rang loudly.","answer":2,"why":"Yesterday the bell RANG. Rang changed, so it is the verb."},{"sentence":"Rain fell all afternoon.","answer":1,"why":"Yesterday rain FELL. Only that word changed."},{"sentence":"She repaired the broken shelf.","answer":1,"why":"Something visibly happens, and repaired is what she did."},{"sentence":"The old wooden gate is heavy.","answer":4,"why":"Nothing happens. Is joins the gate to heavy, and four words go by before you reach it."},{"sentence":"Those instruments look expensive.","answer":2,"why":"Look is the tricky one. Yesterday those instruments LOOKED expensive - it changed shape, so it is the verb."},{"sentence":"The long walk tired everyone.","answer":3,"why":"The trap. Walk is a thing here, not something anyone is doing. Tired is the verb."},{"sentence":"We are ready.","answer":1,"why":"A being verb. Are joins we to ready, and the whole sentence is three words."},{"sentence":"The tired driver from the next town remembered every turn.","answer":7,"why":"Seven words of subject before the verb. Invisible action, but still what he did."},{"sentence":"Her very first attempt was perfect.","answer":4,"why":"The trap again. Attempt is a thing that was perfect. Was is the verb."},{"sentence":"Both engines started without trouble.","answer":2,"why":"Yesterday both engines STARTED. It changed, so it is the verb."}];
+var PARTS     = [{"title":"What a Verb Is","s":["Every sentence has one word that makes it work. That word is the verb.","","The driver stopped the bus.","","Cross out stopped and nothing is left. Just a driver and a bus.","","That word was the verb. Every sentence in English has one."]},{"title":"Kind One. Action Verbs.","s":["An action verb is something happening. Something you could point a camera at.","","She opened the window.","","Opened is the verb. You can picture it.","","The engine stalled.","","Stalled is the verb.","","Some actions happen inside your head, and those count too.","","He remembered the address.","","Nobody can watch remembering happen. But remembered is what he did, so it is the verb."]},{"title":"Kind Two. Being Verbs.","s":["A being verb does not do anything. It joins two things together.","","The road is wet.","","Nothing happens here. Nobody does anything. The verb is is.","","It joins the road to wet, like an equals sign in a sum.","","Take it out and you get: The road wet. That is not a sentence any more.","","There are only eight being verbs in English. Learn these eight and you have learned the whole kind.","","Am. Is. Are. Was. Were. Be. Been. Being."]},{"title":"The Two Side By Side","s":["Same kettle. Two sentences. Two different kinds of verb.","","The kettle boiled. Something happened. Boiled is an action verb.","","The kettle is empty. Nothing happened. Is is a being verb.","","One tells you what happened. The other tells you how something is."]},{"title":"The One That Fools People","s":["The walk was long.","","Walk looks like a verb. But nobody is walking here. The walk is just a thing, like a rope or a film.","","The verb is was.","","A word is a verb because of the job it does in that sentence. Not because of how it looks."]},{"title":"What To Do Now","s":["Now the ten sentences at the bottom. Click the verb in each one.","Then say which kind it is. That is the real job here.","Ask yourself one question. Could you film it?","If you could, it is an action verb. If you could not, it is a being verb.","If you click the wrong word nothing bad happens. The page tells you why, so read that before you try again."]}];
+var PRACTICE  = [{"sentence":"The bell rang loudly.","answer":2,"why":"Yesterday the bell RANG. Rang changed, so it is the verb."},{"sentence":"Rain fell all afternoon.","answer":1,"why":"Yesterday rain FELL. Only that word changed."},{"sentence":"She repaired the broken shelf.","answer":1,"why":"Something visibly happens, and repaired is what she did."},{"sentence":"The old wooden gate is heavy.","answer":4,"why":"Nothing happens. Is joins the gate to heavy, and four words go by before you reach it."},{"sentence":"Those instruments look expensive.","answer":2,"why":"Look is the tricky one. Yesterday those instruments LOOKED expensive - it changed shape, so it is the verb."},{"sentence":"The long walk tired everyone.","answer":3,"why":"The trap. Walk is a thing here, not something anyone is doing. Tired is the verb."},{"sentence":"We are ready.","answer":1,"why":"A being verb. Are joins we to ready, and the whole sentence is three words."},{"sentence":"The tired driver from the next town remembered every turn.","answer":7,"why":"Seven words of subject before the verb. Invisible action, but still what he did."},{"sentence":"Her very first attempt was perfect.","answer":4,"why":"The trap again. Attempt is a thing that was perfect. Was is the verb."},{"sentence":"Both engines started without trouble.","answer":2,"why":"Yesterday both engines STARTED. It changed, so it is the verb."}];   /* Part A - which word is the verb */
+var SORT      = [{"sentence":"The kettle boiled quickly.","at":2,"kind":"action","why":"Something happened, and you could have filmed it. Boiled is an action verb."},{"sentence":"The classroom is quiet.","at":2,"kind":"being","why":"Nothing happens. Is joins the classroom to quiet, so it is a being verb."},{"sentence":"He built a small shelf.","at":1,"kind":"action","why":"He did something you could point a camera at. Built is an action verb."},{"sentence":"Those books were expensive.","at":2,"kind":"being","why":"Nobody does anything. Were joins the books to expensive, so it is a being verb."},{"sentence":"The dog barked at the gate.","at":2,"kind":"action","why":"You could hear it and film it. Barked is an action verb."},{"sentence":"I am ready now.","at":1,"kind":"being","why":"Nothing is happening. Am joins I to ready, so it is a being verb."}];       /* Part B - which KIND of verb it is */
 
 /* ---------- saved settings and progress ----------
    Keys are shared site-wide on purpose:
@@ -965,6 +1004,20 @@ PARTS.forEach(function(part){
   var p = document.createElement("p");
   p.className = "para";
   part.s.forEach(function(text){
+    /* 🚨 AN EMPTY STRING IS A PARAGRAPH BREAK, not a sentence.
+       Paul, 2026-08-29: "i think you need to use paragraphs and make it simple
+       to understand." A section used to be ONE paragraph however long it ran,
+       which gave a struggling reader a nine-sentence wall with no landing spot.
+       ⚠️ It must NOT enter SENT. The clip index in voice.json is a position in
+       SENT, so counting a break as a sentence would play every line's audio one
+       place late. tools/bake-voice.js skips them by the same rule - if you
+       change the rule, change it in BOTH or the whole lesson goes off by one. */
+    if (!String(text).trim()) {
+      if (p.childNodes.length) sec.appendChild(p);
+      p = document.createElement("p");
+      p.className = "para";
+      return;
+    }
     var i = SENT.length;
     var span = document.createElement("span");
     span.className = "sent";
@@ -986,7 +1039,8 @@ PARTS.forEach(function(part){
     p.appendChild(document.createTextNode(" "));
     SENT.push({ text: text, el: span, words: offsets });
   });
-  sec.appendChild(p);
+  /* the last paragraph, unless a stray break at the end left it empty */
+  if (p.childNodes.length) sec.appendChild(p);
   storyEl.appendChild(sec);
 });
 
@@ -999,18 +1053,46 @@ PARTS.forEach(function(part){
 var AUDIO = null;        /* the ACTIVE baked track: { voice, clips:[...] } */
 var AUDIO_TRACKS = [];   /* every baked track for this lesson */
 
+/* Fingerprint of the text this page is actually showing, used to refuse audio
+   baked from a different version of the lesson.
+   🚨 tools/bake-voice.js runs the IDENTICAL function over the sentences it
+   bakes. If you change one you MUST change the other, or every lesson loses its
+   baked voice at once - the hashes would never match again. FNV-1a over UTF-16
+   code units: no crypto, works the same in Node and in a browser. */
+function nsTextHash(list){
+  var h = 2166136261;
+  var s = list.join("\n");
+  for (var i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return ("0000000" + h.toString(16)).slice(-8);
+}
+var TEXT_HASH = nsTextHash(SENT.map(function(s){ return s.text; }));
+
 (function loadBakedVoice(){
   fetch("voice.json", { cache: "force-cache" })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       var tr = (j && j.tracks) || [];
       if (!tr.length) return;
-      /* A stale manifest is worse than none: if a lesson gained or lost a
-         sentence since it was baked, the clips no longer line up and the wrong
-         audio would play for the highlighted line. Sentence count is the
-         cheapest honest check. */
-      /* A stale manifest is worse than none: if a lesson gained or lost a
-         sentence since it was baked, the clips no longer line up. */
+      /* 🚨 A STALE MANIFEST IS WORSE THAN NO AUDIO, because it is confidently
+         wrong: the highlight walks the new text while the voice reads the old.
+
+         ⚠️ COUNTING SENTENCES IS NOT ENOUGH, and this nearly shipped. On
+         2026-08-29 the history lessons lost a six-line opening block and gained
+         a six-line closing one. The count matched exactly, the count check
+         passed, and every clip would have played against a different sentence.
+
+         So the manifest carries a hash of the text it was baked FROM, and the
+         page carries the hash of the text it is showing. If they differ the
+         lesson has been edited since the bake and the audio is refused - the
+         page falls back to a device voice, which is always in step because it
+         reads what is actually on screen. */
+      if (j.textHash && TEXT_HASH && j.textHash !== TEXT_HASH){
+        AUDIO = null;
+        return;
+      }
       tr = tr.filter(function(t){ return t.clips && t.clips.length === SENT.length; });
       if (!tr.length){ AUDIO = null; return; }
       AUDIO_TRACKS = tr;
@@ -2094,15 +2176,19 @@ var KEY = "prog:" + LESSON_ID;
 var state = {};
 try { state = JSON.parse(load(KEY, "{}")) || {}; } catch (e) { state = {}; }
 
-var wrap = document.getElementById("problems");
-var bar  = document.getElementById("scorebar");
+var wrap  = document.getElementById("problems");
+var kwrap = document.getElementById("kinds");
+var bar   = document.getElementById("scorebar");
 
 function save(){ store(KEY, JSON.stringify(state)); }
 
+/* ⚠️ Part A and Part B are stored under PREFIXED keys, "a3" and "b3", not bare
+   numbers. Two parts sharing one number would mark a Part B answer as a solved
+   Part A sentence, and the score would count work nobody did. */
 function render(){
   wrap.innerHTML = "";
   PRACTICE.forEach(function(p, n){
-    var done = state[n] === true;
+    var done = state["a" + n] === true;
     var box = document.createElement("div");
     box.className = "prob" + (done ? " solved" : "");
 
@@ -2126,7 +2212,7 @@ function render(){
       } else {
         b.onclick = function(){
           if (wi === p.answer) {
-            state[n] = true; save();
+            state["a" + n] = true; save();
             render();
             /* keep the explanation on screen after the re-render */
             var fresh = wrap.children[n].querySelector(".nudge");
@@ -2147,6 +2233,75 @@ function render(){
     box.appendChild(nudge);
     wrap.appendChild(box);
   });
+  renderKinds();
+}
+
+/* ── PART B. Which kind of verb is it? ────────────────────────────────────
+   The verb is already underlined here on purpose. Part A was "which word";
+   asking it again would test the same thing twice and hide the actual
+   question, which is what that word DOES. */
+function renderKinds(){
+  kwrap.innerHTML = "";
+  SORT.forEach(function(p, n){
+    var done = state["b" + n] === true;
+    var box = document.createElement("div");
+    box.className = "prob" + (done ? " solved" : "");
+
+    var head = document.createElement("div");
+    head.className = "probhead";
+    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
+      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Got it" : "Action or being") + '</span>';
+    box.appendChild(head);
+
+    /* the sentence, with the verb underlined */
+    var line = document.createElement("div");
+    line.className = "words";
+    p.sentence.split(" ").forEach(function(word, wi){
+      if (wi > 0) line.appendChild(document.createTextNode(" "));
+      var sp = document.createElement("span");
+      if (wi === p.at) sp.className = "kverb";
+      sp.textContent = word;
+      line.appendChild(sp);
+    });
+    box.appendChild(line);
+
+    var nudge = document.createElement("p");
+    nudge.className = "nudge";
+
+    var pick = document.createElement("div");
+    pick.className = "kpick";
+    ["action", "being"].forEach(function(kind){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "kbtn";
+      b.textContent = kind === "action" ? "Action verb" : "Being verb";
+      if (done) {
+        b.disabled = true;
+        if (kind === p.kind) b.classList.add("ok");
+      } else {
+        b.onclick = function(){
+          if (kind === p.kind) {
+            state["b" + n] = true; save();
+            render();
+            var fresh = kwrap.children[n].querySelector(".nudge");
+            if (fresh) fresh.textContent = p.why;
+            score();
+          } else {
+            /* Same rule as Part A: a reason, never a buzzer. */
+            b.classList.add("wrong");
+            nudge.classList.add("warn");
+            nudge.textContent = kind === "action"
+              ? "Not action. Try to film this sentence - if nothing happens that you could point a camera at, the verb is a being verb."
+              : "Not being. The being verbs are am, is, are, was, were, be, been and being. This underlined word is not one of them, so something is happening.";
+          }
+        };
+      }
+      pick.appendChild(b);
+    });
+    box.appendChild(pick);
+    if (done) { nudge.textContent = p.why; }
+    box.appendChild(nudge);
+    kwrap.appendChild(box);
+  });
   score();
 }
 
@@ -2160,29 +2315,51 @@ function wrongWhy(word, p){
   return "Not that one. Put “Yesterday” at the front and read it again — which word has to change shape?";
 }
 
+/* One score across BOTH parts, and it says the split, because "8 / 16" hides
+   whether he can find verbs and cannot name them, or the other way round.
+   Paul's rule from the quizzes: show the score AND the percentage. */
 function score(){
-  var got = 0;
-  for (var i = 0; i < PRACTICE.length; i++) if (state[i]) got++;
-  var pct = Math.round((got / PRACTICE.length) * 100);
-  bar.innerHTML = "<b>" + got + " / " + PRACTICE.length + "</b> · " + pct + "%" +
-    (got === PRACTICE.length ? " — all of them. Write the score in your notes." : "");
+  var a = 0, b = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
+  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
+  var got = a + b, all = PRACTICE.length + SORT.length;
+  var pct = Math.round((got / all) * 100);
+  bar.innerHTML = "<b>" + got + " / " + all + "</b> · " + pct + "%" +
+    " <span class=\"tag\">Part A " + a + "/" + PRACTICE.length +
+    " · Part B " + b + "/" + SORT.length + "</span>" +
+    (got === all ? " — all of them. Write the score in your notes." : "");
 }
 
 document.getElementById("reset").onclick = function(){
-  state = {}; save(); render();
+  state = {}; save(); render(); score();
 };
 document.getElementById("reveal").onclick = function(){
+  var i, j;
   var boxes = wrap.children;
-  for (var i = 0; i < PRACTICE.length; i++) {
-    if (state[i]) continue;
+  for (i = 0; i < PRACTICE.length; i++) {
+    if (state["a" + i]) continue;
     var ws = boxes[i].querySelectorAll(".pw");
-    for (var j = 0; j < ws.length; j++) {
+    for (j = 0; j < ws.length; j++) {
       ws[j].disabled = true;
       if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");
     }
     var nd = boxes[i].querySelector(".nudge");
     nd.classList.remove("warn");
     nd.textContent = PRACTICE[i].why;
+  }
+  /* ⚠️ Reveal has to cover Part B too. It used to walk one list, and after the
+     split that silently left half the worksheet unanswered. */
+  var kboxes = kwrap.children;
+  for (i = 0; i < SORT.length; i++) {
+    if (state["b" + i]) continue;
+    var kb = kboxes[i].querySelectorAll(".kbtn");
+    for (j = 0; j < kb.length; j++) {
+      kb[j].disabled = true;
+      if ((j === 0 ? "action" : "being") === SORT[i].kind) kb[j].classList.add("reveal");
+    }
+    var knd = kboxes[i].querySelector(".nudge");
+    knd.classList.remove("warn");
+    knd.textContent = SORT[i].why;
   }
 };
 

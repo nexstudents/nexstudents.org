@@ -273,7 +273,7 @@ const railFilters = () => {
    no visible reason. */
 const GRADE_ORDER = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
 const liveGrades = () => [...new Set(
-  LESSONS.map(l => l.grade).concat(WORKSHEETS.flatMap(w => w.grades))
+  LESSONS.flatMap(l => l.grades).concat(WORKSHEETS.flatMap(w => w.grades))
 )].map(String).sort((a, b) => GRADE_ORDER.indexOf(a) - GRADE_ORDER.indexOf(b));
 
 
@@ -391,10 +391,22 @@ const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {
     /* A lesson with no shelf block would build a page nobody can reach. That
        is the same failure Paul hit from the other direction on 2026-08-29, so
        it fails the build rather than going quietly missing. */
-    if (!L.shelf || !L.shelf.grade || !L.shelf.subject) {
+    if (!L.shelf || !(L.shelf.grade || L.shelf.grades) || !L.shelf.subject) {
       console.error("FAIL: " + L.id + " in " + file + " has no shelf block " +
         "(needs at least { grade, subject }), so it would build a page with " +
         "no way in.");
+      process.exit(1);
+    }
+    /* 🚨 A LESSON MAY SIT ON MORE THAN ONE GRADE, the way a worksheet already
+       could. Paul, 2026-08-29: "you decide where you think it needs to go based
+       on its actual level." A skill is usually TAUGHT in one grade and REVIEWED
+       in the next, and forcing one number meant either overstating the level or
+       hiding the lesson from the shelf that still needs it.
+       ⚠️ `grade` stays supported and is just the one-item case. Nothing that
+       reads `.grade` breaks, because the first entry is still written there. */
+    const gradeList = L.shelf.grades || [L.shelf.grade];
+    if (!Array.isArray(gradeList) || !gradeList.length) {
+      console.error("FAIL: " + L.id + ": shelf.grades must be a non-empty array");
       process.exit(1);
     }
     if (!Array.isArray(L.shelf.contains) || !L.shelf.contains.length) {
@@ -407,7 +419,8 @@ const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {
       id: L.id,
       contains: L.shelf.contains,
       subject: L.shelf.subject,
-      grade: L.shelf.grade,
+      grade: gradeList[0],   /* the grade it is TAUGHT in - kept for anything reading one grade */
+      grades: gradeList,     /* every shelf it appears on */
       unit: L.unit,
       title: L.title,
       blurb: L.shelf.blurb || L.dek,
@@ -463,7 +476,10 @@ const keyOf = (s) => s.key || s.name;
 const sameGrade = (a, b) => String(a) === String(b);
 
 const bySubject = (s) => LESSONS.filter(l => l.subject === s);
-const byGrade   = (g) => LESSONS.filter(l => sameGrade(l.grade, g));
+/* ⚠️ `l.grades`, not `l.grade`. A lesson taught in 3 and reviewed in 4 belongs
+   on both shelves, and filtering on the single grade would drop it from the
+   second one silently - the shelf would simply look empty. */
+const byGrade   = (g) => LESSONS.filter(l => l.grades.some(x => sameGrade(x, g)));
 const sheetsByGrade   = (g) => WORKSHEETS.filter(w => w.grades.some(x => sameGrade(x, g)));
 const sheetsBySubject = (s) => WORKSHEETS.filter(w => w.subject === s);
 
@@ -659,7 +675,8 @@ const progressScript = `<script>
 const subjectLanding = (s, slugIn) => {
   const slug = slugIn || s.toLowerCase();
   const lessons = bySubject(s), sheets = sheetsBySubject(s);
-  const grades = [...new Set(lessons.map(l => l.grade))].sort((a, b) => a - b);
+  /* flatMap, so a lesson listed on two grades shows under both here too */
+  const grades = [...new Set(lessons.flatMap(l => l.grades))].sort((a, b) => a - b);
   return `<div class="band"><div class="wrap">
   <div class="two">
     <a class="tile" href="/${slug}/lessons/" style="min-height:210px">
@@ -900,7 +917,7 @@ const subjectRows = (grade) => {
   const rows = SUBJECTS;          /* fixed order, never re-sorted by liveness */
   return `<div class="subj-list">
   ${rows.map((s, i) => {
-    const nLes = bySubject(keyOf(s)).filter(l => grade == null || sameGrade(l.grade, grade)).length;
+    const nLes = bySubject(keyOf(s)).filter(l => grade == null || l.grades.some(x => sameGrade(x, grade))).length;
     const nWk  = sheetsBySubject(keyOf(s)).filter(w => grade == null || w.grades.some(x => sameGrade(x, grade))).length;
     const box = (label, note, n, one, many, href) => href
       ? `<a class="minibox" href="${href}">
