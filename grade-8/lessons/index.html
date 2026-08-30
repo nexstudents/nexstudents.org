@@ -57,84 +57,13 @@
   <p class="crumb"><a href="/">Home</a> &rsaquo; <a href="/grade-8/">8th Grade</a> &rsaquo; Lessons</p>
   <h1>8th Grade Lessons.</h1>
   <p>Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.</p>
-  <p class="shelfcount"><b>2 lessons</b><i aria-hidden="true">&middot;</i><a href="/grade-8/worksheets/">4 sheets</a></p>
+  <p class="shelfcount"><b>0 lessons</b><i aria-hidden="true">&middot;</i><a href="/grade-8/worksheets/">4 sheets</a></p>
 </div>
 
 <div class="band"><div class="wrap">
-  <div class="cardgrid">
-    <div class="card" data-lesson="maths/adding-integers">
-      <span class="tick-done" aria-hidden="true">&check;</span>
-      <a class="clink" href="/lessons/maths/adding-integers/">
-        <span class="cthumb"></span>
-        <span class="cbody">
-          <em>Maths &middot; Integers &middot; Unit 1 &middot; Lesson 1</em>
-          <b class="ctitle">Adding Integers</b>
-          <span class="cblurb">Two rules cover every case. Which one you use depends on whether the signs match.</span>
-        </span>
-      </a>
-      <details class="cmore">
-        <summary>What's inside</summary>
-        <ul><li>A Ground Control panel for the teacher: the exact mistake to watch for</li><li>The lesson read aloud, one line at a time, highlighted as it goes</li><li>The sign rules as a chart you can check an answer against</li><li>Fifteen problems, new ones every day, in practice and test modes</li></ul>
-      </details>
-      <div class="cmeta">
-        <span>Interactive</span>
-        <u class="free">$0</u>
-      </div>
-      <span class="tick-score"></span>
-    </div>
-    <div class="card" data-lesson="maths/subtracting-integers">
-      <span class="tick-done" aria-hidden="true">&check;</span>
-      <a class="clink" href="/lessons/maths/subtracting-integers/">
-        <span class="cthumb"></span>
-        <span class="cbody">
-          <em>Maths &middot; Integers &middot; Unit 1 &middot; Lesson 2</em>
-          <b class="ctitle">Subtracting Integers</b>
-          <span class="cblurb">No new arithmetic. Turn every subtraction into an addition, then use the rules you already have.</span>
-        </span>
-      </a>
-      <details class="cmore">
-        <summary>What's inside</summary>
-        <ul><li>A Ground Control panel for the teacher: why this is one step and not two</li><li>The lesson read aloud, one line at a time, highlighted as it goes</li><li>Keep, Change, Change, worked through until it is automatic</li><li>Fifteen problems, new ones every day, with the rewrite shown before the answer</li></ul>
-      </details>
-      <div class="cmeta">
-        <span>Interactive</span>
-        <u class="free">$0</u>
-      </div>
-      <span class="tick-score"></span>
-    </div>
-    
-  </div>
-  <script>
-(function(){
-  var cards = document.querySelectorAll("[data-lesson]");
-  for (var i = 0; i < cards.length; i++){
-    var c = cards[i], d = null, pr = null;
-    try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
-    try { pr = JSON.parse(localStorage.getItem("ns:prog:" + c.dataset.lesson)); } catch(e){}
-
-    // part-finished: show how far in, and stop before the completed styling
-    var finished = d && d.complete !== false;
-    if (!finished && pr && pr.done > 0){
-      c.classList.add("is-part");
-      var ps = c.querySelector(".tick-score");
-      if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
-      var pb = document.createElement("span");
-      pb.className = "cbar";
-      pb.innerHTML = '<i style="width:' + Math.round(pr.done / pr.total * 100) + '%"></i>';
-      var body = c.querySelector(".cbody");
-      if (body) body.appendChild(pb);
-      continue;
-    }
-    if (!finished) continue;
-
-    c.classList.add("is-done");
-    var s = c.querySelector(".tick-score");
-    if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
-    var t = c.querySelector(".tick-done");
-    if (t) t.setAttribute("title", "Completed");
-  }
-})();
-</script>
+  <div class="tile" style="min-height:170px;align-items:center;justify-content:center;text-align:center">
+      <div><h4 style="font-size:1.2rem">Nothing here yet</h4>
+      <p style="max-width:44ch;margin-top:8px">The first lessons for this year are being built.</p></div></div>
 </div></div>
 
 <footer><div class="wrap">

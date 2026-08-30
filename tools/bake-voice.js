@@ -113,6 +113,15 @@ function lessons() {
   const { partsFor } = require("./lesson-instructions.js");
   try { require("./lessons.js").LESSONS.forEach((L) => push(L.id, partsFor(L))); } catch (e) { fail("lessons.js: " + e.message); }
   try { require("./english-lessons.js").ENGLISH.forEach((L) => push(L.id, partsFor(L))); } catch (e) { fail("english-lessons.js: " + e.message); }
+  /* Integers are caption-driven like maths, not parts-driven like English:
+     the walkthrough sentences come from integer-captions.js so the audio and
+     the on-screen demo are generated from the same function. */
+  try {
+    const { sentencesFor } = require("./integer-captions.js");
+    require("./integers-lessons.js").INTEGERS.forEach((L) => {
+      list.push({ id: L.id, sentences: sentencesFor(L) });
+    });
+  } catch (e) { fail("integers-lessons.js: " + e.message); }
   /* Maths used to be impossible to bake: its sentences were computed in the
      browser and existed nowhere on disk. tools/math-captions.js moved that
      arithmetic into the build, so the narration can be read here and spoken in
