@@ -62,36 +62,13 @@ h1{margin:0 0 6px}
   background:var(--panel);border:1px solid var(--boxline);line-height:1.6;max-width:66ch}
 .ruletest b:first-child{color:var(--a)}
 
-/* ── read-aloud ── */
-.player{display:flex;flex-direction:column;align-items:center;gap:10px;
-  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:16px 12px;margin:0 0 18px;text-align:center}
-.playmain{cursor:pointer;min-width:190px;font-size:1.02rem;padding:13px 28px;
-  border-radius:999px;border:1px solid var(--a);background:var(--a);color:var(--on-accent,#0b160f);
-  font-weight:700;justify-content:center;text-align:center}
-.playmain:hover{filter:brightness(1.06)}
-.playmeta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
-select.rate{font-family:inherit;font-size:13px;font-weight:500;
-  color:var(--fg);background-color:var(--boxfill);
-  border:1px solid var(--boxline);border-radius:3px;cursor:pointer;max-width:100%;
-  -webkit-appearance:none;-moz-appearance:none;appearance:none;padding:8px 27px 8px 10px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 9px center;background-size:11px 7px}
-select.rate:focus{outline:none;border-color:var(--a)}
-.nospeech{display:none;color:var(--dim);font-size:.85rem;margin:8px 0 0}
-.nospeech.show{display:block}
-.themerow{display:flex;align-items:center;gap:10px}
-.themerow .lbl{color:var(--dim);font-size:.85rem}
-.swatches{display:flex;gap:7px}
-.sw{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);padding:0;cursor:pointer}
-.sw[aria-pressed="true"]{border-color:var(--a);transform:scale(1.12)}
+/* The reading player CSS is injected from lesson-template.html via
+   tools/voice-player.js. Do not restyle it here - one player, every lesson. */
 
 /* ── taught prose ── */
 .part{margin:0 0 26px}
 .part h3{margin:0 0 8px;font-size:1.08rem}
 .part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
-.part p.on{background:var(--accent-soft);border-radius:6px;
-  box-shadow:0 0 0 6px var(--accent-soft)}
 
 /* ── worked examples ── */
 .ex{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
@@ -120,14 +97,14 @@ select.rate:focus{outline:none;border-color:var(--a)}
 .words{display:flex;flex-wrap:wrap;gap:6px}
 /* Every word is a target, so nothing about the layout hints at the answer.
    A word that is not clickable would give it away. */
-.w{background:transparent;border:1px solid transparent;border-radius:7px;
+.pw{background:transparent;border:1px solid transparent;border-radius:7px;
   color:var(--fg);font:inherit;font-size:1.06rem;padding:6px 8px;cursor:pointer;
   transition:background .12s,border-color .12s}
-.w:hover{background:var(--boxfill);border-color:var(--boxline)}
-.w:disabled{cursor:default}
-.w.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
-.w.wrong{border-color:#e5484d;color:#e5484d}
-.w.reveal{border-color:var(--free);color:var(--free);font-weight:700}
+.pw:hover{background:var(--boxfill);border-color:var(--boxline)}
+.pw:disabled{cursor:default}
+.pw.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
+.pw.wrong{border-color:#e5484d;color:#e5484d}
+.pw.reveal{border-color:var(--free);color:var(--free);font-weight:700}
 .nudge{margin-top:12px;font-size:.92rem;color:var(--dim);min-height:1.4em;line-height:1.6;max-width:66ch}
 .nudge.warn{color:#e5484d}
 .scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
@@ -138,6 +115,8 @@ select.rate:focus{outline:none;border-color:var(--a)}
   .player,.themerow,.actions,.ns-back,.ground{display:none!important}
   .prob{break-inside:avoid;page-break-inside:avoid}
 }
+__PLAYER_CSS__
+__FIELD_CSS__
 </style>
 </head>
 <body>
@@ -163,24 +142,8 @@ __NAV__
   <h2 class="section-head">The Lesson</h2>
   <p class="section-note">Press play to have it read to you. The line being read lights up, so you can follow along.</p>
 
-  <div class="player">
-    <button class="btn playmain" type="button" id="play">&#9654; Read It To Me</button>
-    <div class="playmeta">
-      <select class="rate" id="rate" aria-label="Reading speed">
-        <option value="0.75">Slow</option>
-        <option value="0.9" selected>Normal</option>
-        <option value="1.05">Fast</option>
-      </select>
-      <span class="tag" id="stepPos"></span>
-    </div>
-    <div class="themerow">
-      <span class="lbl">Colours</span>
-      <div class="swatches" id="swatches"></div>
-    </div>
-    <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
-  </div>
-
-  <div id="parts">__PARTS_HTML__</div>
+  __PLAYER_MARKUP__
+  <div id="story"></div>
 
   <h2 class="section-head">Worked Examples</h2>
   <p class="section-note">Five done for you. The underlined word is the verb, and the line under it says how you could have known.</p>
@@ -204,106 +167,7 @@ var LESSON_ID = "__ID__";
 var PARTS     = __PARTS__;
 var PRACTICE  = __PRACTICE__;
 
-function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
-function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
-
-__THEMES__
-
-/* ns.css names its variables differently from the history template, so the
-   same palette is mapped onto the names this page actually uses. Lifted
-   verbatim from the maths page so the three lesson types cannot drift.
-   Each palette carries its own light and dark set, so this page already
-   follows the visitor's mode. */
-var VAR_MAP = {
-  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
-  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
-  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
-};
-
-var themeKey = load("theme", "forest");
-if (!THEMES[themeKey]) themeKey = "forest";
-
-function currentMode(){
-  var t = document.documentElement.getAttribute("data-theme");
-  if (t === "dark" || t === "light") return t;
-  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-function applyTheme(){
-  var set = THEMES[themeKey][currentMode()];
-  var root = document.documentElement;
-  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
-  [].forEach.call(document.querySelectorAll(".sw"), function(b){
-    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
-  });
-}
-(function buildSwatches(){
-  var wrap = document.getElementById("swatches");
-  Object.keys(THEMES).forEach(function(k){
-    var b = document.createElement("button");
-    b.className = "sw";
-    b.type = "button";
-    b.setAttribute("data-t", k);
-    b.title = THEMES[k].name;
-    b.setAttribute("aria-label", THEMES[k].name + " colours");
-    var d = THEMES[k].dark;
-    b.style.background = "linear-gradient(135deg," + d.accent + " 0 50%," + d.ground + " 50% 100%)";
-    b.addEventListener("click", function(){ themeKey = k; store("theme", k); applyTheme(); });
-    wrap.appendChild(b);
-  });
-})();
-applyTheme();
-if (window.matchMedia){
-  var mq = window.matchMedia("(prefers-color-scheme: dark)");
-  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
-}
-new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
-document.body.style.background = "var(--bg)";
-
-/* ── read-aloud ────────────────────────────────────────────────────────────
-   One sentence at a time so the line being read can be highlighted. A student
-   who is behind in reading follows the voice with his eyes; losing his place
-   is the thing that stops him, not the words. */
-var LINES = [];
-(function collect(){
-  var ps = document.querySelectorAll("#parts p, #parts h3");
-  for (var i = 0; i < ps.length; i++) LINES.push(ps[i]);
-})();
-
-var synth = window.speechSynthesis, idx = -1, playing = false;
-var playBtn = document.getElementById("play");
-var pos = document.getElementById("stepPos");
-if (!synth) document.getElementById("nospeech").classList.add("show");
-
-function clearHi(){ for (var i = 0; i < LINES.length; i++) LINES[i].classList.remove("on"); }
-function showPos(){ pos.textContent = idx >= 0 && playing ? (idx + 1) + " / " + LINES.length : ""; }
-
-function speakFrom(i){
-  if (!synth || i >= LINES.length) { stop(); return; }
-  idx = i; clearHi();
-  LINES[i].classList.add("on");
-  LINES[i].scrollIntoView({ block: "center", behavior: "smooth" });
-  showPos();
-  var u = new SpeechSynthesisUtterance(LINES[i].textContent);
-  u.rate = parseFloat(document.getElementById("rate").value);
-  u.onend = function(){ if (playing) speakFrom(i + 1); };
-  synth.speak(u);
-}
-function stop(){
-  playing = false; idx = -1;
-  if (synth) synth.cancel();
-  clearHi(); showPos();
-  playBtn.innerHTML = "&#9654; Read It To Me";
-}
-playBtn.onclick = function(){
-  if (!synth) return;
-  if (playing) { stop(); return; }
-  playing = true;
-  playBtn.innerHTML = "&#9632; Stop";
-  speakFrom(0);
-};
-/* Chrome keeps speaking after a navigation unless it is told not to. */
-window.addEventListener("beforeunload", function(){ if (synth) synth.cancel(); });
-
+__PLAYER_JS__
 /* ── practice ─────────────────────────────────────────────────────────────
    Click the word. Every word is a target so the layout gives nothing away,
    and a wrong click is not fatal: it says WHY it is wrong and lets him go
@@ -338,7 +202,7 @@ function render(){
 
     p.sentence.split(" ").forEach(function(word, wi){
       var b = document.createElement("button");
-      b.type = "button"; b.className = "w"; b.textContent = word;
+      b.type = "button"; b.className = "pw"; b.textContent = word;
       if (done) {
         b.disabled = true;
         if (wi === p.answer) b.classList.add("ok");
@@ -394,7 +258,7 @@ document.getElementById("reveal").onclick = function(){
   var boxes = wrap.children;
   for (var i = 0; i < PRACTICE.length; i++) {
     if (state[i]) continue;
-    var ws = boxes[i].querySelectorAll(".w");
+    var ws = boxes[i].querySelectorAll(".pw");
     for (var j = 0; j < ws.length; j++) {
       ws[j].disabled = true;
       if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");

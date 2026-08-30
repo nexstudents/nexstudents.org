@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice check</title>
+<style>
+  body{font:16px/1.5 system-ui,sans-serif;margin:0;padding:18px;background:#14161a;color:#e6e8ec}
+  h1{font-size:1.1rem;margin:0 0 4px}
+  p{margin:0 0 14px;color:#9aa0aa;font-size:.9rem}
+  button{font:inherit;font-weight:700;padding:14px 22px;border-radius:8px;border:0;
+    background:#8ca5cc;color:#0f1013;width:100%;margin:0 0 16px}
+  .box{background:#1b1d21;border:1px solid #2f323a;border-radius:8px;padding:12px;margin:0 0 14px}
+  .k{color:#9aa0aa;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}
+  ol{margin:6px 0 0;padding-left:20px}
+  li{margin:0 0 4px;font-size:.88rem;word-break:break-word}
+  .n{font-size:1.6rem;font-weight:800}
+</style>
+</head>
+<body>
+
+<h1>Voice check</h1>
+<p>This reports what this device tells the browser it has. Nothing here is part of the site.</p>
+
+<button id="go">Tap here, then wait 3 seconds</button>
+
+<div class="box">
+  <div class="k">Before any tap</div>
+  <div class="n" id="n0">—</div>
+  <ol id="l0"></ol>
+</div>
+
+<div class="box">
+  <div class="k">After the tap</div>
+  <div class="n" id="n1">—</div>
+  <ol id="l1"></ol>
+</div>
+
+<div class="box">
+  <div class="k">Browser</div>
+  <div id="ua" style="font-size:.78rem;color:#9aa0aa"></div>
+</div>
+
+<script>
+/* A deliberately dumb page: no framework, no build step, nothing shared with
+   the lesson template. If the lesson player and this disagree, the problem is
+   in the player. If they agree, the device really has nothing to offer. */
+var synth = window.speechSynthesis;
+
+function list(el, nEl){
+  var v = (synth && synth.getVoices && synth.getVoices()) || [];
+  nEl.textContent = v.length;
+  el.innerHTML = "";
+  v.forEach(function(x){
+    var li = document.createElement("li");
+    li.textContent = x.name + "  [" + x.lang + (x.localService === false ? " · network" : " · local") + "]";
+    el.appendChild(li);
+  });
+  if (!v.length){
+    var li = document.createElement("li");
+    li.textContent = "(none reported)";
+    el.appendChild(li);
+  }
+}
+
+document.getElementById("ua").textContent =
+  navigator.userAgent + "  |  speechSynthesis: " + (synth ? "yes" : "NO");
+
+list(document.getElementById("l0"), document.getElementById("n0"));
+
+document.getElementById("go").addEventListener("click", function(){
+  /* the same warm-up the lesson page does */
+  try {
+    var u = new SpeechSynthesisUtterance(" ");
+    u.volume = 0;
+    synth.speak(u);
+    synth.cancel();
+  } catch (e) {}
+  setTimeout(function(){ list(document.getElementById("l1"), document.getElementById("n1")); }, 800);
+  setTimeout(function(){ list(document.getElementById("l1"), document.getElementById("n1")); }, 3000);
+});
+
+if (synth && typeof synth.onvoiceschanged !== "undefined"){
+  synth.onvoiceschanged = function(){
+    list(document.getElementById("l1"), document.getElementById("n1"));
+  };
+}
+</script>
+</body>
+</html>

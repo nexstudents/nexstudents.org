@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice check</title>
+<style>
+  body{font:16px/1.5 system-ui,sans-serif;margin:0;padding:18px;background:#14161a;color:#e6e8ec}
+  h1{font-size:1.1rem;margin:0 0 4px}
+  p{margin:0 0 14px;color:#9aa0aa;font-size:.9rem}
+  button{font:inherit;font-weight:700;padding:16px 22px;border-radius:8px;border:0;
+    background:#8ca5cc;color:#0f1013;width:100%;margin:0 0 16px}
+  button:active{background:#6f8ab5}
+  .box{background:#1b1d21;border:1px solid #2f323a;border-radius:8px;padding:12px;margin:0 0 14px}
+  .k{color:#9aa0aa;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+  .n{font-size:2rem;font-weight:800;line-height:1.1}
+  ol{margin:6px 0 0;padding-left:20px}
+  li{margin:0 0 4px;font-size:.85rem;word-break:break-word}
+  #log{font-size:.78rem;color:#9aa0aa;white-space:pre-wrap;word-break:break-word}
+</style>
+</head>
+<body>
+
+<h1>Voice check</h1>
+<p>Updates by itself every second. Tap the button too, then read the numbers.</p>
+
+<button id="go">Tap here</button>
+
+<div class="box" style="border-color:#8ca5cc">
+  <div class="k">British voices — read me these</div>
+  <ol id="gb"></ol>
+</div>
+
+<div class="box">
+  <div class="k">Everything this phone reports</div>
+  <div class="n" id="n">—</div>
+  <ol id="l"></ol>
+</div>
+
+<div class="box">
+  <div class="k">What happened</div>
+  <div id="log">starting…</div>
+</div>
+
+<script>
+/* Deliberately crude, and it must NEVER depend on a click to show something -
+   the previous version did, so when the tap did nothing the page looked dead
+   and told us nothing at all. It polls on its own and logs every step, so
+   there is always evidence even if the button is the broken part. */
+var synth = window.speechSynthesis;
+var log = document.getElementById("log");
+var lines = [];
+function say(m){
+  lines.push(new Date().toLocaleTimeString() + "  " + m);
+  log.textContent = lines.slice(-12).join("\n");
+}
+
+function renderGB(){
+  var v = [];
+  try { v = (synth && synth.getVoices && synth.getVoices()) || []; } catch (e) {}
+  var gb = v.filter(function(x){ return /^en[-_]GB/i.test(x.lang || ""); });
+  var ol = document.getElementById("gb");
+  ol.innerHTML = "";
+  if (!gb.length){
+    var li = document.createElement("li"); li.textContent = "(none yet)"; ol.appendChild(li);
+    return;
+  }
+  gb.forEach(function(x){
+    var li = document.createElement("li");
+    li.textContent = x.name + "   ||   " + (x.voiceURI || "no id");
+    ol.appendChild(li);
+  });
+}
+
+function render(){
+  renderGB();
+  var v = [];
+  try { v = (synth && synth.getVoices && synth.getVoices()) || []; } catch (e) { say("getVoices threw: " + e.message); }
+  document.getElementById("n").textContent = v.length;
+  var ol = document.getElementById("l");
+  ol.innerHTML = "";
+  if (!v.length){
+    var li = document.createElement("li");
+    li.textContent = "(none reported yet)";
+    ol.appendChild(li);
+  } else {
+    v.forEach(function(x){
+      var li = document.createElement("li");
+      li.textContent = x.name + "  [" + x.lang + (x.localService === false ? " · network" : " · local") + "]";
+      ol.appendChild(li);
+    });
+  }
+  return v.length;
+}
+
+say("speechSynthesis: " + (synth ? "present" : "MISSING"));
+say("Utterance: " + (typeof window.SpeechSynthesisUtterance));
+say("at load: " + render() + " voices");
+
+var ticks = 0;
+setInterval(function(){
+  ticks++;
+  var n = render();
+  if (ticks % 5 === 0) say("after " + ticks + "s: " + n + " voices");
+}, 1000);
+
+document.getElementById("go").addEventListener("click", function(){
+  say("BUTTON TAPPED");
+  try {
+    var u = new SpeechSynthesisUtterance("test");
+    u.volume = 0;
+    synth.speak(u);
+    say("speak() called ok");
+    setTimeout(function(){ try { synth.cancel(); } catch(e){} }, 400);
+  } catch (e) {
+    say("speak() failed: " + e.message);
+  }
+  setTimeout(function(){ say("1s after tap: " + render() + " voices"); }, 1000);
+  setTimeout(function(){ say("3s after tap: " + render() + " voices"); }, 3000);
+});
+
+if (synth && typeof synth.onvoiceschanged !== "undefined"){
+  synth.onvoiceschanged = function(){ say("voiceschanged fired: " + render()); };
+}
+</script>
+</body>
+</html>

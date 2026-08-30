@@ -21,66 +21,8 @@ h1{margin:0 0 6px}
 .section-head{margin:34px 0 4px;font-size:1.35rem}
 .section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
 
-/* ---- read-aloud player ----
-   Play on its own line, the two step buttons centred under it. Paul,
-   2026-08-26: on the phone Back and Next sat BEFORE Play, which reads wrong. */
-.player{display:flex;flex-direction:column;align-items:center;gap:10px;
-  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:16px 12px;margin:0 0 18px;text-align:center}
-/* One button shape on this page. Play was ns.css's square .btn sitting right
-   above two pills, which is the mismatch Paul photographed. Play keeps the
-   filled accent because it is the primary action; the shape is now the same
-   pill as everything else.
-   It is also a flex box with no justify-content, so a min-width parked the
-   label on its own left edge. Same bug as the drawer button. */
-.playmain{cursor:pointer;min-width:190px;font-size:1.02rem;padding:13px 28px;
-  border-radius:999px;border:1px solid var(--a);background:var(--a);color:var(--on-accent,#0b160f);
-  font-weight:700;justify-content:center;text-align:center}
-.playmain:hover{filter:brightness(1.06)}
-.steprow{display:flex;gap:8px;justify-content:center;width:100%;max-width:420px}
-.steprow .tab.act{flex:1 1 0}
-.playmeta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
-.pbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;
-  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin:0 0 18px}
-.pbar .btn{cursor:pointer}
-
-/* ---- voice picker and the API key ---- */
-.voicerow{display:none;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;max-width:100%}
-.voicerow.show{display:flex}
-.voicerow label{color:var(--dim);font-size:.85rem}
-/* The selects are the SAME control as the history lessons: same size, same
-   3px corner, same hand-drawn arrow. Paul, 2026-08-26: the maths dropdown
-   "looks way too different", and it did, because I styled it from scratch
-   instead of matching what already existed. */
-select.rate{
-  font-family:inherit;font-size:13px;font-weight:500;
-  color:var(--fg);background-color:var(--boxfill);
-  border:1px solid var(--boxline);border-radius:3px;
-  cursor:pointer;max-width:100%;
-  -webkit-appearance:none;-moz-appearance:none;appearance:none;
-  padding:8px 27px 8px 10px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 9px center;background-size:11px 7px;
-}
-select.rate:focus{outline:none;border-color:var(--a)}
-.linkbtn{background:none;border:0;color:var(--dim);font:inherit;font-size:.82rem;
-  text-decoration:underline;cursor:pointer;padding:0}
-.linkbtn:hover{color:var(--fg)}
-.keyrow{display:none;width:100%;max-width:460px;text-align:left}
-.keyrow.show{display:block}
-.keyrow label{display:block;color:var(--dim);font-size:.82rem;margin-bottom:6px}
-.keyfield{display:flex;gap:6px}
-.keyfield input{flex:1 1 auto;min-width:0;background:var(--boxfill);color:var(--fg);
-  border:1px solid var(--boxline);border-radius:999px;padding:9px 14px;font:inherit;font-size:.88rem}
-.keyfield input:focus{outline:none;border-color:var(--a)}
-.keynote{color:var(--dim);font-size:.78rem;margin:8px 0 0}
-.keynote.bad{color:#e5484d}
-.keynote.good{color:var(--free)}
-.caption{margin-top:10px;color:var(--fg);font-size:1rem;line-height:1.5;min-height:3em}
-.caption b{color:var(--a)}
-.nospeech{display:none;color:var(--dim);font-size:.85rem;margin:8px 0 0}
-.nospeech.show{display:block}
-
+/* The reading player CSS comes from lesson-template.html via voice-player.js.
+   Maths does not style the player - one player, one stylesheet. */
 /* ---- the division grid ---- */
 .gridwrap{overflow-x:auto;padding:6px 0}
 .dgrid{display:grid;gap:0;justify-content:start;
@@ -125,14 +67,6 @@ select.rate:focus{outline:none;border-color:var(--a)}
 /* NOTE: --pill belongs to ns.css and is a RADIUS (999px). Never map a colour
    onto it here - that turned every pill in ns.css square on this page. */
 
-/* ---- colour swatches, the same five the history lessons use ---- */
-.themerow{display:flex;align-items:center;gap:10px;margin:0 0 18px}
-.themerow .lbl{color:var(--dim);font-size:.85rem}
-.swatches{display:flex;gap:7px}
-.sw{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);
-  padding:0;cursor:pointer}
-.sw[aria-pressed="true"]{border-color:var(--a);transform:scale(1.12)}
-
 /* ---- practice / test tabs ---- */
 .tabs{display:flex;gap:6px;margin:0 0 12px}
 .tab{background:transparent;border:1px solid var(--line);border-radius:999px;
@@ -162,6 +96,8 @@ select.rate:focus{outline:none;border-color:var(--a)}
 .scorebar b{font-size:1.25rem}
 .legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--dim);font-size:.86rem;margin-top:10px}
 .legend span b{color:var(--fg)}
+__PLAYER_CSS__
+__FIELD_CSS__
 </style>
 </head>
 <body>
@@ -174,44 +110,14 @@ __NAV__
   <p class="dek">__DEK__</p>
 
   <h2 class="section-head">How It Works</h2>
-  <p class="section-note">Press play and watch the same four steps repeat. Back a step replays the one before it.</p>
+  <p class="section-note">Press play and follow along. The arrows step back and forward, and the bar jumps straight to any step, so the same four steps can be replayed as many times as it takes.</p>
 
-  <div class="player">
-    <button class="btn playmain" type="button" id="play">&#9654; Play</button>
-    <div class="steprow">
-      <button class="tab act" type="button" id="prev">&larr; Back a Step</button>
-      <button class="tab act" type="button" id="next">Next Step &rarr;</button>
-    </div>
-    <div class="playmeta">
-      <select class="rate" id="rate" aria-label="Reading speed">
-        <option value="0.7">Slow</option>
-        <option value="0.85" selected>Normal</option>
-        <option value="1">Fast</option>
-      </select>
-      <span class="tag" id="stepPos"></span>
-    </div>
-    <div class="voicerow" id="voicerow">
-      <label for="voice">Voice</label>
-      <select class="rate" id="voice" aria-label="Choose a reading voice"></select>
-    </div>
-    <div class="themerow">
-      <span class="lbl">Colours</span>
-      <div class="swatches" id="swatches"></div>
-      <button class="linkbtn" type="button" id="keyToggle">Studio voice</button>
-    </div>
-    <div class="keyrow" id="keyrow">
-      <label for="ttskey">Google Cloud Text-to-Speech API key</label>
-      <div class="keyfield">
-        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
-        <button class="tab act" type="button" id="keySave">Save</button>
-        <button class="tab act" type="button" id="keyClear">Clear</button>
-      </div>
-      <p class="keynote" id="keynote">Stored only in this browser, never sent anywhere but Google. Restrict the key to the Text-to-Speech API in your Cloud console.</p>
-    </div>
-  </div>
+  __PLAYER_MARKUP__
+
+  <div id="story"></div>
+
   <div class="panel">
     <div class="gridwrap"><div class="dgrid" id="demo"></div></div>
-    <p class="caption" id="caption"></p>
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
     <div class="legend">
       <span><b>Divide</b> how many fit</span>
@@ -242,6 +148,7 @@ __NAV__
 "use strict";
 
 var DEMO = __DEMO__;
+var BAKED_CAPS = __CAPTIONS__;
 var SPEC = __SPEC__;
 var LESSON_ID = "__ID__";
 
@@ -265,8 +172,8 @@ var VAR_MAP = {
   accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
 };
 
-var themeKey = load("theme", "forest");
-if (!THEMES[themeKey]) themeKey = "forest";
+var themeKey = load("theme", "graphite");
+if (!THEMES[themeKey]) themeKey = "graphite";
 
 function currentMode(){
   var t = document.documentElement.getAttribute("data-theme");
@@ -281,21 +188,11 @@ function applyTheme(){
     b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
   });
 }
-(function buildSwatches(){
-  var wrap = document.getElementById("swatches");
-  Object.keys(THEMES).forEach(function(k){
-    var b = document.createElement("button");
-    b.className = "sw";
-    b.type = "button";
-    b.setAttribute("data-t", k);
-    b.title = THEMES[k].name;
-    b.setAttribute("aria-label", THEMES[k].name + " colours");
-    var d = THEMES[k].dark;
-    b.style.background = "linear-gradient(135deg," + d.accent + " 0 50%," + d.ground + " 50% 100%)";
-    b.addEventListener("click", function(){ themeKey = k; store("theme", k); applyTheme(); });
-    wrap.appendChild(b);
-  });
-})();
+/* 🚨 MATHS DOES NOT BUILD SWATCHES. The player builds them. This page had its
+   own row as well, which is why ten colour dots appeared instead of five once
+   the shared player arrived. What maths still owns is the MAPPING - it uses
+   ns.css variable names - so it hands that to the player as a hook. */
+window.nsOnTheme = function(k){ themeKey = k; applyTheme(); };
 applyTheme();
 if (window.matchMedia){
   var mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -432,9 +329,14 @@ function captions(S){
 
 /* ── the worked example ───────────────────────────────────────────────── */
 var S = solve(DEMO.dividend, DEMO.divisor);
-var CAPS = captions(S);
+/* ⚠️ The captions come from the BUILD now (tools/math-captions.js), not from
+   captions() running here. They have to be identical to the ones the audio was
+   generated from, and the only way to guarantee that is for both to come from
+   one place. The local captions() is still used as a fallback if the build did
+   not supply them. */
+var CAPS = (typeof BAKED_CAPS !== "undefined" && BAKED_CAPS && BAKED_CAPS.length)
+  ? BAKED_CAPS : captions(S);
 var demoHost = document.getElementById("demo");
-var capEl = document.getElementById("caption");
 var posEl = document.getElementById("stepPos");
 var at = 0, playing = false, gen = 0;
 
@@ -461,276 +363,33 @@ function paintDemo(upto){
       if (k === upto) cell.classList.add("drop");
     }
   }
-  capEl.textContent = CAPS[Math.min(upto, CAPS.length - 1)].text;
-  posEl.textContent = "Step " + (upto + 1) + " of " + CAPS.length;
+  /* ⚠️ The position line belongs to the PLAYER now. Maths used to own a
+     #stepPos of its own and write "Step 3 of 13" into it; with the shared
+     markup that element is gone and the variable resolved to the players own
+     #pos instead, so maths quietly overwrote "Sentence 3 of 13" on every
+     repaint. The player counts; maths just draws the grid. */
 }
 
-/* ── the voice, the same two engines the history lessons use ───────────────
-   GOOGLE  Google Cloud TTS, fetched live with the viewer's own key, cached
-           per step so replaying never bills twice.
-   DEVICE  the browser's own speechSynthesis. Always there, always the fallback.
-   British first in both, per Paul.
-   ------------------------------------------------------------------------ */
-var GOOGLE_VOICES = [
-  { id:"en-GB-Neural2-B", label:"UK male (Neural2 B)" },
-  { id:"en-GB-Neural2-D", label:"UK male (Neural2 D)" },
-  { id:"en-GB-Neural2-A", label:"UK female (Neural2 A)" },
-  { id:"en-US-Neural2-D", label:"US male (Neural2 D)" },
-  { id:"en-US-Neural2-J", label:"US male (Neural2 J)" }
-];
-var ttsKey = load("ttskey", "");
-var googleVoice = load("gvoice", GOOGLE_VOICES[0].id);
-var engine = "device";                 /* "google" | "device" */
-var voice = null, voices = [], clipCache = {}, audioEl = null;
+/* ── THE READING PLAYER ────────────────────────────────────────────────────
+   🚨 THIS IS THE HISTORY PLAYER, VERBATIM. Paul, 2026-08-29: "i want the exact
+   system from history into math. i like those markers you can select and jump
+   around we can use them for math too."
 
-function hasKey(){ return !!ttsKey; }
-function rateVal(){ return parseFloat(document.getElementById("rate").value) || 0.85; }
-function note(msg, kind){
-  var el = document.getElementById("keynote");
-  if (!el) return;
-  el.className = "keynote" + (kind ? " " + kind : "");
-  el.textContent = msg || "Stored only in this browser, never sent anywhere but Google. Restrict the key to the Text-to-Speech API in your Cloud console.";
-  if (msg && kind === "bad") document.getElementById("keyrow").classList.add("show");
-}
+   Maths used to run its own narrator. It is gone. The captions are handed to
+   the shared engine as sentences, so maths gets the identical thing history
+   has: back and forward, the scrub bar you can click to jump to any step, the
+   same voices, the same key panel, the resume position and the keyboard.
 
-/* One caption -> one MP3. Cached by voice, step and speed. */
-function fetchClip(i){
-  var ck = googleVoice + "|" + i + "|" + rateVal();
-  if (clipCache[ck]) return Promise.resolve(clipCache[ck]);
-  return fetch("https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=" + encodeURIComponent(ttsKey), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      input: { text: CAPS[i].text },
-      voice: { languageCode: googleVoice.slice(0, 5), name: googleVoice },
-      audioConfig: { audioEncoding: "MP3", speakingRate: rateVal() }
-    })
-  }).then(function(r){
-    return r.json().then(function(j){
-      if (!r.ok) throw new Error(j.error ? j.error.message : "HTTP " + r.status);
-      return j;
-    });
-  }).then(function(j){
-    var src = "data:audio/mpeg;base64," + j.audioContent;
-    clipCache[ck] = src;
-    return src;
-  });
-}
+   The grid follows the reader through window.nsOnSentence - one hook in the
+   one engine - so the worked example and the narration can never fall out of
+   step with each other the way two separate players would. */
+var PARTS = [{ title: "", s: CAPS.map(function(c){ return c.text; }) }];
 
-/* Whatever the engine, finishing a step moves to the next one. */
-function stepDone(mine){
-  if (!playing || mine !== gen) return;
-  if (at < CAPS.length - 1){ at++; paintDemo(at); say(at); }
-  else stop();
-}
+__PLAYER_JS__
 
-function say(i){
-  var mine = ++gen;
-  silence();
-  if (engine === "google" && hasKey()){
-    fetchClip(i).then(function(src){
-      if (!playing || mine !== gen) return;
-      audioEl = new Audio(src);
-      audioEl.onended = function(){ stepDone(mine); };
-      audioEl.play().catch(function(){ sayOnDevice(i, mine); });
-    }).catch(function(e){
-      note(String(e.message || e), "bad");
-      engine = "device";
-      sayOnDevice(i, mine);
-    });
-    return;
-  }
-  sayOnDevice(i, mine);
-}
-
-/* ── picking the voice at SPEAK time, not at page load ──────────────────────
-   Paul, 2026-08-26: "the voices for desktop dont work if i select them on
-   mobile". Two Android behaviours cause that:
-     1. getVoices() is repopulated, so the object saved at load no longer
-        matches anything and the engine quietly uses its own default.
-     2. Android honours utterance.voice far more reliably when lang is set
-        to that voice s language as well.
-   So the choice is stored as a NAME and re-resolved every time we speak. */
-function resolveVoice(){
-  if (!supported) return null;
-  var want = voice && voice.name;
-  var all = synth.getVoices() || [];
-  if (want){
-    for (var i = 0; i < all.length; i++) if (all[i].name === want) return all[i];
-  }
-  return voice && all.indexOf(voice) >= 0 ? voice : null;
-}
-function applyVoiceTo(u){
-  var v = resolveVoice();
-  if (v){ u.voice = v; if (v.lang) u.lang = v.lang; }
-}
-
-function sayOnDevice(i, mine){
-  if (!supported){ stop(); return; }
-  synth.cancel();
-  var u = new SpeechSynthesisUtterance(CAPS[i].text);
-  u.rate = rateVal();
-  applyVoiceTo(u);
-  u.onend = function(){ stepDone(mine); };
-  synth.speak(u);
-}
-
-function silence(){
-  if (audioEl){ audioEl.pause(); audioEl.onended = null; audioEl = null; }
-  if (supported) synth.cancel();
-}
-function stop(){
-  playing = false; gen++;
-  silence();
-  document.getElementById("play").innerHTML = "&#9654; Play";
-}
-
-document.getElementById("play").addEventListener("click", function(){
-  if (playing){ stop(); return; }
-  playing = true;
-  this.innerHTML = "&#10073;&#10073; Pause";
-  paintDemo(at);
-  say(at);
-});
-document.getElementById("next").addEventListener("click", function(){
-  stop(); if (at < CAPS.length - 1) at++; paintDemo(at);
-});
-document.getElementById("prev").addEventListener("click", function(){
-  stop(); if (at > 0) at--; paintDemo(at);
-});
-document.getElementById("rate").addEventListener("change", function(){
-  if (playing) say(at);
-});
+/* Draw the division grid up to whichever step is being read. */
+window.nsOnSentence = function(i){ paintDemo(i); };
 paintDemo(0);
-
-/* ── choosing the voice ───────────────────────────────────────────────────
-   The default browser voice on Windows is usually Microsoft David or Zira, the
-   old robotic SAPI pair. Rank by name so the best available wins, British
-   first, and let him pick anything he likes from the list.
-   ------------------------------------------------------------------------ */
-(function voicePicker(){
-  var voiceSel = document.getElementById("voice");
-  var voiceRow = document.getElementById("voicerow");
-
-  if (!supported && !hasKey()){
-    document.getElementById("nospeech").classList.add("show");
-  }
-
-  function rank(v){
-    var n = (v.name || "").trim();
-    if (/^google uk english male$/i.test(n)) return 1000;   /* Paul's pick */
-    var score = 0;
-    if (/natural/i.test(n)) score += 100;
-    if (/neural/i.test(n)) score += 90;
-    if (/^google/i.test(n)) score += 75;
-    if (/online/i.test(n)) score += 55;
-    if (/\b(arthur|oliver|daniel|serena)\b/i.test(n)) score += 60;
-    if (/\b(david|zira|mark|hazel|susan|george|catherine)\b/i.test(n)) score -= 60;
-    if (/compact|eloquence|espeak/i.test(n)) score -= 80;
-    if (v.localService === false) score += 15;
-    if (/^en[-_]GB/i.test(v.lang)) score += 40;             /* British first */
-    else if (/^en[-_]US/i.test(v.lang)) score += 6;
-    return score;
-  }
-  function selectValue(v){
-    var found = false;
-    [].forEach.call(voiceSel.querySelectorAll("option"), function(o){
-      if (o.value === v){ o.selected = true; found = true; }
-    });
-    return found;
-  }
-  function applyChoice(val, persist){
-    if (!val) return;
-    if (val.indexOf("g:") === 0){
-      engine = "google";
-      googleVoice = val.slice(2);
-      store("gvoice", googleVoice);
-    } else {
-      engine = "device";
-      voice = voices.filter(function(v){ return "d:" + v.name === val; })[0] || voice;
-    }
-    if (persist) store("voice", val);
-  }
-
-  function loadVoices(){
-    var all = supported ? (synth.getVoices() || []) : [];
-    voices = all.filter(function(v){ return /^en([-_]|$)/i.test(v.lang || ""); });
-    if (!voices.length) voices = all.slice();
-    voices.sort(function(a, b){ return rank(b) - rank(a); });
-    if (voices.length) voice = voices[0];
-
-    voiceSel.innerHTML = "";
-    if (hasKey()){
-      var gg = document.createElement("optgroup");
-      gg.label = "Google Cloud (your key)";
-      GOOGLE_VOICES.forEach(function(g){
-        var o = document.createElement("option");
-        o.value = "g:" + g.id;
-        o.textContent = g.label;
-        gg.appendChild(o);
-      });
-      voiceSel.appendChild(gg);
-    }
-    var dg = document.createElement("optgroup");
-    dg.label = "This device";
-    voices.forEach(function(v, i){
-      var o = document.createElement("option");
-      o.value = "d:" + v.name;
-      o.textContent = v.name.replace(/\s*\(.*?\)\s*$/, "") + (i === 0 ? "  (best on this device)" : "");
-      dg.appendChild(o);
-    });
-    voiceSel.appendChild(dg);
-
-    var want = load("voice", null);
-    if (!want || !selectValue(want)){
-      /* No saved pick: Google's UK voice if there is a key, else the best
-         British voice this device has. */
-      if (hasKey()) selectValue("g:" + googleVoice);
-      else if (voices.length) selectValue("d:" + voices[0].name);
-    }
-    applyChoice(voiceSel.value, false);
-    if (voiceSel.options.length) voiceRow.classList.add("show");
-  }
-
-  voiceSel.addEventListener("change", function(){
-    applyChoice(voiceSel.value, true);
-    note("", "");
-    if (playing) say(at);
-  });
-
-  /* ---- the API key ---- */
-  var keyRow = document.getElementById("keyrow");
-  var keyIn = document.getElementById("ttskey");
-  document.getElementById("keyToggle").addEventListener("click", function(){
-    keyRow.classList.toggle("show");
-    if (keyRow.classList.contains("show")) keyIn.focus();
-  });
-  if (ttsKey) keyIn.value = ttsKey;
-  document.getElementById("keySave").addEventListener("click", function(){
-    var v = keyIn.value.trim();
-    if (!v){ note("Paste a key first.", "bad"); return; }
-    ttsKey = v; store("ttskey", v); clipCache = {};
-    note("Key saved. Google Cloud voices are now in the list.", "good");
-    loadVoices();
-    selectValue("g:" + googleVoice);
-    applyChoice(voiceSel.value, true);
-  });
-  document.getElementById("keyClear").addEventListener("click", function(){
-    ttsKey = ""; drop("ttskey"); clipCache = {}; keyIn.value = "";
-    engine = "device";
-    note("Key removed. Back to this device's voice.", "");
-    loadVoices();
-  });
-
-  loadVoices();
-  /* Chrome fills the voice list asynchronously, so the first read comes back
-     empty and this fires once it is ready. */
-  if (supported && typeof synth.addEventListener === "function"){
-    synth.addEventListener("voiceschanged", loadVoices);
-  } else if (supported){
-    synth.onvoiceschanged = loadVoices;
-  }
-})();
 
 /* ── the problems he fills in ─────────────────────────────────────────── */
 var host = document.getElementById("problems");

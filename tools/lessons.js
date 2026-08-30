@@ -33,13 +33,21 @@ const LESSONS = [
       "Five questions, four with the answer hidden in the text",
       "A printable answer sheet with a parent signature line",
     ] },
-  eyebrow: ["Intel Briefing", "Unit 1 &middot; Lesson 1", "Ancient Rome"],
+  eyebrow: ["History", "Unit 1 &middot; Lesson 1", "Ancient Rome"],
   dek: "Rome spent five hundred years refusing to have a king. Then it got one, and almost nobody noticed the day it happened.",
   scripture: {
     ref: "Daniel 2:21",
     text: "And he changeth the times and the seasons: he removeth kings, and setteth up kings.",
   },
   parts: [
+    { title: "How This Lesson Works", s: [
+      "Press the play button and this page will read the lesson to you.",
+      "Each sentence lights up as it is read, and the word being spoken is highlighted inside it.",
+      "The bar under the buttons is the whole lesson. Tap anywhere on it to jump, or drag along it to move through.",
+      "The two arrows either side of play step back and forward one sentence, so you can hear a line again as many times as you need.",
+      "You can also tap any sentence in the text to start reading from there.",
+      "After the lesson there are word cards and questions. Four of the questions have their answer hidden somewhere in the text, and the page will help you hunt for it."
+    ] },
     { title: "Rome Without a King", s: [
       "For almost five hundred years, Rome had no king.",
       "Roman citizens voted for the men who led them.",
@@ -138,13 +146,21 @@ const LESSONS = [
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
-  eyebrow: ["Intel Briefing", "Unit 1 &middot; Lesson 2", "Ancient Rome"],
+  eyebrow: ["History", "Unit 1 &middot; Lesson 2", "Ancient Rome"],
   dek: "Rome ran on offices, laws and paperwork. That sounds dull until you notice how much of it we still use.",
   scripture: {
     ref: "Romans 13:1",
     text: "There is no power but of God: the powers that be are ordained of God.",
   },
   parts: [
+    { title: "How This Lesson Works", s: [
+      "Press the play button and this page will read the lesson to you.",
+      "Each sentence lights up as it is read, and the word being spoken is highlighted inside it.",
+      "The bar under the buttons is the whole lesson. Tap anywhere on it to jump, or drag along it to move through.",
+      "The two arrows either side of play step back and forward one sentence, so you can hear a line again as many times as you need.",
+      "You can also tap any sentence in the text to start reading from there.",
+      "After the lesson there are word cards and questions. Four of the questions have their answer hidden somewhere in the text, and the page will help you hunt for it."
+    ] },
     { title: "A Government of Offices", s: [
       "Rome did not run on one man giving orders, at least not at first.",
       "It ran on offices, which are jobs with fixed powers and fixed time limits.",

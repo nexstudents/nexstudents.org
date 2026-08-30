@@ -30,6 +30,13 @@ const fs = require("fs");
 const path = require("path");
 const { ENGLISH } = require("./english-lessons.js");
 const { navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+/* 🚨 ONE PLAYER, EVERY LESSON TYPE. The reading voice is not re-implemented
+   here; it is sliced out of lesson-template.html so English, maths, history
+   and later science all run the identical engine. Paul, 2026-08-29: "i want
+   you to match the way we made the voice exactly like the history lessons
+   even with the bar to go back so he can repeat. this is the standard for all
+   future lessons we will have on the entire site." */
+const player = require("./voice-player.js");
 
 const ROOT = process.argv[2] || ".";
 const TPL = path.join(__dirname, "english", "template.html");
@@ -167,7 +174,10 @@ for (const L of ENGLISH) {
     .replace("__RULE_LONG__", L.rule.long)
     .replace("__RULE_TEST__", L.rule.test
       ? '<p class="ruletest"><b>Run this test.</b> ' + L.rule.test + "</p>" : "")
-    .replace("__PARTS_HTML__", partsHtml(L.parts))
+    .replace("__PLAYER_CSS__", player.playerCss)
+    .replace("__FIELD_CSS__", player.fieldCss)
+    .replace("__PLAYER_MARKUP__", player.playerMarkup)
+    .replace("__PLAYER_JS__", player.playerScript)
     .replace("__EXAMPLES_HTML__", examplesHtml(L.examples))
     .replace("__PRACTICE_NOTE__", L.practiceNote ||
       "Ten sentences. Click the verb in each one. A wrong click tells you why it is wrong and lets you try again, so nothing here counts against you.")
@@ -183,6 +193,7 @@ for (const L of ENGLISH) {
   for (const slot of ["__TITLE__", "__DEK__", "__ID__", "__GROUND__", "__RULE_SHORT__",
                       "__RULE_LONG__", "__RULE_TEST__", "__PARTS_HTML__", "__EXAMPLES_HTML__",
                       "__PRACTICE_NOTE__", "__PARTS__", "__PRACTICE__", "__THEMES__",
+                      "__PLAYER_CSS__", "__FIELD_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__",
                       "__CANONICAL__", "__MODEBOOT__", "__FAVICON__", "__NAV__", "__NAVSCRIPT__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
   }

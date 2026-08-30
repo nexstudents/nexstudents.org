@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Verbs: Action and Being — NexStudents</title>
-<meta name="description" content="Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is.">
+<meta name="description" content="Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.">
 <link rel="canonical" href="https://nexstudents.org/lessons/english/verbs-action-and-being/">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
@@ -64,36 +64,13 @@ h1{margin:0 0 6px}
   background:var(--panel);border:1px solid var(--boxline);line-height:1.6;max-width:66ch}
 .ruletest b:first-child{color:var(--a)}
 
-/* ── read-aloud ── */
-.player{display:flex;flex-direction:column;align-items:center;gap:10px;
-  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:16px 12px;margin:0 0 18px;text-align:center}
-.playmain{cursor:pointer;min-width:190px;font-size:1.02rem;padding:13px 28px;
-  border-radius:999px;border:1px solid var(--a);background:var(--a);color:var(--on-accent,#0b160f);
-  font-weight:700;justify-content:center;text-align:center}
-.playmain:hover{filter:brightness(1.06)}
-.playmeta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
-select.rate{font-family:inherit;font-size:13px;font-weight:500;
-  color:var(--fg);background-color:var(--boxfill);
-  border:1px solid var(--boxline);border-radius:3px;cursor:pointer;max-width:100%;
-  -webkit-appearance:none;-moz-appearance:none;appearance:none;padding:8px 27px 8px 10px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 9px center;background-size:11px 7px}
-select.rate:focus{outline:none;border-color:var(--a)}
-.nospeech{display:none;color:var(--dim);font-size:.85rem;margin:8px 0 0}
-.nospeech.show{display:block}
-.themerow{display:flex;align-items:center;gap:10px}
-.themerow .lbl{color:var(--dim);font-size:.85rem}
-.swatches{display:flex;gap:7px}
-.sw{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);padding:0;cursor:pointer}
-.sw[aria-pressed="true"]{border-color:var(--a);transform:scale(1.12)}
+/* The reading player CSS is injected from lesson-template.html via
+   tools/voice-player.js. Do not restyle it here - one player, every lesson. */
 
 /* ── taught prose ── */
 .part{margin:0 0 26px}
 .part h3{margin:0 0 8px;font-size:1.08rem}
 .part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
-.part p.on{background:var(--accent-soft);border-radius:6px;
-  box-shadow:0 0 0 6px var(--accent-soft)}
 
 /* ── worked examples ── */
 .ex{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
@@ -122,14 +99,14 @@ select.rate:focus{outline:none;border-color:var(--a)}
 .words{display:flex;flex-wrap:wrap;gap:6px}
 /* Every word is a target, so nothing about the layout hints at the answer.
    A word that is not clickable would give it away. */
-.w{background:transparent;border:1px solid transparent;border-radius:7px;
+.pw{background:transparent;border:1px solid transparent;border-radius:7px;
   color:var(--fg);font:inherit;font-size:1.06rem;padding:6px 8px;cursor:pointer;
   transition:background .12s,border-color .12s}
-.w:hover{background:var(--boxfill);border-color:var(--boxline)}
-.w:disabled{cursor:default}
-.w.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
-.w.wrong{border-color:#e5484d;color:#e5484d}
-.w.reveal{border-color:var(--free);color:var(--free);font-weight:700}
+.pw:hover{background:var(--boxfill);border-color:var(--boxline)}
+.pw:disabled{cursor:default}
+.pw.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
+.pw.wrong{border-color:#e5484d;color:#e5484d}
+.pw.reveal{border-color:var(--free);color:var(--free);font-weight:700}
 .nudge{margin-top:12px;font-size:.92rem;color:var(--dim);min-height:1.4em;line-height:1.6;max-width:66ch}
 .nudge.warn{color:#e5484d}
 .scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
@@ -140,6 +117,539 @@ select.rate:focus{outline:none;border-color:var(--a)}
   .player,.themerow,.actions,.ns-back,.ground{display:none!important}
   .prob{break-inside:avoid;page-break-inside:avoid}
 }
+/* ---------- player ---------- */
+.player{
+  /* Docked to the foot of the screen on every width. Paul, 2026-08-29:
+     "i said i want it to be on the bottom of the screen on the pc too and
+     follow the screen like on mobile."
+
+     ⚠️ TWO LEFTOVERS FROM THE STICKY VERSION BROKE THIS AND BOTH WERE SILENT:
+       margin:22px 0 34px  - a fixed box with bottom:0 AND a bottom margin
+                             floats 34px off the floor. It looked like the dock
+                             had failed rather than like a margin.
+       padding:14px 16px 12px - the shorthand came after padding-bottom and
+                             wiped the safe-area inset, so an iPhone home
+                             indicator would have sat over the controls.
+     Never leave a shorthand after the longhand it overwrites. */
+  position:fixed;left:0;right:0;bottom:0;top:auto;z-index:40;
+  margin:0;
+  max-height:80vh;overflow-y:auto;
+  display:flex;flex-direction:column;
+  background:var(--surface, var(--panel));
+  border:1px solid var(--rule, var(--line));
+  border-width:1px 0 0;
+  border-radius:0;
+  box-shadow:0 -6px 24px rgba(0,0,0,.30);
+  padding:8px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+}
+/* 🚨 THE THREE READING CONTROLS SIT IN THE MIDDLE. Paul, 2026-08-29. They
+   were left-aligned with a spacer shoving the speed selector to the far right,
+   which parked the primary action in the corner of a wide screen. Back, Play
+   and Forward are one centred cluster; speed sits centred underneath. */
+.btn{
+  font-family:inherit;font-size:14px;font-weight:500;
+  background:transparent;color:var(--ink, var(--fg));
+  border:1px solid var(--rule, var(--line));border-radius:3px;
+  padding:9px 12px;cursor:pointer;line-height:1;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.btn:hover{background:var(--surface-2, var(--boxfill));border-color:var(--ink-faint, var(--dim))}
+.btn:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
+/* One rule owns the play button. It is a FIXED rectangle - Paul, 2026-08-29:
+   "i want it just a small rectangle shape ... it doesnt need to stretch to
+   fit" - because a transport button that changes width when you press it never
+   feels solid. */
+.btn.primary{
+  background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a));
+  color:var(--on-accent, #0b160f);font-weight:600;
+  flex:0 0 auto;width:56px;min-width:56px;min-height:37px;
+  padding:0;justify-content:center;border-radius:6px;border-width:1.5px;
+}
+.btn.primary:hover{filter:brightness(1.06);background:var(--verdigris, var(--a))}
+.btn svg{display:block}
+.rate{
+  font-family:inherit;font-size:13px;font-weight:500;
+  color:var(--control-ink, var(--fg));
+  background-color:var(--control-bg, var(--boxfill));
+  border:1px solid var(--control-border, var(--boxline));border-radius:3px;
+  cursor:pointer;
+  /* native arrow sits hard against the right edge, which leaves a gap on a wide
+     select. Own arrow, tucked just after the text. */
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  padding:8px 27px 8px 10px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 9px center;
+  background-size:11px 7px;
+}
+.rate::-ms-expand{display:none}
+.rate option{background:var(--control-bg, var(--boxfill));color:var(--control-ink, var(--fg))}
+.rate:hover{border-color:var(--verdigris, var(--a))}
+.rate:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
+
+.scrub{
+  margin-top:10px;display:flex;gap:2px;height:16px;
+  align-items:stretch;cursor:pointer;
+  touch-action:none;      /* the bar scrubs; it must not also scroll the page */
+}
+.tick{flex:1;background:var(--surface-2, var(--boxfill));border-radius:1px;
+  transition:background .14s ease;pointer-events:auto}
+.tick.done{background:var(--tick-done, var(--accent-soft))}
+.tick.now{background:var(--tick-now, var(--a))}
+@media (hover:hover){ .tick:hover{background:var(--verdigris-soft, var(--accent-soft))} }
+/* while scrubbing, kill the transitions entirely: a drag should track the
+   finger exactly, not chase it 140ms behind */
+.scrub.dragging .tick{transition:none}
+.pcontrols{
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;flex-wrap:wrap;
+}
+.pmeta{
+  order:2;display:flex;align-items:center;justify-content:center;
+  gap:14px;flex-wrap:wrap;text-align:center;
+  font-size:12px;color:var(--ink-faint, var(--dim));margin-top:7px;
+  font-variant-numeric:tabular-nums;letter-spacing:.02em;
+}
+.voicerow{
+  display:flex;align-items:center;gap:9px;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--rule, var(--line));
+}
+.voicerow.show{display:flex}
+.voicerow label{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));
+}
+.voicerow select{flex:0 1 auto;min-width:0;max-width:100%;font-size:13px}
+
+/* studio voice key */
+.linkbtn{
+  margin-left:auto;background:none;border:0;cursor:pointer;padding:4px 2px;
+  font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.04em;
+  color:var(--verdigris, var(--a));text-decoration:underline;text-underline-offset:3px;
+}
+.linkbtn:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
+.keyrow{display:none;margin-top:9px;padding-top:9px;border-top:1px solid var(--rule, var(--line))}
+.keyrow.show{display:block}
+.keyrow label{
+  display:block;font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint, var(--dim));margin-bottom:7px;
+}
+.keyfield{display:flex;gap:7px;flex-wrap:wrap}
+.keyfield input{
+  flex:1 1 180px;min-width:0;font-family:inherit;font-size:13px;
+  color:var(--control-ink, var(--fg));background:var(--control-bg, var(--boxfill));
+  border:1px solid var(--control-border, var(--boxline));border-radius:3px;padding:9px 10px;
+}
+.keyfield input:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
+.keynote{font-size:12px;line-height:1.5;color:var(--ink-soft, var(--dim));margin:8px 0 0}
+.keynote.bad{color:var(--porphyry)}
+.keynote.good{color:var(--verdigris-ink, var(--a))}
+
+/* colour picker */
+.themerow{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--rule, var(--line));
+}
+.themerow .lbl{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));
+}
+.swatches{display:flex;gap:7px}
+/* `background-clip:padding-box` with a TRANSPARENT border meant the gradient
+   stopped short and a 2px ring of the dark page showed through every swatch.
+   Paul, 2026-08-26: "can you make the theme colors not have a black spare
+   outline ... compare it to the math one". The maths swatches never had it,
+   because the gradient runs to the edge and the border is drawn on top. Same
+   here now: the ring only appears on the one that is selected. */
+.sw{
+  width:26px;height:26px;border-radius:50%;cursor:pointer;padding:0;
+  border:2px solid var(--rule, var(--line));outline-offset:2px;
+  transition:transform .15s,border-color .15s;
+}
+.sw:hover{transform:scale(1.12)}
+.sw[aria-pressed="true"]{border-color:var(--verdigris, var(--a));transform:scale(1.12)}
+.sw:focus-visible{outline:2px solid var(--verdigris, var(--a))}
+.nospeech{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;
+  color:var(--porphyry);margin-top:10px;display:none;line-height:1.5;
+}
+
+/* ---------- story ---------- */
+.part{margin:0 0 30px}
+h2{
+  font-family:Cinzel,Georgia,serif;font-weight:500;
+  font-size:13px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));
+  margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--rule, var(--line));
+}
+.para{margin:0}
+.sent{
+  border-radius:3px;padding:1px 0;
+  transition:background .2s;
+  scroll-margin-top:180px;
+}
+.sent.reading{background:var(--band)}
+/* ⚠️ NO BOLD, NO RING, NO SIZE CHANGE. Paul, 2026-08-29: "you are bolding or
+   making the words on NexVoice bigger i dont want them to do that." Weight
+   changes reflow the line as the highlight moves, which is exactly the wobble
+   a struggling reader does not need. Colour only. */
+.w.on{background:var(--word);border-radius:3px}
+.hunting .sent{
+  cursor:pointer;
+  box-shadow:inset 0 -1px 0 var(--ink-faint, var(--dim));
+}
+.hunting .sent:hover{background:var(--verdigris-soft, var(--accent-soft));box-shadow:inset 0 -1px 0 var(--verdigris, var(--a))}
+.sent.hit{background:var(--verdigris-soft, var(--accent-soft));box-shadow:inset 0 -2px 0 var(--verdigris, var(--a))}
+.sent.miss{background:var(--porphyry-soft);box-shadow:inset 0 -2px 0 var(--porphyry)}
+.sent.shown{background:var(--band);box-shadow:inset 0 -2px 0 var(--brass)}
+
+
+/* ── FORM FIELDS ───────────────────────────────────────────────────────────
+   🚨 A FIELD IS NOT A CONTROL, AND A FIELD IS PAPER. Paul, 2026-08-29: "the
+   text boxes need to be white with black lettering ... i would do outlines in
+   the theme color not the boxes themselves. you keep being bad at this across
+   all my apps."
+
+   The bug was structural and it was mine repeatedly: fields were painted with
+   the palette CONTROL tokens - ctlBg / ctlInk - which EVERY light palette
+   defines as a dark fill with near-white text, because those tokens were
+   written for solid buttons. So on a light page every select and input
+   rendered as a dark block. In graphite light that is ctlBg #333F55 sitting on
+   a #F5F5F7 page.
+
+   A field is white in BOTH modes. Making it a "lifted neutral" in dark was the
+   same instinct that caused the original bug - it dissolves the field back
+   into the panel it sits on. The theme colour lives in the OUTLINE.
+
+   ⚠️ The old dropdown arrow had a hardcoded pale stroke (#DCEADF) which was
+   invisible the moment a field went white. It is dark now, because the field
+   it sits on is always white. */
+select.rate{padding-top:9px;padding-bottom:9px}
+select.rate, .keyfield input{
+  font-family:inherit;font-size:13px;font-weight:500;
+  background-color:#FFFFFF;color:#14161A;
+  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;
+  padding:10px 12px;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+select.rate{
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  cursor:pointer;max-width:100%;padding-right:30px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 12 8%27%3E%3Cpath d=%27M1 1.5 6 6.5 11 1.5%27 fill=%27none%27 stroke=%27%2314161A%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:11px 7px;
+}
+select.rate::-ms-expand{display:none}
+select.rate option{background:#FFFFFF;color:#14161A}
+select.rate:hover, .keyfield input:hover,
+select.rate:focus, .keyfield input:focus,
+select.rate:focus-visible, .keyfield input:focus-visible{
+  outline:none;border-color:var(--verdigris, var(--a));box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft));
+}
+.keyfield input{flex:1 1 200px;min-width:0;max-width:320px}
+.keyfield input::placeholder{color:#7A7D85}
+
+/* The docked bar covers the foot of the page on EVERY width now, so the
+   padding is not a phone special case. Measured by playerDock(). */
+body{padding-bottom:var(--player-pad, 150px)}
+
+/* ── THE CONTROL CLUSTER, shared ──────────────────────────────────────────
+   These live in the shared block rather than the history-only player CSS,
+   because maths imports the fields but not the player chrome - it keeps its
+   own stepping engine. Without them the maths cluster stayed left-aligned
+   while every other lesson was centred, which is the kind of small
+   inconsistency that makes a site feel unfinished. */
+.pcontrols{order:0;margin-top:0;position:relative;min-height:44px}
+/* pinned to the edges so the transport keeps the centre line to itself */
+.pcontrols .playerhide{position:absolute;right:2px;top:50%;transform:translateY(-50%);margin:0}
+.pcontrols .followchip{position:absolute;left:2px;top:50%;transform:translateY(-50%)}
+.scrub{order:1}
+.pmeta{order:2}
+.nospeech{order:3}
+.keyrow{order:4}
+.psettings{order:5}   /* last row: the one anchored to the bottom edge */
+.phead .playerhide{margin-left:auto}
+/* a switch has to LOOK like a switch: a real track, a real knob, at a size you
+   can see. It is unlabelled, not invisible. */
+@media (max-width: 620px){ .phint{display:none} }
+
+.psettings{order:5}
+
+
+/* 🚨 THE PLAY BUTTON DOES NOT STRETCH. Paul, 2026-08-29: "you made the button
+   for play and pause strech but i want it just a small retwngle shape like the
+   same size as on the pc right now. it doesnt need to strech to fit."
+   It is an icon in a fixed rectangle. A transport button that changes width
+   with the viewport stops being a landmark you can hit without looking. */
+
+/* ── HIDING THE BAR ────────────────────────────────────────────────────────
+   Paul, 2026-08-29: "maybe an option to hide it too."
+
+   Even a compact bar is a bar, and a student who just wants to READ a page
+   should be able to put it away. Hidden, it collapses to a small tab that
+   stays reachable - never gone, because a control you cannot get back is worse
+   than one taking up room. The choice is remembered per device, so a reader
+   who prefers the page clean is not asked again on every lesson.
+
+   It keeps PLAYING while hidden on purpose: a student may want to listen with
+   the whole screen given over to the words. */
+.playerhide{
+  display:inline-flex;align-items:center;
+  border:0;background:none;box-shadow:none;
+  padding:6px 2px;margin-right:10px;
+  color:var(--ink, var(--fg));cursor:pointer;
+}
+.playerhide input{position:absolute;opacity:0;width:1px;height:1px}
+.playerhide .track{
+  width:40px;height:23px;border-radius:999px;flex:0 0 auto;
+  background:var(--surface-2, var(--boxfill));
+  border:1px solid var(--rule, var(--line));
+  position:relative;transition:background .16s ease,border-color .16s ease;
+}
+.playerhide .knob{
+  position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;
+  background:var(--ink, var(--fg));transition:transform .16s ease;
+}
+.playerhide input:checked + .track{background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a))}
+.playerhide input:checked + .track .knob{transform:translateX(17px);background:var(--on-accent, #0b160f)}
+.playerhide input:focus-visible + .track{box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
+@media (prefers-reduced-motion: reduce){ .playerhide .track, .playerhide .knob{transition:none} }
+
+body.player-hidden .pcontrols,
+body.player-hidden .psettings,
+body.player-hidden .keyrow,
+body.player-hidden .nospeech{display:none}
+/* 🚨 the switch row stays when hidden, or the player buries its own
+   off-switch and hiding becomes a one-way door. */
+body.player-hidden .pmeta{display:none}
+body.player-hidden .phead{padding:2px 0}
+body.player-hidden .followchip{display:none}
+/* what survives: the step bar. Still live, still tappable, still moving. */
+body.player-hidden .player{padding-top:4px}
+body.player-hidden .phead{padding:0 0 4px}
+body.player-hidden .scrub{margin:0}
+@media (max-width: 620px){ .player{transition:transform .22s ease} }
+@media (prefers-reduced-motion: reduce){ .player, .playerhide{transition:none} }
+
+/* The resume chip. Fixed above the thumb on a phone, out of the way of the
+   text, and only present while following is off and something is playing. */
+.followchip{
+  opacity:0;pointer-events:none;visibility:hidden;
+  border:1px solid var(--verdigris, var(--a));border-radius:999px;
+  background:transparent;color:var(--verdigris, var(--a));
+  font-family:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;
+  cursor:pointer;white-space:nowrap;
+  transition:opacity .18s ease;
+}
+.followchip.show{opacity:1;pointer-events:auto;visibility:visible}
+.followchip:hover{background:var(--verdigris-soft, var(--accent-soft))}
+@media (prefers-reduced-motion: reduce){ .followchip{transition:none} }
+
+/* 🚨 WHY THE COLOURS WERE NOT CENTRED ON A DESKTOP. Paul, 2026-08-29: "you
+   also didnt center the theme colors on the pc." Correct, and centring the row
+   was never going to fix it: .linkbtn carries margin-left:auto, so the key
+   link was pinned to the far right and stretched the row across the whole
+   player. The swatches then sat wherever was left. The link has its own
+   centred row now, and the auto margin is off inside the player. */
+.player .linkbtn{margin-left:0}
+
+
+/* The disclosure arrow. Paul: "the dropdown arrow to add your own api is
+   really small. we need a way that is has an extension option like the text
+   that say Use my personal API part needs that arrow next to it." So the arrow
+   belongs to the LABEL, is the same size as the label, and turns over when the
+   panel opens - the whole thing reads as one control instead of a link with a
+   speck beside it. */
+/* 🚨 NO BOX. Paul, 2026-08-29: "i said just make the arrow bigger but you drew
+   an entire oval box around it and separated api and color themes. that not
+   what i wanted. i wanted it compact. i just wanted you to make the arrow
+   bigger."
+
+   He asked for one thing and I redesigned the panel around it. The pills and
+   the extra row are gone; the API link sits back beside the colours where it
+   always was. The ONLY change that stays is the arrow: an 18px SVG instead of
+   the ▾ character, because a glyph draws at whatever fraction of its em box
+   the font chooses, which is why raising font-size barely moved it. */
+.keydisclose{display:inline-flex;align-items:center;gap:6px}
+
+/* ── THE VOICE DROPDOWN ────────────────────────────────────────────────────
+   Ours, not the platform's, so a phone and a PC show the same control. The
+   trigger matches the other fields - white, theme outline - and the list opens
+   UPWARD, because the player is docked to the bottom of the screen and a menu
+   opening downward would go off the edge. */
+.vsel{position:relative;display:inline-block;min-width:200px;max-width:100%}
+.vsel-trigger{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font:inherit;font-size:13px;font-weight:500;
+  background:#FFFFFF;color:#14161A;
+  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;
+  padding:10px 12px;cursor:pointer;text-align:left;
+}
+.vsel-trigger:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
+.vsel-trigger .chev{flex:0 0 auto;transition:transform .18s ease}
+.vsel-trigger[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.vsel-list{
+  position:absolute;left:0;right:0;bottom:calc(100% + 6px);z-index:70;
+  margin:0;padding:5px;list-style:none;
+  background:#FFFFFF;color:#14161A;
+  border:1.5px solid var(--verdigris, var(--a));border-radius:8px;
+  box-shadow:0 -8px 24px rgba(0,0,0,.28);
+  max-height:46vh;overflow-y:auto;
+}
+.vsel-list li{
+  padding:11px 12px;border-radius:5px;cursor:pointer;font-size:13.5px;
+}
+.vsel-list li[aria-selected="true"]{background:var(--verdigris, var(--a));color:var(--on-accent, #0b160f);font-weight:700}
+.vsel-list li[aria-disabled="true"]{opacity:.45;cursor:default}
+@media (hover:hover){ .vsel-list li:not([aria-disabled="true"]):hover{background:#eceff3} }
+.vsel-list li[aria-selected="true"]:hover{background:var(--verdigris, var(--a))}
+
+.keytogglerow{display:flex;justify-content:center;padding:2px 0}
+.psettings > summary{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;list-style:none;padding:6px 0 2px;
+  font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));
+}
+.psettings > summary::-webkit-details-marker{display:none}
+.psettings > summary::marker{content:""}
+/* The SVG points down. Closed is rotated up; open returns it to down. */
+.chev{flex:0 0 auto;transform:rotate(180deg);transition:transform .18s ease}
+.keydisclose[aria-expanded="true"] .chev,
+.psettings[open] > summary .chev{transform:rotate(0deg)}
+@media (prefers-reduced-motion: reduce){ .chev{transition:none} }
+.psettings{display:flex;flex-direction:column-reverse}
+.psettings[hidden]{display:none}
+
+/* ── VOICE AND COLOURS, CENTRED ────────────────────────────────────────────
+   Paul, 2026-08-29: "i want that voice selector centered in the middle along
+   with the theme colors for both pc and mobile."
+
+   These rows were laid out as label-left / control-right, which is a form
+   convention and wrong here: everything else in this player is a centred
+   cluster, so two left-aligned rows underneath read as a different component
+   bolted on. One axis for the whole player. */
+.voicerow, .voicerow.show{justify-content:center;flex-wrap:wrap}
+#speedrow, .voicerow, .themerow{
+  flex-direction:column;align-items:center;justify-content:center;gap:6px;
+}
+#speedrow label, .voicerow label, .themerow .lbl{
+  text-align:center;margin:0;
+}
+/* the API link is its own centred line under the swatches */
+.themerow .keydisclose{margin-top:2px}
+.themerow{justify-content:center;flex-wrap:wrap}
+
+/* ── THE PLAYER ON A PHONE ─────────────────────────────────────────────────
+   🚨 It was taking 327px of a 720px screen - 45% of the phone gone before a
+   word of the lesson. Measured, not guessed.
+
+   Nothing is removed, because a student on a phone needs the voice picker
+   MORE than one on a PC, not less. What changes is that voice and colours stop
+   being permanently open: they fold behind the settings summary, so the phone
+   gets the controls and the step bar, and the rest is one tap away. */
+/* ── THE PHONE PLAYER IS DOCKED TO THE BOTTOM ──────────────────────────────
+   Paul, 2026-08-29: "i wonder if we can just lock it to the bottom on mobile
+   and make it more compact."
+
+   Right. A player pinned to the TOP of a phone competes with the thing it is
+   reading: it takes the best part of the screen and pushes the text down. At
+   the bottom it is a transport bar - the shape every music and podcast app
+   settled on - it sits under the thumb instead of under the eyes, and the
+   whole top of the screen goes back to the lesson.
+
+   ⚠️ Three things have to move with it:
+     - the body needs padding, or the bar covers the last paragraph
+     - the settings disclosure opens UPWARD, or it would open off-screen
+     - nsInView has to know the screen is short from the BOTTOM now, not the
+       top, or the reader will happily scroll a sentence to a place the bar is
+       covering
+   The safe-area inset keeps it clear of the home indicator on an iPhone. */
+
+
+/* ── BACK AND FORWARD ──────────────────────────────────────────────────────
+   Paul, 2026-08-29: "draw a better outline around the back and forward
+   button." They carried the generic hairline in --rule, a DIVIDER colour, so
+   the arrows read as faint marks beside a solid Play. Back is the most-used
+   control here - a student replays a sentence far more often than he starts
+   one - so it must not be the faintest thing on the page. */
+#back, #fwd{
+  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;background:transparent;
+  color:var(--ink, var(--fg));min-height:37px;min-width:40px;padding:0 10px;justify-content:center;
+}
+#back:hover, #fwd:hover{background:var(--verdigris-soft, var(--accent-soft));border-color:var(--verdigris, var(--a));color:var(--ink, var(--fg))}
+#back:focus-visible, #fwd:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
+#back:disabled, #fwd:disabled{opacity:.4;cursor:default}
+#back:disabled:hover, #fwd:disabled:hover{background:transparent}
+
+/* Save sits ON the field row, so it matches the field height exactly. Save is
+   filled because it is what you almost always want; Clear stays an outline. */
+.keyfield .btn{
+  padding:10px 16px;border-radius:6px;border:1.5px solid var(--verdigris, var(--a));
+  font-size:13px;font-weight:600;line-height:1.2;min-height:41px;
+  background:transparent;color:var(--ink, var(--fg));
+}
+.keyfield .btn:hover{background:var(--verdigris-soft, var(--accent-soft))}
+.keyfield .btn:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
+#keySave{background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a));color:var(--on-accent, #0b160f);font-weight:700}
+#keySave:hover{filter:brightness(1.08);background:var(--verdigris, var(--a))}
+
+.keyrow.show{
+  display:block;margin:12px auto 0;padding:14px;
+  max-width:520px;
+  background:var(--verdigris-soft, var(--accent-soft));border:1px solid var(--verdigris, var(--a));border-radius:8px;
+}
+.keynote a{color:var(--verdigris-ink, var(--a, currentColor));text-decoration:underline;text-underline-offset:2px}
+.keydisc{
+  display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.55;
+  color:var(--ink, var(--fg));margin:0 0 11px;font-weight:600;
+}
+
+/* ── ADDED, not asked for ──────────────────────────────────────────────────
+   The player is sticky at the top. Without this, jumping to a sentence scrolls
+   it to y=0 and parks it UNDER the player, so the line being read is the one
+   line you cannot see. */
+.s{scroll-margin-top:16px;scroll-margin-bottom:150px}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+
+
+@media (max-width: 620px){
+  .player{padding-left:10px;padding-right:10px}
+  /* ⚠️ Measured, not guessed. The bar changes height when the settings panel
+     is opened, when the voice list wraps, and on a device with a home
+     indicator - a hardcoded number is wrong within a tap, and being wrong here
+     means the last lines of a lesson sit behind the bar where nobody can read
+     them. Set from the real height by playerDock(). */
+
+  /* settings open upward: the summary is the last thing, the panel above it */
+  .psettings{display:flex;flex-direction:column-reverse}
+.psettings[hidden]{display:none}
+  .s{scroll-margin-top:16px;scroll-margin-bottom:150px}
+  .pcontrols{gap:8px}
+  .pcontrols{min-height:40px;padding-bottom:12px}     /* lifts it clear of the bar */
+  .btn.primary{width:50px;min-width:50px;min-height:40px}
+  #back, #fwd{min-height:40px;min-width:42px;padding:0 8px}
+  .scrub{margin-top:2px}
+
+  /* the switch comes down with them, so the row stays balanced */
+  .playerhide .track{width:34px;height:20px}
+  .playerhide .knob{top:2px;left:2px;width:14px;height:14px}
+  .playerhide input:checked + .track .knob{transform:translateX(14px)}
+
+  /* Jump back stays vertically centred on that row, hard left. It is already
+     absolutely positioned, so it does not push the transport off centre. */
+  .pcontrols .followchip{font-size:11px;padding:3px 9px}
+  .pcontrols .tag{display:none}
+  .pmeta{font-size:11px;margin:4px 0 0}
+  .pmeta span:last-child{display:none}         /* "tap any sentence" is a desktop hint */
+  .scrub{height:24px;margin:2px 0 0}
+  .tick{border-radius:2px}
+
+}
+
 </style>
 </head>
 <body>
@@ -182,112 +692,111 @@ select.rate:focus{outline:none;border-color:var(--a)}
 <div class="wrapx">
   <div class="ns-back"><a href="/english/">&larr; English</a></div>
   <h1>Verbs: Action and Being</h1>
-  <p class="dek">Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is.</p>
+  <p class="dek">Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.</p>
 
   <details class="ground" id="ground">
     <summary><span class="who">For the teacher</span> Ground Control</summary>
     <div class="gbody"><h4>What it is</h4><p>A verb is the word that tells you what the subject does, or what the subject is. Nothing else in a sentence can do that job, and no sentence works without one. If a group of words has no verb, it is not a sentence yet.</p>
-<h4>Why it matters</h4><p>Verbs are the hinge everything later swings on. Tense is a verb changing to show time. Subject-verb agreement is a verb changing to match who is doing it. Sentence types, clauses, and eventually essay writing all assume the student can find the verb without thinking about it. A student who is shaky here is shaky in every grammar lesson after it, and usually nobody notices, because the later lessons look like they are about something else.</p>
-<h4>What he will get wrong</h4><p>He will hunt for a word that sounds like doing something. That works until the verb is 'is', 'was' or 'are', and then he freezes or picks a noun instead. The second half of the same mistake is grabbing a word that NAMES an action rather than doing it: in 'The run was long', 'run' is a thing you had, not something anyone is doing, and the real verb is 'was'. Both errors come from teaching the definition 'a verb is an action word', which is not true and is why so many students stall on this exact page.</p>
-<h4>What to say when he is stuck</h4><ul><li>Say: "Read it again, but start with Yesterday. Which word had to change?" That word is the verb.</li><li>If he picks a noun, say: "Is anybody doing that right now, or is it just a thing?" A run sitting on the page is a thing. Running is not.</li><li>If the verb is 'is' or 'was' and he cannot see it, ask: "What is this sentence saying somebody IS?" The word joining the two halves is the verb.</li><li>If he gets it right, do not stop at 'correct'. Ask him HOW he knew. If the answer is 'it looked like one', he got lucky and the test has not stuck yet.</li></ul></div>
+<h4>Why it matters</h4><p>Verbs are the hinge everything later swings on. Tense is a verb changing to show time. Subject-verb agreement is a verb changing to match who is doing it. Sentence types, clauses, and eventually essay writing all assume a student can find the verb without thinking about it. A student who is shaky here is shaky in every grammar lesson after it, and usually nobody notices, because the later lessons look like they are about something else.</p>
+<h4>What he will get wrong</h4><p>Most students hunt for a word that sounds like doing something. That works until the verb is 'is', 'was' or 'are', and then they freeze or pick a noun instead. The second half of the same mistake is grabbing a word that NAMES an action rather than doing it: in 'The walk was long', 'walk' is a thing you went on, not something anyone is doing, and the real verb is 'was'. Both errors come from teaching the definition 'a verb is an action word', which is not true, and is why so many students stall on this exact page.</p>
+<h4>What to say when he is stuck</h4><ul><li>Say: "Read it again, but start with Yesterday. Which word had to change?" That word is the verb.</li><li>If they pick a noun, ask: "Is anybody doing that right now, or is it just a thing?" A walk sitting on the page is a thing. Walking is not.</li><li>If the verb is 'is' or 'was' and they cannot see it, ask: "What is this sentence saying somebody IS?" The word joining the two halves is the verb.</li><li>When they get it right, do not stop at 'correct'. Ask HOW they knew. If the answer is 'it looked like one', they got lucky and the test has not stuck yet.</li></ul></div>
   </details>
 
   <div class="rulebox">
     <p class="short">A verb tells what the subject does, or what the subject is.</p>
-    <p class="long">Verbs come in two kinds. An <b>action verb</b> says something happens: <i>ran, built, decided, forgot</i>. A <b>being verb</b> says something simply is: <i>am, is, are, was, were, be, been, being</i>. Being verbs do not act. They connect the subject to what it is, the way an equals sign connects two sides of a sum.</p>
+    <p class="long">Verbs come in two kinds. An <b>action verb</b> says something happens: <i>ran, built, decided, forgot</i>. A <b>being verb</b> says something simply is: <i>am, is, are, was, were, be, been, being</i>. Being verbs do not act. They join the subject to what it is, the way an equals sign joins two sides of a sum.</p>
     <p class="ruletest"><b>Run this test.</b> THE TIME TEST. Put <i>Yesterday</i> or <i>Tomorrow</i> in front of the sentence and read it again. The one word that has to change shape is the verb. Nothing else in a sentence changes when the time changes.</p>
   </div>
 
   <h2 class="section-head">The Lesson</h2>
   <p class="section-note">Press play to have it read to you. The line being read lights up, so you can follow along.</p>
 
-  <div class="player">
-    <button class="btn playmain" type="button" id="play">&#9654; Read It To Me</button>
-    <div class="playmeta">
-      <select class="rate" id="rate" aria-label="Reading speed">
-        <option value="0.75">Slow</option>
-        <option value="0.9" selected>Normal</option>
-        <option value="1.05">Fast</option>
-      </select>
-      <span class="tag" id="stepPos"></span>
+  <div class="player" id="player">
+    <div class="pcontrols">
+      <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
+      <label class="playerhide" for="playerhide" title="Show or hide the settings" aria-label="Show or hide the settings">
+        <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the settings">
+        <span class="track" aria-hidden="true"><span class="knob"></span></span>
+      </label>
+      <button class="btn" id="back" title="Back one sentence" aria-label="Back one sentence">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13 2.5v11L5.5 8 13 2.5zM4 2.5h1.6v11H4z"/></svg>
+      </button>
+      <button class="btn primary" type="button" id="play" aria-label="Read to me" title="Read to me"><svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.2l9 5.8-9 5.8z"/></svg></button>
+      <button class="btn" id="fwd" title="Forward one sentence" aria-label="Forward one sentence">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 2.5v11L10.5 8 3 2.5zM10.4 2.5H12v11h-1.6z"/></svg>
+      </button>
     </div>
-    <div class="themerow">
-      <span class="lbl">Colours</span>
+    <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Jump to a sentence" aria-valuemin="1" aria-valuemax="26" aria-valuenow="1"></div>
+    <div class="pmeta">
+      <span id="pos">Sentence 1 of 26</span>
+      <span class="phint">Tap any sentence to start reading there</span>
+    </div>
+    <details class="psettings" id="psettings">
+      <summary><span>Settings</span><svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></summary>
+    <div class="voicerow" id="speedrow">
+      <label for="rate">Speed</label>
+      <select class="rate" id="rate" aria-label="Reading speed">
+        <option value="0.7">Slow</option>
+        <option value="0.85" selected>Normal</option>
+        <option value="1">Fast</option>
+      </select>
+    </div>
+    <div class="voicerow" id="voicerow">
+      <label for="voice">Voice</label>
+      <div class="vsel" id="vsel">
+        <button class="vsel-trigger" id="vselBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span id="vselLabel">Voice</span>
+          <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg>
+        </button>
+        <ul class="vsel-list" id="vselList" role="listbox" hidden></ul>
+      </div>
+      <select class="rate" id="voice" aria-label="Choose a reading voice" hidden></select>
+    </div>
+
+    <div class="keytogglerow">
+      <button class="linkbtn keydisclose" type="button" id="keyToggle" aria-expanded="false" aria-controls="keyrow">Use My Personal API (Voice) Key<svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></button>
+    </div>
+    <div class="keyrow" id="keyrow">
+      <p class="keydisc"><span aria-hidden="true">&#128274;</span><span><b>Stored on this device only.</b> Your key stays in this browser. It is never sent to NexStudents, never shared, and never leaves your machine except to the voice provider it belongs to.</span></p>
+      <label for="ttskey">Your API key</label>
+      <div class="keyfield">
+        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
+        <button class="btn" type="button" id="keySave">Save</button>
+        <button class="btn" type="button" id="keyClear">Clear</button>
+      </div>
+      <p class="keynote" id="keynote"><b>Where to get a key.</b> <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener">Google Cloud TTS</a> powers the built-in voices on this page and has a free monthly allowance. <a href="https://elevenlabs.io/" target="_blank" rel="noopener">ElevenLabs</a> is worth a look if you want a more natural voice and do not mind setting up an account.</p>
+    </div>
+    <div class="themerow" id="themerow">
+      <span class="lbl">Colors</span>
       <div class="swatches" id="swatches"></div>
     </div>
+    </details>
+
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
   </div>
-
-  <div id="parts"><div class="part">
-  <h3>Every Sentence Has an Engine</h3>
-  <p>Take any sentence apart and one word is doing the work of holding it together.</p>
-  <p>"The pilot landed the plane." Cross out landed and there is no sentence left, only a pilot and a plane sitting next to each other.</p>
-  <p>That working word is the verb, and every sentence in English has one.</p>
-  <p>This is worth knowing on its own: if you have written a group of words and something feels unfinished about it, check whether it has a verb. Usually it does not.</p>
-</div>
-<div class="part">
-  <h3>Verbs That Do Something</h3>
-  <p>Most verbs are easy to spot because something visibly happens.</p>
-  <p>"Kolten built a redstone door." Built is the verb, and you can picture it.</p>
-  <p>"The engine stalled." Stalled is the verb.</p>
-  <p>Not all action is physical, though, and this is where the definition starts to leak.</p>
-  <p>"He remembered the checklist." Nobody can watch remembering happen, but remembered is still the verb, because it is still what the subject did.</p>
-</div>
-<div class="part">
-  <h3>Verbs That Do Not Do Anything</h3>
-  <p>Now look at this sentence: "The runway is wet."</p>
-  <p>Nothing happens in it. Nobody does anything. And yet it is a complete sentence, so it must have a verb.</p>
-  <p>The verb is is.</p>
-  <p>Words like am, is, are, was, were, be, been and being are called being verbs, and their job is not to act but to connect.</p>
-  <p>"The runway is wet" hooks the runway to wet, the way an equals sign hooks two sides of a sum together.</p>
-  <p>There are only about eight of these and they turn up constantly, so it is worth knowing them on sight: am, is, are, was, were, be, been, being.</p>
-</div>
-<div class="part">
-  <h3>The Trap</h3>
-  <p>Here is the sentence that catches almost everybody.</p>
-  <p>"The run was long."</p>
-  <p>Run looks like a verb. Running is something you do. But in this sentence nobody is running, and the run is just a thing that happened to be long, like a rope or a movie.</p>
-  <p>The verb is was.</p>
-  <p>A word is not a verb because of what it looks like. It is a verb because of the job it is doing in that particular sentence, and the same word can do different jobs in different sentences.</p>
-</div>
-<div class="part">
-  <h3>The Test That Always Works</h3>
-  <p>You cannot pass this lesson by asking whether a word feels like an action, because is and was do not feel like anything.</p>
-  <p>So use a test instead of a feeling.</p>
-  <p>Put the word Yesterday at the front of the sentence and read it again. Exactly one word has to change shape, and that word is the verb.</p>
-  <p>"The runway is wet" becomes "Yesterday the runway was wet." Is changed to was, so is was the verb.</p>
-  <p>"The run was long" becomes "Yesterday the run was long." Run did not move at all. Was is the verb, and run never was one.</p>
-  <p>This test does not care whether anything happens in the sentence, which is exactly why it beats the definition you were probably taught.</p>
-</div>
-<div class="part">
-  <h3>Why This One Matters Later</h3>
-  <p>Almost everything ahead in grammar is really a lesson about verbs wearing a different name.</p>
-  <p>Tense is a verb changing to show when. Agreement is a verb changing to match who. Clauses are counted by counting verbs.</p>
-  <p>So the goal here is not to answer ten questions correctly today.</p>
-  <p>The goal is to get to where finding the verb takes no thought at all, because every later lesson quietly assumes you can already do it.</p>
-</div></div>
+  <div id="story"></div>
 
   <h2 class="section-head">Worked Examples</h2>
   <p class="section-note">Five done for you. The underlined word is the verb, and the line under it says how you could have known.</p>
   <div id="examples"><div class="ex">
   <p class="sent">The mechanic <u>tightened</u> the bolt.</p>
-  <p class="why">Something happens and you can picture it. Yesterday the mechanic tightened - the word already changed, so it is the verb.</p>
+  <p class="why">Something happens and you can picture it. Yesterday the mechanic TIGHTENED the bolt - the word already changed, so it is the verb.</p>
 </div>
 <div class="ex">
-  <p class="sent">The hangar <u>is</u> enormous.</p>
-  <p class="why">Nothing happens here at all. Is connects the hangar to enormous, and Yesterday the hangar WAS enormous proves it.</p>
+  <p class="sent">The hall <u>is</u> enormous.</p>
+  <p class="why">Nothing happens here at all. Is joins the hall to enormous, and Yesterday the hall WAS enormous proves it is the verb.</p>
 </div>
 <div class="ex">
-  <p class="sent">Kolten <u>forgot</u> his flight log.</p>
+  <p class="sent">He <u>forgot</u> his umbrella.</p>
   <p class="why">You cannot watch forgetting, but it is still what he did. Not all action is visible.</p>
 </div>
 <div class="ex">
-  <p class="sent">The flight <u>was</u> rough.</p>
-  <p class="why">The trap. Flight looks like something you do, but here it is a thing that was rough. Was is the verb.</p>
+  <p class="sent">The journey <u>was</u> long.</p>
+  <p class="why">The trap. Journey looks like something you do, but here it is a thing that was long. Was is the verb.</p>
 </div>
 <div class="ex">
-  <p class="sent">Those cadets <u>are</u> ready.</p>
-  <p class="why">A being verb again. Are joins the cadets to ready. Notice it is are and not is, because cadets is plural - that is agreement, and it is coming later.</p>
+  <p class="sent">Those students <u>are</u> ready.</p>
+  <p class="why">A being verb again. Are joins the students to ready. Notice it is are and not is, because students is plural - that is agreement, and it is coming later.</p>
 </div></div>
 
   <h2 class="section-head">Your Turn</h2>
@@ -305,91 +814,111 @@ select.rate:focus{outline:none;border-color:var(--a)}
 "use strict";
 
 var LESSON_ID = "english/verbs-action-and-being";
-var PARTS     = [{"title":"Every Sentence Has an Engine","s":["Take any sentence apart and one word is doing the work of holding it together.","\"The pilot landed the plane.\" Cross out landed and there is no sentence left, only a pilot and a plane sitting next to each other.","That working word is the verb, and every sentence in English has one.","This is worth knowing on its own: if you have written a group of words and something feels unfinished about it, check whether it has a verb. Usually it does not."]},{"title":"Verbs That Do Something","s":["Most verbs are easy to spot because something visibly happens.","\"Kolten built a redstone door.\" Built is the verb, and you can picture it.","\"The engine stalled.\" Stalled is the verb.","Not all action is physical, though, and this is where the definition starts to leak.","\"He remembered the checklist.\" Nobody can watch remembering happen, but remembered is still the verb, because it is still what the subject did."]},{"title":"Verbs That Do Not Do Anything","s":["Now look at this sentence: \"The runway is wet.\"","Nothing happens in it. Nobody does anything. And yet it is a complete sentence, so it must have a verb.","The verb is is.","Words like am, is, are, was, were, be, been and being are called being verbs, and their job is not to act but to connect.","\"The runway is wet\" hooks the runway to wet, the way an equals sign hooks two sides of a sum together.","There are only about eight of these and they turn up constantly, so it is worth knowing them on sight: am, is, are, was, were, be, been, being."]},{"title":"The Trap","s":["Here is the sentence that catches almost everybody.","\"The run was long.\"","Run looks like a verb. Running is something you do. But in this sentence nobody is running, and the run is just a thing that happened to be long, like a rope or a movie.","The verb is was.","A word is not a verb because of what it looks like. It is a verb because of the job it is doing in that particular sentence, and the same word can do different jobs in different sentences."]},{"title":"The Test That Always Works","s":["You cannot pass this lesson by asking whether a word feels like an action, because is and was do not feel like anything.","So use a test instead of a feeling.","Put the word Yesterday at the front of the sentence and read it again. Exactly one word has to change shape, and that word is the verb.","\"The runway is wet\" becomes \"Yesterday the runway was wet.\" Is changed to was, so is was the verb.","\"The run was long\" becomes \"Yesterday the run was long.\" Run did not move at all. Was is the verb, and run never was one.","This test does not care whether anything happens in the sentence, which is exactly why it beats the definition you were probably taught."]},{"title":"Why This One Matters Later","s":["Almost everything ahead in grammar is really a lesson about verbs wearing a different name.","Tense is a verb changing to show when. Agreement is a verb changing to match who. Clauses are counted by counting verbs.","So the goal here is not to answer ten questions correctly today.","The goal is to get to where finding the verb takes no thought at all, because every later lesson quietly assumes you can already do it."]}];
-var PRACTICE  = [{"sentence":"The tower cleared us for takeoff.","answer":2,"why":"Yesterday the tower CLEARED us. Cleared changed, so it is the verb."},{"sentence":"Rain fell all afternoon.","answer":1,"why":"Yesterday rain FELL. Only that word changed."},{"sentence":"Kolten carefully repaired the landing gear.","answer":2,"why":"Carefully tells you how, but repaired is what he actually did."},{"sentence":"The old wooden hangar is enormous.","answer":4,"why":"Nothing happens. Is connects the hangar to enormous, and four words go by before you reach it."},{"sentence":"Those instruments look broken.","answer":2,"why":"Look is the tricky one. Yesterday those instruments LOOKED broken - it changed shape, so it is the verb."},{"sentence":"The long jump scared him badly.","answer":3,"why":"The trap. Jump is a thing here, not something anyone is doing. Scared is the verb."},{"sentence":"We are ready.","answer":1,"why":"A being verb. Are joins we to ready, and the whole sentence is three words."},{"sentence":"The tired pilot from Missouri remembered every checklist item.","answer":5,"why":"Five words of subject before the verb. Invisible action, but still what he did."},{"sentence":"Her first solo landing was perfect.","answer":4,"why":"The trap again. Landing is a thing that was perfect. Was is the verb."},{"sentence":"The engines started without trouble.","answer":2,"why":"Yesterday the engines STARTED. It changed, so it is the verb."}];
+var PARTS     = [{"title":"How This Lesson Works","s":["Press the play button and this page will read the lesson to you.","Each sentence lights up as it is read, and the word being spoken is highlighted inside it.","The bar under the buttons is the whole lesson. Tap anywhere on it to jump, or drag along it to move through.","The two arrows either side of play step back and forward one sentence, so you can hear a line again as many times as you need.","Read the rule at the top first. Then work through the lesson, then the worked examples.","At the end there are ten sentences to try. Click the verb in each one.","If you click the wrong word nothing bad happens. The page tells you why it is wrong and lets you try again."]},{"title":"Every Sentence Has an Engine","s":["Take any sentence apart and one word is doing the work of holding it together.","\"The driver stopped the bus.\" Cross out stopped and there is no sentence left, only a driver and a bus sitting next to each other.","That working word is the verb, and every sentence in English has one.","This is worth knowing on its own. If you have written a group of words and something feels unfinished about it, check whether it has a verb. Usually it does not."]},{"title":"The First Kind: Verbs That Do Something","s":["Most verbs are easy to spot, because something visibly happens.","\"She opened the window.\" Opened is the verb, and you can picture it.","\"The engine stalled.\" Stalled is the verb.","Not all action is physical, though, and this is where the usual definition starts to leak.","\"He remembered the address.\" Nobody can watch remembering happen, but remembered is still the verb, because it is still what the subject did.","So the first kind covers more than it looks like: running and building, but also thinking, hoping, forgetting and deciding."]},{"title":"The Second Kind: Verbs That Do Not Do Anything","s":["Now look at this sentence: \"The road is wet.\"","Nothing happens in it. Nobody does anything. And yet it is a complete sentence, so by our own rule it must have a verb.","The verb is is.","This is the part most students never get told properly, so it is worth being slow about.","Words like am, is, are, was, were, be, been and being are called being verbs, and their job is not to act but to JOIN.","\"The road is wet\" hooks the road to wet. The road on one side, wet on the other, and is holding them together like an equals sign in a sum.","Try it without: \"The road wet.\" That is not a sentence. It is two ideas with nothing connecting them.","That is the whole job of a being verb. It does not describe an action, it makes a claim: this thing IS that thing.","There are only about eight of them and they turn up constantly, so they are worth knowing on sight: am, is, are, was, were, be, been, being."]},{"title":"Telling the Two Apart","s":["You do not have to guess which kind you are looking at.","Ask one question: does the sentence describe something happening, or does it describe how something IS?","\"The kettle boiled.\" Something happened. That is an action verb.","\"The kettle is empty.\" Nothing happened. The sentence just tells you the state the kettle is in. That is a being verb.","Both are verbs. Both are the engine of the sentence. They simply carry different cargo: one carries an event, the other carries a description."]},{"title":"The Trap","s":["Here is the sentence that catches almost everybody.","\"The walk was long.\"","Walk looks like a verb. Walking is something you do. But in this sentence nobody is walking, and the walk is just a thing that happened to be long, like a rope or a film.","The verb is was.","A word is not a verb because of what it looks like. It is a verb because of the job it is doing in that particular sentence, and the same word can do different jobs in different sentences.","\"They walk to school\" and \"the walk was long\" use the same word, and it is a verb in only one of them."]},{"title":"The Test That Always Works","s":["You cannot pass this lesson by asking whether a word feels like an action, because is and was do not feel like anything.","So use a test instead of a feeling.","Put the word Yesterday at the front of the sentence and read it again. Exactly one word has to change shape, and that word is the verb.","\"The road is wet\" becomes \"Yesterday the road was wet.\" Is changed to was, so is was the verb.","\"The walk was long\" becomes \"Yesterday the walk was long.\" Walk did not move at all. Was is the verb, and walk never was one.","This test does not care whether anything happens in the sentence, which is exactly why it beats the definition most students are given."]},{"title":"Why This One Matters Later","s":["Almost everything ahead in grammar is really a lesson about verbs wearing a different name.","Tense is a verb changing to show when. Agreement is a verb changing to match who. Clauses are counted by counting verbs.","So the goal here is not to answer ten questions correctly today.","The goal is to reach the point where finding the verb takes no thought at all, because every later lesson quietly assumes you can already do it."]}];
+var PRACTICE  = [{"sentence":"The bell rang loudly.","answer":2,"why":"Yesterday the bell RANG. Rang changed, so it is the verb."},{"sentence":"Rain fell all afternoon.","answer":1,"why":"Yesterday rain FELL. Only that word changed."},{"sentence":"She repaired the broken shelf.","answer":1,"why":"Something visibly happens, and repaired is what she did."},{"sentence":"The old wooden gate is heavy.","answer":4,"why":"Nothing happens. Is joins the gate to heavy, and four words go by before you reach it."},{"sentence":"Those instruments look expensive.","answer":2,"why":"Look is the tricky one. Yesterday those instruments LOOKED expensive - it changed shape, so it is the verb."},{"sentence":"The long walk tired everyone.","answer":3,"why":"The trap. Walk is a thing here, not something anyone is doing. Tired is the verb."},{"sentence":"We are ready.","answer":1,"why":"A being verb. Are joins we to ready, and the whole sentence is three words."},{"sentence":"The tired driver from the next town remembered every turn.","answer":7,"why":"Seven words of subject before the verb. Invisible action, but still what he did."},{"sentence":"Her very first attempt was perfect.","answer":4,"why":"The trap again. Attempt is a thing that was perfect. Was is the verb."},{"sentence":"Both engines started without trouble.","answer":2,"why":"Yesterday both engines STARTED. It changed, so it is the verb."}];
 
-function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
-function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+/* ---------- saved settings and progress ----------
+   Keys are shared site-wide on purpose:
+     ns:voice / ns:speed / ns:theme   settings, so they carry to every lesson
+     ns:done:<lessonId>               progress, so the lesson list can tick it off
+   Same origin means /grade-7/ and /history/ read the very same store. */
+var LESSON_ID = "history/republic-to-empire";
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch(e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch(e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch(e){} }
 
+/* ---------- colour themes ---------- */
+/* Each theme carries a full light and dark set, so switching theme never leaves
+   half the page on the old palette. --control-bg stays dark in every theme because
+   the select arrow is a light-stroked SVG. */
 var THEMES = {
   forest: { name:"Forest",
     light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
             accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
             ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
-            brass:"#7E6A16",band:"rgba(158,138,40,.22)",word:"rgba(158,138,40,.48)" },
+            brass:"#7E6A16",band:"rgba(158,138,40,.42)",word:"rgba(158,138,40,.74)" },
     dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
             accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
             ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
-            brass:"#D8B355",band:"rgba(216,179,85,.16)",word:"rgba(216,179,85,.40)" } },
+            brass:"#D8B355",band:"rgba(216,179,85,.3)",word:"rgba(216,179,85,.62)" } },
 
   ocean: { name:"Ocean",
     light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
             accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
             ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
-            brass:"#8A6410",band:"rgba(196,132,24,.20)",word:"rgba(196,132,24,.44)" },
+            brass:"#8A6410",band:"rgba(196,132,24,.38)",word:"rgba(196,132,24,.68)" },
     dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
             accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
             ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
-            brass:"#E0B65C",band:"rgba(224,182,92,.16)",word:"rgba(224,182,92,.40)" } },
+            brass:"#E0B65C",band:"rgba(224,182,92,.3)",word:"rgba(224,182,92,.62)" } },
 
   ember: { name:"Ember",
     light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
             accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
             ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
-            brass:"#6B5A11",band:"rgba(120,104,26,.20)",word:"rgba(120,104,26,.44)" },
+            brass:"#6B5A11",band:"rgba(120,104,26,.38)",word:"rgba(120,104,26,.68)" },
     dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
             accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
             ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
-            brass:"#D6C169",band:"rgba(214,193,105,.15)",word:"rgba(214,193,105,.38)" } },
+            brass:"#D6C169",band:"rgba(214,193,105,.28)",word:"rgba(214,193,105,.59)" } },
 
   violet: { name:"Violet",
     light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
             accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
             ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
-            brass:"#7A6212",band:"rgba(150,122,26,.20)",word:"rgba(150,122,26,.44)" },
+            brass:"#7A6212",band:"rgba(150,122,26,.38)",word:"rgba(150,122,26,.68)" },
     dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
             accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
             ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
-            brass:"#DCBB63",band:"rgba(220,187,99,.15)",word:"rgba(220,187,99,.38)" } },
+            brass:"#DCBB63",band:"rgba(220,187,99,.28)",word:"rgba(220,187,99,.59)" } },
 
   graphite: { name:"Graphite",
     light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
             accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
             ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
-            brass:"#7A6318",band:"rgba(152,124,32,.20)",word:"rgba(152,124,32,.44)" },
+            brass:"#7A6318",band:"rgba(152,124,32,.38)",word:"rgba(152,124,32,.68)" },
     dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
             accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
             ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
-            brass:"#D6BC66",band:"rgba(214,188,102,.15)",word:"rgba(214,188,102,.38)" } }
+            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } }
 };
 
-/* ns.css names its variables differently from the history template, so the
-   same palette is mapped onto the names this page actually uses. Lifted
-   verbatim from the maths page so the three lesson types cannot drift.
-   Each palette carries its own light and dark set, so this page already
-   follows the visitor's mode. */
 var VAR_MAP = {
-  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
-  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
-  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
+  ground:"--ground", surface:"--surface", s2:"--surface-2", ink:"--ink",
+  inkSoft:"--ink-soft", inkFaint:"--ink-faint", rule:"--rule",
+  accent:"--verdigris", accentInk:"--verdigris-ink", accentSoft:"--verdigris-soft",
+  onAccent:"--on-accent", ctlBg:"--control-bg", ctlInk:"--control-ink",
+  ctlBorder:"--control-border", tickNow:"--tick-now", tickDone:"--tick-done",
+  brass:"--brass", band:"--band", word:"--word"
 };
 
-var themeKey = load("theme", "forest");
-if (!THEMES[themeKey]) themeKey = "forest";
+/* Graphite is the default reading theme. Paul, 2026-08-29. Forest was only
+   ever the default because it was written first. */
+var themeKey = load("theme", "graphite");
+if (!THEMES[themeKey]) themeKey = "graphite";
 
 function currentMode(){
   var t = document.documentElement.getAttribute("data-theme");
   if (t === "dark" || t === "light") return t;
   return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
+
 function applyTheme(){
   var set = THEMES[themeKey][currentMode()];
   var root = document.documentElement;
-  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
+  for (var k in VAR_MAP){
+    if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]);
+  }
   [].forEach.call(document.querySelectorAll(".sw"), function(b){
     b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
   });
+  /* Maths and English map the same palette onto ns.css names (--bg, --panel,
+     --fg) rather than the history names. They hang their own mapper here, so
+     one set of swatches drives every page instead of each template building a
+     second row of its own. */
+  if (typeof window.nsOnTheme === "function") { try { window.nsOnTheme(themeKey); } catch (e) {} }
 }
+
 (function buildSwatches(){
   var wrap = document.getElementById("swatches");
   Object.keys(THEMES).forEach(function(k){
@@ -401,62 +930,1160 @@ function applyTheme(){
     b.setAttribute("aria-label", THEMES[k].name + " colours");
     var d = THEMES[k].dark;
     b.style.background = "linear-gradient(135deg," + d.accent + " 0 50%," + d.ground + " 50% 100%)";
-    b.addEventListener("click", function(){ themeKey = k; store("theme", k); applyTheme(); });
+    b.addEventListener("click", function(){
+      themeKey = k;
+      store("theme", k);
+      applyTheme();
+    });
     wrap.appendChild(b);
   });
 })();
+
 applyTheme();
 if (window.matchMedia){
   var mq = window.matchMedia("(prefers-color-scheme: dark)");
   (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
 }
 new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
-document.body.style.background = "var(--bg)";
 
-/* ── read-aloud ────────────────────────────────────────────────────────────
-   One sentence at a time so the line being read can be highlighted. A student
-   who is behind in reading follows the voice with his eyes; losing his place
-   is the thing that stops him, not the words. */
-var LINES = [];
-(function collect(){
-  var ps = document.querySelectorAll("#parts p, #parts h3");
-  for (var i = 0; i < ps.length; i++) LINES.push(ps[i]);
+
+/* ---------- build the story ---------- */
+var SENT = [];
+var storyEl = document.getElementById("story");
+
+PARTS.forEach(function(part){
+  var sec = document.createElement("section");
+  sec.className = "part";
+  /* A part may have no title - maths uses one untitled block, because its
+     heading is already the page section above it. An empty <h2> would still
+     take its margin and read as a gap. */
+  if (part.title) {
+    var h = document.createElement("h2");
+    h.textContent = part.title;
+    sec.appendChild(h);
+  }
+  var p = document.createElement("p");
+  p.className = "para";
+  part.s.forEach(function(text){
+    var i = SENT.length;
+    var span = document.createElement("span");
+    span.className = "sent";
+    span.id = "s" + i;
+    span.setAttribute("data-i", i);
+    // word spans with char offsets, so speech boundaries can light them up
+    var offsets = [];
+    var cursor = 0;
+    text.split(" ").forEach(function(w, k){
+      if (k > 0) { span.appendChild(document.createTextNode(" ")); cursor += 1; }
+      var ws = document.createElement("span");
+      ws.className = "w";
+      ws.textContent = w;
+      span.appendChild(ws);
+      offsets.push({ el: ws, start: cursor, end: cursor + w.length });
+      cursor += w.length;
+    });
+    p.appendChild(span);
+    p.appendChild(document.createTextNode(" "));
+    SENT.push({ text: text, el: span, words: offsets });
+  });
+  sec.appendChild(p);
+  storyEl.appendChild(sec);
+});
+
+/* ---------- read aloud ---------- */
+/* Two engines.
+   STUDIO  — pre-rendered Google Cloud TTS clips, embedded below as data URIs, with a
+             per-word timing array from Google's SSML timepoints. Best quality, no network.
+   DEVICE  — the browser's own speechSynthesis. Always present, always the fallback.
+   AUDIO stays null until the clips are generated; the page runs on DEVICE until then. */
+var AUDIO = null;        /* the ACTIVE baked track: { voice, clips:[...] } */
+var AUDIO_TRACKS = [];   /* every baked track for this lesson */
+
+(function loadBakedVoice(){
+  fetch("voice.json", { cache: "force-cache" })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      var tr = (j && j.tracks) || [];
+      if (!tr.length) return;
+      /* A stale manifest is worse than none: if a lesson gained or lost a
+         sentence since it was baked, the clips no longer line up and the wrong
+         audio would play for the highlighted line. Sentence count is the
+         cheapest honest check. */
+      /* A stale manifest is worse than none: if a lesson gained or lost a
+         sentence since it was baked, the clips no longer line up. */
+      tr = tr.filter(function(t){ return t.clips && t.clips.length === SENT.length; });
+      if (!tr.length){ AUDIO = null; return; }
+      AUDIO_TRACKS = tr;
+      AUDIO = tr[0];
+      engine = "baked";
+      /* Rebuild the picker: it was built before this arrived, so it does not
+         know the Built-in voice exists yet. Rebuilding also re-runs the
+         "restore the saved pick" logic, which now prefers the baked voice. */
+      if (typeof window.nsRebuildVoices === "function") window.nsRebuildVoices();
+      if (typeof window.syncVoiceUI === "function") window.syncVoiceUI();
+      var ns = document.getElementById("nospeech");
+      if (ns){ ns.style.display = "none"; ns.classList.remove("show"); }
+      var pb = document.getElementById("play");
+      if (pb){ pb.disabled = false; pb.style.opacity = ""; }
+    })
+    .catch(function(){ /* not baked yet - the device voice still works */ });
 })();
 
-var synth = window.speechSynthesis, idx = -1, playing = false;
+/* Google Cloud voices, fetched live with the viewer's own key. Curated rather
+   than listed from the API: these are the ones that support SSML marks, which
+   is what gives exact per-word timing. British first, per Paul. */
+var GOOGLE_VOICES = [
+  { id:"en-GB-Neural2-B", label:"UK male (Neural2 B)" },
+  { id:"en-GB-Neural2-D", label:"UK male (Neural2 D)" },
+  { id:"en-GB-Neural2-A", label:"UK female (Neural2 A)" },
+  { id:"en-US-Neural2-D", label:"US male (Neural2 D)" },
+  { id:"en-US-Neural2-J", label:"US male (Neural2 J)" }
+];
+var ttsKey = load("ttskey", "");
+
+/* Bounded, oldest-out. 60 clips is more than two full lessons on one voice,
+   so in normal use nothing is ever evicted and the cache behaves exactly as it
+   did before. It only bites when someone switches voices repeatedly, which is
+   the case that used to grow without limit. */
+var CLIP_CAP = 60;
+var clipCache = {};          // "voice|index" -> { src, marks }
+var clipOrder = [];          // keys, oldest first
+function cacheClip(key, clip){
+  if (!clipCache[key]) clipOrder.push(key);
+  clipCache[key] = clip;
+  while (clipOrder.length > CLIP_CAP){
+    var old = clipOrder.shift();
+    if (old !== key) delete clipCache[old];
+  }
+}
+
+function hasKey(){ return !!ttsKey; }
+
+function hasStudio(){
+  return !!(AUDIO && AUDIO.clips && AUDIO.clips.length === SENT.length);
+}
+/* Point AUDIO at a named track. Returns false if this lesson has no such
+   voice, so the caller can fall back rather than play silence. */
+function useTrack(id){
+  for (var i = 0; i < AUDIO_TRACKS.length; i++){
+    if (AUDIO_TRACKS[i].id === id){ AUDIO = AUDIO_TRACKS[i]; return true; }
+  }
+  return false;
+}
+
+function xmlEsc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+}
+
+/* One sentence -> MP3 + a start time per word. Cached, so replaying a sentence
+   or scrubbing back costs nothing and never bills twice. */
+function fetchClip(i, voiceId){
+  var ck = voiceId + "|" + i;
+  if (clipCache[ck]) return Promise.resolve(clipCache[ck]);
+  var words = SENT[i].text.split(" ");
+  var ssml = "<speak>" + words.map(function(w, k){
+    return '<mark name="w' + k + '"/>' + xmlEsc(w);
+  }).join(" ") + "</speak>";
+
+  return fetch("https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=" + encodeURIComponent(ttsKey), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: { ssml: ssml },
+      voice: { languageCode: voiceId.slice(0, 5), name: voiceId },
+      audioConfig: { audioEncoding: "MP3", speakingRate: rateVal() },
+      enableTimePointing: ["SSML_MARK"]
+    })
+  }).then(function(r){
+    return r.json().then(function(j){
+      if (!r.ok) throw new Error(j.error ? j.error.message : "HTTP " + r.status);
+      return j;
+    });
+  }).then(function(j){
+    var marks = new Array(words.length).fill(0);
+    (j.timepoints || []).forEach(function(tp){
+      var n = parseInt(String(tp.markName).slice(1), 10);
+      if (!isNaN(n) && n < marks.length) marks[n] = tp.timeSeconds;
+    });
+    var clip = { src: "data:audio/mpeg;base64," + j.audioContent, marks: marks };
+    cacheClip(ck, clip);
+    return clip;
+  });
+}
+
+var synth = window.speechSynthesis;
+var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
+var idx = 0, playing = false, gen = 0, voice = null;
+var engine = "device";       // "google" | "baked" | "device"
+var googleVoice = load("gvoice", GOOGLE_VOICES[0].id);
+var audioEl = null, rafId = null;
 var playBtn = document.getElementById("play");
-var pos = document.getElementById("stepPos");
-if (!synth) document.getElementById("nospeech").classList.add("show");
+var scrub = document.getElementById("scrub");
+var posEl = document.getElementById("pos");
 
-function clearHi(){ for (var i = 0; i < LINES.length; i++) LINES[i].classList.remove("on"); }
-function showPos(){ pos.textContent = idx >= 0 && playing ? (idx + 1) + " / " + LINES.length : ""; }
+function note(msg, kind){
+  var el = document.getElementById("keynote");
+  if (!el) return;
+  el.className = "keynote" + (kind ? " " + kind : "");
+  if (msg) { el.textContent = msg; } else { el.innerHTML = "Your key is stored only in this browser and is sent only to the provider it belongs to. Paste a Google Cloud Text-to-Speech key for the built-in voices. <a href=\"https://cloud.google.com/text-to-speech\" target=\"_blank\" rel=\"noopener\">Google Cloud TTS</a> &middot; <a href=\"https://elevenlabs.io/\" target=\"_blank\" rel=\"noopener\">ElevenLabs</a>"; }
+  if (msg && kind === "bad") document.getElementById("keyrow").classList.add("show");
+}
+window.syncVoiceUI = function(){};
 
-function speakFrom(i){
-  if (!synth || i >= LINES.length) { stop(); return; }
-  idx = i; clearHi();
-  LINES[i].classList.add("on");
-  LINES[i].scrollIntoView({ block: "center", behavior: "smooth" });
-  showPos();
-  var u = new SpeechSynthesisUtterance(LINES[i].textContent);
-  u.rate = parseFloat(document.getElementById("rate").value);
-  u.onend = function(){ if (playing) speakFrom(i + 1); };
+if (!supported && !hasStudio() && !hasKey()){
+  document.getElementById("nospeech").style.display = "block";
+  playBtn.disabled = true;
+  playBtn.style.opacity = ".5";
+} else {
+  // The default browser voice on Windows is usually Microsoft David or Zira, the old
+  // robotic SAPI pair. The good free voices are the non-local ones: Google's, and the
+  // Windows 11 "Natural" set. Rank by name so the best available wins, and let him pick.
+  var voiceSel = document.getElementById("voice");
+  var voiceRow = document.getElementById("voicerow");
+  var voices = [];
+
+  function rank(v){
+    var n = v.name || "";
+    // Paul's pick. Wins outright wherever Chrome ships it.
+    if (/^google uk english male$/i.test(n.trim())) return 1000;
+    var score = 0;
+    if (/natural/i.test(n)) score += 100;          // Windows 11 neural voices
+    if (/neural/i.test(n)) score += 90;
+    if (/^google/i.test(n)) score += 75;           // Chrome's own, clearly better than SAPI
+    if (/online/i.test(n)) score += 55;
+    if (/\b(ava|andrew|emma|brian|aria|guy|jenny|michelle|steffan|christopher|eric)\b/i.test(n)) score += 45;
+    if (/\b(samantha|alex|siri|evan|nathan|serena|daniel|arthur|oliver)\b/i.test(n)) score += 60; // macOS / iOS
+    if (/\b(david|zira|mark|hazel|susan|george|catherine)\b/i.test(n)) score -= 60; // legacy SAPI
+    if (/compact|eloquence|espeak/i.test(n)) score -= 80;
+    if (v.localService === false) score += 15;
+    if (/^en[-_]GB/i.test(v.lang)) score += 12;    // British first, per Paul
+    else if (/^en[-_]US/i.test(v.lang)) score += 6;
+    return score;
+  }
+
+  function saved(){ return load("voice", null); }
+  function save(name){ store("voice", name); }
+
+  window.nsRebuildVoices = function(){ loadVoices(); };
+  var lastVoiceCount = -1;
+  function loadVoices(){
+    var all = supported ? (synth.getVoices() || []) : [];
+    lastVoiceCount = all.length;
+    voices = all.filter(function(v){ return /^en([-_]|$)/i.test(v.lang || ""); });
+    if (!voices.length) voices = all.slice();
+    voices.sort(function(a, b){ return rank(b) - rank(a); });
+    if (voices.length) voice = voices[0];
+
+    voiceSel.innerHTML = "";
+
+    // Google Cloud voices, only once a key is saved
+    if (hasKey()){
+      var gg = document.createElement("optgroup");
+      gg.label = "Google Cloud (your key)";
+      GOOGLE_VOICES.forEach(function(g){
+        var o = document.createElement("option");
+        o.value = "g:" + g.id;
+        o.textContent = g.label;
+        gg.appendChild(o);
+      });
+      voiceSel.appendChild(gg);
+    }
+    /* NexVoice is always listed. When a lesson has not been recorded yet it
+       is greyed out rather than hidden, so a reader can see it is coming and
+       we can keep writing lessons without waiting on the audio. */
+    if (AUDIO_TRACKS.length){
+      AUDIO_TRACKS.forEach(function(t){
+        var o = document.createElement("option");
+        o.value = "__studio__:" + t.id;
+        o.textContent = t.label || "NexVoice";
+        voiceSel.appendChild(o);
+      });
+    } else {
+      var nv = document.createElement("option");
+      nv.value = "__studio__";
+      nv.textContent = "NexVoice — not available";
+      nv.disabled = true;
+      voiceSel.appendChild(nv);
+    }
+
+    /* ── THE FALLBACK VOICES ──────────────────────────────────────────────
+       🚨 NEVER REQUIRE A NAME TO CONTAIN "MALE" OR "FEMALE". Paul, 2026-08-29,
+       from his S26: the phone reported 92 voices and the lesson offered none.
+
+       Desktop Chrome names voices "Google UK English Male". Android does not -
+       it uses identifiers like en-gb-x-gbb-network, with no gender word and
+       often no readable name at all. The old picker asked every candidate
+       whether it was male or female, got "neither" 92 times, and produced an
+       empty list on the exact device this was all built for.
+
+       So selection is by LANGUAGE and quality, which every platform reports
+       honestly. Gender is used only to LABEL, never to qualify. */
+    function scoreOf(v){
+      var n = (v.name || "") + " " + (v.voiceURI || "");
+      var s = 0;
+      if (/natural|neural|wavenet|enhanced|premium/i.test(n)) s += 60;
+      if (/network|online/i.test(n)) s += 25;   /* Android marks its good ones */
+      if (/google|siri/i.test(n)) s += 20;
+      if (v.localService === false) s += 12;
+      if (/microsoft (david|zira|mark)/i.test(n)) s -= 50;
+      if (/espeak|compact|pico/i.test(n)) s -= 60;
+      return s;
+    }
+    function isGB(v){ return /^en[-_]GB/i.test(v.lang || ""); }
+    function isUS(v){ return /^en[-_]US/i.test(v.lang || ""); }
+    function genderOf(v){
+      var n = v.name || "";
+      if (/female/i.test(n)) return "female";
+      if (/male/i.test(n)) return "male";
+      /* no name to read - fall back to the Android voice id */
+      var id = ((v.voiceURI || "") + " " + n).toLowerCase();
+      if (/-x-(gbb|gbd|usm|iom|ahb)/.test(id)) return "male";
+      if (/-x-(gba|gbc|usf|iof|aha)/.test(id)) return "female";
+      return "";
+    }
+    function bestOf(list, taken){
+      var pool = list.filter(function(v){ return taken.indexOf(v) < 0; });
+      pool.sort(function(a, b){ return scoreOf(b) - scoreOf(a); });
+      return pool[0] || null;
+    }
+
+    var taken = [];
+    var picks = [];
+    function add(v, label){
+      if (!v) return;
+      taken.push(v);
+      picks.push([v, label]);
+    }
+
+    /* 🚨 UK ONLY. The US voices read "3s" as "three es" instead of "threes",
+       which is wrong in a maths lesson about the three times table - a voice
+       that mispronounces the material is not a lesser choice, it is an
+       incorrect one. Two entries, and only two. */
+    var gb = voices.filter(isGB);
+    var male = gb.filter(function(v){ return genderOf(v) === "male"; });
+    var female = gb.filter(function(v){ return genderOf(v) === "female"; });
+    /* Android names carry no gender, so when it cannot be read we simply take
+       the two best British voices and label them 1 and 2 rather than guessing
+       at which is which. */
+    /* One of each gender where the device says so, otherwise the best British
+       voices it has. */
+    add(bestOf(male, taken) || bestOf(gb, taken), null);
+    add(bestOf(female, taken) || bestOf(gb, taken), null);
+    /* Still short? Only then reach outside Britain - and it will be labelled
+       for what it actually is, not as a British voice. */
+    while (picks.length < 2){
+      var any = bestOf(voices, taken);
+      if (!any) break;
+      add(any, null);
+    }
+
+    /* ── LABEL FROM THE VOICE, NEVER FROM ITS POSITION ──────────────────── */
+    function accentOf(v){
+      var l = (v.lang || "").toUpperCase();
+      if (/^EN[-_]GB/.test(l)) return "UK";
+      if (/^EN[-_]US/.test(l)) return "US";
+      if (/^EN[-_]AU/.test(l)) return "Australian";
+      if (/^EN[-_]IN/.test(l)) return "Indian";
+      if (/^EN[-_]IE/.test(l)) return "Irish";
+      if (/^EN[-_]ZA/.test(l)) return "South African";
+      if (/^EN[-_]CA/.test(l)) return "Canadian";
+      return "English";
+    }
+    var used = {};
+    picks.forEach(function(p){
+      var acc = accentOf(p[0]);
+      var g = genderOf(p[0]);
+      var base = (acc === "English" ? "Voice" : acc + " Voice") + (g ? " " + (g === "male" ? "Male" : "Female") : "");
+      used[base] = (used[base] || 0) + 1;
+      p[1] = base;
+      p[2] = base;                 /* remember the base for the numbering pass */
+    });
+    /* number only where two entries would otherwise read identically */
+    var seenBase = {};
+    picks.forEach(function(p){
+      if (used[p[2]] > 1){
+        seenBase[p[2]] = (seenBase[p[2]] || 0) + 1;
+        p[1] = p[2] + " " + seenBase[p[2]];
+      }
+    });
+
+    if (picks.length){
+      picks.forEach(function(p){
+        var o = document.createElement("option");
+        o.value = "d:" + p[0].name;
+        o.textContent = p[1];
+        voiceSel.appendChild(o);
+      });
+      /* the device default used elsewhere should be the best of these, not
+         whatever the OS listed first */
+      voice = picks[0][0];
+    }
+
+    // Restore the saved pick, falling back sensibly if it is not on this device
+    var want = saved();
+    if (!want || !selectValue(want)){
+      /* NexVoice first when the lesson has it - it is the reason the site has
+         a voice at all. A saved pick still wins, so a reader who chose
+         something else keeps it. */
+      if (AUDIO_TRACKS.length) selectValue("__studio__:" + AUDIO_TRACKS[0].id);
+      else if (AUDIO_TRACKS.length) selectValue("__studio__:" + AUDIO_TRACKS[0].id);
+      else if (hasKey()) selectValue("g:" + googleVoice);
+      else if (voice) selectValue("d:" + voice.name);
+    }
+    applyVoiceChoice(voiceSel.value, false);
+    if (voiceSel.options.length) voiceRow.classList.add("show");
+    renderVsel();
+  }
+
+  /* Mirror the hidden select into our own dropdown. Rebuilt whenever the
+     voice list changes, which is the only time it can differ. */
+  function renderVsel(){
+    var btn = document.getElementById("vselBtn");
+    var list = document.getElementById("vselList");
+    var label = document.getElementById("vselLabel");
+    if (!btn || !list || !label) return;
+    list.innerHTML = "";
+    [].forEach.call(voiceSel.options, function(o){
+      var li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", String(o.selected));
+      if (o.disabled) li.setAttribute("aria-disabled", "true");
+      li.textContent = o.textContent;
+      if (!o.disabled){
+        li.addEventListener("click", function(){
+          voiceSel.value = o.value;
+          voiceSel.dispatchEvent(new Event("change", { bubbles: true }));
+          closeVsel();
+          renderVsel();
+        });
+      }
+      list.appendChild(li);
+    });
+    var sel = voiceSel.options[voiceSel.selectedIndex];
+    label.textContent = sel ? sel.textContent : "Voice";
+  }
+  function closeVsel(){
+    var btn = document.getElementById("vselBtn");
+    var list = document.getElementById("vselList");
+    if (!btn || !list) return;
+    list.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+  }
+  (function wireVsel(){
+    var btn = document.getElementById("vselBtn");
+    var list = document.getElementById("vselList");
+    if (!btn || !list) return;
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      var open = list.hidden;
+      list.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    /* a menu that will not close is worse than no menu */
+    document.addEventListener("click", function(e){
+      if (!list.hidden && !list.contains(e.target) && e.target !== btn) closeVsel();
+    });
+    document.addEventListener("keydown", function(e){
+      if (e.key === "Escape") closeVsel();
+    });
+  })();
+  window.nsRenderVsel = renderVsel;
+
+  function selectValue(v){
+    var found = false;
+    [].forEach.call(voiceSel.querySelectorAll("option"), function(o){
+      if (o.value === v){ o.selected = true; found = true; }
+    });
+    return found;
+  }
+
+  function applyVoiceChoice(val, persist){
+    if (!val) return;
+    if (val.indexOf("g:") === 0){
+      engine = "google";
+      googleVoice = val.slice(2);
+      store("gvoice", googleVoice);
+    } else if (val.indexOf("__studio__") === 0){
+      var id = val.split(":")[1];
+      if (id) useTrack(id);
+      engine = "baked";
+    } else {
+      engine = "device";
+      voice = voices.filter(function(v){ return "d:" + v.name === val; })[0] || voice;
+    }
+    if (persist) save(val);
+  }
+
+  window.syncVoiceUI = function(){
+    if (engine === "device" && voice) selectValue("d:" + voice.name);
+  };
+
+  voiceSel.addEventListener("change", function(){
+    applyVoiceChoice(voiceSel.value, true);
+    note("", "");
+    if (playing) speak(idx);
+  });
+
+  /* ---- API key ---- */
+  var keyRow = document.getElementById("keyrow");
+  var keyIn = document.getElementById("ttskey");
+  document.getElementById("keyToggle").addEventListener("click", function(){
+    var open = keyRow.classList.toggle("show");
+    this.setAttribute("aria-expanded", String(open));
+    if (open) keyIn.focus();
+  });
+  if (ttsKey) keyIn.value = ttsKey;
+  document.getElementById("keySave").addEventListener("click", function(){
+    var v = keyIn.value.trim();
+    if (!v){ note("Paste a key first.", "bad"); return; }
+    ttsKey = v; store("ttskey", v); clipCache = {};
+    note("Key saved. Google Cloud voices are now in the list.", "good");
+    loadVoices();
+    selectValue("g:" + googleVoice);
+    applyVoiceChoice(voiceSel.value, true);
+  });
+  document.getElementById("keyClear").addEventListener("click", function(){
+    ttsKey = ""; drop("ttskey"); clipCache = {}; keyIn.value = "";
+    engine = "device";
+    note("Key removed. Back to this device's voice.", "");
+    loadVoices();
+  });
+
+  loadVoices();
+  // Chrome populates the list asynchronously, so this fires after the first empty read
+  if (supported && typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = loadVoices;
+
+  /* The event is unreliable, so watch the count as well. Rebuilds only when it
+     actually changes, and gives up after ~20s by which point any device that
+     is going to report voices has done so. */
+  (function warmVoicesOnGesture(){
+    if (!supported) return;
+    var done = false;
+    function warm(){
+      if (done) return;
+      done = true;
+      try {
+        /* an empty utterance: no sound, but it forces Android to load voices */
+        var u = new SpeechSynthesisUtterance(" ");
+        u.volume = 0;
+        synth.speak(u);
+        synth.cancel();
+      } catch (e) {}
+      /* the list can take a moment to appear even after the nudge */
+      setTimeout(loadVoices, 120);
+      setTimeout(loadVoices, 600);
+      setTimeout(loadVoices, 1600);
+      ["pointerdown", "touchstart", "keydown"].forEach(function(ev){
+        document.removeEventListener(ev, warm, true);
+      });
+    }
+    ["pointerdown", "touchstart", "keydown"].forEach(function(ev){
+      document.addEventListener(ev, warm, true);
+    });
+  })();
+
+  (function watchVoices(){
+    if (!supported) return;
+    var checks = 0;
+    var t = setInterval(function(){
+      checks++;
+      var n = (synth.getVoices() || []).length;
+      if (n !== lastVoiceCount) loadVoices();
+      if (checks > 80 || (n > 0 && checks > 12)) clearInterval(t);
+    }, 250);
+  })();
+}
+
+var ticks = SENT.map(function(_, i){
+  var t = document.createElement("span");
+  t.className = "tick";
+  t.setAttribute("data-i", i);
+  scrub.appendChild(t);
+  return t;
+});
+scrub.setAttribute("aria-valuemax", String(SENT.length));
+
+function paint(){
+  SENT.forEach(function(s, i){
+    /* 🚨 WORD OR SENTENCE, NEVER BOTH. NexVoice has real per-word timings, so
+       it marks the WORD and the sentence band would only compete with it.
+       Every other voice has no usable timing at all, so it marks the SENTENCE.
+       Dragging always shows the band, because then you are looking for a line
+       rather than following one. */
+    s.el.classList.toggle("reading", i === idx && ((playing && !wordMode()) || dragging));
+    var want = "tick" + (i < idx ? " done" : (i === idx ? " now" : ""));
+    if (ticks[i].className !== want) ticks[i].className = want;   /* only if changed */
+  });
+  posEl.textContent = "Sentence " + (idx + 1) + " of " + SENT.length;
+  scrub.setAttribute("aria-valuenow", String(idx + 1));
+  /* 🚨 AN ICON, AND THE BUTTON KEEPS ITS SHAPE. Paul, 2026-08-29: "instead of
+     the button say read to me it just shows a play and pause icon inside of
+     the button. dont change the shape of the button." The min-width stays, so
+     it does not resize as it toggles - a transport button that changes width
+     every time you press it never feels solid. The words move to aria-label
+     and title, so a screen reader still hears a verb. */
+  playBtn.innerHTML = playing ? "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.5h3.1v11H4zM8.9 2.5H12v11H8.9z\"/></svg>" : "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.2l9 5.8-9 5.8z\"/></svg>";
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Read to me");
+  playBtn.setAttribute("title", playing ? "Pause" : "Read to me");
+  /* A lesson can hang something off the current sentence. Maths uses it to
+     draw its division grid up to this step, so the worked example and the
+     narration move together instead of being two separate players. Generic,
+     so science gets it free. */
+  if (typeof window.nsOnSentence === "function") { try { window.nsOnSentence(idx); } catch (e) {} }
+  if (typeof window.nsSavePos === "function") window.nsSavePos();
+}
+
+/* 🚨 ONLY SCROLL WHEN THE THING IS ACTUALLY OFF SCREEN.
+   Reported from a real lesson, 2026-08-29: "after he answered a question the page jumped
+   up or around."
+
+   He was right, and there were two causes stacked on each other. Answering a
+   question ALWAYS pulled its card to the centre of the screen, even when the
+   card was already sitting under his eyes - so the page moved for no reason
+   the moment he clicked. And where a hunt was involved, endHunt fired at the
+   same time, so a second smooth scroll started before the first had finished
+   and the page appeared to swing around.
+
+   A scroll should answer a question the reader is asking: "where did it go?"
+   If he can already see it, he is not asking. The sticky player is counted as
+   covered screen, because an element hidden behind it is not visible either. */
+/* The band of screen a reader can actually see: the viewport, less whatever
+   the player is sitting over. It handles the player docked at the bottom (the
+   layout today) and stuck at the top (what it used to be, and what a future
+   change might want again) without either caller knowing which. */
+function nsReadArea(){
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  var top = 0, bottom = vh;
+  var p = document.getElementById("player");
+  if (p && !document.body.classList.contains("player-hidden")){
+    var pr = p.getBoundingClientRect();
+    if (pr.top <= 4) top = pr.bottom;                 /* stuck at the top    */
+    else if (pr.bottom >= vh - 4) bottom = pr.top;    /* docked at the bottom */
+  }
+  return { top: top, bottom: bottom, height: Math.max(120, bottom - top) };
+}
+
+/* Where the page must sit for this element to land on the eye line. Reading is
+   comfortable slightly above centre - more text ahead of you than behind - so
+   the line is 42% down the READABLE area, not the viewport. */
+function nsEyeTargetY(el){
+  var a = nsReadArea();
+  var r = el.getBoundingClientRect();
+  return window.scrollY + (r.top + r.height / 2) - (a.top + a.height * 0.42);
+}
+
+function nsInView(el){
+  var a = nsReadArea();
+  var r = el.getBoundingClientRect();
+  return r.top >= a.top - 4 && r.bottom <= a.bottom + 4;
+}
+function nsReveal(el, block){
+  if (!el || nsInView(el)) return;
+  try { el.scrollIntoView({ behavior:"smooth", block: block || "center" }); }
+  catch(e){ el.scrollIntoView(); }
+}
+
+/* Voice and colours are OPEN on a desktop and FOLDED on a phone, where the
+   player was eating 45% of the screen. It cannot be done in CSS - <details>
+   open state is an attribute, not a style - so the width decides it here, and
+   it follows a rotation. A choice the reader makes by hand is respected: once
+   he opens or closes it himself we stop overriding him. */
+(function playerSettings(){
+  var box = document.getElementById("psettings");
+  if (!box) return;
+  /* Folded on every width, not just phones. A reader picks a voice once; it
+     should not cost a third of the bar on every page load. Remembered, so a
+     reader who does open it keeps it open. */
+  /* the Reader switch owns this now - see settingsSwitch() */
+})();
+
+/* ── FOLLOWING THE READER ──────────────────────────────────────────────────
+   🚨 THE READER MUST NOT FIGHT THE READER. Paul, 2026-08-29: "if you try to
+   scroll down while its playing the page move as it goes to the next section."
+
+   Auto-following is right by default - a student listening should not have to
+   scroll - but the moment a person scrolls on purpose, the page yanking itself
+   back on the next sentence is the software arguing with them. It also makes it
+   impossible to look ahead, or to check the question while it reads.
+
+   So: any real scroll gesture turns following OFF, and a small chip appears
+   offering to resume. Nothing moves under your hands again until you ask.
+
+   Paul also suggested letting the player travel down the page instead. This is
+   the cheaper answer: it costs no screen, and on a phone the player is already
+   the most expensive thing on the page. */
+var following = true;
+var selfScrollAt = 0;
+
+function nsEyeLine(el, smooth){
+  var delta = nsEyeTargetY(el) - window.scrollY;
+  if (Math.abs(delta) < 2) return;
+  try { window.scrollBy({ top: delta, behavior: smooth === false ? "auto" : "smooth" }); }
+  catch(e){ window.scrollBy(0, delta); }
+}
+
+function followScroll(el){
+  if (!following) return;
+  selfScrollAt = Date.now();
+  nsEyeLine(el);
+}
+var chipTimer = null;
+function chip(show){
+  var c = document.getElementById("followchip");
+  if (!c) return;
+  var on = !!show && playing;
+  var wasOn = c.classList.contains("show");
+  c.classList.toggle("show", on);
+  if (on && wasOn) return;        /* already counting down - do not restart it */
+  clearTimeout(chipTimer);
+  /* It disappears on its own. Paul, 2026-08-29. An offer that never withdraws
+     stops being an offer and becomes furniture - and this one sits in a row
+     that is otherwise empty, so leaving it there permanently would make the
+     bar look busier than it is. Following stays OFF when it goes; the chip
+     going away is not the page deciding to grab the screen back. */
+  if (on) chipTimer = setTimeout(function(){ c.classList.remove("show"); }, 7000);
+}
+function stopFollowing(){
+  following = false;
+  /* every deliberate scroll re-offers the way back, and restarts its timer -
+     the offer is cheap and only appears while a voice is actually reading */
+  chip(true);
+}
+/* A wheel or a finger is unambiguous intent. A plain scroll event is not - our
+   own smooth scrolling fires it too - so that path is time-guarded against the
+   scroll we just started ourselves. */
+addEventListener("wheel", function(){ if (playing && !dragging) stopFollowing(); }, { passive: true });
+addEventListener("touchmove", function(e){
+  /* a finger ON the bar is scrubbing, not scrolling the page away */
+  if (dragging) return;
+  if (e.target && e.target.closest && e.target.closest("#scrub")) return;
+  if (playing) stopFollowing();
+}, { passive: true });
+addEventListener("scroll", function(){
+  if (dragging) return;
+  if (playing && Date.now() - selfScrollAt > 900) stopFollowing();
+}, { passive: true });
+
+(function playerDock(){
+  var P = document.getElementById("player");
+  if (!P) return;
+  function fit(){
+    /* only meaningful while the bar is actually docked */
+    var docked = getComputedStyle(P).position === "fixed";
+    var hidden = document.body.classList.contains("player-hidden");
+    var pad = (docked && !hidden) ? Math.ceil(P.getBoundingClientRect().height) + 12 : 0;
+    document.documentElement.style.setProperty("--player-pad", pad + "px");
+  }
+  fit();
+  addEventListener("resize", fit, { passive: true });
+  addEventListener("orientationchange", fit);
+  /* the settings disclosure changes the height */
+  var s = document.getElementById("psettings");
+  if (s) s.addEventListener("toggle", fit);
+  var hb = document.getElementById("playerhide");
+  if (hb) hb.addEventListener("click", function(){ setTimeout(fit, 260); });
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(P);
+})();
+
+(function settingsSwitch(){
+  var box = document.getElementById("playerhide");
+  var panel = document.getElementById("psettings");
+  if (!box || !panel) return;
+
+  /* The slider decides whether the Settings row exists on the bar. */
+  var shown = load("settingsrow", "0") === "1";
+  var keyRow = document.getElementById("keyrow");
+  var keyToggle = document.getElementById("keyToggle");
+  function paintRow(){
+    panel.hidden = !box.checked;
+    if (!box.checked){
+      /* Collapse on the way out, so switching it back on gives a closed row
+         rather than one already sprawling open. */
+      panel.open = false;
+      /* ⚠️ The API panel lives OUTSIDE the settings row, so it has to be shut
+         explicitly or it stays on the bar after everything else has gone. */
+      if (keyRow) keyRow.classList.remove("show");
+      if (keyToggle) keyToggle.setAttribute("aria-expanded", "false");
+    }
+  }
+  box.checked = shown;
+  paintRow();
+  box.addEventListener("change", function(){
+    paintRow();
+    store("settingsrow", box.checked ? "1" : "0");
+  });
+
+  /* The arrow keeps its own job: expanding the row once it is there. */
+  panel.addEventListener("toggle", function(){
+    store("vsettings", panel.open ? "1" : "0");
+  });
+})();
+
+(function followChip(){
+  var c = document.getElementById("followchip");
+  if (!c) return;
+  c.addEventListener("click", function(){
+    following = true;
+    chip(false);
+    if (SENT[idx]) followScroll(SENT[idx].el);
+  });
+})();
+
+/* True when the engine can say exactly which word is being spoken. Only baked
+   NexVoice clips and live Google clips carry timepoints. */
+function wordMode(){
+  return (engine === "baked" && hasStudio()) || (engine === "google" && hasKey());
+}
+
+function clearWords(){
+  SENT.forEach(function(s){
+    s.words.forEach(function(w){ w.el.classList.remove("on"); });
+  });
+}
+
+function rateVal(){ return parseFloat(document.getElementById("rate").value); }
+
+function stopEngines(){
+  gen++;
+  if (supported){ try { synth.cancel(); } catch(e){} }
+  if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
+  if (audioEl){
+    try {
+      audioEl.pause();
+      audioEl.onended = null;
+      audioEl.removeAttribute("src");
+      audioEl.load();          /* drop the decoded buffer now, not eventually */
+    } catch(e){}
+    audioEl = null;
+  }
+}
+
+function finished(mine){
+  if (mine !== gen || !playing) return;
+  if (idx < SENT.length - 1) speak(idx + 1);
+  else { playing = false; clearWords(); paint(); }
+}
+
+// GOOGLE CLOUD: fetched live with the viewer's own key, then played like a clip.
+// Prefetches the next sentence so playback does not stall between sentences.
+function playGoogle(mine){
+  var v = googleVoice;
+  playBtn.textContent = "Loading…";
+  fetchClip(idx, v).then(function(clip){
+    if (mine !== gen) return;
+    /* 🚨 AN ICON, AND THE BUTTON KEEPS ITS SHAPE. Paul, 2026-08-29: "instead of
+     the button say read to me it just shows a play and pause icon inside of
+     the button. dont change the shape of the button." The min-width stays, so
+     it does not resize as it toggles - a transport button that changes width
+     every time you press it never feels solid. The words move to aria-label
+     and title, so a screen reader still hears a verb. */
+  playBtn.innerHTML = playing ? "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.5h3.1v11H4zM8.9 2.5H12v11H8.9z\"/></svg>" : "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.2l9 5.8-9 5.8z\"/></svg>";
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Read to me");
+  playBtn.setAttribute("title", playing ? "Pause" : "Read to me");
+    playClipFrom(mine, clip);
+    if (idx + 1 < SENT.length) fetchClip(idx + 1, v).catch(function(){});
+  }).catch(function(err){
+    if (mine !== gen) return;
+    note(String(err.message || err), "bad");
+    engine = "device";
+    syncVoiceUI();
+    playSynth(mine);
+  });
+}
+
+// STUDIO: pre-rendered clip baked into the page at build time
+function playClip(mine){
+  playClipFrom(mine, AUDIO.clips[idx]);
+}
+
+function playClipFrom(mine, clip){
+  var s = SENT[idx];
+  var marks = clip.marks || [];
+  audioEl = new Audio(clip.src);
+  /* 🚨 SPEED COMES FROM PLAYBACK, NOT FROM THE CLIP. Baked audio is generated
+     once at natural speed, so Slow / Normal / Fast are applied here. 0.85 is
+     what the picker calls "Normal", so dividing by it keeps Normal at exactly
+     the recorded pace and makes the other two relative to it.
+     Word marks need no adjustment: currentTime reports MEDIA time, which does
+     not change when playbackRate does. */
+  audioEl.playbackRate = Math.max(0.5, Math.min(2, rateVal() / 0.85));
+
+  function tick(){
+    if (mine !== gen || !audioEl) return;
+    var t = audioEl.currentTime, k = -1;
+    for (var j = 0; j < marks.length; j++){
+      if (marks[j] <= t) k = j; else break;
+    }
+    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === k); });
+    rafId = requestAnimationFrame(tick);
+  }
+
+  audioEl.onended = function(){ finished(mine); };
+  var p = audioEl.play();
+  if (p && p.then){
+    p.then(function(){ rafId = requestAnimationFrame(tick); })
+     .catch(function(){ if (mine === gen) playSynth(mine); });   // clip broken -> device voice
+  } else {
+    rafId = requestAnimationFrame(tick);
+  }
+}
+
+/* ── picking the voice at SPEAK time, not at page load ──────────────────────
+   Paul, 2026-08-26: "the voices for desktop dont work if i select them on
+   mobile". Two Android behaviours cause that:
+     1. getVoices() is repopulated, so the object saved at load no longer
+        matches anything and the engine quietly uses its own default.
+     2. Android honours utterance.voice far more reliably when lang is set
+        to that voice s language as well.
+   So the choice is stored as a NAME and re-resolved every time we speak. */
+function resolveVoice(){
+  if (!supported) return null;
+  var want = voice && voice.name;
+  var all = synth.getVoices() || [];
+  if (want){
+    for (var i = 0; i < all.length; i++) if (all[i].name === want) return all[i];
+  }
+  return voice && all.indexOf(voice) >= 0 ? voice : null;
+}
+function applyVoiceTo(u){
+  var v = resolveVoice();
+  if (v){ u.voice = v; if (v.lang) u.lang = v.lang; }
+}
+
+// DEVICE: the browser's own voice, and the fallback for everything
+function playSynth(mine){
+  if (!supported) return;
+  var s = SENT[idx];
+  var u = new SpeechSynthesisUtterance(s.text);
+  u.rate = rateVal();
+  applyVoiceTo(u);
+  /* 🚨 NO WORD HIGHLIGHTING ON DEVICE VOICES. Paul, 2026-08-29: "when the
+     other voices play the highlighted doesnt keep up compared to NexVoice ...
+     NexVoice can highlight individual words while the rest can highlight
+     sentences."
+
+     He is right and it is the better answer. A device voice reports nothing
+     usable - network voices fire no boundary events at all - so any word
+     highlight is a guess, and a guess that drifts is worse than none: it
+     teaches a struggling reader to look at the wrong word. The sentence band
+     is always correct, because we know exactly which sentence is playing.
+     The estimator is gone rather than disabled; dead code that once ran is how
+     it comes back by accident. */
+  u.onend = function(){ finished(mine); };
+  // Chrome drops long queues if the tab throttles; one sentence at a time avoids it
   synth.speak(u);
 }
-function stop(){
-  playing = false; idx = -1;
-  if (synth) synth.cancel();
-  clearHi(); showPos();
-  playBtn.innerHTML = "&#9654; Read It To Me";
+
+function speak(i){
+  if (!supported && !hasStudio()) return;
+  stopEngines();
+  var mine = gen;
+  idx = Math.max(0, Math.min(SENT.length - 1, i));
+  clearWords();
+  paint();
+  var s = SENT[idx];
+  followScroll(s.el);
+
+  if (engine === "google" && hasKey()) playGoogle(mine);
+  else if (engine === "baked" && hasStudio()) playClip(mine);
+  else playSynth(mine);
 }
-playBtn.onclick = function(){
-  if (!synth) return;
-  if (playing) { stop(); return; }
-  playing = true;
-  playBtn.innerHTML = "&#9632; Stop";
-  speakFrom(0);
-};
-/* Chrome keeps speaking after a navigation unless it is told not to. */
-window.addEventListener("beforeunload", function(){ if (synth) synth.cancel(); });
+
+playBtn.addEventListener("click", function(){
+  if (!supported && !hasStudio()) return;
+  if (playing){
+    playing = false;
+    stopEngines();
+    clearWords();
+    paint();
+  } else {
+    playing = true;
+    speak(idx);
+  }
+});
+
+document.getElementById("back").addEventListener("click", function(){
+  var t = Math.max(0, idx - 1);
+  if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
+});
+document.getElementById("fwd").addEventListener("click", function(){
+  var t = Math.min(SENT.length - 1, idx + 1);
+  if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
+});
+var rateSel = document.getElementById("rate");
+(function restoreRate(){
+  var r = load("speed", null);
+  if (r && [].some.call(rateSel.options, function(o){ return o.value === r; })) rateSel.value = r;
+})();
+rateSel.addEventListener("change", function(){
+  store("speed", rateSel.value);
+  /* With baked or studio audio the speed can change under a playing clip, so
+     the sentence carries on instead of starting again - restarting a line
+     every time a reader nudges the speed is its own small punishment. The
+     device voice cannot do that, so it still re-speaks. */
+  if (playing && audioEl){
+    audioEl.playbackRate = Math.max(0.5, Math.min(2, rateVal() / 0.85));
+  } else if (playing){
+    speak(idx);
+  }
+});
+
+function targetFromEvent(e){
+  var el = document.elementFromPoint(e.clientX, e.clientY);
+  var tk = el && el.closest ? el.closest(".tick") : null;
+  if (tk){
+    var i = ticks.indexOf(tk);
+    if (i >= 0) return i;
+  }
+  var r = scrub.getBoundingClientRect();
+  var x = (e.clientX - r.left) / Math.max(1, r.width);
+  return Math.max(0, Math.min(SENT.length - 1, Math.floor(x * SENT.length)));
+}
+function seekTo(t){
+  if (t === idx && playing) return;          /* do not restart the same clip */
+  if (playing) speak(t);
+  else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
+}
+function seekFromEvent(e){ seekTo(targetFromEvent(e)); }
+
+/* ── 3. PRESS AND DRAG ────────────────────────────────────────────────────
+   It only listened for click, so nothing happened until the finger came back
+   up and dragging along the bar did nothing at all - which feels broken rather
+   than slow. Pointer events give an immediate response and scrubbing, and the
+   capture keeps it working when the finger leaves the bar mid-drag.
+   ⚠️ While dragging we only MOVE, never re-speak on every tick - restarting
+   audio 26 times across a swipe is the stutter. The voice follows on release. */
+var dragging = false, dragTo = -1;
+var dragWantY = null, dragRaf = 0;
+
+function dragGlide(){
+  if (!dragging){ dragRaf = 0; return; }
+  selfScrollAt = Date.now();          /* this scrolling is ours, not the reader is */
+  if (dragWantY !== null){
+    var cur = window.scrollY;
+    var delta = dragWantY - cur;
+    if (Math.abs(delta) < 0.5) window.scrollTo(0, dragWantY);
+    else window.scrollTo(0, cur + delta * 0.22);   /* ease, never snap */
+  }
+  dragRaf = requestAnimationFrame(dragGlide);
+}
+scrub.addEventListener("pointerdown", function(e){
+  e.preventDefault();
+  dragging = true; scrub.classList.add("dragging");
+  try { scrub.setPointerCapture(e.pointerId); } catch(err){}
+  dragTo = targetFromEvent(e);
+  idx = dragTo; paint();
+  dragWantY = nsEyeTargetY(SENT[dragTo].el);
+  if (!dragRaf) dragRaf = requestAnimationFrame(dragGlide);
+});
+scrub.addEventListener("pointermove", function(e){
+  if (!dragging) return;
+  var t = targetFromEvent(e);
+  if (t === dragTo) return;
+  dragTo = t;
+  idx = t; paint();
+  dragWantY = nsEyeTargetY(SENT[t].el);   /* the loop eases toward it */
+});
+scrub.addEventListener("pointerup", function(e){
+  if (!dragging) return;
+  dragging = false; scrub.classList.remove("dragging");
+  if (dragRaf){ cancelAnimationFrame(dragRaf); dragRaf = 0; }
+  dragWantY = null;
+  selfScrollAt = Date.now();          /* momentum after release is still ours */
+  try { scrub.releasePointerCapture(e.pointerId); } catch(err){}
+  paint();                            /* drops the scrubbing highlight if paused */
+  if (playing) speak(dragTo); else nsEyeLine(SENT[dragTo].el);
+});
+function endDrag(){
+  if (!dragging && !dragRaf) return;
+  dragging = false;
+  scrub.classList.remove("dragging");
+  if (dragRaf){ cancelAnimationFrame(dragRaf); dragRaf = 0; }
+  dragWantY = null;
+}
+scrub.addEventListener("pointercancel", endDrag);
+scrub.addEventListener("lostpointercapture", endDrag);
+addEventListener("blur", endDrag);
+document.addEventListener("visibilitychange", function(){
+  if (document.visibilityState === "hidden"){ endDrag(); stopEngines(); playing = false; paint(); }
+});
+scrub.addEventListener("keydown", function(e){
+  if (e.key === "ArrowLeft"){ e.preventDefault(); document.getElementById("back").click(); }
+  if (e.key === "ArrowRight"){ e.preventDefault(); document.getElementById("fwd").click(); }
+});
+
+/* ── ADDED, not asked for ──────────────────────────────────────────────────
+   Paul, 2026-08-29: "if you have any suggestions go ahead and add it."
+
+   1. KEYBOARD CONTROL ANYWHERE ON THE PAGE, not just when the scrub bar has
+      focus. Space plays and stops, the arrows step a sentence. A student
+      re-reading a hard line should not have to find a 44px target with a
+      mouse every time; the most repeated action on this page deserves a key.
+
+      ⚠️ It must NOT fire while typing. Without the tag guard, pressing space
+      inside the API key field would swallow the space AND start the reader,
+      which looks like the page fighting you. */
+(function keyboard(){
+  document.addEventListener("keydown", function(e){
+    var t = e.target || {};
+    var tag = (t.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select" || t.isContentEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === " " || e.key === "Spacebar"){ e.preventDefault(); playBtn.click(); }
+    else if (e.key === "ArrowLeft"){ e.preventDefault(); document.getElementById("back").click(); }
+    else if (e.key === "ArrowRight"){ e.preventDefault(); document.getElementById("fwd").click(); }
+  });
+})();
+
+/* 2. COME BACK TO WHERE HE STOPPED. A lesson is longer than one sitting, and
+      starting at sentence 1 every time is how a student re-reads the opening
+      four times and never reaches the end. The position is per lesson and
+      per device.
+
+      It does NOT auto-play on load - landing on a page that starts talking is
+      hostile. It sets the place; he presses play. */
+(function resume(){
+  var RK = "pos:" + LESSON_ID;
+  var saved = parseInt(load(RK, "0"), 10);
+  if (saved > 0 && saved < SENT.length){
+    idx = saved;
+    paint();
+    /* no scrollIntoView on load: a page that jumps before you have read the
+       title is disorienting. The scrub bar shows where he is. */
+  }
+  var last = idx;
+  window.nsSavePos = function(){
+    if (idx === last) return;
+    last = idx;
+    store(RK, String(idx));
+  };
+  /* and once more on the way out, in case the last move was the last thing
+     that happened */
+  addEventListener("pagehide", function(){ last = -1; window.nsSavePos(); });
+  document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState === "hidden"){ last = -1; window.nsSavePos(); }
+  });
+})();
+
+/* Tap a sentence to read from there. This lives in the ENGINE so every
+   lesson type gets it, not just history.
+
+   ⚠️ History has its own click handler on the story, because tapping is also
+   how the answer hunt works there. It bails out if that pages hunt control is
+   present, so the two never both fire and speak the same line twice. */
+(function tapToRead(){
+  if (document.getElementById("huntcancel")) return;   /* history handles its own */
+  storyEl.addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest(".sent") : null;
+    if (!t) return;
+    var i = parseInt(t.getAttribute("data-i"), 10);
+    if (isNaN(i)) return;
+    playing = true;
+    speak(i);
+  });
+})();
+
 
 /* ── practice ─────────────────────────────────────────────────────────────
    Click the word. Every word is a target so the layout gives nothing away,
@@ -492,7 +2119,7 @@ function render(){
 
     p.sentence.split(" ").forEach(function(word, wi){
       var b = document.createElement("button");
-      b.type = "button"; b.className = "w"; b.textContent = word;
+      b.type = "button"; b.className = "pw"; b.textContent = word;
       if (done) {
         b.disabled = true;
         if (wi === p.answer) b.classList.add("ok");
@@ -548,7 +2175,7 @@ document.getElementById("reveal").onclick = function(){
   var boxes = wrap.children;
   for (var i = 0; i < PRACTICE.length; i++) {
     if (state[i]) continue;
-    var ws = boxes[i].querySelectorAll(".w");
+    var ws = boxes[i].querySelectorAll(".pw");
     for (var j = 0; j < ws.length; j++) {
       ws[j].disabled = true;
       if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");

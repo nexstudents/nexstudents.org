@@ -17,6 +17,13 @@ const { MATH } = require("./math-lessons.js");
 /* Same nav as every other page. Paul, 2026-08-26: a lesson with no way back
    into the site is what stops it feeling like a website. */
 const { navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+/* The shared field, arrow and key-panel rules. Maths keeps its own stepping
+   engine - a step here drives the division animation, not just narration - but
+   the CHROME is identical to every other lesson. Paul, 2026-08-29. */
+const player = require("./voice-player.js");
+/* One source for the narration, shared with tools/bake-voice.js so the words
+   on the page and the words in the audio cannot drift apart. */
+const { captions, solve } = require("./math-captions.js");
 
 const ROOT = process.argv[2] || ".";
 const TPL = path.join(__dirname, "math", "template.html");
@@ -79,15 +86,20 @@ for (const L of MATH) {
     .replace(/__DEK__/g, L.dek)
     .replace(/__ID__/g, L.id)
     .replace("__DEMO__", JSON.stringify(L.demo))
+    .replace("__CAPTIONS__", JSON.stringify(captions(solve(L.demo.dividend, L.demo.divisor))))
     .replace("__SPEC__", JSON.stringify(L.practice))
     .replace("__THEMES__", themesBlock)
+    .replace("__PLAYER_CSS__", player.playerCss)
+    .replace("__FIELD_CSS__", player.fieldCss)
+    .replace("__PLAYER_MARKUP__", player.playerMarkup)
+    .replace("__PLAYER_JS__", player.playerScript)
     .replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">')
     .replace("__MODEBOOT__", modeBoot)
     .replace("__FAVICON__", faviconTags)
     .replace("__NAV__", () => navMarkup(null, "navbtn"))
     .replace("__NAVSCRIPT__", navScript);
 
-  for (const slot of ["__DEMO__", "__SPEC__", "__TITLE__", "__THEMES__", "__NAV__", "__NAVSCRIPT__", "__CANONICAL__", "__MODEBOOT__", "__FAVICON__"]) {
+  for (const slot of ["__DEMO__", "__CAPTIONS__", "__SPEC__", "__TITLE__", "__THEMES__", "__FIELD_CSS__", "__PLAYER_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__", "__NAV__", "__NAVSCRIPT__", "__CANONICAL__", "__MODEBOOT__", "__FAVICON__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
   }
 
