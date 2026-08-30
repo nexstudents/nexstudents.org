@@ -77,10 +77,24 @@ function captions(S, L) {
     if (st.bring !== undefined) out.push({ step: k, phase: "bring",
       text: "Bring down the next digit, " + st.bring + ", to make " + (st.diff * 10 + st.bring) + "." });
   });
-  out.push({
-    text: "The digits on top read " + S.quotient + ". So " + S.dividend + " divided by " +
-          S.divisor + " is " + S.quotient + ".",
-  });
+  /* Nothing left to bring down and the last subtract did not reach zero: that
+     leftover number is the remainder, and it gets its own sentence rather
+     than sliding past as just another subtract answer. */
+  if (S.remainder > 0) {
+    out.push({
+      text: "There is nothing left to bring down, and " + S.remainder +
+            " is still left over after that last subtract. That is the remainder.",
+    });
+    out.push({
+      text: "The digits on top read " + S.quotient + ", with " + S.remainder + " remaining. So " +
+            S.dividend + " divided by " + S.divisor + " is " + S.quotient + " remainder " + S.remainder + ".",
+    });
+  } else {
+    out.push({
+      text: "The digits on top read " + S.quotient + ". So " + S.dividend + " divided by " +
+            S.divisor + " is " + S.quotient + ".",
+    });
+  }
   /* ⚠️ No `step` or `phase` on these, so paintDemo() leaves the finished
      bracket on screen while they are read. The student is being told what to do
      next while still looking at the worked example. */

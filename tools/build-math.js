@@ -45,11 +45,14 @@ function themesBlock() {
   return block;
 }
 
-/* The bracket layout only handles a problem with no remainder whose quotient
-   fills the top row exactly. Anything else is a bug, not a harder question. */
-function check(dividend, divisor, where) {
-  const q = dividend / divisor;
-  if (dividend % divisor !== 0) fail(where + ": " + dividend + " / " + divisor + " leaves a remainder");
+/* The bracket layout always needs the quotient to fill the top row exactly.
+   A remainder is fine ONLY when the lesson's practice spec says allowRemainder
+   - that guard exists so a lesson cannot silently ship a problem nobody
+   designed the narration or the grid for. Do not delete it; add the flag to
+   the lesson instead, the way long-division-remainders does. */
+function check(dividend, divisor, where, allowRemainder) {
+  const q = Math.floor(dividend / divisor);
+  if (!allowRemainder && dividend % divisor !== 0) fail(where + ": " + dividend + " / " + divisor + " leaves a remainder");
   if (String(q).length !== String(dividend).length) fail(where + ": " + dividend + " / " + divisor + " does not fill the top row");
 }
 function fail(msg) { console.error("FAIL: " + msg); process.exit(1); }
@@ -82,9 +85,20 @@ function poolFor(spec) {
   for (const divisor of spec.divisors) {
     for (let q = lo; q <= hi; q++) {
       if (!spec.allowZeroDigit && String(q).indexOf("0") >= 0) continue;
-      const dividend = q * divisor;
-      if (String(dividend).length !== spec.digits) continue;
-      pool.push({ dividend, divisor });
+      if (spec.allowRemainder) {
+        /* Every nonzero remainder the divisor allows - never 0, that would be
+           a clean-division problem sneaking into a remainder lesson. */
+        for (let r = 1; r < divisor; r++) {
+          const dividend = q * divisor + r;
+          if (String(dividend).length !== spec.digits) continue;
+          if (String(Math.floor(dividend / divisor)).length !== spec.digits) continue;
+          pool.push({ dividend, divisor });
+        }
+      } else {
+        const dividend = q * divisor;
+        if (String(dividend).length !== spec.digits) continue;
+        pool.push({ dividend, divisor });
+      }
     }
   }
   return pool;
@@ -93,14 +107,14 @@ function poolFor(spec) {
 const written = [];
 for (const L of MATH) {
   checkTodoCount(L);
-  check(L.demo.dividend, L.demo.divisor, L.slug + " demo");
+  check(L.demo.dividend, L.demo.divisor, L.slug + " demo", L.practice.allowRemainder);
 
   const pool = poolFor(L.practice);
   if (pool.length < L.practice.count * 4) {
     fail(L.slug + ": the practice spec yields only " + pool.length +
          " problems, too few for a set of " + L.practice.count);
   }
-  pool.forEach(p => check(p.dividend, p.divisor, L.slug + " pool"));
+  pool.forEach(p => check(p.dividend, p.divisor, L.slug + " pool", L.practice.allowRemainder));
 
   let h = template
     .replace(/__TITLE__/g, L.title)
