@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Long Division With Remainders — NexStudents</title>
-<meta name="description" content="Divide, multiply, subtract, bring down. This time it does not come out even, and you write what is left over.">
+<meta name="description" content="Divide, multiply, subtract, bring down. This time it doesn't come out even, and you write down what's left over.">
 <link rel="canonical" href="https://nexstudents.org/lessons/maths/long-division-remainders/">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
@@ -677,10 +677,10 @@ body.player-hidden .scrub{margin:0}
 <div class="wrapx">
   <div class="ns-back"><a href="/maths/">&larr; Maths</a></div>
   <h1>Long Division With Remainders</h1>
-  <p class="dek">Divide, multiply, subtract, bring down. This time it does not come out even, and you write what is left over.</p>
+  <p class="dek">Divide, multiply, subtract, bring down. This time it doesn't come out even, and you write down what's left over.</p>
 
   <h2 class="section-head">How It Works</h2>
-  <p class="section-note">Press play and follow along. The arrows step back and forward, and the bar jumps straight to any step, so the same four steps can be replayed as many times as it takes.</p>
+  <p class="section-note">Press play and follow along. The arrows step back and forward, and the bar jumps to any step, so you can replay the same four steps as many times as you need.</p>
 
   <div class="player" id="player">
     <div class="pcontrols">
@@ -780,12 +780,12 @@ body.player-hidden .scrub{margin:0}
 "use strict";
 
 var DEMO = {"dividend":587,"divisor":3};
-var BAKED_CAPS = [{"text":"We are dividing 587 by 3. The 3 sits outside the bracket, and 587 goes underneath it."},{"step":0,"phase":"divide","text":"Step 1. Divide. How many 3s fit into 5? 1. Write the 1 on top."},{"step":0,"phase":"multiply","text":"Multiply. 1 times 3 is 3. Write 3 underneath."},{"step":0,"phase":"subtract","text":"Subtract. 5 minus 3 is 2."},{"step":0,"phase":"bring","text":"Bring down the next digit, 8, to make 28."},{"step":1,"phase":"divide","text":"Step 2. Divide. How many 3s fit into 28? 9. Write the 9 on top."},{"step":1,"phase":"multiply","text":"Multiply. 9 times 3 is 27. Write 27 underneath."},{"step":1,"phase":"subtract","text":"Subtract. 28 minus 27 is 1."},{"step":1,"phase":"bring","text":"Bring down the next digit, 7, to make 17."},{"step":2,"phase":"divide","text":"Step 3. Divide. How many 3s fit into 17? 5. Write the 5 on top."},{"step":2,"phase":"multiply","text":"Multiply. 5 times 3 is 15. Write 15 underneath."},{"step":2,"phase":"subtract","text":"Subtract. 17 minus 15 is 2."},{"revealRemainder":true,"text":"There is nothing left to bring down, and 2 is still left over after that last subtract. That is the remainder."},{"text":"2 is smaller than 3, the divisor. That is what tells us we are finished - if 2 were 3 or more, 3 would still fit in at least one more time."},{"text":"The digits on top read 195, with 2 remaining. So 587 divided by 3 is 195 with a remainder of 2."},{"text":"Now try it with a number that does not divide evenly."},{"text":"Underneath the worked example there are five problems to solve."},{"text":"You work every row the same way as before: divide, multiply, subtract, bring down. The only difference is the very last subtract does not reach zero."},{"text":"Whatever is left after the last subtraction is your remainder. Write that in the last box on top, next to the quotient."},{"text":"Practice mode checks each digit as you type it. Test mode checks nothing until you press Check my work."},{"text":"Do all five. If the remainder ends up bigger than the divisor, go back - that means a divide step earlier was too small."}];
+var BAKED_CAPS = [{"text":"We're dividing 587 by 3. The 3 goes outside the bracket, and 587 sits underneath it."},{"step":0,"phase":"divide","text":"Step 1. Divide. How many 3s fit into 5? 1. Write that 1 on top."},{"step":0,"phase":"multiply","text":"Multiply. 1 times 3 is 3. Write it underneath."},{"step":0,"phase":"subtract","text":"Subtract. 5 minus 3 is 2."},{"step":0,"phase":"bring","text":"Bring down the next digit, the 8. Now you've got 28."},{"step":1,"phase":"divide","text":"Step 2. Divide. How many 3s fit into 28? 9. Write that 9 on top."},{"step":1,"phase":"multiply","text":"Multiply. 9 times 3 is 27. Write it underneath."},{"step":1,"phase":"subtract","text":"Subtract. 28 minus 27 is 1."},{"step":1,"phase":"bring","text":"Bring down the next digit, the 7. Now you've got 17."},{"step":2,"phase":"divide","text":"Step 3. Divide. How many 3s fit into 17? 5. Write that 5 on top."},{"step":2,"phase":"multiply","text":"Multiply. 5 times 3 is 15. Write it underneath."},{"step":2,"phase":"subtract","text":"Subtract. 17 minus 15 is 2."},{"revealRemainder":true,"text":"Nothing left to bring down, and we've still got 2 sitting there after that last subtraction. That 2 is the remainder."},{"text":"2 is smaller than 3, and that's how you know you're done. If it were 3 or bigger, another 3 would still fit in."},{"text":"Read the top row: 195, with 2 left over. So 587 divided by 3 is 195 with a remainder of 2."},{"text":"Now you try one that doesn't divide evenly."},{"text":"There are five problems below this one."},{"text":"Work every row the same way you just did: divide, multiply, subtract, bring down. The only difference is that the very last subtraction doesn't reach zero."},{"text":"Whatever is left after the last subtraction is your remainder. Write that in the last box on top, next to your answer."},{"text":"Practice mode checks each digit as you type it. Test mode won't check anything until you press Check my work."},{"text":"Do all five. If your remainder comes out bigger than the divisor, go back. That means one of your divide steps was too small."}];
 var SPEC = {"count":5,"digits":3,"divisors":[3,4,5,6,7,8,9],"allowZeroDigit":false,"allowRemainder":true};
 var LESSON_ID = "maths/long-division-remainders";
 
 document.getElementById("turnnote").textContent += SPEC.allowRemainder
-  ? " Some of these leave a remainder - write what is left over in the last box."
+  ? " Some of these leave a remainder. Write what's left over in the box up top."
   : " None of these have a remainder.";
 
 /* ── colours ───────────────────────────────────────────────────────────────
@@ -1008,31 +1008,30 @@ function slots(g, row, value, step, opts){
 
 /* ── what gets said, and what gets read on screen ─────────────────────── */
 function captions(S){
-  var out = [{ text: "We are dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
-                     " sits outside the bracket, and " + S.dividend + " goes underneath it." }];
+  var out = [{ text: "We're dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
+                     " goes outside the bracket, and " + S.dividend + " sits underneath it." }];
   S.steps.forEach(function(st, k){
     out.push({ step: k, phase: "divide",
       text: "Step " + (k + 1) + ". Divide. How many " + S.divisor + "s fit into " + st.cur +
-            "? " + st.q + ". Write the " + st.q + " on top." });
+            "? " + st.q + ". Write that " + st.q + " on top." });
     out.push({ step: k, phase: "multiply",
       text: "Multiply. " + st.q + " times " + S.divisor + " is " + st.prod +
-            ". Write " + st.prod + " underneath." });
+            ". Write it underneath." });
     out.push({ step: k, phase: "subtract",
       text: "Subtract. " + st.cur + " minus " + st.prod + " is " + st.diff + "." });
     if (st.bring !== undefined) out.push({ step: k, phase: "bring",
-      text: "Bring down the next digit, " + st.bring + ", to make " + (st.diff * 10 + st.bring) + "." });
+      text: "Bring down the next digit, the " + st.bring + ". Now you've got " + (st.diff * 10 + st.bring) + "." });
   });
   if (S.remainder > 0){
     out.push({ revealRemainder: true,
-               text: "There is nothing left to bring down, and " + S.remainder +
-                     " is still left over after that last subtract. That is the remainder." });
-    out.push({ text: S.remainder + " is smaller than " + S.divisor + ", the divisor. That is what tells us we are " +
-                     "finished - if " + S.remainder + " were " + S.divisor + " or more, " + S.divisor +
-                     " would still fit in at least one more time." });
-    out.push({ text: "The digits on top read " + S.quotient + ", with " + S.remainder + " remaining. So " +
+               text: "Nothing left to bring down, and we've still got " + S.remainder +
+                     " sitting there after that last subtraction. That " + S.remainder + " is the remainder." });
+    out.push({ text: S.remainder + " is smaller than " + S.divisor + ", and that's how you know you're done. " +
+                     "If it were " + S.divisor + " or bigger, another " + S.divisor + " would still fit in." });
+    out.push({ text: "Read the top row: " + S.quotient + ", with " + S.remainder + " left over. So " +
                      S.dividend + " divided by " + S.divisor + " is " + S.quotient + " with a remainder of " + S.remainder + "." });
   } else {
-    out.push({ text: "The digits on top read " + S.quotient + ". So " + S.dividend + " divided by " +
+    out.push({ text: "Read the top row: " + S.quotient + ". So " + S.dividend + " divided by " +
                      S.divisor + " is " + S.quotient + "." });
   }
   return out;
@@ -2423,7 +2422,7 @@ if (S.remainder > 0){
   var legendEl = document.querySelector(".legend");
   if (legendEl){
     var remSpan = document.createElement("span");
-    remSpan.innerHTML = "<b>Remainder</b> what is left over &mdash; always smaller than the divisor";
+    remSpan.innerHTML = "<b>Remainder</b> what's left over, always smaller than the divisor";
     legendEl.appendChild(remSpan);
   }
 }
@@ -2463,8 +2462,8 @@ function renderSet(list, label){
   /* Check my work belongs to Test only. Practice already checks every digit. */
   document.getElementById("check").hidden = MODE !== "test";
   document.getElementById("modenote").textContent = MODE === "practice"
-    ? "A wrong digit clears itself and tells you which of the four steps you are on. The next digit drops down once the subtraction is done."
-    : "Nothing is checked as you go. Fill the whole bracket, wrong digits and all, then press Check my work. This is the one that tells you what you actually know.";
+    ? "A wrong digit clears itself and tells you which of the four steps you're on. The next digit drops down once you've finished the subtraction."
+    : "Nothing gets checked as you go. Fill in the whole bracket, wrong digits and all, then press Check my work. This is the one that tells you what you actually know.";
   list.forEach(addProblem);
   paintScore();
 }
@@ -2491,13 +2490,13 @@ function addProblem(P, pi){
       ask: "Divide. How many " + PS.divisor + "s fit into " + st.cur + "? Put it on top." });
     slots(g, 2 + k * 2, st.prod, st, { minus: true, under: true }).forEach(function(s){
       queue.push({ cell: s.cell, want: s.want,
-        ask: "Multiply. " + st.q + " times " + PS.divisor + ", written underneath." });
+        ask: "Multiply. " + st.q + " times " + PS.divisor + ". Write it underneath." });
     });
     var isFinalRemainder = PS.remainder > 0 && st.bring === undefined;
     slots(g, 3 + k * 2, st.diff, st, {}).forEach(function(s){
       queue.push({ cell: s.cell, want: s.want,
         ask: isFinalRemainder
-          ? "Subtract. " + st.cur + " minus " + st.prod + " is what's left over - the remainder."
+          ? "Subtract. " + st.cur + " minus " + st.prod + ". That's your remainder."
           : "Subtract. " + st.cur + " minus " + st.prod + " is what?" });
     });
     if (st.bring !== undefined) queue.push({ bring: true, cell: g.at(3 + k * 2, st.i + 2), want: st.bring });
@@ -2509,7 +2508,7 @@ function addProblem(P, pi){
      until every step below it is done. */
   if (SPEC.allowRemainder && g.remCell){
     queue.push({ cell: g.remCell, want: PS.remainder,
-      ask: "Write the remainder up here too, next to the quotient." });
+      ask: "Now write that remainder up here, next to your answer." });
   }
 
   queue.forEach(function(q){
@@ -2593,12 +2592,12 @@ function addProblem(P, pi){
   function finish(){
     box.classList.add("solved");
     tag.classList.add("done");
-    var remTag = PS.remainder > 0 ? " remainder " + PS.remainder : "";
+    var remTag = PS.remainder > 0 ? " with a remainder of " + PS.remainder : "";
     tag.textContent = P.dividend + " ÷ " + P.divisor + " = " + PS.quotient + remTag;
     nudge.classList.remove("warn");
     nudge.textContent = PS.remainder > 0
-      ? "Solved. Check it: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
-      : "Solved. Check it: " + PS.quotient + " × " + P.divisor + " = " + P.dividend + ".";
+      ? "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
+      : "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " = " + P.dividend + ".";
     solved++;
     save();
     paintScore();
@@ -2633,7 +2632,7 @@ function markTest(){
     var r = perBox[k];
     var tag = r.box.querySelector(".tag");
     var nudge = r.box.querySelector(".nudge");
-    var remMark = r.PS.remainder > 0 ? " remainder " + r.PS.remainder : "";
+    var remMark = r.PS.remainder > 0 ? " with a remainder of " + r.PS.remainder : "";
     if (r.ok){
       solved++;
       r.box.classList.add("solved");
@@ -2644,7 +2643,7 @@ function markTest(){
     } else {
       nudge.classList.add("warn");
       nudge.textContent = "The answer is " + r.PS.quotient + remMark +
-        ". Every red digit is where it went off. Work that one again in Practice.";
+        ". Every red digit is where it went wrong. Try that one again in Practice.";
     }
   });
 
@@ -2700,10 +2699,10 @@ function paintScore(){
   var el = document.getElementById("scorebar");
   el.innerHTML = solved === PROBLEMS.length
     ? "<b>All " + PROBLEMS.length + " solved.</b>" +
-      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That is the lesson finished.</p>'
+      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That\'s the lesson finished.</p>'
     : "<b>" + solved + " of " + PROBLEMS.length + " solved.</b>" +
       '<p style="margin:6px 0 0;color:var(--dim)">Work down the boxes in order. ' +
-      "A wrong digit clears itself, so nothing is lost.</p>";
+      "A wrong digit clears itself, so nothing's lost.</p>";
 }
 paintScore();
 

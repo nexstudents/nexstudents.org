@@ -62,20 +62,20 @@ function captions(S, L) {
   /* 🚨 The lesson opens on the maths, not on an explanation of the buttons.
      Paul, 2026-08-29: "you also need to remove the voice engine instructions." */
   const out = [{
-    text: "We are dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
-          " sits outside the bracket, and " + S.dividend + " goes underneath it.",
+    text: "We're dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
+          " goes outside the bracket, and " + S.dividend + " sits underneath it.",
   }];
   S.steps.forEach((st, k) => {
     out.push({ step: k, phase: "divide",
       text: "Step " + (k + 1) + ". Divide. How many " + S.divisor + "s fit into " + st.cur +
-            "? " + st.q + ". Write the " + st.q + " on top." });
+            "? " + st.q + ". Write that " + st.q + " on top." });
     out.push({ step: k, phase: "multiply",
       text: "Multiply. " + st.q + " times " + S.divisor + " is " + st.prod +
-            ". Write " + st.prod + " underneath." });
+            ". Write it underneath." });
     out.push({ step: k, phase: "subtract",
       text: "Subtract. " + st.cur + " minus " + st.prod + " is " + st.diff + "." });
     if (st.bring !== undefined) out.push({ step: k, phase: "bring",
-      text: "Bring down the next digit, " + st.bring + ", to make " + (st.diff * 10 + st.bring) + "." });
+      text: "Bring down the next digit, the " + st.bring + ". Now you've got " + (st.diff * 10 + st.bring) + "." });
   });
   /* Nothing left to bring down and the last subtract did not reach zero: that
      leftover number is the remainder, and it gets its own sentence rather
@@ -88,25 +88,24 @@ function captions(S, L) {
        just the last subtract row. */
     out.push({
       revealRemainder: true,
-      text: "There is nothing left to bring down, and " + S.remainder +
-            " is still left over after that last subtract. That is the remainder.",
+      text: "Nothing left to bring down, and we've still got " + S.remainder +
+            " sitting there after that last subtraction. That " + S.remainder + " is the remainder.",
     });
     /* The rule that tells you the division is actually finished, not the
        trivia. Paul, 2026-08-30: "express that the remainder is when its
        smaller" - a remainder has to be smaller than the divisor, or the
        divide step before it was too small and the dividing is not done. */
     out.push({
-      text: S.remainder + " is smaller than " + S.divisor + ", the divisor. That is what tells us we are " +
-            "finished - if " + S.remainder + " were " + S.divisor + " or more, " + S.divisor +
-            " would still fit in at least one more time.",
+      text: S.remainder + " is smaller than " + S.divisor + ", and that's how you know you're done. " +
+            "If it were " + S.divisor + " or bigger, another " + S.divisor + " would still fit in.",
     });
     out.push({
-      text: "The digits on top read " + S.quotient + ", with " + S.remainder + " remaining. So " +
+      text: "Read the top row: " + S.quotient + ", with " + S.remainder + " left over. So " +
             S.dividend + " divided by " + S.divisor + " is " + S.quotient + " with a remainder of " + S.remainder + ".",
     });
   } else {
     out.push({
-      text: "The digits on top read " + S.quotient + ". So " + S.dividend + " divided by " +
+      text: "Read the top row: " + S.quotient + ". So " + S.dividend + " divided by " +
             S.divisor + " is " + S.quotient + ".",
     });
   }

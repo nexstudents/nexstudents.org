@@ -114,7 +114,7 @@ __NAV__
   <p class="dek">__DEK__</p>
 
   <h2 class="section-head">How It Works</h2>
-  <p class="section-note">Press play and follow along. The arrows step back and forward, and the bar jumps straight to any step, so the same four steps can be replayed as many times as it takes.</p>
+  <p class="section-note">Press play and follow along. The arrows step back and forward, and the bar jumps to any step, so you can replay the same four steps as many times as you need.</p>
 
   __PLAYER_MARKUP__
 
@@ -157,7 +157,7 @@ var SPEC = __SPEC__;
 var LESSON_ID = "__ID__";
 
 document.getElementById("turnnote").textContent += SPEC.allowRemainder
-  ? " Some of these leave a remainder - write what is left over in the last box."
+  ? " Some of these leave a remainder. Write what's left over in the box up top."
   : " None of these have a remainder.";
 
 /* ── colours ───────────────────────────────────────────────────────────────
@@ -330,31 +330,30 @@ function slots(g, row, value, step, opts){
 
 /* ── what gets said, and what gets read on screen ─────────────────────── */
 function captions(S){
-  var out = [{ text: "We are dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
-                     " sits outside the bracket, and " + S.dividend + " goes underneath it." }];
+  var out = [{ text: "We're dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
+                     " goes outside the bracket, and " + S.dividend + " sits underneath it." }];
   S.steps.forEach(function(st, k){
     out.push({ step: k, phase: "divide",
       text: "Step " + (k + 1) + ". Divide. How many " + S.divisor + "s fit into " + st.cur +
-            "? " + st.q + ". Write the " + st.q + " on top." });
+            "? " + st.q + ". Write that " + st.q + " on top." });
     out.push({ step: k, phase: "multiply",
       text: "Multiply. " + st.q + " times " + S.divisor + " is " + st.prod +
-            ". Write " + st.prod + " underneath." });
+            ". Write it underneath." });
     out.push({ step: k, phase: "subtract",
       text: "Subtract. " + st.cur + " minus " + st.prod + " is " + st.diff + "." });
     if (st.bring !== undefined) out.push({ step: k, phase: "bring",
-      text: "Bring down the next digit, " + st.bring + ", to make " + (st.diff * 10 + st.bring) + "." });
+      text: "Bring down the next digit, the " + st.bring + ". Now you've got " + (st.diff * 10 + st.bring) + "." });
   });
   if (S.remainder > 0){
     out.push({ revealRemainder: true,
-               text: "There is nothing left to bring down, and " + S.remainder +
-                     " is still left over after that last subtract. That is the remainder." });
-    out.push({ text: S.remainder + " is smaller than " + S.divisor + ", the divisor. That is what tells us we are " +
-                     "finished - if " + S.remainder + " were " + S.divisor + " or more, " + S.divisor +
-                     " would still fit in at least one more time." });
-    out.push({ text: "The digits on top read " + S.quotient + ", with " + S.remainder + " remaining. So " +
+               text: "Nothing left to bring down, and we've still got " + S.remainder +
+                     " sitting there after that last subtraction. That " + S.remainder + " is the remainder." });
+    out.push({ text: S.remainder + " is smaller than " + S.divisor + ", and that's how you know you're done. " +
+                     "If it were " + S.divisor + " or bigger, another " + S.divisor + " would still fit in." });
+    out.push({ text: "Read the top row: " + S.quotient + ", with " + S.remainder + " left over. So " +
                      S.dividend + " divided by " + S.divisor + " is " + S.quotient + " with a remainder of " + S.remainder + "." });
   } else {
-    out.push({ text: "The digits on top read " + S.quotient + ". So " + S.dividend + " divided by " +
+    out.push({ text: "Read the top row: " + S.quotient + ". So " + S.dividend + " divided by " +
                      S.divisor + " is " + S.quotient + "." });
   }
   return out;
@@ -435,7 +434,7 @@ if (S.remainder > 0){
   var legendEl = document.querySelector(".legend");
   if (legendEl){
     var remSpan = document.createElement("span");
-    remSpan.innerHTML = "<b>Remainder</b> what is left over &mdash; always smaller than the divisor";
+    remSpan.innerHTML = "<b>Remainder</b> what's left over, always smaller than the divisor";
     legendEl.appendChild(remSpan);
   }
 }
@@ -475,8 +474,8 @@ function renderSet(list, label){
   /* Check my work belongs to Test only. Practice already checks every digit. */
   document.getElementById("check").hidden = MODE !== "test";
   document.getElementById("modenote").textContent = MODE === "practice"
-    ? "A wrong digit clears itself and tells you which of the four steps you are on. The next digit drops down once the subtraction is done."
-    : "Nothing is checked as you go. Fill the whole bracket, wrong digits and all, then press Check my work. This is the one that tells you what you actually know.";
+    ? "A wrong digit clears itself and tells you which of the four steps you're on. The next digit drops down once you've finished the subtraction."
+    : "Nothing gets checked as you go. Fill in the whole bracket, wrong digits and all, then press Check my work. This is the one that tells you what you actually know.";
   list.forEach(addProblem);
   paintScore();
 }
@@ -503,13 +502,13 @@ function addProblem(P, pi){
       ask: "Divide. How many " + PS.divisor + "s fit into " + st.cur + "? Put it on top." });
     slots(g, 2 + k * 2, st.prod, st, { minus: true, under: true }).forEach(function(s){
       queue.push({ cell: s.cell, want: s.want,
-        ask: "Multiply. " + st.q + " times " + PS.divisor + ", written underneath." });
+        ask: "Multiply. " + st.q + " times " + PS.divisor + ". Write it underneath." });
     });
     var isFinalRemainder = PS.remainder > 0 && st.bring === undefined;
     slots(g, 3 + k * 2, st.diff, st, {}).forEach(function(s){
       queue.push({ cell: s.cell, want: s.want,
         ask: isFinalRemainder
-          ? "Subtract. " + st.cur + " minus " + st.prod + " is what's left over - the remainder."
+          ? "Subtract. " + st.cur + " minus " + st.prod + ". That's your remainder."
           : "Subtract. " + st.cur + " minus " + st.prod + " is what?" });
     });
     if (st.bring !== undefined) queue.push({ bring: true, cell: g.at(3 + k * 2, st.i + 2), want: st.bring });
@@ -521,7 +520,7 @@ function addProblem(P, pi){
      until every step below it is done. */
   if (SPEC.allowRemainder && g.remCell){
     queue.push({ cell: g.remCell, want: PS.remainder,
-      ask: "Write the remainder up here too, next to the quotient." });
+      ask: "Now write that remainder up here, next to your answer." });
   }
 
   queue.forEach(function(q){
@@ -605,12 +604,12 @@ function addProblem(P, pi){
   function finish(){
     box.classList.add("solved");
     tag.classList.add("done");
-    var remTag = PS.remainder > 0 ? " remainder " + PS.remainder : "";
+    var remTag = PS.remainder > 0 ? " with a remainder of " + PS.remainder : "";
     tag.textContent = P.dividend + " ÷ " + P.divisor + " = " + PS.quotient + remTag;
     nudge.classList.remove("warn");
     nudge.textContent = PS.remainder > 0
-      ? "Solved. Check it: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
-      : "Solved. Check it: " + PS.quotient + " × " + P.divisor + " = " + P.dividend + ".";
+      ? "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
+      : "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " = " + P.dividend + ".";
     solved++;
     save();
     paintScore();
@@ -645,7 +644,7 @@ function markTest(){
     var r = perBox[k];
     var tag = r.box.querySelector(".tag");
     var nudge = r.box.querySelector(".nudge");
-    var remMark = r.PS.remainder > 0 ? " remainder " + r.PS.remainder : "";
+    var remMark = r.PS.remainder > 0 ? " with a remainder of " + r.PS.remainder : "";
     if (r.ok){
       solved++;
       r.box.classList.add("solved");
@@ -656,7 +655,7 @@ function markTest(){
     } else {
       nudge.classList.add("warn");
       nudge.textContent = "The answer is " + r.PS.quotient + remMark +
-        ". Every red digit is where it went off. Work that one again in Practice.";
+        ". Every red digit is where it went wrong. Try that one again in Practice.";
     }
   });
 
@@ -712,10 +711,10 @@ function paintScore(){
   var el = document.getElementById("scorebar");
   el.innerHTML = solved === PROBLEMS.length
     ? "<b>All " + PROBLEMS.length + " solved.</b>" +
-      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That is the lesson finished.</p>'
+      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That\'s the lesson finished.</p>'
     : "<b>" + solved + " of " + PROBLEMS.length + " solved.</b>" +
       '<p style="margin:6px 0 0;color:var(--dim)">Work down the boxes in order. ' +
-      "A wrong digit clears itself, so nothing is lost.</p>";
+      "A wrong digit clears itself, so nothing's lost.</p>";
 }
 paintScore();
 
