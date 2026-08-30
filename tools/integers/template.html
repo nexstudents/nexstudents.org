@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ — NexStudents</title>
+<meta name="description" content="__DEK__">
+__CANONICAL__
+__MODEBOOT__
+__FAVICON__
+<link rel="stylesheet" href="/assets/ns.css">
+<link rel="stylesheet" href="/assets/lesson-nav.css">
+<style>
+.wrapx{max-width:900px;margin:0 auto;padding:0 20px}
+.ns-back{padding:18px 0}
+.ns-back a{color:var(--dim);text-decoration:none;font-size:.9rem}
+.ns-back a:hover{color:var(--fg)}
+h1{margin:0 0 6px}
+.dek{color:var(--dim);max-width:60ch;margin:0 0 22px}
+.section-head{margin:34px 0 4px;font-size:1.35rem}
+.section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
+
+/* Fallbacks. applyTheme() overwrites these the moment it runs. */
+:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38);--accent-soft:rgba(255,255,255,.14)}
+/* The site nav reads six variables of its own (assets/lesson-nav.css), mapped
+   onto this page's palette so the nav re-themes with the lesson.
+   NOTE: --pill belongs to ns.css and is a RADIUS. Never map a colour onto it. */
+:root{--nv-bg:var(--panel);--nv-fg:var(--fg);--nv-dim:var(--dim);
+  --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
+
+/* ── Ground Control ────────────────────────────────────────────────────────
+   The teacher panel. Deliberately FIRST on the page and deliberately shut by
+   default: the parent opens it before the lesson, the student never needs to.
+   Identical treatment to the English lessons on purpose. */
+.ground{border:1px solid var(--boxline);border-radius:var(--r);margin:0 0 26px;
+  background:var(--boxfill);overflow:hidden}
+.ground summary{cursor:pointer;padding:15px 18px;font-weight:700;list-style:none;
+  display:flex;align-items:center;gap:10px}
+.ground summary::-webkit-details-marker{display:none}
+.ground summary::after{content:"▾";margin-left:auto;color:var(--dim);transition:transform .18s}
+.ground[open] summary::after{transform:rotate(180deg)}
+.ground summary:hover{color:var(--a)}
+.ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--dim);font-weight:600}
+.ground .gbody{padding:0 18px 18px;border-top:1px solid var(--line)}
+.ground h4{margin:18px 0 5px;font-size:.79rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--a)}
+.ground p{margin:0;line-height:1.6;max-width:68ch}
+.ground ul{margin:6px 0 0;padding-left:20px;line-height:1.65;max-width:68ch}
+.ground li{margin:0 0 7px}
+
+/* ── the rule ─────────────────────────────────────────────────────────────
+   🚨 THE RULE BOX IS THE LESSON. Paul chose rules-first on 2026-08-30 for
+   speed, so the rule is stated up front rather than discovered at the end.
+   That only works if it is stated precisely - build-integers.js refuses to
+   build a lesson whose short rule contains the folk version. */
+.rulebox{border:1px solid var(--a);border-radius:var(--r);padding:20px;margin:0 0 26px;
+  background:var(--accent-soft)}
+.rulebox .short{font-size:1.16rem;font-weight:700;margin:0 0 12px;line-height:1.45}
+.rulebox .long{margin:0;color:var(--fg);line-height:1.65;max-width:66ch}
+.ruletest{margin:16px 0 0;padding:14px 16px;border-radius:10px;
+  background:var(--panel);border:1px solid var(--boxline);line-height:1.6;max-width:66ch}
+.ruletest b:first-child{color:var(--a)}
+
+/* ── the sign chart ───────────────────────────────────────────────────────
+   Wide content scrolls inside its own box rather than pushing the page
+   sideways on a phone. */
+.tablewrap{overflow-x:auto;margin:0 0 26px}
+table.signs{border-collapse:collapse;width:100%;min-width:420px;font-size:.95rem}
+table.signs caption{text-align:left;color:var(--dim);font-size:.85rem;padding:0 0 8px}
+table.signs th,table.signs td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+table.signs th{background:var(--boxfill);font-size:.82rem;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--dim)}
+table.signs tbody tr:nth-child(odd){background:var(--panel)}
+
+/* ── the one number line ──────────────────────────────────────────────────
+   Shown ONCE to say why the rule is true, then it gets out of the way. The
+   fast route earns its speed by not making a student draw fifteen of these. */
+figure.nl{margin:0 0 26px;padding:14px 6px 6px;background:var(--panel);
+  border:1px solid var(--line);border-radius:var(--r);color:var(--fg)}
+figure.nl svg{display:block;width:100%;height:auto}
+figure.nl figcaption{color:var(--dim);font-size:.88rem;line-height:1.55;
+  padding:6px 12px 8px;max-width:62ch}
+
+/* ── taught prose ── */
+.part{margin:0 0 26px}
+.part h3{margin:0 0 8px;font-size:1.08rem}
+.part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
+
+/* ── practice ── */
+.tabs{display:flex;gap:6px;margin:0 0 12px}
+.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
+  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
+.tab:hover{color:var(--fg)}
+.tab.on{background:var(--accent-soft);border-color:var(--a);color:var(--fg);font-weight:700}
+.actions{display:flex;flex-wrap:nowrap;gap:8px;margin:0 0 18px}
+.tab.act{flex:1 1 0;min-width:0;color:var(--fg);border-color:var(--boxline);
+  background:var(--boxfill);font-weight:600;white-space:nowrap;padding:11px 10px;font-size:.88rem}
+.tab.act:hover{border-color:var(--a)}
+.tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
+
+.prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;margin:0 0 12px}
+.prob.solved{border-color:var(--free)}
+.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tag{font-size:.85rem;color:var(--dim)}
+.tag.done{color:var(--free);font-weight:700}
+/* The expression reads on one line and wraps on a phone rather than scrolling. */
+.expr{display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:1.28rem;line-height:1.5}
+.expr .op{color:var(--dim)}
+.ans{width:4.4em;background:transparent;border:1px solid var(--boxline);border-radius:8px;
+  color:var(--fg);font:inherit;text-align:center;padding:5px 4px;
+  transition:background .12s,border-color .12s,box-shadow .12s}
+.ans::placeholder{color:var(--dim);opacity:.55}
+.ans:focus{outline:none;background:var(--boxfill);border:2px solid var(--a);
+  box-shadow:0 0 0 3px var(--accent-soft)}
+.ans:disabled{opacity:.5;cursor:default}
+.ans.ok{border-color:var(--free);color:var(--free);font-weight:700;opacity:1}
+.ans.wrong{border-color:#e5484d;color:#e5484d;font-weight:700;opacity:1}
+.ans.bad{border-color:#e5484d;animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+/* The rewrite box is the first half of a subtraction and is labelled, because
+   an unlabelled second box on the same line reads as a typo. */
+.steplab{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 6px}
+.nudge{margin-top:10px;font-size:.92rem;color:var(--dim);min-height:1.4em;
+  line-height:1.6;max-width:66ch}
+.nudge.warn{color:#e5484d}
+.scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px;margin:22px 0 40px}
+.scorebar b{font-size:1.25rem}
+
+@media print{
+  .player,.themerow,.actions,.tabs,.ns-back,.ground{display:none!important}
+  .prob{break-inside:avoid;page-break-inside:avoid}
+}
+__PLAYER_CSS__
+__FIELD_CSS__
+</style>
+</head>
+<body>
+
+__NAV__
+
+<div class="wrapx">
+  <div class="ns-back"><a href="/maths/">&larr; Maths</a></div>
+  <h1>__TITLE__</h1>
+  <p class="dek">__DEK__</p>
+
+  <details class="ground">
+    <summary><span class="who">For the teacher</span> Ground Control</summary>
+    <div class="gbody">__GROUND__</div>
+  </details>
+
+  <div class="rulebox">
+    <p class="short">__RULE_SHORT__</p>
+    <p class="long">__RULE_LONG__</p>
+    __RULE_TEST__
+  </div>
+
+  __NUMBER_LINE__
+
+  <div class="tablewrap">__SIGN_TABLE__</div>
+
+  <h2 class="section-head">The Lesson</h2>
+  <p class="section-note">Press play and follow along. The arrows step back and forward, and the bar jumps to any line, so you can hear the same bit as many times as you need.</p>
+
+  __PLAYER_MARKUP__
+
+  <div id="story">__PARTS_HTML__</div>
+  <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
+
+  <h2 class="section-head">Your Turn</h2>
+  <p class="section-note">__PRACTICE_NOTE__</p>
+  <div class="tabs" role="tablist">
+    <button class="tab on" type="button" id="tabPractice" role="tab" aria-selected="true">Practice</button>
+    <button class="tab" type="button" id="tabTest" role="tab" aria-selected="false">Test</button>
+  </div>
+  <p class="section-note" id="modenote"></p>
+  <div class="actions">
+    <button class="tab act" type="button" id="reroll">New Problems</button>
+    <button class="tab act" type="button" id="check" hidden>Check My Work</button>
+  </div>
+  <div id="problems"></div>
+
+  <div class="scorebar" id="scorebar"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var LESSON_ID = "__ID__";
+var PARTS     = __PARTS__;
+var SPEC      = __SPEC__;
+
+/* ── colours ───────────────────────────────────────────────────────────────
+   The same five palettes every other lesson type uses, spliced in from
+   lesson-template.html at build time, stored under the same ns:theme key so a
+   colour picked in a history lesson is already picked here.
+   ------------------------------------------------------------------------ */
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch (e){} }
+
+__THEMES__
+
+/* ns.css names its variables differently from the history template, so the
+   palette is mapped onto the names this page actually uses. Same map as
+   math/template.html. */
+var VAR_MAP = {
+  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
+  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
+  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
+};
+
+var themeKey = load("theme", "graphite");
+if (!THEMES[themeKey]) themeKey = "graphite";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+/* 🚨 THIS PAGE DOES NOT BUILD SWATCHES. The player builds them. What this
+   page owns is the MAPPING, handed to the player as a hook - same split as
+   maths, and the reason maths once rendered ten colour dots instead of five. */
+window.nsOnTheme = function(k){ themeKey = k; applyTheme(); };
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+document.body.style.background = "var(--bg)";
+
+var synth = window.speechSynthesis;
+var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
+if (!supported) document.getElementById("nospeech").classList.add("show");
+
+__PLAYER_JS__
+
+/* ── where the problems come from ──────────────────────────────────────────
+   Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
+   doesn't help improve." Rolled from SPEC and seeded by the date, so the set
+   holds still all day and changes tomorrow. New Problems reseeds by hand.
+   ------------------------------------------------------------------------ */
+function rng(seed){                       /* mulberry32, small and repeatable */
+  var a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function seedFromString(s){
+  var h = 2166136261;
+  for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function today(){
+  var d = new Date();
+  return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+}
+
+var SIGNS = { pp:[1,1], nn:[-1,-1], pn:[1,-1], np:[-1,1] };
+
+/* An answer of exactly 0 is a real case but a poor practice item: zero has no
+   sign, so it hides the exact mistake this page is trying to catch. Skipped
+   here and in build-integers.js by the same rule. */
+function makeProblem(rand, key){
+  var s = SIGNS[key];
+  for (var tries = 0; tries < 400; tries++){
+    var a = (1 + Math.floor(rand() * SPEC.max)) * s[0];
+    var b = (1 + Math.floor(rand() * SPEC.max)) * s[1];
+    var ans = SPEC.kind === "add" ? a + b : a - b;
+    if (ans === 0) continue;
+    return { a:a, b:b, ans:ans, mix:key };
+  }
+  return SPEC.kind === "add" ? { a:-9, b:4, ans:-5, mix:"np" } : { a:5, b:-3, ans:8, mix:"pn" };
+}
+
+/* 🚨 THE SIGN MIX IS DEALT, NOT DRAWN.
+   Picking each problem's sign combination at random looked fine and was not:
+   a real generated set came out with seven negative+positive and ONE
+   positive+negative, so a student could work the whole page and barely meet
+   one of the four cases the lesson teaches. Drawing 15 times from 4 buckets
+   clusters badly far more often than it feels like it should.
+   So the combinations are dealt round-robin first and then shuffled, which
+   makes the balance structural instead of probabilistic. Same reasoning as
+   the Part B guards in build-english.js, which refuse a set where one kind is
+   over 70% or three run together. */
+function mixOrder(rand){
+  var order = [];
+  for (var i = 0; i < SPEC.count; i++) order.push(SPEC.mix[i % SPEC.mix.length]);
+  /* Fisher-Yates on the seeded rng, so the deal is even but the sequence is
+     not the same four repeating down the page. */
+  for (var j = order.length - 1; j > 0; j--){
+    var k = Math.floor(rand() * (j + 1));
+    var t = order[j]; order[j] = order[k]; order[k] = t;
+  }
+  /* A shuffle can still leave a run of three the same, which reads as a
+     pattern and lets a student coast. Break any run by swapping the offender
+     with the next item that differs from its new neighbours. */
+  for (var m = 2; m < order.length; m++){
+    if (order[m] !== order[m - 1] || order[m] !== order[m - 2]) continue;
+    for (var n = m + 1; n < order.length; n++){
+      if (order[n] === order[m]) continue;
+      var swap = order[n]; order[n] = order[m]; order[m] = swap;
+      break;
+    }
+  }
+  return order;
+}
+
+function makeSet(seedStr){
+  var rand = rng(seedFromString(LESSON_ID + "|" + seedStr));
+  var order = mixOrder(rand);
+  var out = [], seen = {};
+  for (var i = 0; i < order.length; i++){
+    var p = null;
+    for (var tries = 0; tries < 60; tries++){
+      var c = makeProblem(rand, order[i]);
+      var k = c.a + "|" + c.b;
+      if (seen[k]) continue;              /* never the same one twice on a page */
+      seen[k] = true; p = c; break;
+    }
+    if (p) out.push(p);
+  }
+  return out;
+}
+
+/* A negative number after an operator wears brackets, the way a workbook
+   writes it. Without them "8 + -3" reads as two operators in a row. */
+function term(n){ return n < 0 ? "(" + n + ")" : String(n); }
+
+/* ── the problems ──────────────────────────────────────────────────────── */
+var host = document.getElementById("problems");
+var solved = 0, PROBLEMS = [], BOXES = [];
+var MODE = "practice";
+
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt !== undefined) e.textContent = txt;
+  return e;
+}
+
+/* Every answer box behaves the same way in both modes; only the CHECKING
+   differs. Practice marks the moment the right number is typed, which is why
+   there is no per-keystroke wrong marking: "-8" passes through "-" and "-"
+   is not an answer. A wrong answer is only called wrong on Enter or on
+   leaving the box. */
+function answerBox(want, ask, nudge, box, onSolved){
+  var inp = el("input", "ans");
+  inp.type = "text";
+  inp.inputMode = "text";        /* not numeric: the minus sign has to be typeable */
+  inp.autocomplete = "off";
+  inp.placeholder = "?";
+  inp.setAttribute("aria-label", ask);
+  var done = false;
+
+  function markRight(){
+    if (done) return;
+    done = true;
+    inp.classList.remove("bad", "wrong");
+    inp.classList.add("ok");
+    inp.disabled = true;
+    nudge.classList.remove("warn");
+    nudge.textContent = "";
+    onSolved();
+  }
+  function markWrong(){
+    if (done) return;
+    inp.classList.add("bad");
+    nudge.classList.add("warn");
+    nudge.textContent = ask;
+    setTimeout(function(){ inp.classList.remove("bad"); }, 320);
+  }
+
+  inp.addEventListener("input", function(){
+    var v = inp.value.replace(/[^0-9-]/g, "");
+    if (v.indexOf("-") > 0) v = v.replace(/-/g, "");   /* a minus only leads */
+    inp.value = v;
+    if (MODE !== "practice") return;
+    if (/^-?\d+$/.test(v) && Number(v) === want) markRight();
+  });
+  inp.addEventListener("keydown", function(e){
+    if (e.key !== "Enter" || MODE !== "practice") return;
+    e.preventDefault();
+    if (/^-?\d+$/.test(inp.value) && Number(inp.value) !== want) markWrong();
+  });
+  inp.addEventListener("blur", function(){
+    if (MODE !== "practice" || inp.value === "") return;
+    if (/^-?\d+$/.test(inp.value) && Number(inp.value) !== want) markWrong();
+  });
+
+  BOXES.push({ el: inp, want: want, box: box });
+  return inp;
+}
+
+function addProblem(P, pi){
+  var box = el("div", "prob");
+  box.setAttribute("data-i", pi);
+  var head = el("div", "probhead");
+  head.appendChild(el("span", "probnum", "Problem " + (pi + 1)));
+  var tag = el("span", "tag", "");
+  head.appendChild(tag);
+  box.appendChild(head);
+
+  var nudge = el("p", "nudge", "");
+  var need = SPEC.kind === "subtract" ? 2 : 1;
+  var got = 0;
+  function onSolved(){
+    got++;
+    if (got < need) return;
+    box.classList.add("solved");
+    tag.classList.add("done");
+    tag.textContent = "Solved";
+    nudge.classList.remove("warn");
+    nudge.textContent = SPEC.kind === "subtract"
+      ? "Right. " + P.a + " minus " + term(P.b) + " is the same as " + P.a + " plus " + term(-P.b) + "."
+      : "Right.";
+    solved++;
+    save();
+    paintScore();
+  }
+
+  if (SPEC.kind === "subtract"){
+    /* Two boxes: the rewrite, then the answer. Keep, Change, Change is the
+       whole lesson, so the conversion is typed rather than assumed - and when
+       one of the two is wrong you can see WHICH half failed. */
+    box.appendChild(el("p", "steplab", "Keep, change, change. Then add."));
+    var r1 = el("div", "expr");
+    r1.appendChild(el("span", null, String(P.a)));
+    r1.appendChild(el("span", "op", "-"));
+    r1.appendChild(el("span", null, term(P.b)));
+    r1.appendChild(el("span", "op", "="));
+    r1.appendChild(el("span", null, String(P.a)));
+    r1.appendChild(el("span", "op", "+"));
+    r1.appendChild(answerBox(-P.b, "Change the sign of " + P.b + ". What does it become?", nudge, box, onSolved));
+    box.appendChild(r1);
+
+    var r2 = el("div", "expr");
+    r2.style.marginTop = "10px";
+    r2.appendChild(el("span", "op", "="));
+    r2.appendChild(answerBox(P.ans, "Now add. Same signs add and keep the sign, different signs subtract.", nudge, box, onSolved));
+    box.appendChild(r2);
+  } else {
+    var r = el("div", "expr");
+    r.appendChild(el("span", null, String(P.a)));
+    r.appendChild(el("span", "op", "+"));
+    r.appendChild(el("span", null, term(P.b)));
+    r.appendChild(el("span", "op", "="));
+    r.appendChild(answerBox(P.ans, "Are the signs the same or different? Same signs add and keep the sign. Different signs subtract, and take the sign of the one further from zero.", nudge, box, onSolved));
+    box.appendChild(r);
+  }
+
+  box.appendChild(nudge);
+  host.appendChild(box);
+}
+
+function renderSet(list){
+  PROBLEMS = list;
+  solved = 0;
+  BOXES = [];
+  host.innerHTML = "";
+  document.getElementById("check").hidden = MODE !== "test";
+  document.getElementById("modenote").textContent = MODE === "practice"
+    ? "A box turns green the moment you type the right number. Press Enter if you want to be told you are wrong."
+    : "Nothing gets checked as you go. Fill in every box, wrong answers and all, then press Check my work. This is the one that tells you what you actually know.";
+  list.forEach(addProblem);
+  paintScore();
+}
+
+/* ── marking the test ─────────────────────────────────────────────────── */
+function markTest(){
+  var right = 0, blank = 0, perBox = {};
+  BOXES.forEach(function(b){
+    var v = b.el.value;
+    b.el.classList.remove("ok", "wrong");
+    if (v === "") blank++;
+    else if (/^-?\d+$/.test(v) && Number(v) === b.want){ b.el.classList.add("ok"); right++; }
+    else b.el.classList.add("wrong");
+    b.el.disabled = true;
+    var key = b.box.getAttribute("data-i");
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box };
+    if (!(/^-?\d+$/.test(v) && Number(v) === b.want)) perBox[key].ok = false;
+  });
+
+  solved = 0;
+  Object.keys(perBox).forEach(function(k){
+    var r = perBox[k];
+    var P = PROBLEMS[Number(k)];
+    var tag = r.box.querySelector(".tag");
+    var nudge = r.box.querySelector(".nudge");
+    if (r.ok){
+      solved++;
+      r.box.classList.add("solved");
+      tag.classList.add("done");
+      tag.textContent = "Solved";
+      nudge.classList.remove("warn");
+      nudge.textContent = "Right.";
+    } else {
+      nudge.classList.add("warn");
+      nudge.textContent = SPEC.kind === "subtract"
+        ? "The rewrite is " + P.a + " + " + term(-P.b) + ", and the answer is " + P.ans + "."
+        : "The answer is " + P.ans + ". Check the signs first, then the digits.";
+    }
+  });
+
+  document.getElementById("check").disabled = true;
+  save();
+  var el2 = document.getElementById("scorebar");
+  el2.innerHTML = "<b>" + solved + " of " + PROBLEMS.length + " problems fully right.</b>" +
+    '<p style="margin:6px 0 0;color:var(--dim)">' + right + " of " + BOXES.length +
+    " boxes correct" + (blank ? ", " + blank + " left blank" : "") +
+    ". Press New problems for another test.</p>";
+}
+
+var currentSeed = today();
+function reload(seed){
+  currentSeed = seed;
+  document.getElementById("check").disabled = false;
+  renderSet(makeSet(seed));
+}
+reload(currentSeed);
+
+document.getElementById("reroll").addEventListener("click", function(){
+  reload(String(Date.now()));
+  host.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("check").addEventListener("click", markTest);
+
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m;
+  var pt = document.getElementById("tabPractice"), tt = document.getElementById("tabTest");
+  pt.classList.toggle("on", m === "practice");
+  tt.classList.toggle("on", m === "test");
+  pt.setAttribute("aria-selected", String(m === "practice"));
+  tt.setAttribute("aria-selected", String(m === "test"));
+  /* Same problems in both modes, so a test can be worked again in practice. */
+  reload(currentSeed);
+}
+document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
+document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
+
+/* ── progress, stored the way the other lessons store it ──────────────── */
+function save(){
+  try {
+    localStorage.setItem("ns:prog:" + LESSON_ID, JSON.stringify({
+      done: solved, total: PROBLEMS.length, complete: solved === PROBLEMS.length
+    }));
+  } catch (e) {}
+}
+function paintScore(){
+  var e = document.getElementById("scorebar");
+  e.innerHTML = solved === PROBLEMS.length
+    ? "<b>All " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That\'s the lesson finished.</p>'
+    : "<b>" + solved + " of " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Look at the signs before the digits. ' +
+      "A wrong answer tells you which rule to check.</p>";
+}
+paintScore();
+
+})();
+</script>
+__NAVSCRIPT__
+</body>
+</html>

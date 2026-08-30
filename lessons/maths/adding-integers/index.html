@@ -1,0 +1,2784 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding Integers — NexStudents</title>
+<meta name="description" content="Two rules cover every addition you will ever meet. Which one you use depends on whether the signs match.">
+<link rel="canonical" href="https://nexstudents.org/lessons/maths/adding-integers/">
+<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
+<link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
+<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
+<link rel="stylesheet" href="/assets/ns.css">
+<link rel="stylesheet" href="/assets/lesson-nav.css">
+<style>
+.wrapx{max-width:900px;margin:0 auto;padding:0 20px}
+.ns-back{padding:18px 0}
+.ns-back a{color:var(--dim);text-decoration:none;font-size:.9rem}
+.ns-back a:hover{color:var(--fg)}
+h1{margin:0 0 6px}
+.dek{color:var(--dim);max-width:60ch;margin:0 0 22px}
+.section-head{margin:34px 0 4px;font-size:1.35rem}
+.section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
+
+/* Fallbacks. applyTheme() overwrites these the moment it runs. */
+:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38);--accent-soft:rgba(255,255,255,.14)}
+/* The site nav reads six variables of its own (assets/lesson-nav.css), mapped
+   onto this page's palette so the nav re-themes with the lesson.
+   NOTE: --pill belongs to ns.css and is a RADIUS. Never map a colour onto it. */
+:root{--nv-bg:var(--panel);--nv-fg:var(--fg);--nv-dim:var(--dim);
+  --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
+
+/* ── Ground Control ────────────────────────────────────────────────────────
+   The teacher panel. Deliberately FIRST on the page and deliberately shut by
+   default: the parent opens it before the lesson, the student never needs to.
+   Identical treatment to the English lessons on purpose. */
+.ground{border:1px solid var(--boxline);border-radius:var(--r);margin:0 0 26px;
+  background:var(--boxfill);overflow:hidden}
+.ground summary{cursor:pointer;padding:15px 18px;font-weight:700;list-style:none;
+  display:flex;align-items:center;gap:10px}
+.ground summary::-webkit-details-marker{display:none}
+.ground summary::after{content:"▾";margin-left:auto;color:var(--dim);transition:transform .18s}
+.ground[open] summary::after{transform:rotate(180deg)}
+.ground summary:hover{color:var(--a)}
+.ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--dim);font-weight:600}
+.ground .gbody{padding:0 18px 18px;border-top:1px solid var(--line)}
+.ground h4{margin:18px 0 5px;font-size:.79rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--a)}
+.ground p{margin:0;line-height:1.6;max-width:68ch}
+.ground ul{margin:6px 0 0;padding-left:20px;line-height:1.65;max-width:68ch}
+.ground li{margin:0 0 7px}
+
+/* ── the rule ─────────────────────────────────────────────────────────────
+   🚨 THE RULE BOX IS THE LESSON. Paul chose rules-first on 2026-08-30 for
+   speed, so the rule is stated up front rather than discovered at the end.
+   That only works if it is stated precisely - build-integers.js refuses to
+   build a lesson whose short rule contains the folk version. */
+.rulebox{border:1px solid var(--a);border-radius:var(--r);padding:20px;margin:0 0 26px;
+  background:var(--accent-soft)}
+.rulebox .short{font-size:1.16rem;font-weight:700;margin:0 0 12px;line-height:1.45}
+.rulebox .long{margin:0;color:var(--fg);line-height:1.65;max-width:66ch}
+.ruletest{margin:16px 0 0;padding:14px 16px;border-radius:10px;
+  background:var(--panel);border:1px solid var(--boxline);line-height:1.6;max-width:66ch}
+.ruletest b:first-child{color:var(--a)}
+
+/* ── the sign chart ───────────────────────────────────────────────────────
+   Wide content scrolls inside its own box rather than pushing the page
+   sideways on a phone. */
+.tablewrap{overflow-x:auto;margin:0 0 26px}
+table.signs{border-collapse:collapse;width:100%;min-width:420px;font-size:.95rem}
+table.signs caption{text-align:left;color:var(--dim);font-size:.85rem;padding:0 0 8px}
+table.signs th,table.signs td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+table.signs th{background:var(--boxfill);font-size:.82rem;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--dim)}
+table.signs tbody tr:nth-child(odd){background:var(--panel)}
+
+/* ── the one number line ──────────────────────────────────────────────────
+   Shown ONCE to say why the rule is true, then it gets out of the way. The
+   fast route earns its speed by not making a student draw fifteen of these. */
+figure.nl{margin:0 0 26px;padding:14px 6px 6px;background:var(--panel);
+  border:1px solid var(--line);border-radius:var(--r);color:var(--fg)}
+figure.nl svg{display:block;width:100%;height:auto}
+figure.nl figcaption{color:var(--dim);font-size:.88rem;line-height:1.55;
+  padding:6px 12px 8px;max-width:62ch}
+
+/* ── taught prose ── */
+.part{margin:0 0 26px}
+.part h3{margin:0 0 8px;font-size:1.08rem}
+.part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
+
+/* ── practice ── */
+.tabs{display:flex;gap:6px;margin:0 0 12px}
+.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
+  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
+.tab:hover{color:var(--fg)}
+.tab.on{background:var(--accent-soft);border-color:var(--a);color:var(--fg);font-weight:700}
+.actions{display:flex;flex-wrap:nowrap;gap:8px;margin:0 0 18px}
+.tab.act{flex:1 1 0;min-width:0;color:var(--fg);border-color:var(--boxline);
+  background:var(--boxfill);font-weight:600;white-space:nowrap;padding:11px 10px;font-size:.88rem}
+.tab.act:hover{border-color:var(--a)}
+.tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
+
+.prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;margin:0 0 12px}
+.prob.solved{border-color:var(--free)}
+.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tag{font-size:.85rem;color:var(--dim)}
+.tag.done{color:var(--free);font-weight:700}
+/* The expression reads on one line and wraps on a phone rather than scrolling. */
+.expr{display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:1.28rem;line-height:1.5}
+.expr .op{color:var(--dim)}
+.ans{width:4.4em;background:transparent;border:1px solid var(--boxline);border-radius:8px;
+  color:var(--fg);font:inherit;text-align:center;padding:5px 4px;
+  transition:background .12s,border-color .12s,box-shadow .12s}
+.ans::placeholder{color:var(--dim);opacity:.55}
+.ans:focus{outline:none;background:var(--boxfill);border:2px solid var(--a);
+  box-shadow:0 0 0 3px var(--accent-soft)}
+.ans:disabled{opacity:.5;cursor:default}
+.ans.ok{border-color:var(--free);color:var(--free);font-weight:700;opacity:1}
+.ans.wrong{border-color:#e5484d;color:#e5484d;font-weight:700;opacity:1}
+.ans.bad{border-color:#e5484d;animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+/* The rewrite box is the first half of a subtraction and is labelled, because
+   an unlabelled second box on the same line reads as a typo. */
+.steplab{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 6px}
+.nudge{margin-top:10px;font-size:.92rem;color:var(--dim);min-height:1.4em;
+  line-height:1.6;max-width:66ch}
+.nudge.warn{color:#e5484d}
+.scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px;margin:22px 0 40px}
+.scorebar b{font-size:1.25rem}
+
+@media print{
+  .player,.themerow,.actions,.tabs,.ns-back,.ground{display:none!important}
+  .prob{break-inside:avoid;page-break-inside:avoid}
+}
+/* ---------- player ---------- */
+.player{
+  /* Docked to the foot of the screen on every width. Paul, 2026-08-29:
+     "i said i want it to be on the bottom of the screen on the pc too and
+     follow the screen like on mobile."
+
+     ⚠️ TWO LEFTOVERS FROM THE STICKY VERSION BROKE THIS AND BOTH WERE SILENT:
+       margin:22px 0 34px  - a fixed box with bottom:0 AND a bottom margin
+                             floats 34px off the floor. It looked like the dock
+                             had failed rather than like a margin.
+       padding:14px 16px 12px - the shorthand came after padding-bottom and
+                             wiped the safe-area inset, so an iPhone home
+                             indicator would have sat over the controls.
+     Never leave a shorthand after the longhand it overwrites. */
+  position:fixed;left:0;right:0;bottom:0;top:auto;z-index:40;
+  margin:0;
+  max-height:80vh;overflow-y:auto;
+  display:flex;flex-direction:column;
+  background:var(--surface, var(--panel));
+  border:1px solid var(--rule, var(--line));
+  border-width:1px 0 0;
+  border-radius:0;
+  box-shadow:0 -6px 24px rgba(0,0,0,.30);
+  padding:8px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+}
+/* 🚨 THE THREE READING CONTROLS SIT IN THE MIDDLE. Paul, 2026-08-29. They
+   were left-aligned with a spacer shoving the speed selector to the far right,
+   which parked the primary action in the corner of a wide screen. Back, Play
+   and Forward are one centred cluster; speed sits centred underneath. */
+.btn{
+  font-family:inherit;font-size:14px;font-weight:500;
+  background:transparent;color:var(--ink, var(--fg));
+  border:1px solid var(--rule, var(--line));border-radius:3px;
+  padding:9px 12px;cursor:pointer;line-height:1;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.btn:hover{background:var(--surface-2, var(--boxfill));border-color:var(--ink-faint, var(--dim))}
+.btn:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
+/* One rule owns the play button. It is a FIXED rectangle - Paul, 2026-08-29:
+   "i want it just a small rectangle shape ... it doesnt need to stretch to
+   fit" - because a transport button that changes width when you press it never
+   feels solid. */
+.btn.primary{
+  background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a));
+  color:var(--on-accent, #0b160f);font-weight:600;
+  flex:0 0 auto;width:56px;min-width:56px;min-height:37px;
+  padding:0;justify-content:center;border-radius:6px;border-width:1.5px;
+}
+.btn.primary:hover{filter:brightness(1.06);background:var(--verdigris, var(--a))}
+.btn svg{display:block}
+.rate{
+  font-family:inherit;font-size:13px;font-weight:500;
+  color:var(--control-ink, var(--fg));
+  background-color:var(--control-bg, var(--boxfill));
+  border:1px solid var(--control-border, var(--boxline));border-radius:3px;
+  cursor:pointer;
+  /* native arrow sits hard against the right edge, which leaves a gap on a wide
+     select. Own arrow, tucked just after the text. */
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  padding:8px 27px 8px 10px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 9px center;
+  background-size:11px 7px;
+}
+.rate::-ms-expand{display:none}
+.rate option{background:var(--control-bg, var(--boxfill));color:var(--control-ink, var(--fg))}
+.rate:hover{border-color:var(--verdigris, var(--a))}
+.rate:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
+
+.scrub{
+  margin-top:10px;display:flex;gap:2px;height:16px;
+  align-items:stretch;cursor:pointer;
+  touch-action:none;      /* the bar scrubs; it must not also scroll the page */
+}
+.tick{flex:1;background:var(--surface-2, var(--boxfill));border-radius:1px;
+  transition:background .14s ease;pointer-events:auto}
+.tick.done{background:var(--tick-done, var(--accent-soft))}
+.tick.now{background:var(--tick-now, var(--a))}
+@media (hover:hover){ .tick:hover{background:var(--verdigris-soft, var(--accent-soft))} }
+/* while scrubbing, kill the transitions entirely: a drag should track the
+   finger exactly, not chase it 140ms behind */
+.scrub.dragging .tick{transition:none}
+.pcontrols{
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;flex-wrap:wrap;
+}
+.pmeta{
+  order:2;display:flex;align-items:center;justify-content:center;
+  gap:14px;flex-wrap:wrap;text-align:center;
+  font-size:12px;color:var(--ink-faint, var(--dim));margin-top:7px;
+  font-variant-numeric:tabular-nums;letter-spacing:.02em;
+}
+.voicerow{
+  display:flex;align-items:center;gap:9px;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--rule, var(--line));
+}
+.voicerow.show{display:flex}
+.voicerow label{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));
+}
+.voicerow select{flex:0 1 auto;min-width:0;max-width:100%;font-size:13px}
+
+/* studio voice key */
+.linkbtn{
+  margin-left:auto;background:none;border:0;cursor:pointer;padding:4px 2px;
+  font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.04em;
+  color:var(--verdigris, var(--a));text-decoration:underline;text-underline-offset:3px;
+}
+.linkbtn:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
+.keyrow{display:none;margin-top:9px;padding-top:9px;border-top:1px solid var(--rule, var(--line))}
+.keyrow.show{display:block}
+.keyrow label{
+  display:block;font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint, var(--dim));margin-bottom:7px;
+}
+.keyfield{display:flex;gap:7px;flex-wrap:wrap}
+.keyfield input{
+  flex:1 1 180px;min-width:0;font-family:inherit;font-size:13px;
+  color:var(--control-ink, var(--fg));background:var(--control-bg, var(--boxfill));
+  border:1px solid var(--control-border, var(--boxline));border-radius:3px;padding:9px 10px;
+}
+.keyfield input:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
+.keynote{font-size:12px;line-height:1.5;color:var(--ink-soft, var(--dim));margin:8px 0 0}
+.keynote.bad{color:var(--porphyry)}
+.keynote.good{color:var(--verdigris-ink, var(--a))}
+
+/* colour picker */
+.themerow{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--rule, var(--line));
+}
+.themerow .lbl{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));
+}
+.swatches{display:flex;gap:7px}
+/* `background-clip:padding-box` with a TRANSPARENT border meant the gradient
+   stopped short and a 2px ring of the dark page showed through every swatch.
+   Paul, 2026-08-26: "can you make the theme colors not have a black spare
+   outline ... compare it to the math one". The maths swatches never had it,
+   because the gradient runs to the edge and the border is drawn on top. Same
+   here now: the ring only appears on the one that is selected. */
+.sw{
+  width:26px;height:26px;border-radius:50%;cursor:pointer;padding:0;
+  border:2px solid var(--rule, var(--line));outline-offset:2px;
+  transition:transform .15s,border-color .15s;
+}
+.sw:hover{transform:scale(1.12)}
+.sw[aria-pressed="true"]{border-color:var(--verdigris, var(--a));transform:scale(1.12)}
+.sw:focus-visible{outline:2px solid var(--verdigris, var(--a))}
+.nospeech{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;
+  color:var(--porphyry);margin-top:10px;display:none;line-height:1.5;
+}
+
+/* ---------- story ---------- */
+.part{margin:0 0 30px}
+h2{
+  font-family:Cinzel,Georgia,serif;font-weight:500;
+  font-size:13px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));
+  margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--rule, var(--line));
+}
+.para{margin:0}
+.sent{
+  border-radius:3px;padding:1px 0;
+  transition:background .2s;
+  scroll-margin-top:180px;
+}
+.sent.reading{background:var(--band)}
+/* ⚠️ NO BOLD, NO RING, NO SIZE CHANGE. Paul, 2026-08-29: "you are bolding or
+   making the words on NexVoice bigger i dont want them to do that." Weight
+   changes reflow the line as the highlight moves, which is exactly the wobble
+   a struggling reader does not need. Colour only. */
+.w.on{background:var(--word);border-radius:3px}
+.hunting .sent{
+  cursor:pointer;
+  box-shadow:inset 0 -1px 0 var(--ink-faint, var(--dim));
+}
+.hunting .sent:hover{background:var(--verdigris-soft, var(--accent-soft));box-shadow:inset 0 -1px 0 var(--verdigris, var(--a))}
+.sent.hit{background:var(--verdigris-soft, var(--accent-soft));box-shadow:inset 0 -2px 0 var(--verdigris, var(--a))}
+.sent.miss{background:var(--porphyry-soft);box-shadow:inset 0 -2px 0 var(--porphyry)}
+.sent.shown{background:var(--band);box-shadow:inset 0 -2px 0 var(--brass)}
+
+
+/* ── FORM FIELDS ───────────────────────────────────────────────────────────
+   🚨 A FIELD IS NOT A CONTROL, AND A FIELD IS PAPER. Paul, 2026-08-29: "the
+   text boxes need to be white with black lettering ... i would do outlines in
+   the theme color not the boxes themselves. you keep being bad at this across
+   all my apps."
+
+   The bug was structural and it was mine repeatedly: fields were painted with
+   the palette CONTROL tokens - ctlBg / ctlInk - which EVERY light palette
+   defines as a dark fill with near-white text, because those tokens were
+   written for solid buttons. So on a light page every select and input
+   rendered as a dark block. In graphite light that is ctlBg #333F55 sitting on
+   a #F5F5F7 page.
+
+   A field is white in BOTH modes. Making it a "lifted neutral" in dark was the
+   same instinct that caused the original bug - it dissolves the field back
+   into the panel it sits on. The theme colour lives in the OUTLINE.
+
+   ⚠️ The old dropdown arrow had a hardcoded pale stroke (#DCEADF) which was
+   invisible the moment a field went white. It is dark now, because the field
+   it sits on is always white. */
+select.rate{padding-top:9px;padding-bottom:9px}
+select.rate, .keyfield input{
+  font-family:inherit;font-size:13px;font-weight:500;
+  background-color:#FFFFFF;color:#14161A;
+  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;
+  padding:10px 12px;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+select.rate{
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  cursor:pointer;max-width:100%;padding-right:30px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 12 8%27%3E%3Cpath d=%27M1 1.5 6 6.5 11 1.5%27 fill=%27none%27 stroke=%27%2314161A%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:11px 7px;
+}
+select.rate::-ms-expand{display:none}
+select.rate option{background:#FFFFFF;color:#14161A}
+select.rate:hover, .keyfield input:hover,
+select.rate:focus, .keyfield input:focus,
+select.rate:focus-visible, .keyfield input:focus-visible{
+  outline:none;border-color:var(--verdigris, var(--a));box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft));
+}
+.keyfield input{flex:1 1 200px;min-width:0;max-width:320px}
+.keyfield input::placeholder{color:#7A7D85}
+
+/* The docked bar covers the foot of the page on EVERY width now, so the
+   padding is not a phone special case. Measured by playerDock(). */
+body{padding-bottom:var(--player-pad, 150px)}
+
+/* ── THE CONTROL CLUSTER, shared ──────────────────────────────────────────
+   These live in the shared block rather than the history-only player CSS,
+   because maths imports the fields but not the player chrome - it keeps its
+   own stepping engine. Without them the maths cluster stayed left-aligned
+   while every other lesson was centred, which is the kind of small
+   inconsistency that makes a site feel unfinished. */
+.pcontrols{order:0;margin-top:0;position:relative;min-height:44px}
+/* pinned to the edges so the transport keeps the centre line to itself */
+.pcontrols .playerhide{position:absolute;right:2px;top:50%;transform:translateY(-50%);margin:0}
+.pcontrols .followchip{position:absolute;left:2px;top:50%;transform:translateY(-50%)}
+.scrub{order:1}
+.pmeta{order:2}
+.nospeech{order:3}
+.keyrow{order:4}
+.psettings{order:5}   /* last row: the one anchored to the bottom edge */
+.phead .playerhide{margin-left:auto}
+/* a switch has to LOOK like a switch: a real track, a real knob, at a size you
+   can see. It is unlabelled, not invisible. */
+@media (max-width: 620px){ .phint{display:none} }
+
+.psettings{order:5}
+
+
+/* 🚨 THE PLAY BUTTON DOES NOT STRETCH. Paul, 2026-08-29: "you made the button
+   for play and pause strech but i want it just a small retwngle shape like the
+   same size as on the pc right now. it doesnt need to strech to fit."
+   It is an icon in a fixed rectangle. A transport button that changes width
+   with the viewport stops being a landmark you can hit without looking. */
+
+/* ── HIDING THE BAR ────────────────────────────────────────────────────────
+   Paul, 2026-08-29: "maybe an option to hide it too."
+
+   Even a compact bar is a bar, and a student who just wants to READ a page
+   should be able to put it away. Hidden, it collapses to a small tab that
+   stays reachable - never gone, because a control you cannot get back is worse
+   than one taking up room. The choice is remembered per device, so a reader
+   who prefers the page clean is not asked again on every lesson.
+
+   It keeps PLAYING while hidden on purpose: a student may want to listen with
+   the whole screen given over to the words. */
+.playerhide{
+  display:inline-flex;align-items:center;
+  border:0;background:none;box-shadow:none;
+  padding:6px 2px;margin-right:10px;
+  color:var(--ink, var(--fg));cursor:pointer;
+}
+.playerhide input{position:absolute;opacity:0;width:1px;height:1px}
+.playerhide .track{
+  width:40px;height:23px;border-radius:999px;flex:0 0 auto;
+  background:var(--surface-2, var(--boxfill));
+  border:1px solid var(--rule, var(--line));
+  position:relative;transition:background .16s ease,border-color .16s ease;
+}
+.playerhide .knob{
+  position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;
+  background:var(--ink, var(--fg));transition:transform .16s ease;
+}
+.playerhide input:checked + .track{background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a))}
+.playerhide input:checked + .track .knob{transform:translateX(17px);background:var(--on-accent, #0b160f)}
+.playerhide input:focus-visible + .track{box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
+@media (prefers-reduced-motion: reduce){ .playerhide .track, .playerhide .knob{transition:none} }
+
+body.player-hidden .pcontrols,
+body.player-hidden .psettings,
+body.player-hidden .keyrow,
+body.player-hidden .nospeech{display:none}
+/* 🚨 the switch row stays when hidden, or the player buries its own
+   off-switch and hiding becomes a one-way door. */
+body.player-hidden .pmeta{display:none}
+body.player-hidden .phead{padding:2px 0}
+body.player-hidden .followchip{display:none}
+/* what survives: the step bar. Still live, still tappable, still moving. */
+body.player-hidden .player{padding-top:4px}
+body.player-hidden .phead{padding:0 0 4px}
+body.player-hidden .scrub{margin:0}
+@media (max-width: 620px){ .player{transition:transform .22s ease} }
+@media (prefers-reduced-motion: reduce){ .player, .playerhide{transition:none} }
+
+/* The resume chip. Fixed above the thumb on a phone, out of the way of the
+   text, and only present while following is off and something is playing. */
+.followchip{
+  opacity:0;pointer-events:none;visibility:hidden;
+  border:1px solid var(--verdigris, var(--a));border-radius:999px;
+  background:transparent;color:var(--verdigris, var(--a));
+  font-family:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;
+  cursor:pointer;white-space:nowrap;
+  transition:opacity .18s ease;
+}
+.followchip.show{opacity:1;pointer-events:auto;visibility:visible}
+.followchip:hover{background:var(--verdigris-soft, var(--accent-soft))}
+@media (prefers-reduced-motion: reduce){ .followchip{transition:none} }
+
+/* 🚨 WHY THE COLOURS WERE NOT CENTRED ON A DESKTOP. Paul, 2026-08-29: "you
+   also didnt center the theme colors on the pc." Correct, and centring the row
+   was never going to fix it: .linkbtn carries margin-left:auto, so the key
+   link was pinned to the far right and stretched the row across the whole
+   player. The swatches then sat wherever was left. The link has its own
+   centred row now, and the auto margin is off inside the player. */
+.player .linkbtn{margin-left:0}
+
+
+/* The disclosure arrow. Paul: "the dropdown arrow to add your own api is
+   really small. we need a way that is has an extension option like the text
+   that say Use my personal API part needs that arrow next to it." So the arrow
+   belongs to the LABEL, is the same size as the label, and turns over when the
+   panel opens - the whole thing reads as one control instead of a link with a
+   speck beside it. */
+/* 🚨 NO BOX. Paul, 2026-08-29: "i said just make the arrow bigger but you drew
+   an entire oval box around it and separated api and color themes. that not
+   what i wanted. i wanted it compact. i just wanted you to make the arrow
+   bigger."
+
+   He asked for one thing and I redesigned the panel around it. The pills and
+   the extra row are gone; the API link sits back beside the colours where it
+   always was. The ONLY change that stays is the arrow: an 18px SVG instead of
+   the ▾ character, because a glyph draws at whatever fraction of its em box
+   the font chooses, which is why raising font-size barely moved it. */
+.keydisclose{display:inline-flex;align-items:center;gap:6px}
+
+/* ── THE VOICE DROPDOWN ────────────────────────────────────────────────────
+   Ours, not the platform's, so a phone and a PC show the same control. The
+   trigger matches the other fields - white, theme outline - and the list opens
+   UPWARD, because the player is docked to the bottom of the screen and a menu
+   opening downward would go off the edge. */
+.vsel{position:relative;display:inline-block;min-width:200px;max-width:100%}
+.vsel-trigger{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font:inherit;font-size:13px;font-weight:500;
+  background:#FFFFFF;color:#14161A;
+  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;
+  padding:10px 12px;cursor:pointer;text-align:left;
+}
+.vsel-trigger:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
+.vsel-trigger .chev{flex:0 0 auto;transition:transform .18s ease}
+.vsel-trigger[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.vsel-list{
+  position:absolute;left:0;right:0;bottom:calc(100% + 6px);z-index:70;
+  margin:0;padding:5px;list-style:none;
+  background:#FFFFFF;color:#14161A;
+  border:1.5px solid var(--verdigris, var(--a));border-radius:8px;
+  box-shadow:0 -8px 24px rgba(0,0,0,.28);
+  max-height:46vh;overflow-y:auto;
+}
+.vsel-list li{
+  padding:11px 12px;border-radius:5px;cursor:pointer;font-size:13.5px;
+}
+.vsel-list li[aria-selected="true"]{background:var(--verdigris, var(--a));color:var(--on-accent, #0b160f);font-weight:700}
+.vsel-list li[aria-disabled="true"]{opacity:.45;cursor:default}
+@media (hover:hover){ .vsel-list li:not([aria-disabled="true"]):hover{background:#eceff3} }
+.vsel-list li[aria-selected="true"]:hover{background:var(--verdigris, var(--a))}
+
+.keytogglerow{display:flex;justify-content:center;padding:2px 0}
+.psettings > summary{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;list-style:none;padding:6px 0 2px;
+  font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));
+}
+.psettings > summary::-webkit-details-marker{display:none}
+.psettings > summary::marker{content:""}
+/* The SVG points down. Closed is rotated up; open returns it to down. */
+.chev{flex:0 0 auto;transform:rotate(180deg);transition:transform .18s ease}
+.keydisclose[aria-expanded="true"] .chev,
+.psettings[open] > summary .chev{transform:rotate(0deg)}
+@media (prefers-reduced-motion: reduce){ .chev{transition:none} }
+.psettings{display:flex;flex-direction:column-reverse}
+.psettings[hidden]{display:none}
+
+/* ── VOICE AND COLOURS, CENTRED ────────────────────────────────────────────
+   Paul, 2026-08-29: "i want that voice selector centered in the middle along
+   with the theme colors for both pc and mobile."
+
+   These rows were laid out as label-left / control-right, which is a form
+   convention and wrong here: everything else in this player is a centred
+   cluster, so two left-aligned rows underneath read as a different component
+   bolted on. One axis for the whole player. */
+.voicerow, .voicerow.show{justify-content:center;flex-wrap:wrap}
+#speedrow, .voicerow, .themerow{
+  flex-direction:column;align-items:center;justify-content:center;gap:6px;
+}
+#speedrow label, .voicerow label, .themerow .lbl{
+  text-align:center;margin:0;
+}
+/* the API link is its own centred line under the swatches */
+.themerow .keydisclose{margin-top:2px}
+.themerow{justify-content:center;flex-wrap:wrap}
+
+/* ── THE PLAYER ON A PHONE ─────────────────────────────────────────────────
+   🚨 It was taking 327px of a 720px screen - 45% of the phone gone before a
+   word of the lesson. Measured, not guessed.
+
+   Nothing is removed, because a student on a phone needs the voice picker
+   MORE than one on a PC, not less. What changes is that voice and colours stop
+   being permanently open: they fold behind the settings summary, so the phone
+   gets the controls and the step bar, and the rest is one tap away. */
+/* ── THE PHONE PLAYER IS DOCKED TO THE BOTTOM ──────────────────────────────
+   Paul, 2026-08-29: "i wonder if we can just lock it to the bottom on mobile
+   and make it more compact."
+
+   Right. A player pinned to the TOP of a phone competes with the thing it is
+   reading: it takes the best part of the screen and pushes the text down. At
+   the bottom it is a transport bar - the shape every music and podcast app
+   settled on - it sits under the thumb instead of under the eyes, and the
+   whole top of the screen goes back to the lesson.
+
+   ⚠️ Three things have to move with it:
+     - the body needs padding, or the bar covers the last paragraph
+     - the settings disclosure opens UPWARD, or it would open off-screen
+     - nsInView has to know the screen is short from the BOTTOM now, not the
+       top, or the reader will happily scroll a sentence to a place the bar is
+       covering
+   The safe-area inset keeps it clear of the home indicator on an iPhone. */
+
+
+/* ── BACK AND FORWARD ──────────────────────────────────────────────────────
+   Paul, 2026-08-29: "draw a better outline around the back and forward
+   button." They carried the generic hairline in --rule, a DIVIDER colour, so
+   the arrows read as faint marks beside a solid Play. Back is the most-used
+   control here - a student replays a sentence far more often than he starts
+   one - so it must not be the faintest thing on the page. */
+#back, #fwd{
+  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;background:transparent;
+  color:var(--ink, var(--fg));min-height:37px;min-width:40px;padding:0 10px;justify-content:center;
+}
+#back:hover, #fwd:hover{background:var(--verdigris-soft, var(--accent-soft));border-color:var(--verdigris, var(--a));color:var(--ink, var(--fg))}
+#back:focus-visible, #fwd:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
+#back:disabled, #fwd:disabled{opacity:.4;cursor:default}
+#back:disabled:hover, #fwd:disabled:hover{background:transparent}
+
+/* Save sits ON the field row, so it matches the field height exactly. Save is
+   filled because it is what you almost always want; Clear stays an outline. */
+.keyfield .btn{
+  padding:10px 16px;border-radius:6px;border:1.5px solid var(--verdigris, var(--a));
+  font-size:13px;font-weight:600;line-height:1.2;min-height:41px;
+  background:transparent;color:var(--ink, var(--fg));
+}
+.keyfield .btn:hover{background:var(--verdigris-soft, var(--accent-soft))}
+.keyfield .btn:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
+#keySave{background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a));color:var(--on-accent, #0b160f);font-weight:700}
+#keySave:hover{filter:brightness(1.08);background:var(--verdigris, var(--a))}
+
+.keyrow.show{
+  display:block;margin:12px auto 0;padding:14px;
+  max-width:520px;
+  background:var(--verdigris-soft, var(--accent-soft));border:1px solid var(--verdigris, var(--a));border-radius:8px;
+}
+.keynote a{color:var(--verdigris-ink, var(--a, currentColor));text-decoration:underline;text-underline-offset:2px}
+.keydisc{
+  display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.55;
+  color:var(--ink, var(--fg));margin:0 0 11px;font-weight:600;
+}
+
+/* ── ADDED, not asked for ──────────────────────────────────────────────────
+   The player is sticky at the top. Without this, jumping to a sentence scrolls
+   it to y=0 and parks it UNDER the player, so the line being read is the one
+   line you cannot see. */
+.s{scroll-margin-top:16px;scroll-margin-bottom:150px}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+
+
+@media (max-width: 620px){
+  .player{padding-left:10px;padding-right:10px}
+  /* ⚠️ Measured, not guessed. The bar changes height when the settings panel
+     is opened, when the voice list wraps, and on a device with a home
+     indicator - a hardcoded number is wrong within a tap, and being wrong here
+     means the last lines of a lesson sit behind the bar where nobody can read
+     them. Set from the real height by playerDock(). */
+
+  /* settings open upward: the summary is the last thing, the panel above it */
+  .psettings{display:flex;flex-direction:column-reverse}
+.psettings[hidden]{display:none}
+  .s{scroll-margin-top:16px;scroll-margin-bottom:150px}
+  .pcontrols{gap:8px}
+  .pcontrols{min-height:40px;padding-bottom:12px}     /* lifts it clear of the bar */
+  .btn.primary{width:50px;min-width:50px;min-height:40px}
+  #back, #fwd{min-height:40px;min-width:42px;padding:0 8px}
+  .scrub{margin-top:2px}
+
+  /* the switch comes down with them, so the row stays balanced */
+  .playerhide .track{width:34px;height:20px}
+  .playerhide .knob{top:2px;left:2px;width:14px;height:14px}
+  .playerhide input:checked + .track .knob{transform:translateX(14px)}
+
+  /* Jump back stays vertically centred on that row, hard left. It is already
+     absolutely positioned, so it does not push the transport off centre. */
+  .pcontrols .followchip{font-size:11px;padding:3px 9px}
+  .pcontrols .tag{display:none}
+  .pmeta{font-size:11px;margin:4px 0 0}
+  .pmeta span:last-child{display:none}         /* "tap any sentence" is a desktop hint */
+  .scrub{height:24px;margin:2px 0 0}
+  .tick{border-radius:2px}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="scrim" id="scrim"></div>
+<div class="menucol" id="menucol">
+<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+  <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
+  <a class="dl" href="/">Home<small>Start here</small></a>
+  <button class="dl dl-open" type="button" data-sub="gr">Grades<small>K through 8</small><i aria-hidden="true">&#8250;</i></button>
+  <button class="dl dl-open" type="button" data-sub="r">Resources<small>Tools we use</small><i aria-hidden="true">&#8250;</i></button>
+  <button class="dl dl-open" type="button" data-sub="g">Games<small>Play in the browser</small><i aria-hidden="true">&#8250;</i></button>
+  <button class="dl dl-open" type="button" data-sub="c">Comics<small>Read on the site</small><i aria-hidden="true">&#8250;</i></button>
+  <button class="dl dl-open" type="button" data-sub="p">For Parents<small>Placement exams</small><i aria-hidden="true">&#8250;</i></button>
+  <a class="dl" href="/about/">About<small>Who makes this</small></a>
+  <a class="dl" href="/contact/">Contact<small>Get in touch</small></a>
+  <a class="navbtn" href="https://www.paypal.com/donate/?hosted_button_id=PZ9D8N9KVURDA" target="_blank" rel="noopener">Support Us</a>
+  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night"><span data-mode-icon>&#9790;</span><span data-mode-label>Night Mode</span></button>
+</aside>
+<div class="dsubs" id="dsubs"><aside class="dsub" data-subpanel="gr" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Grades</h3><div class="dsub-body"><div class="dst-grid"><a class="dst" href="/grade-k/" aria-label="Kindergarten"><b>K</b></a><a class="dst" href="/grade-1/" aria-label="Grade 1"><b>1</b></a><a class="dst" href="/grade-2/" aria-label="Grade 2"><b>2</b></a><a class="dst" href="/grade-3/" aria-label="Grade 3"><b>3</b></a><a class="dst" href="/grade-4/" aria-label="Grade 4"><b>4</b></a><a class="dst" href="/grade-5/" aria-label="Grade 5"><b>5</b></a><a class="dst" href="/grade-6/" aria-label="Grade 6"><b>6</b></a><a class="dst" href="/grade-7/" aria-label="Grade 7"><b>7</b></a><a class="dst" href="/grade-8/" aria-label="Grade 8"><b>8</b></a></div></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></aside>
+<aside class="dsub" data-subpanel="r" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Resources</h3><div class="dsub-body"><a class="dsr view" href="/resources/">View Resources</a><a class="dsr" href="/resources/">What We Use<small>Books, tools and supplies</small></a><a class="dsr" href="/resources/books-and-readers/">Books and Readers<small>What he actually reads</small></a><a class="dsr" href="/resources/tools-and-supplies/">Tools and Supplies<small>Paper, pencils, the desk</small></a><a class="dsr" href="/resources/science-experiments/">Science Experiments<small>Run them at home</small></a><a class="dsr" href="/resources/reading-lists/">Reading Lists<small>By grade</small></a><a class="dsr" href="/blog/">Blog<small>How we teach it</small></a><a class="dsr" href="/resources/placement-tests/">Placement Tests<small>Free, and not ours</small></a></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></aside>
+<aside class="dsub" data-subpanel="g" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Games</h3><div class="dsub-body"><a class="dsr view" href="/games/">View Games</a><a class="dsr" href="/games/speed-run-math/">Speed Run Math<small>Multiplication, timed</small></a><a class="dsr" href="/games/remainder-race/">Remainder Race<small>Being built</small></a><a class="dsr" href="/games/fraction-match/">Fraction Match<small>Being built</small></a><a class="dsr" href="/games/spelling-ladder/">Spelling Ladder<small>Being built</small></a><a class="dsr" href="/games/comma-catcher/">Comma Catcher<small>Being built</small></a><a class="dsr" href="/games/show-me-the-states/">Show Me The States<small>Fifty states and capitals</small></a><a class="dsr" href="/games/sort-the-mixture/">Sort the Mixture<small>Being built</small></a></div></aside>
+<aside class="dsub" data-subpanel="c" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Comics</h3><div class="dsub-body"><a class="dsr view" href="/comics/">View Comics</a><a class="dsr" href="/comics/">Donut Boy<small>8 episodes</small></a><a class="dsr" href="/comics/more-strips/">More Strips<small>What is coming</small></a></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></aside>
+<aside class="dsub" data-subpanel="p" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>For Parents</h3><div class="dsub-body"><a class="dsr view" href="/for-parents/">View For Parents</a><a class="dsr" href="/placement-exam.html">Reading Placement Exam</a><a class="dsr" href="/resources/">What We Use</a><a class="dsr" href="/about/">About</a><a class="dsr" href="/contact/">Contact</a></div></aside></div>
+</div>
+
+<nav id="nav" class="ns-nav"><div class="nv">
+  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+    <i></i><i></i><i></i>
+  </button>
+  <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
+  <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a></div>
+  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>
+  
+  <div class="navicons"><a class="navicon" href="/account/" aria-label="Sign in" title="Sign in"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></a><a class="navicon" href="/cart/" aria-label="Cart" title="Cart"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg></a></div>
+</div>
+<div class="mg-panel" id="megapanel" aria-hidden="true"><div class="mg-inner" data-for="gr"><div class="mg-body"><div class="mg-grades"><a class="mg-grade live" href="/grade-k/"><b>K</b><span>Live</span></a><a class="mg-grade live" href="/grade-1/"><b>1</b><span>Live</span></a><a class="mg-grade live" href="/grade-2/"><b>2</b><span>Live</span></a><a class="mg-grade live" href="/grade-3/"><b>3</b><span>Live</span></a><a class="mg-grade live" href="/grade-4/"><b>4</b><span>Live</span></a><a class="mg-grade live" href="/grade-5/"><b>5</b><span>Live</span></a><a class="mg-grade live" href="/grade-6/"><b>6</b><span>Live</span></a><a class="mg-grade live" href="/grade-7/"><b>7</b><span>Live</span></a><a class="mg-grade live" href="/grade-8/"><b>8</b><span>Live</span></a></div><p class="mg-note">Organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></div><div class="mg-inner" data-for="r"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>What We Use</h4><ul><li><a href="/resources/books-and-readers/">Books and Readers</a></li><li><a href="/resources/tools-and-supplies/">Tools and Supplies</a></li></ul></div><div class="mg-col"><h4>Extras</h4><ul><li><a href="/resources/science-experiments/">Science Experiments</a></li><li><a href="/resources/reading-lists/">Reading Lists</a></li></ul></div><div class="mg-col"><h4>Writing</h4><ul><li><a href="/blog/">Blog</a></li><li><a href="/resources/placement-tests/">Placement Tests</a></li></ul></div></div><p class="mg-note">Things we actually use, not a list copied off somebody else&rsquo;s blog. Any affiliate link is marked as one. Lessons and printables are not here &mdash; they live under each grade.</p><p class="mg-all"><a href="/resources/">All resources &rarr;</a></p></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></div><div class="mg-inner" data-for="g"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Maths</h4><ul><li><a href="/games/speed-run-math/">Speed Run Math</a></li><li><a href="/games/remainder-race/">Remainder Race</a></li><li><a href="/games/fraction-match/">Fraction Match</a></li></ul></div><div class="mg-col"><h4>English</h4><ul><li><a href="/games/spelling-ladder/">Spelling Ladder</a></li><li><a href="/games/comma-catcher/">Comma Catcher</a></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><a href="/games/show-me-the-states/">Show Me The States</a></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><a href="/games/sort-the-mixture/">Sort the Mixture</a></li></ul></div></div><p class="mg-note">Two are playable now. The rest have a page saying what they will be.</p><p class="mg-all"><a href="/games/">All games &rarr;</a></p></div></div><div class="mg-inner" data-for="c"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Donut Boy</h4><ul><li><a href="/comics/">Start at Episode 1</a></li><li><a href="/comics/">All 8 Episodes</a></li></ul></div><div class="mg-col"><h4>More strips</h4><ul><li><a href="/comics/more-strips/">What Is Coming</a></li></ul></div></div><p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p><p class="mg-all"><a href="/comics/">All comics &rarr;</a></p></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></div><div class="mg-inner" data-for="p"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Placement</h4><ul><li><a href="/placement-exam.html">Reading Placement Exam</a></li></ul></div><div class="mg-col"><h4>Planning</h4><ul><li><a href="/resources/">What We Use</a></li><li><a href="/about/">About NexStudents</a></li><li><a href="/contact/">Contact</a></li></ul></div></div><p class="mg-all"><a href="/for-parents/">All for parents &rarr;</a></p></div></div></div>
+</nav>
+
+<div class="wrapx">
+  <div class="ns-back"><a href="/maths/">&larr; Maths</a></div>
+  <h1>Adding Integers</h1>
+  <p class="dek">Two rules cover every addition you will ever meet. Which one you use depends on whether the signs match.</p>
+
+  <details class="ground">
+    <summary><span class="who">For the teacher</span> Ground Control</summary>
+    <div class="gbody"><h4>What it is</h4><p>Adding integers is adding when one or both of the numbers can be negative. A negative number is a number below zero, and the minus sign in front of it is part of the number rather than an instruction to subtract. Everything rests on one idea: the sign tells you which direction from zero, and the digits tell you how far.</p>
+<h4>Why it matters</h4><p>This is the gate to algebra. Solving any equation means moving terms across the equals sign and every one of them arrives with a sign attached. A student who is unsure whether -3 + (-5) is -8 or 8 will not be unsure loudly - they will get equations wrong for a year and it will look like they cannot do algebra, when the real fault is here.</p>
+<h4>What they will get wrong</h4><p>"Two negatives make a positive." It is the most repeated sentence in maths teaching and it is wrong for addition. -3 + (-5) is -8. Two negatives added together go further below zero, not above it. The saying is true for MULTIPLYING two negatives, and true for SUBTRACTING a negative, which is why it survives - it is right often enough to sound reliable. If a student gives you a positive answer for two negatives added, they are not being careless, they are applying a rule they were taught. Correct the rule, not the child.</p>
+<h4>What to say when they are stuck</h4><ul><li>Say: "Are the signs the same or different?" That single question picks which rule applies, and it is the whole lesson.</li><li>If the signs are the same: "Then add the numbers and keep the sign you already had." Two negatives stay negative.</li><li>If the signs are different: "Which number is further from zero? Subtract the smaller from the bigger, and that further one decides the sign."</li><li>For a stubborn -3 + (-5), drop the maths and use money: "You owe 3 dollars, then you owe 5 more. Do you owe more or less now?" Nobody gets that one wrong.</li><li>When they get it right, ask WHICH rule they used. If they cannot say, they guessed, and the next problem will show it.</li></ul></div>
+  </details>
+
+  <div class="rulebox">
+    <p class="short">Same signs: add, and keep the sign. Different signs: subtract, and take the sign of the number that is further from zero.</p>
+    <p class="long">Every addition falls into one of two cases, and you decide which by looking at the signs before you touch the digits.<br><br><b>Same signs.</b> Both positive, or both negative. Add the digits and keep the sign they already had. <i>4 + 9 = 13</i>. <i>-4 + (-9) = -13</i>. Two negatives added go further below zero, never above it.<br><br><b>Different signs.</b> One of each. Subtract the smaller digit from the bigger one, then give the answer the sign of whichever number was further from zero. <i>-9 + 4 = -5</i>, because 9 is further from zero than 4, and the 9 was negative.</p>
+    <p class="ruletest"><b>Run this test.</b> THE FURTHER-FROM-ZERO TEST. When the signs are different, ignore the signs for a moment and ask which number is bigger. That number wins, and its sign is the answer's sign. You can settle the sign before doing any arithmetic at all, which means you can check your own answer: if -9 + 4 came out positive, it is wrong, and you knew that before you subtracted.</p>
+  </div>
+
+  <figure class="nl"><svg viewBox="0 0 640 96" role="img" aria-label="-9 + 4 = -5. Start at -9, move 4 to the right, and you are still below zero."><defs><marker id="nlarrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--a)"/></marker></defs><line x1="26" y1="62" x2="614" y2="62" stroke="currentColor" stroke-width="1.5"/><line x1="26.0" y1="57" x2="26.0" y2="67" stroke="currentColor" stroke-width="1"/><text x="26.0" y="88" text-anchor="middle" font-size="12" fill="currentColor">-12</text><line x1="58.7" y1="57" x2="58.7" y2="67" stroke="currentColor" stroke-width="1"/><line x1="91.3" y1="57" x2="91.3" y2="67" stroke="currentColor" stroke-width="1"/><line x1="124.0" y1="57" x2="124.0" y2="67" stroke="currentColor" stroke-width="1"/><text x="124.0" y="88" text-anchor="middle" font-size="12" fill="currentColor">-9</text><line x1="156.7" y1="57" x2="156.7" y2="67" stroke="currentColor" stroke-width="1"/><line x1="189.3" y1="57" x2="189.3" y2="67" stroke="currentColor" stroke-width="1"/><line x1="222.0" y1="57" x2="222.0" y2="67" stroke="currentColor" stroke-width="1"/><line x1="254.7" y1="57" x2="254.7" y2="67" stroke="currentColor" stroke-width="1"/><text x="254.7" y="88" text-anchor="middle" font-size="12" fill="currentColor">-5</text><line x1="287.3" y1="57" x2="287.3" y2="67" stroke="currentColor" stroke-width="1"/><line x1="320.0" y1="57" x2="320.0" y2="67" stroke="currentColor" stroke-width="1"/><line x1="352.7" y1="57" x2="352.7" y2="67" stroke="currentColor" stroke-width="1"/><line x1="385.3" y1="57" x2="385.3" y2="67" stroke="currentColor" stroke-width="1"/><line x1="418.0" y1="53" x2="418.0" y2="71" stroke="currentColor" stroke-width="2"/><text x="418.0" y="88" text-anchor="middle" font-size="12" fill="currentColor">0</text><line x1="450.7" y1="57" x2="450.7" y2="67" stroke="currentColor" stroke-width="1"/><line x1="483.3" y1="57" x2="483.3" y2="67" stroke="currentColor" stroke-width="1"/><line x1="516.0" y1="57" x2="516.0" y2="67" stroke="currentColor" stroke-width="1"/><line x1="548.7" y1="57" x2="548.7" y2="67" stroke="currentColor" stroke-width="1"/><line x1="581.3" y1="57" x2="581.3" y2="67" stroke="currentColor" stroke-width="1"/><line x1="614.0" y1="57" x2="614.0" y2="67" stroke="currentColor" stroke-width="1"/><text x="614.0" y="88" text-anchor="middle" font-size="12" fill="currentColor">6</text><path d="M 124.0 30 L 254.7 30" stroke="var(--a)" stroke-width="2.5" fill="none" marker-end="url(#nlarrow)"/><circle cx="124.0" cy="62" r="4.5" fill="var(--a)"/><text x="189.3" y="20" text-anchor="middle" font-size="12.5" fill="var(--a)">+4</text></svg><figcaption>-9 + 4 = -5. Start at -9, move 4 to the right, and you are still below zero.</figcaption></figure>
+
+  <div class="tablewrap"><table class="signs"><caption>Adding: the two rules as a chart</caption>
+<thead><tr><th>Signs</th><th>What you do</th><th>Sign of the answer</th></tr></thead>
+<tbody><tr><td>positive + positive</td><td>add</td><td>positive</td></tr>
+<tr><td>negative + negative</td><td>add</td><td>negative</td></tr>
+<tr><td>positive + negative</td><td>subtract</td><td>sign of the one further from zero</td></tr>
+<tr><td>negative + positive</td><td>subtract</td><td>sign of the one further from zero</td></tr></tbody></table></div>
+
+  <h2 class="section-head">The Lesson</h2>
+  <p class="section-note">Press play and follow along. The arrows step back and forward, and the bar jumps to any line, so you can hear the same bit as many times as you need.</p>
+
+  <div class="player" id="player">
+    <div class="pcontrols">
+      <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
+      <label class="playerhide" for="playerhide" title="Show or hide the settings" aria-label="Show or hide the settings">
+        <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the settings">
+        <span class="track" aria-hidden="true"><span class="knob"></span></span>
+      </label>
+      <button class="btn" id="back" title="Back one sentence" aria-label="Back one sentence">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13 2.5v11L5.5 8 13 2.5zM4 2.5h1.6v11H4z"/></svg>
+      </button>
+      <button class="btn primary" type="button" id="play" aria-label="Read to me" title="Read to me"><svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.2l9 5.8-9 5.8z"/></svg></button>
+      <button class="btn" id="fwd" title="Forward one sentence" aria-label="Forward one sentence">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 2.5v11L10.5 8 3 2.5zM10.4 2.5H12v11h-1.6z"/></svg>
+      </button>
+    </div>
+    <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Jump to a sentence" aria-valuemin="1" aria-valuemax="26" aria-valuenow="1"></div>
+    <div class="pmeta">
+      <span id="pos">Sentence 1 of 26</span>
+      <span class="phint">Tap any sentence to start reading there</span>
+    </div>
+    <details class="psettings" id="psettings">
+      <summary><span>Settings</span><svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></summary>
+    <div class="voicerow" id="speedrow">
+      <label for="rate">Speed</label>
+      <select class="rate" id="rate" aria-label="Reading speed">
+        <option value="0.7">Slow</option>
+        <option value="0.85" selected>Normal</option>
+        <option value="1">Fast</option>
+      </select>
+    </div>
+    <div class="voicerow" id="voicerow">
+      <label for="voice">Voice</label>
+      <div class="vsel" id="vsel">
+        <button class="vsel-trigger" id="vselBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span id="vselLabel">Voice</span>
+          <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg>
+        </button>
+        <ul class="vsel-list" id="vselList" role="listbox" hidden></ul>
+      </div>
+      <select class="rate" id="voice" aria-label="Choose a reading voice" hidden></select>
+    </div>
+
+    <div class="keytogglerow">
+      <button class="linkbtn keydisclose" type="button" id="keyToggle" aria-expanded="false" aria-controls="keyrow">Use My Personal API (Voice) Key<svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></button>
+    </div>
+    <div class="keyrow" id="keyrow">
+      <p class="keydisc"><span aria-hidden="true">&#128274;</span><span><b>Stored on this device only.</b> Your key stays in this browser. It is never sent to NexStudents, never shared, and never leaves your machine except to the voice provider it belongs to.</span></p>
+      <label for="ttskey">Your API key</label>
+      <div class="keyfield">
+        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
+        <button class="btn" type="button" id="keySave">Save</button>
+        <button class="btn" type="button" id="keyClear">Clear</button>
+      </div>
+      <p class="keynote" id="keynote"><b>Where to get a key.</b> <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener">Google Cloud TTS</a> powers the built-in voices on this page and has a free monthly allowance. <a href="https://elevenlabs.io/" target="_blank" rel="noopener">ElevenLabs</a> is worth a look if you want a more natural voice and do not mind setting up an account.</p>
+    </div>
+    <div class="themerow" id="themerow">
+      <span class="lbl">Colors</span>
+      <div class="swatches" id="swatches"></div>
+    </div>
+    </details>
+
+    <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
+  </div>
+
+  <div id="story"><div class="part">
+  <h3>The Sign Is Part Of The Number</h3>
+  <p>A negative number is a number below zero.</p>
+  <p></p>
+  <p>The minus sign in front of it is not telling you to subtract. It is part of the number, the same way the digits are.</p>
+  <p></p>
+  <p>So -7 is a single number. It sits seven steps below zero, in the same way 7 sits seven steps above it.</p>
+  <p></p>
+  <p>When you add integers, the sign tells you which direction from zero, and the digits tell you how far.</p>
+</div>
+<div class="part">
+  <h3>Rule One. Same Signs.</h3>
+  <p>If both numbers have the same sign, add the digits and keep the sign.</p>
+  <p></p>
+  <p>4 + 9 = 13</p>
+  <p></p>
+  <p>Both positive, so add them and the answer stays positive. Nothing surprising there.</p>
+  <p></p>
+  <p>-4 + (-9) = -13</p>
+  <p></p>
+  <p>Both negative, so add them and the answer stays negative.</p>
+  <p></p>
+  <p>This is the one people get wrong. You may have heard that two negatives make a positive. That is not true for adding.</p>
+  <p></p>
+  <p>If you owe four dollars and then you owe nine more, you owe thirteen. You are further behind, not ahead.</p>
+</div>
+<div class="part">
+  <h3>Rule Two. Different Signs.</h3>
+  <p>If the signs are different, subtract the smaller digit from the bigger one.</p>
+  <p></p>
+  <p>Then give the answer the sign of whichever number was further from zero.</p>
+  <p></p>
+  <p>-9 + 4 = -5</p>
+  <p></p>
+  <p>Nine is further from zero than four, and the nine was negative. So the answer is negative.</p>
+  <p></p>
+  <p>9 + (-4) = 5</p>
+  <p></p>
+  <p>Same digits, but this time the nine is positive, so the answer is positive.</p>
+  <p></p>
+  <p>Notice you can decide the sign before doing any subtraction at all. Ask which number is bigger, and you already know whether your answer will be above or below zero.</p>
+</div>
+<div class="part">
+  <h3>Checking Yourself</h3>
+  <p>Work out the sign first, then the digits.</p>
+  <p></p>
+  <p>If you are adding two negatives and your answer came out positive, it is wrong. Two negatives cannot climb above zero by being added.</p>
+  <p></p>
+  <p>If the signs were different and your answer is bigger than both numbers you started with, it is wrong. Different signs pull against each other, so the answer always lands between them.</p>
+  <p></p>
+  <p>Those two checks catch most mistakes without redoing the problem.</p>
+</div></div>
+  <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
+
+  <h2 class="section-head">Your Turn</h2>
+  <p class="section-note">15 problems, and they change every day. A wrong answer tells you which rule to look at and lets you try again, so nothing here counts against you.</p>
+  <div class="tabs" role="tablist">
+    <button class="tab on" type="button" id="tabPractice" role="tab" aria-selected="true">Practice</button>
+    <button class="tab" type="button" id="tabTest" role="tab" aria-selected="false">Test</button>
+  </div>
+  <p class="section-note" id="modenote"></p>
+  <div class="actions">
+    <button class="tab act" type="button" id="reroll">New Problems</button>
+    <button class="tab act" type="button" id="check" hidden>Check My Work</button>
+  </div>
+  <div id="problems"></div>
+
+  <div class="scorebar" id="scorebar"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var LESSON_ID = "maths/adding-integers";
+var PARTS     = [{"title":"The Sign Is Part Of The Number","s":["A negative number is a number below zero.","","The minus sign in front of it is not telling you to subtract. It is part of the number, the same way the digits are.","","So -7 is a single number. It sits seven steps below zero, in the same way 7 sits seven steps above it.","","When you add integers, the sign tells you which direction from zero, and the digits tell you how far."]},{"title":"Rule One. Same Signs.","s":["If both numbers have the same sign, add the digits and keep the sign.","","4 + 9 = 13","","Both positive, so add them and the answer stays positive. Nothing surprising there.","","-4 + (-9) = -13","","Both negative, so add them and the answer stays negative.","","This is the one people get wrong. You may have heard that two negatives make a positive. That is not true for adding.","","If you owe four dollars and then you owe nine more, you owe thirteen. You are further behind, not ahead."]},{"title":"Rule Two. Different Signs.","s":["If the signs are different, subtract the smaller digit from the bigger one.","","Then give the answer the sign of whichever number was further from zero.","","-9 + 4 = -5","","Nine is further from zero than four, and the nine was negative. So the answer is negative.","","9 + (-4) = 5","","Same digits, but this time the nine is positive, so the answer is positive.","","Notice you can decide the sign before doing any subtraction at all. Ask which number is bigger, and you already know whether your answer will be above or below zero."]},{"title":"Checking Yourself","s":["Work out the sign first, then the digits.","","If you are adding two negatives and your answer came out positive, it is wrong. Two negatives cannot climb above zero by being added.","","If the signs were different and your answer is bigger than both numbers you started with, it is wrong. Different signs pull against each other, so the answer always lands between them.","","Those two checks catch most mistakes without redoing the problem."]},{"title":"What To Do Now","s":["That is both rules. Now it is your turn.","There are fifteen problems below this one.","For each one, look at the signs first and decide which rule applies before you work out any digits.","Type the answer in the box, minus sign included if the answer is below zero.","Practice mode checks each answer as you enter it. Test mode won't check anything until you press Check my work.","Do all fifteen. If you get one wrong, say out loud which of the two rules it needed. That is usually where it went wrong, not in the arithmetic."]}];
+var SPEC      = {"count":15,"kind":"add","max":60,"mix":["pp","nn","pn","np"]};
+
+/* ── colours ───────────────────────────────────────────────────────────────
+   The same five palettes every other lesson type uses, spliced in from
+   lesson-template.html at build time, stored under the same ns:theme key so a
+   colour picked in a history lesson is already picked here.
+   ------------------------------------------------------------------------ */
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch (e){} }
+
+var THEMES = {
+  forest: { name:"Forest",
+    light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
+            accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
+            ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
+            brass:"#7E6A16",band:"rgba(158,138,40,.42)",word:"rgba(158,138,40,.74)" },
+    dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
+            accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
+            ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
+            brass:"#D8B355",band:"rgba(216,179,85,.3)",word:"rgba(216,179,85,.62)" } },
+
+  ocean: { name:"Ocean",
+    light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
+            accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
+            ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.38)",word:"rgba(196,132,24,.68)" },
+    dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
+            accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
+            ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.3)",word:"rgba(224,182,92,.62)" } },
+
+  ember: { name:"Ember",
+    light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
+            accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
+            ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
+            brass:"#6B5A11",band:"rgba(120,104,26,.38)",word:"rgba(120,104,26,.68)" },
+    dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
+            accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
+            ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
+            brass:"#D6C169",band:"rgba(214,193,105,.28)",word:"rgba(214,193,105,.59)" } },
+
+  violet: { name:"Violet",
+    light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
+            accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
+            ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
+            brass:"#7A6212",band:"rgba(150,122,26,.38)",word:"rgba(150,122,26,.68)" },
+    dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
+            accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
+            ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.28)",word:"rgba(220,187,99,.59)" } },
+
+  graphite: { name:"Graphite",
+    light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
+            accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
+            ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
+            brass:"#7A6318",band:"rgba(152,124,32,.38)",word:"rgba(152,124,32,.68)" },
+    dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
+            accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
+            ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
+            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } }
+};
+
+/* ns.css names its variables differently from the history template, so the
+   palette is mapped onto the names this page actually uses. Same map as
+   math/template.html. */
+var VAR_MAP = {
+  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
+  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
+  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
+};
+
+var themeKey = load("theme", "graphite");
+if (!THEMES[themeKey]) themeKey = "graphite";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+/* 🚨 THIS PAGE DOES NOT BUILD SWATCHES. The player builds them. What this
+   page owns is the MAPPING, handed to the player as a hook - same split as
+   maths, and the reason maths once rendered ten colour dots instead of five. */
+window.nsOnTheme = function(k){ themeKey = k; applyTheme(); };
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+document.body.style.background = "var(--bg)";
+
+var synth = window.speechSynthesis;
+var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
+if (!supported) document.getElementById("nospeech").classList.add("show");
+
+/* ---------- saved settings and progress ----------
+   Keys are shared site-wide on purpose:
+     ns:voice / ns:speed / ns:theme   settings, so they carry to every lesson
+     ns:done:<lessonId>               progress, so the lesson list can tick it off
+   Same origin means /grade-7/ and /history/ read the very same store. */
+var LESSON_ID = "history/republic-to-empire";
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch(e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch(e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch(e){} }
+
+/* ---------- colour themes ---------- */
+/* Each theme carries a full light and dark set, so switching theme never leaves
+   half the page on the old palette. --control-bg stays dark in every theme because
+   the select arrow is a light-stroked SVG. */
+var THEMES = {
+  forest: { name:"Forest",
+    light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
+            accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
+            ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
+            brass:"#7E6A16",band:"rgba(158,138,40,.42)",word:"rgba(158,138,40,.74)" },
+    dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
+            accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
+            ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
+            brass:"#D8B355",band:"rgba(216,179,85,.3)",word:"rgba(216,179,85,.62)" } },
+
+  ocean: { name:"Ocean",
+    light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
+            accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
+            ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.38)",word:"rgba(196,132,24,.68)" },
+    dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
+            accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
+            ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.3)",word:"rgba(224,182,92,.62)" } },
+
+  ember: { name:"Ember",
+    light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
+            accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
+            ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
+            brass:"#6B5A11",band:"rgba(120,104,26,.38)",word:"rgba(120,104,26,.68)" },
+    dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
+            accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
+            ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
+            brass:"#D6C169",band:"rgba(214,193,105,.28)",word:"rgba(214,193,105,.59)" } },
+
+  violet: { name:"Violet",
+    light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
+            accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
+            ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
+            brass:"#7A6212",band:"rgba(150,122,26,.38)",word:"rgba(150,122,26,.68)" },
+    dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
+            accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
+            ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.28)",word:"rgba(220,187,99,.59)" } },
+
+  graphite: { name:"Graphite",
+    light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
+            accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
+            ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
+            brass:"#7A6318",band:"rgba(152,124,32,.38)",word:"rgba(152,124,32,.68)" },
+    dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
+            accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
+            ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
+            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } }
+};
+
+var VAR_MAP = {
+  ground:"--ground", surface:"--surface", s2:"--surface-2", ink:"--ink",
+  inkSoft:"--ink-soft", inkFaint:"--ink-faint", rule:"--rule",
+  accent:"--verdigris", accentInk:"--verdigris-ink", accentSoft:"--verdigris-soft",
+  onAccent:"--on-accent", ctlBg:"--control-bg", ctlInk:"--control-ink",
+  ctlBorder:"--control-border", tickNow:"--tick-now", tickDone:"--tick-done",
+  brass:"--brass", band:"--band", word:"--word"
+};
+
+/* Graphite is the default reading theme. Paul, 2026-08-29. Forest was only
+   ever the default because it was written first. */
+var themeKey = load("theme", "graphite");
+if (!THEMES[themeKey]) themeKey = "graphite";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){
+    if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]);
+  }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+  /* Maths and English map the same palette onto ns.css names (--bg, --panel,
+     --fg) rather than the history names. They hang their own mapper here, so
+     one set of swatches drives every page instead of each template building a
+     second row of its own. */
+  if (typeof window.nsOnTheme === "function") { try { window.nsOnTheme(themeKey); } catch (e) {} }
+}
+
+(function buildSwatches(){
+  var wrap = document.getElementById("swatches");
+  Object.keys(THEMES).forEach(function(k){
+    var b = document.createElement("button");
+    b.className = "sw";
+    b.type = "button";
+    b.setAttribute("data-t", k);
+    b.title = THEMES[k].name;
+    b.setAttribute("aria-label", THEMES[k].name + " colours");
+    var d = THEMES[k].dark;
+    b.style.background = "linear-gradient(135deg," + d.accent + " 0 50%," + d.ground + " 50% 100%)";
+    b.addEventListener("click", function(){
+      themeKey = k;
+      store("theme", k);
+      applyTheme();
+    });
+    wrap.appendChild(b);
+  });
+})();
+
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+
+
+/* ---------- build the story ---------- */
+var SENT = [];
+var storyEl = document.getElementById("story");
+
+PARTS.forEach(function(part){
+  var sec = document.createElement("section");
+  sec.className = "part";
+  /* A part may have no title - maths uses one untitled block, because its
+     heading is already the page section above it. An empty <h2> would still
+     take its margin and read as a gap. */
+  if (part.title) {
+    var h = document.createElement("h2");
+    h.textContent = part.title;
+    sec.appendChild(h);
+  }
+  var p = document.createElement("p");
+  p.className = "para";
+  part.s.forEach(function(text){
+    /* 🚨 AN EMPTY STRING IS A PARAGRAPH BREAK, not a sentence.
+       Paul, 2026-08-29: "i think you need to use paragraphs and make it simple
+       to understand." A section used to be ONE paragraph however long it ran,
+       which gave a struggling reader a nine-sentence wall with no landing spot.
+       ⚠️ It must NOT enter SENT. The clip index in voice.json is a position in
+       SENT, so counting a break as a sentence would play every line's audio one
+       place late. tools/bake-voice.js skips them by the same rule - if you
+       change the rule, change it in BOTH or the whole lesson goes off by one. */
+    if (!String(text).trim()) {
+      if (p.childNodes.length) sec.appendChild(p);
+      p = document.createElement("p");
+      p.className = "para";
+      return;
+    }
+    var i = SENT.length;
+    var span = document.createElement("span");
+    span.className = "sent";
+    span.id = "s" + i;
+    span.setAttribute("data-i", i);
+    // word spans with char offsets, so speech boundaries can light them up
+    var offsets = [];
+    var cursor = 0;
+    text.split(" ").forEach(function(w, k){
+      if (k > 0) { span.appendChild(document.createTextNode(" ")); cursor += 1; }
+      var ws = document.createElement("span");
+      ws.className = "w";
+      ws.textContent = w;
+      span.appendChild(ws);
+      offsets.push({ el: ws, start: cursor, end: cursor + w.length });
+      cursor += w.length;
+    });
+    p.appendChild(span);
+    p.appendChild(document.createTextNode(" "));
+    SENT.push({ text: text, el: span, words: offsets });
+  });
+  /* the last paragraph, unless a stray break at the end left it empty */
+  if (p.childNodes.length) sec.appendChild(p);
+  storyEl.appendChild(sec);
+});
+
+/* ---------- read aloud ---------- */
+/* Two engines.
+   STUDIO  — pre-rendered Google Cloud TTS clips, embedded below as data URIs, with a
+             per-word timing array from Google's SSML timepoints. Best quality, no network.
+   DEVICE  — the browser's own speechSynthesis. Always present, always the fallback.
+   AUDIO stays null until the clips are generated; the page runs on DEVICE until then. */
+var AUDIO = null;        /* the ACTIVE baked track: { voice, clips:[...] } */
+var AUDIO_TRACKS = [];   /* every baked track for this lesson */
+
+/* Fingerprint of the text this page is actually showing, used to refuse audio
+   baked from a different version of the lesson.
+   🚨 tools/bake-voice.js runs the IDENTICAL function over the sentences it
+   bakes. If you change one you MUST change the other, or every lesson loses its
+   baked voice at once - the hashes would never match again. FNV-1a over UTF-16
+   code units: no crypto, works the same in Node and in a browser. */
+function nsTextHash(list){
+  var h = 2166136261;
+  var s = list.join("\n");
+  for (var i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return ("0000000" + h.toString(16)).slice(-8);
+}
+var TEXT_HASH = nsTextHash(SENT.map(function(s){ return s.text; }));
+
+(function loadBakedVoice(){
+  fetch("voice.json", { cache: "force-cache" })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      var tr = (j && j.tracks) || [];
+      if (!tr.length) return;
+      /* 🚨 A STALE MANIFEST IS WORSE THAN NO AUDIO, because it is confidently
+         wrong: the highlight walks the new text while the voice reads the old.
+
+         ⚠️ COUNTING SENTENCES IS NOT ENOUGH, and this nearly shipped. On
+         2026-08-29 the history lessons lost a six-line opening block and gained
+         a six-line closing one. The count matched exactly, the count check
+         passed, and every clip would have played against a different sentence.
+
+         So the manifest carries a hash of the text it was baked FROM, and the
+         page carries the hash of the text it is showing. If they differ the
+         lesson has been edited since the bake and the audio is refused - the
+         page falls back to a device voice, which is always in step because it
+         reads what is actually on screen. */
+      if (j.textHash && TEXT_HASH && j.textHash !== TEXT_HASH){
+        AUDIO = null;
+        return;
+      }
+      tr = tr.filter(function(t){ return t.clips && t.clips.length === SENT.length; });
+      if (!tr.length){ AUDIO = null; return; }
+      AUDIO_TRACKS = tr;
+      AUDIO = tr[0];
+      engine = "baked";
+      /* Rebuild the picker: it was built before this arrived, so it does not
+         know the Built-in voice exists yet. Rebuilding also re-runs the
+         "restore the saved pick" logic, which now prefers the baked voice. */
+      if (typeof window.nsRebuildVoices === "function") window.nsRebuildVoices();
+      if (typeof window.syncVoiceUI === "function") window.syncVoiceUI();
+      var ns = document.getElementById("nospeech");
+      if (ns){ ns.style.display = "none"; ns.classList.remove("show"); }
+      var pb = document.getElementById("play");
+      if (pb){ pb.disabled = false; pb.style.opacity = ""; }
+    })
+    .catch(function(){ /* not baked yet - the device voice still works */ });
+})();
+
+/* Google Cloud voices, fetched live with the viewer's own key. Curated rather
+   than listed from the API: these are the ones that support SSML marks, which
+   is what gives exact per-word timing. British first, per Paul. */
+var GOOGLE_VOICES = [
+  { id:"en-GB-Neural2-B", label:"UK male (Neural2 B)" },
+  { id:"en-GB-Neural2-D", label:"UK male (Neural2 D)" },
+  { id:"en-GB-Neural2-A", label:"UK female (Neural2 A)" },
+  { id:"en-US-Neural2-D", label:"US male (Neural2 D)" },
+  { id:"en-US-Neural2-J", label:"US male (Neural2 J)" }
+];
+var ttsKey = load("ttskey", "");
+
+/* Bounded, oldest-out. 60 clips is more than two full lessons on one voice,
+   so in normal use nothing is ever evicted and the cache behaves exactly as it
+   did before. It only bites when someone switches voices repeatedly, which is
+   the case that used to grow without limit. */
+var CLIP_CAP = 60;
+var clipCache = {};          // "voice|index" -> { src, marks }
+var clipOrder = [];          // keys, oldest first
+function cacheClip(key, clip){
+  if (!clipCache[key]) clipOrder.push(key);
+  clipCache[key] = clip;
+  while (clipOrder.length > CLIP_CAP){
+    var old = clipOrder.shift();
+    if (old !== key) delete clipCache[old];
+  }
+}
+
+function hasKey(){ return !!ttsKey; }
+
+function hasStudio(){
+  return !!(AUDIO && AUDIO.clips && AUDIO.clips.length === SENT.length);
+}
+/* Point AUDIO at a named track. Returns false if this lesson has no such
+   voice, so the caller can fall back rather than play silence. */
+function useTrack(id){
+  for (var i = 0; i < AUDIO_TRACKS.length; i++){
+    if (AUDIO_TRACKS[i].id === id){ AUDIO = AUDIO_TRACKS[i]; return true; }
+  }
+  return false;
+}
+
+function xmlEsc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+}
+
+/* One sentence -> MP3 + a start time per word. Cached, so replaying a sentence
+   or scrubbing back costs nothing and never bills twice. */
+function fetchClip(i, voiceId){
+  var ck = voiceId + "|" + i;
+  if (clipCache[ck]) return Promise.resolve(clipCache[ck]);
+  var words = SENT[i].text.split(" ");
+  var ssml = "<speak>" + words.map(function(w, k){
+    return '<mark name="w' + k + '"/>' + xmlEsc(w);
+  }).join(" ") + "</speak>";
+
+  return fetch("https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=" + encodeURIComponent(ttsKey), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: { ssml: ssml },
+      voice: { languageCode: voiceId.slice(0, 5), name: voiceId },
+      audioConfig: { audioEncoding: "MP3", speakingRate: rateVal() },
+      enableTimePointing: ["SSML_MARK"]
+    })
+  }).then(function(r){
+    return r.json().then(function(j){
+      if (!r.ok) throw new Error(j.error ? j.error.message : "HTTP " + r.status);
+      return j;
+    });
+  }).then(function(j){
+    var marks = new Array(words.length).fill(0);
+    (j.timepoints || []).forEach(function(tp){
+      var n = parseInt(String(tp.markName).slice(1), 10);
+      if (!isNaN(n) && n < marks.length) marks[n] = tp.timeSeconds;
+    });
+    var clip = { src: "data:audio/mpeg;base64," + j.audioContent, marks: marks };
+    cacheClip(ck, clip);
+    return clip;
+  });
+}
+
+var synth = window.speechSynthesis;
+var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
+var idx = 0, playing = false, gen = 0, voice = null;
+var engine = "device";       // "google" | "baked" | "device"
+var googleVoice = load("gvoice", GOOGLE_VOICES[0].id);
+var audioEl = null, rafId = null;
+var playBtn = document.getElementById("play");
+var scrub = document.getElementById("scrub");
+var posEl = document.getElementById("pos");
+
+function note(msg, kind){
+  var el = document.getElementById("keynote");
+  if (!el) return;
+  el.className = "keynote" + (kind ? " " + kind : "");
+  if (msg) { el.textContent = msg; } else { el.innerHTML = "Your key is stored only in this browser and is sent only to the provider it belongs to. Paste a Google Cloud Text-to-Speech key for the built-in voices. <a href=\"https://cloud.google.com/text-to-speech\" target=\"_blank\" rel=\"noopener\">Google Cloud TTS</a> &middot; <a href=\"https://elevenlabs.io/\" target=\"_blank\" rel=\"noopener\">ElevenLabs</a>"; }
+  if (msg && kind === "bad") document.getElementById("keyrow").classList.add("show");
+}
+window.syncVoiceUI = function(){};
+
+if (!supported && !hasStudio() && !hasKey()){
+  document.getElementById("nospeech").style.display = "block";
+  playBtn.disabled = true;
+  playBtn.style.opacity = ".5";
+} else {
+  // The default browser voice on Windows is usually Microsoft David or Zira, the old
+  // robotic SAPI pair. The good free voices are the non-local ones: Google's, and the
+  // Windows 11 "Natural" set. Rank by name so the best available wins, and let him pick.
+  var voiceSel = document.getElementById("voice");
+  var voiceRow = document.getElementById("voicerow");
+  var voices = [];
+
+  function rank(v){
+    var n = v.name || "";
+    // Paul's pick. Wins outright wherever Chrome ships it.
+    if (/^google uk english male$/i.test(n.trim())) return 1000;
+    var score = 0;
+    if (/natural/i.test(n)) score += 100;          // Windows 11 neural voices
+    if (/neural/i.test(n)) score += 90;
+    if (/^google/i.test(n)) score += 75;           // Chrome's own, clearly better than SAPI
+    if (/online/i.test(n)) score += 55;
+    if (/\b(ava|andrew|emma|brian|aria|guy|jenny|michelle|steffan|christopher|eric)\b/i.test(n)) score += 45;
+    if (/\b(samantha|alex|siri|evan|nathan|serena|daniel|arthur|oliver)\b/i.test(n)) score += 60; // macOS / iOS
+    if (/\b(david|zira|mark|hazel|susan|george|catherine)\b/i.test(n)) score -= 60; // legacy SAPI
+    if (/compact|eloquence|espeak/i.test(n)) score -= 80;
+    if (v.localService === false) score += 15;
+    if (/^en[-_]GB/i.test(v.lang)) score += 12;    // British first, per Paul
+    else if (/^en[-_]US/i.test(v.lang)) score += 6;
+    return score;
+  }
+
+  function saved(){ return load("voice", null); }
+  function save(name){ store("voice", name); }
+
+  window.nsRebuildVoices = function(){ loadVoices(); };
+  var lastVoiceCount = -1;
+  function loadVoices(){
+    var all = supported ? (synth.getVoices() || []) : [];
+    lastVoiceCount = all.length;
+    voices = all.filter(function(v){ return /^en([-_]|$)/i.test(v.lang || ""); });
+    if (!voices.length) voices = all.slice();
+    voices.sort(function(a, b){ return rank(b) - rank(a); });
+    if (voices.length) voice = voices[0];
+
+    voiceSel.innerHTML = "";
+
+    // Google Cloud voices, only once a key is saved
+    if (hasKey()){
+      var gg = document.createElement("optgroup");
+      gg.label = "Google Cloud (your key)";
+      GOOGLE_VOICES.forEach(function(g){
+        var o = document.createElement("option");
+        o.value = "g:" + g.id;
+        o.textContent = g.label;
+        gg.appendChild(o);
+      });
+      voiceSel.appendChild(gg);
+    }
+    /* NexVoice is always listed. When a lesson has not been recorded yet it
+       is greyed out rather than hidden, so a reader can see it is coming and
+       we can keep writing lessons without waiting on the audio. */
+    if (AUDIO_TRACKS.length){
+      AUDIO_TRACKS.forEach(function(t){
+        var o = document.createElement("option");
+        o.value = "__studio__:" + t.id;
+        o.textContent = t.label || "NexVoice";
+        voiceSel.appendChild(o);
+      });
+    } else {
+      var nv = document.createElement("option");
+      nv.value = "__studio__";
+      nv.textContent = "NexVoice — not available";
+      nv.disabled = true;
+      voiceSel.appendChild(nv);
+    }
+
+    /* ── THE FALLBACK VOICES ──────────────────────────────────────────────
+       🚨 NEVER REQUIRE A NAME TO CONTAIN "MALE" OR "FEMALE". Paul, 2026-08-29,
+       from his S26: the phone reported 92 voices and the lesson offered none.
+
+       Desktop Chrome names voices "Google UK English Male". Android does not -
+       it uses identifiers like en-gb-x-gbb-network, with no gender word and
+       often no readable name at all. The old picker asked every candidate
+       whether it was male or female, got "neither" 92 times, and produced an
+       empty list on the exact device this was all built for.
+
+       So selection is by LANGUAGE and quality, which every platform reports
+       honestly. Gender is used only to LABEL, never to qualify. */
+    function scoreOf(v){
+      var n = (v.name || "") + " " + (v.voiceURI || "");
+      var s = 0;
+      if (/natural|neural|wavenet|enhanced|premium/i.test(n)) s += 60;
+      if (/network|online/i.test(n)) s += 25;   /* Android marks its good ones */
+      if (/google|siri/i.test(n)) s += 20;
+      if (v.localService === false) s += 12;
+      if (/microsoft (david|zira|mark)/i.test(n)) s -= 50;
+      if (/espeak|compact|pico/i.test(n)) s -= 60;
+      return s;
+    }
+    function isGB(v){ return /^en[-_]GB/i.test(v.lang || ""); }
+    function isUS(v){ return /^en[-_]US/i.test(v.lang || ""); }
+    function genderOf(v){
+      var n = v.name || "";
+      if (/female/i.test(n)) return "female";
+      if (/male/i.test(n)) return "male";
+      /* no name to read - fall back to the Android voice id */
+      var id = ((v.voiceURI || "") + " " + n).toLowerCase();
+      if (/-x-(gbb|gbd|usm|iom|ahb)/.test(id)) return "male";
+      if (/-x-(gba|gbc|usf|iof|aha)/.test(id)) return "female";
+      return "";
+    }
+    function bestOf(list, taken){
+      var pool = list.filter(function(v){ return taken.indexOf(v) < 0; });
+      pool.sort(function(a, b){ return scoreOf(b) - scoreOf(a); });
+      return pool[0] || null;
+    }
+
+    var taken = [];
+    var picks = [];
+    function add(v, label){
+      if (!v) return;
+      taken.push(v);
+      picks.push([v, label]);
+    }
+
+    /* 🚨 UK ONLY. The US voices read "3s" as "three es" instead of "threes",
+       which is wrong in a maths lesson about the three times table - a voice
+       that mispronounces the material is not a lesser choice, it is an
+       incorrect one. Two entries, and only two. */
+    var gb = voices.filter(isGB);
+    var male = gb.filter(function(v){ return genderOf(v) === "male"; });
+    var female = gb.filter(function(v){ return genderOf(v) === "female"; });
+    /* Android names carry no gender, so when it cannot be read we simply take
+       the two best British voices and label them 1 and 2 rather than guessing
+       at which is which. */
+    /* One of each gender where the device says so, otherwise the best British
+       voices it has. */
+    add(bestOf(male, taken) || bestOf(gb, taken), null);
+    add(bestOf(female, taken) || bestOf(gb, taken), null);
+    /* Still short? Only then reach outside Britain - and it will be labelled
+       for what it actually is, not as a British voice. */
+    while (picks.length < 2){
+      var any = bestOf(voices, taken);
+      if (!any) break;
+      add(any, null);
+    }
+
+    /* ── LABEL FROM THE VOICE, NEVER FROM ITS POSITION ──────────────────── */
+    function accentOf(v){
+      var l = (v.lang || "").toUpperCase();
+      if (/^EN[-_]GB/.test(l)) return "UK";
+      if (/^EN[-_]US/.test(l)) return "US";
+      if (/^EN[-_]AU/.test(l)) return "Australian";
+      if (/^EN[-_]IN/.test(l)) return "Indian";
+      if (/^EN[-_]IE/.test(l)) return "Irish";
+      if (/^EN[-_]ZA/.test(l)) return "South African";
+      if (/^EN[-_]CA/.test(l)) return "Canadian";
+      return "English";
+    }
+    var used = {};
+    picks.forEach(function(p){
+      var acc = accentOf(p[0]);
+      var g = genderOf(p[0]);
+      var base = (acc === "English" ? "Voice" : acc + " Voice") + (g ? " " + (g === "male" ? "Male" : "Female") : "");
+      used[base] = (used[base] || 0) + 1;
+      p[1] = base;
+      p[2] = base;                 /* remember the base for the numbering pass */
+    });
+    /* number only where two entries would otherwise read identically */
+    var seenBase = {};
+    picks.forEach(function(p){
+      if (used[p[2]] > 1){
+        seenBase[p[2]] = (seenBase[p[2]] || 0) + 1;
+        p[1] = p[2] + " " + seenBase[p[2]];
+      }
+    });
+
+    if (picks.length){
+      picks.forEach(function(p){
+        var o = document.createElement("option");
+        o.value = "d:" + p[0].name;
+        o.textContent = p[1];
+        voiceSel.appendChild(o);
+      });
+      /* the device default used elsewhere should be the best of these, not
+         whatever the OS listed first */
+      voice = picks[0][0];
+    }
+
+    // Restore the saved pick, falling back sensibly if it is not on this device
+    var want = saved();
+    if (!want || !selectValue(want)){
+      /* NexVoice first when the lesson has it - it is the reason the site has
+         a voice at all. A saved pick still wins, so a reader who chose
+         something else keeps it. */
+      if (AUDIO_TRACKS.length) selectValue("__studio__:" + AUDIO_TRACKS[0].id);
+      else if (AUDIO_TRACKS.length) selectValue("__studio__:" + AUDIO_TRACKS[0].id);
+      else if (hasKey()) selectValue("g:" + googleVoice);
+      else if (voice) selectValue("d:" + voice.name);
+    }
+    applyVoiceChoice(voiceSel.value, false);
+    if (voiceSel.options.length) voiceRow.classList.add("show");
+    renderVsel();
+  }
+
+  /* Mirror the hidden select into our own dropdown. Rebuilt whenever the
+     voice list changes, which is the only time it can differ. */
+  function renderVsel(){
+    var btn = document.getElementById("vselBtn");
+    var list = document.getElementById("vselList");
+    var label = document.getElementById("vselLabel");
+    if (!btn || !list || !label) return;
+    list.innerHTML = "";
+    [].forEach.call(voiceSel.options, function(o){
+      var li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", String(o.selected));
+      if (o.disabled) li.setAttribute("aria-disabled", "true");
+      li.textContent = o.textContent;
+      if (!o.disabled){
+        li.addEventListener("click", function(){
+          voiceSel.value = o.value;
+          voiceSel.dispatchEvent(new Event("change", { bubbles: true }));
+          closeVsel();
+          renderVsel();
+        });
+      }
+      list.appendChild(li);
+    });
+    var sel = voiceSel.options[voiceSel.selectedIndex];
+    label.textContent = sel ? sel.textContent : "Voice";
+  }
+  function closeVsel(){
+    var btn = document.getElementById("vselBtn");
+    var list = document.getElementById("vselList");
+    if (!btn || !list) return;
+    list.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+  }
+  (function wireVsel(){
+    var btn = document.getElementById("vselBtn");
+    var list = document.getElementById("vselList");
+    if (!btn || !list) return;
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      var open = list.hidden;
+      list.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    /* a menu that will not close is worse than no menu */
+    document.addEventListener("click", function(e){
+      if (!list.hidden && !list.contains(e.target) && e.target !== btn) closeVsel();
+    });
+    document.addEventListener("keydown", function(e){
+      if (e.key === "Escape") closeVsel();
+    });
+  })();
+  window.nsRenderVsel = renderVsel;
+
+  function selectValue(v){
+    var found = false;
+    [].forEach.call(voiceSel.querySelectorAll("option"), function(o){
+      if (o.value === v){ o.selected = true; found = true; }
+    });
+    return found;
+  }
+
+  function applyVoiceChoice(val, persist){
+    if (!val) return;
+    if (val.indexOf("g:") === 0){
+      engine = "google";
+      googleVoice = val.slice(2);
+      store("gvoice", googleVoice);
+    } else if (val.indexOf("__studio__") === 0){
+      var id = val.split(":")[1];
+      if (id) useTrack(id);
+      engine = "baked";
+    } else {
+      engine = "device";
+      voice = voices.filter(function(v){ return "d:" + v.name === val; })[0] || voice;
+    }
+    if (persist) save(val);
+  }
+
+  window.syncVoiceUI = function(){
+    if (engine === "device" && voice) selectValue("d:" + voice.name);
+  };
+
+  voiceSel.addEventListener("change", function(){
+    applyVoiceChoice(voiceSel.value, true);
+    note("", "");
+    if (playing) speak(idx);
+  });
+
+  /* ---- API key ---- */
+  var keyRow = document.getElementById("keyrow");
+  var keyIn = document.getElementById("ttskey");
+  document.getElementById("keyToggle").addEventListener("click", function(){
+    var open = keyRow.classList.toggle("show");
+    this.setAttribute("aria-expanded", String(open));
+    if (open) keyIn.focus();
+  });
+  if (ttsKey) keyIn.value = ttsKey;
+  document.getElementById("keySave").addEventListener("click", function(){
+    var v = keyIn.value.trim();
+    if (!v){ note("Paste a key first.", "bad"); return; }
+    ttsKey = v; store("ttskey", v); clipCache = {};
+    note("Key saved. Google Cloud voices are now in the list.", "good");
+    loadVoices();
+    selectValue("g:" + googleVoice);
+    applyVoiceChoice(voiceSel.value, true);
+  });
+  document.getElementById("keyClear").addEventListener("click", function(){
+    ttsKey = ""; drop("ttskey"); clipCache = {}; keyIn.value = "";
+    engine = "device";
+    note("Key removed. Back to this device's voice.", "");
+    loadVoices();
+  });
+
+  loadVoices();
+  // Chrome populates the list asynchronously, so this fires after the first empty read
+  if (supported && typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = loadVoices;
+
+  /* The event is unreliable, so watch the count as well. Rebuilds only when it
+     actually changes, and gives up after ~20s by which point any device that
+     is going to report voices has done so. */
+  (function warmVoicesOnGesture(){
+    if (!supported) return;
+    var done = false;
+    function warm(){
+      if (done) return;
+      done = true;
+      try {
+        /* an empty utterance: no sound, but it forces Android to load voices */
+        var u = new SpeechSynthesisUtterance(" ");
+        u.volume = 0;
+        synth.speak(u);
+        synth.cancel();
+      } catch (e) {}
+      /* the list can take a moment to appear even after the nudge */
+      setTimeout(loadVoices, 120);
+      setTimeout(loadVoices, 600);
+      setTimeout(loadVoices, 1600);
+      ["pointerdown", "touchstart", "keydown"].forEach(function(ev){
+        document.removeEventListener(ev, warm, true);
+      });
+    }
+    ["pointerdown", "touchstart", "keydown"].forEach(function(ev){
+      document.addEventListener(ev, warm, true);
+    });
+  })();
+
+  (function watchVoices(){
+    if (!supported) return;
+    var checks = 0;
+    var t = setInterval(function(){
+      checks++;
+      var n = (synth.getVoices() || []).length;
+      if (n !== lastVoiceCount) loadVoices();
+      if (checks > 80 || (n > 0 && checks > 12)) clearInterval(t);
+    }, 250);
+  })();
+}
+
+var ticks = SENT.map(function(_, i){
+  var t = document.createElement("span");
+  t.className = "tick";
+  t.setAttribute("data-i", i);
+  scrub.appendChild(t);
+  return t;
+});
+scrub.setAttribute("aria-valuemax", String(SENT.length));
+
+function paint(){
+  SENT.forEach(function(s, i){
+    /* 🚨 WORD OR SENTENCE, NEVER BOTH. NexVoice has real per-word timings, so
+       it marks the WORD and the sentence band would only compete with it.
+       Every other voice has no usable timing at all, so it marks the SENTENCE.
+       Dragging always shows the band, because then you are looking for a line
+       rather than following one. */
+    s.el.classList.toggle("reading", i === idx && ((playing && !wordMode()) || dragging));
+    var want = "tick" + (i < idx ? " done" : (i === idx ? " now" : ""));
+    if (ticks[i].className !== want) ticks[i].className = want;   /* only if changed */
+  });
+  posEl.textContent = "Sentence " + (idx + 1) + " of " + SENT.length;
+  scrub.setAttribute("aria-valuenow", String(idx + 1));
+  /* 🚨 AN ICON, AND THE BUTTON KEEPS ITS SHAPE. Paul, 2026-08-29: "instead of
+     the button say read to me it just shows a play and pause icon inside of
+     the button. dont change the shape of the button." The min-width stays, so
+     it does not resize as it toggles - a transport button that changes width
+     every time you press it never feels solid. The words move to aria-label
+     and title, so a screen reader still hears a verb. */
+  playBtn.innerHTML = playing ? "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.5h3.1v11H4zM8.9 2.5H12v11H8.9z\"/></svg>" : "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.2l9 5.8-9 5.8z\"/></svg>";
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Read to me");
+  playBtn.setAttribute("title", playing ? "Pause" : "Read to me");
+  /* A lesson can hang something off the current sentence. Maths uses it to
+     draw its division grid up to this step, so the worked example and the
+     narration move together instead of being two separate players. Generic,
+     so science gets it free. */
+  if (typeof window.nsOnSentence === "function") { try { window.nsOnSentence(idx); } catch (e) {} }
+  if (typeof window.nsSavePos === "function") window.nsSavePos();
+}
+
+/* 🚨 ONLY SCROLL WHEN THE THING IS ACTUALLY OFF SCREEN.
+   Reported from a real lesson, 2026-08-29: "after he answered a question the page jumped
+   up or around."
+
+   He was right, and there were two causes stacked on each other. Answering a
+   question ALWAYS pulled its card to the centre of the screen, even when the
+   card was already sitting under his eyes - so the page moved for no reason
+   the moment he clicked. And where a hunt was involved, endHunt fired at the
+   same time, so a second smooth scroll started before the first had finished
+   and the page appeared to swing around.
+
+   A scroll should answer a question the reader is asking: "where did it go?"
+   If he can already see it, he is not asking. The sticky player is counted as
+   covered screen, because an element hidden behind it is not visible either. */
+/* The band of screen a reader can actually see: the viewport, less whatever
+   the player is sitting over. It handles the player docked at the bottom (the
+   layout today) and stuck at the top (what it used to be, and what a future
+   change might want again) without either caller knowing which. */
+function nsReadArea(){
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  var top = 0, bottom = vh;
+  var p = document.getElementById("player");
+  if (p && !document.body.classList.contains("player-hidden")){
+    var pr = p.getBoundingClientRect();
+    if (pr.top <= 4) top = pr.bottom;                 /* stuck at the top    */
+    else if (pr.bottom >= vh - 4) bottom = pr.top;    /* docked at the bottom */
+  }
+  return { top: top, bottom: bottom, height: Math.max(120, bottom - top) };
+}
+
+/* Where the page must sit for this element to land on the eye line. Reading is
+   comfortable slightly above centre - more text ahead of you than behind - so
+   the line is 42% down the READABLE area, not the viewport. */
+function nsEyeTargetY(el){
+  var a = nsReadArea();
+  var r = el.getBoundingClientRect();
+  return window.scrollY + (r.top + r.height / 2) - (a.top + a.height * 0.42);
+}
+
+function nsInView(el){
+  var a = nsReadArea();
+  var r = el.getBoundingClientRect();
+  return r.top >= a.top - 4 && r.bottom <= a.bottom + 4;
+}
+function nsReveal(el, block){
+  if (!el || nsInView(el)) return;
+  try { el.scrollIntoView({ behavior:"smooth", block: block || "center" }); }
+  catch(e){ el.scrollIntoView(); }
+}
+
+/* Voice and colours are OPEN on a desktop and FOLDED on a phone, where the
+   player was eating 45% of the screen. It cannot be done in CSS - <details>
+   open state is an attribute, not a style - so the width decides it here, and
+   it follows a rotation. A choice the reader makes by hand is respected: once
+   he opens or closes it himself we stop overriding him. */
+(function playerSettings(){
+  var box = document.getElementById("psettings");
+  if (!box) return;
+  /* Folded on every width, not just phones. A reader picks a voice once; it
+     should not cost a third of the bar on every page load. Remembered, so a
+     reader who does open it keeps it open. */
+  /* the Reader switch owns this now - see settingsSwitch() */
+})();
+
+/* ── FOLLOWING THE READER ──────────────────────────────────────────────────
+   🚨 THE READER MUST NOT FIGHT THE READER. Paul, 2026-08-29: "if you try to
+   scroll down while its playing the page move as it goes to the next section."
+
+   Auto-following is right by default - a student listening should not have to
+   scroll - but the moment a person scrolls on purpose, the page yanking itself
+   back on the next sentence is the software arguing with them. It also makes it
+   impossible to look ahead, or to check the question while it reads.
+
+   So: any real scroll gesture turns following OFF, and a small chip appears
+   offering to resume. Nothing moves under your hands again until you ask.
+
+   Paul also suggested letting the player travel down the page instead. This is
+   the cheaper answer: it costs no screen, and on a phone the player is already
+   the most expensive thing on the page. */
+var following = true;
+var selfScrollAt = 0;
+
+function nsEyeLine(el, smooth){
+  var delta = nsEyeTargetY(el) - window.scrollY;
+  if (Math.abs(delta) < 2) return;
+  try { window.scrollBy({ top: delta, behavior: smooth === false ? "auto" : "smooth" }); }
+  catch(e){ window.scrollBy(0, delta); }
+}
+
+function followScroll(el){
+  if (!following) return;
+  selfScrollAt = Date.now();
+  nsEyeLine(el);
+}
+var chipTimer = null;
+function chip(show){
+  var c = document.getElementById("followchip");
+  if (!c) return;
+  var on = !!show && playing;
+  var wasOn = c.classList.contains("show");
+  c.classList.toggle("show", on);
+  if (on && wasOn) return;        /* already counting down - do not restart it */
+  clearTimeout(chipTimer);
+  /* It disappears on its own. Paul, 2026-08-29. An offer that never withdraws
+     stops being an offer and becomes furniture - and this one sits in a row
+     that is otherwise empty, so leaving it there permanently would make the
+     bar look busier than it is. Following stays OFF when it goes; the chip
+     going away is not the page deciding to grab the screen back. */
+  if (on) chipTimer = setTimeout(function(){ c.classList.remove("show"); }, 7000);
+}
+function stopFollowing(){
+  following = false;
+  /* every deliberate scroll re-offers the way back, and restarts its timer -
+     the offer is cheap and only appears while a voice is actually reading */
+  chip(true);
+}
+/* A wheel or a finger is unambiguous intent. A plain scroll event is not - our
+   own smooth scrolling fires it too - so that path is time-guarded against the
+   scroll we just started ourselves. */
+addEventListener("wheel", function(){ if (playing && !dragging) stopFollowing(); }, { passive: true });
+addEventListener("touchmove", function(e){
+  /* a finger ON the bar is scrubbing, not scrolling the page away */
+  if (dragging) return;
+  if (e.target && e.target.closest && e.target.closest("#scrub")) return;
+  if (playing) stopFollowing();
+}, { passive: true });
+addEventListener("scroll", function(){
+  if (dragging) return;
+  if (playing && Date.now() - selfScrollAt > 900) stopFollowing();
+}, { passive: true });
+
+(function playerDock(){
+  var P = document.getElementById("player");
+  if (!P) return;
+  function fit(){
+    /* only meaningful while the bar is actually docked */
+    var docked = getComputedStyle(P).position === "fixed";
+    var hidden = document.body.classList.contains("player-hidden");
+    var pad = (docked && !hidden) ? Math.ceil(P.getBoundingClientRect().height) + 12 : 0;
+    document.documentElement.style.setProperty("--player-pad", pad + "px");
+  }
+  fit();
+  addEventListener("resize", fit, { passive: true });
+  addEventListener("orientationchange", fit);
+  /* the settings disclosure changes the height */
+  var s = document.getElementById("psettings");
+  if (s) s.addEventListener("toggle", fit);
+  var hb = document.getElementById("playerhide");
+  if (hb) hb.addEventListener("click", function(){ setTimeout(fit, 260); });
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(P);
+})();
+
+(function settingsSwitch(){
+  var box = document.getElementById("playerhide");
+  var panel = document.getElementById("psettings");
+  if (!box || !panel) return;
+
+  /* The slider decides whether the Settings row exists on the bar. */
+  var shown = load("settingsrow", "0") === "1";
+  var keyRow = document.getElementById("keyrow");
+  var keyToggle = document.getElementById("keyToggle");
+  function paintRow(){
+    panel.hidden = !box.checked;
+    if (!box.checked){
+      /* Collapse on the way out, so switching it back on gives a closed row
+         rather than one already sprawling open. */
+      panel.open = false;
+      /* ⚠️ The API panel lives OUTSIDE the settings row, so it has to be shut
+         explicitly or it stays on the bar after everything else has gone. */
+      if (keyRow) keyRow.classList.remove("show");
+      if (keyToggle) keyToggle.setAttribute("aria-expanded", "false");
+    }
+  }
+  box.checked = shown;
+  paintRow();
+  box.addEventListener("change", function(){
+    paintRow();
+    store("settingsrow", box.checked ? "1" : "0");
+  });
+
+  /* The arrow keeps its own job: expanding the row once it is there. */
+  panel.addEventListener("toggle", function(){
+    store("vsettings", panel.open ? "1" : "0");
+  });
+})();
+
+(function followChip(){
+  var c = document.getElementById("followchip");
+  if (!c) return;
+  c.addEventListener("click", function(){
+    following = true;
+    chip(false);
+    if (SENT[idx]) followScroll(SENT[idx].el);
+  });
+})();
+
+/* True when the engine can say exactly which word is being spoken. Only baked
+   NexVoice clips and live Google clips carry timepoints. */
+function wordMode(){
+  return (engine === "baked" && hasStudio()) || (engine === "google" && hasKey());
+}
+
+function clearWords(){
+  SENT.forEach(function(s){
+    s.words.forEach(function(w){ w.el.classList.remove("on"); });
+  });
+}
+
+function rateVal(){ return parseFloat(document.getElementById("rate").value); }
+
+function stopEngines(){
+  gen++;
+  if (supported){ try { synth.cancel(); } catch(e){} }
+  if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
+  if (audioEl){
+    try {
+      audioEl.pause();
+      audioEl.onended = null;
+      audioEl.removeAttribute("src");
+      audioEl.load();          /* drop the decoded buffer now, not eventually */
+    } catch(e){}
+    audioEl = null;
+  }
+}
+
+function finished(mine){
+  if (mine !== gen || !playing) return;
+  if (idx < SENT.length - 1) speak(idx + 1);
+  else { playing = false; clearWords(); paint(); }
+}
+
+// GOOGLE CLOUD: fetched live with the viewer's own key, then played like a clip.
+// Prefetches the next sentence so playback does not stall between sentences.
+function playGoogle(mine){
+  var v = googleVoice;
+  playBtn.textContent = "Loading…";
+  fetchClip(idx, v).then(function(clip){
+    if (mine !== gen) return;
+    /* 🚨 AN ICON, AND THE BUTTON KEEPS ITS SHAPE. Paul, 2026-08-29: "instead of
+     the button say read to me it just shows a play and pause icon inside of
+     the button. dont change the shape of the button." The min-width stays, so
+     it does not resize as it toggles - a transport button that changes width
+     every time you press it never feels solid. The words move to aria-label
+     and title, so a screen reader still hears a verb. */
+  playBtn.innerHTML = playing ? "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.5h3.1v11H4zM8.9 2.5H12v11H8.9z\"/></svg>" : "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.2l9 5.8-9 5.8z\"/></svg>";
+  playBtn.setAttribute("aria-label", playing ? "Pause" : "Read to me");
+  playBtn.setAttribute("title", playing ? "Pause" : "Read to me");
+    playClipFrom(mine, clip);
+    if (idx + 1 < SENT.length) fetchClip(idx + 1, v).catch(function(){});
+  }).catch(function(err){
+    if (mine !== gen) return;
+    note(String(err.message || err), "bad");
+    engine = "device";
+    syncVoiceUI();
+    playSynth(mine);
+  });
+}
+
+// STUDIO: pre-rendered clip baked into the page at build time
+function playClip(mine){
+  playClipFrom(mine, AUDIO.clips[idx]);
+}
+
+function playClipFrom(mine, clip){
+  var s = SENT[idx];
+  var marks = clip.marks || [];
+  audioEl = new Audio(clip.src);
+  /* 🚨 SPEED COMES FROM PLAYBACK, NOT FROM THE CLIP. Baked audio is generated
+     once at natural speed, so Slow / Normal / Fast are applied here. 0.85 is
+     what the picker calls "Normal", so dividing by it keeps Normal at exactly
+     the recorded pace and makes the other two relative to it.
+     Word marks need no adjustment: currentTime reports MEDIA time, which does
+     not change when playbackRate does. */
+  audioEl.playbackRate = Math.max(0.5, Math.min(2, rateVal() / 0.85));
+
+  function tick(){
+    if (mine !== gen || !audioEl) return;
+    var t = audioEl.currentTime, k = -1;
+    for (var j = 0; j < marks.length; j++){
+      if (marks[j] <= t) k = j; else break;
+    }
+    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === k); });
+    rafId = requestAnimationFrame(tick);
+  }
+
+  audioEl.onended = function(){ finished(mine); };
+  var p = audioEl.play();
+  if (p && p.then){
+    p.then(function(){ rafId = requestAnimationFrame(tick); })
+     .catch(function(){ if (mine === gen) playSynth(mine); });   // clip broken -> device voice
+  } else {
+    rafId = requestAnimationFrame(tick);
+  }
+}
+
+/* ── picking the voice at SPEAK time, not at page load ──────────────────────
+   Paul, 2026-08-26: "the voices for desktop dont work if i select them on
+   mobile". Two Android behaviours cause that:
+     1. getVoices() is repopulated, so the object saved at load no longer
+        matches anything and the engine quietly uses its own default.
+     2. Android honours utterance.voice far more reliably when lang is set
+        to that voice s language as well.
+   So the choice is stored as a NAME and re-resolved every time we speak. */
+function resolveVoice(){
+  if (!supported) return null;
+  var want = voice && voice.name;
+  var all = synth.getVoices() || [];
+  if (want){
+    for (var i = 0; i < all.length; i++) if (all[i].name === want) return all[i];
+  }
+  return voice && all.indexOf(voice) >= 0 ? voice : null;
+}
+function applyVoiceTo(u){
+  var v = resolveVoice();
+  if (v){ u.voice = v; if (v.lang) u.lang = v.lang; }
+}
+
+// DEVICE: the browser's own voice, and the fallback for everything
+function playSynth(mine){
+  if (!supported) return;
+  var s = SENT[idx];
+  var u = new SpeechSynthesisUtterance(s.text);
+  u.rate = rateVal();
+  applyVoiceTo(u);
+  /* 🚨 NO WORD HIGHLIGHTING ON DEVICE VOICES. Paul, 2026-08-29: "when the
+     other voices play the highlighted doesnt keep up compared to NexVoice ...
+     NexVoice can highlight individual words while the rest can highlight
+     sentences."
+
+     He is right and it is the better answer. A device voice reports nothing
+     usable - network voices fire no boundary events at all - so any word
+     highlight is a guess, and a guess that drifts is worse than none: it
+     teaches a struggling reader to look at the wrong word. The sentence band
+     is always correct, because we know exactly which sentence is playing.
+     The estimator is gone rather than disabled; dead code that once ran is how
+     it comes back by accident. */
+  u.onend = function(){ finished(mine); };
+  // Chrome drops long queues if the tab throttles; one sentence at a time avoids it
+  synth.speak(u);
+}
+
+function speak(i){
+  if (!supported && !hasStudio()) return;
+  stopEngines();
+  var mine = gen;
+  idx = Math.max(0, Math.min(SENT.length - 1, i));
+  clearWords();
+  paint();
+  var s = SENT[idx];
+  followScroll(s.el);
+
+  if (engine === "google" && hasKey()) playGoogle(mine);
+  else if (engine === "baked" && hasStudio()) playClip(mine);
+  else playSynth(mine);
+}
+
+playBtn.addEventListener("click", function(){
+  if (!supported && !hasStudio()) return;
+  if (playing){
+    playing = false;
+    stopEngines();
+    clearWords();
+    paint();
+  } else {
+    playing = true;
+    speak(idx);
+  }
+});
+
+document.getElementById("back").addEventListener("click", function(){
+  var t = Math.max(0, idx - 1);
+  if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
+});
+document.getElementById("fwd").addEventListener("click", function(){
+  var t = Math.min(SENT.length - 1, idx + 1);
+  if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
+});
+var rateSel = document.getElementById("rate");
+(function restoreRate(){
+  var r = load("speed", null);
+  if (r && [].some.call(rateSel.options, function(o){ return o.value === r; })) rateSel.value = r;
+})();
+rateSel.addEventListener("change", function(){
+  store("speed", rateSel.value);
+  /* With baked or studio audio the speed can change under a playing clip, so
+     the sentence carries on instead of starting again - restarting a line
+     every time a reader nudges the speed is its own small punishment. The
+     device voice cannot do that, so it still re-speaks. */
+  if (playing && audioEl){
+    audioEl.playbackRate = Math.max(0.5, Math.min(2, rateVal() / 0.85));
+  } else if (playing){
+    speak(idx);
+  }
+});
+
+function targetFromEvent(e){
+  var el = document.elementFromPoint(e.clientX, e.clientY);
+  var tk = el && el.closest ? el.closest(".tick") : null;
+  if (tk){
+    var i = ticks.indexOf(tk);
+    if (i >= 0) return i;
+  }
+  var r = scrub.getBoundingClientRect();
+  var x = (e.clientX - r.left) / Math.max(1, r.width);
+  return Math.max(0, Math.min(SENT.length - 1, Math.floor(x * SENT.length)));
+}
+function seekTo(t){
+  if (t === idx && playing) return;          /* do not restart the same clip */
+  if (playing) speak(t);
+  else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
+}
+function seekFromEvent(e){ seekTo(targetFromEvent(e)); }
+
+/* ── 3. PRESS AND DRAG ────────────────────────────────────────────────────
+   It only listened for click, so nothing happened until the finger came back
+   up and dragging along the bar did nothing at all - which feels broken rather
+   than slow. Pointer events give an immediate response and scrubbing, and the
+   capture keeps it working when the finger leaves the bar mid-drag.
+   ⚠️ While dragging we only MOVE, never re-speak on every tick - restarting
+   audio 26 times across a swipe is the stutter. The voice follows on release. */
+var dragging = false, dragTo = -1;
+var dragWantY = null, dragRaf = 0;
+
+function dragGlide(){
+  if (!dragging){ dragRaf = 0; return; }
+  selfScrollAt = Date.now();          /* this scrolling is ours, not the reader is */
+  if (dragWantY !== null){
+    var cur = window.scrollY;
+    var delta = dragWantY - cur;
+    if (Math.abs(delta) < 0.5) window.scrollTo(0, dragWantY);
+    else window.scrollTo(0, cur + delta * 0.22);   /* ease, never snap */
+  }
+  dragRaf = requestAnimationFrame(dragGlide);
+}
+scrub.addEventListener("pointerdown", function(e){
+  e.preventDefault();
+  dragging = true; scrub.classList.add("dragging");
+  try { scrub.setPointerCapture(e.pointerId); } catch(err){}
+  dragTo = targetFromEvent(e);
+  idx = dragTo; paint();
+  dragWantY = nsEyeTargetY(SENT[dragTo].el);
+  if (!dragRaf) dragRaf = requestAnimationFrame(dragGlide);
+});
+scrub.addEventListener("pointermove", function(e){
+  if (!dragging) return;
+  var t = targetFromEvent(e);
+  if (t === dragTo) return;
+  dragTo = t;
+  idx = t; paint();
+  dragWantY = nsEyeTargetY(SENT[t].el);   /* the loop eases toward it */
+});
+scrub.addEventListener("pointerup", function(e){
+  if (!dragging) return;
+  dragging = false; scrub.classList.remove("dragging");
+  if (dragRaf){ cancelAnimationFrame(dragRaf); dragRaf = 0; }
+  dragWantY = null;
+  selfScrollAt = Date.now();          /* momentum after release is still ours */
+  try { scrub.releasePointerCapture(e.pointerId); } catch(err){}
+  paint();                            /* drops the scrubbing highlight if paused */
+  if (playing) speak(dragTo); else nsEyeLine(SENT[dragTo].el);
+});
+function endDrag(){
+  if (!dragging && !dragRaf) return;
+  dragging = false;
+  scrub.classList.remove("dragging");
+  if (dragRaf){ cancelAnimationFrame(dragRaf); dragRaf = 0; }
+  dragWantY = null;
+}
+scrub.addEventListener("pointercancel", endDrag);
+scrub.addEventListener("lostpointercapture", endDrag);
+addEventListener("blur", endDrag);
+document.addEventListener("visibilitychange", function(){
+  if (document.visibilityState === "hidden"){ endDrag(); stopEngines(); playing = false; paint(); }
+});
+scrub.addEventListener("keydown", function(e){
+  if (e.key === "ArrowLeft"){ e.preventDefault(); document.getElementById("back").click(); }
+  if (e.key === "ArrowRight"){ e.preventDefault(); document.getElementById("fwd").click(); }
+});
+
+/* ── ADDED, not asked for ──────────────────────────────────────────────────
+   Paul, 2026-08-29: "if you have any suggestions go ahead and add it."
+
+   1. KEYBOARD CONTROL ANYWHERE ON THE PAGE, not just when the scrub bar has
+      focus. Space plays and stops, the arrows step a sentence. A student
+      re-reading a hard line should not have to find a 44px target with a
+      mouse every time; the most repeated action on this page deserves a key.
+
+      ⚠️ It must NOT fire while typing. Without the tag guard, pressing space
+      inside the API key field would swallow the space AND start the reader,
+      which looks like the page fighting you. */
+(function keyboard(){
+  document.addEventListener("keydown", function(e){
+    var t = e.target || {};
+    var tag = (t.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select" || t.isContentEditable) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === " " || e.key === "Spacebar"){ e.preventDefault(); playBtn.click(); }
+    else if (e.key === "ArrowLeft"){ e.preventDefault(); document.getElementById("back").click(); }
+    else if (e.key === "ArrowRight"){ e.preventDefault(); document.getElementById("fwd").click(); }
+  });
+})();
+
+/* 2. COME BACK TO WHERE HE STOPPED. A lesson is longer than one sitting, and
+      starting at sentence 1 every time is how a student re-reads the opening
+      four times and never reaches the end. The position is per lesson and
+      per device.
+
+      It does NOT auto-play on load - landing on a page that starts talking is
+      hostile. It sets the place; he presses play. */
+(function resume(){
+  var RK = "pos:" + LESSON_ID;
+  var saved = parseInt(load(RK, "0"), 10);
+  if (saved > 0 && saved < SENT.length){
+    idx = saved;
+    paint();
+    /* no scrollIntoView on load: a page that jumps before you have read the
+       title is disorienting. The scrub bar shows where he is. */
+  }
+  var last = idx;
+  window.nsSavePos = function(){
+    if (idx === last) return;
+    last = idx;
+    store(RK, String(idx));
+  };
+  /* and once more on the way out, in case the last move was the last thing
+     that happened */
+  addEventListener("pagehide", function(){ last = -1; window.nsSavePos(); });
+  document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState === "hidden"){ last = -1; window.nsSavePos(); }
+  });
+})();
+
+/* Tap a sentence to read from there. This lives in the ENGINE so every
+   lesson type gets it, not just history.
+
+   ⚠️ History has its own click handler on the story, because tapping is also
+   how the answer hunt works there. It bails out if that pages hunt control is
+   present, so the two never both fire and speak the same line twice. */
+(function tapToRead(){
+  if (document.getElementById("huntcancel")) return;   /* history handles its own */
+  storyEl.addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest(".sent") : null;
+    if (!t) return;
+    var i = parseInt(t.getAttribute("data-i"), 10);
+    if (isNaN(i)) return;
+    playing = true;
+    speak(i);
+  });
+})();
+
+
+
+/* ── where the problems come from ──────────────────────────────────────────
+   Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
+   doesn't help improve." Rolled from SPEC and seeded by the date, so the set
+   holds still all day and changes tomorrow. New Problems reseeds by hand.
+   ------------------------------------------------------------------------ */
+function rng(seed){                       /* mulberry32, small and repeatable */
+  var a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function seedFromString(s){
+  var h = 2166136261;
+  for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function today(){
+  var d = new Date();
+  return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+}
+
+var SIGNS = { pp:[1,1], nn:[-1,-1], pn:[1,-1], np:[-1,1] };
+
+/* An answer of exactly 0 is a real case but a poor practice item: zero has no
+   sign, so it hides the exact mistake this page is trying to catch. Skipped
+   here and in build-integers.js by the same rule. */
+function makeProblem(rand, key){
+  var s = SIGNS[key];
+  for (var tries = 0; tries < 400; tries++){
+    var a = (1 + Math.floor(rand() * SPEC.max)) * s[0];
+    var b = (1 + Math.floor(rand() * SPEC.max)) * s[1];
+    var ans = SPEC.kind === "add" ? a + b : a - b;
+    if (ans === 0) continue;
+    return { a:a, b:b, ans:ans, mix:key };
+  }
+  return SPEC.kind === "add" ? { a:-9, b:4, ans:-5, mix:"np" } : { a:5, b:-3, ans:8, mix:"pn" };
+}
+
+/* 🚨 THE SIGN MIX IS DEALT, NOT DRAWN.
+   Picking each problem's sign combination at random looked fine and was not:
+   a real generated set came out with seven negative+positive and ONE
+   positive+negative, so a student could work the whole page and barely meet
+   one of the four cases the lesson teaches. Drawing 15 times from 4 buckets
+   clusters badly far more often than it feels like it should.
+   So the combinations are dealt round-robin first and then shuffled, which
+   makes the balance structural instead of probabilistic. Same reasoning as
+   the Part B guards in build-english.js, which refuse a set where one kind is
+   over 70% or three run together. */
+function mixOrder(rand){
+  var order = [];
+  for (var i = 0; i < SPEC.count; i++) order.push(SPEC.mix[i % SPEC.mix.length]);
+  /* Fisher-Yates on the seeded rng, so the deal is even but the sequence is
+     not the same four repeating down the page. */
+  for (var j = order.length - 1; j > 0; j--){
+    var k = Math.floor(rand() * (j + 1));
+    var t = order[j]; order[j] = order[k]; order[k] = t;
+  }
+  /* A shuffle can still leave a run of three the same, which reads as a
+     pattern and lets a student coast. Break any run by swapping the offender
+     with the next item that differs from its new neighbours. */
+  for (var m = 2; m < order.length; m++){
+    if (order[m] !== order[m - 1] || order[m] !== order[m - 2]) continue;
+    for (var n = m + 1; n < order.length; n++){
+      if (order[n] === order[m]) continue;
+      var swap = order[n]; order[n] = order[m]; order[m] = swap;
+      break;
+    }
+  }
+  return order;
+}
+
+function makeSet(seedStr){
+  var rand = rng(seedFromString(LESSON_ID + "|" + seedStr));
+  var order = mixOrder(rand);
+  var out = [], seen = {};
+  for (var i = 0; i < order.length; i++){
+    var p = null;
+    for (var tries = 0; tries < 60; tries++){
+      var c = makeProblem(rand, order[i]);
+      var k = c.a + "|" + c.b;
+      if (seen[k]) continue;              /* never the same one twice on a page */
+      seen[k] = true; p = c; break;
+    }
+    if (p) out.push(p);
+  }
+  return out;
+}
+
+/* A negative number after an operator wears brackets, the way a workbook
+   writes it. Without them "8 + -3" reads as two operators in a row. */
+function term(n){ return n < 0 ? "(" + n + ")" : String(n); }
+
+/* ── the problems ──────────────────────────────────────────────────────── */
+var host = document.getElementById("problems");
+var solved = 0, PROBLEMS = [], BOXES = [];
+var MODE = "practice";
+
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt !== undefined) e.textContent = txt;
+  return e;
+}
+
+/* Every answer box behaves the same way in both modes; only the CHECKING
+   differs. Practice marks the moment the right number is typed, which is why
+   there is no per-keystroke wrong marking: "-8" passes through "-" and "-"
+   is not an answer. A wrong answer is only called wrong on Enter or on
+   leaving the box. */
+function answerBox(want, ask, nudge, box, onSolved){
+  var inp = el("input", "ans");
+  inp.type = "text";
+  inp.inputMode = "text";        /* not numeric: the minus sign has to be typeable */
+  inp.autocomplete = "off";
+  inp.placeholder = "?";
+  inp.setAttribute("aria-label", ask);
+  var done = false;
+
+  function markRight(){
+    if (done) return;
+    done = true;
+    inp.classList.remove("bad", "wrong");
+    inp.classList.add("ok");
+    inp.disabled = true;
+    nudge.classList.remove("warn");
+    nudge.textContent = "";
+    onSolved();
+  }
+  function markWrong(){
+    if (done) return;
+    inp.classList.add("bad");
+    nudge.classList.add("warn");
+    nudge.textContent = ask;
+    setTimeout(function(){ inp.classList.remove("bad"); }, 320);
+  }
+
+  inp.addEventListener("input", function(){
+    var v = inp.value.replace(/[^0-9-]/g, "");
+    if (v.indexOf("-") > 0) v = v.replace(/-/g, "");   /* a minus only leads */
+    inp.value = v;
+    if (MODE !== "practice") return;
+    if (/^-?\d+$/.test(v) && Number(v) === want) markRight();
+  });
+  inp.addEventListener("keydown", function(e){
+    if (e.key !== "Enter" || MODE !== "practice") return;
+    e.preventDefault();
+    if (/^-?\d+$/.test(inp.value) && Number(inp.value) !== want) markWrong();
+  });
+  inp.addEventListener("blur", function(){
+    if (MODE !== "practice" || inp.value === "") return;
+    if (/^-?\d+$/.test(inp.value) && Number(inp.value) !== want) markWrong();
+  });
+
+  BOXES.push({ el: inp, want: want, box: box });
+  return inp;
+}
+
+function addProblem(P, pi){
+  var box = el("div", "prob");
+  box.setAttribute("data-i", pi);
+  var head = el("div", "probhead");
+  head.appendChild(el("span", "probnum", "Problem " + (pi + 1)));
+  var tag = el("span", "tag", "");
+  head.appendChild(tag);
+  box.appendChild(head);
+
+  var nudge = el("p", "nudge", "");
+  var need = SPEC.kind === "subtract" ? 2 : 1;
+  var got = 0;
+  function onSolved(){
+    got++;
+    if (got < need) return;
+    box.classList.add("solved");
+    tag.classList.add("done");
+    tag.textContent = "Solved";
+    nudge.classList.remove("warn");
+    nudge.textContent = SPEC.kind === "subtract"
+      ? "Right. " + P.a + " minus " + term(P.b) + " is the same as " + P.a + " plus " + term(-P.b) + "."
+      : "Right.";
+    solved++;
+    save();
+    paintScore();
+  }
+
+  if (SPEC.kind === "subtract"){
+    /* Two boxes: the rewrite, then the answer. Keep, Change, Change is the
+       whole lesson, so the conversion is typed rather than assumed - and when
+       one of the two is wrong you can see WHICH half failed. */
+    box.appendChild(el("p", "steplab", "Keep, change, change. Then add."));
+    var r1 = el("div", "expr");
+    r1.appendChild(el("span", null, String(P.a)));
+    r1.appendChild(el("span", "op", "-"));
+    r1.appendChild(el("span", null, term(P.b)));
+    r1.appendChild(el("span", "op", "="));
+    r1.appendChild(el("span", null, String(P.a)));
+    r1.appendChild(el("span", "op", "+"));
+    r1.appendChild(answerBox(-P.b, "Change the sign of " + P.b + ". What does it become?", nudge, box, onSolved));
+    box.appendChild(r1);
+
+    var r2 = el("div", "expr");
+    r2.style.marginTop = "10px";
+    r2.appendChild(el("span", "op", "="));
+    r2.appendChild(answerBox(P.ans, "Now add. Same signs add and keep the sign, different signs subtract.", nudge, box, onSolved));
+    box.appendChild(r2);
+  } else {
+    var r = el("div", "expr");
+    r.appendChild(el("span", null, String(P.a)));
+    r.appendChild(el("span", "op", "+"));
+    r.appendChild(el("span", null, term(P.b)));
+    r.appendChild(el("span", "op", "="));
+    r.appendChild(answerBox(P.ans, "Are the signs the same or different? Same signs add and keep the sign. Different signs subtract, and take the sign of the one further from zero.", nudge, box, onSolved));
+    box.appendChild(r);
+  }
+
+  box.appendChild(nudge);
+  host.appendChild(box);
+}
+
+function renderSet(list){
+  PROBLEMS = list;
+  solved = 0;
+  BOXES = [];
+  host.innerHTML = "";
+  document.getElementById("check").hidden = MODE !== "test";
+  document.getElementById("modenote").textContent = MODE === "practice"
+    ? "A box turns green the moment you type the right number. Press Enter if you want to be told you are wrong."
+    : "Nothing gets checked as you go. Fill in every box, wrong answers and all, then press Check my work. This is the one that tells you what you actually know.";
+  list.forEach(addProblem);
+  paintScore();
+}
+
+/* ── marking the test ─────────────────────────────────────────────────── */
+function markTest(){
+  var right = 0, blank = 0, perBox = {};
+  BOXES.forEach(function(b){
+    var v = b.el.value;
+    b.el.classList.remove("ok", "wrong");
+    if (v === "") blank++;
+    else if (/^-?\d+$/.test(v) && Number(v) === b.want){ b.el.classList.add("ok"); right++; }
+    else b.el.classList.add("wrong");
+    b.el.disabled = true;
+    var key = b.box.getAttribute("data-i");
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box };
+    if (!(/^-?\d+$/.test(v) && Number(v) === b.want)) perBox[key].ok = false;
+  });
+
+  solved = 0;
+  Object.keys(perBox).forEach(function(k){
+    var r = perBox[k];
+    var P = PROBLEMS[Number(k)];
+    var tag = r.box.querySelector(".tag");
+    var nudge = r.box.querySelector(".nudge");
+    if (r.ok){
+      solved++;
+      r.box.classList.add("solved");
+      tag.classList.add("done");
+      tag.textContent = "Solved";
+      nudge.classList.remove("warn");
+      nudge.textContent = "Right.";
+    } else {
+      nudge.classList.add("warn");
+      nudge.textContent = SPEC.kind === "subtract"
+        ? "The rewrite is " + P.a + " + " + term(-P.b) + ", and the answer is " + P.ans + "."
+        : "The answer is " + P.ans + ". Check the signs first, then the digits.";
+    }
+  });
+
+  document.getElementById("check").disabled = true;
+  save();
+  var el2 = document.getElementById("scorebar");
+  el2.innerHTML = "<b>" + solved + " of " + PROBLEMS.length + " problems fully right.</b>" +
+    '<p style="margin:6px 0 0;color:var(--dim)">' + right + " of " + BOXES.length +
+    " boxes correct" + (blank ? ", " + blank + " left blank" : "") +
+    ". Press New problems for another test.</p>";
+}
+
+var currentSeed = today();
+function reload(seed){
+  currentSeed = seed;
+  document.getElementById("check").disabled = false;
+  renderSet(makeSet(seed));
+}
+reload(currentSeed);
+
+document.getElementById("reroll").addEventListener("click", function(){
+  reload(String(Date.now()));
+  host.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("check").addEventListener("click", markTest);
+
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m;
+  var pt = document.getElementById("tabPractice"), tt = document.getElementById("tabTest");
+  pt.classList.toggle("on", m === "practice");
+  tt.classList.toggle("on", m === "test");
+  pt.setAttribute("aria-selected", String(m === "practice"));
+  tt.setAttribute("aria-selected", String(m === "test"));
+  /* Same problems in both modes, so a test can be worked again in practice. */
+  reload(currentSeed);
+}
+document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
+document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
+
+/* ── progress, stored the way the other lessons store it ──────────────── */
+function save(){
+  try {
+    localStorage.setItem("ns:prog:" + LESSON_ID, JSON.stringify({
+      done: solved, total: PROBLEMS.length, complete: solved === PROBLEMS.length
+    }));
+  } catch (e) {}
+}
+function paintScore(){
+  var e = document.getElementById("scorebar");
+  e.innerHTML = solved === PROBLEMS.length
+    ? "<b>All " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That\'s the lesson finished.</p>'
+    : "<b>" + solved + " of " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Look at the signs before the digits. ' +
+      "A wrong answer tells you which rule to check.</p>";
+}
+paintScore();
+
+})();
+</script>
+<script>
+(function(){
+
+var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
+    scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
+function setNav(o){document.body.classList.toggle("nav-open",o);
+  burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
+  document.body.style.overflow=o?"hidden":"";
+  if(!o) nsCloseSubs();}
+burger.onclick=function(){setNav(!document.body.classList.contains("nav-open"));};
+scrim.onclick=dClose.onclick=function(){setNav(false);};
+var nav=document.getElementById("nav");
+addEventListener("scroll",function(){nav.classList.toggle("stuck",scrollY>16);},{passive:true});
+
+/* ── day and night ── */
+function nsMode(){ return document.documentElement.getAttribute("data-theme")==="light"?"light":"dark"; }
+function nsPaintMode(){
+  var light=nsMode()==="light";
+  document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML=light?"&#9788;":"&#9790;"; });
+  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent=light?"Day Mode":"Night Mode"; });
+  document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
+    e.setAttribute("aria-label", light?"Switch to night mode":"Switch to day mode"); });
+}
+document.querySelectorAll("[data-mode-toggle]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var next=nsMode()==="light"?"dark":"light";
+    document.documentElement.setAttribute("data-theme",next);
+    try{localStorage.setItem("ns:mode",next);}catch(e){}
+    nsPaintMode();
+  });
+});
+nsPaintMode();
+
+/* ── phone sheets: a STACK, not a pile ───────────────────────────────────
+   Levels move together. Opening a child slides the level above it out to the
+   left while the child comes in from the right; Back reverses it. A stack of
+   ids is the whole state, so any depth unwinds correctly. */
+var subStack=[];
+function nsRender(){
+  document.querySelectorAll("[data-subpanel]").forEach(function(p){
+    var id=p.getAttribute("data-subpanel");
+    var i=subStack.indexOf(id);
+    p.classList.toggle("open", i>=0);
+    /* every level except the top one has moved off to the left */
+    p.classList.toggle("exit", i>=0 && i<subStack.length-1);
+    p.setAttribute("aria-hidden", i>=0 ? "false" : "true");
+  });
+  /* the drawer is level zero, so it leaves the moment any sheet is up */
+  document.body.classList.toggle("sub-open", subStack.length>0);
+}
+function nsOpenSub(id){
+  var p=document.querySelector('[data-subpanel="'+id+'"]');
+  if(!p) return;
+  var back=p.querySelector("[data-sub-back]");
+  var parent=back?back.getAttribute("data-sub-back"):"";
+  var at=parent?subStack.indexOf(parent):-1;
+  subStack = parent && at>=0 ? subStack.slice(0,at+1) : (parent?[parent]:[]);
+  subStack.push(id);
+  nsRender();
+}
+function nsCloseSubs(){ subStack=[]; nsRender(); }
+function nsBack(){ subStack.pop(); nsRender(); }
+document.querySelectorAll("[data-sub]").forEach(function(b){
+  b.addEventListener("click",function(){ nsOpenSub(b.getAttribute("data-sub")); });
+});
+document.querySelectorAll("[data-sub-back]").forEach(function(b){
+  b.addEventListener("click", nsBack);
+});
+
+/* ── ONE mega panel ──────────────────────────────────────────────────────
+   Stays open while the pointer moves along the bar; only the contents
+   cross-fade and the height eases. Closing is on a timer that any tab or the
+   panel cancels, because the pointer crosses dead space on the way down and a
+   hard mouseleave kills the menu mid-reach. */
+var panel=document.getElementById("megapanel");
+var tabEls=[].slice.call(document.querySelectorAll(".mg-top[data-menu]"));
+var onTab=document.querySelector(".mg-top.on");
+var closeTimer=null,current=null;
+
+function nsMark(el){
+  document.querySelectorAll(".mg-top.mg-live").forEach(function(t){ t.classList.remove("mg-live"); });
+  if(el) el.classList.add("mg-live");
+}
+/* ONE height for every section, measured from the tallest.
+   Paul, 2026-08-26: "the dropdown for games is shorter in height than the
+   rest and its noticable." Animating height per section also meant the first
+   hover measured BEFORE the promo image had loaded and the panel jumped a
+   moment later - the glitch that cleared itself on reload. A fixed height
+   removes both: nothing resizes, so nothing can resize wrongly. */
+var panelH=0;
+function nsMeasure(){
+  if(!panel) return;
+  var was=panel.className;
+  panel.classList.add("measuring");
+  var max=0;
+  panel.querySelectorAll(".mg-inner").forEach(function(i){ max=Math.max(max,i.offsetHeight); });
+  panel.className=was;
+  if(max>0){ panelH=max; if(panel.classList.contains("open")) panel.style.height=panelH+"px"; }
+}
+function nsShow(key){
+  if(!panel) return;
+  clearTimeout(closeTimer);
+  var inner=panel.querySelector('[data-for="'+key+'"]');
+  if(!inner) return;
+  if(!panelH) nsMeasure();
+  panel.classList.add("open");
+  panel.setAttribute("aria-hidden","false");
+  panel.style.height=panelH+"px";
+  if(current!==key){
+    current=key;
+    panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.toggle("on", i===inner); });
+    tabEls.forEach(function(t){ t.setAttribute("aria-expanded", String(t.getAttribute("data-menu")===key)); });
+    nsMark(document.querySelector('.mg-top[data-menu="'+key+'"]'));
+  }
+}
+function nsHide(){
+  if(!panel) return;
+  current=null;
+  panel.classList.remove("open");
+  panel.setAttribute("aria-hidden","true");
+  panel.style.height="";
+  panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.remove("on"); });
+  tabEls.forEach(function(t){ t.setAttribute("aria-expanded","false"); });
+  nsMark(onTab);
+}
+function nsLater(){ clearTimeout(closeTimer); closeTimer=setTimeout(nsHide,220); }
+function nsKeep(){ clearTimeout(closeTimer); }
+
+if(panel){
+  nav.classList.add("js-nav");
+  nsMark(onTab);
+  if(matchMedia("(hover:hover)").matches){
+    tabEls.forEach(function(t){
+      t.addEventListener("mouseenter",function(){ nsShow(t.getAttribute("data-menu")); });
+      t.addEventListener("focus",function(){ nsShow(t.getAttribute("data-menu")); });
+      /* the label drives the panel; it is not a click-through */
+      t.addEventListener("click",function(e){ e.preventDefault(); });
+    });
+    var tabsBox=document.querySelector(".tabs");
+    if(tabsBox){ tabsBox.addEventListener("mouseenter",nsKeep); tabsBox.addEventListener("mouseleave",nsLater); }
+    panel.addEventListener("mouseenter",nsKeep);
+    panel.addEventListener("mouseleave",nsLater);
+    addEventListener("keydown",function(e){ if(e.key==="Escape") nsHide(); });
+    addEventListener("resize",function(){ panelH=0; nsMeasure(); });
+    /* the promo images decide the height, so re-measure as each one lands */
+    panel.querySelectorAll("img").forEach(function(im){
+      if(!im.complete) im.addEventListener("load",function(){ panelH=0; nsMeasure(); });
+    });
+    addEventListener("load",function(){ panelH=0; nsMeasure(); });
+  }
+}
+
+})();
+</script>
+</body>
+</html>

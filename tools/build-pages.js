@@ -376,9 +376,10 @@ const plannedFor = (subject, grade, kind) => ALL_PLANNED.filter(x =>
    Adding a whole new SUBJECT still needs its data file required below - that
    is one line, and it is the only line. */
 const LESSON_SOURCES = [
-  { file: "./lessons.js",         key: "LESSONS" },   /* history, story shape  */
-  { file: "./math-lessons.js",    key: "MATH"    },   /* maths, show-your-work */
-  { file: "./english-lessons.js", key: "ENGLISH" },   /* english, rule + test  */
+  { file: "./lessons.js",           key: "LESSONS"  },  /* history, story shape  */
+  { file: "./math-lessons.js",      key: "MATH"     },  /* maths, show-your-work */
+  { file: "./english-lessons.js",   key: "ENGLISH"  },  /* english, rule + test  */
+  { file: "./integers-lessons.js",  key: "INTEGERS" },  /* maths, rule + drill   */
 ];
 
 const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {
