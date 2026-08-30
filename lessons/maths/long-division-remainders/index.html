@@ -36,6 +36,10 @@ h1{margin:0 0 6px}
 .cell.under{border-bottom:2px solid var(--fg)}
 .cell.drop{color:var(--a);animation:drop .35s ease}
 @keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+/* The remainder, restated up top next to the quotient - "R 2" - once it is
+   known, not just left as an unlabeled number at the bottom of the work. */
+.cell.remlabel{color:var(--dim);font-weight:700;padding-left:.35em}
+.cell.remval{color:var(--free);font-weight:700}
 /* Only the box he is in should read as live. Paul, 2026-08-26: with every box
    filled and outlined the page was noise. So a waiting box is a faint hairline,
    and the focused one gets the fill and the accent ring. Both colours come from
@@ -776,7 +780,7 @@ body.player-hidden .scrub{margin:0}
 "use strict";
 
 var DEMO = {"dividend":587,"divisor":3};
-var BAKED_CAPS = [{"text":"We are dividing 587 by 3. The 3 sits outside the bracket, and 587 goes underneath it."},{"step":0,"phase":"divide","text":"Step 1. Divide. How many 3s fit into 5? 1. Write the 1 on top."},{"step":0,"phase":"multiply","text":"Multiply. 1 times 3 is 3. Write 3 underneath."},{"step":0,"phase":"subtract","text":"Subtract. 5 minus 3 is 2."},{"step":0,"phase":"bring","text":"Bring down the next digit, 8, to make 28."},{"step":1,"phase":"divide","text":"Step 2. Divide. How many 3s fit into 28? 9. Write the 9 on top."},{"step":1,"phase":"multiply","text":"Multiply. 9 times 3 is 27. Write 27 underneath."},{"step":1,"phase":"subtract","text":"Subtract. 28 minus 27 is 1."},{"step":1,"phase":"bring","text":"Bring down the next digit, 7, to make 17."},{"step":2,"phase":"divide","text":"Step 3. Divide. How many 3s fit into 17? 5. Write the 5 on top."},{"step":2,"phase":"multiply","text":"Multiply. 5 times 3 is 15. Write 15 underneath."},{"step":2,"phase":"subtract","text":"Subtract. 17 minus 15 is 2."},{"text":"There is nothing left to bring down, and 2 is still left over after that last subtract. That is the remainder."},{"text":"The digits on top read 195, with 2 remaining. So 587 divided by 3 is 195 remainder 2."},{"text":"Now try it with a number that does not divide evenly."},{"text":"Underneath the worked example there are five problems to solve."},{"text":"You work every row the same way as before: divide, multiply, subtract, bring down. The only difference is the very last subtract does not reach zero."},{"text":"Whatever is left after that last subtract is the remainder. Write it in that last box, same as every other digit."},{"text":"Practice mode checks each digit as you type it. Test mode checks nothing until you press Check my work."},{"text":"Do all five. If the remainder ends up bigger than the divisor, go back - that means a divide step earlier was too small."}];
+var BAKED_CAPS = [{"text":"We are dividing 587 by 3. The 3 sits outside the bracket, and 587 goes underneath it."},{"step":0,"phase":"divide","text":"Step 1. Divide. How many 3s fit into 5? 1. Write the 1 on top."},{"step":0,"phase":"multiply","text":"Multiply. 1 times 3 is 3. Write 3 underneath."},{"step":0,"phase":"subtract","text":"Subtract. 5 minus 3 is 2."},{"step":0,"phase":"bring","text":"Bring down the next digit, 8, to make 28."},{"step":1,"phase":"divide","text":"Step 2. Divide. How many 3s fit into 28? 9. Write the 9 on top."},{"step":1,"phase":"multiply","text":"Multiply. 9 times 3 is 27. Write 27 underneath."},{"step":1,"phase":"subtract","text":"Subtract. 28 minus 27 is 1."},{"step":1,"phase":"bring","text":"Bring down the next digit, 7, to make 17."},{"step":2,"phase":"divide","text":"Step 3. Divide. How many 3s fit into 17? 5. Write the 5 on top."},{"step":2,"phase":"multiply","text":"Multiply. 5 times 3 is 15. Write 15 underneath."},{"step":2,"phase":"subtract","text":"Subtract. 17 minus 15 is 2."},{"revealRemainder":true,"text":"There is nothing left to bring down, and 2 is still left over after that last subtract. That is the remainder."},{"text":"The digits on top read 195, with 2 remaining. So 587 divided by 3 is 195 remainder 2."},{"text":"Now try it with a number that does not divide evenly."},{"text":"Underneath the worked example there are five problems to solve."},{"text":"You work every row the same way as before: divide, multiply, subtract, bring down. The only difference is the very last subtract does not reach zero."},{"text":"Whatever is left after that last subtract is the remainder. Write it in that last box, same as every other digit."},{"text":"Practice mode checks each digit as you type it. Test mode checks nothing until you press Check my work."},{"text":"Do all five. If the remainder ends up bigger than the divisor, go back - that means a divide step earlier was too small."}];
 var SPEC = {"count":5,"digits":3,"divisors":[3,4,5,6,7,8,9],"allowZeroDigit":false,"allowRemainder":true};
 var LESSON_ID = "maths/long-division-remainders";
 
@@ -954,10 +958,15 @@ function solve(dividend, divisor){
            quotient: steps.map(function(s){ return s.q; }).join(""), remainder: r };
 }
 
-/* Column 0 holds the divisor, so dividend digit i sits in column i + 1. */
-function build(host, S){
+/* Column 0 holds the divisor, so dividend digit i sits in column i + 1.
+   withRem adds two more columns at the end of the TOP row only - "R" then
+   the remainder digit - so the final answer reads "195 R 2" next to the
+   quotient once it is known. Off (the default) leaves the no-remainder
+   lesson's grid exactly as it was. */
+function build(host, S, withRem){
   host.innerHTML = "";
-  var n = S.digits.length, cols = n + 2, rows = 2 + S.steps.length * 2;
+  var n = S.digits.length, remCols = withRem ? 2 : 0;
+  var cols = n + 2 + remCols, rows = 2 + S.steps.length * 2;
   host.style.gridTemplateColumns = "repeat(" + cols + ", 2.1em)";
   var cells = {};
   for (var r = 0; r < rows; r++){
@@ -975,7 +984,13 @@ function build(host, S){
     cell.textContent = S.digits[i];
     cell.classList.add(i === 0 ? "brk" : "bar");
   }
-  return { at: at, cols: cols, rows: rows };
+  var remCell = null;
+  if (withRem){
+    at(0, n + 1).textContent = "R";
+    at(0, n + 1).classList.add("remlabel");
+    remCell = at(0, n + 2);
+  }
+  return { at: at, cols: cols, rows: rows, remCell: remCell };
 }
 
 /* Right-align a written number so its last digit lands under this step's digit. */
@@ -1008,7 +1023,8 @@ function captions(S){
       text: "Bring down the next digit, " + st.bring + ", to make " + (st.diff * 10 + st.bring) + "." });
   });
   if (S.remainder > 0){
-    out.push({ text: "There is nothing left to bring down, and " + S.remainder +
+    out.push({ revealRemainder: true,
+               text: "There is nothing left to bring down, and " + S.remainder +
                      " is still left over after that last subtract. That is the remainder." });
     out.push({ text: "The digits on top read " + S.quotient + ", with " + S.remainder + " remaining. So " +
                      S.dividend + " divided by " + S.divisor + " is " + S.quotient + " remainder " + S.remainder + "." });
@@ -1041,9 +1057,13 @@ function write(g, row, value, step, opts){
 }
 
 function paintDemo(upto){
-  var g = build(demoHost, S);
+  var g = build(demoHost, S, SPEC.allowRemainder);
   for (var k = 0; k <= upto && k < CAPS.length; k++){
     var c = CAPS[k];
+    if (c.revealRemainder && g.remCell){
+      g.remCell.textContent = S.remainder;
+      g.remCell.classList.add("remval");
+    }
     if (c.step === undefined) continue;
     var st = S.steps[c.step];
     if (c.phase === "divide") g.at(0, st.i + 1).textContent = st.q;
@@ -2458,7 +2478,7 @@ function addProblem(P, pi){
     '<p class="nudge"></p>';
   host.appendChild(box);
 
-  var g = build(box.querySelector(".dgrid"), PS);
+  var g = build(box.querySelector(".dgrid"), PS, SPEC.allowRemainder);
   var nudge = box.querySelector(".nudge");
   var tag = box.querySelector(".tag");
   var queue = [];
@@ -2499,7 +2519,7 @@ function addProblem(P, pi){
     q.cell.appendChild(inp);
 
     if (MODE === "test"){
-      BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P });
+      BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P, g: g });
       /* Tap any box to go back and change it, and typing replaces what is
          there rather than being swallowed by maxLength. */
       inp.addEventListener("focus", function(){ inp.select(); });
@@ -2563,6 +2583,10 @@ function addProblem(P, pi){
     tag.classList.add("done");
     var remTag = PS.remainder > 0 ? " remainder " + PS.remainder : "";
     tag.textContent = P.dividend + " ÷ " + P.divisor + " = " + PS.quotient + remTag;
+    if (g.remCell){
+      g.remCell.textContent = PS.remainder;
+      g.remCell.classList.add("remval");
+    }
     nudge.classList.remove("warn");
     nudge.textContent = PS.remainder > 0
       ? "Solved. Check it: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
@@ -2592,7 +2616,7 @@ function markTest(){
     else { b.el.classList.add("wrong"); }
     b.el.disabled = true;
     var key = b.box.getAttribute("data-i");
-    if (!perBox[key]) perBox[key] = { ok: true, box: b.box, PS: b.PS, P: b.P };
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box, PS: b.PS, P: b.P, g: b.g };
     if (v === "" || Number(v) !== b.want) perBox[key].ok = false;
   });
 
@@ -2607,6 +2631,10 @@ function markTest(){
       r.box.classList.add("solved");
       tag.classList.add("done");
       tag.textContent = r.P.dividend + " ÷ " + r.P.divisor + " = " + r.PS.quotient + remMark;
+      if (r.g && r.g.remCell){
+        r.g.remCell.textContent = r.PS.remainder;
+        r.g.remCell.classList.add("remval");
+      }
       nudge.classList.remove("warn");
       nudge.textContent = "Right the whole way down.";
     } else {

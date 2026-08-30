@@ -81,7 +81,13 @@ function captions(S, L) {
      leftover number is the remainder, and it gets its own sentence rather
      than sliding past as just another subtract answer. */
   if (S.remainder > 0) {
+    /* revealRemainder is STRUCTURE, like step/phase - it tells paintDemo() to
+       write the remainder into the R box up top, next to the quotient, the
+       moment it is named. Paul, 2026-08-30: "we need to put remainders on
+       top with the answer" - restated there, not left sitting unlabeled as
+       just the last subtract row. */
     out.push({
+      revealRemainder: true,
       text: "There is nothing left to bring down, and " + S.remainder +
             " is still left over after that last subtract. That is the remainder.",
     });
