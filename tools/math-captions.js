@@ -91,6 +91,15 @@ function captions(S, L) {
       text: "There is nothing left to bring down, and " + S.remainder +
             " is still left over after that last subtract. That is the remainder.",
     });
+    /* The rule that tells you the division is actually finished, not the
+       trivia. Paul, 2026-08-30: "express that the remainder is when its
+       smaller" - a remainder has to be smaller than the divisor, or the
+       divide step before it was too small and the dividing is not done. */
+    out.push({
+      text: S.remainder + " is smaller than " + S.divisor + ", the divisor. That is what tells us we are " +
+            "finished - if " + S.remainder + " were " + S.divisor + " or more, " + S.divisor +
+            " would still fit in at least one more time.",
+    });
     out.push({
       text: "The digits on top read " + S.quotient + ", with " + S.remainder + " remaining. So " +
             S.dividend + " divided by " + S.divisor + " is " + S.quotient + " remainder " + S.remainder + ".",

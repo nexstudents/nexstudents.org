@@ -1026,6 +1026,9 @@ function captions(S){
     out.push({ revealRemainder: true,
                text: "There is nothing left to bring down, and " + S.remainder +
                      " is still left over after that last subtract. That is the remainder." });
+    out.push({ text: S.remainder + " is smaller than " + S.divisor + ", the divisor. That is what tells us we are " +
+                     "finished - if " + S.remainder + " were " + S.divisor + " or more, " + S.divisor +
+                     " would still fit in at least one more time." });
     out.push({ text: "The digits on top read " + S.quotient + ", with " + S.remainder + " remaining. So " +
                      S.dividend + " divided by " + S.divisor + " is " + S.quotient + " remainder " + S.remainder + "." });
   } else {
@@ -2420,7 +2423,7 @@ if (S.remainder > 0){
   var legendEl = document.querySelector(".legend");
   if (legendEl){
     var remSpan = document.createElement("span");
-    remSpan.innerHTML = "<b>Remainder</b> what is left over at the end";
+    remSpan.innerHTML = "<b>Remainder</b> what is left over &mdash; always smaller than the divisor";
     legendEl.appendChild(remSpan);
   }
 }
