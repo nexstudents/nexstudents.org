@@ -102,7 +102,7 @@ function captions(S, L) {
     });
     out.push({
       text: "The digits on top read " + S.quotient + ", with " + S.remainder + " remaining. So " +
-            S.dividend + " divided by " + S.divisor + " is " + S.quotient + " remainder " + S.remainder + ".",
+            S.dividend + " divided by " + S.divisor + " is " + S.quotient + " with a remainder of " + S.remainder + ".",
     });
   } else {
     out.push({

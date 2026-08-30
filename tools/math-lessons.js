@@ -88,7 +88,7 @@ const MATH = [
       "Now try it with a number that does not divide evenly.",
       "Underneath the worked example there are five problems to solve.",
       "You work every row the same way as before: divide, multiply, subtract, bring down. The only difference is the very last subtract does not reach zero.",
-      "Whatever is left after that last subtract is the remainder. Write it in that last box, same as every other digit.",
+      "Whatever is left after the last subtraction is your remainder. Write that in the last box on top, next to the quotient.",
       "Practice mode checks each digit as you type it. Test mode checks nothing until you press Check my work.",
       "Do all five. If the remainder ends up bigger than the divisor, go back - that means a divide step earlier was too small."
   ] },
