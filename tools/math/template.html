@@ -515,6 +515,15 @@ function addProblem(P, pi){
     if (st.bring !== undefined) queue.push({ bring: true, cell: g.at(3 + k * 2, st.i + 2), want: st.bring });
   });
 
+  /* The remainder up top is TYPED, not filled in for him - Paul, 2026-08-30:
+     "they need to put the remainder at the top dont just automatically do it
+     for them." It is the last thing in the queue, because it is not known
+     until every step below it is done. */
+  if (SPEC.allowRemainder && g.remCell){
+    queue.push({ cell: g.remCell, want: PS.remainder,
+      ask: "Write the remainder up here too, next to the quotient." });
+  }
+
   queue.forEach(function(q){
     /* In PRACTICE the bring-down is something to watch, so it drops in on its
        own. In TEST he writes it himself: Paul, 2026-08-26, "they should write
@@ -534,7 +543,7 @@ function addProblem(P, pi){
     q.cell.appendChild(inp);
 
     if (MODE === "test"){
-      BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P, g: g });
+      BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P });
       /* Tap any box to go back and change it, and typing replaces what is
          there rather than being swallowed by maxLength. */
       inp.addEventListener("focus", function(){ inp.select(); });
@@ -598,10 +607,6 @@ function addProblem(P, pi){
     tag.classList.add("done");
     var remTag = PS.remainder > 0 ? " remainder " + PS.remainder : "";
     tag.textContent = P.dividend + " ÷ " + P.divisor + " = " + PS.quotient + remTag;
-    if (g.remCell){
-      g.remCell.textContent = PS.remainder;
-      g.remCell.classList.add("remval");
-    }
     nudge.classList.remove("warn");
     nudge.textContent = PS.remainder > 0
       ? "Solved. Check it: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
@@ -631,7 +636,7 @@ function markTest(){
     else { b.el.classList.add("wrong"); }
     b.el.disabled = true;
     var key = b.box.getAttribute("data-i");
-    if (!perBox[key]) perBox[key] = { ok: true, box: b.box, PS: b.PS, P: b.P, g: b.g };
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box, PS: b.PS, P: b.P };
     if (v === "" || Number(v) !== b.want) perBox[key].ok = false;
   });
 
@@ -646,10 +651,6 @@ function markTest(){
       r.box.classList.add("solved");
       tag.classList.add("done");
       tag.textContent = r.P.dividend + " ÷ " + r.P.divisor + " = " + r.PS.quotient + remMark;
-      if (r.g && r.g.remCell){
-        r.g.remCell.textContent = r.PS.remainder;
-        r.g.remCell.classList.add("remval");
-      }
       nudge.classList.remove("warn");
       nudge.textContent = "Right the whole way down.";
     } else {
