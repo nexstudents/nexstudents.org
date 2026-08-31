@@ -270,6 +270,11 @@ const LESSONS = [
   title: "What Makes Something Alive",
   unit: "Life Science &middot; Unit 1 &middot; Lesson 1",
   shelf: { grades: [7], subject: "Science",
+    /* Paul's own art, made 2026-08-31, square because the card tile is square
+       at every width. Source PNG lives in his Desktop\School Lessons
+       Worksheets\Science\ folder; the 700px thumb.jpg beside index.html is
+       what ships. 🚨 The art is Paul's - do not restyle it or regenerate it. */
+    thumb: true,
     blurb: "The characteristics every living thing shares, and what that complexity might point to.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",

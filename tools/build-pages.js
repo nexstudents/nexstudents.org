@@ -427,6 +427,11 @@ const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {
       blurb: L.shelf.blurb || L.dek,
       meta: L.shelf.meta || "Interactive",
       price: L.shelf.price || "$0",
+      /* Same shape worksheets already use below: the lesson says it HAS art,
+         the path is derived, so a card and its picture cannot disagree. A
+         lesson with no art gets null and the card keeps the plain panel it
+         has always had. The file sits beside the lesson's index.html. */
+      thumb: L.shelf.thumb ? "/lessons/" + L.id + "/thumb.jpg" : null,
     };
   });
 });
