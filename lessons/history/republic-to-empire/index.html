@@ -27,6 +27,33 @@
   .ns-back a{color:var(--verdigris);text-decoration:none;display:inline-flex;gap:7px;align-items:center}
   .ns-back a:hover{text-decoration:underline}
   .ns-back a:focus-visible{outline:2px solid var(--verdigris);outline-offset:3px;border-radius:2px}
+
+  /* ══ THE UNIT STRIP — how you leave a lesson forwards ══
+     Paul, 2026-08-31: "i would like to have a way inside to switch to the next
+     one." Before this the only exit from a finished lesson was the back button,
+     so the course had no forward direction at all from inside a lesson.
+     Rendered by build-lessons.js from `seq`; a lesson without `seq` gets an
+     empty string here and the strip simply does not appear. */
+  /* ⚠️ THIS TEMPLATE HAS ITS OWN PALETTE. There is no --line, --panel or
+     --muted here; those are ns.css tokens and they resolve to NOTHING inside a
+     lesson page. The five themes swap --rule, --surface-2, --ink-soft and
+     --verdigris, so a strip built on those re-colours with the theme picker
+     for free. Never hardcode a colour, and never borrow an ns.css token name. */
+  .unitnav{display:flex;gap:12px;align-items:stretch;margin:34px 0 8px;flex-wrap:wrap}
+  .unitnav a{flex:1 1 240px;display:flex;flex-direction:column;gap:3px;
+    padding:14px 16px;border:1px solid var(--rule);border-radius:6px;
+    text-decoration:none;color:inherit;background:var(--surface-2);
+    transition:border-color .2s ease,transform .2s ease}
+  .unitnav a:hover{border-color:var(--verdigris);transform:translateY(-2px)}
+  .unitnav a:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+  .unitnav em{font-style:normal;font-size:.68rem;font-weight:800;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--ink-soft)}
+  .unitnav b{font-size:1rem;font-weight:800;letter-spacing:-.01em}
+  /* The forward card is the one being pushed, so it carries the accent. */
+  .unitnav .fwd{text-align:right;border-color:var(--verdigris)}
+  .unitnav .unitdone{flex:1 1 100%;padding:14px 16px;border:1px dashed var(--rule);
+    border-radius:6px;color:var(--ink-soft);font-size:.9rem}
+  @media print{ .unitnav{display:none} }
 </style>
 <link rel="stylesheet" href="/assets/lesson-nav.css">
 <style>
@@ -1023,6 +1050,8 @@ body.player-hidden .scrub{margin:0}
   <div class="done-note">
     <b>When you finish:</b> write the answers out in your own words &mdash; not copied word for word from the choices. Saying it your own way is the part that proves you understood it. Then use <b>Print answer sheet</b> for a one-page record of what was answered and scored.
   </div>
+
+
 
 </div>
 

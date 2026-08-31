@@ -13,7 +13,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=28fd6ed6">
+<link rel="stylesheet" href="/assets/ns.css?v=77f0906d">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -57,7 +57,7 @@
   <p class="crumb"><a href="/">Home</a> &rsaquo; <a href="/grade-7/">7th Grade</a> &rsaquo; Lessons</p>
   <h1>7th Grade Lessons.</h1>
   <p>Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.</p>
-  <p class="shelfcount"><b>1 lesson</b><i aria-hidden="true">&middot;</i><a href="/grade-7/worksheets/">1 sheet</a></p>
+  <p class="shelfcount"><b>4 lessons</b><i aria-hidden="true">&middot;</i><a href="/grade-7/worksheets/">1 sheet</a></p>
 </div>
 
 <div class="band"><div class="wrap"><div class="unitpager" data-shelf="g7-lessons">
@@ -570,15 +570,26 @@
 </script>
   <script>
 (function(){
-  var cards = document.querySelectorAll("[data-lesson]");
-  for (var i = 0; i < cards.length; i++){
-    var c = cards[i], d = null, pr = null;
-    try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
-    try { pr = JSON.parse(localStorage.getItem("ns:prog:" + c.dataset.lesson)); } catch(e){}
+  var cards = [].slice.call(document.querySelectorAll("[data-lesson]"));
 
-    // part-finished: show how far in, and stop before the completed styling
-    var finished = d && d.complete !== false;
-    if (!finished && pr && pr.done > 0){
+  function read(k, id){ try { return JSON.parse(localStorage.getItem(k + id)); } catch(e){ return null; } }
+  function isDone(id){ var d = read("ns:done:", id); return !!(d && d.complete !== false); }
+
+  /* PASS 1 - what each card is on its own. */
+  cards.forEach(function(c){
+    var id = c.dataset.lesson;
+    var d = read("ns:done:", id), pr = read("ns:prog:", id);
+
+    if (d && d.complete !== false){
+      c.classList.add("is-done");
+      var s = c.querySelector(".tick-score");
+      if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+      var t = c.querySelector(".tick-done");
+      if (t) t.setAttribute("title", "Completed");
+      return;
+    }
+
+    if (pr && pr.done > 0){
       c.classList.add("is-part");
       var ps = c.querySelector(".tick-score");
       if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
@@ -587,21 +598,43 @@
       pb.innerHTML = '<i style="width:' + Math.round(pr.done / pr.total * 100) + '%"></i>';
       var body = c.querySelector(".cbody");
       if (body) body.appendChild(pb);
-      continue;
+      return;
     }
-    if (!finished) continue;
 
-    c.classList.add("is-done");
-    var s = c.querySelector(".tick-score");
-    if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
-    var t = c.querySelector(".tick-done");
-    if (t) t.setAttribute("title", "Completed");
-  }
+    /* 🚨 SOFT LOCK, ON PURPOSE. The card dims and says so; the link still
+       works. Progress lives in localStorage, which is PER DEVICE - a cleared
+       browser or a new phone would hard-lock Kolten out of a course he has
+       already done. A lock that can strand the student is worse than no lock.
+       Paul chose faded-60% for this state, 2026-08-31. */
+    if (c.dataset.needs && !isDone(c.dataset.needs)) c.classList.add("is-locked");
+  });
+
+  /* PASS 2 - exactly ONE "up next" per unit: the lowest-numbered lesson that is
+     neither finished nor locked. Grouped by data-unit so a mixed shelf marks one
+     per course rather than one per page. A lesson with no seq has no data-unit,
+     so history and maths are untouched by any of this.
+     WARNING: this whole block is inside a JS template literal. A backtick in a
+     comment here closes the string and the build dies on the next word. */
+  var groups = {};
+  cards.forEach(function(c){
+    var g = c.dataset.unit;
+    if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
+    var n = parseInt(c.dataset.n, 10);
+    if (!groups[g] || n < groups[g].n) groups[g] = { n: n, el: c };
+  });
+  Object.keys(groups).forEach(function(g){
+    var c = groups[g].el;
+    c.classList.add("is-next");
+    if (!c.classList.contains("is-part")){
+      var s = c.querySelector(".tick-score");
+      if (s) s.textContent = "Start here";
+    }
+  });
 })();
 </script></div></div><div class="band"><div class="wrap">
   <h2 class="section-head">The Other Subjects</h2>
   <div class="cardgrid">
-    <div class="card has-thumb" data-lesson="science/what-makes-something-alive">
+    <div class="card has-thumb" data-lesson="science/what-makes-something-alive" data-unit="Science|1" data-n="1">
       <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
       <a class="clink" href="/lessons/science/what-makes-something-alive/">
         <span class="cthumb"><img src="/lessons/science/what-makes-something-alive/thumb.jpg" alt="" loading="lazy" decoding="async"></span>
@@ -621,19 +654,90 @@
       </div>
       <span class="tick-score"></span>
     </div>
+    <div class="card" data-lesson="science/life-only-comes-from-life" data-needs="science/what-makes-something-alive" data-unit="Science|1" data-n="2">
+      <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
+      <a class="clink" href="/lessons/science/life-only-comes-from-life/">
+        <span class="cthumb"></span>
+        <span class="cbody">
+          <em>Science &middot; Life Science &middot; Unit 1 &middot; Lesson 2</em>
+          <b class="ctitle">Life Only Comes From Life</b>
+          <span class="cblurb">Three experiments across two hundred years, and the question none of them could reach.</span>
+        </span>
+      </a>
+      <details class="cmore">
+        <summary>What's inside</summary>
+        <ul><li>A story-form reading, read aloud with the words highlighted</li><li>Four vocabulary words, each one defined inside the reading</li><li>Day 1: four questions with the answer findable in the text</li><li>Day 2: a vocabulary check and a printable answer sheet</li></ul>
+      </details>
+      <div class="cmeta">
+        <span>Interactive</span>
+        <u class="free">$0</u>
+      </div>
+      <span class="tick-score"></span>
+    </div>
+    <div class="card" data-lesson="science/how-we-know-what-we-know" data-needs="science/life-only-comes-from-life" data-unit="Science|1" data-n="3">
+      <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
+      <a class="clink" href="/lessons/science/how-we-know-what-we-know/">
+        <span class="cthumb"></span>
+        <span class="cbody">
+          <em>Science &middot; Life Science &middot; Unit 1 &middot; Lesson 3</em>
+          <b class="ctitle">How We Know What We Know</b>
+          <span class="cblurb">Science is a method, not a pile of facts. What the method can settle, and what it cannot.</span>
+        </span>
+      </a>
+      <details class="cmore">
+        <summary>What's inside</summary>
+        <ul><li>A story-form reading, read aloud with the words highlighted</li><li>Four vocabulary words, each one defined inside the reading</li><li>Day 1: four questions with the answer findable in the text</li><li>Day 2: a vocabulary check and a printable answer sheet</li></ul>
+      </details>
+      <div class="cmeta">
+        <span>Interactive</span>
+        <u class="free">$0</u>
+      </div>
+      <span class="tick-score"></span>
+    </div>
+    <div class="card" data-lesson="science/science-you-use-every-day" data-needs="science/how-we-know-what-we-know" data-unit="Science|1" data-n="4">
+      <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
+      <a class="clink" href="/lessons/science/science-you-use-every-day/">
+        <span class="cthumb"></span>
+        <span class="cbody">
+          <em>Science &middot; Life Science &middot; Unit 1 &middot; Lesson 4</em>
+          <b class="ctitle">Science You Use Every Day</b>
+          <span class="cblurb">What the method has already done to your ordinary morning, and the choices it hands you.</span>
+        </span>
+      </a>
+      <details class="cmore">
+        <summary>What's inside</summary>
+        <ul><li>A story-form reading, read aloud with the words highlighted</li><li>Four vocabulary words, each one defined inside the reading</li><li>Day 1: four questions with the answer findable in the text</li><li>Day 2: a vocabulary check and a printable answer sheet</li></ul>
+      </details>
+      <div class="cmeta">
+        <span>Interactive</span>
+        <u class="free">$0</u>
+      </div>
+      <span class="tick-score"></span>
+    </div>
     
   </div>
   <script>
 (function(){
-  var cards = document.querySelectorAll("[data-lesson]");
-  for (var i = 0; i < cards.length; i++){
-    var c = cards[i], d = null, pr = null;
-    try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
-    try { pr = JSON.parse(localStorage.getItem("ns:prog:" + c.dataset.lesson)); } catch(e){}
+  var cards = [].slice.call(document.querySelectorAll("[data-lesson]"));
 
-    // part-finished: show how far in, and stop before the completed styling
-    var finished = d && d.complete !== false;
-    if (!finished && pr && pr.done > 0){
+  function read(k, id){ try { return JSON.parse(localStorage.getItem(k + id)); } catch(e){ return null; } }
+  function isDone(id){ var d = read("ns:done:", id); return !!(d && d.complete !== false); }
+
+  /* PASS 1 - what each card is on its own. */
+  cards.forEach(function(c){
+    var id = c.dataset.lesson;
+    var d = read("ns:done:", id), pr = read("ns:prog:", id);
+
+    if (d && d.complete !== false){
+      c.classList.add("is-done");
+      var s = c.querySelector(".tick-score");
+      if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+      var t = c.querySelector(".tick-done");
+      if (t) t.setAttribute("title", "Completed");
+      return;
+    }
+
+    if (pr && pr.done > 0){
       c.classList.add("is-part");
       var ps = c.querySelector(".tick-score");
       if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
@@ -642,16 +746,38 @@
       pb.innerHTML = '<i style="width:' + Math.round(pr.done / pr.total * 100) + '%"></i>';
       var body = c.querySelector(".cbody");
       if (body) body.appendChild(pb);
-      continue;
+      return;
     }
-    if (!finished) continue;
 
-    c.classList.add("is-done");
-    var s = c.querySelector(".tick-score");
-    if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
-    var t = c.querySelector(".tick-done");
-    if (t) t.setAttribute("title", "Completed");
-  }
+    /* 🚨 SOFT LOCK, ON PURPOSE. The card dims and says so; the link still
+       works. Progress lives in localStorage, which is PER DEVICE - a cleared
+       browser or a new phone would hard-lock Kolten out of a course he has
+       already done. A lock that can strand the student is worse than no lock.
+       Paul chose faded-60% for this state, 2026-08-31. */
+    if (c.dataset.needs && !isDone(c.dataset.needs)) c.classList.add("is-locked");
+  });
+
+  /* PASS 2 - exactly ONE "up next" per unit: the lowest-numbered lesson that is
+     neither finished nor locked. Grouped by data-unit so a mixed shelf marks one
+     per course rather than one per page. A lesson with no seq has no data-unit,
+     so history and maths are untouched by any of this.
+     WARNING: this whole block is inside a JS template literal. A backtick in a
+     comment here closes the string and the build dies on the next word. */
+  var groups = {};
+  cards.forEach(function(c){
+    var g = c.dataset.unit;
+    if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
+    var n = parseInt(c.dataset.n, 10);
+    if (!groups[g] || n < groups[g].n) groups[g] = { n: n, el: c };
+  });
+  Object.keys(groups).forEach(function(g){
+    var c = groups[g].el;
+    c.classList.add("is-next");
+    if (!c.classList.contains("is-part")){
+      var s = c.querySelector(".tick-score");
+      if (s) s.textContent = "Start here";
+    }
+  });
 })();
 </script>
 </div></div>

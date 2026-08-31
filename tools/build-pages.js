@@ -432,8 +432,28 @@ const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {
          lesson with no art gets null and the card keeps the plain panel it
          has always had. The file sits beside the lesson's index.html. */
       thumb: L.shelf.thumb ? "/lessons/" + L.id + "/thumb.jpg" : null,
+      seq: L.seq || null,
     };
   });
+});
+
+/* ══ THE MODULE ORDER ══
+   Paul, 2026-08-31: "once finished with this lesson the next one unlocks and i
+   would like to have a way inside to switch to the next one."
+
+   A lesson's prerequisite is simply the lesson before it in the same subject
+   and unit. Working it out HERE, once, means the shelf script does not have to
+   understand units - it just reads `data-needs` off the card and asks whether
+   that one lesson is finished.
+
+   ⚠️ A lesson with no `seq` gets no prerequisite and never locks. That is on
+   purpose: the history and maths lessons predate this and must keep behaving
+   exactly as they did. Locking is opt-in, per lesson, by adding `seq`. */
+LESSONS.forEach(l => {
+  if (!l.seq) { l.needs = null; return; }
+  const prev = LESSONS.find(o => o.seq && o.subject === l.subject &&
+                                 o.seq.unit === l.seq.unit && o.seq.n === l.seq.n - 1);
+  l.needs = prev ? prev.id : null;   /* n:1 has no prerequisite, so it is always open */
 });
 
 
@@ -502,7 +522,9 @@ const SLOT_LABEL = "Being Built";
 
 /* One card. Shared by the flat shelves and the unit pager so they cannot
    drift apart. `eyebrow` is whatever label suits that shelf. */
-const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}" data-lesson="${l.id}">
+const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}" data-lesson="${l.id}"${
+      l.needs ? ` data-needs="${l.needs}"` : ""}${
+      l.seq ? ` data-unit="${l.subject}|${l.seq.unit}" data-n="${l.seq.n}"` : ""}>
       <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
       <a class="clink" href="${l.href}">
         <span class="cthumb">${l.thumb ? `<img src="${l.thumb}" alt="" loading="lazy" decoding="async">` : ""}</span>
@@ -646,15 +668,26 @@ const pagerScript = `<script>
    ticks it off here. Same origin, so no server and nothing to sign in to. */
 const progressScript = `<script>
 (function(){
-  var cards = document.querySelectorAll("[data-lesson]");
-  for (var i = 0; i < cards.length; i++){
-    var c = cards[i], d = null, pr = null;
-    try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
-    try { pr = JSON.parse(localStorage.getItem("ns:prog:" + c.dataset.lesson)); } catch(e){}
+  var cards = [].slice.call(document.querySelectorAll("[data-lesson]"));
 
-    // part-finished: show how far in, and stop before the completed styling
-    var finished = d && d.complete !== false;
-    if (!finished && pr && pr.done > 0){
+  function read(k, id){ try { return JSON.parse(localStorage.getItem(k + id)); } catch(e){ return null; } }
+  function isDone(id){ var d = read("ns:done:", id); return !!(d && d.complete !== false); }
+
+  /* PASS 1 - what each card is on its own. */
+  cards.forEach(function(c){
+    var id = c.dataset.lesson;
+    var d = read("ns:done:", id), pr = read("ns:prog:", id);
+
+    if (d && d.complete !== false){
+      c.classList.add("is-done");
+      var s = c.querySelector(".tick-score");
+      if (s) s.textContent = "Completed \\u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+      var t = c.querySelector(".tick-done");
+      if (t) t.setAttribute("title", "Completed");
+      return;
+    }
+
+    if (pr && pr.done > 0){
       c.classList.add("is-part");
       var ps = c.querySelector(".tick-score");
       if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
@@ -663,16 +696,38 @@ const progressScript = `<script>
       pb.innerHTML = '<i style="width:' + Math.round(pr.done / pr.total * 100) + '%"></i>';
       var body = c.querySelector(".cbody");
       if (body) body.appendChild(pb);
-      continue;
+      return;
     }
-    if (!finished) continue;
 
-    c.classList.add("is-done");
-    var s = c.querySelector(".tick-score");
-    if (s) s.textContent = "Completed \\u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
-    var t = c.querySelector(".tick-done");
-    if (t) t.setAttribute("title", "Completed");
-  }
+    /* 🚨 SOFT LOCK, ON PURPOSE. The card dims and says so; the link still
+       works. Progress lives in localStorage, which is PER DEVICE - a cleared
+       browser or a new phone would hard-lock Kolten out of a course he has
+       already done. A lock that can strand the student is worse than no lock.
+       Paul chose faded-60% for this state, 2026-08-31. */
+    if (c.dataset.needs && !isDone(c.dataset.needs)) c.classList.add("is-locked");
+  });
+
+  /* PASS 2 - exactly ONE "up next" per unit: the lowest-numbered lesson that is
+     neither finished nor locked. Grouped by data-unit so a mixed shelf marks one
+     per course rather than one per page. A lesson with no seq has no data-unit,
+     so history and maths are untouched by any of this.
+     WARNING: this whole block is inside a JS template literal. A backtick in a
+     comment here closes the string and the build dies on the next word. */
+  var groups = {};
+  cards.forEach(function(c){
+    var g = c.dataset.unit;
+    if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
+    var n = parseInt(c.dataset.n, 10);
+    if (!groups[g] || n < groups[g].n) groups[g] = { n: n, el: c };
+  });
+  Object.keys(groups).forEach(function(g){
+    var c = groups[g].el;
+    c.classList.add("is-next");
+    if (!c.classList.contains("is-part")){
+      var s = c.querySelector(".tick-score");
+      if (s) s.textContent = "Start here";
+    }
+  });
 })();
 <\/script>`;
 

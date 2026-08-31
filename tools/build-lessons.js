@@ -167,6 +167,33 @@ for (const L of LESSONS) {
   }
   h = h.replace("__BACKHREF__", backHref).replace("__BACKLABEL__", backLabel);
 
+  /* ══ THE UNIT STRIP ══
+     Paul, 2026-08-31: "i would like to have a way inside to switch to the next
+     one." Until now the only way out of a finished lesson was backwards.
+
+     Prev and next are the neighbours by `seq` inside the same subject and unit.
+     ⚠️ A lesson with no `seq` gets an EMPTY STRING, not a strip with dead
+     arrows - history and maths keep exactly the page they had. The slot must
+     still be replaced either way or `__NEXTNAV__` ships visible on the page. */
+  const sib = (n) => LESSONS.find((o) => o.seq && L.seq &&
+    o.id.split("/")[0] === subject && o.seq.unit === L.seq.unit && o.seq.n === n);
+  let nav = "";
+  if (L.seq) {
+    const prev = sib(L.seq.n - 1), next = sib(L.seq.n + 1);
+    const card = (l, dir, label) =>
+      '<a class="' + dir + '" href="/lessons/' + l.id + '/">' +
+      "<em>" + label + "</em><b>" + esc(l.title) + "</b></a>";
+    const parts = [];
+    if (prev) parts.push(card(prev, "back", "&larr; Lesson " + prev.seq.n));
+    if (next) parts.push(card(next, "fwd", "Lesson " + next.seq.n + " &rarr;"));
+    /* The last lesson in a unit says so, rather than ending on nothing. */
+    if (!next) parts.push('<p class="unitdone">That is the last lesson in ' +
+      esc(L.seq.unitTitle || ("Unit " + L.seq.unit)) + ".</p>");
+    nav = '<nav class="unitnav" aria-label="Unit navigation">' + parts.join("") + "</nav>";
+  }
+  h = h.replace("__NEXTNAV__", nav);
+  if (h.includes("__NEXTNAV__")) { console.error("FAIL: " + L.slug + ": __NEXTNAV__ slot not filled"); process.exit(1); }
+
   const dir = path.join(ROOT, "lessons", subject, L.slug);
   fs.mkdirSync(dir, { recursive: true });
   /* The template contains "undefined" as a JS keyword, so only the GENERATED
