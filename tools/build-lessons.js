@@ -34,6 +34,11 @@ const TPL = process.argv[3];
 if (!ROOT || !TPL) { console.error("usage: build-lessons.js <site root> <template html>"); process.exit(1); }
 const template = fs.readFileSync(TPL, "utf8");
 
+/* Labels for the back link. K has no ordinal, so it gets its own word. */
+const ORDINAL = { 0: "Kindergarten", 1: "1st", 2: "2nd", 3: "3rd", 4: "4th",
+                  5: "5th", 6: "6th", 7: "7th", 8: "8th" };
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
 /* deterministic PRNG so a rebuild never reshuffles a student's answers */
 function seeded(str) {
   let h = 2166136261;
@@ -132,6 +137,36 @@ for (const L of LESSONS) {
   /* Subject comes from the id prefix ("history/..." , "maths/...") so a new
      subject needs no change here, only an id. */
   const subject = L.id.split("/")[0];
+
+  /* 🚨 THE BACK LINK USED TO BE HARDCODED TO "/history/" in the template, so
+     the science lesson sent Kolten back to the History shelf. Paul, 2026-08-31:
+     "this lesson says history in the back button. you needs to send this stuff
+     to the back to the 7th grade science page."
+
+     It now comes from the lesson. The default is the subject shelf, which is
+     what every history lesson already had. A lesson that sits on ONE grade's
+     shelf goes back to that grade's shelf instead, because that is the page the
+     student actually came from. `L.back` overrides both if a lesson ever needs
+     to point somewhere else. ⚠️ The href must be a real page — grade-7/science/
+     has no index.html, the shelf is grade-7/science/lessons/. */
+  const backHref = L.back ? L.back.href
+    : (L.shelf && L.shelf.grades && L.shelf.grades.length === 1
+        ? "/grade-" + L.shelf.grades[0] + "/" + subject + "/lessons/"
+        : "/" + subject + "/");
+  const backLabel = L.back ? L.back.label
+    : (L.shelf && L.shelf.grades && L.shelf.grades.length === 1
+        ? ORDINAL[L.shelf.grades[0]] + " Grade " + (L.shelf.subject || cap(subject))
+        : cap(subject));
+  {
+    const rel = backHref.replace(/^\/|\/$/g, "");
+    if (!fs.existsSync(path.join(ROOT, rel, "index.html"))) {
+      console.error("FAIL: " + L.slug + " back link points at " + backHref +
+                    ", which has no index.html. Point it at a page that exists.");
+      process.exit(1);
+    }
+  }
+  h = h.replace("__BACKHREF__", backHref).replace("__BACKLABEL__", backLabel);
+
   const dir = path.join(ROOT, "lessons", subject, L.slug);
   fs.mkdirSync(dir, { recursive: true });
   /* The template contains "undefined" as a JS keyword, so only the GENERATED

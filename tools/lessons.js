@@ -246,19 +246,23 @@ const LESSONS = [
 ,
 
 /* ═════════════ Life Science Unit 1 Lesson 1 — What Makes Something Alive ═════
-   Source: Merrill Life Science (Glencoe, 1994), Chapter 1 "Exploring Life",
-   Section 1-1 Living Things, printed pages 4-9. Paul borrowed the book on
-   Archive.org 2026-08-30 and flipped the pages so this could be built from the
-   real text rather than from a summary of it.
+   REWRITTEN 2026-08-31 from Paul's own text. The first version was built from
+   Merrill Life Science (Glencoe, 1994), Section 1-1, and it read well, but the
+   baked NexVoice had drifted out of step with the page. Paul sent a replacement
+   text and asked for it to go in whole, so the parts below are HIS sentences,
+   split one per line for the player and otherwise unchanged in meaning.
 
    🚨 Paul's direction, 2026-08-30: "for science lets build something that mixes
-   world science with creation science." The mix here is SIDE BY SIDE, not
-   blended: the observable features of life are taught exactly as the textbook
-   teaches them, and the closing section names the origin question as a
-   separate question with two answers to it. The textbook's own Section 1-2 is
-   "Where Does Life Come From? — Origins", so that is where the book itself
-   puts the question. We did not invent the seam; we are using the one that is
-   already there.
+   world science with creation science." In this version the mix is still SIDE
+   BY SIDE, not blended. The observable characteristics of life are taught first
+   and on their own, and "The Amazing Design of Life" is the separate section
+   where the design argument and Genesis are named as such.
+
+   ⚠️ EVERY EDIT TO THESE SENTENCES MEANS RE-RUNNING `node tools/bake-voice.js .`
+   voice.json carries a textHash of exactly these lines, and the page refuses the
+   baked audio on a mismatch and quietly drops to a device voice. The `find`
+   arrays below are 0-based positions in the flattened sentence list (parts,
+   then todo, blanks skipped) — renumber them whenever a sentence moves.
    ────────────────────────────────────────────────────────────────────────── */
 {
   id: "science/what-makes-something-alive",
@@ -266,90 +270,95 @@ const LESSONS = [
   title: "What Makes Something Alive",
   unit: "Life Science &middot; Unit 1 &middot; Lesson 1",
   shelf: { grades: [7], subject: "Science",
-    blurb: "The features every living thing shares, and the four things all of them need.",
+    blurb: "The characteristics every living thing shares, and what that complexity might point to.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",
-      "Four vocabulary words, each one defined inside the story",
+      "Four vocabulary words, each one defined inside the reading",
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
   eyebrow: ["Science", "Unit 1 &middot; Lesson 1", "Life Science"],
-  dek: "A dog, a stream and a rock are all sitting in the same sunshine. Only one of them is alive, and saying why is harder than it sounds.",
+  dek: "A stream moves, a dog moves, and a tree hardly moves at all. Only some of them are alive, and saying why is harder than it sounds.",
   scripture: {
     ref: "Genesis 2:7",
     text: "And the LORD God formed man of the dust of the ground, and breathed into his nostrils the breath of life; and man became a living soul.",
   },
   parts: [
-    { title: "A Question You Already Think You Can Answer", s: [
-      "Picture a hot summer day.",
-      "You take your dog down to a stream, and while you skip stones across the water the dog runs along the bank barking.",
-      "After a while it settles down under a tree and falls asleep.",
-      "Dragonflies skim over the water and insects buzz in the grass.",
-      "Everything in that picture is easy to sort into alive and not alive, and you did it without thinking about it.",
-      "So here is the harder version of the question.",
-      "What actually makes you and your dog different from the water and the rocks?",
-      "It moves is not the answer, because the water moves too.",
-      "Living things share a short list of features, and the whole list has to be there."
+    { title: "Beside the Stream", s: [
+      "Imagine you are sitting beside a stream with a dog.",
+      "The water moves.",
+      "The dog moves.",
+      "The trees barely seem to move at all.",
+      "So here is the question.",
+      "What makes something alive?",
+      "It is more complicated than simply being able to move."
     ]},
-    { title: "Made of Cells", s: [
-      "Every living thing is called an organism.",
-      "You are an organism, your dog is an organism, and so is the grass, the dragonfly and the tree.",
-      "Every organism is made of one or more cells.",
-      "A cell is the smallest unit of an organism that carries on the functions of life.",
-      "Water and rocks are made of chemicals, the same as you are, but they are not built out of cells.",
-      "That is the first line on the list, and it is the one that rules the rock out straight away."
+    { title: "The Signs of Life", s: [
+      "Scientists use several characteristics to recognize living things.",
+      "Living things are called organisms, and they are made of cells.",
+      "Cells are the tiny building blocks that carry out the processes of life.",
+      "Living things also use energy.",
+      "They grow and develop.",
+      "They respond to their surroundings.",
+      "They keep their internal conditions stable.",
+      "They reproduce.",
+      "And they have characteristics that help them survive.",
+      "Your body is constantly working to keep things balanced.",
+      "When you run, your heart beats faster.",
+      "When you stop, your body works to bring your heart rate back toward normal.",
+      "This is called homeostasis, which means keeping the inside of your body relatively stable."
     ]},
-    { title: "Moving, Responding, Using Energy", s: [
-      "Organisms move.",
-      "A sleeping dog looks lifeless until an ear twitches or it snores, and plants move too, just slowly enough that you have to watch for it.",
-      "Organisms respond to changes around them.",
-      "Anything that makes an organism react is called a stimulus, and what the organism does back is called a response.",
-      "Your dog hears a can opener, which is the stimulus, and comes running with its tail wagging, which is the response.",
-      "Organisms use energy.",
-      "Responding takes energy, moving takes energy, and simply staying alive takes energy all day long.",
-      "Plants make their own food from sunlight, animals get theirs by eating, and both of them release the energy from that food in a process called respiration."
+    { title: "Stimulus and Response", s: [
+      "Living things interact with the world around them in fascinating ways.",
+      "Three important words can help us understand this.",
+      "A stimulus is something in the environment that causes an organism to react.",
+      "For example, imagine your dog hears a can of dog food opening.",
+      "The sound of the can opener is the stimulus.",
+      "A response is the reaction an organism makes because of a stimulus.",
+      "Your dog hears the can opener and runs into the kitchen.",
+      "Running toward the food is the response.",
+      "So remember, the stimulus is what causes the reaction, and the response is how the organism reacts."
     ]},
-    { title: "Holding Steady", s: [
-      "Think about a driver keeping a car at a steady speed on a hill.",
-      "The foot on the pedal keeps making small adjustments, so the speed stays the same even though the road does not.",
-      "Your body does the same thing constantly.",
-      "Keeping steady conditions on the inside no matter what is going on outside is called homeostasis.",
-      "When you are frightened your heart races, and then homeostasis brings it back down to normal once the fright has passed.",
-      "A rock has no normal to return to, because there is nothing inside it doing the adjusting."
+    { title: "Adaptation", s: [
+      "An adaptation is an inherited characteristic that helps an organism survive in its environment.",
+      "For example, a polar bear has thick fur that helps keep it warm in a freezing environment.",
+      "Unlike a response, an adaptation is not something the animal simply decides to do.",
+      "It is a characteristic passed down through generations.",
+      "Think of it this way.",
+      "Stimulus means something happens.",
+      "Response means an organism reacts.",
+      "Adaptation is a built in characteristic that helps it survive."
     ]},
-    { title: "Growing, Changing, Ending", s: [
-      "Organisms grow and develop.",
-      "A puppy is small and helpless, then it feeds and grows and turns into a dog that can hunt and defend itself.",
-      "The changes an organism goes through as it grows are called its development.",
-      "Organisms also adapt.",
-      "Any feature that makes an organism better able to survive where it lives is an adaptation.",
-      "A dog sheds its heavy winter coat when summer comes, and that is an adaptation.",
-      "Adaptations are inherited, which means they are passed down rather than learned, and that is what separates an adaptation from a response.",
-      "Organisms have life spans.",
-      "A mayfly may live only one day, a dog around fifteen years, and some bristlecone pines have been alive for more than four thousand years.",
-      "Every one of those numbers has an end on it, and that is true of every living thing."
+    { title: "The Amazing Design of Life", s: [
+      "Now stop and think about what we have learned.",
+      "Every living thing is made of cells.",
+      "Those cells contain incredibly complex structures that work together.",
+      "Living things use energy, repair themselves, grow, reproduce, respond to their surroundings, and maintain the delicate conditions needed to stay alive.",
+      "That raises an important question.",
+      "Could such incredible complexity and organization simply happen by chance?",
+      "This is where the idea of intelligent design comes in.",
+      "When we see something that contains information, organization, and purposeful design, we normally recognize that it came from intelligence.",
+      "Think about a computer, a watch, or even a simple LEGO creation.",
+      "If you found one sitting in the woods, you would not assume that the pieces randomly came together and built themselves.",
+      "You would naturally look for a designer.",
+      "Life is far more complex than any machine humans have created.",
+      "The Bible teaches that life has a Creator.",
+      "Genesis 1 tells us that God created the living world, and Genesis 2:7 describes God giving mankind the breath of life.",
+      "For Christians, the incredible design found throughout living things points toward a Grand Designer.",
+      "The basic idea is simple.",
+      "If we recognize intelligent design, it is reasonable to ask whether there is an intelligent Designer.",
+      "Science allows us to study the incredible details of how living things work.",
+      "Faith also asks who created them and why they exist.",
+      "As we study biology, we can explore both the amazing complexity of life and what that complexity may tell us about its Creator."
     ]},
-    { title: "What Every Living Thing Needs", s: [
-      "Living things all need the same four things, and every one of them has to come from outside.",
-      "They need energy, and almost all of it starts at the sun.",
-      "Green plants use sunlight together with carbon dioxide, water and minerals from the soil to make their own food, and everything that eats a plant is living off that same sunlight one step later.",
-      "They need raw materials, which are the water, oxygen, carbon dioxide and minerals an organism takes in, uses, and then returns to the environment.",
-      "They need water, and water is the most urgent of the four.",
-      "You could go two or three weeks without food, but only a few days without water, and about seventy percent of your body is water by weight.",
-      "They need a place to live, because every organism needs room, shelter and the right conditions around it.",
-      "Trees are mostly water and blood is mostly water, so an organism is largely built out of the very thing it has to keep drinking."
-    ]},
-    { title: "Where Life Comes From", s: [
-      "Everything above can be watched, measured and tested, and scientists who disagree about almost everything else agree on that list.",
-      "The next question is a different kind of question.",
-      "Where did the first living thing come from?",
-      "Nobody watched that happen, so it cannot be tested the way a dog's heart rate can be tested.",
-      "Many scientists answer that life began on its own from non-living chemicals over an enormous stretch of time.",
-      "The Bible answers that God made living things on purpose, each one able to reproduce after its own kind.",
-      "Genesis 2:7 says God formed man from the dust of the ground and breathed into him the breath of life, and man became a living soul.",
-      "Notice what that verse says about the dust: the raw materials on their own were not alive, and life was something added to them.",
-      "You are allowed to know exactly what a cell does and still be asking where the first one came from.",
-      "Keeping those two questions apart is the honest way to study science, and it is what the rest of this unit will keep doing."
+    { title: "Your Challenge", s: [
+      "Look at something living around you.",
+      "It could be a person, animal, plant, insect, or even a tiny organism.",
+      "Ask yourself, what makes it alive?",
+      "Can you identify its cells, energy use, growth, responses, and adaptations?",
+      "The more we look closely at life, the more amazing it becomes.",
+      "Science helps us discover how life works.",
+      "Studying creation can also lead us to wonder about the Creator."
     ]}
   ],
   todo: { title: "What To Do Now", s: [
@@ -358,46 +367,46 @@ const LESSONS = [
       "Then four questions. The answer to every one of them is somewhere in the reading above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",
       "Finding the answer in the text is the skill this lesson is teaching. Getting it right from memory is not the same thing.",
-      "The one people trip on is the difference between a response and an adaptation, because both are things an organism does about its surroundings. Read Growing, Changing, Ending again and look for the word inherited."
+      "The one people trip on is the difference between a response and an adaptation, because both are about an organism and its surroundings. Read the Adaptation section again and look for the word inherited."
   ] },
   words: [
-    ["Organism", "Any living thing. You, your dog, the grass and the dragonfly are all organisms, and every one of them is made of cells."],
-    ["Stimulus", "Anything that makes an organism react. A can opener, a bright light, a cold wind. What the organism does back is the response."],
-    ["Homeostasis", "Keeping steady conditions inside an organism no matter what is happening outside it. Your heart racing and then settling back to normal."],
-    ["Adaptation", "An inherited feature that makes an organism better able to survive where it lives. A dog shedding its winter coat when summer comes."]
+    ["Organism", "Any living thing. Organisms are made of cells, the tiny building blocks that carry out the processes of life."],
+    ["Stimulus", "Something in the environment that causes an organism to react. A can of dog food opening is a stimulus."],
+    ["Homeostasis", "Keeping the inside of your body relatively stable. Your heart speeds up when you run, then settles back toward normal when you stop."],
+    ["Adaptation", "An inherited characteristic that helps an organism survive where it lives. The polar bear's thick fur in a freezing environment."]
   ],
   questions: [
-    { q: "What are the features shared by every living thing?", find: [11, 15, 17, 20, 26, 29, 33, 36],
-      hint: "The list is built up across the middle of the reading, one feature at a time.",
+    { q: "Which characteristics do scientists use to recognize living things?", find: [7, 8, 10, 11, 12, 13, 14, 15],
+      hint: "The list is in The Signs of Life, given one line at a time.",
       choices: [
-        "Organisms are made of cells, move, respond, use energy, hold steady conditions, grow and develop, adapt, and have life spans.",
-        "Organisms move, and anything that moves on its own is alive.",
-        "Organisms are made of chemicals, and anything made of chemicals is alive.",
-        "Organisms are warm to the touch and can be seen with the naked eye."
+        "They are made of cells, use energy, grow and develop, respond to their surroundings, keep their internal conditions stable, reproduce, and have characteristics that help them survive.",
+        "They move on their own, and anything that moves on its own is alive.",
+        "They are made of chemicals, and anything made of chemicals is alive.",
+        "They are warm to the touch and big enough to see without a microscope."
       ], right: 0 },
-    { q: "What is the main source of energy for living things?", find: [40, 41],
-      hint: "Look in the section about what every living thing needs, at where the energy starts.",
+    { q: "What does homeostasis mean?", find: [16, 17, 18, 19],
+      hint: "Look at the end of The Signs of Life, at what your body does after you stop running.",
       choices: [
-        "The sun. Green plants make food from sunlight, and everything that eats a plant is living off that sunlight one step later.",
-        "The soil, which passes energy directly into every organism that touches it.",
-        "Water, which carries energy into an organism when it is drunk.",
-        "Oxygen, which is the only thing an organism actually takes energy from."
+        "Keeping the inside of the body relatively stable, the way your heart rate comes back toward normal after you stop running.",
+        "Growing steadily larger until an organism reaches its full size.",
+        "Passing an inherited characteristic down to the next generation.",
+        "Reacting quickly to anything that happens in the environment."
       ], right: 0 },
-    { q: "What is the difference between a response and an adaptation?", find: [18, 33, 35],
-      hint: "Look for the word inherited. It is the word that separates the two.",
+    { q: "What is the difference between a response and an adaptation?", find: [25, 29, 31, 32],
+      hint: "Look for the words inherited and passed down. They are what separate the two.",
       choices: [
-        "A response is something an organism does at the time, while an adaptation is an inherited feature passed down to it.",
+        "A response is the reaction an organism makes at the time, while an adaptation is an inherited characteristic passed down through generations.",
         "A response happens in animals and an adaptation happens only in plants.",
         "A response is slow and an adaptation is fast.",
-        "A response is learned at school and an adaptation is learned at home."
+        "A response is something an organism is born with and an adaptation is something it learns."
       ], right: 0 },
-    { q: "Why does the reading treat where life came from as a different kind of question?", find: [47, 48, 50],
-      hint: "Look in the last section, at what makes a question testable.",
+    { q: "What is the basic idea behind intelligent design, as the reading explains it?", find: [43, 44, 46, 47, 53],
+      hint: "Look at the LEGO creation in the woods, and at what you would go looking for.",
       choices: [
-        "Because nobody watched it happen, so it cannot be tested the way the features of a living thing can be tested.",
-        "Because scientists have never disagreed about it and there is nothing left to ask.",
-        "Because the Bible does not say anything about where living things came from.",
-        "Because the question only matters to people who are not studying science."
+        "When something contains information, organization and purposeful design, we normally recognize it came from intelligence, so it is reasonable to ask whether there is an intelligent Designer.",
+        "That science cannot tell us anything true about how living things work.",
+        "That every machine humans build is more complex than any living thing.",
+        "That a watch found in the woods most likely assembled itself over a long time."
       ], right: 0 }
   ]
 }
