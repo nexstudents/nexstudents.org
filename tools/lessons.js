@@ -785,7 +785,7 @@ const LESSONS = [
       "Knowing how to keep food from spoiling is not the same as deciding who gets fed.",
       "Knowing how to build something powerful is not the same as deciding what to point it at.",
       "Those are not scientific questions at all, and no experiment will ever answer one.",
-      "They are questions about right and wrong, and everybody answers them, including the people who say they are not.",
+      "They are questions about right and wrong, which is what the word ethics means, and everybody answers them, including the people who say they are not.",
       "Micah 6:8 gives the short version of the standard: do justly, love mercy, walk humbly.",
       "A person who can do a thing and asks first whether they should is not being unscientific.",
       "They are being an adult about it."
@@ -805,7 +805,7 @@ const LESSONS = [
       "You do not have to become a scientist for any of this to be yours.",
       "You will vote, you will make decisions about your own health, and you will raise people who ask you questions.",
       "Every one of those is a place where knowing how a claim gets tested changes what you do.",
-      "The habit is small and it is the whole thing: ask what the evidence actually is, and ask what the right thing to do with it is.",
+      "The habit is small and it is the whole thing: ask what the evidence actually is, meaning what was measured and what it was compared against, and then ask what the right thing to do with it is.",
       "Those are two different questions and they both need answering.",
       "Proverbs called searching a matter out an honour, and this unit has been four lessons of exactly that.",
       "You learned what makes something alive, how people found out that life comes only from life, how the method works, and now what it costs and what it gives.",
@@ -818,12 +818,19 @@ const LESSONS = [
       "Then four questions. The answer to each is in the text above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to that part and read it again.",
       "The one people trip on is science against technology. Read Technology Is The Method Applied again and look for which one FINDS OUT and which one BUILDS.",
-      "After the questions, the Unit 1 Review is waiting. It covers all four lessons, so do not start it until the other three are ticked off."
+      /* 🚨 THIS LINE USED TO PROMISE A "Unit 1 Review" THAT DOES NOT EXIST.
+         Paul's standing rule: never assign an unbuilt lesson. A title is not a
+         lesson. Put the review back in this line ONLY once the page is live. */
+      "When the questions are done, that is the whole unit finished. Look back at the four covers and say out loud what each lesson was about, because being able to say it is how you find out whether you actually have it."
   ] },
   words: [
     ["Pasteurisation", "Heating and sealing food so organisms cannot spoil it. Named after Louis Pasteur, whose curved flask ended the spontaneous generation argument."],
     ["Technology", "Using what science found out to build something that does a job. Science finds out how; technology puts it to work."],
-    ["Control", "The thing you compare a result against. A claim with nothing to compare it to is a story, not a result."],
+    /* ⚠️ "Control" was here and was ALREADY a card in Lesson 3. Four cards per
+       lesson is the whole vocabulary budget, so a repeat spends a quarter of it
+       teaching nothing. The idea still gets its callback in the reading; it
+       just does not take a card twice. */
+    ["Evidence", "What was actually measured, and what it was compared against. A claim with nothing to compare it to is a story, not a result."],
     ["Ethics", "The question of whether you should do a thing, as opposed to whether you can. No experiment answers it."]
   ],
   questions: [
