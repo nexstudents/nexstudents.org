@@ -1225,6 +1225,31 @@ const pages = [
     lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
     count: countLabel(sheetsBySubject("English").length, "sheet", "sheets") + " available", body: subjectSheets("English") },
 
+  /* Science joined the shelf on 2026-08-30 with the first science worksheet.
+     ⚠️ These three are HAND-LISTED, like every other subject in this block -
+     flipping `live` in nav.js is not enough on its own, and the link checker
+     is what catches the difference. */
+  { dir: "science", active: "w",
+    title: "Science — NexStudents",
+    desc: "Science worksheets and lessons you can work through at home.",
+    crumb: "Science", h1: "Science.",
+    lead: "Forces, motion and how things actually work, written so a student can follow it without a lab full of equipment. Worksheets get printed; the answer key is always included.",
+    body: subjectLanding("Science") },
+
+  { dir: "science/lessons", active: "w",
+    title: "Science Lessons — NexStudents",
+    desc: "Science lessons worked through on screen.",
+    crumb: '<a href="/science/">Science</a> &rsaquo; Lessons', h1: "Science Lessons.",
+    lead: "Nothing on screen for science yet. The printables came first.",
+    count: countLabel(bySubject("Science").length, "lesson", "lessons") + " available", body: subjectLessons("Science") },
+
+  { dir: "science/worksheets", active: "w",
+    title: "Science Worksheets — NexStudents",
+    desc: "Printable science worksheets with answer keys included.",
+    crumb: '<a href="/science/">Science</a> &rsaquo; Worksheets', h1: "Science Worksheets.",
+    lead: "Printables for working on paper. Read the passage, then answer &mdash; no equipment needed. Answer keys are always included free.",
+    count: countLabel(sheetsBySubject("Science").length, "sheet", "sheets") + " available", body: subjectSheets("Science") },
+
   { dir: "history", active: "w",
     title: "History — NexStudents",
     desc: "History lessons and worksheets, worked through on screen.",

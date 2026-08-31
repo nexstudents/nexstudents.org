@@ -308,6 +308,74 @@ const SHEETS = [
   cutnote: "Card one names the week, so a cut stack never gets mixed with another one.",
 },
 
+/* ═════════════════ NEWTON'S THREE LAWS OF MOTION (science) ═════════════════
+   🚨 THE FIRST SCIENCE CONTENT ON THE SITE. Every grade has had a science
+   worksheets page built, linked and empty since 2026-08-29, so the shelf has
+   been promising something that did not exist. This is the first thing on it.
+
+   ⚠️ It is deliberately WORLDVIEW-NEUTRAL. ROADMAP item 18 says the creation
+   science question has to be decided with Paul before science content is
+   written, because it is an editorial position rather than a detail. Forces
+   and motion is one of the few science topics where the question does not
+   arise at all, so this can ship while that decision is still open. Do NOT
+   treat it as the decision having been made.
+
+   Grade 8, not 7. Forces and motion is NGSS MS-PS2, which spans 6-8; what
+   puts this at the top of that band is rearranging F = m x a to solve for
+   mass or acceleration, which is algebraic thinking. Shelved by the skill's
+   level, not by the student's - the 2026-08-29 rule. */
+{
+  slug: "newtons-laws-of-motion", subject: "Science", grade: 8,
+  title: "Newton's Three Laws of Motion",
+  dek: "Read the story, then identify the laws and use the formula. Answer key on the last page.",
+  blurb: "A skateboard that would not stop, and the three rules behind it. Answer key included.",
+  contains: [
+    "A story that meets all three laws in one scene, no lab equipment needed",
+    "Six vocabulary words with space to write meanings",
+    "Eight questions: identify the law, then calculate with F = m &times; a",
+    "A worked example of the formula before you are asked to use it",
+  ],
+  /* thumb.jpg is rendered from the printed page by make-cover.js rather than
+     hand-drawn art, which suits a text worksheet - the shelf card shows the
+     actual sheet. Regenerate it if the content changes. */
+  price: "$0", buy: null, art: false, thumb: true,
+  passage: [
+    "The skateboard rolled away without him, and that was the first clue. Marcus had stepped off it to tie his lace, and the board just kept going. Straight across the flat concrete, past the bench, slowing a little but not stopping, until it clipped the lip of the ramp and finally gave up. Nobody had pushed it. It simply carried on doing what it had already been doing.",
+    "That is the first thing to understand about the world: it is lazy. Objects continue exactly as they are until something interferes. A board that is rolling keeps rolling. A board sitting still sits still all afternoon. The word for that stubbornness is inertia, and the only thing that beats it is a push or a pull &mdash; a force &mdash; strong enough to win. If the forces on something are balanced they cancel out and nothing changes. Only an unbalanced force changes anything. That is Newton's first law.",
+    "Marcus picked up his board and set it next to his friend Dev's. Dev's board was the heavy kind, thick trucks, big wheels, built like a door. Marcus pushed his own board with a gentle shove and it shot away. He pushed Dev's with exactly the same shove and it lumbered off like it resented being asked. Same push, very different results. The difference was mass &mdash; how much stuff each board was made of. What changed was acceleration, which does not only mean speeding up; it means any change to how fast something is going or which way it is going. Newton wrote that down as F = m &times; a, and it is the second law: push harder and you get more acceleration, add mass and you get less.",
+    "Then Marcus did the thing he had done ten thousand times without thinking about it. He put one foot on the board, and with the other he pushed backwards against the ground &mdash; and he went forwards. Read that again, because it is stranger than it sounds. He pushed backwards. He travelled forwards. His foot shoved the whole planet one way and the planet shoved him the other. Forces are never lonely; they arrive in pairs, equal in strength and opposite in direction. That is the third law, and it sounds like a riddle until you notice you have been using it your whole life.",
+    "It is also the law that got us off the ground. A wing works by shoving air downwards, and the air shoves the wing up. A jet engine throws air out the back and the plane is thrown forward. A rocket in the emptiness of space has nothing at all to push against, and does not need anything &mdash; it pushes its own exhaust one way and rides the other way on the reaction.",
+    "About that formula, because the questions below use it. F stands for force, measured in newtons and written N. The m is mass in kilograms, kg. The a is acceleration in metres per second squared, m/s&sup2;. If you know two of the three you can always find the third, and there are only three versions to know: F = m &times; a, or a = F &divide; m, or m = F &divide; a. The rule underneath all of them is short &mdash; if you are looking for F you multiply, and if you are looking for anything else you divide F by the other one. Worked example: a trolley of mass 5 kg accelerates at 2 m/s&sup2;, so F = 5 &times; 2 = 10 N. Always write the unit. An answer of 10 on its own is not finished.",
+  ],
+  vocab: [
+    ["force", "A push or a pull acting on an object, measured in newtons."],
+    ["inertia", "The tendency of an object to resist a change in its motion."],
+    ["mass", "The amount of matter in an object, measured in kilograms."],
+    ["acceleration", "A change in an object's speed or direction."],
+    ["unbalanced", "Forces that do not cancel out, so the object's motion changes."],
+    ["newton", "The unit of force, written N."],
+  ],
+  questions: [
+    ["The skateboard kept rolling after Marcus stepped off it. Which law explains that, and why?",
+     "The first law. No unbalanced force was acting on it, so it carried on doing what it was already doing. That is inertia.", "Paragraphs 1 and 2", 3],
+    ["Marcus gave both boards the same push, but Dev's moved off more slowly. Explain why, using the word <i>mass</i>.",
+     "Dev's board has more mass, so the same force produces less acceleration. F = m &times; a means acceleration goes down as mass goes up.", "Paragraph 3", 3],
+    ["Marcus pushed backwards against the ground and travelled forwards. Explain how that works.",
+     "His foot pushed the ground backwards and the ground pushed him forwards with an equal force in the opposite direction. Forces come in pairs. That is the third law.", "Paragraph 4", 3],
+    ["A rocket in empty space has nothing to push against. Explain how it still moves forward.",
+     "It pushes its own exhaust gas out one way, and the reaction to that push drives the rocket the other way. It does not need anything outside itself, because the force pair is between the rocket and its exhaust.", "Paragraph 5", 3],
+    ["What does <i>inertia</i> mean?",
+     "The tendency of an object to resist a change in its motion.", "Vocabulary, not in the reading", 2],
+    ["A cart has a mass of 4 kg and accelerates at 3 m/s&sup2;. What force was applied? Show your working.",
+     "Looking for F, so multiply. F = m &times; a = 4 &times; 3 = 12 N. The unit is required for the second mark.", "Paragraph 6", 2],
+    ["A force of 50 N acts on a 10 kg box. What is its acceleration? Show your working.",
+     "Looking for a, so divide. a = F &divide; m = 50 &divide; 10 = 5 m/s&sup2;. The unit is required for the second mark.", "Paragraph 6", 2],
+    ["A force of 60 N gives an object an acceleration of 5 m/s&sup2;. What is its mass? Show your working.",
+     "Looking for m, so divide. m = F &divide; a = 60 &divide; 5 = 12 kg. The unit is required for the second mark.", "Paragraph 6", 2],
+  ],
+  note: "<b>Before you answer.</b> The first four questions are hiding in the reading &mdash; find the sentence that answers each one and write its number in the margin beside it. Question 5 is a vocabulary word, so check the word list instead. The last three use the formula, and paragraph 6 shows you how, including a worked example. Write the unit on every calculation.",
+},
+
 ];
 
 module.exports = { SHEETS };

@@ -61,7 +61,14 @@ const SUBJECTS = [
     blurb: "American and Biblical history, taught properly rather than skipped over." },
   { name: "Maths", slug: "maths", live: true,
     blurb: "Practice that teaches, without punishing a student for getting things wrong." },
-  { name: "Science", slug: "science", live: false,
+  /* Live from 2026-08-30, when the first science worksheet shipped (Newton's
+     Three Laws of Motion, grade 8). Every grade had a science worksheets page
+     built, linked and empty since 2026-08-29, so the shelf was promising
+     something that did not exist. It does now.
+     ⚠️ This blurb claims a creation lens and the first sheet on the shelf is
+     worldview-neutral physics. That is Paul's copy to keep or change - see
+     ROADMAP item 18, which is still open. */
+  { name: "Science", slug: "science", live: true,
     blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
 ];
 
