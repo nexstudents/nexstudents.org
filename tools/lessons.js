@@ -441,6 +441,7 @@ const LESSONS = [
   unit: "Life Science &middot; Unit 1 &middot; Lesson 2",
   seq: { unit: 1, unitTitle: "Life and How We Study It", n: 2 },
   shelf: { grades: [7], subject: "Science",
+    thumb: true,   /* Paul's art, 2026-08-31. Source PNG on his Desktop; see Lesson 1. */
     blurb: "Three experiments across two hundred years, and the question none of them could reach.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",
@@ -598,6 +599,7 @@ const LESSONS = [
   unit: "Life Science &middot; Unit 1 &middot; Lesson 3",
   seq: { unit: 1, unitTitle: "Life and How We Study It", n: 3 },
   shelf: { grades: [7], subject: "Science",
+    thumb: true,   /* Paul's art, 2026-08-31. Source PNG on his Desktop; see Lesson 1. */
     blurb: "Science is a method, not a pile of facts. What the method can settle, and what it cannot.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",
@@ -740,6 +742,7 @@ const LESSONS = [
   unit: "Life Science &middot; Unit 1 &middot; Lesson 4",
   seq: { unit: 1, unitTitle: "Life and How We Study It", n: 4 },
   shelf: { grades: [7], subject: "Science",
+    thumb: true,   /* Paul's art, 2026-08-31. Source PNG on his Desktop; see Lesson 1. */
     blurb: "What the method has already done to your ordinary morning, and the choices it hands you.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",
