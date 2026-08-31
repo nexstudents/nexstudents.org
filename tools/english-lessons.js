@@ -65,7 +65,7 @@ const ENGLISH = [
   unit: "Parts of Speech &middot; Unit 1 &middot; Lesson 1",
   eyebrow: ["English", "Unit 1 &middot; Lesson 1", "Parts of Speech"],
   dek: "Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.",
-  shelf: { grades: [3, 4], subject: "English",
+  shelf: { grades: [3], subject: "English",
     blurb: "Every sentence has an engine. Find it with a test that works even when nothing happens.",
     contains: [
       "A Ground Control panel for the teacher: what to say when a student is stuck",
