@@ -61,60 +61,9 @@
 </div>
 
 <div class="band"><div class="wrap">
-  <div class="cardgrid">
-    <div class="card" data-lesson="english/verbs-action-and-being">
-      <span class="tick-done" aria-hidden="true">&check;</span>
-      <a class="clink" href="/lessons/english/verbs-action-and-being/">
-        <span class="cthumb"></span>
-        <span class="cbody">
-          <em>English &middot; Parts of Speech &middot; Unit 1 &middot; Lesson 1</em>
-          <b class="ctitle">Verbs: Action and Being</b>
-          <span class="cblurb">Every sentence has an engine. Find it with a test that works even when nothing happens.</span>
-        </span>
-      </a>
-      <details class="cmore">
-        <summary>What's inside</summary>
-        <ul><li>A Ground Control panel for the teacher: what to say when a student is stuck</li><li>The lesson read aloud, one line at a time, highlighted as it goes</li><li>A test the student can run alone, not a definition to memorise</li><li>Five worked examples, then a two-part worksheet: find the verb, then name its kind</li></ul>
-      </details>
-      <div class="cmeta">
-        <span>Interactive</span>
-        <u class="free">$0</u>
-      </div>
-      <span class="tick-score"></span>
-    </div>
-    
-  </div>
-  <script>
-(function(){
-  var cards = document.querySelectorAll("[data-lesson]");
-  for (var i = 0; i < cards.length; i++){
-    var c = cards[i], d = null, pr = null;
-    try { d = JSON.parse(localStorage.getItem("ns:done:" + c.dataset.lesson)); } catch(e){}
-    try { pr = JSON.parse(localStorage.getItem("ns:prog:" + c.dataset.lesson)); } catch(e){}
-
-    // part-finished: show how far in, and stop before the completed styling
-    var finished = d && d.complete !== false;
-    if (!finished && pr && pr.done > 0){
-      c.classList.add("is-part");
-      var ps = c.querySelector(".tick-score");
-      if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
-      var pb = document.createElement("span");
-      pb.className = "cbar";
-      pb.innerHTML = '<i style="width:' + Math.round(pr.done / pr.total * 100) + '%"></i>';
-      var body = c.querySelector(".cbody");
-      if (body) body.appendChild(pb);
-      continue;
-    }
-    if (!finished) continue;
-
-    c.classList.add("is-done");
-    var s = c.querySelector(".tick-score");
-    if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
-    var t = c.querySelector(".tick-done");
-    if (t) t.setAttribute("title", "Completed");
-  }
-})();
-</script>
+  <div class="tile" style="min-height:170px;align-items:center;justify-content:center;text-align:center">
+      <div><h4 style="font-size:1.2rem">Nothing here yet</h4>
+      <p style="max-width:44ch;margin-top:8px">Nothing on screen for this subject this year yet.</p></div></div>
 </div></div>
 
 <footer><div class="wrap">

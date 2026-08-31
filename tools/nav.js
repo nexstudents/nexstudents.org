@@ -75,7 +75,12 @@ const SUBJECTS = [
 /* 4 and 5 joined the list on 2026-08-29, when the lessons were re-shelved by
    the level of the skill rather than the age of the student reading them:
    verbs to 3-4, long division to 4-5, Rome to 6-7. */
-const LIVE_GRADES = ["K", "3", "4", "5", "6", "7", "8"];
+/* ⚠️ 5 came OFF on 2026-08-30. Long division was the only thing on it, and it
+   was there as a duplicate of the grade 4 lesson. Paul, same day: one grade
+   per item. Grade 5 gets its own shelf back the moment it has content of its
+   own - a real grade 5 lesson, not a grade 4 one relisted. Showing an empty
+   grade is worse than not showing it. */
+const LIVE_GRADES = ["K", "3", "4", "6", "7", "8"];
 const ALL_GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
 const gradeName = (g) => (g === "K" ? "Kindergarten" : "Grade " + g);
 
