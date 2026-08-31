@@ -397,9 +397,16 @@ a.sub-t{color:inherit;text-decoration:none}
 
 /* completed tick, set from localStorage by the lesson list script */
 .card.is-done{border-color:var(--free)}
+/* 🚨 THE TICK IS AN SVG, NOT THE `&check;` GLYPH. Paul, 2026-08-31: "center that
+   checkmark in that green circle." It was a text glyph, and `place-items:center`
+   centres the inline LINE BOX while the check's ink sits high inside it, so the
+   tick rode high and left. Measuring the glyph against the font's own box says
+   "centred" and is the wrong measurement - the eye is right, that scan is not.
+   An SVG has an explicit viewBox with the path centred in it, so it lands dead
+   centre in any font, at any size, on any platform. Do not go back to a glyph. */
 .card .tick-done{position:absolute;top:9px;right:9px;width:23px;height:23px;border-radius:50%;
-  background:var(--free);color:var(--on-free);display:none;place-items:center;z-index:2;
-  font-size:13px;font-weight:800;line-height:1}
+  background:var(--free);color:var(--on-free);display:none;place-items:center;z-index:2}
+.card .tick-done svg{width:15px;height:15px;display:block}
 .card.is-done .tick-done{display:grid}
 .card .tick-score{display:none;padding:0 13px 10px;margin-top:-4px;font-size:.66rem;font-weight:800;
   letter-spacing:.05em;text-transform:uppercase;color:var(--free)}

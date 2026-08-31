@@ -503,7 +503,7 @@ const SLOT_LABEL = "Being Built";
 /* One card. Shared by the flat shelves and the unit pager so they cannot
    drift apart. `eyebrow` is whatever label suits that shelf. */
 const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}" data-lesson="${l.id}">
-      <span class="tick-done" aria-hidden="true">&check;</span>
+      <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
       <a class="clink" href="${l.href}">
         <span class="cthumb">${l.thumb ? `<img src="${l.thumb}" alt="" loading="lazy" decoding="async">` : ""}</span>
         <span class="cbody">
