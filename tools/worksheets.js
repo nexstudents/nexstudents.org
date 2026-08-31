@@ -320,12 +320,15 @@ const SHEETS = [
    arise at all, so this can ship while that decision is still open. Do NOT
    treat it as the decision having been made.
 
-   Grade 8, not 7. Forces and motion is NGSS MS-PS2, which spans 6-8; what
-   puts this at the top of that band is rearranging F = m x a to solve for
-   mass or acceleration, which is algebraic thinking. Shelved by the skill's
-   level, not by the student's - the 2026-08-29 rule. */
+   GRADE 7. Forces and motion is NGSS MS-PS2, which spans 6-8, so 7 sits
+   squarely inside the band. I first shelved this at 8 on the grounds that
+   rearranging F = m x a is algebraic, and Paul pushed back - correctly. The
+   "shelve by the skill, not the student" rule is about not filing a grade-3
+   skill at grade 7 because that is the reader's age; it is not a reason to
+   pick the top of a three-grade band over one part of one section. The sheet
+   teaches the formula from scratch, so the algebra is not a prerequisite. */
 {
-  slug: "newtons-laws-of-motion", subject: "Science", grade: 8,
+  slug: "newtons-laws-of-motion", subject: "Science", grade: 7,
   title: "Newton's Three Laws of Motion",
   dek: "Read the story, then identify the laws and use the formula. Answer key on the last page.",
   blurb: "A skateboard that would not stop, and the three rules behind it. Answer key included.",
