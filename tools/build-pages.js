@@ -332,6 +332,17 @@ const PLANNED = [
   { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 8",  title: "Paul, Persecution, and the Early Church" },
   { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 9",  title: "Crisis and Reform in the Late Empire" },
   { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 10", title: "Review of Rome and Early Christianity" },
+  /* 🚨 SCIENCE UNIT 1 REVIEW — THE COVER EXISTS, THE LESSON DOES NOT.
+     Paul drew it 2026-09-01 and asked for the file to be parked ahead of the
+     content. It is a SLOT, not a card: `.is-slot` renders no <a>, so this
+     cover cannot be clicked into a page that is not there. A cover is not a
+     lesson, the same way a title is not a lesson
+     → [[feedback-never-assign-an-unbuilt-lesson]].
+     ⚠️ WHEN THE REVIEW IS BUILT: delete this line, and add the lesson to
+     lessons.js with `seq` n:5 and `thumb: true`. The thumb.jpg is already at
+     the path below. Leaving this line in as well would show the review twice. */
+  { kind: "lesson", subject: "Science", grade: 7, unit: "Unit 1 &middot; Lesson Review",
+    title: "Unit 1 Lesson Review", thumb: "/lessons/science/unit-1-review/thumb.jpg" },
 ];
 
 /* Grade 8 US history: the Colonies to Reconstruction sequence, thirty sheets
@@ -353,9 +364,23 @@ const PLANNED_8 = [
 })));
 
 const ALL_PLANNED = PLANNED.concat(PLANNED_8);
+/* 🚨 `sameGrade`, NOT `===`. Found 2026-09-01 and it had been broken the whole
+   time: LIVE_GRADES in nav.js are STRINGS ("7") and every PLANNED entry writes
+   the grade as a NUMBER (7), so `7 === "7"` was false and this function
+   returned NOTHING on every grade+subject page. No "Being Built" card had ever
+   appeared on one.
+
+   It stayed invisible because the only shelf with planned items was grade-7
+   History, which uses the unit pager instead and never calls this. The bug
+   surfaced only when a Science slot was added.
+
+   ⚠️ This is the SAME number-vs-string grade bug already recorded in
+   CLAUDE.md - the one where only Kindergarten built and the guard meant to
+   catch it used the same broken helper. `sameGrade()` was written for exactly
+   this and simply never applied here. Use it everywhere a grade is compared. */
 const plannedFor = (subject, grade, kind) => ALL_PLANNED.filter(x =>
   (subject == null || x.subject === subject) &&
-  (grade == null || x.grade === grade) &&
+  (grade == null || sameGrade(x.grade, grade)) &&
   (kind == null || x.kind === kind));
 
 /* ── ONE REGISTRY, DERIVED FROM THE LESSON DATA FILES ──────────────────────
@@ -545,8 +570,15 @@ const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}"
       <span class="tick-score"></span>
     </div>`;
 
-const slotCard = (eyebrow, title, blurb) => `<div class="card is-slot" aria-hidden="true">
-      <span class="cthumb"></span>
+/* `thumb` is optional and most slots will never have one. It exists because a
+   cover sometimes lands before the lesson does - Paul drew the Unit 1 Review
+   cover on 2026-09-01, before the review itself was written.
+   🚨 A slot card is STILL NOT A LINK, art or no art. `.is-slot` carries no
+   <a>, so a cover here can never be clicked into a page that does not exist -
+   which is the whole reason the review is a slot and not a real card
+   → [[feedback-never-assign-an-unbuilt-lesson]]. */
+const slotCard = (eyebrow, title, blurb, thumb) => `<div class="card is-slot" aria-hidden="true">
+      <span class="cthumb">${thumb ? `<img src="${thumb}" alt="" loading="lazy" decoding="async">` : ""}</span>
       <span class="cbody">
         <em>${eyebrow}</em>
         <b class="ctitle">${title}</b>
@@ -561,7 +593,7 @@ const lessonCards = (list, showSubject, slots) => {
   const named = Array.isArray(slots) ? slots : [];
   const generic = Array.isArray(slots) ? 0 : blanks;
   const empty =
-    named.map(x => slotCard(x.unit, x.title, SLOT_LABEL)).join("\n    ") +
+    named.map(x => slotCard(x.unit, x.title, SLOT_LABEL, x.thumb)).join("\n    ") +
     (named.length && generic ? "\n    " : "") +
     Array.from({ length: generic }, () => slotCard(SLOT_LABEL, "Coming Soon", "Another one is on the way.")).join("\n    ");
 
