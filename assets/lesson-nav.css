@@ -433,7 +433,8 @@ html{-webkit-tap-highlight-color:transparent}
   .nv .wordtext{display:none}
   .navicons{justify-self:end}
   /* both of these are in the drawer, so they were pure crowding up here */
-  .nv .btn,.nv .modetog{display:none}
+  /* .modetog was dropped 2026-09-02; only .btn is left up here. */
+  .nv .btn{display:none}
 }
 @media(max-width:380px){
   .nv .word img{height:34px;width:34px}

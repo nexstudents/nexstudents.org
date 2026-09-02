@@ -79,16 +79,11 @@
   color-scheme:light;
 }
 
-/* The toggle itself. Sits in the nav beside the button. */
-.modetog{background:none;border:1px solid var(--line);border-radius:var(--pill);
-  color:var(--dim);font:inherit;font-size:15px;line-height:1;cursor:pointer;
-  width:38px;height:38px;display:inline-grid;place-items:center;flex:none;
-  transition:color .2s,border-color .2s}
-.modetog:hover{color:var(--fg);border-color:var(--a)}
-.nv .modetog{margin-left:auto}
-.nv .modetog + .btn{margin-left:10px}
-.drawer .modetog{width:100%;height:auto;padding:13px;margin-top:14px;gap:9px;
-  display:flex;align-items:center;justify-content:center}
+/* ⚠️ .modetog IS GONE, 2026-09-02 — the round moon button that used to sit in
+   the nav bar and as a row in the drawer. Paul, after seeing the slim slider:
+   "i like that better now and you can remove the old one and add it to the
+   bottom of the side menu." One control shape for one setting. The slider is
+   .mswitch, defined down beside the footer rules. Do not add this back. */
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--fg);
@@ -550,6 +545,16 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 /* Below the two-column footer breakpoint the row wraps; keep the switch on its
    own line rather than jammed against the copyright. */
 @media(max-width:520px){ .mswitch{margin-right:0} }
+
+/* ── THE SAME SWITCH, AT THE BOTTOM OF THE DRAWER ──────────────────────────
+   Paul asked for it there once the nav button came out. It is a full-width row
+   with the label on the left and the track on the right, so it reads as the
+   last SETTING under the list of destinations rather than as another link.
+   ⚠️ Same markup, same data-mode-toggle, same listener. Only the layout
+   differs - which is the whole reason modeSwitch() takes a class. */
+.mswitch-drawer{width:100%;margin:16px 0 0;padding:14px 2px 0;
+  border-top:1px solid var(--line);border-radius:0;
+  justify-content:space-between;flex-direction:row-reverse}
 
 .rv{opacity:0;transform:translateY(16px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
 .rv.in{opacity:1;transform:none}
@@ -1134,7 +1139,8 @@ html{-webkit-tap-highlight-color:transparent}
   .nv .wordtext{display:none}
   .navicons{justify-self:end}
   /* both of these are in the drawer, so they were pure crowding up here */
-  .nv .btn,.nv .modetog{display:none}
+  /* .modetog was dropped 2026-09-02; only .btn is left up here. */
+  .nv .btn{display:none}
 }
 @media(max-width:380px){
   .nv .word img{height:34px;width:34px}

@@ -352,7 +352,7 @@ const navMarkup = (active, btn) => {
   <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
 ${drawerLinks(active)}
   <a class="${b}" href="${SUPPORT_URL}" target="_blank" rel="noopener">Support Us</a>
-  ${modeButton(true)}
+  ${modeSwitch("mswitch-drawer")}
 </aside>
 ${drawerSubs()}
 </div>
@@ -384,7 +384,6 @@ ${drawerSubs()}
   </div>
   <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
   <div class="tabs">${tabs(active)}</div>
-  ${modeButton()}
   ${/* Sign in and cart sit where "Pick a Grade" used to. Paul, 2026-08-29.
        The button was redundant anyway: Grades is a nav tab with its own mega
        panel holding all nine years, so the page already had two doors to the
@@ -424,11 +423,25 @@ const navIcons = () =>
   '<circle cx="17" cy="19" r="1.4"/></svg></a>' +
   "</div>";
 
-const modeButton = (inDrawer) => inDrawer
-  ? '<button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night">' +
-    "<span data-mode-icon>&#9790;</span><span data-mode-label>Night Mode</span></button>"
-  : '<button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night">' +
-    "<span data-mode-icon>&#9790;</span></button>";
+/* ── THE DAY/NIGHT SWITCH, ONE DEFINITION, TWO PLACES ──────────────────────
+   The slim slider modelled on lttstore's. It lives at the BOTTOM OF THE DRAWER
+   and in the FOOTER. Paul, 2026-09-02: "i like that better now and you can
+   remove the old one and add it to the bottom of the side menu."
+
+   ⚠️ THE ROUND MOON BUTTON IN THE NAV BAR IS GONE, on purpose. It was a
+   third-of-a-second decision sitting in the most valuable strip on the page,
+   next to Sign in and the cart. The setting is not something a reader changes
+   often, so it belongs where the other settings-shaped things are.
+   ⚠️ modeButton() and the .modetog styles went with it. Do not reintroduce a
+   second control shape for one setting.
+
+   🚨 EVERY COPY CARRIES data-mode-toggle AND NOTHING ELSE. navScript's single
+   listener drives all of them, so the drawer and the footer cannot disagree.
+   No per-control handler, no second storage key. */
+const modeSwitch = (extra) => '<button class="mswitch' + (extra ? " " + extra : "") +
+  '" type="button" data-mode-toggle aria-label="Switch between day and night">' +
+  '<span class="mswitch-track"><span class="mswitch-knob"></span></span>' +
+  "<span data-mode-label>Night Mode</span></button>";
 
 /* Runs BEFORE the body paints so a reader who chose light never sees the dark
    page flash first. Inlined in <head> by every generator. */
@@ -718,4 +731,4 @@ ${/* 🚨 THE COLUMNS COLLAPSE ON A PHONE, and the open state is set HERE rather
 </footer>`;
 
 module.exports = { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
-                   megaPanel, navMarkup, navScript, modeButton, modeBoot, footerMarkup, FOOTER_COLS };
+                   megaPanel, navMarkup, navScript, modeSwitch, modeBoot, footerMarkup, FOOTER_COLS };
