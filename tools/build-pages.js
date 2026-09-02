@@ -214,6 +214,54 @@ const comicsPage = () => {
     '</scr' + 'ipt>';
 };
 
+/* ── THE TERMS PAGE BODY ───────────────────────────────────────────────────
+   Written in plain language on purpose. A parent deciding whether they may
+   print thirty copies for a co-op should get that answer in one read, not
+   from a wall of "hereinafter". The permissions come FIRST for the same
+   reason - most people arriving here want a yes, and burying it under
+   restrictions makes a generous licence feel mean.
+
+   ⚠️ Every clause must stay true of the site as it stands. No refunds
+   section until paid downloads exist; no account clause until accounts do. */
+const termsBody = () => `<div class="band"><div class="wrap prose">
+
+  <h2>What you may do</h2>
+  <ul class="gets">
+    <li><b>Use everything with your own students.</b> Your children, your classroom, your co-op, your tutoring students. Home or school, it makes no difference to us.</li>
+    <li><b>Print as many copies as you need</b>, as many times as you need them. There is no per-copy limit and no expiry.</li>
+    <li><b>Save the files</b> so you can print them again without coming back to the site.</li>
+    <li><b>Link to any page here</b> from a blog, a lesson plan, a newsletter or a school website. Links are welcome and need no permission.</li>
+    <li><b>Mention us by name</b> and quote a short passage when you are writing about the material.</li>
+  </ul>
+
+  <h2>What you may not do</h2>
+  <ul class="gets">
+    <li><b>Do not sell them</b>, or include them in anything sold, bundled or offered as a paid download.</li>
+    <li><b>Do not re-host them.</b> Do not upload our files to another website, a file locker, a course platform or a marketplace. Link to the page instead.</li>
+    <li><b>Do not present them as your own work</b>, and do not remove the NexStudents mark from a sheet.</li>
+    <li><b>Do not redistribute the files in bulk</b> to people outside your own students, in place of sending them here.</li>
+    <li><b>Do not train models on them</b> or scrape the site to build a competing library.</li>
+  </ul>
+
+  <h2>The short version</h2>
+  <p>Use them freely with the students you teach. Do not become a second source for them. If you are unsure whether something counts, ask us &mdash; the answer is usually yes.</p>
+
+  <h2>Who owns what</h2>
+  <p>The worksheets, lessons, artwork and text on this site belong to NexStudents unless a page says otherwise. Where we build on public-domain or openly licensed material, the page says so. Facts are nobody's property: the history and science described here can be taught by anyone, in their own words. It is our wording, layout and artwork that are ours.</p>
+
+  <h2>Free now, and what that means</h2>
+  <p>Most of what is here is free, and that is a decision rather than a trial. If paid material is added later it will be clearly marked and priced on its own page, and anything already free stays free.</p>
+
+  <h2>No warranty</h2>
+  <p>These are teaching materials made by a homeschooling family, offered as they are. We check them and we fix what we find, but we cannot promise a sheet is free of errors or right for a particular student. You are the teacher; use your judgement.</p>
+
+  <h2>Questions, corrections and permission</h2>
+  <p>If you want to use something in a way this page does not cover, or you have found a mistake, say so on the <a href="/contact/">contact page</a>. Permission beyond what is written here is often granted, but it has to be asked for.</p>
+
+  <p class="muted" style="margin-top:26px">Last updated 2 September 2026. If these terms change, the date changes with them.</p>
+
+</div></div>`;
+
 /* Honest empty state - better than fake cards implying content exists. */
 const empty = (line) => `<div class="band"><div class="wrap">
   <div class="tile" style="min-height:230px;align-items:center;justify-content:center;text-align:center">
@@ -1407,6 +1455,27 @@ const pages = [
     crumb: "Contact", h1: "Get in Touch.",
     lead: "Questions about a worksheet, a broken link, or something you would like built. We read everything.",
     body: empty("The contact form is being set up. An address will go here as soon as there is one worth publishing.") },
+
+  /* ── TERMS OF USE ──────────────────────────────────────────────────────
+     Paul, 2026-09-02: "we might need to add a terms and service about these
+     [worksheets] and lessons.. like they can use them personally but they
+     can't copy them and distribute them as their own."
+
+     🚨 THIS IS NOT LEGAL ADVICE AND THE PAGE DOES NOT PRETEND TO BE. It is
+     the ordinary licence printable sites use, written plainly. If real money
+     or a real dispute ever turns up, a lawyer reads it before it is relied on.
+
+     ⚠️ WRITTEN TO BE TRUE OF THE SITE AS IT IS TODAY. It does not promise
+     accounts, refunds, uptime or a purchase history, because none of those
+     exist yet (ROADMAP 23-25). When paid downloads ship, this page needs a
+     purchase and refund section - not before, or it makes a claim the site
+     cannot keep. Same rule as the unsafe-claims list in BEHAVIOR.md. */
+  { dir: "terms", active: "", noindex: false,
+    title: "Terms of Use — NexStudents",
+    desc: "What you may and may not do with NexStudents worksheets and lessons. Free to use with your own students; not to redistribute or resell.",
+    crumb: "Terms of Use", h1: "Terms of Use.",
+    lead: "Short version: print them, use them with your own students, as often as you like. Do not repost them, sell them, or put your name on them.",
+    body: termsBody() },
 
   { dir: "for-parents", active: "p",
     title: "For Parents — NexStudents",

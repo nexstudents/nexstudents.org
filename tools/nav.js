@@ -48,6 +48,9 @@ const NAV = [
   { href: "/for-parents/", label: "For Parents", note: "Placement exams",     key: "p",  top: true },
   { href: "/about/",       label: "About",       note: "Who makes this",      key: "a",  top: false },
   { href: "/contact/",     label: "Contact",     note: "Get in touch",        key: "ct", top: false },
+  /* Not in the top bar - a licence page belongs in the drawer and the footer,
+     where people look for it, not competing with Grades for attention. */
+  { href: "/terms/",       label: "Terms of Use", note: "What you may print",  key: "tm", top: false },
 ];
 
 /* ⚠️ SUBJECTS and LIVE_GRADES live here because the NAV needs them on every
@@ -298,6 +301,7 @@ SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
   { label: "What We Use", href: "/resources/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
+  { label: "Terms of Use", href: "/terms/" },
 ]};
 
 

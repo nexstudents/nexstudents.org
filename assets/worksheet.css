@@ -427,3 +427,19 @@ body.print-all .wk+.wk{page-break-before:always}
 @media print{
   nav#nav,.drawer,.scrim{display:none!important}
 }
+
+/* ── THE USAGE LINE ────────────────────────────────────────────────────────
+   Paul, 2026-09-02: "we might need to add a terms and service about these
+   [worksheets] and lessons.. like they can use them personally but they can't
+   copy them and distribute them as their own."
+
+   It sits on the SHEET PAGE, not only on /terms/, because a licence nobody
+   walks past is a licence nobody reads. Quiet by design - this is a reminder,
+   not a warning notice, and the page is for teaching.
+   ⚠️ It is screen furniture: the print rules already hide everything outside
+   .sheet, so it never costs paper. */
+.useline{max-width:70ch;margin:26px auto 34px;font-size:12.5px;line-height:1.6;
+  color:var(--dim);text-align:center}
+.useline a{color:var(--dim);text-underline-offset:2px}
+.useline a:hover{color:var(--fg)}
+@media print{ .useline{display:none!important} }

@@ -181,6 +181,8 @@ ${navMarkup("w")}
   </div>
 
 </div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+
 ${navScript()}
 </body>
 </html>
@@ -268,6 +270,8 @@ ${navMarkup("w")}
     <small>Copyright &copy; NexEdge Studios</small></p>
 
 </div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+
 ${navScript()}
 </body>
 </html>
@@ -406,6 +410,8 @@ ${navMarkup("w")}
   show(w >= 1 && w <= weeks.length ? w : 1);
 })();
 </script>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+
 ${navScript()}
 </body>
 </html>
@@ -498,6 +504,8 @@ ${s.scripture ? `
   </div>
 
 </div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+
 ${navScript()}
 </body>
 </html>
@@ -580,6 +588,8 @@ ${navMarkup("w")}
 
 </div>
 
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+
 ${navScript()}
 </body>
 </html>
@@ -646,12 +656,12 @@ ${faviconTags()}
   .note > p:first-child { margin: 0 0 4px; }
   .note ol { margin: 0; padding-left: 20px; }
   .note li { font-size: 13.5px; line-height: 1.5; margin: 2px 0; }
-  .note .later { font-size: 12.5px; color: var(--muted); margin: 12px 0 0;
+  .note .later { font-size: 12.5px; color: var(--dim); margin: 12px 0 0;
                  padding-top: 10px; border-top: 1px solid var(--line); }
   .imgwrap { margin: 30px 0 6px; text-align: center; }
   .imgwrap img { width: 100%; max-width: 620px; height: auto;
                  border: 1px solid var(--line); border-radius: 6px; background: #fff; }
-  .imgcap { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
+  .imgcap { font-size: 12.5px; color: var(--dim); margin: 8px 0 0; }
   @media print {
     /* Everything except the sheet itself is screen furniture. */
     nav, .bar, .head, .note, .imgcap { display: none !important; }
@@ -698,6 +708,8 @@ ${navMarkup("w")}
 
 </div>
 
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+
 ${navScript()}
 </body>
 </html>
@@ -741,7 +753,7 @@ ${faviconTags()}
   .note > p:first-child { margin: 0 0 4px; }
   .note ol { margin: 0; padding-left: 20px; }
   .note li { font-size: 13.5px; line-height: 1.5; margin: 2px 0; }
-  .note .later { font-size: 12.5px; color: var(--muted); margin: 12px 0 0;
+  .note .later { font-size: 12.5px; color: var(--dim); margin: 12px 0 0;
                  padding-top: 10px; border-top: 1px solid var(--line); }
   .pdfwrap { margin: 30px 0 6px; }
   /* Tall enough to show the whole sheet without the reader scrolling inside a
@@ -752,8 +764,8 @@ ${faviconTags()}
              border-radius: 6px; background: var(--panel-2); }
   .pdffall img { width: 100%; max-width: 380px; height: auto; border-radius: 4px;
                  border: 1px solid var(--line); background: #fff; }
-  .pdffall p { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
-  .imgcap { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; text-align: center; }
+  .pdffall p { font-size: 13px; color: var(--dim); margin: 10px 0 0; }
+  .imgcap { font-size: 12.5px; color: var(--dim); margin: 8px 0 0; text-align: center; }
 </style>
 </head>
 <body>
@@ -797,6 +809,8 @@ ${navMarkup("w")}
   </div>
 
 </div>
+
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
