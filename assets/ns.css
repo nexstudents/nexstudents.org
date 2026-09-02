@@ -34,6 +34,16 @@
      picker is the main way into the site on a phone, so it is deliberately
      the loudest thing in the drawer rather than another panel. */
   --tile-bg:#ffffff; --tile-fg:#0a0b0d; --tile-dim:#6b7280;
+  /* 🚨 THE ROLLING BANNER'S GHOST TEXT, and it is its OWN token on purpose.
+     It was var(--panel-2) - the panel FILL grey, a shade off the page ground -
+     so every word except "Free" was effectively invisible on a phone. Paul,
+     2026-09-02, picked the warm option: it echoes the logo red, which is the
+     only warm note the site has.
+     ⚠️ It is NOT --paid, deliberately, even though they are cousins. --paid
+     and --free MEAN something on this site - they are the badge colours - and
+     spending a semantic colour on decoration is how the meaning leaks away.
+     A separate token can be retuned without touching a badge. */
+  --mq:#5a2b1f;
   --free:#4ade80;        /* free badge - the thing they came for */
   --paid:#ff5c33;        /* paid badge. the only warm colour on the page */
   --on-free:#052e16; --on-paid:#2b0a02;
@@ -65,6 +75,17 @@
   --bg:#f2f4f7; --panel:#ffffff; --panel-2:#e8ecf1; --line:#c6cfd9;
   --fg:#1b2229; --dim:#5d6874;
   --a:#27313f; --a-ink:#ffffff;
+  /* ⚠️ THE BANNER TINT NEEDS ITS OWN LIGHT VALUE, not the dark one. #5a2b1f is
+     a deep warm that sits just above near-black; on a near-white ground it
+     would read as hard brown text rather than as the ghost the banner is meant
+     to be. This is the same warm carried up to a pale tint, so it stays a
+     shade off the page the way the dark one does.
+     ⚠️ PICKED BY MATCHING CONTRAST, not by eye. #5a2b1f sits at 1.69:1 against
+     the dark ground; this sits at 1.70:1 against the light one, so the banner
+     is equally present in both themes. A tint chosen to "look about right" on
+     white lands far fainter than its dark twin - the first try measured
+     1.26:1, which is most of the way back to invisible. */
+  --mq:#e3b3a1;
   /* Same white tile in light mode. The drawer is already white here, so the
      tile carries its --line border to stay a distinct shape rather than
      dissolving into the sheet. */
@@ -460,7 +481,7 @@ a.sub-t{color:inherit;text-decoration:none}
   background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 @media(max-width:700px){ .mq{height:150px} }
 .mq div{display:inline-flex;align-items:center;gap:56px;padding-right:56px;animation:slide 40s linear infinite}
-.mq span{font-size:clamp(2.4rem,7vw,104px);font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--panel-2)}
+.mq span{font-size:clamp(2.4rem,7vw,104px);font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--mq)}
 .mq span.on{color:var(--fg)}
 @keyframes slide{ to{ transform:translateX(-50%) } }
 @media(hover:hover){ .mq:hover div{animation-play-state:paused} }
