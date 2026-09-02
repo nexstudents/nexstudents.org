@@ -46,8 +46,15 @@ const NAV = [
   { href: "/games/",       label: "Games",       note: "Play in the browser", key: "g",  top: true },
   { href: "/comics/",      label: "Comics",      note: "Read on the site",    key: "c",  top: true },
   { href: "/for-parents/", label: "For Parents", note: "Placement exams",     key: "p",  top: true },
-  { href: "/about/",       label: "About",       note: "Who makes this",      key: "a",  top: false },
-  { href: "/contact/",     label: "Contact",     note: "Get in touch",        key: "ct", top: false },
+  /* ⚠️ ABOUT AND CONTACT ARE NOT HERE EITHER, 2026-09-02. Paul: "you can also
+     probably remove about AND CONTACT MAYBE" - and the measurement agreed. The
+     drawer must not scroll, and with these two it was 633px inside a 560px
+     phone and 636 inside a 600. Without them it fits every size tested.
+     At 360x640 it had been clearing by 20px, which is not clearance, it is
+     luck: one more row, or a slightly taller Support button, and it scrolls.
+     ⚠️ Both pages are still in the footer - Contact under Help, About under
+     Company - and both are still built and in the sitemap. The drawer is the
+     list of PLACES TO GO; the footer is where you look something up. */
   /* ⚠️ THE THREE LEGAL PAGES ARE NOT IN THIS LIST, 2026-09-02. Paul: "i dont
      think you need to add refund policy, terms, and privacy in the side menu."
      They were here when the footer had no links at all, so the drawer was the
