@@ -271,12 +271,24 @@
   <a class="btn rv d2" href="/worksheets/">Browse all worksheets</a>
 </div></div>
 
-<!-- ═══ rolling banner ═══ -->
+<!-- ═══ rolling banner ═══
+     🚨 THE TWO HALVES MUST BE IDENTICAL. @keyframes slide runs to
+     translateX(-50%), so the loop is seamless ONLY because the second half is
+     a byte-for-byte repeat of the first. Add a word to one half and the banner
+     visibly jumps every time it wraps. Seven items, listed twice.
+
+     ⚠️ "Packets" is GONE from this list, 2026-09-02. Paul's new wording, and
+     it is also the honest one: there is exactly one packet on the site, it is
+     $14 with no buy link, and it renders as "Coming soon". A rolling banner
+     advertising it sat oddly beside that.
+     ⚠️ The white word is now "Free Resources" rather than a bare "Free" - it
+     is the claim the site is actually making, and it is the one thing here
+     that is true of nearly everything on the site. -->
 <div class="mq"><div>
-  <span>Worksheets</span><span class="on">Free</span><span>Packets</span><span>Experiments</span>
-  <span>Comics</span><span class="on">Free</span><span>Reading lists</span><span>Games</span>
-  <span>Worksheets</span><span class="on">Free</span><span>Packets</span><span>Experiments</span>
-  <span>Comics</span><span class="on">Free</span><span>Reading lists</span><span>Games</span>
+  <span>Science Experiments</span><span>Comics</span><span class="on">Free Resources</span>
+  <span>Games</span><span>Placement Exam</span><span>Worksheets</span><span>Reading List</span>
+  <span>Science Experiments</span><span>Comics</span><span class="on">Free Resources</span>
+  <span>Games</span><span>Placement Exam</span><span>Worksheets</span><span>Reading List</span>
 </div></div>
 
 <footer><div class="wrap">
@@ -396,6 +408,7 @@ fbar.addEventListener('click',e=>{
 
 
 <script>(function(){var a=document.getElementById('ann');if(!a)return;try{if(localStorage.getItem('ns:ann')==='off'){a.remove();return;}}catch(e){}var b=a.querySelector('[data-ann-close]');if(b)b.addEventListener('click',function(){try{localStorage.setItem('ns:ann','off');}catch(e){}a.remove();});})();</script>
+
 
 
 
