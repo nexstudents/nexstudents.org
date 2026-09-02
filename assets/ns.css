@@ -528,6 +528,29 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    colour rather than the dimmed one. */
 .fbot .disc{margin:0;color:inherit}
 
+/* ── THE SLIM DAY/NIGHT SWITCH ─────────────────────────────────────────────
+   Modelled on lttstore's footer toggle, which Paul asked for by name: a 40x13
+   track with a small round knob, sitting bottom left beside its label.
+   ⚠️ IT IS A BUTTON, NOT A CHECKBOX. The state already lives on <html> as
+   data-theme and in ns:mode, so a checkbox would add a second copy of it that
+   has to be kept in sync - and would disagree the moment the theme changed
+   from the nav instead. The knob reads its position straight off data-theme. */
+.mswitch{margin-right:auto;background:none;border:0;padding:0;cursor:pointer;
+  display:inline-flex;align-items:center;gap:9px;
+  font:inherit;font-weight:700;color:var(--fg);-webkit-tap-highlight-color:transparent}
+.mswitch-track{position:relative;width:40px;height:13px;border-radius:999px;
+  background:var(--panel-2);border:1px solid var(--line);flex:none;transition:background .2s var(--ease)}
+.mswitch-knob{position:absolute;top:50%;left:2px;width:9px;height:9px;border-radius:999px;
+  background:var(--a);transform:translateY(-50%);transition:transform .2s var(--ease),background .2s var(--ease)}
+/* Knob right in light mode, left in dark. Dark is the site default, so the
+   plain rule is the dark position and [data-theme="light"] moves it. */
+:root[data-theme="light"] .mswitch-knob{transform:translateY(-50%) translateX(26px)}
+@media(hover:hover){ .mswitch:hover .mswitch-track{background:var(--panel)} }
+.mswitch:focus-visible{outline:2px solid var(--a);outline-offset:3px;border-radius:4px}
+/* Below the two-column footer breakpoint the row wraps; keep the switch on its
+   own line rather than jammed against the copyright. */
+@media(max-width:520px){ .mswitch{margin-right:0} }
+
 .rv{opacity:0;transform:translateY(16px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
 .rv.in{opacity:1;transform:none}
 .rv.d1{transition-delay:.05s} .rv.d2{transition-delay:.1s} .rv.d3{transition-delay:.15s}

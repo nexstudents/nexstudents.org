@@ -664,6 +664,20 @@ ${FOOTER_COLS.map(c => '    <details class="fcol" open><summary><h5>' + c.title 
     "\n    </ul></details>").join("\n")}
   </div>
   <div class="fbot">
+    ${/* 🚨 A THIRD CONTROL, NOT A THIRD MECHANISM. It carries data-mode-toggle,
+         so navScript's existing listener picks it up with no new code, writes
+         ns:mode and repaints every control at once. The nav button and the
+         drawer row stay in step with it for free.
+         ⚠️ Do NOT give this its own click handler or its own storage key. Two
+         sources of truth for one setting is how a theme toggle starts
+         disagreeing with itself between the header and the footer.
+         Paul, 2026-09-02, on lttstore: "there is an icon at the bottom for
+         darkmode thet have that looks like a very slim slider." Theirs
+         measures 40x13 with a ~9px knob; so does this. */""}
+    <button class="mswitch" type="button" data-mode-toggle aria-label="Switch between day and night">
+      <span class="mswitch-track"><span class="mswitch-knob"></span></span>
+      <span data-mode-label>Night Mode</span>
+    </button>
     <span>&copy; 2026 NexEdge Studios</span>
     ${/* ⚠️ ONE LINE, not the old three-line paragraph. The disclosure has to be
          present and plain - it is an FTC requirement and it is on every page
