@@ -913,6 +913,14 @@ a.dst{text-decoration:none}
    black was baked in - so it was keyed out before use, or it would have been a
    black square in day mode. */
 .word{display:inline-flex;align-items:center;gap:9px}
+/* 🚨 THE FOOTER WORDMARK IS TEXT ONLY, SO IT MUST NOT BE A FLEX ROW. The gap
+   above exists to separate the logo image from the name in the nav. In the
+   footer there is no image - just the text "Nex" and <b>Students</b> - and
+   inline-flex turns those into two flex items with 9px between them, so it
+   read "Nex Students". Paul, 2026-09-02: "it should be NeStudents".
+   ⚠️ An anonymous text node becomes a flex ITEM. Any gap on a flex container
+   will split a word that is only partly wrapped in a tag. */
+footer .word{display:block;gap:0}
 .word img{height:clamp(22px,4.4vw,28px);width:auto;display:block}
 @media(max-width:380px){ .word img{height:22px} }
 
