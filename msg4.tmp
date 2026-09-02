@@ -1,0 +1,20 @@
+Fix the cut-off top of the worksheet instruction box
+
+Paul, 2026-09-02: "the top of the instructions on this worksheet looks cut off."
+He was right and it was my own rule that did it.
+
+`.note` in worksheet.css carries only 12px of top padding, which is fine while
+its first child brings its own margin. The previous commit added
+`.note p { margin: 0 }` to tighten the list, which also zeroed the heading's
+top margin - so "Before you start" sat hard against the top border while the
+foot still had padding plus a divider under the closing line. Top-heavy, and it
+reads as clipped.
+
+Set the padding on the block instead of fighting margins, and target only the
+first paragraph. 16px top, 14px bottom, and the closing line gets more room
+above its divider.
+
+⚠️ The rule worth keeping: never blanket-zero margins inside a shared
+component. `.note` is used by every sheet type here, and a selector broad
+enough to fix the spacing you are looking at is broad enough to break the
+spacing you are not.
