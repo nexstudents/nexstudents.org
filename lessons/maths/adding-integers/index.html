@@ -757,7 +757,7 @@ body.player-hidden .scrub{margin:0}
 </nav>
 
 <div class="wrapx">
-  <div class="ns-back"><a href="/maths/">&larr; Maths</a></div>
+  <div class="ns-back"><a href="/grade-6/maths/lessons/">&larr; 6th Grade Maths</a></div>
   <h1>Adding Integers</h1>
   <p class="dek">Two rules cover every addition. Which one you use depends on whether the signs match.</p>
 
@@ -1224,12 +1224,17 @@ function nsTextHash(list){
 }
 var TEXT_HASH = nsTextHash(SENT.map(function(s){ return s.text; }));
 
+var MEDIA_BASE = "";
+
 (function loadBakedVoice(){
   fetch("voice.json", { cache: "force-cache" })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       var tr = (j && j.tracks) || [];
       if (!tr.length) return;
+      /* Absent on lessons baked before R2, and that is what keeps their
+         absolute /lessons/... paths working. See mediaUrl(). */
+      MEDIA_BASE = (j && j.base) || "";
       /* 🚨 A STALE MANIFEST IS WORSE THAN NO AUDIO, because it is confidently
          wrong: the highlight walks the new text while the voice reads the old.
 
@@ -2033,10 +2038,25 @@ function playClip(mine){
   playClipFrom(mine, AUDIO.clips[idx]);
 }
 
+/* 🚨 ONE PLACE RESOLVES A CLIP PATH — ROADMAP 27.
+   Clips baked to R2 are stored RELATIVE ("lessons/x/voice/male/000.mp3") and
+   voice.json carries `base`. Clips baked before R2 are absolute ("/lessons/...")
+   and carry no base. Both must keep working: history and maths were baked long
+   before this and must not need re-baking.
+
+   ⭐ This is also what makes the host swappable. Moving from workers.dev to
+   media.nexstudents.org changes MEDIA_BASE in the build and nothing else -
+   no page edit, no re-bake, however many lessons exist by then. */
+function mediaUrl(src){
+  if (!src) return src;
+  if (src.charAt(0) === "/" || /^https?:\/\//i.test(src)) return src;
+  return (MEDIA_BASE || "").replace(/\/+$/, "") + "/" + src.replace(/^\/+/, "");
+}
+
 function playClipFrom(mine, clip){
   var s = SENT[idx];
   var marks = clip.marks || [];
-  audioEl = new Audio(clip.src);
+  audioEl = new Audio(mediaUrl(clip.src));
   /* 🚨 SPEED COMES FROM PLAYBACK, NOT FROM THE CLIP. Baked audio is generated
      once at natural speed, so Slow / Normal / Fast are applied here. 0.85 is
      what the picker calls "Normal", so dividing by it keeps Normal at exactly

@@ -27,6 +27,10 @@ const { captions, solve } = require("./math-captions.js");
 const { requireTodo } = require("./lesson-instructions.js");
 
 const ROOT = process.argv[2] || ".";
+/* ONE back-link rule for every lesson generator - see lesson-back.js. These
+   templates used to hardcode /maths/ and /english/, so a single-grade lesson
+   sent the student to a subject root instead of the shelf they came from. */
+const { backFor } = require("./lesson-back.js");
 const TPL = path.join(__dirname, "math", "template.html");
 const template = fs.readFileSync(TPL, "utf8");
 
@@ -117,6 +121,8 @@ for (const L of MATH) {
   pool.forEach(p => check(p.dividend, p.divisor, L.slug + " pool", L.practice.allowRemainder));
 
   let h = template
+    .replace(/__BACKHREF__/g, backFor(L, L.id.split("/")[0], ROOT, L.id).href)
+    .replace(/__BACKLABEL__/g, backFor(L, L.id.split("/")[0], ROOT, L.id).label)
     .replace(/__TITLE__/g, L.title)
     .replace(/__DEK__/g, L.dek)
     .replace(/__ID__/g, L.id)
