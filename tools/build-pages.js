@@ -223,42 +223,120 @@ const comicsPage = () => {
 
    ⚠️ Every clause must stay true of the site as it stands. No refunds
    section until paid downloads exist; no account clause until accounts do. */
+/* ── THE TERMS PAGE BODY ───────────────────────────────────────────────────
+   🚨 THIS TEXT IS PAUL'S, WORD FOR WORD. He wrote it with ChatGPT on
+   2026-09-02 after reading my draft: "chat gpt just knows how to write better
+   than you regarding the terms and services. I'm sending it over next and I
+   want you to use it."
+
+   ⚠️ DO NOT REWRITE, TIGHTEN OR "IMPROVE" THIS. It is a licence, not copy.
+   Changing a word changes what people are permitted to do. Edits come from
+   Paul, or from a lawyer, and nowhere else. My earlier draft was replaced
+   wholesale and is in git history if it is ever wanted.
+
+   It is better than what I wrote in three specific ways worth remembering:
+     - it names NexEdge Studios AND NexStudents as owner, matching the real
+       org structure, where mine named only the site
+     - it handles future paid products with a conditional clause instead of
+       omitting the subject, so the page does not go stale the day checkout
+       ships - which was the flaw I had flagged in my own version
+     - it separates "free" from "copyright-free", which is the distinction
+       people actually get wrong
+
+   Delivered a line at a time over ~40 messages because a paste kept breaking;
+   one sentence arrived scrambled and was re-sent rather than guessed at. */
 const termsBody = () => `<div class="band"><div class="wrap prose">
 
-  <h2>What you may do</h2>
+  <p class="muted">Last updated: September 2, 2026</p>
+
+  <p>We create educational resources to make teaching and learning easier for families, teachers, tutors, and educational groups. We want our materials to be used, printed, and enjoyed. We just ask that our work is not resold, reposted, or claimed as someone else&rsquo;s.</p>
+
+  <h2>The Short Version</h2>
+  <p>Print them. Teach with them. Use them again.</p>
+  <p>You may use NexStudents materials with your own students as often as you like.</p>
+  <p>Please do not sell our materials, repost our files somewhere else, remove our branding, or claim our work as your own.</p>
+
+  <h2>What You May Do</h2>
+  <p>You may use NexStudents materials with students you personally teach or supervise, including:</p>
   <ul class="gets">
-    <li><b>Use everything with your own students.</b> Your children, your classroom, your co-op, your tutoring students. Home or school, it makes no difference to us.</li>
-    <li><b>Print as many copies as you need</b>, as many times as you need them. There is no per-copy limit and no expiry.</li>
-    <li><b>Save the files</b> so you can print them again without coming back to the site.</li>
-    <li><b>Link to any page here</b> from a blog, a lesson plan, a newsletter or a school website. Links are welcome and need no permission.</li>
-    <li><b>Mention us by name</b> and quote a short passage when you are writing about the material.</li>
+    <li>Your own children</li>
+    <li>Students in your classroom</li>
+    <li>Homeschool students</li>
+    <li>Homeschool co-op students</li>
+    <li>Tutoring students</li>
+    <li>Students in a church or educational group you teach</li>
   </ul>
+  <p>You may print as many copies as reasonably needed for those students. There is no per-copy limit and no expiration date on this permission.</p>
+  <p>You may save downloaded files to your own computer, tablet, cloud storage, or other personal storage so that you can use and print them again later.</p>
+  <p>You may link to pages on NexStudents from your website, blog, lesson plan, newsletter, social media page, school website, or other educational resource. Links to NexStudents are welcome and do not require permission.</p>
+  <p>You may also mention NexStudents by name and quote a short portion of our material when reviewing, discussing, or recommending one of our resources.</p>
 
-  <h2>What you may not do</h2>
+  <h2>What You May Not Do</h2>
+  <p>Unless you receive written permission from NexStudents, you may not:</p>
   <ul class="gets">
-    <li><b>Do not sell them</b>, or include them in anything sold, bundled or offered as a paid download.</li>
-    <li><b>Do not re-host them.</b> Do not upload our files to another website, a file locker, a course platform or a marketplace. Link to the page instead.</li>
-    <li><b>Do not present them as your own work</b>, and do not remove the NexStudents mark from a sheet.</li>
-    <li><b>Do not redistribute the files in bulk</b> to people outside your own students, in place of sending them here.</li>
-    <li><b>Do not train models on them</b> or scrape the site to build a competing library.</li>
+    <li>Sell NexStudents worksheets, lessons, artwork, downloads, or other materials.</li>
+    <li>Include NexStudents materials inside another product, bundle, course, subscription, or download that is sold or offered for a fee.</li>
+    <li>Upload or re-host NexStudents files on another website, file-sharing service, course platform, marketplace, shared resource library, or similar service. Please link people to NexStudents instead.</li>
+    <li>Present NexStudents materials as your own work.</li>
+    <li>Remove, cover, alter, or intentionally obscure NexStudents branding, copyright notices, watermarks, or attribution included on our materials.</li>
+    <li>Redistribute our files in bulk to people who are not your own students.</li>
+    <li>Create another website, resource library, collection, or service that substantially republishes NexStudents materials.</li>
+    <li>Scrape, crawl, systematically download, or otherwise collect substantial portions of NexStudents content for the purpose of creating a competing resource or database.</li>
+    <li>Use NexStudents materials to train, fine-tune, or develop an artificial intelligence or machine-learning model without our written permission.</li>
   </ul>
+  <p>In simple terms: use our resources to teach, not to become another source for distributing them.</p>
+  <p>If you are unsure whether a particular use is allowed, contact us. We would rather answer your question than have you avoid using a resource that could help your students.</p>
 
-  <h2>The short version</h2>
-  <p>Use them freely with the students you teach. Do not become a second source for them. If you are unsure whether something counts, ask us &mdash; the answer is usually yes.</p>
+  <h2>Who Owns the Materials?</h2>
+  <p>Unless otherwise stated on a particular page or resource, the original worksheets, lessons, written content, illustrations, graphics, designs, and other original materials published by NexStudents are owned by NexEdge Studios and/or NexStudents and are protected by applicable copyright laws.</p>
+  <p>Some educational resources may incorporate or build upon public-domain works, openly licensed materials, quotations, historical documents, or other third-party content. When appropriate, those sources or licenses will be identified.</p>
+  <p>Facts themselves are not owned by NexStudents. Historical events, scientific principles, mathematical concepts, and other factual information may be taught and discussed by anyone.</p>
+  <p>Our copyright applies to our original expression of those ideas, including our writing, explanations, illustrations, worksheets, graphics, organization, and design.</p>
 
-  <h2>Who owns what</h2>
-  <p>The worksheets, lessons, artwork and text on this site belong to NexStudents unless a page says otherwise. Where we build on public-domain or openly licensed material, the page says so. Facts are nobody's property: the history and science described here can be taught by anyone, in their own words. It is our wording, layout and artwork that are ours.</p>
+  <h2>Free Educational Materials</h2>
+  <p>Many NexStudents resources are provided free of charge because we want families and educators to have access to useful educational materials.</p>
+  <p>Free does not mean copyright-free or public domain.</p>
+  <p>Unless a resource specifically states otherwise, a free NexStudents resource remains subject to these Terms of Use.</p>
+  <p>If NexStudents introduces paid resources, memberships, courses, or other paid services in the future, those products will be clearly identified along with their applicable price and any additional terms.</p>
+  <p>Resources already identified as free will not suddenly require payment simply because additional paid resources are introduced.</p>
 
-  <h2>Free now, and what that means</h2>
-  <p>Most of what is here is free, and that is a decision rather than a trial. If paid material is added later it will be clearly marked and priced on its own page, and anything already free stays free.</p>
+  <h2>Educational Use</h2>
+  <p>NexStudents provides educational materials and resources. We work to make our content useful and accurate, but every student, classroom, homeschool, and educational situation is different.</p>
+  <p>Parents, teachers, tutors, and other educators remain responsible for deciding whether a particular resource is appropriate for their students and how it should be used.</p>
 
-  <h2>No warranty</h2>
-  <p>These are teaching materials made by a homeschooling family, offered as they are. We check them and we fix what we find, but we cannot promise a sheet is free of errors or right for a particular student. You are the teacher; use your judgement.</p>
+  <h2>Errors and Corrections</h2>
+  <p>We review our materials and try to correct errors when we find them. However, educational materials may occasionally contain mistakes, outdated information, typographical errors, or other inaccuracies.</p>
+  <p>If you find something that appears incorrect, please contact us. We appreciate corrections and want our materials to be as accurate and useful as possible.</p>
 
-  <h2>Questions, corrections and permission</h2>
-  <p>If you want to use something in a way this page does not cover, or you have found a mistake, say so on the <a href="/contact/">contact page</a>. Permission beyond what is written here is often granted, but it has to be asked for.</p>
+  <h2>No Warranty</h2>
+  <p>NexStudents materials and this website are provided &ldquo;as is&rdquo; and &ldquo;as available.&rdquo;</p>
+  <p>To the extent permitted by law, NexStudents and NexEdge Studios make no guarantees that every resource will be error-free, uninterrupted, suitable for every student, or appropriate for every educational purpose.</p>
+  <p>You are responsible for reviewing materials and exercising your own judgment before using them with your students.</p>
 
-  <p class="muted" style="margin-top:26px">Last updated 2 September 2026. If these terms change, the date changes with them.</p>
+  <h2>Website Availability</h2>
+  <p>We may update, revise, replace, move, or discontinue pages, features, or resources on NexStudents from time to time.</p>
+  <p>We cannot guarantee that every page, download, feature, or resource will remain available indefinitely.</p>
+
+  <h2>Third-Party Links and Resources</h2>
+  <p>NexStudents may occasionally link to websites, videos, books, services, or resources operated by other organizations.</p>
+  <p>Those websites and resources are controlled by their respective owners. A link from NexStudents does not necessarily mean that we endorse everything available on that website.</p>
+  <p>We are not responsible for the content, availability, privacy practices, or policies of third-party websites.</p>
+
+  <h2>Acceptable Use of the Website</h2>
+  <p>Please do not use NexStudents in a way that interferes with the website, attempts to gain unauthorized access to its systems, distributes malicious software, or prevents other people from accessing our resources.</p>
+  <p>Automated activity that places an unreasonable burden on the website or systematically collects our content may be restricted or blocked.</p>
+
+  <h2>Changes to These Terms</h2>
+  <p>We may update these Terms of Use as NexStudents grows or as our services change.</p>
+  <p>When we make changes, the &ldquo;Last updated&rdquo; date at the top of this page will be updated.</p>
+  <p>Your continued use of NexStudents after updated terms are posted means that your future use of the website and materials is subject to the updated terms, to the extent permitted by applicable law.</p>
+
+  <h2>Questions, Corrections, and Special Permission</h2>
+  <p>If you would like to use NexStudents material in a way that is not covered by these terms, please contact us through our <a href="/contact/">Contact page</a>.</p>
+  <p>We are often happy to grant additional permission for educational uses. Permission outside these terms must be requested and granted before that use occurs.</p>
+  <p>If you find an error in one of our resources, we would also appreciate hearing from you.</p>
+
+  <p class="muted" style="margin-top:30px">NexStudents<br>An educational resource by NexEdge Studios<br>&copy; 2026 NexEdge Studios. All rights reserved.</p>
 
 </div></div>`;
 
@@ -1474,7 +1552,7 @@ const pages = [
     title: "Terms of Use — NexStudents",
     desc: "What you may and may not do with NexStudents worksheets and lessons. Free to use with your own students; not to redistribute or resell.",
     crumb: "Terms of Use", h1: "Terms of Use.",
-    lead: "Short version: print them, use them with your own students, as often as you like. Do not repost them, sell them, or put your name on them.",
+    lead: "Welcome to NexStudents. We create educational resources to make teaching and learning easier for families, teachers, tutors, and educational groups.",
     body: termsBody() },
 
   { dir: "for-parents", active: "p",
