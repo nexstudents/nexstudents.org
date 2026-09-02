@@ -629,13 +629,19 @@ ${faviconTags()}
      block under the worksheet too and it was not wanted - "honestly maybe we
      don't need the content below the worksheet." One place to read, then the
      thing you came for. Do not reintroduce a section after the image. */
-  /* ⚠️ `.note` in worksheet.css has only 12px of top padding, which is fine
-     when its first child brings its own margin. Zeroing every p inside it -
-     which an earlier version of this block did with `.note p { margin: 0 }` -
-     left the heading hard against the top border while the foot still had
-     padding plus a divider. Paul, 2026-09-02: "the top of the instructions on
-     this worksheet looks cut off." Set the padding here rather than fighting
-     margins, and never blanket-zero margins inside a shared component. */
+  /* WARNING: .note in worksheet.css has only 12px of top padding, which is
+     fine while its first child brings its own margin. Zeroing every p inside
+     it - which an earlier version of this block did - left the heading hard
+     against the top border while the foot still had padding plus a divider.
+     Paul, 2026-09-02: "the top of the instructions on this worksheet looks cut
+     off." Set the padding here rather than fighting margins, and never
+     blanket-zero margins inside a shared component.
+
+     NO BACKTICKS IN THIS COMMENT. It lives inside a JS template literal, so a
+     backtick closes the string and the build dies on the next word. That is
+     already recorded in CLAUDE.md for progressScript and it caught me here
+     too - and because the build was piped to /dev/null, the crash was silent
+     and a "fix" was pushed that never built. Never hide build stderr. */
   .note { padding: 16px 16px 14px; }
   .note > p:first-child { margin: 0 0 4px; }
   .note ol { margin: 0; padding-left: 20px; }
