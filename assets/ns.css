@@ -485,11 +485,12 @@ a.sub-t{color:inherit;text-decoration:none}
    the last word of one half meets the first word of the next. Change one alone
    and the banner reads evenly until it wraps, then bunches or gaps once per
    loop - a fault that only shows itself every 40 seconds.
-   ⚠️ 56px to 110px, 2026-09-02. Paul: "they are too close together on that
+   ⚠️ 56px to 92px, 2026-09-02 (110 first, then eased back - Paul: "yea better
+   but maybe just slightly closer"). Paul: "they are too close together on that
    banner". The words got a lot longer the same day (Science Experiments, Free
    Resources, Placement Exam), so the old spacing that suited Free and Games
    left the new list looking like one run-on line. */
-.mq div{display:inline-flex;align-items:center;gap:110px;padding-right:110px;animation:slide 40s linear infinite}
+.mq div{display:inline-flex;align-items:center;gap:92px;padding-right:92px;animation:slide 40s linear infinite}
 .mq span{font-size:clamp(2.4rem,7vw,104px);font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--mq)}
 .mq span.on{color:var(--fg)}
 @keyframes slide{ to{ transform:translateX(-50%) } }
