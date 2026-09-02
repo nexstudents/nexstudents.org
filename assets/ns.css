@@ -1114,4 +1114,10 @@ nav{border-bottom:1px solid var(--line)}
 
 /* The contact address closes the page, centred, with room above it so it
    reads as the action after the text rather than another paragraph. */
-.contactfoot{margin-top:34px;text-align:center}
+.contactfoot{margin-top:38px;text-align:center}
+/* â ï¸ .prose h2 carries a max-width for readable line length, so the heading
+   box is narrower than the column and sits flush LEFT. text-align:center then
+   centres the words INSIDE that narrow box, which is not the middle of the
+   page - it looked centred in a screenshot and measured 200px off.
+   margin-inline:auto centres the box itself. */
+.contactfoot h2{margin:0 auto 14px;margin-inline:auto}

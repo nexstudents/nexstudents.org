@@ -360,7 +360,7 @@ const termsBody = () => `<div class="band"><div class="wrap prose">
    minimum until it arrives, not the final copy. */
 const contactBody = () => `<div class="band"><div class="wrap prose">
 
-  <h2>What we would like to hear about</h2>
+  <h2>We&rsquo;d Love to Hear From You</h2>
   <ul class="gets">
     <li><b>A mistake in a worksheet or lesson.</b> Wrong answer, confusing wording, a question that cannot be answered from the reading. These get fixed.</li>
     <li><b>A broken link or a page that will not print.</b> Tell us the page and what happened.</li>
@@ -375,6 +375,7 @@ const contactBody = () => `<div class="band"><div class="wrap prose">
        then act - the button is the thing you do after knowing what to say,
        so it closes the page rather than opening it. -->
   <div class="contactfoot">
+    <h2>Contact Us</h2>
     <a class="btn" href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a>
   </div>
 
