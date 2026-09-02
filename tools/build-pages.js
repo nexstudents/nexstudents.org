@@ -1784,7 +1784,7 @@ const pages = [
     title: "Terms of Use — NexStudents",
     desc: "What you may and may not do with NexStudents worksheets and lessons. Free to use with your own students; not to redistribute or resell.",
     crumb: "", h1: "Terms of Use.",
-    lead: "Welcome to NexStudents. We create educational resources to make teaching and learning easier for families, teachers, tutors, and educational groups.",
+    lead: "Welcome to NexStudents",
     body: termsBody() },
 
   /* Paired with /terms/. Same head treatment so the two read as a set. */

@@ -1233,3 +1233,31 @@ nav{border-bottom:1px solid var(--line)}
 .prose ul{margin:0 0 12px}
 /* The closing block is not a section, so it takes no number. */
 .prose p.muted{font-size:13.5px}
+
+/* Same weight relationship as the contact page ask list: the heading is what
+   you scan for, so it holds full --fg; the body steps back to --dim. Paul,
+   2026-09-02: "the sections - with the title need to be bold and just like the
+   contact us the regular text needs less. you can use the same outline."
+   ⚠️ Links stay at --fg so they do not disappear into the dimmed body. */
+.prose p, .prose li{color:var(--dim)}
+.prose h2{color:var(--fg)}
+.prose p b, .prose li b{color:var(--fg)}
+.prose a{color:var(--fg);text-underline-offset:2px}
+
+/* Paul, 2026-09-02: the lead paragraph under the title, and the closing block,
+   both centred on the policy pages. They bracket the document - an intro and a
+   sign-off - so they read as framing rather than as body text.
+   ⚠️ margin-inline:auto as well as text-align, because both sit inside width
+   constrained parents. Centring the text alone leaves the box flush left,
+   which is the same trap as .contactfoot and .prose h2.mid. */
+.termshead p{text-align:center;margin-inline:auto}
+.prose p.muted{text-align:center;margin-inline:auto}
+
+/* The welcome line is a heading, not a sentence. Paul, 2026-09-02: "make
+   Welcome to NexStudents centered and bold like the section text and the we
+   create educational resources under it."
+   ⚠️ This also removed a real duplication: the page lead and the first body
+   paragraph were both carrying "We create educational resources...", so the
+   sentence appeared twice. The lead is the greeting now; the body keeps the
+   sentence. */
+.termshead p{font-weight:800;color:var(--fg);font-size:19px;letter-spacing:-.01em}
