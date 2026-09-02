@@ -27,6 +27,13 @@
   --bg:#0a0b0d; --panel:#16191d; --panel-2:#1f242a; --line:#2b3138;
   --fg:#f1f3f5; --dim:#98a1ab;
   --a:#ffffff; --a-ink:#0a0b0d;
+  /* 🚨 THE GRADE TILES ARE WHITE WITH BLACK TEXT IN BOTH THEMES.
+     Paul, 2026-09-02: "I wanted white boxes for the grades with black text."
+     Not derived from --panel/--panel-2: a tile one step off the drawer is
+     still a dark tile on a dark drawer, which is what he rejected. The grade
+     picker is the main way into the site on a phone, so it is deliberately
+     the loudest thing in the drawer rather than another panel. */
+  --tile-bg:#ffffff; --tile-fg:#0a0b0d; --tile-dim:#6b7280;
   --free:#4ade80;        /* free badge - the thing they came for */
   --paid:#ff5c33;        /* paid badge. the only warm colour on the page */
   --on-free:#052e16; --on-paid:#2b0a02;
@@ -58,6 +65,10 @@
   --bg:#f2f4f7; --panel:#ffffff; --panel-2:#e8ecf1; --line:#c6cfd9;
   --fg:#1b2229; --dim:#5d6874;
   --a:#27313f; --a-ink:#ffffff;
+  /* Same white tile in light mode. The drawer is already white here, so the
+     tile carries its --line border to stay a distinct shape rather than
+     dissolving into the sheet. */
+  --tile-bg:#ffffff; --tile-fg:#1b2229; --tile-dim:#7b8794;
   --free:#15803d;
   --paid:#c2410c;
   --on-free:#eafdf1; --on-paid:#fff3ee;
@@ -833,14 +844,19 @@ body.sub-open .drawer{transform:translateX(-100%)}
    the drawer is themed, and a hardcoded fill breaks whichever mode it was not
    picked for. Same trap as the worksheet dark-theme bug in CLAUDE.md. */
 .dst{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
-  background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r,4px);
-  color:var(--fg);font:inherit;cursor:pointer;padding:0}
+  background:var(--tile-bg);border:1px solid var(--line);border-radius:var(--r,4px);
+  color:var(--tile-fg);font:inherit;cursor:pointer;padding:0}
 /* A grade tile is an <a> now, not a <button>, so it needs the underline
    taken off - a button never had one. */
 a.dst{text-decoration:none}
 .dst b{font-size:clamp(1.1rem,5vw,1.5rem);font-weight:800;letter-spacing:-.03em}
-.dst:not(.soon):hover{border-color:var(--a)}
-.dst.soon{color:var(--dim);opacity:.45;cursor:default}
+/* ⚠️ The tile is white now, so hover cannot use --a - that IS white in dark
+   mode and the border would vanish. Darken the edge instead. */
+.dst:not(.soon):hover{border-color:var(--tile-fg)}
+/* ⚠️ And a not-yet-live tile cannot use --dim at .45 opacity either: --dim is
+   a light grey chosen for dark panels, so on white it faded to nearly nothing.
+   --tile-dim is picked to sit on white in both themes. */
+.dst.soon{color:var(--tile-dim);opacity:1;cursor:default}
 
 /* The promo is the first thing to go when the screen is short. */
 @media(max-height:760px){ .menucol .mg-promo{display:none} }
@@ -949,9 +965,36 @@ html{-webkit-tap-highlight-color:transparent}
 .menucol .dsub.open .dsub-back,
 .menucol .dsub.open h3,
 .menucol .dsub.open .dsub-body > *,
-.menucol .dsub.open .dst-grid,
+.menucol .dsub.open .dst-grid > *,
 .menucol .dsub.open .mg-promo{
   animation:ns-row-in .3s both cubic-bezier(.22,.61,.36,1)}
+
+/* 🚨 THE GRADE TILES DROP IN ONE BY ONE, not as one block.
+   Paul, 2026-09-02: "you know how some of the text animation floats down in
+   some of the other drop downs can you also make the grades do the same thing
+   when switching over from grades into this [sheet]."
+
+   .dst-grid used to be in the group above, so the whole 3x3 arrived as a
+   single rectangle - the exact flat-slab effect the stagger exists to avoid.
+   Animating its CHILDREN instead gives the same cascade the menu rows have.
+   ⚠️ Animate the grid OR its children, never both, or the two transforms
+   compound and the tiles overshoot. */
+/* 🚨 THE GRID IS A DIRECT CHILD OF .dsub-body, so it is ALSO caught by
+   `.dsub-body > *` above and would animate at the same time as its tiles.
+   Two ns-row-in transforms on nested elements compound: the tiles start 18px
+   up instead of 9 and drift as the parent settles. Cancel the parent, keep
+   the children. Verified by reading animationName on the grid, which is how
+   this was caught - it is invisible in a screenshot. */
+.menucol .dsub.open .dst-grid{animation:none}
+.menucol .dsub.open .dst-grid > *:nth-child(1){animation-delay:.14s}
+.menucol .dsub.open .dst-grid > *:nth-child(2){animation-delay:.17s}
+.menucol .dsub.open .dst-grid > *:nth-child(3){animation-delay:.20s}
+.menucol .dsub.open .dst-grid > *:nth-child(4){animation-delay:.23s}
+.menucol .dsub.open .dst-grid > *:nth-child(5){animation-delay:.26s}
+.menucol .dsub.open .dst-grid > *:nth-child(6){animation-delay:.29s}
+.menucol .dsub.open .dst-grid > *:nth-child(7){animation-delay:.32s}
+.menucol .dsub.open .dst-grid > *:nth-child(8){animation-delay:.35s}
+.menucol .dsub.open .dst-grid > *:nth-child(n+9){animation-delay:.38s}
 .menucol .dsub.open .dsub-back{animation-delay:.06s}
 .menucol .dsub.open h3{animation-delay:.10s}
 .menucol .dsub.open .dsub-body > *:nth-child(1){animation-delay:.14s}
@@ -966,14 +1009,14 @@ html{-webkit-tap-highlight-color:transparent}
 .menucol .dsub.exit .dsub-back,
 .menucol .dsub.exit h3,
 .menucol .dsub.exit .dsub-body > *,
-.menucol .dsub.exit .dst-grid,
+.menucol .dsub.exit .dst-grid > *,
 .menucol .dsub.exit .mg-promo{animation:none}
 
 @media(prefers-reduced-motion:reduce){
   .menucol .dsub.open .dsub-back,
   .menucol .dsub.open h3,
   .menucol .dsub.open .dsub-body > *,
-  .menucol .dsub.open .dst-grid,
+  .menucol .dsub.open .dst-grid > *,
   .menucol .dsub.open .mg-promo{animation:none}
 }
 
