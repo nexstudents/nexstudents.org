@@ -1121,3 +1121,25 @@ nav{border-bottom:1px solid var(--line)}
    page - it looked centred in a screenshot and measured 200px off.
    margin-inline:auto centres the box itself. */
 .contactfoot h2{margin:0 auto 14px;margin-inline:auto}
+
+/* ── THE CONTACT PAGE ASK LIST ─────────────────────────────────────────────
+   Paul, 2026-09-02: "the bullet point heading like Found a mistake? Something
+   not working? can you make those bold ... and the rest of the text not as
+   bold? i think the seperation will look better."
+
+   The question is the thing a reader scans for - they are looking for their
+   own situation - so it stays at full weight and full --fg. The explanation
+   after it steps back to --dim, which is what creates the separation. Same
+   idea as the eyebrow on a card: one line to find, one line to read.
+
+   ⚠️ SCOPED WITH .asklist, NOT ON .gets. That class is also used by the terms
+   page and every worksheet, where the bullets carry no bold lead-in - dimming
+   there would just make the whole list quieter for no reason. */
+.asklist{color:var(--dim)}
+.asklist li{margin-bottom:9px;line-height:1.6}
+.asklist li b{color:var(--fg);font-weight:700}
+
+/* The heading over the list is centred to match Contact Us at the foot.
+   ⚠️ margin-inline:auto as well as text-align - .prose h2 has a max-width, so
+   centring the text alone leaves the box flush left. See .contactfoot. */
+.prose h2.mid{text-align:center;margin-inline:auto}

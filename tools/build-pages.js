@@ -383,10 +383,10 @@ const termsBody = () => `<div class="band"><div class="wrap prose">
    screenshot. See .contactfoot in ns.css. */
 const contactBody = () => `<div class="band"><div class="wrap prose">
 
-  <h2>We&rsquo;d Love to Hear From You</h2>
+  <h2 class="mid">We&rsquo;d Love to Hear From You</h2>
   <p>Whether you found something that needs fixing, have a question, or just have an idea for NexStudents, feel free to reach out.</p>
 
-  <ul class="gets">
+  <ul class="gets asklist">
     <li><b>Found a mistake?</b> If you spot a wrong answer, confusing wording, or something that doesn&rsquo;t look right in a worksheet or lesson, please tell us. We want to fix it.</li>
     <li><b>Something not working?</b> Broken link, missing download, page not loading, or something not printing correctly? Let us know.</li>
     <li><b>Need permission?</b> If you would like to use our materials in a way that isn&rsquo;t covered by our <a href="/terms/">Terms of Use</a>, just ask. We&rsquo;re often happy to say yes.</li>
