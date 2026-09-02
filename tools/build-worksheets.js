@@ -704,6 +704,106 @@ ${navScript()}
 `;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   kind "pdf" — the sheet arrives as a finished PDF.
+
+   ⭐ BETTER THAN kind "image", and the reason is resolution. A PDF made of
+   real text prints at printer resolution, the same as our generated sheets.
+   The cursive PNG is stuck at ~130 DPI forever. So when ChatGPT can produce a
+   PDF instead of a picture, take the PDF.
+
+   🚨 PRINT GOES TO THE FILE, NOT THE PAGE. window.print() here would print
+   this wrapper - nav, instructions and a squashed embed. The Print button
+   opens the PDF itself so the browser's own PDF viewer does the printing at
+   full size. That is the "pull it from a different location to print" idea
+   Paul asked about on 2026-09-02, applied properly.
+
+   The preview is an <object>. It is a real embed, so it needs a fallback for
+   phones that refuse to render PDFs inline - which is most of them. The
+   fallback is the thumbnail plus the same two buttons, never a blank box. */
+function pdfHtml(s) {
+  const subjectSlug = s.subject.toLowerCase();
+  const gradeLabel = s.grade === "K" ? "Kindergarten" : "Grade " + s.grade;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://nexstudents.org/worksheets/${subjectSlug}/${s.slug}/">
+${modeBoot()}
+${faviconTags()}
+<title>${s.title} — NexStudents</title>
+<meta name="description" content="${s.blurb}">
+<link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
+<link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
+<style>
+  .note { padding: 16px 16px 14px; }
+  .note > p:first-child { margin: 0 0 4px; }
+  .note ol { margin: 0; padding-left: 20px; }
+  .note li { font-size: 13.5px; line-height: 1.5; margin: 2px 0; }
+  .note .later { font-size: 12.5px; color: var(--muted); margin: 12px 0 0;
+                 padding-top: 10px; border-top: 1px solid var(--line); }
+  .pdfwrap { margin: 30px 0 6px; }
+  /* Tall enough to show the whole sheet without the reader scrolling inside a
+     scroller, which is the worst thing an embedded PDF can do on a phone. */
+  .pdfwrap object { display: block; width: 100%; height: 78vh; min-height: 520px;
+                    border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  .pdffall { text-align: center; padding: 18px; border: 1px solid var(--line);
+             border-radius: 6px; background: var(--panel-2); }
+  .pdffall img { width: 100%; max-width: 380px; height: auto; border-radius: 4px;
+                 border: 1px solid var(--line); background: #fff; }
+  .pdffall p { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+  .imgcap { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; text-align: center; }
+</style>
+</head>
+<body>
+
+${navMarkup("w")}
+
+<div class="bar">
+  ${backLink(s)}
+  <div class="acts">
+    <a class="btn" href="${s.file}" target="_blank" rel="noopener" title="Open the sheet to print it at full size" aria-label="Open the sheet to print">
+      ${ICON_PRINT}<span class="lbl">Print</span>
+    </a>
+    <a class="btn ghost" href="${s.file}" download title="Save the sheet so you can print it again without coming back" aria-label="Download the sheet">
+      ${ICON_DL}<span class="lbl">Download</span>
+    </a>
+  </div>
+</div>
+
+<div class="sheet">
+
+  <div class="head">
+    <p class="eyebrow">${s.subject} &middot; ${gradeLabel} &middot; ${s.tagline || "Drill"}</p>
+    <h1>${s.title}</h1>
+    <p class="dek">${s.dek}</p>
+  </div>
+
+  <div class="note">
+    <p><b>How to use this drill</b></p>
+    <ol>${s.steps.map((t) => "<li>" + t + "</li>").join("")}</ol>
+    <p class="later">${s.after}</p>
+  </div>
+
+  <div class="pdfwrap">
+    <object data="${s.file}" type="application/pdf">
+      <div class="pdffall">
+        <img src="thumb.jpg" alt="${s.title}" width="700" height="700">
+        <p>Your browser will not show the sheet here. Use Download or Print above.</p>
+      </div>
+    </object>
+    <p class="imgcap">Print at full size, portrait, with margins set to none.</p>
+  </div>
+
+</div>
+
+${navScript()}
+</body>
+</html>
+`;
+}
+
 const written = [];
 for (const s of SHEETS) {
   const dir = path.join(ROOT, "worksheets", s.subject.toLowerCase(), s.slug);
@@ -722,16 +822,23 @@ for (const s of SHEETS) {
   /* GUARD: an image sheet is nothing without its image. The page would build
      clean and show a broken picture, which is the kind of failure nobody
      notices until a parent hits Print. */
-  if (s.kind === "image") {
-    const img = path.join(dir, s.file);
-    if (!fs.existsSync(img)) {
-      console.error("FAIL: " + s.slug + " is kind:image but " + s.file + " is missing from " + dir);
+  if (s.kind === "image" || s.kind === "pdf") {
+    const asset = path.join(dir, s.file);
+    if (!fs.existsSync(asset)) {
+      console.error("FAIL: " + s.slug + " is kind:" + s.kind + " but " + s.file + " is missing from " + dir);
+      process.exit(1);
+    }
+    /* The <object> fallback shows thumb.jpg, so a pdf sheet without one would
+       leave phones staring at nothing when the embed is refused. */
+    if (s.kind === "pdf" && !fs.existsSync(path.join(dir, "thumb.jpg"))) {
+      console.error("FAIL: " + s.slug + " is kind:pdf but thumb.jpg is missing - it is the fallback when a browser will not embed the PDF.");
       process.exit(1);
     }
   }
 
   const html = s.kind === "handwriting" ? handwritingHtml(s)
              : s.kind === "image"      ? imageHtml(s)
+             : s.kind === "pdf"        ? pdfHtml(s)
              : s.kind === "blank"      ? blankHtml(s)
              : s.kind === "flashcards" ? flashHtml(s)
              : isPaid(s)               ? bundleHtml(s)

@@ -95,6 +95,70 @@ const SHEETS = [
   price: "$0", buy: null, art: false, thumb: true,
 },
 
+/* ═══════════════════ 0c. THE TWO SPEED DRILLS (maths) ═══════════════════
+   kind "pdf" - the sheet is a finished PDF made in ChatGPT. ⭐ PREFER THIS
+   OVER kind "image": a PDF of real text prints at printer resolution, where
+   the cursive PNG is stuck near 130 DPI forever.
+
+   🚨 GRADE 4, BOTH, Paul's call 2026-09-02: "both of these will go into 4th
+   grade math." They are separate sheets on purpose - "make them two separate
+   files" - not one combined page.
+
+   🚨 NO ANSWER KEY EXISTS. Paul, 2026-09-02: "there is no answer key to them."
+   So `unit` must NOT default to "answer key included", which would be a lie
+   on the card. Do not add one from memory either - a wrong key on a hundred
+   facts is worse than no key.
+
+   The PDFs already carry their own DIRECTIONS line and a "Time Limit
+   (Recommended: Under 5 Minutes)" field, plus a Total Correct / Your Time /
+   Beat Your Best Time footer. So the page steps tell the student how to RUN a
+   drill; they do not repeat what is printed on the sheet. */
+{
+  slug: "multiplication-drill-100", subject: "Maths", grade: 4,
+  kind: "pdf", file: "multiplication-drill-100.pdf", tagline: "Speed Drill",
+  title: "100 Multiplication Facts: Speed Drill",
+  dek: "One hundred multiplication facts on a single page, timed. Five minutes is the target, not the rule.",
+  blurb: "100 multiplication facts, timed. Race your own best time, not anyone else's.",
+  contains: [
+    "100 multiplication facts, nothing above 12",
+    "Vertical layout, ten to a row",
+    "A time limit box and a place to record your time",
+    "A Beat Your Best Time check so the sheet can be re-run",
+  ],
+  steps: [
+    "Set a timer for 5 minutes before you pick up the pencil.",
+    "Work down the columns, left to right. Do not hunt for the easy ones.",
+    "If a fact stalls you, skip it and come back. A stuck problem costs more than a missed one.",
+    "Stop when the timer goes, count what you got right, and write your time at the bottom.",
+  ],
+  after: "Five minutes is a starting point, not a standard. Shorten it as the facts get quicker, and lengthen it if the sheet is still new. The number to beat is your own last time.",
+  unit: "Printable &middot; no answer key",
+  price: "$0", buy: null, art: false, thumb: true,
+},
+
+{
+  slug: "division-drill-100", subject: "Maths", grade: 4,
+  kind: "pdf", file: "division-drill-100.pdf", tagline: "Speed Drill",
+  title: "100 Division Facts: Speed Drill",
+  dek: "One hundred division facts on a single page, timed. The same five minute target as the multiplication drill.",
+  blurb: "100 division facts, timed. The partner sheet to the multiplication drill.",
+  contains: [
+    "100 division facts, no quotient above 12",
+    "Vertical layout, ten to a row",
+    "A time limit box and a place to record your time",
+    "A Beat Your Best Time check so the sheet can be re-run",
+  ],
+  steps: [
+    "Set a timer for 5 minutes before you pick up the pencil.",
+    "Work down the columns, left to right. Do not hunt for the easy ones.",
+    "If a fact stalls you, skip it and come back. A stuck problem costs more than a missed one.",
+    "Stop when the timer goes, count what you got right, and write your time at the bottom.",
+  ],
+  after: "Division is the multiplication table read backwards, so a slow time here usually means the multiplication facts need another run first. Five minutes is a starting point - the number to beat is your own last time.",
+  unit: "Printable &middot; no answer key",
+  price: "$0", buy: null, art: false, thumb: true,
+},
+
 /* ══════════════════════════ 1. LEWIS AND CLARK ══════════════════════════ */
 {
   slug: "lewis-and-clark", subject: "History", grade: 8,
