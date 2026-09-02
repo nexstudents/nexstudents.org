@@ -48,11 +48,15 @@ const NAV = [
   { href: "/for-parents/", label: "For Parents", note: "Placement exams",     key: "p",  top: true },
   { href: "/about/",       label: "About",       note: "Who makes this",      key: "a",  top: false },
   { href: "/contact/",     label: "Contact",     note: "Get in touch",        key: "ct", top: false },
-  /* Not in the top bar - a licence page belongs in the drawer and the footer,
-     where people look for it, not competing with Grades for attention. */
-  { href: "/terms/",       label: "Terms of Use", note: "What you may print",  key: "tm", top: false },
-  { href: "/privacy/",     label: "Privacy Policy", note: "What we collect",   key: "pv", top: false },
-  { href: "/refund/",      label: "Refund Policy",  note: "How refunds work", key: "rf", top: false },
+  /* ⚠️ THE THREE LEGAL PAGES ARE NOT IN THIS LIST, 2026-09-02. Paul: "i dont
+     think you need to add refund policy, terms, and privacy in the side menu."
+     They were here when the footer had no links at all, so the drawer was the
+     only place they existed. The footer carries them now, under Help, which is
+     where a person looks for a policy - so listing them again in the menu just
+     pads a list of destinations with three pages nobody browses to.
+     ⚠️ /terms/, /privacy/ and /refund/ are still BUILT, still in the sitemap
+     and still linked from the footer and from each other. Removing a nav entry
+     must never mean removing the page. */
 ];
 
 /* ⚠️ SUBJECTS and LIVE_GRADES live here because the NAV needs them on every
@@ -303,9 +307,6 @@ SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
   { label: "What We Use", href: "/resources/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
-  { label: "Terms of Use", href: "/terms/" },
-  { label: "Privacy Policy", href: "/privacy/" },
-  { label: "Refund Policy", href: "/refund/" },
 ]};
 
 
