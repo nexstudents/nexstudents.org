@@ -484,7 +484,17 @@ a.sub-t{color:inherit;text-decoration:none}
 .mq span{font-size:clamp(2.4rem,7vw,104px);font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--mq)}
 .mq span.on{color:var(--fg)}
 @keyframes slide{ to{ transform:translateX(-50%) } }
-@media(hover:hover){ .mq:hover div{animation-play-state:paused} }
+/* ⚠️ THE HOVER PAUSE IS GONE, 2026-09-02. Paul: "its stopping."
+   .mq:hover paused the scroll so a reader could stop it and read a word - a
+   reasonable idea for a list of LINKS, and this is not one. Nothing here is
+   clickable, so the only thing the pause did was halt the banner whenever the
+   pointer happened to rest near the bottom of the page, which reads as broken
+   rather than as a feature.
+   ⚠️ THE ANIMATION WAS NEVER THE PROBLEM. Measured on the live page: running,
+   127px/s, 40s a loop, and each half wider than the viewport so the wrap is
+   seamless. Check what STOPS a thing before assuming it is the thing itself.
+   The banner still respects prefers-reduced-motion below. */
+@media(prefers-reduced-motion:reduce){ .mq div{animation:none} }
 
 /* ⚠️ TIGHTENED 2026-09-02. Paul: "thats too much." Every number here came
    down - the block padding, the gap between columns, the space under the grid,
