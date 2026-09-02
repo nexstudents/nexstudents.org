@@ -16,13 +16,22 @@
   /* The sheet is capped on screen so the page reads as a page, not a wall of
      paper. ⚠️ It is NOT the print source - printing uses the same image at
      its full pixel size, so shrinking it here costs nothing on paper. */
-  .imgwrap { margin: 18px 0 6px; text-align: center; }
+  /* 🚨 ALL THE READING SITS ABOVE THE SHEET. Paul, 2026-09-02: there was a
+     block under the worksheet too and it was not wanted - "honestly maybe we
+     don't need the content below the worksheet." One place to read, then the
+     thing you came for. Do not reintroduce a section after the image. */
+  .note ol { margin: 6px 0 0; padding-left: 20px; }
+  .note li { font-size: 13.5px; line-height: 1.5; margin: 2px 0; }
+  .note p { margin: 0; }
+  .note .later { font-size: 12.5px; color: var(--muted); margin: 9px 0 0;
+                 padding-top: 8px; border-top: 1px solid var(--line); }
+  .imgwrap { margin: 30px 0 6px; text-align: center; }
   .imgwrap img { width: 100%; max-width: 620px; height: auto;
                  border: 1px solid var(--line); border-radius: 6px; background: #fff; }
-  .imgcap { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  .imgcap { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
   @media print {
     /* Everything except the sheet itself is screen furniture. */
-    nav, .bar, .head, .note, .imgcap, .after { display: none !important; }
+    nav, .bar, .head, .note, .imgcap { display: none !important; }
     .sheet { border: 0; padding: 0; margin: 0; box-shadow: none; }
     .imgwrap { margin: 0; }
     .imgwrap img { max-width: 100%; width: 100%; border: 0; border-radius: 0; }
@@ -67,7 +76,7 @@
 </nav>
 
 <div class="bar">
-  <a class="back" href="/english/worksheets/">&larr; English Worksheets</a>
+  <a class="back" href="/grade-4/english/worksheets/">&larr; 4th Grade English Worksheets</a>
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
       <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M6 3h8v3H6V3zm-3 5h14a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2v-3H5v3H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zm3 6h8v3H6v-3z"/></svg><span class="lbl">Print</span>
@@ -89,16 +98,12 @@
   <div class="note">
     <p><b>Before you start</b></p>
     <ol><li>Print the sheet, or open it on a tablet you can write on.</li><li>Trace every dotted letter, capital first, then lowercase.</li><li>Go slowly. Cursive is one continuous line, so keep the pencil down until the letter is finished.</li><li>When the tracing is done, use the box at the bottom to write the letters with nothing to follow.</li></ol>
+    <p class="later">Come back to this sheet whenever a letter starts to drift. Tracing the shape again fixes it faster than practising it wrong.</p>
   </div>
 
   <div class="imgwrap">
     <img src="cursive-alphabet.png" alt="Cursive Alphabet: Trace and Practice" width="1103" height="1426">
     <p class="imgcap">Print at full size, portrait, with margins set to none so nothing is cut off.</p>
-  </div>
-
-  <div class="after">
-    <h2 class="hwh">When they finish</h2>
-    <p class="dek">Come back to this sheet whenever a letter starts to drift. Tracing the shape again fixes it faster than practising it wrong.</p>
   </div>
 
 </div>

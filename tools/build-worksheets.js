@@ -49,6 +49,52 @@ const isPaid = (s) => (s.price || "$0") !== "$0";
 
 /* The buy control. With a real Stripe Payment Link it is a button. Without
    one it says so plainly - never a placeholder URL, never a dead button. */
+/* ─────────────────────────────────────────────────────────────────────────
+   🚨 THE BACK LINK GOES TO THE GRADE SHELF, NOT THE SUBJECT-WIDE ONE.
+
+   Paul, 2026-09-02, on opening the cursive sheet: "if I hit back from this
+   worksheet the back button is English worksheets not what I wanted and I want
+   it to go to 4th grade English worksheets. I don't know why you keep trying
+   to combine all of the sheets together? this doesn't feel like a proper site."
+
+   He is right, and it was the SAME bug the lesson template had on 2026-08-31,
+   where every lesson said "History" because the back link was hardcoded. All
+   six builders here carried an identical hardcoded /<subject>/worksheets/.
+
+   The hierarchy the site is supposed to read as:
+     4th Grade  ->  4th Grade English  ->  Worksheets  ->  this sheet
+   so the way out of a sheet is the shelf you came in through.
+
+   ⚠️ A sheet listed on SEVERAL grades (grades: [3, 7]) has no single shelf to
+   return to, so it falls back to the subject page. That is the honest answer
+   rather than picking one at random.
+   ⚠️ FAILS THE BUILD if the target has no index.html - same discipline as
+   build-lessons.js, because a back link to nowhere is worse than none. */
+const gradeSlug = (g) => "grade-" + String(g).toLowerCase();
+const gradeWord = (g) => (g === "K" || g === "k")
+  ? "Kindergarten"
+  : ({ 1: "1st", 2: "2nd", 3: "3rd" }[g] || g + "th") + " Grade";
+
+function backLink(s) {
+  const subjectSlug = s.subject.toLowerCase();
+  const grades = s.grades && s.grades.length ? s.grades : [s.grade];
+  let href, label;
+  if (grades.length === 1 && grades[0] != null) {
+    href = "/" + gradeSlug(grades[0]) + "/" + subjectSlug + "/worksheets/";
+    label = gradeWord(grades[0]) + " " + s.subject + " Worksheets";
+  } else {
+    href = "/" + subjectSlug + "/worksheets/";
+    label = s.subject + " Worksheets";
+  }
+  const target = path.join(ROOT, href.replace(/^\/|\/$/g, ""), "index.html");
+  if (!fs.existsSync(target)) {
+    console.error("FAIL: " + s.slug + " back link points at " + href +
+      " but " + target + " does not exist.");
+    process.exit(1);
+  }
+  return `<a class="back" href="${href}">&larr; ${label}</a>`;
+}
+
 function buyBlock(s) {
   if (s.buy) {
     return `<a class="btn buy" href="${s.buy}">Buy &mdash; ${s.price}</a>
@@ -81,7 +127,7 @@ ${faviconTags()}
 ${navMarkup("w")}
 
 <div class="bar">
-  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  ${backLink(s)}
 </div>
 
 <div class="sheet">
@@ -174,7 +220,7 @@ ${faviconTags()}
 ${navMarkup("w")}
 
 <div class="bar">
-  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  ${backLink(s)}
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
       ${ICON_PRINT}<span class="lbl">Print</span>
@@ -277,7 +323,7 @@ ${faviconTags()}
 ${navMarkup("w")}
 
 <div class="bar">
-  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  ${backLink(s)}
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print the week you picked" aria-label="Print this sheet">
       ${ICON_PRINT}<span class="lbl">Print</span>
@@ -386,7 +432,7 @@ ${faviconTags()}
 ${navMarkup("w")}
 
 <div class="bar">
-  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  ${backLink(s)}
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
       ${ICON_PRINT}<span class="lbl">Print</span>
@@ -484,7 +530,7 @@ ${faviconTags()}
 ${navMarkup("w")}
 
 <div class="bar">
-  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  ${backLink(s)}
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
       ${ICON_PRINT}<span class="lbl">Print</span>
@@ -579,13 +625,22 @@ ${faviconTags()}
   /* The sheet is capped on screen so the page reads as a page, not a wall of
      paper. ⚠️ It is NOT the print source - printing uses the same image at
      its full pixel size, so shrinking it here costs nothing on paper. */
-  .imgwrap { margin: 18px 0 6px; text-align: center; }
+  /* 🚨 ALL THE READING SITS ABOVE THE SHEET. Paul, 2026-09-02: there was a
+     block under the worksheet too and it was not wanted - "honestly maybe we
+     don't need the content below the worksheet." One place to read, then the
+     thing you came for. Do not reintroduce a section after the image. */
+  .note ol { margin: 6px 0 0; padding-left: 20px; }
+  .note li { font-size: 13.5px; line-height: 1.5; margin: 2px 0; }
+  .note p { margin: 0; }
+  .note .later { font-size: 12.5px; color: var(--muted); margin: 9px 0 0;
+                 padding-top: 8px; border-top: 1px solid var(--line); }
+  .imgwrap { margin: 30px 0 6px; text-align: center; }
   .imgwrap img { width: 100%; max-width: 620px; height: auto;
                  border: 1px solid var(--line); border-radius: 6px; background: #fff; }
-  .imgcap { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  .imgcap { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
   @media print {
     /* Everything except the sheet itself is screen furniture. */
-    nav, .bar, .head, .note, .imgcap, .after { display: none !important; }
+    nav, .bar, .head, .note, .imgcap { display: none !important; }
     .sheet { border: 0; padding: 0; margin: 0; box-shadow: none; }
     .imgwrap { margin: 0; }
     .imgwrap img { max-width: 100%; width: 100%; border: 0; border-radius: 0; }
@@ -597,7 +652,7 @@ ${faviconTags()}
 ${navMarkup("w")}
 
 <div class="bar">
-  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  ${backLink(s)}
   <div class="acts">
     <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
       ${ICON_PRINT}<span class="lbl">Print</span>
@@ -619,16 +674,12 @@ ${navMarkup("w")}
   <div class="note">
     <p><b>Before you start</b></p>
     <ol>${s.steps.map((t) => "<li>" + t + "</li>").join("")}</ol>
+    <p class="later">${s.after}</p>
   </div>
 
   <div class="imgwrap">
     <img src="${s.file}" alt="${s.title}" width="1103" height="1426">
     <p class="imgcap">Print at full size, portrait, with margins set to none so nothing is cut off.</p>
-  </div>
-
-  <div class="after">
-    <h2 class="hwh">When they finish</h2>
-    <p class="dek">${s.after}</p>
   </div>
 
 </div>
