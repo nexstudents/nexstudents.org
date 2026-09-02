@@ -823,8 +823,17 @@ body.sub-open .drawer{transform:translateX(-100%)}
 
 /* Grades as tiles: three across, so nine years cost three rows not nine. */
 .dst-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}
+/* 🚨 THE TILE NEEDS ITS OWN FILL. It used to be background:none, which put a
+   transparent tile on the drawer's --panel with only a --line hairline round
+   it. In dark mode that is #2b3138 on #16191d, so on a phone the grade picker
+   read as nine black squares. Paul, 2026-09-02: "in darkmode the grade buttons
+   when I press grades they are all black on mobile."
+   --panel-2 sits one step off --panel in BOTH themes, so the tiles separate
+   from the drawer on dark and on light. ⚠️ Do not set a literal colour here -
+   the drawer is themed, and a hardcoded fill breaks whichever mode it was not
+   picked for. Same trap as the worksheet dark-theme bug in CLAUDE.md. */
 .dst{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
-  background:none;border:1px solid var(--line);border-radius:var(--r,4px);
+  background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r,4px);
   color:var(--fg);font:inherit;cursor:pointer;padding:0}
 /* A grade tile is an <a> now, not a <button>, so it needs the underline
    taken off - a button never had one. */
