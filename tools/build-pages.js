@@ -238,7 +238,24 @@ const comicsPage = () => {
    ⚠️ LAST UPDATED SITS AT THE FOOT, matching /terms/. Paul, 2026-09-02: "yes
    keep my bottom placement". His text said the date is at the top of this
    page; changed to on this page - the smallest edit that keeps it true - and
-   flagged rather than silently reworded. Same call as on /terms/. */
+   flagged rather than silently reworded. Same call as on /terms/.
+
+   ⚠️ "SCORES AND PROGRESS ARE SAVED ON YOUR DEVICE" IS MINE, NOT PAUL'S, added
+   2026-09-02 with his approval after he asked "do we need something for our
+   games". It is the one section on this page not lifted from his text, so it
+   is the one to re-check if the wording ever feels off. /terms/ already named
+   games twice; this page had not mentioned them once, while the site quietly
+   stored things in the browser. A leaderboard with no explanation reads like a
+   database to a parent.
+
+   🚨 IT IS A FACTUAL CLAIM AND IT WAS CHECKED, not assumed. No game page makes
+   a network call - no fetch, no XHR, no remote script - so "not sent to
+   NexStudents" is literally true today. Everything below is localStorage:
+     ns:speedrunmath:best   ns:states:leaderboard   ns:prog:*   ns:done:*
+     ns:mode   ns:repeat   ns:ann   nexstudents.placement.readingB
+   ⚠️ THE DAY A GAME POSTS A SCORE ANYWHERE, THIS SECTION BECOMES FALSE. A
+   shared leaderboard is exactly the kind of thing that gets built without
+   thinking of this page. Re-read it before any backend touches a game. */
 const privacyBody = () => `<div class="band"><div class="wrap prose policy">
 
   <p>NexStudents is built for families and educators, so we believe privacy should be simple and easy to understand.</p>
@@ -289,6 +306,11 @@ const privacyBody = () => `<div class="band"><div class="wrap prose policy">
   <p>Depending on the technology being used, this may include an IP address, browser type, device type, pages requested, and basic security or diagnostic information.</p>
   <p>This information may be used to keep NexStudents working properly, diagnose problems, understand basic website performance, and protect the site from abuse.</p>
   <p>We do not use a student&rsquo;s placement exam results for targeted advertising.</p>
+
+  <h2 class="mid">Scores and Progress Are Saved on Your Device</h2>
+  <p>Some parts of NexStudents, such as our games and lessons, save information in your web browser so that a student&rsquo;s scores, best times, and lesson progress are still there the next time they visit. Your display settings, like light or dark mode, are saved the same way.</p>
+  <p>This information stays in the browser on the device being used. It is not sent to NexStudents, it is not attached to a name or an account, and we cannot see it.</p>
+  <p>Because it is stored in the browser, it is not shared between devices. A score set on a tablet will not appear on a computer. Clearing your browser&rsquo;s data or using private browsing will remove it.</p>
 
   <h2 class="mid">How Long We Keep Information</h2>
   <p>We do not want to keep personal information simply because we can.</p>
