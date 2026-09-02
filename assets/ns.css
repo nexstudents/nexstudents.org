@@ -1215,8 +1215,8 @@ nav{border-bottom:1px solid var(--line)}
    ⚠️ NUMBERING IS A CSS COUNTER, so Paul's text is untouched and the numbers
    renumber themselves if a section is added or moved. Delete these three
    counter lines to remove it. */
-.prose{counter-reset:sec}
-.prose h2, .prose h2.mid{
+.policy{counter-reset:sec}
+.policy h2, .policy h2.mid{
   counter-increment:sec;
   text-align:left;
   margin:30px 0 10px;
@@ -1227,7 +1227,7 @@ nav{border-bottom:1px solid var(--line)}
   text-transform:uppercase;
   color:var(--fg);
   max-width:none}
-.prose h2::before{content:"Section " counter(sec) " \2014 "}
+.policy h2::before{content:"Section " counter(sec) " \2014 "}
 .prose p{font-size:15px;line-height:1.65;margin:0 0 11px}
 .prose li{font-size:15px;line-height:1.65;margin-bottom:3px}
 .prose ul{margin:0 0 12px}
@@ -1242,7 +1242,7 @@ nav{border-bottom:1px solid var(--line)}
 .prose p, .prose li{color:var(--dim)}
 .prose h2{color:var(--fg)}
 .prose p b, .prose li b{color:var(--fg)}
-.prose a{color:var(--fg);text-underline-offset:2px}
+.prose a:not(.btn){color:var(--fg);text-underline-offset:2px}
 
 /* Paul, 2026-09-02: the lead paragraph under the title, and the closing block,
    both centred on the policy pages. They bracket the document - an intro and a

@@ -239,7 +239,7 @@ const comicsPage = () => {
    keep my bottom placement". His text said the date is at the top of this
    page; changed to on this page - the smallest edit that keeps it true - and
    flagged rather than silently reworded. Same call as on /terms/. */
-const privacyBody = () => `<div class="band"><div class="wrap prose">
+const privacyBody = () => `<div class="band"><div class="wrap prose policy">
 
   <p>NexStudents is built for families and educators, so we believe privacy should be simple and easy to understand.</p>
   <p>We do not require student accounts. We do not currently process payments. We do not sell personal information.</p>
@@ -380,7 +380,7 @@ const privacyBody = () => `<div class="band"><div class="wrap prose">
    check-links.js fails the build on a dead root-absolute link, and a promise
    to a page that 404s is worse than no link. Link it the moment that page
    ships. */
-const termsBody = () => `<div class="band"><div class="wrap prose">
+const termsBody = () => `<div class="band"><div class="wrap prose policy">
 
   <p>We create educational resources to make teaching and learning easier for families, teachers, tutors, and educational groups. We want our materials to be used, printed, and enjoyed. We just ask that our work is not resold, reposted, or claimed as someone else&rsquo;s.</p>
 
@@ -1759,10 +1759,10 @@ const pages = [
     lead: "A homeschool family building the resources it needed and could not find, then leaving them up for everyone else.",
     body: empty("This page is being written.") },
 
-  { dir: "contact", active: "ct",
+  { dir: "contact", active: "ct", pclass: "termshead",
     title: "Contact — NexStudents",
     desc: "How to reach NexStudents.",
-    crumb: "Contact", h1: "Get in Touch.",
+    crumb: "", h1: "Get in Touch.",
     lead: "Questions about a worksheet, a broken link, or something you would like built. We read everything.",
     body: contactBody() },
 
