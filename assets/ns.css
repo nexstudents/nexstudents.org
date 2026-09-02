@@ -509,12 +509,18 @@ footer ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 }
 footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 @media(hover:hover){ footer li a:hover{color:var(--fg)} }
-.fbot{border-top:1px solid var(--line);padding-top:16px;font-size:.82rem;color:var(--dim);
+/* ⚠️ FULL-STRENGTH TEXT, NOT DIMMED. Paul, 2026-09-02: "that bottom banner the
+   text would look better all white ithink." It is --fg rather than a literal
+   white so it inverts correctly - white on the dark theme, near-black on the
+   light one. Never hardcode #fff here; that is how a rule reads as "broken" on
+   a white page. */
+.fbot{border-top:1px solid var(--line);padding-top:16px;font-size:.82rem;color:var(--fg);
   display:flex;gap:14px;flex-wrap:wrap;justify-content:center;text-align:center}
 .disc{font-size:.78rem;color:var(--dim);max-width:70ch;margin:0 0 14px}
-/* The affiliate disclosure rides in .fbot beside the copyright, so it must not
-   carry the block margin the standalone .disc paragraphs use. */
-.fbot .disc{margin:0}
+/* The affiliate disclosure rides in .fbot beside the copyright, so it drops the
+   block margin the standalone .disc paragraphs carry, and takes the banner's
+   colour rather than the dimmed one. */
+.fbot .disc{margin:0;color:inherit}
 
 .rv{opacity:0;transform:translateY(16px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
 .rv.in{opacity:1;transform:none}
