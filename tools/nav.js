@@ -633,7 +633,12 @@ const FOOTER_COLS = [
     { label: "Games", href: "/games/" },
     { label: "Comics", href: "/comics/" },
   ]},
-  { title: "Studios", links: [
+  /* ⚠️ "Studios" until 2026-09-02, and only because that was the heading on the
+     old hand-written home footer. Paul: "why did we call it studios". It was
+     standing in for "NexEdge Studios, the company behind this", which is not
+     something one word conveys - and it read like a section about a studio.
+     Company is what lttstore calls the same column, and it is plain. */
+  { title: "Company", links: [
     { label: "About", href: "/about/" },
     { label: "For parents", href: "/for-parents/" },
     { label: "Placement exams", href: "/placement-exam.html" },
