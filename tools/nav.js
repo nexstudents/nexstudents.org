@@ -595,5 +595,108 @@ if(panel){
 }
 ` + "\n})();\n" + "</scr" + "ipt>";
 
+/* ── THE FOOTER, ONE DEFINITION ────────────────────────────────────────────
+   🚨 THERE USED TO BE TWO FOOTERS AND NEITHER WAS RIGHT. The home page had a
+   hand-written four-column footer; every generated page had a bare copyright
+   line and nothing else. So Terms, Privacy and Refund were reachable only from
+   the drawer, and Paul went looking for them exactly where a person looks for
+   a policy - the footer - and found nothing. "i dont see any of these option
+   on the main homepage in the dropdown or the footer", 2026-09-02.
+
+   ⚠️ THIS IS THE SAME DRIFT THE NAV ALREADY TAUGHT US. The top nav and the
+   drawer were once separate and silently disagreed; that is why NAV lives here
+   and both generators read it. The footer was the last hand-kept copy on the
+   home page, and it went stale the same way. It is generated now. Do not
+   hand-edit a footer in a built page or in index.html - the next build wipes
+   it, and if it does not, the two have already drifted.
+
+   STRUCTURE IS LTTSTORE'S, the reference Paul named for the legal pages and
+   then for this: https://www.lttstore.com/. Their footer is three link columns
+   under a brand block, and the policies live INSIDE Customer Service rather
+   than in a small legal strip at the very bottom. Help is our version of that
+   column. The technique, not their content.
+
+   ⚠️ THE AMAZON DISCLOSURE MOVES WITH THIS FOOTER, so it now appears on every
+   page rather than on the home page alone. That is the correct direction: the
+   affiliate links are on /resources/, not on the home page, and the Refund
+   Policy now has a section pointing at them. */
+const FOOTER_COLS = [
+  { title: "Help", links: [
+    { label: "Contact", href: "/contact/" },
+    { label: "Terms of Use", href: "/terms/" },
+    { label: "Privacy Policy", href: "/privacy/" },
+    { label: "Refund Policy", href: "/refund/" },
+  ]},
+  { title: "Resources", links: [
+    { label: "What we use", href: "/resources/" },
+    { label: "Worksheets", href: "/worksheets/" },
+    { label: "Games", href: "/games/" },
+    { label: "Comics", href: "/comics/" },
+  ]},
+  { title: "Studios", links: [
+    { label: "About", href: "/about/" },
+    { label: "For parents", href: "/for-parents/" },
+    { label: "Placement exams", href: "/placement-exam.html" },
+    { label: "NexEdge Studios", href: "https://nexedgestudios.com/" },
+  ]},
+];
+
+/* ⚠️ NO SUBJECTS COLUMN, and it is not an oversight. Paul, 2026-09-02:
+   "thats too much." Every subject already has a mega-menu panel and a row in
+   the Grades sheets, so a fourth column repeated links the reader passes on
+   the way down the page. The footer exists for the things that live NOWHERE
+   else - the policies, the company, the help - which is how lttstore's is
+   built too. Adding it back means adding a fifth column; do not. */
+
+const footerMarkup = () => `<footer><div class="wrap">
+  <div class="fgrid">
+    <div>
+      <div class="word" style="margin-bottom:12px">Nex<b>Students</b></div>
+      <p class="disc">Free printable homeschool resources for K-8. A brand of NexEdge Studios.</p>
+    </div>
+${FOOTER_COLS.map(c => '    <details class="fcol" open><summary><h5>' + c.title + "</h5></summary><ul>\n" +
+    c.links.map(l => '      <li><a href="' + l.href + '">' + l.label + "</a></li>").join("\n") +
+    "\n    </ul></details>").join("\n")}
+  </div>
+  <div class="fbot">
+    <span>&copy; 2026 NexEdge Studios</span>
+    ${/* ⚠️ ONE LINE, not the old three-line paragraph. The disclosure has to be
+         present and plain - it is an FTC requirement and it is on every page
+         now - but it was taking more room than the links it sat under. The
+         long version moved to /resources/, where the affiliate links actually
+         are, and to the Refund Policy. Never delete this line to save space. */""}
+    <span class="disc">As an Amazon Associate we earn from qualifying purchases.</span>
+  </div>
+</div>
+${/* 🚨 THE COLUMNS COLLAPSE ON A PHONE, and the open state is set HERE rather
+     than in CSS, because a <details> cannot be forced open with CSS. The UA
+     hides everything but the summary through a mechanism display cannot
+     override, so "always open above 820px" has to be the open ATTRIBUTE.
+
+     ⚠️ THEY SHIP OPEN. With JS off, or before this runs, the footer is exactly
+     what it was: three visible lists. Closing is the enhancement, never the
+     default - a link that needs a script to become reachable is not a link.
+
+     ⚠️ ONE LISTENER, and it only ever writes when the state actually changes,
+     so dragging a desktop window across the breakpoint cannot fight a reader
+     who has opened a column by hand. Paul, 2026-09-02, on lttstore: "they
+     actually have arrow dropdowns to compact it on the f12 screen for mobile."
+     Technique theirs, markup ours. */""}
+<script>(function(){
+  var cols = document.querySelectorAll("footer .fcol");
+  if (!cols.length || !window.matchMedia) return;
+  var mq = matchMedia("(max-width: 820px)"), was = null;
+  function sync(){
+    var small = mq.matches;
+    if (small === was) return;
+    was = small;
+    for (var i = 0; i < cols.length; i++) cols[i].open = !small;
+  }
+  sync();
+  if (mq.addEventListener) mq.addEventListener("change", sync);
+  else mq.addListener(sync);
+})();</scr` + `ipt>
+</footer>`;
+
 module.exports = { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
-                   megaPanel, navMarkup, navScript, modeButton, modeBoot };
+                   megaPanel, navMarkup, navScript, modeButton, modeBoot, footerMarkup, FOOTER_COLS };

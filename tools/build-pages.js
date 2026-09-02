@@ -22,7 +22,8 @@ const CSS_V = require("crypto")
    one. It lived here under a comment promising "ONE nav definition", which was
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
-const { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+const { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot, faviconTags,
+        footerMarkup } = require("./nav.js");
 
 /* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
 const SITE = "https://nexstudents.org";
@@ -61,11 +62,7 @@ ${navMarkup(o.active)}
 
 ${o.body}
 
-<footer><div class="wrap">
-  <div class="fbot">
-    <span>&copy; 2026 NexEdge Studios</span>
-  </div>
-</div></footer>
+${footerMarkup()}
 
 ${navScript()}
 </body>
@@ -2287,21 +2284,13 @@ const nb = newHome.indexOf(N_CLOSE, na);
 if (nb < 0) { console.error("FAIL: home nav not closed"); process.exit(1); }
 newHome = newHome.slice(0, na) + navMarkup("h") + newHome.slice(nb + N_CLOSE.length);
 
-/* The footer link columns, same reason: hand-kept and stale. Science is not a
-   live subject, so it points at /subjects/ rather than pretending. */
-const F_OPEN = '<div><h5>Resources</h5>', F_CLOSE = "</ul></div>\n    <div><h5>Studios</h5>";
-const fa = newHome.indexOf(F_OPEN);
-const fb2 = newHome.indexOf(F_CLOSE, fa);
-if (fa >= 0 && fb2 >= 0) {
-  newHome = newHome.slice(0, fa) +
-    '<div><h5>Resources</h5><ul>\n' +
-    '      <li><a href="/resources/">What we use</a></li><li><a href="/worksheets/">Worksheets</a></li>\n' +
-    '      <li><a href="/games/">Games</a></li><li><a href="/comics/">Comics</a></li></ul></div>\n' +
-    '    <div><h5>Subjects</h5><ul>\n' +
-    '      <li><a href="/english/">English</a></li><li><a href="/history/">History</a></li>\n' +
-    '      <li><a href="/maths/">Maths</a></li><li><a href="/subjects/">Science</a></li>' +
-    newHome.slice(fb2);
-}
+/* ⚠️ THE OLD PARTIAL FOOTER SPLICE WAS DELETED HERE, 2026-09-02. It rewrote
+   only the Resources and Subjects columns of the home footer and left the rest
+   hand-written - which is why the legal pages never appeared there. The WHOLE
+   footer is replaced further down from footerMarkup(); patching two of its
+   columns from a second place would just be a new way to drift. It also still
+   sent Science to /subjects/, which stopped being true when science went live
+   on 2026-08-30. */
 newHome = newHome
   .split('<li><a href="mailto:contact@nexedgestudios.com">Contact</a></li>')
   .join('<li><a href="/contact/">Contact</a></li>\n      <li><a href="/about/">About</a></li>');
@@ -2478,6 +2467,27 @@ newHome = newHome.split('<a class="btn rv d2" href="/worksheets/">Browse all res
     process.exit(1);
   }
 }
+
+/* 🚨 THE HOME FOOTER WAS THE LAST HAND-KEPT COPY, and it had gone stale the way
+   every hand-kept copy on this page eventually does: it listed Contact and
+   About but none of the three legal pages, so Terms, Privacy and Refund were
+   reachable only from the drawer. Paul went looking in the footer, which is
+   where a person looks for a policy, and found nothing. It is generated from
+   footerMarkup() now, the same one every built page uses, so the two cannot
+   disagree again.
+
+   ⚠️ FAILS THE BUILD if the home has no footer to replace, rather than
+   appending a second one. An append-if-missing splice leaves the broken copy
+   in place and shows two footers - the exact mistake the nav splice above
+   already made once. */
+const F_OPEN = "<footer>", F_CLOSE = "</footer>";
+const fa = newHome.indexOf(F_OPEN);
+const fb = newHome.indexOf(F_CLOSE, fa + F_OPEN.length);
+if (fa < 0 || fb < 0) { console.error("FAIL: home footer not found"); process.exit(1); }
+if (newHome.indexOf(F_OPEN, fa + F_OPEN.length) >= 0) {
+  console.error("FAIL: home has more than one footer"); process.exit(1);
+}
+newHome = newHome.slice(0, fa) + footerMarkup() + newHome.slice(fb + F_CLOSE.length);
 
 /* Everything else on the hand-written home that still said ELA. */
 newHome = newHome
