@@ -340,6 +340,41 @@ const termsBody = () => `<div class="band"><div class="wrap prose">
 
 </div></div>`;
 
+/* ── THE CONTACT PAGE ──────────────────────────────────────────────────────
+   🚨 THE TERMS DEPEND ON THIS PAGE WORKING. /terms/ tells people to contact
+   us five times - to ask permission for a use outside the licence, and to
+   report errors - and written permission is REQUIRED for anything the licence
+   does not cover. Until 2026-09-02 this page said "an address will go here as
+   soon as there is one worth publishing", so the mechanism the terms rely on
+   did not exist. A licence that points at a dead end is not a licence.
+
+   Address given by Paul, 2026-09-02: contact@nexedgestudios.com. It is the
+   NexEdge Studios address, which matches who the terms name as owner.
+
+   ⚠️ A PLAIN mailto FOR NOW, DELIBERATELY. A form needs a third-party
+   backend on a static site, and an address that works forever beats a form
+   that quietly breaks when a free tier changes. Web3Forms (250/month free) is
+   the upgrade path if the address starts attracting spam; the address stays
+   as the fallback either way.
+   ⚠️ Paul is sending his own wording for this page. This is the honest
+   minimum until it arrives, not the final copy. */
+const contactBody = () => `<div class="band"><div class="wrap prose">
+
+  <h2>Email us</h2>
+  <p><a class="btn" href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a></p>
+
+  <h2>What we would like to hear about</h2>
+  <ul class="gets">
+    <li><b>A mistake in a worksheet or lesson.</b> Wrong answer, confusing wording, a question that cannot be answered from the reading. These get fixed.</li>
+    <li><b>A broken link or a page that will not print.</b> Tell us the page and what happened.</li>
+    <li><b>Permission for a use our <a href="/terms/">terms</a> do not cover.</b> We are often happy to say yes, but it has to be asked for first.</li>
+    <li><b>Something you would like built.</b> A grade, a subject, a kind of sheet you keep looking for and cannot find.</li>
+  </ul>
+
+  <p>We are a homeschooling family, not a support desk, so replies are not instant. We do read everything.</p>
+
+</div></div>`;
+
 /* Honest empty state - better than fake cards implying content exists. */
 const empty = (line) => `<div class="band"><div class="wrap">
   <div class="tile" style="min-height:230px;align-items:center;justify-content:center;text-align:center">
@@ -1532,7 +1567,7 @@ const pages = [
     desc: "How to reach NexStudents.",
     crumb: "Contact", h1: "Get in Touch.",
     lead: "Questions about a worksheet, a broken link, or something you would like built. We read everything.",
-    body: empty("The contact form is being set up. An address will go here as soon as there is one worth publishing.") },
+    body: contactBody() },
 
   /* ── TERMS OF USE ──────────────────────────────────────────────────────
      Paul, 2026-09-02: "we might need to add a terms and service about these
