@@ -62,6 +62,39 @@ const SHEETS = [
   price: "$0", buy: null, art: false, thumb: true,
 },
 
+/* ═══════════════════ 0b. CURSIVE ALPHABET (handwriting) ═══════════════════
+   kind "image" - the sheet is a finished picture, not generated markup. See
+   imageHtml() in build-worksheets.js for why that is allowed here and what to
+   check before adding another one.
+
+   🚨 GRADE 4 IS PAUL'S CALL, 2026-09-02, and it is deliberate:
+   "I know some start cursive in 3rd grade but my generation we started in 4th
+   and let's not overwhelm students to learn everything in one grade."
+   Manuscript is Kindergarten, cursive is 4th. Do not "correct" this to 3rd. */
+{
+  slug: "cursive-alphabet", subject: "English", grade: 4,
+  kind: "image",
+  file: "cursive-alphabet.png",
+  title: "Cursive Alphabet: Trace and Practice",
+  dek: "Every cursive letter, capital and lowercase, dotted to trace, with room at the bottom to write them without help.",
+  blurb: "All 26 cursive letters to trace, then space to practise on your own.",
+  contains: [
+    "All 26 letters, capital and lowercase, in cursive",
+    "Dotted letterforms to trace over",
+    "Ruled lines with a dashed midline",
+    "A practice box at the foot of the page",
+  ],
+  steps: [
+    "Print the sheet, or open it on a tablet you can write on.",
+    "Trace every dotted letter, capital first, then lowercase.",
+    "Go slowly. Cursive is one continuous line, so keep the pencil down until the letter is finished.",
+    "When the tracing is done, use the box at the bottom to write the letters with nothing to follow.",
+  ],
+  after: "Come back to this sheet whenever a letter starts to drift. Tracing the shape again fixes it faster than practising it wrong.",
+  unit: "Printable &middot; no answer key needed",
+  price: "$0", buy: null, art: false, thumb: true,
+},
+
 /* ══════════════════════════ 1. LEWIS AND CLARK ══════════════════════════ */
 {
   slug: "lewis-and-clark", subject: "History", grade: 8,

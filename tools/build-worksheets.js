@@ -540,6 +540,105 @@ ${navScript()}
 `;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   kind "image" — the sheet is a PICTURE, not generated markup.
+
+   🚨 EVERY OTHER SHEET ON THIS SITE IS BUILT FROM DATA and prints as real
+   text at printer resolution. This one cannot: it arrives as a finished
+   image, so its resolution is fixed at whatever it was made at. Paul,
+   2026-09-02, made the cursive alphabet in ChatGPT because hand-plotted
+   letterforms failed twice → [[feedback-never-hand-draw-letterforms]].
+
+   ⚠️ CHECK THE PIXEL SIZE BEFORE ADDING ONE. Letter at 300 DPI is
+   2550x3300. At 1103x1426 the cursive sheet is about 130 DPI, which is fine
+   for tracing big letter shapes and soft on small print. Do not add an image
+   sheet whose value depends on fine detail.
+
+   ⭐ THE PAGE IS INSTRUCTIONS + THE SHEET, which is what Paul asked for:
+   "when they open the worksheet file it has some instructions and the sheet
+   for them to download or print." So the picture is NOT the whole page —
+   the teaching wrapper around it is ours even when the sheet is not.
+
+   `file` is the image beside index.html. `steps` is the instruction list. */
+function imageHtml(s) {
+  const subjectSlug = s.subject.toLowerCase();
+  const gradeLabel = s.grade === "K" ? "Kindergarten" : "Grade " + s.grade;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://nexstudents.org/worksheets/${subjectSlug}/${s.slug}/">
+${modeBoot()}
+${faviconTags()}
+<title>${s.title} — NexStudents</title>
+<meta name="description" content="${s.blurb}">
+<link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
+<link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
+<style>
+  /* The sheet is capped on screen so the page reads as a page, not a wall of
+     paper. ⚠️ It is NOT the print source - printing uses the same image at
+     its full pixel size, so shrinking it here costs nothing on paper. */
+  .imgwrap { margin: 18px 0 6px; text-align: center; }
+  .imgwrap img { width: 100%; max-width: 620px; height: auto;
+                 border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  .imgcap { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  @media print {
+    /* Everything except the sheet itself is screen furniture. */
+    nav, .bar, .head, .note, .imgcap, .after { display: none !important; }
+    .sheet { border: 0; padding: 0; margin: 0; box-shadow: none; }
+    .imgwrap { margin: 0; }
+    .imgwrap img { max-width: 100%; width: 100%; border: 0; border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+
+${navMarkup("w")}
+
+<div class="bar">
+  <a class="back" href="/${subjectSlug}/worksheets/">&larr; ${s.subject} Worksheets</a>
+  <div class="acts">
+    <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
+      ${ICON_PRINT}<span class="lbl">Print</span>
+    </button>
+    <a class="btn ghost" href="${s.file}" download title="Save the sheet so you can print it again without coming back" aria-label="Download the sheet">
+      ${ICON_DL}<span class="lbl">Download</span>
+    </a>
+  </div>
+</div>
+
+<div class="sheet">
+
+  <div class="head">
+    <p class="eyebrow">${s.subject} &middot; ${gradeLabel} &middot; Handwriting</p>
+    <h1>${s.title}</h1>
+    <p class="dek">${s.dek}</p>
+  </div>
+
+  <div class="note">
+    <p><b>Before you start</b></p>
+    <ol>${s.steps.map((t) => "<li>" + t + "</li>").join("")}</ol>
+  </div>
+
+  <div class="imgwrap">
+    <img src="${s.file}" alt="${s.title}" width="1103" height="1426">
+    <p class="imgcap">Print at full size, portrait, with margins set to none so nothing is cut off.</p>
+  </div>
+
+  <div class="after">
+    <h2 class="hwh">When they finish</h2>
+    <p class="dek">${s.after}</p>
+  </div>
+
+</div>
+
+${navScript()}
+</body>
+</html>
+`;
+}
+
 const written = [];
 for (const s of SHEETS) {
   const dir = path.join(ROOT, "worksheets", s.subject.toLowerCase(), s.slug);
@@ -555,7 +654,19 @@ for (const s of SHEETS) {
     process.exit(1);
   }
 
+  /* GUARD: an image sheet is nothing without its image. The page would build
+     clean and show a broken picture, which is the kind of failure nobody
+     notices until a parent hits Print. */
+  if (s.kind === "image") {
+    const img = path.join(dir, s.file);
+    if (!fs.existsSync(img)) {
+      console.error("FAIL: " + s.slug + " is kind:image but " + s.file + " is missing from " + dir);
+      process.exit(1);
+    }
+  }
+
   const html = s.kind === "handwriting" ? handwritingHtml(s)
+             : s.kind === "image"      ? imageHtml(s)
              : s.kind === "blank"      ? blankHtml(s)
              : s.kind === "flashcards" ? flashHtml(s)
              : isPaid(s)               ? bundleHtml(s)

@@ -61,9 +61,93 @@
 </div>
 
 <div class="band"><div class="wrap">
-  <div class="tile" style="min-height:170px;align-items:center;justify-content:center;text-align:center">
-      <div><h4 style="font-size:1.2rem">Nothing here yet</h4>
-      <p style="max-width:44ch;margin-top:8px">No printables for this subject this year yet.</p></div></div>
+  <div class="cardgrid">
+    <div class="card has-thumb" data-lesson="english/cursive-alphabet">
+      <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
+      <a class="clink" href="/worksheets/english/cursive-alphabet/">
+        <span class="cthumb"><img src="/worksheets/english/cursive-alphabet/thumb.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="cbody">
+          <em>English &middot; Printable &middot; no answer key needed</em>
+          <b class="ctitle">Cursive Alphabet: Trace and Practice</b>
+          <span class="cblurb">All 26 cursive letters to trace, then space to practise on your own.</span>
+        </span>
+      </a>
+      <details class="cmore">
+        <summary>What's inside</summary>
+        <ul><li>All 26 letters, capital and lowercase, in cursive</li><li>Dotted letterforms to trace over</li><li>Ruled lines with a dashed midline</li><li>A practice box at the foot of the page</li></ul>
+      </details>
+      <div class="cmeta">
+        <span>Print or Download</span>
+        <u class="free">$0</u>
+      </div>
+      <span class="tick-score"></span>
+    </div>
+    
+  </div>
+  <script>
+(function(){
+  var cards = [].slice.call(document.querySelectorAll("[data-lesson]"));
+
+  function read(k, id){ try { return JSON.parse(localStorage.getItem(k + id)); } catch(e){ return null; } }
+  function isDone(id){ var d = read("ns:done:", id); return !!(d && d.complete !== false); }
+
+  /* PASS 1 - what each card is on its own. */
+  cards.forEach(function(c){
+    var id = c.dataset.lesson;
+    var d = read("ns:done:", id), pr = read("ns:prog:", id);
+
+    if (d && d.complete !== false){
+      c.classList.add("is-done");
+      var s = c.querySelector(".tick-score");
+      if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+      var t = c.querySelector(".tick-done");
+      if (t) t.setAttribute("title", "Completed");
+      return;
+    }
+
+    if (pr && pr.done > 0){
+      c.classList.add("is-part");
+      var ps = c.querySelector(".tick-score");
+      if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
+      var pb = document.createElement("span");
+      pb.className = "cbar";
+      pb.innerHTML = '<i style="width:' + Math.round(pr.done / pr.total * 100) + '%"></i>';
+      var body = c.querySelector(".cbody");
+      if (body) body.appendChild(pb);
+      return;
+    }
+
+    /* 🚨 SOFT LOCK, ON PURPOSE. The card dims and says so; the link still
+       works. Progress lives in localStorage, which is PER DEVICE - a cleared
+       browser or a new phone would hard-lock Kolten out of a course he has
+       already done. A lock that can strand the student is worse than no lock.
+       Paul chose faded-60% for this state, 2026-08-31. */
+    if (c.dataset.needs && !isDone(c.dataset.needs)) c.classList.add("is-locked");
+  });
+
+  /* PASS 2 - exactly ONE "up next" per unit: the lowest-numbered lesson that is
+     neither finished nor locked. Grouped by data-unit so a mixed shelf marks one
+     per course rather than one per page. A lesson with no seq has no data-unit,
+     so history and maths are untouched by any of this.
+     WARNING: this whole block is inside a JS template literal. A backtick in a
+     comment here closes the string and the build dies on the next word. */
+  var groups = {};
+  cards.forEach(function(c){
+    var g = c.dataset.unit;
+    if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
+    var n = parseInt(c.dataset.n, 10);
+    if (!groups[g] || n < groups[g].n) groups[g] = { n: n, el: c };
+  });
+  Object.keys(groups).forEach(function(g){
+    var c = groups[g].el;
+    c.classList.add("is-next");
+    if (!c.classList.contains("is-part")){
+      var s = c.querySelector(".tick-score");
+      if (s) s.textContent = "Start here";
+    }
+  });
+})();
+</script>
 </div></div>
 
 <footer><div class="wrap">
