@@ -1111,3 +1111,7 @@ nav{border-bottom:1px solid var(--line)}
 .phead .shelfcount a:hover{border-bottom-color:currentColor}
 .phead .shelfcount b{color:var(--fg)}
 .phead .shelfcount i{font-style:normal;opacity:.45;margin:0 9px}
+
+/* The contact address closes the page, centred, with room above it so it
+   reads as the action after the text rather than another paragraph. */
+.contactfoot{margin-top:34px;text-align:center}

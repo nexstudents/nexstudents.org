@@ -360,9 +360,6 @@ const termsBody = () => `<div class="band"><div class="wrap prose">
    minimum until it arrives, not the final copy. */
 const contactBody = () => `<div class="band"><div class="wrap prose">
 
-  <h2>Email us</h2>
-  <p><a class="btn" href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a></p>
-
   <h2>What we would like to hear about</h2>
   <ul class="gets">
     <li><b>A mistake in a worksheet or lesson.</b> Wrong answer, confusing wording, a question that cannot be answered from the reading. These get fixed.</li>
@@ -372,6 +369,14 @@ const contactBody = () => `<div class="band"><div class="wrap prose">
   </ul>
 
   <p>We are a homeschooling family, not a support desk, so replies are not instant. We do read everything.</p>
+
+  <!-- 🚨 THE ADDRESS SITS LAST AND CENTRED. Paul, 2026-09-02: "can you put
+       that contact at the bottom of that text in the center." Read the page,
+       then act - the button is the thing you do after knowing what to say,
+       so it closes the page rather than opening it. -->
+  <div class="contactfoot">
+    <a class="btn" href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a>
+  </div>
 
 </div></div>`;
 
