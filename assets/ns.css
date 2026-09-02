@@ -1170,3 +1170,66 @@ nav{border-bottom:1px solid var(--line)}
    pair in the flex row; on mobile it is a SINGLE grid item, which is what
    keeps the three-column grid - and the centred logo - intact. */
 .navleft{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+
+/* ── THE READING COLUMN ────────────────────────────────────────────────────
+   Paul, 2026-09-02, on the terms page: "it feels like it s all split up ...
+   i think you copied it word for word but it doesnt feel like paragraphs."
+
+   🚨 THE CAUSE WAS LINE LENGTH, NOT THE TEXT. .prose had no width limit, so
+   paragraphs ran the full 1040px of the page - roughly 160 characters a line,
+   more than double a comfortable measure. Every sentence became one long
+   stretched band with a gap under it, so consecutive short paragraphs read as
+   disconnected fragments instead of continuous prose.
+
+   68ch is about 68 characters, the low end of the usual 60-75 range and right
+   for legal text people skim. Tighter leading between paragraphs than the
+   default groups them into a block; the paragraph breaks are still visible,
+   they just stop shouting.
+
+   ⚠️ This constrains the COLUMN, not each element, so .mid headings still
+   centre correctly inside it - see .prose h2.mid. */
+.prose{max-width:68ch;margin-inline:auto}
+.prose p{margin:0 0 15px;line-height:1.7}
+.prose h2{margin:36px 0 12px}
+.prose ul{margin:0 0 15px}
+.prose li{line-height:1.7;margin-bottom:4px}
+
+/* ── POLICY PAGE STRUCTURE ─────────────────────────────────────────────────
+   Paul, 2026-09-02: "it needs to look more like this
+   lttstore.com/policies/terms-of-service ... dont take their terms but the
+   structure."
+
+   What their structure actually is, measured rather than guessed:
+     - the PAGE title is centred and large
+     - SECTION headings are small, bold, UPPERCASE and LEFT aligned. They are
+       labels, not display type - barely larger than the body
+     - sections are NUMBERED
+     - body text is small and tight, so a section reads as one block instead
+       of a stack of isolated lines
+
+   ⚠️ THIS PARTLY REVERSES AN EARLIER INSTRUCTION. Paul asked for all titles
+   centred a few messages before. LTT centres only the H1 and left-aligns the
+   section headings, so the h1 stays centred and .mid is overridden here.
+   Flagged to him rather than silently changed.
+
+   ⚠️ NUMBERING IS A CSS COUNTER, so Paul's text is untouched and the numbers
+   renumber themselves if a section is added or moved. Delete these three
+   counter lines to remove it. */
+.prose{counter-reset:sec}
+.prose h2, .prose h2.mid{
+  counter-increment:sec;
+  text-align:left;
+  margin:30px 0 10px;
+  margin-inline:0;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--fg);
+  max-width:none}
+.prose h2::before{content:"Section " counter(sec) " \2014 "}
+.prose p{font-size:15px;line-height:1.65;margin:0 0 11px}
+.prose li{font-size:15px;line-height:1.65;margin-bottom:3px}
+.prose ul{margin:0 0 12px}
+/* The closing block is not a section, so it takes no number. */
+.prose p.muted{font-size:13.5px}
