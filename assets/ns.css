@@ -533,10 +533,25 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .mswitch{margin-right:auto;background:none;border:0;padding:0;cursor:pointer;
   display:inline-flex;align-items:center;gap:9px;
   font:inherit;font-weight:700;color:var(--fg);-webkit-tap-highlight-color:transparent}
+/* 🚨 THE COLOURS SWAP INSTANTLY. ONLY THE KNOB'S POSITION ANIMATES.
+   Paul, 2026-09-02: "I THINK THE DARK AND LIGHT SLIGHTER MOVES TOO FAST AND IT
+   KIND OF FLICKERS." It was not only speed. Both tokens INVERT across themes -
+   --a runs #ffffff to #27313f and --panel-2 runs #1f242a to #e8ecf1 - so the
+   knob was cross-fading white to dark while the track cross-faded dark to
+   light, over the same 200ms, while the knob was also travelling. Halfway
+   through, both sit on a similar mid-grey and the knob disappears into its own
+   track. That is the flicker: a contrast collapse, not a stutter.
+   ⚠️ Never put a transition on a property whose value inverts with the theme.
+   The two ends are fine; it is the middle that is unreadable. */
 .mswitch-track{position:relative;width:40px;height:13px;border-radius:999px;
-  background:var(--panel-2);border:1px solid var(--line);flex:none;transition:background .2s var(--ease)}
+  background:var(--panel-2);border:1px solid var(--line);flex:none}
+/* ⚠️ SLOWER, AND A GENTLER CURVE. var(--ease) is a hard expo-out that spends
+   most of its travel in the first third, which reads as a snap however long
+   the duration is. This one is closer to even. */
 .mswitch-knob{position:absolute;top:50%;left:2px;width:9px;height:9px;border-radius:999px;
-  background:var(--a);transform:translateY(-50%);transition:transform .2s var(--ease),background .2s var(--ease)}
+  background:var(--a);transform:translateY(-50%);
+  transition:transform .34s cubic-bezier(.4,.05,.2,1)}
+@media(prefers-reduced-motion:reduce){ .mswitch-knob{transition:none} }
 /* Knob right in light mode, left in dark. Dark is the site default, so the
    plain rule is the dark position and [data-theme="light"] moves it. */
 :root[data-theme="light"] .mswitch-knob{transform:translateY(-50%) translateX(26px)}
