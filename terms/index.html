@@ -13,7 +13,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=bfdc2357">
+<link rel="stylesheet" href="/assets/ns.css?v=53847c5e">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -42,9 +42,30 @@
 </div>
 
 <nav id="nav" class="ns-nav"><div class="nv">
-  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-    <i></i><i></i><i></i>
-  </button>
+  <!-- 🚨 BURGER AND HOME SHARE ONE GRID CELL.
+       On mobile .nv is a THREE column grid - 1fr auto 1fr - so the logo sits
+       dead centre. Adding the home icon as a fourth grid item pushed the
+       logo, account and cart onto a second row. Paul saw it immediately:
+       "well you moved all the logo cart and login".
+       Wrapping both controls in .navleft keeps the grid at three items, so
+       the logo stays centred and the icon still sits beside the burger. -->
+  <div class="navleft">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <i></i><i></i><i></i>
+    </button>
+    <!-- 🚨 HOME IS AN ICON IN THE HEADER, NOT A BREADCRUMB CRUTCH.
+         Paul, 2026-09-02: "i dont even like how that is even an option on that
+         home name being the home button. can we just add a home icon on the
+         header next to the hamburger?" and "we dont need Home> Terms of Use".
+         A breadcrumb whose only rung is Home is not navigation, it is a link
+         wearing a costume. The icon is always there, on every page, in the same
+         place - which is what a reader actually wants from a way home.
+         ⚠️ The wordmark also links home; that is deliberate redundancy, not a
+         duplicate to clean up. The icon is a target, the wordmark is a brand. -->
+    <a class="homeb" href="/" aria-label="Home" title="Home">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
+    </a>
+  </div>
   <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
   <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a></div>
   <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>
@@ -54,8 +75,8 @@
 <div class="mg-panel" id="megapanel" aria-hidden="true"><div class="mg-inner" data-for="gr"><div class="mg-body"><div class="mg-grades"><a class="mg-grade live" href="/grade-k/"><b>K</b><span>Live</span></a><a class="mg-grade live" href="/grade-1/"><b>1</b><span>Live</span></a><a class="mg-grade live" href="/grade-2/"><b>2</b><span>Live</span></a><a class="mg-grade live" href="/grade-3/"><b>3</b><span>Live</span></a><a class="mg-grade live" href="/grade-4/"><b>4</b><span>Live</span></a><a class="mg-grade live" href="/grade-5/"><b>5</b><span>Live</span></a><a class="mg-grade live" href="/grade-6/"><b>6</b><span>Live</span></a><a class="mg-grade live" href="/grade-7/"><b>7</b><span>Live</span></a><a class="mg-grade live" href="/grade-8/"><b>8</b><span>Live</span></a></div><p class="mg-note">Organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></div><div class="mg-inner" data-for="r"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>What We Use</h4><ul><li><a href="/resources/books-and-readers/">Books and Readers</a></li><li><a href="/resources/tools-and-supplies/">Tools and Supplies</a></li></ul></div><div class="mg-col"><h4>Extras</h4><ul><li><a href="/resources/science-experiments/">Science Experiments</a></li><li><a href="/resources/reading-lists/">Reading Lists</a></li></ul></div><div class="mg-col"><h4>Writing</h4><ul><li><a href="/blog/">Blog</a></li><li><a href="/resources/placement-tests/">Placement Tests</a></li></ul></div></div><p class="mg-note">Things we actually use, not a list copied off somebody else&rsquo;s blog. Any affiliate link is marked as one. Lessons and printables are not here &mdash; they live under each grade.</p><p class="mg-all"><a href="/resources/">All resources &rarr;</a></p></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></div><div class="mg-inner" data-for="g"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Maths</h4><ul><li><a href="/games/speed-run-math/">Speed Run Math</a></li><li><a href="/games/remainder-race/">Remainder Race</a></li><li><a href="/games/fraction-match/">Fraction Match</a></li></ul></div><div class="mg-col"><h4>English</h4><ul><li><a href="/games/spelling-ladder/">Spelling Ladder</a></li><li><a href="/games/comma-catcher/">Comma Catcher</a></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><a href="/games/show-me-the-states/">Show Me The States</a></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><a href="/games/sort-the-mixture/">Sort the Mixture</a></li></ul></div></div><p class="mg-note">Two are playable now. The rest have a page saying what they will be.</p><p class="mg-all"><a href="/games/">All games &rarr;</a></p></div></div><div class="mg-inner" data-for="c"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Donut Boy</h4><ul><li><a href="/comics/">Start at Episode 1</a></li><li><a href="/comics/">All 8 Episodes</a></li></ul></div><div class="mg-col"><h4>More strips</h4><ul><li><a href="/comics/more-strips/">What Is Coming</a></li></ul></div></div><p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p><p class="mg-all"><a href="/comics/">All comics &rarr;</a></p></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></div><div class="mg-inner" data-for="p"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Placement</h4><ul><li><a href="/placement-exam.html">Reading Placement Exam</a></li></ul></div><div class="mg-col"><h4>Planning</h4><ul><li><a href="/resources/">What We Use</a></li><li><a href="/about/">About NexStudents</a></li><li><a href="/contact/">Contact</a></li></ul></div></div><p class="mg-all"><a href="/for-parents/">All for parents &rarr;</a></p></div></div></div>
 </nav>
 
-<div class="wrap phead">
-  <p class="crumb"><a href="/">Home</a> &rsaquo; Terms of Use</p>
+<div class="wrap phead termshead">
+  
   <h1>Terms of Use.</h1>
   <p>Welcome to NexStudents. We create educational resources to make teaching and learning easier for families, teachers, tutors, and educational groups.</p>
   
@@ -63,16 +84,14 @@
 
 <div class="band"><div class="wrap prose">
 
-  <p class="muted">Last updated: September 2, 2026</p>
-
   <p>We create educational resources to make teaching and learning easier for families, teachers, tutors, and educational groups. We want our materials to be used, printed, and enjoyed. We just ask that our work is not resold, reposted, or claimed as someone else&rsquo;s.</p>
 
-  <h2>The Short Version</h2>
+  <h2 class="mid">The Short Version</h2>
   <p>Print them. Teach with them. Use them again.</p>
   <p>You may use NexStudents materials with your own students as often as you like.</p>
   <p>Please do not sell our materials, repost our files somewhere else, remove our branding, or claim our work as your own.</p>
 
-  <h2>What You May Do</h2>
+  <h2 class="mid">What You May Do</h2>
   <p>You may use NexStudents materials with students you personally teach or supervise, including:</p>
   <ul class="gets">
     <li>Your own children</li>
@@ -87,7 +106,7 @@
   <p>You may link to pages on NexStudents from your website, blog, lesson plan, newsletter, social media page, school website, or other educational resource. Links to NexStudents are welcome and do not require permission.</p>
   <p>You may also mention NexStudents by name and quote a short portion of our material when reviewing, discussing, or recommending one of our resources.</p>
 
-  <h2>What You May Not Do</h2>
+  <h2 class="mid">What You May Not Do</h2>
   <p>Unless you receive written permission from NexStudents, you may not:</p>
   <ul class="gets">
     <li>Sell NexStudents worksheets, lessons, artwork, downloads, or other materials.</li>
@@ -103,56 +122,58 @@
   <p>In simple terms: use our resources to teach, not to become another source for distributing them.</p>
   <p>If you are unsure whether a particular use is allowed, contact us. We would rather answer your question than have you avoid using a resource that could help your students.</p>
 
-  <h2>Who Owns the Materials?</h2>
+  <h2 class="mid">Who Owns the Materials?</h2>
   <p>Unless otherwise stated on a particular page or resource, the original worksheets, lessons, written content, illustrations, graphics, designs, and other original materials published by NexStudents are owned by NexEdge Studios and/or NexStudents and are protected by applicable copyright laws.</p>
   <p>Some educational resources may incorporate or build upon public-domain works, openly licensed materials, quotations, historical documents, or other third-party content. When appropriate, those sources or licenses will be identified.</p>
   <p>Facts themselves are not owned by NexStudents. Historical events, scientific principles, mathematical concepts, and other factual information may be taught and discussed by anyone.</p>
   <p>Our copyright applies to our original expression of those ideas, including our writing, explanations, illustrations, worksheets, graphics, organization, and design.</p>
 
-  <h2>Free Educational Materials</h2>
+  <h2 class="mid">Free Educational Materials</h2>
   <p>Many NexStudents resources are provided free of charge because we want families and educators to have access to useful educational materials.</p>
   <p>Free does not mean copyright-free or public domain.</p>
   <p>Unless a resource specifically states otherwise, a free NexStudents resource remains subject to these Terms of Use.</p>
   <p>If NexStudents introduces paid resources, memberships, courses, or other paid services in the future, those products will be clearly identified along with their applicable price and any additional terms.</p>
   <p>Resources already identified as free will not suddenly require payment simply because additional paid resources are introduced.</p>
 
-  <h2>Educational Use</h2>
+  <h2 class="mid">Educational Use</h2>
   <p>NexStudents provides educational materials and resources. We work to make our content useful and accurate, but every student, classroom, homeschool, and educational situation is different.</p>
   <p>Parents, teachers, tutors, and other educators remain responsible for deciding whether a particular resource is appropriate for their students and how it should be used.</p>
 
-  <h2>Errors and Corrections</h2>
+  <h2 class="mid">Errors and Corrections</h2>
   <p>We review our materials and try to correct errors when we find them. However, educational materials may occasionally contain mistakes, outdated information, typographical errors, or other inaccuracies.</p>
   <p>If you find something that appears incorrect, please contact us. We appreciate corrections and want our materials to be as accurate and useful as possible.</p>
 
-  <h2>No Warranty</h2>
+  <h2 class="mid">No Warranty</h2>
   <p>NexStudents materials and this website are provided &ldquo;as is&rdquo; and &ldquo;as available.&rdquo;</p>
   <p>To the extent permitted by law, NexStudents and NexEdge Studios make no guarantees that every resource will be error-free, uninterrupted, suitable for every student, or appropriate for every educational purpose.</p>
   <p>You are responsible for reviewing materials and exercising your own judgment before using them with your students.</p>
 
-  <h2>Website Availability</h2>
+  <h2 class="mid">Website Availability</h2>
   <p>We may update, revise, replace, move, or discontinue pages, features, or resources on NexStudents from time to time.</p>
   <p>We cannot guarantee that every page, download, feature, or resource will remain available indefinitely.</p>
 
-  <h2>Third-Party Links and Resources</h2>
+  <h2 class="mid">Third-Party Links and Resources</h2>
   <p>NexStudents may occasionally link to websites, videos, books, services, or resources operated by other organizations.</p>
   <p>Those websites and resources are controlled by their respective owners. A link from NexStudents does not necessarily mean that we endorse everything available on that website.</p>
   <p>We are not responsible for the content, availability, privacy practices, or policies of third-party websites.</p>
 
-  <h2>Acceptable Use of the Website</h2>
+  <h2 class="mid">Acceptable Use of the Website</h2>
   <p>Please do not use NexStudents in a way that interferes with the website, attempts to gain unauthorized access to its systems, distributes malicious software, or prevents other people from accessing our resources.</p>
   <p>Automated activity that places an unreasonable burden on the website or systematically collects our content may be restricted or blocked.</p>
 
-  <h2>Changes to These Terms</h2>
+  <h2 class="mid">Changes to These Terms</h2>
   <p>We may update these Terms of Use as NexStudents grows or as our services change.</p>
-  <p>When we make changes, the &ldquo;Last updated&rdquo; date at the top of this page will be updated.</p>
+  <p>When we make changes, the &ldquo;Last updated&rdquo; date on this page will be updated.</p>
   <p>Your continued use of NexStudents after updated terms are posted means that your future use of the website and materials is subject to the updated terms, to the extent permitted by applicable law.</p>
 
-  <h2>Questions, Corrections, and Special Permission</h2>
+  <h2 class="mid">Questions, Corrections, and Special Permission</h2>
   <p>If you would like to use NexStudents material in a way that is not covered by these terms, please contact us through our <a href="/contact/">Contact page</a>.</p>
   <p>We are often happy to grant additional permission for educational uses. Permission outside these terms must be requested and granted before that use occurs.</p>
   <p>If you find an error in one of our resources, we would also appreciate hearing from you.</p>
 
-  <p class="muted" style="margin-top:30px">NexStudents<br>An educational resource by NexEdge Studios<br>&copy; 2026 NexEdge Studios. All rights reserved.</p>
+  <p class="muted" style="margin-top:34px">Last updated: September 2, 2026</p>
+
+  <p class="muted">NexStudents<br>An educational resource by NexEdge Studios<br>&copy; 2026 NexEdge Studios. All rights reserved.</p>
 
 </div></div>
 

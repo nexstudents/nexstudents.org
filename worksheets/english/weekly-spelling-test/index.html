@@ -10,8 +10,8 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <title>Weekly Spelling Test — NexStudents</title>
 <meta name="description" content="A blank weekly spelling test. Ten words out of ten, one bonus word worth one extra.">
-<link rel="stylesheet" href="/assets/ns.css?v=cb8687c5">
-<link rel="stylesheet" href="/assets/worksheet.css?v=cb8687c5">
+<link rel="stylesheet" href="/assets/ns.css?v=c817aa60">
+<link rel="stylesheet" href="/assets/worksheet.css?v=c817aa60">
 </head>
 <body>
 
@@ -39,9 +39,30 @@
 </div>
 
 <nav id="nav" class="ns-nav"><div class="nv">
-  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-    <i></i><i></i><i></i>
-  </button>
+  <!-- 🚨 BURGER AND HOME SHARE ONE GRID CELL.
+       On mobile .nv is a THREE column grid - 1fr auto 1fr - so the logo sits
+       dead centre. Adding the home icon as a fourth grid item pushed the
+       logo, account and cart onto a second row. Paul saw it immediately:
+       "well you moved all the logo cart and login".
+       Wrapping both controls in .navleft keeps the grid at three items, so
+       the logo stays centred and the icon still sits beside the burger. -->
+  <div class="navleft">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <i></i><i></i><i></i>
+    </button>
+    <!-- 🚨 HOME IS AN ICON IN THE HEADER, NOT A BREADCRUMB CRUTCH.
+         Paul, 2026-09-02: "i dont even like how that is even an option on that
+         home name being the home button. can we just add a home icon on the
+         header next to the hamburger?" and "we dont need Home> Terms of Use".
+         A breadcrumb whose only rung is Home is not navigation, it is a link
+         wearing a costume. The icon is always there, on every page, in the same
+         place - which is what a reader actually wants from a way home.
+         ⚠️ The wordmark also links home; that is deliberate redundancy, not a
+         duplicate to clean up. The icon is a target, the wordmark is a brand. -->
+    <a class="homeb" href="/" aria-label="Home" title="Home">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
+    </a>
+  </div>
   <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
   <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a></div>
   <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>

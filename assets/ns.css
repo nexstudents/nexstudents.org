@@ -1051,7 +1051,8 @@ html{-webkit-tap-highlight-color:transparent}
 @media(max-width:940px){
   /* three zones, logo dead centre */
   .nv{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:10px 14px}
-  .nv .burger{justify-self:start;margin-left:0}
+  .nv .navleft{justify-self:start}
+  .nv .burger{margin-left:0}
   .nv .word{justify-self:center;gap:0}
   .nv .wordtext{display:none}
   .navicons{justify-self:end}
@@ -1143,3 +1144,29 @@ nav{border-bottom:1px solid var(--line)}
    ⚠️ margin-inline:auto as well as text-align - .prose h2 has a max-width, so
    centring the text alone leaves the box flush left. See .contactfoot. */
 .prose h2.mid{text-align:center;margin-inline:auto}
+
+/* ── THE TERMS PAGE HEAD ───────────────────────────────────────────────────
+   Paul, 2026-09-02: "The terms of use and all the titles needs to be
+   centered ... the terms title also needs to move down and away from the
+   home>Terms of use button."
+
+   Only the TITLE centres. The lead paragraph stays left, because centring a
+   full sentence of running text hurts readability - the eye loses the start
+   of each line. Titles are short enough that centring helps them.
+   ⚠️ margin-inline:auto as well as text-align, because .phead h1 is width
+   constrained - the same trap as .contactfoot and .prose h2.mid. */
+.termshead h1{text-align:center;margin-inline:auto;margin-top:26px}
+.termshead .crumb{margin-bottom:0}
+
+/* The home icon, sitting beside the burger. Sized and coloured like the other
+   icon controls in the bar so it reads as one set rather than a bolt-on. */
+.homeb{display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:var(--r,4px);color:var(--dim);
+  text-decoration:none;flex:0 0 auto}
+.homeb:hover{color:var(--fg)}
+@media(max-width:520px){ .homeb{width:32px;height:32px} }
+
+/* Burger and home icon travel together as one unit. On desktop this is just a
+   pair in the flex row; on mobile it is a SINGLE grid item, which is what
+   keeps the three-column grid - and the centred logo - intact. */
+.navleft{display:flex;align-items:center;gap:6px;flex:0 0 auto}

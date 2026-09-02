@@ -354,9 +354,30 @@ ${drawerSubs()}
 </div>
 
 <nav id="nav" class="ns-nav"><div class="nv">
-  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-    <i></i><i></i><i></i>
-  </button>
+  <!-- 🚨 BURGER AND HOME SHARE ONE GRID CELL.
+       On mobile .nv is a THREE column grid - 1fr auto 1fr - so the logo sits
+       dead centre. Adding the home icon as a fourth grid item pushed the
+       logo, account and cart onto a second row. Paul saw it immediately:
+       "well you moved all the logo cart and login".
+       Wrapping both controls in .navleft keeps the grid at three items, so
+       the logo stays centred and the icon still sits beside the burger. -->
+  <div class="navleft">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <i></i><i></i><i></i>
+    </button>
+    <!-- 🚨 HOME IS AN ICON IN THE HEADER, NOT A BREADCRUMB CRUTCH.
+         Paul, 2026-09-02: "i dont even like how that is even an option on that
+         home name being the home button. can we just add a home icon on the
+         header next to the hamburger?" and "we dont need Home> Terms of Use".
+         A breadcrumb whose only rung is Home is not navigation, it is a link
+         wearing a costume. The icon is always there, on every page, in the same
+         place - which is what a reader actually wants from a way home.
+         ⚠️ The wordmark also links home; that is deliberate redundancy, not a
+         duplicate to clean up. The icon is a target, the wordmark is a brand. -->
+    <a class="homeb" href="/" aria-label="Home" title="Home">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
+    </a>
+  </div>
   <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
   <div class="tabs">${tabs(active)}</div>
   ${modeButton()}

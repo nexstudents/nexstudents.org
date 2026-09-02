@@ -13,7 +13,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=bfdc2357">
+<link rel="stylesheet" href="/assets/ns.css?v=53847c5e">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -42,9 +42,30 @@
 </div>
 
 <nav id="nav" class="ns-nav"><div class="nv">
-  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-    <i></i><i></i><i></i>
-  </button>
+  <!-- 🚨 BURGER AND HOME SHARE ONE GRID CELL.
+       On mobile .nv is a THREE column grid - 1fr auto 1fr - so the logo sits
+       dead centre. Adding the home icon as a fourth grid item pushed the
+       logo, account and cart onto a second row. Paul saw it immediately:
+       "well you moved all the logo cart and login".
+       Wrapping both controls in .navleft keeps the grid at three items, so
+       the logo stays centred and the icon still sits beside the burger. -->
+  <div class="navleft">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <i></i><i></i><i></i>
+    </button>
+    <!-- 🚨 HOME IS AN ICON IN THE HEADER, NOT A BREADCRUMB CRUTCH.
+         Paul, 2026-09-02: "i dont even like how that is even an option on that
+         home name being the home button. can we just add a home icon on the
+         header next to the hamburger?" and "we dont need Home> Terms of Use".
+         A breadcrumb whose only rung is Home is not navigation, it is a link
+         wearing a costume. The icon is always there, on every page, in the same
+         place - which is what a reader actually wants from a way home.
+         ⚠️ The wordmark also links home; that is deliberate redundancy, not a
+         duplicate to clean up. The icon is a target, the wordmark is a brand. -->
+    <a class="homeb" href="/" aria-label="Home" title="Home">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
+    </a>
+  </div>
   <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
   <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top on" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a></div>
   <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>
@@ -54,8 +75,8 @@
 <div class="mg-panel" id="megapanel" aria-hidden="true"><div class="mg-inner" data-for="gr"><div class="mg-body"><div class="mg-grades"><a class="mg-grade live" href="/grade-k/"><b>K</b><span>Live</span></a><a class="mg-grade live" href="/grade-1/"><b>1</b><span>Live</span></a><a class="mg-grade live" href="/grade-2/"><b>2</b><span>Live</span></a><a class="mg-grade live" href="/grade-3/"><b>3</b><span>Live</span></a><a class="mg-grade live" href="/grade-4/"><b>4</b><span>Live</span></a><a class="mg-grade live" href="/grade-5/"><b>5</b><span>Live</span></a><a class="mg-grade live" href="/grade-6/"><b>6</b><span>Live</span></a><a class="mg-grade live" href="/grade-7/"><b>7</b><span>Live</span></a><a class="mg-grade live" href="/grade-8/"><b>8</b><span>Live</span></a></div><p class="mg-note">Organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></div><div class="mg-inner" data-for="r"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>What We Use</h4><ul><li><a href="/resources/books-and-readers/">Books and Readers</a></li><li><a href="/resources/tools-and-supplies/">Tools and Supplies</a></li></ul></div><div class="mg-col"><h4>Extras</h4><ul><li><a href="/resources/science-experiments/">Science Experiments</a></li><li><a href="/resources/reading-lists/">Reading Lists</a></li></ul></div><div class="mg-col"><h4>Writing</h4><ul><li><a href="/blog/">Blog</a></li><li><a href="/resources/placement-tests/">Placement Tests</a></li></ul></div></div><p class="mg-note">Things we actually use, not a list copied off somebody else&rsquo;s blog. Any affiliate link is marked as one. Lessons and printables are not here &mdash; they live under each grade.</p><p class="mg-all"><a href="/resources/">All resources &rarr;</a></p></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></div><div class="mg-inner" data-for="g"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Maths</h4><ul><li><a href="/games/speed-run-math/">Speed Run Math</a></li><li><a href="/games/remainder-race/">Remainder Race</a></li><li><a href="/games/fraction-match/">Fraction Match</a></li></ul></div><div class="mg-col"><h4>English</h4><ul><li><a href="/games/spelling-ladder/">Spelling Ladder</a></li><li><a href="/games/comma-catcher/">Comma Catcher</a></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><a href="/games/show-me-the-states/">Show Me The States</a></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><a href="/games/sort-the-mixture/">Sort the Mixture</a></li></ul></div></div><p class="mg-note">Two are playable now. The rest have a page saying what they will be.</p><p class="mg-all"><a href="/games/">All games &rarr;</a></p></div></div><div class="mg-inner" data-for="c"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Donut Boy</h4><ul><li><a href="/comics/">Start at Episode 1</a></li><li><a href="/comics/">All 8 Episodes</a></li></ul></div><div class="mg-col"><h4>More strips</h4><ul><li><a href="/comics/more-strips/">What Is Coming</a></li></ul></div></div><p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p><p class="mg-all"><a href="/comics/">All comics &rarr;</a></p></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></div><div class="mg-inner" data-for="p"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Placement</h4><ul><li><a href="/placement-exam.html">Reading Placement Exam</a></li></ul></div><div class="mg-col"><h4>Planning</h4><ul><li><a href="/resources/">What We Use</a></li><li><a href="/about/">About NexStudents</a></li><li><a href="/contact/">Contact</a></li></ul></div></div><p class="mg-all"><a href="/for-parents/">All for parents &rarr;</a></p></div></div></div>
 </nav>
 
-<div class="wrap phead">
-  <p class="crumb"><a href="/">Home</a> &rsaquo; <a href="/grade-5/">5th Grade</a> &rsaquo; Science &rsaquo; Lessons</p>
+<div class="wrap phead ">
+  <p class="crumb"><a href="/grade-5/">5th Grade</a> &rsaquo; Science &rsaquo; Lessons</p>
   <h1>5th Grade Science Lessons.</h1>
   <p>Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets.</p>
   
