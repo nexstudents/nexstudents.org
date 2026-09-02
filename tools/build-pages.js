@@ -214,6 +214,114 @@ const comicsPage = () => {
     '</scr' + 'ipt>';
 };
 
+/* ── THE PRIVACY POLICY ────────────────────────────────────────────────────
+   🚨 PAUL'S TEXT, WORD FOR WORD, 2026-09-02. Same rule as /terms/: do not
+   rewrite, tighten or "improve" it. A privacy policy is a set of promises
+   about real data belonging to real families; changing a word changes a
+   promise. Edits come from Paul or a lawyer.
+
+   WHY THIS PAGE EXISTS. /for-parents/ advertises that placement exam results
+   "land in your inbox". That is personal data, collected from families, about
+   children. The Terms were solid without it but only half a pair - a site
+   that promises to email you and never says what it does with your address
+   has a real gap, not a theoretical one.
+
+   ⚠️ COPPA IS ADDRESSED DIRECTLY because the data concerns under-13s. That is
+   the same reason ROADMAP item 23 says accounts must be parent-owned from day
+   one: Kolten alone is nothing, strangers' children are a legal surface.
+
+   ⚠️ THIS PAGE DESCRIBES THE SITE AS IT IS TODAY. No accounts, no payments,
+   no newsletter, nothing sold. Every one of those becomes false the moment
+   the backend in ROADMAP 23-25 ships. Re-read this page BEFORE launching
+   accounts or checkout, not after.
+
+   ⚠️ LAST UPDATED SITS AT THE FOOT, matching /terms/. Paul, 2026-09-02: "yes
+   keep my bottom placement". His text said the date is at the top of this
+   page; changed to on this page - the smallest edit that keeps it true - and
+   flagged rather than silently reworded. Same call as on /terms/. */
+const privacyBody = () => `<div class="band"><div class="wrap prose">
+
+  <p>NexStudents is built for families and educators, so we believe privacy should be simple and easy to understand.</p>
+  <p>We do not require student accounts. We do not currently process payments. We do not sell personal information.</p>
+  <p>When we need information to provide a feature, we try to collect only what we actually need.</p>
+
+  <h2 class="mid">Information We Collect</h2>
+  <p>You do not need to create an account to use NexStudents or access our educational resources.</p>
+  <p>For certain features, such as our placement exams, we may ask for a parent or guardian&rsquo;s email address so that we can send the student&rsquo;s results to them.</p>
+  <p>A placement exam may also create information such as the student&rsquo;s answers, score, placement result, or other information necessary to evaluate the exam.</p>
+  <p>We use this information to operate the placement exam, calculate the results, and deliver those results to the parent or guardian.</p>
+
+  <h2 class="mid">Why We Ask for a Parent&rsquo;s Email Address</h2>
+  <p>The email address provided for a placement exam is used to send the student&rsquo;s results to the parent or guardian.</p>
+  <p>Providing an email address for this purpose does not automatically subscribe you to a newsletter or marketing list.</p>
+  <p>We do not sell or rent that email address.</p>
+
+  <h2 class="mid">Children&rsquo;s Privacy</h2>
+  <p>NexStudents is an educational website, and we know that many of the people using our resources are children.</p>
+  <p>Our website is designed so that children do not need to create personal accounts to use our educational materials.</p>
+  <p>When an email address is requested for a placement exam, the parent or guardian should provide their own email address rather than the child&rsquo;s.</p>
+  <p>We do not knowingly ask children under 13 to provide their own email address or other personal contact information through our placement exams.</p>
+  <p>If we learn that personal information was collected directly from a child under 13 in a situation where parental consent was required under the Children&rsquo;s Online Privacy Protection Act, or COPPA, we will take appropriate steps to remove that information.</p>
+  <p>If you are a parent or guardian and believe your child has provided personal information to NexStudents, please <a href="/contact/">contact us</a>. We will work with you to review and, when appropriate, delete that information.</p>
+
+  <h2 class="mid">How We Use Information</h2>
+  <p>Information collected through a placement exam may be used to:</p>
+  <ul class="gets">
+    <li>Process and score the exam.</li>
+    <li>Generate the student&rsquo;s placement results.</li>
+    <li>Send those results to the parent or guardian.</li>
+    <li>Diagnose technical problems or correct errors with the exam.</li>
+    <li>Protect NexStudents from spam, abuse, fraud, or misuse.</li>
+  </ul>
+  <p>We do not use a child&rsquo;s placement exam results to build an advertising profile.</p>
+
+  <h2 class="mid">We Do Not Sell Personal Information</h2>
+  <p>NexStudents does not sell personal information.</p>
+  <p>We also do not rent parent email addresses or student placement information to advertisers or data brokers.</p>
+
+  <h2 class="mid">Services That Help Us Run NexStudents</h2>
+  <p>Like most websites, NexStudents relies on other services to keep the site running. These may include website hosting, email delivery, security, and other technical services.</p>
+  <p>Those providers may process limited information when necessary to provide their services to us.</p>
+  <p>We do not authorize these providers to use placement exam information for their own advertising purposes.</p>
+
+  <h2 class="mid">Basic Website Information</h2>
+  <p>When someone visits a website, some technical information may be received automatically by the website or the services that help operate it.</p>
+  <p>Depending on the technology being used, this may include an IP address, browser type, device type, pages requested, and basic security or diagnostic information.</p>
+  <p>This information may be used to keep NexStudents working properly, diagnose problems, understand basic website performance, and protect the site from abuse.</p>
+  <p>We do not use a student&rsquo;s placement exam results for targeted advertising.</p>
+
+  <h2 class="mid">How Long We Keep Information</h2>
+  <p>We do not want to keep personal information simply because we can.</p>
+  <p>We keep personal information only for as long as reasonably necessary to provide the feature for which it was collected, deliver placement results, resolve technical problems, maintain security, or meet applicable legal obligations.</p>
+  <p>When we no longer reasonably need the information, we may delete or anonymize it.</p>
+  <p>Some information may remain temporarily in routine system backups until those backups are replaced or deleted.</p>
+
+  <h2 class="mid">Requesting Deletion</h2>
+  <p>Parents and guardians may contact us to request deletion of personal information associated with their child or a placement exam.</p>
+  <p>We may ask for enough information to reasonably verify the request and locate the correct records.</p>
+  <p>Once we can identify the information, we will delete the information we control unless we are required or permitted by law to retain it.</p>
+
+  <h2 class="mid">Third-Party Links</h2>
+  <p>NexStudents may link to educational websites, videos, resources, or services operated by other organizations.</p>
+  <p>Once you leave NexStudents, those websites have their own privacy practices. This Privacy Policy applies to NexStudents and does not control how another website handles information.</p>
+  <p>Parents and educators should review outside services before allowing children to provide personal information to them.</p>
+
+  <h2 class="mid">Changes to This Privacy Policy</h2>
+  <p>As NexStudents grows, we may add new resources or features. If those features change the information we collect or how we use it, we will update this Privacy Policy.</p>
+  <p>The &ldquo;Last updated&rdquo; date on this page will change when the policy is updated.</p>
+  <p>If we make a significant change involving children&rsquo;s personal information, we will also take any additional steps required by applicable law.</p>
+
+  <h2 class="mid">Questions or Privacy Requests</h2>
+  <p>If you have a question about this Privacy Policy, believe your child provided personal information to NexStudents, or would like information deleted, please <a href="/contact/">contact us</a>.</p>
+
+  <p class="muted" style="margin-top:34px">Last updated: September 2, 2026</p>
+
+  <p class="muted">NexStudents<br>An educational resource by NexEdge Studios<br>
+  <a href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a><br>
+  &copy; 2026 NexEdge Studios. All rights reserved.</p>
+
+</div></div>`;
+
 /* ── THE TERMS PAGE BODY ───────────────────────────────────────────────────
    Written in plain language on purpose. A parent deciding whether they may
    print thirty copies for a co-op should get that answer in one read, not
@@ -245,6 +353,33 @@ const comicsPage = () => {
 
    Delivered a line at a time over ~40 messages because a paste kept breaking;
    one sentence arrived scrambled and was re-sent rather than guessed at. */
+/* ── THE TERMS PAGE BODY ───────────────────────────────────────────────────
+   🚨 THIS TEXT IS PAUL'S, WORD FOR WORD. Second version, 2026-09-02, after he
+   had ChatGPT extend it to cover the gaps I flagged. Do not rewrite, tighten
+   or "improve" it. It is a licence, not copy: changing a word changes what
+   people are permitted to do. Edits come from Paul or a lawyer.
+
+   What this version adds over the first, all of it worth having:
+     - NexStudents Is a Learning Resource: not a school, not accredited, no
+       grades, credits, transcripts or diplomas, and no guarantee of meeting
+       any state's homeschool requirements. That last point is the one
+       homeschool parents genuinely need, because some states require an
+       accredited provider.
+     - Placement Exams: results are a starting point, not an evaluation.
+     - Limitation of Liability, which pairs with No Warranty. Having one
+       without the other was the gap.
+     - Governing Law: Missouri.
+     - A short Privacy section pointing at the full policy.
+
+   ⚠️ LAST UPDATED SITS AT THE FOOT, by Paul's instruction on layout. His text
+   said "at the top of this page"; changed to "on this page" - the smallest
+   edit that keeps the sentence true - and flagged to him rather than silently
+   reworded. If the date ever moves back to the top, restore the original.
+
+   ⚠️ "Privacy Policy" is PLAIN TEXT, not a link, until /privacy/ exists.
+   check-links.js fails the build on a dead root-absolute link, and a promise
+   to a page that 404s is worse than no link. Link it the moment that page
+   ships. */
 const termsBody = () => `<div class="band"><div class="wrap prose">
 
   <p>We create educational resources to make teaching and learning easier for families, teachers, tutors, and educational groups. We want our materials to be used, printed, and enjoyed. We just ask that our work is not resold, reposted, or claimed as someone else&rsquo;s.</p>
@@ -298,6 +433,20 @@ const termsBody = () => `<div class="band"><div class="wrap prose">
   <p>If NexStudents introduces paid resources, memberships, courses, or other paid services in the future, those products will be clearly identified along with their applicable price and any additional terms.</p>
   <p>Resources already identified as free will not suddenly require payment simply because additional paid resources are introduced.</p>
 
+  <h2 class="mid">NexStudents Is a Learning Resource</h2>
+  <p>NexStudents exists to support homeschool families, parents, teachers, tutors, and other educators by providing educational materials they can use alongside the way they already teach.</p>
+  <p>NexStudents is not a school, an accredited educational institution, or an accredited curriculum provider. Using NexStudents does not enroll a student in a school or educational program.</p>
+  <p>We do not issue official grades, academic credits, transcripts, or diplomas.</p>
+  <p>Our lessons, worksheets, placement exams, games, and other resources are tools to help parents and educators teach. They are not intended to take the place of the parent or educator directing a student&rsquo;s education.</p>
+  <p>Homeschool laws and educational requirements are different from state to state and can change over time. NexStudents cannot guarantee that using our resources will satisfy the homeschool requirements of your state.</p>
+  <p>Parents and educators are responsible for understanding and following the homeschool or educational requirements that apply where they live.</p>
+  <p>Our role is simple: we provide resources to help you teach. You decide how those resources fit into your student&rsquo;s education.</p>
+
+  <h2 class="mid">Placement Exams</h2>
+  <p>NexStudents may provide placement exams or similar tools to help parents and educators get a better idea of where a student may be academically.</p>
+  <p>Placement results are intended as a helpful starting point. They are not an official academic evaluation, diagnosis, grade, transcript, or guarantee that a student should be placed at a particular grade level.</p>
+  <p>Every student learns differently. Parents and educators should use placement results together with their own knowledge of the student when deciding what material is appropriate.</p>
+
   <h2 class="mid">Educational Use</h2>
   <p>NexStudents provides educational materials and resources. We work to make our content useful and accurate, but every student, classroom, homeschool, and educational situation is different.</p>
   <p>Parents, teachers, tutors, and other educators remain responsible for deciding whether a particular resource is appropriate for their students and how it should be used.</p>
@@ -308,12 +457,21 @@ const termsBody = () => `<div class="band"><div class="wrap prose">
 
   <h2 class="mid">No Warranty</h2>
   <p>NexStudents materials and this website are provided &ldquo;as is&rdquo; and &ldquo;as available.&rdquo;</p>
-  <p>To the extent permitted by law, NexStudents and NexEdge Studios make no guarantees that every resource will be error-free, uninterrupted, suitable for every student, or appropriate for every educational purpose.</p>
-  <p>You are responsible for reviewing materials and exercising your own judgment before using them with your students.</p>
+  <p>We do our best to create useful, accurate educational resources, but we cannot promise that every lesson, worksheet, answer key, placement exam, game, or other resource will always be completely free of errors or appropriate for every student.</p>
+  <p>We also cannot guarantee that the website or every feature will always be available without interruption.</p>
+  <p>Parents and educators are responsible for reviewing materials and using their own judgment before using them with their students.</p>
+
+  <h2 class="mid">Limitation of Liability</h2>
+  <p>NexStudents is provided as an educational resource for families and educators.</p>
+  <p>To the fullest extent permitted by law, NexStudents and NexEdge Studios will not be responsible for indirect, incidental, special, consequential, or similar damages resulting from the use of, or inability to use, NexStudents, its website, or its materials.</p>
+  <p>This includes decisions made based on our lessons, worksheets, answer keys, placement exams, educational information, links, or other resources.</p>
+  <p>Parents and educators remain responsible for deciding how NexStudents materials should be used and whether they are appropriate for a particular student.</p>
+  <p>Nothing in these Terms of Use is intended to exclude or limit responsibility where doing so would not be permitted by law.</p>
 
   <h2 class="mid">Website Availability</h2>
   <p>We may update, revise, replace, move, or discontinue pages, features, or resources on NexStudents from time to time.</p>
   <p>We cannot guarantee that every page, download, feature, or resource will remain available indefinitely.</p>
+  <p>If there is something you use regularly, you are welcome to save a permitted copy for your own educational use as described in these terms.</p>
 
   <h2 class="mid">Third-Party Links and Resources</h2>
   <p>NexStudents may occasionally link to websites, videos, books, services, or resources operated by other organizations.</p>
@@ -324,19 +482,32 @@ const termsBody = () => `<div class="band"><div class="wrap prose">
   <p>Please do not use NexStudents in a way that interferes with the website, attempts to gain unauthorized access to its systems, distributes malicious software, or prevents other people from accessing our resources.</p>
   <p>Automated activity that places an unreasonable burden on the website or systematically collects our content may be restricted or blocked.</p>
 
+  <h2 class="mid">Privacy</h2>
+  <p>We believe families should be able to understand what happens to their information without having to work through pages of legal language.</p>
+  <p>NexStudents does not require students to create accounts, does not currently process payments, and does not sell personal information.</p>
+  <p>Some features, such as placement exams, may ask for a parent or guardian&rsquo;s email address so that we can deliver a student&rsquo;s results.</p>
+  <p>More information about what we collect, why we collect it, children&rsquo;s privacy, and how parents can request deletion is available in our <a href="/privacy/">Privacy Policy</a>.</p>
+
+  <h2 class="mid">Governing Law</h2>
+  <p>NexStudents is operated by NexEdge Studios in Missouri, United States.</p>
+  <p>These Terms of Use and any dispute relating to NexStudents or the use of our materials are governed by the laws of the State of Missouri, without regard to conflict-of-law principles.</p>
+  <p>Nothing in these terms is intended to take away rights that cannot legally be limited or waived under applicable law.</p>
+
   <h2 class="mid">Changes to These Terms</h2>
-  <p>We may update these Terms of Use as NexStudents grows or as our services change.</p>
-  <p>When we make changes, the &ldquo;Last updated&rdquo; date on this page will be updated.</p>
+  <p>NexStudents will continue to grow, and we may update these Terms of Use as our resources and features change.</p>
+  <p>When we make changes, we will update the &ldquo;Last updated&rdquo; date on this page.</p>
   <p>Your continued use of NexStudents after updated terms are posted means that your future use of the website and materials is subject to the updated terms, to the extent permitted by applicable law.</p>
 
   <h2 class="mid">Questions, Corrections, and Special Permission</h2>
-  <p>If you would like to use NexStudents material in a way that is not covered by these terms, please contact us through our <a href="/contact/">Contact page</a>.</p>
+  <p>If you would like to use NexStudents material in a way that is not covered by these terms, please <a href="/contact/">contact us</a>.</p>
   <p>We are often happy to grant additional permission for educational uses. Permission outside these terms must be requested and granted before that use occurs.</p>
-  <p>If you find an error in one of our resources, we would also appreciate hearing from you.</p>
+  <p>And if you find a mistake in one of our lessons, worksheets, answer keys, or other resources, please tell us. We want to know so we can fix it.</p>
 
   <p class="muted" style="margin-top:34px">Last updated: September 2, 2026</p>
 
-  <p class="muted">NexStudents<br>An educational resource by NexEdge Studios<br>&copy; 2026 NexEdge Studios. All rights reserved.</p>
+  <p class="muted">NexStudents<br>An educational resource by NexEdge Studios<br>
+  <a href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a><br>
+  &copy; 2026 NexEdge Studios. All rights reserved.</p>
 
 </div></div>`;
 
@@ -1615,6 +1786,14 @@ const pages = [
     crumb: "", h1: "Terms of Use.",
     lead: "Welcome to NexStudents. We create educational resources to make teaching and learning easier for families, teachers, tutors, and educational groups.",
     body: termsBody() },
+
+  /* Paired with /terms/. Same head treatment so the two read as a set. */
+  { dir: "privacy", active: "", pclass: "termshead",
+    title: "Privacy Policy — NexStudents",
+    desc: "What NexStudents collects, why, and how parents can request deletion. No accounts, no payments, nothing sold.",
+    crumb: "", h1: "Privacy Policy.",
+    lead: "NexStudents is built for families and educators, so we believe privacy should be simple and easy to understand.",
+    body: privacyBody() },
 
   { dir: "for-parents", active: "p",
     title: "For Parents — NexStudents",
