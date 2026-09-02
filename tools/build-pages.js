@@ -358,22 +358,42 @@ const termsBody = () => `<div class="band"><div class="wrap prose">
    as the fallback either way.
    ⚠️ Paul is sending his own wording for this page. This is the honest
    minimum until it arrives, not the final copy. */
+/* ── THE CONTACT PAGE ──────────────────────────────────────────────────────
+   🚨 THIS TEXT IS PAUL'S, WORD FOR WORD, same as /terms/. He wrote the
+   headings and all five items on 2026-09-02 after rejecting mine: "I also
+   don't like that wording 'what we would like to hear about' it sounds
+   different." His version is warmer and the question-led items read better
+   than my flat noun phrases. Do not rewrite it.
+
+   🚨 THE TERMS DEPEND ON THIS PAGE WORKING. /terms/ tells people to contact
+   us five times, and written permission is REQUIRED for any use the licence
+   does not cover. Until 2026-09-02 this page said an address would appear
+   "as soon as there is one worth publishing", so the mechanism the terms rely
+   on did not exist. A licence that points at a dead end is not a licence.
+
+   ⚠️ A PLAIN mailto, DELIBERATELY. A form on a static site needs a
+   third-party backend, and an address that works forever beats a form that
+   breaks when a free tier changes. Web3Forms (250/month free, checked
+   2026-09-02) is the upgrade path if spam ever forces it; the address stays
+   as the fallback either way.
+
+   ⚠️ THE HEADING BOX MUST BE CENTRED, NOT JUST ITS TEXT. .prose h2 carries a
+   max-width for readable line length, so text-align:center alone centres the
+   words inside a narrow left-aligned box - 200px off, and it looks fine in a
+   screenshot. See .contactfoot in ns.css. */
 const contactBody = () => `<div class="band"><div class="wrap prose">
 
   <h2>We&rsquo;d Love to Hear From You</h2>
+  <p>Whether you found something that needs fixing, have a question, or just have an idea for NexStudents, feel free to reach out.</p>
+
   <ul class="gets">
-    <li><b>A mistake in a worksheet or lesson.</b> Wrong answer, confusing wording, a question that cannot be answered from the reading. These get fixed.</li>
-    <li><b>A broken link or a page that will not print.</b> Tell us the page and what happened.</li>
-    <li><b>Permission for a use our <a href="/terms/">terms</a> do not cover.</b> We are often happy to say yes, but it has to be asked for first.</li>
-    <li><b>Something you would like built.</b> A grade, a subject, a kind of sheet you keep looking for and cannot find.</li>
+    <li><b>Found a mistake?</b> If you spot a wrong answer, confusing wording, or something that doesn&rsquo;t look right in a worksheet or lesson, please tell us. We want to fix it.</li>
+    <li><b>Something not working?</b> Broken link, missing download, page not loading, or something not printing correctly? Let us know.</li>
+    <li><b>Need permission?</b> If you would like to use our materials in a way that isn&rsquo;t covered by our <a href="/terms/">Terms of Use</a>, just ask. We&rsquo;re often happy to say yes.</li>
+    <li><b>Have an idea?</b> Is there a lesson, worksheet, subject, activity, or feature you&rsquo;d like to see on NexStudents? We&rsquo;d love to hear your suggestion.</li>
+    <li><b>Just want to say hello?</b> That&rsquo;s okay too. We enjoy hearing from the families and educators using NexStudents.</li>
   </ul>
 
-  <p>We are a homeschooling family, not a support desk, so replies are not instant. We do read everything.</p>
-
-  <!-- 🚨 THE ADDRESS SITS LAST AND CENTRED. Paul, 2026-09-02: "can you put
-       that contact at the bottom of that text in the center." Read the page,
-       then act - the button is the thing you do after knowing what to say,
-       so it closes the page rather than opening it. -->
   <div class="contactfoot">
     <h2>Contact Us</h2>
     <a class="btn" href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a>
