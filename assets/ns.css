@@ -1227,7 +1227,11 @@ nav{border-bottom:1px solid var(--line)}
   text-transform:uppercase;
   color:var(--fg);
   max-width:none}
-.policy h2::before{content:"Section " counter(sec) " \2014 "}
+/* ⚠️ NON-BREAKING SPACES AROUND THE DASH, DELIBERATELY. A plain trailing space
+   at the END of generated content is collapsed away, so the heading rendered as
+   "SECTION 1 —30-DAY REFUND WINDOW". It shipped that way on /terms/ and
+   /privacy/ and was only caught building the third page. */
+.policy h2::before{content:"Section " counter(sec) "\00a0\2014\00a0"}
 .prose p{font-size:15px;line-height:1.65;margin:0 0 11px}
 .prose li{font-size:15px;line-height:1.65;margin-bottom:3px}
 .prose ul{margin:0 0 12px}

@@ -511,6 +511,102 @@ const termsBody = () => `<div class="band"><div class="wrap prose policy">
 
 </div></div>`;
 
+/* ── THE REFUND POLICY ─────────────────────────────────────────────────────
+   🚨 PAUL'S TEXT, WORD FOR WORD, 2026-09-02. Third of the set after /terms/
+   and /privacy/, same rule as both: do not rewrite, tighten or "improve" it.
+   A refund policy is a promise about someone's money. Edits come from Paul.
+
+   ⚠️ HIS TEXT ARRIVED AS ONE SENTENCE PER LINE. Paul: "make it more paragraph
+   and the same theme as the other pages we just made." Related sentences are
+   grouped into paragraphs; not one word changed, nothing reordered, nothing
+   dropped. Structure only - the same call as on the other two pages.
+
+   ⚠️ TWO SECTIONS ARE NOT IN HIS PASTED TEXT. He asked for them by message,
+   in his own words, and both close a real gap:
+     - DIGITAL DOWNLOADS, NOT PHYSICAL ITEMS. Paul: "we dont plan as of now to
+       ship any real phyiscial items. only digital downloads and affliate
+       sale." Without it the policy is silent on shipping, returns and damaged
+       goods, which is the first thing a reader looks for in a refund policy.
+     - AFFILIATE LINKS. Paul: "our page will have affliate links." This is the
+       one section that is TRUE TODAY - /resources/ already carries them, and
+       tools/resources.js requires an explicit affiliate flag on every link.
+       An affiliate purchase is money paid to another retailer, so we cannot
+       refund it and must not imply we can. Saying so is the honest answer.
+
+   ⚠️ NOTHING IS SOLD ON NEXSTUDENTS YET. Everything else on this page is
+   forward-looking, exactly like the paid-downloads note on /terms/. That is
+   fine for a published policy, but re-read this page BEFORE checkout ships
+   (ROADMAP 23-25), not after.
+
+   ⚠️ LAST UPDATED SITS AT THE FOOT, matching /terms/ and /privacy/. His text
+   said the date is "at the top of this page"; changed to "on this page" - the
+   smallest edit that keeps the sentence true - and flagged rather than
+   silently reworded. Same call as on the other two.
+
+   ⚠️ THE .policy CLASS IS WHAT NUMBERS THE SECTIONS. It belongs to the legal
+   pages only. /contact/ shares .prose and briefly grew a "SECTION 2" because
+   the counter was scoped there instead. Style the thing you mean. */
+const refundBody = () => `<div class="band"><div class="wrap prose policy">
+
+  <p>If something does not work out, we will do our best to make it right.</p>
+
+  <h2 class="mid">30-Day Refund Window</h2>
+  <p>Unless a product or service says otherwise, you may request a refund within 30 days of the original purchase date. Refund requests made after 30 days may not be eligible for a refund.</p>
+  <p>To request a refund, contact us at <a href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a>. Please include enough information for us to identify the purchase, such as the email address used at checkout and the name of the item purchased.</p>
+
+  <h2 class="mid">Digital Downloads, Not Physical Items</h2>
+  <p>NexStudents does not sell or ship physical products. Our paid resources are digital downloads, so there is nothing to mail back and no shipping charges, return labels, or restocking fees involved in a refund.</p>
+  <p>If you were expecting a printed or physical item, please contact us before purchasing so we can tell you exactly what you would be buying.</p>
+
+  <h2 class="mid">Digital Products</h2>
+  <p>Because many NexStudents products may be delivered digitally, we ask that refund requests be made in good faith. If you purchased the wrong item, were charged incorrectly, received a file that does not work, or believe there is a problem with your purchase, please contact us. We would rather help fix the problem than leave you with something you cannot use.</p>
+  <p>We may deny a refund request if there is evidence of fraud, abuse, repeated refund activity, or an attempt to receive and keep paid materials without paying for them.</p>
+
+  <h2 class="mid">Affiliate Links</h2>
+  <p>Some pages on NexStudents, such as our <a href="/resources/">Resources</a> page, include affiliate links to books, supplies, and other materials sold by outside retailers. If you buy something through one of those links, you are purchasing from that retailer and not from NexStudents. We may earn a small commission at no additional cost to you.</p>
+  <p>Because we never receive that payment, we cannot refund it. Returns, refunds, shipping, and order problems for those purchases are handled by the retailer under their own policies, so please contact them directly.</p>
+  <p>If an affiliate link on our site is broken, points to the wrong item, or sends you somewhere unexpected, please tell us. That part is ours to fix.</p>
+
+  <h2 class="mid">Duplicate Purchases</h2>
+  <p>If you accidentally purchase the same item more than once, contact us. Once we confirm the duplicate charge, we will normally refund the duplicate purchase.</p>
+
+  <h2 class="mid">Technical Problems</h2>
+  <p>If a digital file is missing, corrupted, will not download, or otherwise does not work as intended, please contact us first. We may be able to replace the file or correct the problem immediately.</p>
+  <p>If we cannot reasonably provide the product you purchased, we may issue a refund.</p>
+
+  <h2 class="mid">Donations</h2>
+  <p>Donations made to support NexStudents are voluntary and are not purchases of a product or service. Because of this, donations are generally non-refundable.</p>
+  <p>If a donation was made accidentally, duplicated, or submitted in the wrong amount, please contact us as soon as possible. We will review the situation and may correct or refund the payment when appropriate.</p>
+
+  <h2 class="mid">Subscriptions or Memberships</h2>
+  <p>If NexStudents offers subscriptions or memberships in the future, cancellation will stop future renewals. Unless otherwise stated at the time of purchase, canceling a subscription does not automatically refund previous charges.</p>
+  <p>A recent subscription charge may still be eligible for a refund if the request is made within our 30-day refund window.</p>
+
+  <h2 class="mid">Refund Processing</h2>
+  <p>Approved refunds will be returned to the original payment method whenever possible. After we issue a refund, your bank, card issuer, or payment provider may take additional time to show the credit on your account. NexStudents does not control those processing times.</p>
+
+  <h2 class="mid">Discounts, Coupons, and Promotional Purchases</h2>
+  <p>Refunds are based on the amount actually paid. If a discount or coupon was used, the refund will not exceed the amount charged for that purchase.</p>
+  <p>Purchases made as part of a bundle may be refunded according to the amount paid for the bundle rather than the individual retail price of each item.</p>
+
+  <h2 class="mid">Chargebacks and Payment Disputes</h2>
+  <p>If you believe there is a problem with a purchase, please contact us before filing a chargeback or payment dispute. We are happy to review billing mistakes, duplicate charges, missing files, and other purchase problems.</p>
+  <p>We reserve the right to restrict future purchases or access to paid services in cases involving fraudulent chargebacks, payment abuse, or repeated misuse of our refund policy.</p>
+
+  <h2 class="mid">Changes to This Policy</h2>
+  <p>We may update this Refund Policy as NexStudents adds new products or services. When we make changes, the &ldquo;Last updated&rdquo; date on this page will be updated.</p>
+
+  <h2 class="mid">Questions About a Purchase</h2>
+  <p>If you have a question about a purchase, refund, duplicate charge, or donation, please <a href="/contact/">contact us</a>.</p>
+
+  <p class="muted" style="margin-top:34px">Last updated: September 2, 2026</p>
+
+  <p class="muted">NexStudents<br>An educational resource by NexEdge Studios<br>
+  <a href="mailto:contact@nexedgestudios.com">contact@nexedgestudios.com</a><br>
+  &copy; 2026 NexEdge Studios. All rights reserved.</p>
+
+</div></div>`;
+
 /* ── THE CONTACT PAGE ──────────────────────────────────────────────────────
    🚨 THE TERMS DEPEND ON THIS PAGE WORKING. /terms/ tells people to contact
    us five times - to ask permission for a use outside the licence, and to
@@ -1794,6 +1890,18 @@ const pages = [
     crumb: "", h1: "Privacy Policy.",
     lead: "NexStudents is built for families and educators, so we believe privacy should be simple and easy to understand.",
     body: privacyBody() },
+
+  /* Third of the legal set. Same head treatment as /terms/ and /privacy/ so the
+     three read as one group. ⚠️ Nothing is sold yet, so every section here
+     except Affiliate Links describes a future checkout - see the note above
+     refundBody(). Paul asked for it now rather than at launch: a policy written
+     under pressure after the first refund request is a worse policy. */
+  { dir: "refund", active: "", pclass: "termshead",
+    title: "Refund Policy — NexStudents",
+    desc: "How refunds work on NexStudents. Digital downloads only, a 30-day window, and what happens with donations and affiliate purchases.",
+    crumb: "", h1: "Refund Policy.",
+    lead: "We want you to feel comfortable purchasing from NexStudents.",
+    body: refundBody() },
 
   { dir: "for-parents", active: "p",
     title: "For Parents — NexStudents",

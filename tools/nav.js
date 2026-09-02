@@ -52,6 +52,7 @@ const NAV = [
      where people look for it, not competing with Grades for attention. */
   { href: "/terms/",       label: "Terms of Use", note: "What you may print",  key: "tm", top: false },
   { href: "/privacy/",     label: "Privacy Policy", note: "What we collect",   key: "pv", top: false },
+  { href: "/refund/",      label: "Refund Policy",  note: "How refunds work", key: "rf", top: false },
 ];
 
 /* ⚠️ SUBJECTS and LIVE_GRADES live here because the NAV needs them on every
@@ -304,6 +305,7 @@ SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
   { label: "Contact", href: "/contact/" },
   { label: "Terms of Use", href: "/terms/" },
   { label: "Privacy Policy", href: "/privacy/" },
+  { label: "Refund Policy", href: "/refund/" },
 ]};
 
 
