@@ -45,6 +45,23 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const media = require("./media-store.js");
+
+/* 🚨 WHERE THE AUDIO GOES — ROADMAP 27.
+   With R2 configured, clips are uploaded and NEVER written into lessons/, so
+   they never enter git. Without it, the old behaviour is kept exactly, because
+   history and maths already have baked audio sitting in the repo and a bake
+   must not break them.
+
+   ⚠️ Half-configured is refused outright. Four variables set and MEDIA_BASE
+   missing would upload happily, then write a manifest the page cannot resolve
+   — a lesson that goes silent with nothing in the logs. */
+if (media.partial()) {
+  console.error("FAIL: R2 is half-configured.");
+  console.error(media.help());
+  process.exit(1);
+}
+const R2 = media.configured();
 
 const ROOT = process.argv[2] || ".";
 const ARGS = process.argv.slice(3);
@@ -182,7 +199,20 @@ async function synth(text, VOICE) {
   const all = lessons().filter((L) => !ONLY || L.id === ONLY);
   if (!all.length) fail(ONLY ? "no lesson with id " + ONLY : "no lessons found");
 
-  let made = 0, kept = 0, chars = 0;
+  /* 🚨 PROVE THE STORE WORKS BEFORE SPENDING MONEY AT GOOGLE.
+     Synth is billed per character. Uploading only after the whole lesson is
+     generated would mean paying for audio and then discovering the bucket name
+     is wrong. One tiny object, first. */
+  if (R2) {
+    process.stdout.write("R2 preflight ... ");
+    try { console.log("ok -> " + await media.preflight()); }
+    catch (e) { console.log("FAILED"); fail(e.message); }
+  } else {
+    console.log("R2 not configured - writing audio into the repo (old behaviour).");
+    console.log("⚠️  Roadmap 27: audio in git is permanent. Configure R2 before baking new lessons.");
+  }
+
+  let made = 0, kept = 0, chars = 0, sent = 0;
 
   for (const L of all) {
     const dir = path.join(ROOT, "lessons", ...L.id.split("/"));
@@ -196,7 +226,8 @@ async function synth(text, VOICE) {
     for (const T of TRACKS) {
     const VOICE = T.voice;
     const outDir = path.join(dir, "voice", T.id);
-    fs.mkdirSync(outDir, { recursive: true });
+    /* With R2 on, nothing is written under lessons/ at all - that is the point. */
+    if (!R2) fs.mkdirSync(outDir, { recursive: true });
     /* previous clips for THIS track, so a re-bake of one voice does not
        invalidate the other */
     const prev = prevDoc && prevDoc.tracks
@@ -209,17 +240,40 @@ async function synth(text, VOICE) {
       const hash = sha(VOICE + "|" + RATE + "|" + text);
       const file = String(i).padStart(3, "0") + ".mp3";
       const abs = path.join(outDir, file);
+      /* 🚨 THE STORED PATH IS RELATIVE WHEN R2 IS ON, ABSOLUTE WHEN IT IS NOT.
+         Relative is what makes the host swappable: moving from workers.dev to
+         media.nexstudents.org changes MEDIA_BASE and nothing else, however many
+         lessons exist by then. Writing full URLs here would mean rewriting every
+         voice.json on every lesson at that point - the exact migration cost
+         roadmap 27 exists to avoid. The page resolves it; see mediaUrl(). */
+      const key = "lessons/" + L.id + "/voice/" + T.id + "/" + file;
+      const src = R2 ? key : "/" + key;
       /* look for this exact sentence anywhere in the previous manifest, not
          just at the same index */
       const old = prev && prev.clips && prev.clips.find((c) => c && c.hash === hash);
 
-      if (!FORCE && old && fs.existsSync(path.join(ROOT, old.src.slice(1)))) {
-        /* reuse the audio, but under this sentence position */
-        const reusedFile = path.basename(old.src);
-        if (reusedFile !== file) {
-          fs.copyFileSync(path.join(ROOT, old.src.slice(1)), abs);
+      /* Reuse rules differ by store. On disk we can confirm the file is really
+         there. In R2 we trust the manifest: re-listing the bucket per clip
+         would be thousands of API calls to learn what the hash already tells
+         us. ⚠️ If a bucket is ever emptied by hand, re-bake with --force. */
+      const reusable = R2
+        ? (!FORCE && old)
+        : (!FORCE && old && fs.existsSync(path.join(ROOT, old.src.replace(/^\//, ""))));
+
+      if (reusable) {
+        if (R2) {
+          /* The key encodes the sentence position, so a moved sentence needs
+             its audio under the new key. Copy within the bucket by re-uploading
+             the bytes we already have locally only if they exist; otherwise the
+             old key is still valid audio for this hash, so point at it. */
+          clips.push({ src: old.src, marks: old.marks, hash });
+        } else {
+          const reusedFile = path.basename(old.src);
+          if (reusedFile !== file) {
+            fs.copyFileSync(path.join(ROOT, old.src.replace(/^\//, "")), abs);
+          }
+          clips.push({ src: src, marks: old.marks, hash });
         }
-        clips.push({ src: "/lessons/" + L.id + "/voice/" + T.id + "/" + file, marks: old.marks, hash });
         kept++; continue;
       }
 
@@ -227,11 +281,17 @@ async function synth(text, VOICE) {
       let got;
       try { got = await synth(text, VOICE); }
       catch (e) { console.log("ERROR"); fail(L.id + " sentence " + i + ": " + e.message); }
-      fs.writeFileSync(abs, got.audio);
+      if (R2) {
+        try { await media.put(key, got.audio, "audio/mpeg"); }
+        catch (e) { console.log("UPLOAD FAILED"); fail(e.message); }
+        sent += got.audio.length;
+      } else {
+        fs.writeFileSync(abs, got.audio);
+      }
       chars += text.length;
       made++;
-      console.log(Math.round(got.audio.length / 1024) + "kb");
-      clips.push({ src: "/lessons/" + L.id + "/voice/" + T.id + "/" + file, marks: got.marks, hash });
+      console.log(Math.round(got.audio.length / 1024) + "kb" + (R2 ? " -> R2" : ""));
+      clips.push({ src: src, marks: got.marks, hash });
     }
     tracks.push({ id: T.id, label: T.label, voice: VOICE, clips: clips });
     }
@@ -244,8 +304,13 @@ async function synth(text, VOICE) {
        six-line opening block for a six-line closing one, so the count was
        identical and every clip was against the wrong line.
        ⚠️ nsTextHash() in lesson-template.html must stay identical to this. */
-    fs.writeFileSync(manifestPath, JSON.stringify(
-      { rate: RATE, textHash: textHash(L.sentences), tracks: tracks }, null, 1));
+    /* ⭐ `base` is written ONLY when the clips are relative. Its absence is how
+       an older lesson with absolute /lessons/... paths keeps working untouched,
+       so this change cannot break history or maths. See mediaUrl() on the page:
+       a src starting with "/" or "http" is used as-is. */
+    const doc = { rate: RATE, textHash: textHash(L.sentences), tracks: tracks };
+    if (R2) doc.base = media.BASE;
+    fs.writeFileSync(manifestPath, JSON.stringify(doc, null, 1));
     console.log("wrote " + L.id + "/voice.json  (" +
       tracks.map(function(t){ return t.id + ": " + t.clips.length; }).join(", ") + ")");
   }
@@ -265,8 +330,17 @@ async function synth(text, VOICE) {
 
   console.log("");
   console.log("generated " + made + " clips, reused " + kept + ", " + chars + " characters billed this run.");
-  console.log("audio on disk: " + files + " clips, " + mb.toFixed(1) + " MB total.");
-  if (mb > 200) {
+  if (R2) {
+    console.log("uploaded " + (sent / 1048576).toFixed(1) + " MB to R2 at " + media.BASE);
+    console.log("audio still in the repo from before R2: " + files + " clips, " + mb.toFixed(1) + " MB.");
+    /* Not deleted automatically. Removing the files shrinks the working tree
+       but NOT .git, and a lesson whose manifest still points at /lessons/...
+       would go silent. Retiring the old audio is a deliberate, verified job. */
+    if (files) console.log("  (left alone on purpose - older lessons still point at those paths)");
+  } else {
+    console.log("audio on disk: " + files + " clips, " + mb.toFixed(1) + " MB total.");
+  }
+  if (!R2 && mb > 200) {
     console.log("");
     console.log("⚠️  Over 200 MB of audio. GitHub Pages serves from the repo and git keeps");
     console.log("    every version of every clip forever, so this only goes up. Worth moving");
