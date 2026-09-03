@@ -77,8 +77,17 @@ const styles = `
      text. Reset moves down beside the target, where it belongs anyway:
      both are settings, and play is the thing you press. */
   .rl-row { display:flex; align-items:center; justify-content:center; }
-  .rl-ico.rl-small { min-width:40px; height:32px; padding:0 10px; border-radius:3px;
-                     opacity:1; }
+  /* ⚠️ RESET IS A SMALL CIRCLE, and the GLYPH inside it does not shrink.
+     Paul, 2026-09-03: "make that reset timer box button smaller not the
+     icon itself inside of it. and maybe if you really want you can make it
+     a circle I think it might match better."
+     He is right that it matches: play is the rectangle because it is the
+     primary control the lesson player draws that way, and a round secondary
+     beside it reads as a different KIND of button rather than a competing
+     one. Padding goes to zero and the box becomes square-then-round, so the
+     17px icon is unchanged and only the box around it tightens. */
+  .rl-ico.rl-small { width:34px; height:34px; min-width:0; padding:0;
+                     border-radius:50%; opacity:1; }
   .rl-ico.rl-small svg { width:17px; height:17px; }
   /* 🚨 SQUARE, NOT ROUND. Paul, 2026-09-03: "the play button doesnt have to
      be circle it can be square like the voice engine." The lesson player draws
@@ -506,7 +515,8 @@ const styles = `
      likely to be used one-handed while actually holding a book.
      ⚠️ Only under 560px, so the desktop dock keeps its tighter proportions. */
   @media (max-width:560px) {
-    .rl-ico.rl-small { min-width:46px; height:44px; }
+    /* ⚠️ Still 44px on a phone - it shrinks, but not below a finger. */
+    .rl-ico.rl-small { width:44px; height:44px; min-width:0; }
     .rl-target input { height:44px; padding-block:0; }
     .rl-spot input { height:44px; }
   }

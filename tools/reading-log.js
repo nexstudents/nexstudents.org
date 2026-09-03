@@ -348,6 +348,14 @@ function readingLogScript() {
     var last = parseInt(o.dataset.last, 10) || 0;
     if (last) elFrom.value = last + 1;
     elTo.value = "";
+    /* 🚨 CLEAR THE CHAPTERS TOO. Choosing Continue prefills the next PAGE,
+       but the chapter boxes kept whatever the last session left in them -
+       so a new session could be saved carrying the previous chapter. Caught
+       in the final pass: an entry read "page 42 to Chapter 5", where 5 was
+       stale. The page is known from where you stopped; the chapter is not,
+       so it starts empty. */
+    elChapter.value = "";
+    elChapterTo.value = "";
     pendingCover = o.dataset.cover || null;
     pendingAuthor = o.dataset.author || null;
     // Carrying on a known book needs no ISBN - it is already identified.
