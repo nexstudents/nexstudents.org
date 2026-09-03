@@ -183,6 +183,85 @@ const styles = `
   .rl-empty { color:var(--dim); }
   .rl-total { color:var(--dim); font-size:.9rem; margin:0 0 14px; }
 
+
+  /* ── CENTRED, AND FULL-STRENGTH TEXT ──────────────────────────────────
+     Paul, 2026-09-03: "make all of the text in content boxes White. and also
+     send her them in the middle of the page."
+
+     🚨 IT IS var(--fg), NOT #fff. The site has a light mode, and hardcoding
+     white would put white text on a white card the moment the theme flips -
+     exactly the failure already recorded in CLAUDE.md, where a worksheet set
+     background:#fff and left dark-theme text white on white. --fg is white
+     in dark and near-black in light, which is what "white" means here.
+     ⚠️ The hint text under a label stays --dim ON PURPOSE. It is a second
+     voice, and making everything one weight loses the difference between a
+     label and its explanation. */
+  .rl-card, .rl-card p, .rl-field label, .rl-body p, .rl-body dd { color:var(--fg); }
+  .rl-card .rl-note { color:var(--fg); }
+  .rl-total { color:var(--fg); }
+
+  /* The cards and the form sit on the page's centre line rather than hard
+     left. ⚠️ margin-inline:auto as well as the max-width - centring a box
+     needs both, which is the note already in CLAUDE.md. */
+  .rl-wrap { max-width:760px; margin-inline:auto; }
+  .rl-form { margin-inline:auto; }
+  .rl-card h2, .rl-card > .rl-note { text-align:center; }
+
+
+  /* ── THE VOICE PLAYER'S PALETTE ───────────────────────────────────────
+     Paul, 2026-09-03: "can you also make this match the same theme as the
+     voice engine?"
+
+     🚨 THE VALUES ARE LIFTED FROM lesson-template.html, NOT INVENTED. That
+     file is the master for the reading player, and its accent is verdigris:
+       light  --verdigris:#25664A  --tick-now:#14432E  --tick-done:rgba(37,102,74,.30)
+       dark   --verdigris:#66C293  --tick-now:#3F9B69  --tick-done:rgba(102,194,147,.28)
+
+     ⚠️ THEY CANNOT BE USED DIRECTLY. A lesson page defines --verdigris; an
+     ns.css page does NOT, and a custom property with no declaration resolves to
+     nothing rather than falling back - the exact trap already recorded in
+     CLAUDE.md, where --muted was used on a lesson page and five rules shipped
+     rendering full white. So the log declares its own tokens with the same
+     values, and follows ns.css's own theming rules: bare :root for light,
+     then the two dark selectors.
+     ⚠️ If lesson-template.html ever re-tunes verdigris, re-tune these to
+     match, or the two players drift apart - which is the whole thing Paul is
+     asking to avoid. */
+  .rl-dock, .rl-wrap {
+    --rl-accent:#25664A;
+    --rl-live:#14432E;
+    --rl-spent:rgba(37,102,74,.30);
+    --rl-on-accent:#F2F7EF;
+  }
+  @media (prefers-color-scheme:dark) {
+    :root:not([data-theme="light"]) .rl-dock,
+    :root:not([data-theme="light"]) .rl-wrap {
+      --rl-accent:#66C293; --rl-live:#3F9B69;
+      --rl-spent:rgba(102,194,147,.28); --rl-on-accent:#0B160F;
+    }
+  }
+  :root[data-theme="dark"] .rl-dock, :root[data-theme="dark"] .rl-wrap {
+    --rl-accent:#66C293; --rl-live:#3F9B69;
+    --rl-spent:rgba(102,194,147,.28); --rl-on-accent:#0B160F;
+  }
+
+  /* The ticks read like the lesson player's: accent for time you still have,
+     faint accent for time spent. ⚠️ NOT --line for spent. A neutral grey next
+     to a green bar looks broken rather than dimmed. */
+  .rl-tick { background:var(--rl-live); }
+  .rl-tick.spent { background:var(--rl-spent); }
+  .rl-scrub.is-over .rl-tick { background:var(--rl-accent); }
+
+  .rl-ico.is-go { background:var(--rl-accent); color:var(--rl-on-accent);
+                  border-color:var(--rl-accent); }
+  .rl-ico.is-go:hover { filter:brightness(1.08); }
+  .rl-clock.is-over { color:var(--rl-accent); }
+  .rl-btn.is-go { background:var(--rl-accent); color:var(--rl-on-accent);
+                  border-color:var(--rl-accent); }
+  .rl-msg.is-ok { color:var(--rl-accent); }
+  .rl-tag.is-done { color:var(--rl-accent); border-color:var(--rl-accent); }
+  .rl-check input { accent-color:var(--rl-accent); }
+
   @media (max-width:520px) {
     .rl-pages { grid-template-columns:1fr; }
     .rl-isbn { grid-template-columns:1fr; }
@@ -193,7 +272,16 @@ const styles = `
 /* Icons are inline SVG, not a font and not an image: they inherit currentColor
    so they flip with the theme, and there is nothing extra to load. */
 const ICON = {
-  play:  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.6v12.8c0 .8.9 1.3 1.6.9l10-6.4c.6-.4.6-1.3 0-1.7l-10-6.4c-.7-.5-1.6 0-1.6.8z"/></svg>',
+  /* 🚨 THE TRIANGLE IS CENTRED BY ITS OPTICAL CENTRE, NOT ITS BOX. Paul,
+     2026-09-03: 'the Little triangle arrow on the play button is not
+     centered.' Two things were wrong. The old path spanned x 8 to 20 in a
+     24 box, so its BOUNDING BOX centre sat at 14 - two units right of the
+     button's middle. And even centred by box a triangle reads left-heavy,
+     because two thirds of its area sits behind the tip. So it is drawn
+     symmetric about x=12 and then nudged +0.7 for the optical correction.
+     ⚠️ VERIFY WITH getBBox AGAINST THE BUTTON RECT, never by looking. That
+     is how the two-unit error survived a screenshot. */
+  play:  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.9 5.3a1 1 0 0 1 1.52-.85l9.6 6.7a1 1 0 0 1 0 1.7l-9.6 6.7A1 1 0 0 1 6.9 18.7z"/></svg>',
   pause: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>',
   reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4.5V10h5.5"/></svg>',
 };
