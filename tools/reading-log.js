@@ -142,7 +142,30 @@ function readingLogScript() {
      ⚠️ The sound is generated, not a file: no asset to load, nothing to 404,
      and the AudioContext is built on the first PLAY press, which is a real
      user gesture, so autoplay rules are satisfied by the time it rings. */
-  var ringing = false, actx = null;
+  var ringing = false, actx = null, bell = null;
+
+  /* 🚨 TIME COMES FROM THE CLOCK, NOT FROM COUNTING TICKS. A phone suspends
+     timers when the screen goes off, and reading a paper book with the phone
+     face down is the NORMAL way this page gets used - counting setInterval
+     firings would have paid him four minutes for half an hour of reading.
+     runStart is when the current run began; the two bases are where elapsed
+     and ran stood at that moment. Anything that moves elapsed out of band
+     (a seek, a new target) must call rebase() or the next paint undoes it. */
+  var runStart = 0, ranBase = 0, elapsedBase = 0;
+  function rebase(){ runStart = Date.now(); ranBase = ran; elapsedBase = elapsed; }
+  function sync(){
+    if (!running) return;
+    var d = Math.max(0, Math.round((Date.now() - runStart) / 1000));
+    ran = ranBase + d;
+    elapsed = elapsedBase + d;
+  }
+
+  /* 🚨 SAVE IS LOCKED UNTIL THE TIMER HAS RUNG. Paul: "save this session
+     button should only be able to save after the timer goes off once."
+     rangOut is the whole gate. It is raised ONLY by ring(), so like ran it
+     cannot be reached by dragging the scrub - the two protections are the
+     same protection, one on the number and one on the button. */
+  var rangOut = false;
 
   function chime(){
     try {
@@ -161,15 +184,34 @@ function readingLogScript() {
     } catch(e){}
   }
 
+  /* THE BELL REPEATS UNTIL IT IS STOPPED. Paul: "I wanted to keep playing
+     that sound over on repeat until they stop it." One chime is easy to miss
+     from across a room, which is the whole situation this is for - the child
+     has put the screen down and is reading a paper book.
+     The pattern runs 0.86s, so it repeats on a 1.9s cycle: long enough to
+     read as a rung bell rather than a siren, short enough that no gap reads
+     as over. */
   function ring(){
     ringing = true;
+    rangOut = true;
+    /* 🚨 PAUSE FIRST, THEN CLAMP. pause() calls sync(), which recomputes
+       elapsed from the wall clock - so clamping before pausing was undone
+       one line later and the alarm showed +0:29 instead of 0:00. */
     pause();
+    elapsed = target * 60;
     chime();
+    stopBell();
+    bell = setInterval(function(){ if (ringing) chime(); else stopBell(); }, 1900);
     paint();
+  }
+
+  function stopBell(){
+    if (bell) { clearInterval(bell); bell = null; }
   }
 
   function dismiss(){
     ringing = false;
+    stopBell();
     elapsed = 0;          /* countdown back to the target */
     paint();              /* ran is deliberately untouched */
   }
@@ -226,20 +268,51 @@ function readingLogScript() {
     bPlay.classList.toggle("is-ringing", ringing);
     /* left enabled on purpose - see the note in reading-log-parts.js */
     bReset.disabled = false;
+    /* 🚨 THE TARGET IS LOCKED WHILE THE TIMER RUNS. Otherwise twenty minutes
+       in you could wind it down to one, ring the bell on the spot and unlock
+       Save. You choose the length before you start; reset gives it back. */
+    elTarget.disabled = running;
+    elTarget.title = running ? "Stop the timer to change how long you are reading for" : "";
+    gateSave();
+  }
+
+  /* The lock has to EXPLAIN itself. A faint button that does nothing when it
+     is tapped is a bug as far as a twelve year old is concerned, so the hint
+     stands beside it the whole time the button is down. It writes into rlMsg
+     only when rlMsg is not already carrying a real answer, which is why it
+     tests the class rather than the text. */
+  function gateSave(){
+    var elSave = $("rlSave");
+    elSave.disabled = !rangOut;
+    elSave.classList.toggle("is-locked", !rangOut);
+    if (!rangOut && (elMsg.className === "rl-msg" || elMsg.className === "rl-msg is-hint")){
+      elMsg.className = "rl-msg is-hint";
+      elMsg.textContent = "The timer has to finish before you can save.";
+    } else if (rangOut && elMsg.className === "rl-msg is-hint"){
+      elMsg.className = "rl-msg";
+      elMsg.textContent = "";
+    }
   }
 
   function start(){
     if (running) return;
     ringing = false;
+    stopBell();   /* pressing play through the alarm silences it */
     running = true;
+    rebase();
     tick = setInterval(function(){
-      elapsed++; ran++;
-      if (elapsed >= target * 60) { ring(); return; }
+      sync();
+      /* 🚨 THE ALARM WATCHES ran, NOT elapsed. elapsed is draggable, so
+         checking it let a child pull the bar to the end, ring the bell and
+         unlock Save without reading. ran cannot be dragged, so the bell is
+         now the same evidence the saved number is. */
+      if (ran >= target * 60) { ring(); return; }
       paint();
     }, 1000);
     paint();
   }
   function pause(){
+    sync();          /* bank the real time before the interval stops */
     running = false;
     if (tick) { clearInterval(tick); tick = null; }
     paint();
@@ -253,7 +326,13 @@ function readingLogScript() {
     if (actx && actx.state === "suspended") { try { actx.resume(); } catch(e){} }
     running ? pause() : start();
   });
-  bReset.addEventListener("click", function(){ pause(); elapsed = 0; ran = 0; paint(); });
+  bReset.addEventListener("click", function(){
+    /* reset is the ONE control that clears ran - it is the deliberate
+       "start this session over", not a way past the alarm. */
+    ringing = false; stopBell();
+    rangOut = false;
+    pause(); elapsed = 0; ran = 0; paint();
+  });
 
   // Dragging the scrub moves the countdown, the way dragging the lesson
   // player's bar moves the reading. It sets time ALREADY READ, so releasing
@@ -275,6 +354,7 @@ function readingLogScript() {
     var x = (e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX) - r.left;
     var pct = Math.max(0, Math.min(1, r.width ? x / r.width : 0));
     elapsed = Math.round((1 - pct) * target * 60);
+    rebase();
     paint();
   }
   var dragging = false;
@@ -300,8 +380,8 @@ function readingLogScript() {
   scrub.addEventListener("keydown", function(e){
     var step = e.shiftKey ? 300 : 60;
     // Right moves the lit edge right, which means MORE time remaining.
-    if (e.key === "ArrowRight" || e.key === "ArrowUp"){ elapsed = Math.max(0, elapsed - step); paint(); e.preventDefault(); }
-    if (e.key === "ArrowLeft" || e.key === "ArrowDown"){ elapsed += step; paint(); e.preventDefault(); }
+    if (e.key === "ArrowRight" || e.key === "ArrowUp"){ elapsed = Math.max(0, elapsed - step); rebase(); paint(); e.preventDefault(); }
+    if (e.key === "ArrowLeft" || e.key === "ArrowDown"){ elapsed += step; rebase(); paint(); e.preventDefault(); }
   });
 
   // A longer target is remembered. Paul: "saves your timer if you add like
@@ -312,6 +392,7 @@ function readingLogScript() {
     if (n > 600) n = 600;
     target = n; elTarget.value = n; buildTicks();
     if (n > 30) saveTarget(n);
+    rebase();
     paint();
   });
 
@@ -546,13 +627,33 @@ function readingLogScript() {
   }
 
   $("rlSave").addEventListener("click", function(){
-    var title = elTitle.value.trim();
-    if (!title){
-      elMsg.className = "rl-msg is-bad";
-      elMsg.textContent = "Type the book first.";
-      elTitle.focus();
-      return;
+    /* EVERY STARRED BOX IS REQUIRED. Paul: "make the info like they have to
+       type something in the boxes a must and put a little red star."
+       The star and this list have to stay in step - a star with no check is
+       a suggestion, and a check with no star is an ambush. The message names
+       the box and the focus goes to it, so the answer is never "something on
+       this page is wrong, go and find it".
+       ⚠️ The ISBN and "I finished this book" are deliberately NOT here. One
+       is a shortcut for filling the title in and the other is only true at
+       the end of a book. */
+    var need = [
+      [elTitle,     "Type the book first."],
+      [elChapter,   "Put in the chapter you started at."],
+      [elFrom,      "Put in the page you started at."],
+      [elChapterTo, "Put in the chapter you stopped at."],
+      [elTo,        "Put in the page you stopped at."],
+      [elSummary,   "Write what happened before you save."],
+      [elLiked,     "Write what you liked about it before you save."]
+    ];
+    for (var q = 0; q < need.length; q++){
+      if (!String(need[q][0].value).trim()){
+        elMsg.className = "rl-msg is-bad";
+        elMsg.textContent = need[q][1];
+        need[q][0].focus();
+        return;
+      }
     }
+    var title = elTitle.value.trim();
     if (ran === 0){
       elMsg.className = "rl-msg is-bad";
       elMsg.textContent = "Run the timer before saving a session.";
@@ -582,17 +683,17 @@ function readingLogScript() {
     save(list);
 
     elMsg.className = "rl-msg is-ok";
-    elMsg.textContent = (summary && liked) ? "Saved." : "Saved, and marked as needing a summary.";
+    elMsg.textContent = "Saved.";
 
     elSummary.value = ""; elLiked.value = "";
-    elFrom.value = ""; elTo.value = ""; elChapter.value = "";
+    elFrom.value = ""; elTo.value = ""; elChapter.value = ""; elChapterTo.value = "";
     elIsbn.value = ""; elIsbnMsg.textContent = "";
     elFinished.checked = false;
     elPick.value = "";
     $("rlIsbnField").hidden = false;
     elFound.hidden = true; elFound.innerHTML = "";
     pendingCover = null; pendingAuthor = null;
-    elapsed = 0; ran = 0;
+    elapsed = 0; ran = 0; rangOut = false;   /* the next session earns its own save */
     paint();
     render();
   });

@@ -229,6 +229,13 @@ const styles = `
   }
 
   .rl-lab { font-weight:600; font-size:.93rem; }
+  /* THE STAR IS DECORATION, THE MESSAGE IS THE ANSWER. It is aria-hidden,
+     because a screen reader saying "Book star" tells nobody anything; the
+     inputs carry aria-required instead.
+     Red alone is not a signal every reader can see, which is why each
+     required box also refuses to save and says which one it is by name. */
+  .rl-req { color:#c0392b; font-weight:700; margin-left:2px; }
+  :root:not([data-theme=light]) .rl-req { color:#ff8a84; }
   /* One end of the range: Ch [ ] p. [ ]. The little words carry the
      meaning so the boxes can stay small. */
   /* 🚨 THREE COLUMNS: 1fr auto 1fr. Paul, 2026-09-03: "spread out the four
@@ -298,6 +305,12 @@ const styles = `
   .rl-msg { color:var(--dim); font-size:.88rem; }
   .rl-msg.is-ok { color:var(--rl-accent); }
   .rl-msg.is-bad { color:#e0a33c; }
+  .rl-msg.is-hint { color:var(--dim); }
+  /* the locked Save. Faint and unclickable, never hidden - a button that
+     disappears reads as broken, one that is dimmed reads as not yet. */
+  .rl-btn.is-locked { opacity:.42; cursor:not-allowed; }
+  #rlTarget:disabled { opacity:.55; cursor:not-allowed; }
+  .rl-btn.is-locked:hover { filter:none; }
 
   /* ── ISBN LOOKUP ────────────────────────────────────────────────────── */
   .rl-isbn { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; }
@@ -705,8 +718,8 @@ function markup() {
       <summary>How this works</summary>
       <p>Start the timer at the bottom of the screen, read, then fill this in when you stop.
          Put in the book, where you started and where you stopped, and a few sentences about
-         what happened. If you are not ready to write the summary yet, save anyway and it will
-         be kept and marked as needing one. Every session is stored underneath so you can look
+         what happened. Everything marked with a red star has to be filled in, and the timer has
+         to finish, before a session will save. Every session is stored underneath so you can look
          back at what you have read and how long you spent on it.</p>
     </details>
 
@@ -728,8 +741,8 @@ function markup() {
       <div id="rlFound" hidden></div>
 
       <div class="rl-field">
-        <label for="rlTitle">Book</label>
-        <input type="text" id="rlTitle" placeholder="The title of the book" autocomplete="off">
+        <label for="rlTitle">Book<span class="rl-req" aria-hidden="true">*</span></label>
+        <input type="text" id="rlTitle" placeholder="The title of the book" autocomplete="off" aria-required="true">
       </div>
 
       <!-- 🚨 CHAPTER AND PAGES, not "from page" and "to page". Paul,
@@ -758,7 +771,7 @@ function markup() {
            The word "to" stays: it is what makes the two halves read as ONE
            range rather than two separate questions. -->
       <div class="rl-field">
-        <span class="rl-lab">What you read</span>
+        <span class="rl-lab">What you read<span class="rl-req" aria-hidden="true">*</span></span>
         <!-- ⚠️ PLACEHOLDERS ARE 0, NOT EXAMPLE NUMBERS. Paul, 2026-09-03:
            "if you're going to put free text in those boxes just put zeros."
            They read as 3, 8, 5, 9 - which looks like a filled-in answer
@@ -786,13 +799,13 @@ function markup() {
       </div>
 
       <div class="rl-field">
-        <label for="rlSummary">What happened <span class="rl-hint">a few sentences is plenty</span></label>
-        <textarea id="rlSummary" placeholder="Write briefly about what you just read."></textarea>
+        <label for="rlSummary">What happened<span class="rl-req" aria-hidden="true">*</span> <span class="rl-hint">a few sentences is plenty</span></label>
+        <textarea id="rlSummary" placeholder="Write briefly about what you just read." aria-required="true"></textarea>
       </div>
 
       <div class="rl-field">
-        <label for="rlLiked">What you liked <span class="rl-hint">or did not like, that counts too</span></label>
-        <textarea id="rlLiked" placeholder="What you liked about it?"></textarea>
+        <label for="rlLiked">What you liked<span class="rl-req" aria-hidden="true">*</span> <span class="rl-hint">or did not like, that counts too</span></label>
+        <textarea id="rlLiked" placeholder="What you liked about it?" aria-required="true"></textarea>
       </div>
 
       <label class="rl-check"><input type="checkbox" id="rlFinished"> I finished this book</label>
