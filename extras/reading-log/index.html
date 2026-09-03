@@ -75,7 +75,7 @@
 <div class="wrap phead termshead">
   <p class="crumb"><a href="/extras/">Extras</a> &rsaquo; Reading Log</p>
   <h1>Reading Log.</h1>
-  <p>Set a timer, read, then write down what happened and what you liked. Every session is kept underneath so you can look back at what you have read and how long you spent on it.</p>
+  <p>Time your reading, then write down what you read.</p>
   
 </div>
 
@@ -86,6 +86,19 @@
              border-radius:14px; padding:22px 20px; }
   .rl-card h2 { margin:0 0 4px; font-size:1.18rem; letter-spacing:-.01em; }
   .rl-card .rl-note { margin:0 0 18px; color:var(--dim); font-size:.92rem; }
+  /* The How This Works disclosure. Same shape as a past entry so the page
+     has one kind of expandable thing rather than two. */
+  .rl-how { margin:0 auto 18px; max-width:560px; border:1px solid var(--line);
+            border-radius:10px; background:var(--panel-2); overflow:hidden; }
+  .rl-how > summary { cursor:pointer; padding:11px 14px; font-size:.9rem;
+                      font-weight:600; list-style:none; display:flex;
+                      align-items:center; gap:8px; }
+  .rl-how > summary::-webkit-details-marker { display:none; }
+  .rl-how > summary::after { content:"+"; margin-left:auto; color:var(--dim);
+                             font-weight:700; font-size:1.05rem; }
+  .rl-how[open] > summary::after { content:"–"; }
+  .rl-how p { margin:0; padding:0 14px 14px; font-size:.9rem; line-height:1.6;
+              color:var(--fg); }
 
   /* ── THE DOCK ───────────────────────────────────────────────────────── */
   body { padding-bottom:132px; }          /* room for the fixed dock */
@@ -584,6 +597,22 @@
     .rl-spot input { height:44px; }
   }
 
+
+  /* 🚨 A SHORTER PAGE HEADER ON A PHONE, SO THE LOG IS THE FIRST THING YOU
+     REACH. Paul, 2026-09-03: "that way they only see the log itself which is
+     further down the page." Collapsing the instructions was most of it, but
+     on a 320px screen the site header still ate 320px and pushed the first
+     control below the fold. Trimmed here rather than in ns.css, because this
+     style block only ships on this page - every other page keeps its
+     generous header. */
+  @media (max-width:560px) {
+    .phead { padding-block:22px 16px; }
+    .phead h1 { font-size:clamp(1.7rem,8vw,2.2rem); margin-bottom:8px; }
+    .phead p { font-size:.95rem; }
+    .rl-card { padding:16px 14px; }
+    .rl-card h2 { font-size:1.05rem; }
+  }
+
   @media (max-width:520px) {
     /* 🚨 THE TWO ROWS SHARE ONE COLUMN GRID SO THEY LINE UP EXACTLY. Paul,
        2026-09-03: "the chapter and page boxes are not exactly adjusted for
@@ -638,9 +667,22 @@
 
   <section class="rl-card">
     <h2>What You Read</h2>
-    <p class="rl-note">Start the timer at the bottom of the screen, then fill this in when you stop.
-      If you are not ready to write the summary yet, save anyway and it will be kept and marked as
-      needing one.</p>
+    <!-- 🚨 THE EXPLANATION IS COLLAPSED, AND CLOSED BY DEFAULT. Paul,
+         2026-09-03: "there is a bunch of text under the reading log ... can
+         you make them into one and put it in a collapsible window ... that
+         way they only see the log itself which is further down the page."
+         Two paragraphs of instructions sat between the heading and the first
+         field, so the thing you actually use was pushed off the screen. It
+         is one paragraph now, behind a native <details> - no script, works
+         with a keyboard, and open by choice rather than by default. -->
+    <details class="rl-how">
+      <summary>How this works</summary>
+      <p>Start the timer at the bottom of the screen, read, then fill this in when you stop.
+         Put in the book, where you started and where you stopped, and a few sentences about
+         what happened. If you are not ready to write the summary yet, save anyway and it will
+         be kept and marked as needing one. Every session is stored underneath so you can look
+         back at what you have read and how long you spent on it.</p>
+    </details>
 
     <div class="rl-form">
       <div class="rl-field">

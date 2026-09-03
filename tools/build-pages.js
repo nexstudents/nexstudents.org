@@ -1805,7 +1805,11 @@ const pages = [
        every grade shelf follow: PARENT LINKED, current page plain text, no
        arrow button anywhere → feedback_grade_path_not_subject_wide. */
     crumb: '<a href="/extras/">Extras</a> &rsaquo; Reading Log', h1: "Reading Log.",
-    lead: "Set a timer, read, then write down what happened and what you liked. Every session is kept underneath so you can look back at what you have read and how long you spent on it.",
+    /* ⚠️ ONE LINE. Paul, 2026-09-03: "there is a bunch of text under the
+       reading log ... make them into one and put it in a collapsible window
+       ... that way they only see the log itself." The explanation moved into
+       the How This Works disclosure inside the card; this is just the label. */
+    lead: "Time your reading, then write down what you read.",
     body: readingLogMarkup(), script: readingLogScript() },
 
   { dir: "games", active: "g",
