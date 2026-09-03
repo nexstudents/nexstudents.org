@@ -522,10 +522,24 @@ const styles = `
   }
 
   @media (max-width:520px) {
-    /* Too narrow for three columns - stack, with to on its own centred row. */
+    /* 🚨 THE TWO ROWS SHARE ONE COLUMN GRID SO THEY LINE UP EXACTLY. Paul,
+       2026-09-03: "the chapter and page boxes are not exactly adjusted for
+       the center on Mobile. they need to be spaced apart symmetrically. I
+       don't know how to explain but it's off."
+       Each row was its OWN centred flex line, so the two rows centred
+       independently and their boxes did not sit above one another. Both
+       rows are the same four-column grid now - label, box, label, box - at
+       fixed widths, so Ch sits over Ch and Pg sits over Pg, and the pair is
+       centred as a unit rather than line by line.
+       ⚠️ Same mistake as everything else on this page: centring each PIECE
+       is not the same as centring the thing they make together. */
     .rl-range { grid-template-columns:1fr; row-gap:10px; justify-items:center; }
-    .rl-range > .rl-spot:first-of-type,
-    .rl-range > .rl-spot:last-of-type { justify-self:center; }
+    .rl-range > .rl-spot {
+      display:grid; grid-template-columns:auto 70px auto 70px;
+      align-items:center; column-gap:8px; justify-self:center;
+    }
+    .rl-range > .rl-spot input { max-width:none; width:100%; }
+    .rl-to { justify-self:center; }
     /* 🚨 A STACKED BUTTON MUST NOT STRETCH. Paul, 2026-09-03: "that look it
        up button on mobile is way too large. remember buttons and text boxes
        dont need to be fully like that."
@@ -635,7 +649,7 @@ function markup() {
             <input type="number" id="rlFrom" min="1" max="99999" inputmode="numeric"
                    aria-label="Page you started at" placeholder="8">
           </span>
-          <span class="rl-to">to</span>
+          <span class="rl-to">To</span>
           <span class="rl-spot">
             <span class="rl-mini">Ch</span>
             <input type="text" id="rlChapterTo" aria-label="Chapter you stopped at"

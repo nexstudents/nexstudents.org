@@ -186,11 +186,23 @@ function readingLogScript() {
   // Dragging the scrub moves the countdown, the way dragging the lesson
   // player's bar moves the reading. It sets time ALREADY READ, so releasing
   // part way through a 30 minute target means 15 minutes are logged.
+  /* 🚨 THE DRAG IS INVERTED RELATIVE TO A NORMAL SCRUB, ON PURPOSE.
+     Paul, 2026-09-03: "if you move over it from right to left or left to
+     right it goes the opposite direction. it also doesn't follow my finger."
+     He is right and the cause is the countdown. This bar shows time
+     REMAINING and empties from the right, so the lit portion IS the time
+     left. Mapping the finger to ELAPSED made the lit edge run away from the
+     finger: drag right, elapsed grows, the lit part shrinks leftward.
+     The finger sets REMAINING now, so the boundary between lit and dark
+     lands exactly under the finger and tracks it.
+     ⚠️ This is why it differs from the lesson player's scrub, which counts
+     UP through sentences and so maps straight to position. Do not "fix"
+     this back by copying that one. */
   function seekFromEvent(e){
     var r = scrub.getBoundingClientRect();
     var x = (e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX) - r.left;
     var pct = Math.max(0, Math.min(1, r.width ? x / r.width : 0));
-    elapsed = Math.round(pct * target * 60);
+    elapsed = Math.round((1 - pct) * target * 60);
     paint();
   }
   var dragging = false;
@@ -215,8 +227,9 @@ function readingLogScript() {
   scrub.addEventListener("pointercancel", endDrag);
   scrub.addEventListener("keydown", function(e){
     var step = e.shiftKey ? 300 : 60;
-    if (e.key === "ArrowRight" || e.key === "ArrowUp"){ elapsed += step; paint(); e.preventDefault(); }
-    if (e.key === "ArrowLeft" || e.key === "ArrowDown"){ elapsed = Math.max(0, elapsed - step); paint(); e.preventDefault(); }
+    // Right moves the lit edge right, which means MORE time remaining.
+    if (e.key === "ArrowRight" || e.key === "ArrowUp"){ elapsed = Math.max(0, elapsed - step); paint(); e.preventDefault(); }
+    if (e.key === "ArrowLeft" || e.key === "ArrowDown"){ elapsed += step; paint(); e.preventDefault(); }
   });
 
   // A longer target is remembered. Paul: "saves your timer if you add like
@@ -259,6 +272,43 @@ function readingLogScript() {
       (author ? "<span>" + esc(author) + "</span>" : "") + "</div></div>";
   }
 
+  /* 🚨 TWO SOURCES, BECAUSE ONE IS NOT ENOUGH. Paul, 2026-09-03: "I tried
+     looking up the ISBN for the 100 book but it said it wasn't found."
+     He was right and the book is not obscure. Open Library's /api/books
+     endpoint returns an EMPTY object for masses of real editions - The 100
+     among them - while its /search.json endpoint finds the same ISBN
+     immediately with title, author and cover id. So the data endpoint is
+     tried first for its richer record, and search is the fallback.
+     ⚠️ Google Books was tested as a third source and REJECTED: it answered
+     429 Quota exceeded without a key, so it would fail unpredictably.
+     ⚠️ Both are still soft failures. A book neither service knows about
+     leaves the title typeable by hand; the lookup is a shortcut, not a gate. */
+  function applyFound(title, author, cover){
+    if (title) elTitle.value = title;
+    pendingAuthor = author || null;
+    pendingCover = cover || null;
+    showFound(title, author, cover);
+    elIsbnMsg.className = "rl-msg is-ok";
+    elIsbnMsg.textContent = "Found it.";
+  }
+
+  function searchFallback(isbn, mine){
+    var url = "https://openlibrary.org/search.json?isbn=" + isbn +
+              "&fields=title,author_name,cover_i&limit=1";
+    return fetch(url).then(function(r){ return r.json(); }).then(function(j){
+      if (mine !== lookupSeq) return;
+      var d = j && j.docs && j.docs[0];
+      if (!d){
+        elIsbnMsg.className = "rl-msg is-bad";
+        elIsbnMsg.textContent = "No book found for that number. Type the title yourself.";
+        return;
+      }
+      applyFound(d.title || "",
+                 (d.author_name || []).join(", "),
+                 d.cover_i ? "https://covers.openlibrary.org/b/id/" + d.cover_i + "-M.jpg" : "");
+    });
+  }
+
   function lookup(){
     var mine = ++lookupSeq;
     var isbn = cleanIsbn(elIsbn.value);
@@ -272,27 +322,20 @@ function readingLogScript() {
     var url = "https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn +
               "&format=json&jscmd=data";
     fetch(url).then(function(r){ return r.json(); }).then(function(j){
-      if (mine !== lookupSeq) return;   // a newer lookup has started
+      if (mine !== lookupSeq) return;
       var b = j["ISBN:" + isbn];
-      if (!b){
-        elIsbnMsg.className = "rl-msg is-bad";
-        elIsbnMsg.textContent = "No book found for that number. Type the title yourself.";
-        return;
-      }
+      if (!b) return searchFallback(isbn, mine);
       var title = b.title || "";
       if (b.subtitle) title += ": " + b.subtitle;
-      var author = (b.authors || []).map(function(a){ return a.name; }).join(", ");
-      var cover = b.cover ? (b.cover.medium || b.cover.small || "") : "";
-      elTitle.value = title;
-      pendingAuthor = author || null;
-      pendingCover = cover || null;
-      showFound(title, author, cover);
-      elIsbnMsg.className = "rl-msg is-ok";
-      elIsbnMsg.textContent = "Found it.";
+      applyFound(title,
+                 (b.authors || []).map(function(a){ return a.name; }).join(", "),
+                 b.cover ? (b.cover.medium || b.cover.small || "") : "");
     }).catch(function(){
       if (mine !== lookupSeq) return;
-      elIsbnMsg.className = "rl-msg is-bad";
-      elIsbnMsg.textContent = "Could not reach the book service. Type the title yourself.";
+      searchFallback(isbn, mine).catch(function(){
+        elIsbnMsg.className = "rl-msg is-bad";
+        elIsbnMsg.textContent = "Could not reach the book service. Type the title yourself.";
+      });
     });
   }
   $("rlLookup").addEventListener("click", lookup);
