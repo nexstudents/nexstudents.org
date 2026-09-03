@@ -253,9 +253,24 @@
   .rl-field { display:grid; gap:6px; }
   .rl-field label { font-weight:600; font-size:.93rem; }
   .rl-field .rl-hint { color:var(--dim); font-size:.84rem; font-weight:400; }
+  /* 🚨 A FIELD EDGE NEEDS ITS OWN TOKEN IN LIGHT MODE. Paul: "light mode
+     those text boxes all the borders need to be darker."
+     ns.css --line is #c6cfd9, which is tuned for a panel edge sitting on a
+     tinted page. A white box on a near-white page has no other cue that it
+     is a box, so the same hairline that reads fine around a card disappears
+     around an input. Dark mode keeps --line: there the fill already
+     separates the box from the ground.
+     ⚠️ This is the SAME lesson as "light needs firmer borders than dark",
+     already in CLAUDE.md - it just had never been applied to the inputs. */
+  .rl-wrap, .rl-dock { --rl-edge:#95a3b3; }
+  :root:not([data-theme=light]) .rl-wrap,
+  :root:not([data-theme=light]) .rl-dock { --rl-edge:var(--line); }
+  [data-theme=light] .rl-wrap, [data-theme=light] .rl-dock { --rl-edge:#95a3b3; }
+
   .rl-field input, .rl-field textarea, .rl-field select {
-    font:inherit; padding:11px 12px; border-radius:10px; border:1px solid var(--line);
+    font:inherit; padding:11px 12px; border-radius:10px; border:1px solid var(--rl-edge);
     background:var(--bg); color:var(--fg); width:100%; }
+  .rl-field input:hover, .rl-field textarea:hover, .rl-field select:hover { border-color:var(--rl-accent); }
   .rl-field textarea { min-height:96px; resize:vertical; line-height:1.5; }
 
   /* 🚨 THE SELECT ARROW WAS OFF CENTRE. Paul: "the arrow is off center."
@@ -367,6 +382,7 @@
      disappears reads as broken, one that is dimmed reads as not yet. */
   .rl-btn.is-locked { opacity:.42; cursor:not-allowed; }
   #rlTarget:disabled { opacity:.55; cursor:not-allowed; }
+  .rl-target input { border-color:var(--rl-edge); }
   .rl-btn.is-locked:hover { filter:none; }
 
   /* ── ISBN LOOKUP ────────────────────────────────────────────────────── */
@@ -1347,6 +1363,27 @@ if(panel){
     }, 1000);
     paint();
   }
+  /* 🚨 A BACKGROUND TAB THROTTLES setInterval TO ABOUT ONCE A MINUTE, so the
+     bell was arriving late by however long the tab had been hidden - and this
+     page is MEANT to be left alone while a paper book is read.
+     The count itself is safe, because it comes from the wall clock. It is the
+     ALARM that needed this: the moment the page is looked at again, catch up
+     and ring if the time has already been served.
+     ⚠️ Found by testing in an unfocused tab: the clock sat frozen at 59
+     seconds past a 1 minute target. Watching the numbers in a FOCUSED tab
+     would never have shown it. */
+  function catchUp(){
+    if (!running) return;
+    sync();
+    if (ran >= target * 60) { ring(); return; }
+    paint();
+  }
+  document.addEventListener("visibilitychange", function(){
+    if (!document.hidden) catchUp();
+  });
+  window.addEventListener("focus", catchUp);
+  window.addEventListener("pageshow", catchUp);
+
   function pause(){
     sync();          /* bank the real time before the interval stops */
     running = false;

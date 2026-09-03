@@ -196,9 +196,24 @@ const styles = `
   .rl-field { display:grid; gap:6px; }
   .rl-field label { font-weight:600; font-size:.93rem; }
   .rl-field .rl-hint { color:var(--dim); font-size:.84rem; font-weight:400; }
+  /* 🚨 A FIELD EDGE NEEDS ITS OWN TOKEN IN LIGHT MODE. Paul: "light mode
+     those text boxes all the borders need to be darker."
+     ns.css --line is #c6cfd9, which is tuned for a panel edge sitting on a
+     tinted page. A white box on a near-white page has no other cue that it
+     is a box, so the same hairline that reads fine around a card disappears
+     around an input. Dark mode keeps --line: there the fill already
+     separates the box from the ground.
+     ⚠️ This is the SAME lesson as "light needs firmer borders than dark",
+     already in CLAUDE.md - it just had never been applied to the inputs. */
+  .rl-wrap, .rl-dock { --rl-edge:#95a3b3; }
+  :root:not([data-theme=light]) .rl-wrap,
+  :root:not([data-theme=light]) .rl-dock { --rl-edge:var(--line); }
+  [data-theme=light] .rl-wrap, [data-theme=light] .rl-dock { --rl-edge:#95a3b3; }
+
   .rl-field input, .rl-field textarea, .rl-field select {
-    font:inherit; padding:11px 12px; border-radius:10px; border:1px solid var(--line);
+    font:inherit; padding:11px 12px; border-radius:10px; border:1px solid var(--rl-edge);
     background:var(--bg); color:var(--fg); width:100%; }
+  .rl-field input:hover, .rl-field textarea:hover, .rl-field select:hover { border-color:var(--rl-accent); }
   .rl-field textarea { min-height:96px; resize:vertical; line-height:1.5; }
 
   /* 🚨 THE SELECT ARROW WAS OFF CENTRE. Paul: "the arrow is off center."
@@ -310,6 +325,7 @@ const styles = `
      disappears reads as broken, one that is dimmed reads as not yet. */
   .rl-btn.is-locked { opacity:.42; cursor:not-allowed; }
   #rlTarget:disabled { opacity:.55; cursor:not-allowed; }
+  .rl-target input { border-color:var(--rl-edge); }
   .rl-btn.is-locked:hover { filter:none; }
 
   /* ── ISBN LOOKUP ────────────────────────────────────────────────────── */

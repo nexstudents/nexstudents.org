@@ -311,6 +311,27 @@ function readingLogScript() {
     }, 1000);
     paint();
   }
+  /* 🚨 A BACKGROUND TAB THROTTLES setInterval TO ABOUT ONCE A MINUTE, so the
+     bell was arriving late by however long the tab had been hidden - and this
+     page is MEANT to be left alone while a paper book is read.
+     The count itself is safe, because it comes from the wall clock. It is the
+     ALARM that needed this: the moment the page is looked at again, catch up
+     and ring if the time has already been served.
+     ⚠️ Found by testing in an unfocused tab: the clock sat frozen at 59
+     seconds past a 1 minute target. Watching the numbers in a FOCUSED tab
+     would never have shown it. */
+  function catchUp(){
+    if (!running) return;
+    sync();
+    if (ran >= target * 60) { ring(); return; }
+    paint();
+  }
+  document.addEventListener("visibilitychange", function(){
+    if (!document.hidden) catchUp();
+  });
+  window.addEventListener("focus", catchUp);
+  window.addEventListener("pageshow", catchUp);
+
   function pause(){
     sync();          /* bank the real time before the interval stops */
     running = false;
