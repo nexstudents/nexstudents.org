@@ -240,8 +240,15 @@ const styles = `
               align-items:center; column-gap:16px; width:100%; }
   .rl-range > .rl-spot:first-of-type { justify-self:start; }
   .rl-range > .rl-spot:last-of-type  { justify-self:end; }
-  .rl-spot { display:flex; align-items:center; gap:6px; }
-  .rl-spot input { width:100%; max-width:70px; text-align:center; }
+  /* ⚠️ THE SAME FIVE-COLUMN SHAPE ON DESKTOP. A flex row opens with a
+     label and closes with a box, so the boxes sit right of the row's
+     centre - the exact thing Paul spotted on mobile. The trailing empty
+     column balances it here too. */
+  .rl-spot { display:grid; grid-template-columns:2.1rem 70px 2.1rem 70px 2.1rem;
+             align-items:center; column-gap:10px; }
+  .rl-spot::after { content:""; }
+  .rl-spot .rl-mini { text-align:center; }
+  .rl-spot input { width:100%; max-width:none; text-align:center; }
   .rl-mini { color:var(--dim); font-size:.84rem; white-space:nowrap; }
   .rl-to { color:var(--fg); font-weight:600; font-size:.9rem; text-align:center; }
   .rl-pages { display:flex; align-items:center; gap:8px; }
@@ -556,6 +563,8 @@ const styles = `
     .rl-card h2 { font-size:1.05rem; }
   }
 
+
+
   @media (max-width:520px) {
     /* 🚨 THE TWO ROWS SHARE ONE COLUMN GRID SO THEY LINE UP EXACTLY. Paul,
        2026-09-03: "the chapter and page boxes are not exactly adjusted for
@@ -579,10 +588,26 @@ const styles = `
        WITHOUT moving the row off centre - which is the thing that kept
        going wrong when this was a flex line.
        ⚠️ Fits 320px: 17+70+16+70 plus three 20px gaps is 233 in a 263 form. */
+    /* 🚨 CENTRE THE BOXES, NOT THE ROW. Paul, 2026-09-03: "it needs to come
+       over to the left slightly because it just does not look Center and I
+       think you're trying to send her on the text and not on the boxes."
+       He read it exactly right. The row measured 0px off centre every time,
+       but a row runs [Ch][box][Pg][box] - it OPENS with a label and CLOSES
+       with a box. So the two white boxes, which are the only things the eye
+       tracks, sat 18.7px right of centre while the maths said perfect.
+       The fix is a fifth, empty column the same width as a label, added
+       through ::after. With equal label columns L and gap g the row is
+       L g 70 g L g 70 g L, and the boxes are then symmetric about the
+       centre by construction rather than by a nudge.
+       ⚠️ The label columns must be a FIXED width for that symmetry to hold;
+       auto columns size to their text and Ch is wider than Pg. */
     .rl-range > .rl-spot {
-      display:grid; grid-template-columns:auto 70px auto 70px;
-      align-items:center; column-gap:20px; justify-self:center;
+      display:grid;
+      grid-template-columns:2.2rem 70px 2.2rem 70px 2.2rem;
+      align-items:center; column-gap:16px; justify-self:center;
     }
+    .rl-range > .rl-spot::after { content:""; }
+    .rl-range > .rl-spot .rl-mini { text-align:center; }
     .rl-range > .rl-spot input { max-width:none; width:100%; }
     /* 🚨 THESE TWO MUST NAME THE SAME PSEUDO-CLASSES AS THE DESKTOP RULES.
        .rl-range > .rl-spot:first-of-type is MORE SPECIFIC than
@@ -614,6 +639,23 @@ const styles = `
     .rl-isbn .rl-btn { justify-self:center; width:auto; }
     .rl-save .rl-btn { width:auto; }
     body { padding-bottom:150px; }
+  }
+
+  /* 🚨 THIS BLOCK MUST STAY LAST. It narrows the row for the smallest
+     phones, and the 520px block above also sets grid-template-columns on
+     the same selector at the same specificity - so whichever comes LATER
+     wins. Placed before it, this rule was simply ignored and 320px kept
+     overflowing. Order is the only thing separating them.
+     parts to keep the same symmetry. At 320px the five-column row came to
+     310px and overflowed. Narrower labels, narrower boxes and a tighter gap
+     keep the SHAPE identical - three equal label columns, two equal boxes -
+     which is what makes the boxes centre. Do not drop the fifth column to
+     save space; that is the thing doing the centring. */
+  @media (max-width:360px) {
+    .rl-range > .rl-spot {
+      grid-template-columns:1.9rem 60px 1.9rem 60px 1.9rem;
+      column-gap:10px;
+    }
   }
 </style>`;
 
@@ -706,23 +748,28 @@ function markup() {
            range rather than two separate questions. -->
       <div class="rl-field">
         <span class="rl-lab">What you read</span>
-        <div class="rl-range">
+        <!-- ⚠️ PLACEHOLDERS ARE 0, NOT EXAMPLE NUMBERS. Paul, 2026-09-03:
+           "if you're going to put free text in those boxes just put zeros."
+           They read as 3, 8, 5, 9 - which looks like a filled-in answer
+           rather than an empty box, and invites copying the example. A zero
+           says the shape of what goes here and nothing more. -->
+      <div class="rl-range">
           <span class="rl-spot">
             <span class="rl-mini">Ch</span>
             <input type="text" id="rlChapter" aria-label="Chapter you started at"
-                   placeholder="3" autocomplete="off">
+                   placeholder="0" autocomplete="off">
             <span class="rl-mini">Pg</span>
             <input type="number" id="rlFrom" min="1" max="99999" inputmode="numeric"
-                   aria-label="Page you started at" placeholder="8">
+                   aria-label="Page you started at" placeholder="0">
           </span>
           <span class="rl-to">To</span>
           <span class="rl-spot">
             <span class="rl-mini">Ch</span>
             <input type="text" id="rlChapterTo" aria-label="Chapter you stopped at"
-                   placeholder="5" autocomplete="off">
+                   placeholder="0" autocomplete="off">
             <span class="rl-mini">Pg</span>
             <input type="number" id="rlTo" min="1" max="99999" inputmode="numeric"
-                   aria-label="Page you stopped at" placeholder="9">
+                   aria-label="Page you stopped at" placeholder="0">
           </span>
         </div>
       </div>
