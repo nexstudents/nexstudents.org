@@ -569,9 +569,19 @@ const styles = `
        ⚠️ Same mistake as everything else on this page: centring each PIECE
        is not the same as centring the thing they make together. */
     .rl-range { grid-template-columns:1fr; row-gap:10px; justify-items:center; }
+    /* ⚠️ WIDER GAPS INSIDE EACH ROW, ROW STILL CENTRED. Paul, 2026-09-03:
+       "space chapter and Page further apart by still making them Center
+       though ... I really wanted you to still keep them symmetrical but I
+       think theyre still close together."
+       The earlier fix made the two rows line up, which was the alignment
+       problem, but left them cramped at an 8px gap. 20px now. The row is a
+       grid centred as a unit, so widening the gaps pushes Ch and Pg apart
+       WITHOUT moving the row off centre - which is the thing that kept
+       going wrong when this was a flex line.
+       ⚠️ Fits 320px: 17+70+16+70 plus three 20px gaps is 233 in a 263 form. */
     .rl-range > .rl-spot {
       display:grid; grid-template-columns:auto 70px auto 70px;
-      align-items:center; column-gap:8px; justify-self:center;
+      align-items:center; column-gap:20px; justify-self:center;
     }
     .rl-range > .rl-spot input { max-width:none; width:100%; }
     /* 🚨 THESE TWO MUST NAME THE SAME PSEUDO-CLASSES AS THE DESKTOP RULES.
