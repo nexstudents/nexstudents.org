@@ -1095,14 +1095,21 @@ const lessonCards = (list, showSubject, slots) => {
 const { UNITS, BUILT } = require("./leif-units.js");
 const { GRADE3, GRADE4 } = require("./english-units.js");
 
-/* Grade 7 history: lessons are bare strings, BUILT maps "unit:n" to a slug. */
-const leifPager = () => UNITS.map((u) => ({
-  n: u.n, name: u.name,
-  items: u.lessons.map((title, i) => ({
-    label: "Unit " + u.n + " &middot; Lesson " + (i + 1),
-    title, slug: BUILT[u.n + ":" + (i + 1)] || null,
-  })),
-}));
+/* Leif world history: lessons are bare strings, BUILT maps "unit:n" to a slug.
+   🚨 FILTERED BY GRADE, because this course spans two. Unit 1 is Rome, which
+   both McDougal Littell volumes put in grade 6; Units 2-5 are medieval and
+   early modern, which is grade 7. See the header of leif-units.js for the
+   evidence. Calling this with no grade returns the whole course, which is
+   right for the subject-wide /history/ shelf and wrong for a grade page. */
+const leifPager = (grade) => UNITS
+  .filter((u) => grade == null || sameGrade(u.grade, grade))
+  .map((u) => ({
+    n: u.n, name: u.name,
+    items: u.lessons.map((title, i) => ({
+      label: "Unit " + u.n + " &middot; Lesson " + (i + 1),
+      title, slug: BUILT[u.n + ":" + (i + 1)] || null,
+    })),
+  }));
 
 /* English: Harcourt nests unit > chapter > lesson, Houghton Mifflin has no
    chapter layer. Both flatten to one list per unit, with the chapter name
@@ -1475,9 +1482,12 @@ const gradeLessons = (g) => {
      under it as ordinary cards — without this, an English or Science lesson
      builds, links from its subject page, and is invisible from its own grade.
      Found 2026-08-29, when the first grade-7 English lesson went up. */
-  if (g === 7) {
+  /* ⚠️ leifPager(g), not the whole course. Grade 6 gets Rome, grade 7 gets
+     medieval onward. Passing no grade here put all five units on grade 7,
+     including the Rome one whose two built lessons are shelved at grade 6. */
+  if (g === 7 || g === 6) {
     const others = list.filter((l) => l.subject !== "History");
-    return `<div class="band"><div class="wrap">${unitPager("g7-lessons")}</div></div>` +
+    return `<div class="band"><div class="wrap">${unitPager("g" + g + "-lessons", leifPager(g))}</div></div>` +
       (others.length ? `<div class="band"><div class="wrap">
   <h2 class="section-head">The Other Subjects</h2>
   ${lessonCards(others, true, plannedFor(null, g, "lesson").filter(p => p.subject !== "History"))}
@@ -1524,7 +1534,8 @@ const sheetsIn   = (g, sub) => sheetsByGrade(g).filter(w => w.subject === sub);
    editing the pager. ⚠️ `sameGrade` — grades arrive as both strings and
    numbers, see the note further up this file. */
 const COURSE_SHELVES = [
-  { grade: 7, subject: "History", units: leifPager },
+  { grade: 6, subject: "History", units: () => leifPager(6) },   /* Rome */
+  { grade: 7, subject: "History", units: () => leifPager(7) },   /* medieval onward */
   { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
   { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
 ];

@@ -78,14 +78,24 @@
   
 </div>
 
-<div class="band"><div class="wrap">
-  <div class="cardgrid">
-    <div class="card" data-lesson="history/republic-to-empire">
+<div class="band"><div class="wrap"><div class="unitpager" data-shelf="g6-history-lessons">
+    <div class="unithead">
+      <button type="button" class="unitnav" data-step="-1" aria-label="Previous unit">&#8249;</button>
+      <div class="unitmid">
+        <p class="unittag" id="utag"></p>
+        <h3 class="unitname" id="uname"></h3>
+        <p class="unitcount" id="ucount"></p>
+      </div>
+      <button type="button" class="unitnav" data-step="1" aria-label="Next unit">&#8250;</button>
+    </div>
+    <section class="unitpanel" data-unit="1" data-built="2" data-total="10" hidden>
+      <div class="cardgrid">
+        <div class="card" data-lesson="history/republic-to-empire">
       <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
       <a class="clink" href="/lessons/history/republic-to-empire/">
         <span class="cthumb"></span>
         <span class="cbody">
-          <em>History &middot; Ancient Rome &middot; Unit 1 &middot; Lesson 1</em>
+          <em>Unit 1 &middot; Lesson 1</em>
           <b class="ctitle">From Republic to Empire</b>
           <span class="cblurb">Republic to empire, read aloud, then five questions hidden in the text.</span>
         </span>
@@ -100,12 +110,12 @@
       </div>
       <span class="tick-score"></span>
     </div>
-    <div class="card" data-lesson="history/roman-government">
+        <div class="card" data-lesson="history/roman-government">
       <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
       <a class="clink" href="/lessons/history/roman-government/">
         <span class="cthumb"></span>
         <span class="cbody">
-          <em>History &middot; Ancient Rome &middot; Unit 1 &middot; Lesson 2</em>
+          <em>Unit 1 &middot; Lesson 2</em>
           <b class="ctitle">Roman Government and Citizenship</b>
           <span class="cblurb">Offices, consuls and citizenship, and why one-year terms mattered.</span>
         </span>
@@ -120,8 +130,135 @@
       </div>
       <span class="tick-score"></span>
     </div>
-    
+        <div class="card is-slot" aria-hidden="true">
+      <span class="cthumb"></span>
+      <span class="cbody">
+        <em>Unit 1 &middot; Lesson 3</em>
+        <b class="ctitle">Engineering, Roads, and Military Power</b>
+        <span class="cblurb">Not built yet.</span>
+      </span>
+    </div>
+        <div class="card is-slot" aria-hidden="true">
+      <span class="cthumb"></span>
+      <span class="cbody">
+        <em>Unit 1 &middot; Lesson 4</em>
+        <b class="ctitle">Conquest, Provinces, and Daily Life</b>
+        <span class="cblurb">Not built yet.</span>
+      </span>
+    </div>
+        <div class="card is-slot" aria-hidden="true">
+      <span class="cthumb"></span>
+      <span class="cbody">
+        <em>Unit 1 &middot; Lesson 5</em>
+        <b class="ctitle">Social Class, Slavery, and Daily Life</b>
+        <span class="cblurb">Not built yet.</span>
+      </span>
+    </div>
+        <div class="card is-slot" aria-hidden="true">
+      <span class="cthumb"></span>
+      <span class="cbody">
+        <em>Unit 1 &middot; Lesson 6</em>
+        <b class="ctitle">Judea Under Rome</b>
+        <span class="cblurb">Not built yet.</span>
+      </span>
+    </div>
+        <div class="card is-slot" aria-hidden="true">
+      <span class="cthumb"></span>
+      <span class="cbody">
+        <em>Unit 1 &middot; Lesson 7</em>
+        <b class="ctitle">Jesus and the Early Church</b>
+        <span class="cblurb">Not built yet.</span>
+      </span>
+    </div>
+        <div class="card is-slot" aria-hidden="true">
+      <span class="cthumb"></span>
+      <span class="cbody">
+        <em>Unit 1 &middot; Lesson 8</em>
+        <b class="ctitle">Paul, Persecution, and the Early Church</b>
+        <span class="cblurb">Not built yet.</span>
+      </span>
+    </div>
+        <div class="card is-slot" aria-hidden="true">
+      <span class="cthumb"></span>
+      <span class="cbody">
+        <em>Unit 1 &middot; Lesson 9</em>
+        <b class="ctitle">Crisis and Reform in the Late Empire</b>
+        <span class="cblurb">Not built yet.</span>
+      </span>
+    </div>
+        <div class="card is-slot" aria-hidden="true">
+      <span class="cthumb"></span>
+      <span class="cbody">
+        <em>Unit 1 &middot; Lesson 10</em>
+        <b class="ctitle">Review of Rome and Early Christianity</b>
+        <span class="cblurb">Not built yet.</span>
+      </span>
+    </div>
+      </div>
+    </section>
+    <div class="unitdots"><button type="button" class="unitdot" data-go="1" title="Roman Republic, Empire, and Early Christianity">1</button></div>
   </div>
+  <script>
+(function(){
+  var wrap = document.querySelector(".unitpager");
+  if (!wrap) return;
+  var key = "ns:unit:" + wrap.dataset.shelf;
+  var panels = [].slice.call(wrap.querySelectorAll(".unitpanel"));
+  var NAMES = {"1":"Roman Republic, Empire, and Early Christianity"};
+  var prev = wrap.querySelectorAll(".unitnav")[0];
+  var next = wrap.querySelectorAll(".unitnav")[1];
+
+  function idxOf(n){
+    for (var i = 0; i < panels.length; i++){ if (panels[i].dataset.unit === String(n)) return i; }
+    return 0;
+  }
+
+  function showIdx(i){
+    if (i < 0) i = 0;
+    if (i > panels.length - 1) i = panels.length - 1;
+    var cur = panels[i];
+    var n = cur.dataset.unit;
+    panels.forEach(function(p){ p.hidden = (p !== cur); });
+    [].forEach.call(wrap.querySelectorAll(".unitdot"), function(b){
+      b.setAttribute("aria-current", b.dataset.go === n ? "true" : "false");
+    });
+    wrap.querySelector("#utag").textContent = "Unit " + n + " of " + panels.length;
+    wrap.querySelector("#uname").textContent = NAMES[n] || "";
+    wrap.querySelector("#ucount").textContent = cur.dataset.built + " of " + cur.dataset.total + " built";
+    try { localStorage.setItem(key, n); } catch(e){}
+    prev.disabled = (i <= 0);
+    next.disabled = (i >= panels.length - 1);
+  }
+
+  // last unit viewed, else the first unit with unfinished work, else the first
+  var start = null;
+  try { start = parseInt(localStorage.getItem(key), 10) || null; } catch(e){}
+  var startIdx = null;
+  if (start !== null && idxOf(start) >= 0) startIdx = idxOf(start);
+  if (startIdx === null){
+    for (var i = 0; i < panels.length && startIdx === null; i++){
+      var cards = panels[i].querySelectorAll("[data-lesson]");
+      for (var j = 0; j < cards.length; j++){
+        var d = null;
+        try { d = JSON.parse(localStorage.getItem("ns:done:" + cards[j].dataset.lesson)); } catch(e){}
+        if (!d || d.complete === false){ startIdx = i; break; }
+      }
+    }
+  }
+  showIdx(startIdx === null ? 0 : startIdx);
+
+  wrap.addEventListener("click", function(e){
+    var nav = e.target.closest(".unitnav");
+    if (nav && !nav.disabled){
+      var cur = panels.filter(function(x){ return !x.hidden; })[0];
+      showIdx(panels.indexOf(cur) + parseInt(nav.dataset.step, 10));
+      return;
+    }
+    var dot = e.target.closest(".unitdot");
+    if (dot) showIdx(idxOf(parseInt(dot.dataset.go, 10)));
+  });
+})();
+</script>
   <script>
 (function(){
   var cards = [].slice.call(document.querySelectorAll("[data-lesson]"));
@@ -185,8 +322,7 @@
     }
   });
 })();
-</script>
-</div></div>
+</script></div></div>
 
 <footer><div class="wrap">
   <div class="fgrid">
