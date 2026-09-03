@@ -460,6 +460,176 @@ const GRADE4 = {
   part2: { name: "Writing, Listening, Speaking, and Viewing", transcribed: false },
 };
 
+/* ─────────────────────────────────────────────────────────────────────────
+   GRADE 7 — Houghton Mifflin English, 2001. Robert Rueda.
+   `houghtonmiffline0000rued` · 775 leaves · BORROW-ONLY · Teacher's Edition.
+
+   ⭐ THE SHELF KOLTEN IS ACTUALLY ON. Grades 3 and 4 exist so a skill can be
+   taught at the grade it belongs to; this is the year he is in.
+
+   Part 1, "Grammar, Usage, and Mechanics", is EIGHT units and starts at
+   page 30 with "Why Learn Grammar?". Every unit banner below was read off
+   the contents pages on 2026-09-03 — including the ones OCR could not see,
+   because the banners are white-on-blue art rather than text.
+
+   ⚠️ UNIT 4 IS CALLED "MODIFIERS", NOT "ADJECTIVES AND ADVERBS". Its lesson
+   list opens with Adjectives and Adverbs, so the obvious guess is wrong and
+   was very nearly written down. That is exactly why the banners get checked.
+
+   ⚠️ SIXTEEN LESSONS IN UNIT 3. The split rule matters most here: Verbs runs
+   from Kinds of Verbs to bring/take, let/leave, lend/loan. One lesson each.
+   ───────────────────────────────────────────────────────────────────────── */
+const GRADE7 = {
+  grade: 7,
+  book: {
+    title: "Houghton Mifflin English",
+    authors: "Robert Rueda",
+    publisher: "Houghton Mifflin",
+    year: 2001,
+    archive: "houghtonmiffline0000rued",
+    pages: 775,
+    access: "borrow-only",
+    edition: "Teacher's Edition",
+  },
+  part1: "Grammar, Usage, and Mechanics",
+  units: [
+    { n: 1, name: "The Sentence", page: 31, lessons: [
+      { n: 1, title: "Kinds of Sentences", page: 32 },
+      { title: "Revising Strategies: Writing Good Sentences", page: 35, craft: true },
+      { n: 2, title: "Complete Subjects and Complete Predicates", page: 37 },
+      { n: 3, title: "Simple Subjects and Simple Predicates", page: 40 },
+      { title: "Revising Strategies: Forming Compound Subjects and Predicates", page: 43, craft: true },
+      { n: 4, title: "Finding the Subject", page: 45 },
+      { n: 5, title: "Conjunctions", page: 48 },
+      { n: 6, title: "Fragments and Run-ons", page: 51 },
+      { title: "Revising Strategies: Forming Compound and Complex Sentences", page: 55, craft: true },
+      { title: "Unit 1 Checkup", page: 58, review: true },
+    ]},
+
+    { n: 2, name: "Nouns", page: 69, lessons: [
+      { n: 1, title: "Kinds of Nouns", page: 70 },
+      { n: 2, title: "Collective and Compound Nouns", page: 73 },
+      { n: 3, title: "Singular and Plural Nouns", page: 76 },
+      { title: "Revising Strategies: Writing with Nouns", page: 79, craft: true },
+      { n: 4, title: "Possessive Nouns", page: 81 },
+      { title: "Revising Strategies: Writing with Possessive Nouns", page: 84, craft: true },
+      { title: "Revising Strategies: Exact Nouns", page: 86, craft: true },
+      { title: "Unit 2 Checkup", page: 88, review: true },
+    ]},
+
+    /* 🚨 SIXTEEN LESSONS. The biggest unit in any of the four books, and the
+       one that carries the skill our only built lesson teaches — though at
+       grade 7 the treatment is far past action-versus-being. */
+    { n: 3, name: "Verbs", page: 99, lessons: [
+      { n: 1, title: "Kinds of Verbs", page: 100 },
+      { n: 2, title: "Verb Phrases", page: 104 },
+      { n: 3, title: "Simple Verb Tenses", page: 107 },
+      { n: 4, title: "Be, Have, and Do", page: 110 },
+      { n: 5, title: "Perfect Tenses", page: 113 },
+      { n: 6, title: "Irregular Verbs", page: 117 },
+      { n: 7, title: "More Irregular Verbs", page: 120 },
+      { n: 8, title: "Progressive Forms", page: 124 },
+      { title: "Revising Strategies: Writing with Verbs", page: 127, craft: true },
+      { n: 9, title: "Transitive and Intransitive Verbs", page: 129 },
+      { n: 10, title: "Direct and Indirect Objects", page: 132 },
+      { n: 11, title: "Predicate Nouns and Predicate Adjectives", page: 136 },
+      { n: 12, title: "Active and Passive Voices", page: 139 },
+      { title: "Revising Strategies: Writing with Verbs (Voice)", page: 142, craft: true },
+      { n: 13, title: "Subject-Verb Agreement", page: 144 },
+      { n: 14, title: "Inverted and Interrupted Order", page: 147 },
+      { n: 15, title: "Rise/Raise, Lie/Lay, Sit/Set", page: 150 },
+      { n: 16, title: "Bring/Take, Let/Leave, Lend/Loan", page: 153 },
+      { title: "Revising Strategies: Choosing Different Verbs", page: 156, craft: true },
+      { title: "Unit 3 Checkup", page: 158, review: true },
+    ]},
+
+    { n: 4, name: "Modifiers", page: 179, lessons: [
+      { n: 1, title: "Adjectives", page: 180 },
+      { title: "Revising Strategies: Writing with Adjectives", page: 184, craft: true },
+      { n: 2, title: "Comparing with Adjectives", page: 186 },
+      { n: 3, title: "Adverbs", page: 190 },
+      { title: "Revising Strategies: Writing with Adverbs", page: 193, craft: true },
+      { n: 4, title: "Comparing with Adverbs", page: 195 },
+      { n: 5, title: "Negatives", page: 198 },
+      { n: 6, title: "Adjective or Adverb?", page: 201 },
+      { title: "Revising Strategies: Choosing Different Adjectives and Adverbs", page: 204, craft: true },
+      { title: "Unit 4 Checkup", page: 206, review: true },
+    ]},
+
+    { n: 5, name: "Capitalization and Punctuation", page: 221, lessons: [
+      { n: 1, title: "Correct Sentences", page: 222 },
+      { n: 2, title: "Proper Nouns and Proper Adjectives", page: 224 },
+      { n: 3, title: "Interjections", page: 228 },
+      { n: 4, title: "Uses for Commas", page: 230 },
+      { title: "Revising Strategies: Writing Sentences with Commas", page: 233, craft: true },
+      { n: 5, title: "More Uses for Commas", page: 235 },
+      { n: 6, title: "Dates, Addresses, and Letters", page: 238 },
+      { n: 7, title: "Direct Quotations", page: 241 },
+      { n: 8, title: "Titles", page: 244 },
+      { n: 9, title: "Semicolons and Colons", page: 247 },
+      { title: "Revising Strategies: Writing with Colons and Semicolons", page: 250, craft: true },
+      { n: 10, title: "Abbreviations", page: 252 },
+      { n: 11, title: "Apostrophes", page: 255 },
+      { n: 12, title: "Hyphens, Dashes, and Parentheses", page: 258 },
+      { title: "Unit 5 Checkup", page: 262, review: true },
+    ]},
+
+    { n: 6, name: "Pronouns", page: 279, lessons: [
+      { n: 1, title: "Pronouns and Antecedents", page: 280 },
+      { title: "Revising Strategies: Writing Clearly with Pronouns", page: 283, craft: true },
+      { n: 2, title: "Personal Pronouns", page: 285 },
+      { n: 3, title: "Subject and Object Pronouns", page: 288 },
+      { n: 4, title: "Pronouns in Compound Subjects and Objects", page: 291 },
+      { n: 5, title: "Possessive Pronouns", page: 293 },
+      { n: 6, title: "Interrogative Pronouns", page: 296 },
+      { n: 7, title: "Demonstrative Pronouns", page: 299 },
+      { n: 8, title: "Indefinite Pronouns", page: 302 },
+      { n: 9, title: "Reflexive and Intensive Pronouns", page: 306 },
+      { title: "Revising Strategies: Homophones", page: 309, craft: true },
+      { title: "Unit 6 Checkup", page: 311, review: true },
+    ]},
+
+    { n: 7, name: "Prepositional Phrases", page: 325, lessons: [
+      { n: 1, title: "Prepositional Phrases", page: 326 },
+      { n: 2, title: "Pronouns After Prepositions", page: 330 },
+      { n: 3, title: "Adjective Phrases", page: 333 },
+      { n: 4, title: "Adverb Phrases", page: 336 },
+      { n: 5, title: "Placing Phrases Correctly", page: 340 },
+      { title: "Revising Strategies: Writing with Prepositional Phrases", page: 343, craft: true },
+      { n: 6, title: "Choosing Correct Prepositions", page: 345 },
+      { title: "Revising Strategies: Idioms", page: 348, craft: true },
+      { title: "Unit 7 Checkup", page: 350, review: true },
+    ]},
+
+    { n: 8, name: "Complex Sentences", page: 361, lessons: [
+      { n: 1, title: "Clauses", page: 362 },
+      { n: 2, title: "Compound and Complex Sentences", page: 365 },
+      { title: "Revising Strategies: Forming Complex and Compound-Complex Sentences", page: 368, craft: true },
+      { title: "Unit 8 Checkup", page: 371, review: true },
+    ]},
+  ],
+
+  /* PART 2 is "Writing, Listening, Speaking, and Viewing" — the writing half.
+     ⛔ NOT TRANSCRIBED. Grammar is what the site builds from today, and Paul
+     counted fourteen units in the whole book, so Part 2 holds the other six. */
+  part2: { name: "Writing, Listening, Speaking, and Viewing", transcribed: false },
+};
+
+/* ─────────────────────────────────────────────────────────────────────────
+   GRADE 8 — ⛔ NO BOOK CHOSEN YET. Paul, 2026-09-03: grades 7 and 8 next,
+   5 and 6 skipped for now. The grade 7 volume above is the obvious sibling
+   to look for, but the grade 8 student text has NOT been found on
+   archive.org — the only grade 8 records turned up so far are "expanded set"
+   supplements of 118 and 174 pages, which are the same workbook-not-textbook
+   trap that ruled out Houghton Mifflin for grade 3.
+   🚨 Find a real student text before writing anything here.
+   ───────────────────────────────────────────────────────────────────────── */
+const GRADE8 = {
+  grade: 8,
+  book: null,
+  units: [],
+};
+
 /* ── counts, so a miscount is caught rather than believed ───────────────── */
 /* ⚠️ TWO SHAPES ON PURPOSE. Harcourt nests unit > chapter > lesson; Houghton
    Mifflin has no chapter layer, just unit > lesson. Flattening HM into a fake
@@ -482,10 +652,10 @@ function tally(course) {
   return { units: course.units.length, chapters, lessons, reviews, built, gaps };
 }
 
-module.exports = { GRADE3, GRADE4, tally };
+module.exports = { GRADE3, GRADE4, GRADE7, GRADE8, tally };
 
 if (require.main === module) {
-  for (const [name, c] of [["GRADE 3", GRADE3], ["GRADE 4", GRADE4]]) {
+  for (const [name, c] of [["GRADE 3", GRADE3], ["GRADE 4", GRADE4], ["GRADE 7", GRADE7], ["GRADE 8", GRADE8]]) {
     console.log(name, JSON.stringify(tally(c)));
   }
 }

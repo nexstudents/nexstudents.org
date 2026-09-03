@@ -1093,7 +1093,7 @@ const lessonCards = (list, showSubject, slots) => {
    and each course supplies its own adapter below. Adding a course means
    writing an adapter, never touching the pager. */
 const { UNITS, BUILT } = require("./leif-units.js");
-const { GRADE3, GRADE4 } = require("./english-units.js");
+const { GRADE3, GRADE4, GRADE7 } = require("./english-units.js");
 
 /* Leif world history: lessons are bare strings, BUILT maps "unit:n" to a slug.
    🚨 FILTERED BY GRADE, because this course spans two. Unit 1 is Rome, which
@@ -1538,6 +1538,7 @@ const COURSE_SHELVES = [
   { grade: 7, subject: "History", units: () => leifPager(7) },   /* medieval onward */
   { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
   { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
+  { grade: 7, subject: "English", units: () => englishPager(GRADE7) },
 ];
 
 const courseFor = (g, sub) =>
