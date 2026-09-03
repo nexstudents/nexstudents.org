@@ -130,6 +130,26 @@ const styles = `
                      border-radius:9px; border:1px solid var(--line);
                      background:var(--bg); color:var(--fg); }
 
+  /* 🚨 THE SPINNER WAS PUSHING THE DIGITS OFF CENTRE. Paul, 2026-09-03:
+     "the 30 minute text in the middle of the time adjuster box is not
+     Center so when you type something like 60 in there the text will be
+     Center ... if I type in 120 it will still be Center."
+     text-align:center was already set and was already doing its job - but a
+     number input reserves room on the RIGHT for its up/down arrows, and the
+     text centres in what is LEFT OVER. So the digits sat left of true
+     centre, and by a different amount for 30, 60 and 120.
+     ⚠️ Same shape of mistake as the heading and the play button: the thing
+     was centred inside a box that was not the box you can see.
+     The arrows go; the field is typed into, not nudged. */
+  .rl-spot input[type=number]::-webkit-outer-spin-button,
+  .rl-spot input[type=number]::-webkit-inner-spin-button,
+  .rl-target input::-webkit-outer-spin-button,
+  .rl-target input::-webkit-inner-spin-button {
+    -webkit-appearance:none; appearance:none; margin:0;
+  }
+  .rl-spot input[type=number], .rl-target input { -moz-appearance:textfield;
+                                                  appearance:textfield; }
+
   /* ── THE FORM ─────────────────────────────────────────────────────────
      🚨 THE FIELDS DO NOT RUN THE WIDTH OF THE PAGE. Paul, 2026-09-03: "yeah
      these text boxes they don't need to be so large. we kind of fixed this
@@ -175,6 +195,11 @@ const styles = `
   .rl-pair { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px;
              align-items:start; }
   .rl-lab { font-weight:600; font-size:.93rem; }
+  /* One end of the range: Ch [ ] p. [ ]. The little words carry the
+     meaning so the boxes can stay small. */
+  .rl-spot { display:flex; align-items:center; gap:6px; }
+  .rl-spot input { width:100%; max-width:76px; text-align:center; }
+  .rl-mini { color:var(--dim); font-size:.84rem; }
   .rl-pages { display:flex; align-items:center; gap:8px; }
   /* ⚠️ DIGITS CENTRE IN THEIR BOX. Paul, 2026-09-03: "make when you write
      those numbers those numbers are centered in that text box." A page or
@@ -517,23 +542,36 @@ function markup() {
            collapsing them into one free-text box would quietly kill that.
            Chapter is free text because a chapter can be "4" or "4-5" or
            "The Long Winter". -->
+      <!-- 🚨 THE AXIS IS FROM / TO, NOT CHAPTER / PAGE. Paul, 2026-09-03:
+           "you have chapter from chapter and page to page. it's chapter and
+           page from chapter and page. so chapter 3 page 8 to chapter 5 to
+           page 9."
+           I had grouped it by FIELD - a chapter pair and a page pair - which
+           reads as two unrelated ranges. A reading session is ONE range with
+           two ends, and each end is a chapter AND a page. Grouped by end now.
+           ⚠️ The four input ids are unchanged, so the engine, the saved
+           entries and the Continue prefill all still work. -->
       <div class="rl-pair">
         <div class="rl-field">
-          <span class="rl-lab">Chapters <span class="rl-hint">optional</span></span>
-          <div class="rl-pages">
-            <input type="text" id="rlChapter" aria-label="First chapter read" placeholder="from" autocomplete="off">
-            <span class="rl-dash" aria-hidden="true">&ndash;</span>
-            <input type="text" id="rlChapterTo" aria-label="Last chapter read" placeholder="to" autocomplete="off">
+          <span class="rl-lab">Started at</span>
+          <div class="rl-spot">
+            <span class="rl-mini">Ch</span>
+            <input type="text" id="rlChapter" aria-label="Chapter you started at"
+                   placeholder="3" autocomplete="off">
+            <span class="rl-mini">p.</span>
+            <input type="number" id="rlFrom" min="1" max="99999" inputmode="numeric"
+                   aria-label="Page you started at" placeholder="8">
           </div>
         </div>
         <div class="rl-field">
-          <span class="rl-lab">Pages</span>
-          <div class="rl-pages">
-            <input type="number" id="rlFrom" min="1" max="99999" inputmode="numeric"
-                   aria-label="First page read" placeholder="from">
-            <span class="rl-dash" aria-hidden="true">&ndash;</span>
+          <span class="rl-lab">Stopped at</span>
+          <div class="rl-spot">
+            <span class="rl-mini">Ch</span>
+            <input type="text" id="rlChapterTo" aria-label="Chapter you stopped at"
+                   placeholder="5" autocomplete="off">
+            <span class="rl-mini">p.</span>
             <input type="number" id="rlTo" min="1" max="99999" inputmode="numeric"
-                   aria-label="Last page read" placeholder="to">
+                   aria-label="Page you stopped at" placeholder="9">
           </div>
         </div>
       </div>
@@ -551,7 +589,7 @@ function markup() {
       <label class="rl-check"><input type="checkbox" id="rlFinished"> I finished this book</label>
 
       <div class="rl-save">
-        <button type="button" class="rl-btn is-go" id="rlSave">Save This Session</button>
+        <button type="button" class="rl-btn is-go" id="rlSave">Save Session</button>
         <span class="rl-msg" id="rlMsg"></span>
       </div>
     </div>

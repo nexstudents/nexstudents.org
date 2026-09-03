@@ -334,6 +334,15 @@ function readingLogScript() {
     else { elFound.hidden = true; elFound.innerHTML = ""; }
   });
 
+  /* One end of a reading range, as the form now asks for it: a chapter
+     and a page together. Either half may be blank. */
+  function spot(ch, pg){
+    var bits = [];
+    if (ch) bits.push("Ch " + ch);
+    if (pg) bits.push("p. " + pg);
+    return bits.length ? bits.join(", ") : "not recorded";
+  }
+
   function dateText(iso){
     var d = new Date(iso);
     if (isNaN(d)) return "";
@@ -373,9 +382,9 @@ function readingLogScript() {
             (e.author ? "<dt>By</dt><dd>" + esc(e.author) + "</dd>" : "") +
             "<dt>Read for</dt><dd>" + esc(spell(e.seconds || 0)) +
               (e.target ? " (target " + e.target + " min)" : "") + "</dd>" +
-            "<dt>Pages</dt><dd>" + esc(pages) +
-              ((e.from && e.to && e.to >= e.from) ? " - " + (e.to - e.from + 1) + " pages" : "") + "</dd>" +
-            (e.chapter ? "<dt>" + (e.chapterTo ? "Chapters" : "Chapter") + "</dt><dd>" + esc(e.chapter) + (e.chapterTo ? " to " + esc(e.chapterTo) : "") + "</dd>" : "") +
+            "<dt>Read</dt><dd>" + esc(spot(e.chapter, e.from)) +
+              ((e.chapterTo || e.to) ? " to " + esc(spot(e.chapterTo, e.to)) : "") +
+              ((e.from && e.to && e.to >= e.from) ? " (" + (e.to - e.from + 1) + " pages)" : "") + "</dd>" +
             (e.isbn ? "<dt>ISBN</dt><dd>" + esc(e.isbn) + "</dd>" : "") +
             "<dt>Finished</dt><dd>" + (e.finished ? "Yes" : "Not yet") + "</dd>" +
           "</dl>" +
