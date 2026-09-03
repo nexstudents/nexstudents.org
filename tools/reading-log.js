@@ -143,7 +143,8 @@ function readingLogScript() {
 
     bPlay.innerHTML = running ? PAUSE : PLAY;
     bPlay.setAttribute("aria-label", running ? "Pause reading" : "Start reading");
-    bReset.disabled = (elapsed === 0 && !running);
+    /* left enabled on purpose - see the note in reading-log-parts.js */
+    bReset.disabled = false;
   }
 
   function start(){

@@ -75,7 +75,12 @@ const styles = `
      both are settings, and play is the thing you press. */
   .rl-row { display:flex; align-items:center; justify-content:center; }
   .rl-ico.rl-small { min-width:40px; height:32px; padding:0 10px; border-radius:3px;
-                     position:absolute; right:0; top:50%; transform:translateY(-50%); }
+                     /* ⚠️ LEFT, not right. Paul, 2026-09-03: "you moved it to the
+                        right side I want you to put it back on the left side."
+                        Absolute either way, so it never pulls the number box
+                        off the centre line. */
+                     position:absolute; left:0; top:50%; transform:translateY(-50%);
+                     opacity:1; }
   .rl-ico.rl-small svg { width:17px; height:17px; }
   /* 🚨 SQUARE, NOT ROUND. Paul, 2026-09-03: "the play button doesnt have to
      be circle it can be square like the voice engine." The lesson player draws
@@ -93,7 +98,13 @@ const styles = `
                   min-width:74px; height:46px; padding:0 20px; border-radius:3px; }
   .rl-ico.is-go svg { width:26px; height:26px; }
   .rl-ico:hover { border-color:var(--fg); }
-  .rl-ico:disabled { opacity:.4; cursor:default; }
+  /* 🚨 RESET IS NEVER DISABLED-INVISIBLE. Paul, 2026-09-03: "I do not see
+     restart icon." It was there - disabled at .4 opacity, which on a dark
+     dock reads as absent rather than as unavailable. A control the eye
+     cannot find is a missing control, whatever the DOM says.
+     Reset does nothing harmful when the timer is at zero, so it is simply
+     always available now, and drawn in the dock ink like the clock. */
+  .rl-ico:disabled { opacity:.55; cursor:default; }
 
   /* A visually-hidden label: present for a screen reader, gone from the eye. */
   .rl-sr { position:absolute; width:1px; height:1px; padding:0; margin:-1px;
@@ -395,6 +406,9 @@ const styles = `
   .rl-dock .rl-ico.is-go:hover { filter:brightness(1.06); }
   .rl-dock .rl-ico { background:var(--rl-surface); color:var(--rl-ink);
                      border-color:var(--rl-rule); }
+  .rl-dock .rl-ico.rl-small { border-color:var(--rl-accent); color:var(--rl-accent);
+                              background:transparent; opacity:1; }
+  .rl-dock .rl-ico.rl-small:hover { background:var(--rl-accent); color:var(--rl-on-accent); }
   .rl-dock .rl-ico:hover { border-color:var(--rl-ctl-bg); }
 
 
@@ -561,7 +575,7 @@ function markup() {
       <button type="button" class="rl-ico is-go" id="rlPlay" aria-label="Start reading">${ICON.play}</button>
     </div>
     <p class="rl-target">
-      <button type="button" class="rl-ico rl-small" id="rlReset" aria-label="Reset the timer" disabled>${ICON.reset}</button>
+      <button type="button" class="rl-ico rl-small" id="rlReset" aria-label="Reset the timer">${ICON.reset}</button>
       <!-- ⚠️ NO VISIBLE "Target" LABEL. Paul, 2026-09-03: "dont put the word
            Target in the time adjuster just put that text box and put it in
            the center." The box sits under a clock and is followed by "min",
