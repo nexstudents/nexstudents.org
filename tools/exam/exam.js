@@ -19,9 +19,33 @@ let i = 0;
 const $ = id => document.getElementById(id);
 const LET = ["A","B","C","D"];
 
-function start(){ $("s-intro").classList.add("hide"); $("s-test").classList.remove("hide"); draw(); }
+/* 🚨 START DOES NOT JUMP TO THE QUESTIONS. Paul, 2026-09-02: "when i start the
+   test it right away drops me down to the questions before i can read the
+   story." draw() used to scroll on EVERY call, including the first, so the
+   passage was skipped past the instant the exam opened - and the page own
+   instructions say "Read the passage all the way through before you answer
+   anything." The exam was contradicting itself.
+   ⚠️ The scroll is right when MOVING BETWEEN questions and wrong when entering
+   the test or when picking an option. Only go() passes jump now. */
+function start(){
+  $("s-intro").classList.add("hide");
+  $("s-test").classList.remove("hide");
+  draw();
+  /* ⚠️ SCROLL TO THE PASSAGE ITSELF, AND ALLOW FOR THE STICKY NAV. Paul,
+     second look: "no it lands closer to the top but not the top of the story."
+     scrollIntoView on the SECTION lands on the section box, which starts above
+     the passage - and block:"start" puts that edge at y=0, where the sticky
+     header is already sitting, so the story heading hides underneath it.
+     Measuring the nav at run time rather than hardcoding a number: it is a
+     different height on a phone, and it changes again if a row is ever added. */
+  const story = document.querySelector(".exam .passage");
+  const nav = document.getElementById("nav");
+  const navH = nav ? nav.getBoundingClientRect().height : 0;
+  const top = story.getBoundingClientRect().top + window.scrollY - navH - 14;
+  window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+}
 
-function draw(){
+function draw(jump){
   const q = Q[i];
   $("prog").textContent = `Question ${i+1} of ${Q.length}`;
   $("ans").textContent  = `${pick.filter(v=>v!==null).length} answered`;
@@ -38,14 +62,15 @@ function draw(){
   $("back").disabled = i===0;
   $("next").disabled = pick[i]===null;
   $("next").textContent = i===Q.length-1 ? "Finish" : "Next";
-  /* the passage now runs full length above, so jump to the question, not the top of the page.
-     the passage stays one scroll away for re-reading. */
-  $("qtext").closest(".card").scrollIntoView({block:"start",behavior:"smooth"});
+  /* Only when stepping between questions. The passage stays one scroll away
+     for re-reading, and re-drawing after an option is picked must not move the
+     page under the reader s finger. */
+  if (jump) $("qtext").closest(".card").scrollIntoView({block:"start",behavior:"smooth"});
 }
 
 function go(d){
   if(d===1 && i===Q.length-1) return finish();
-  i += d; draw();
+  i += d; draw(true);
 }
 
 function finish(){
@@ -67,15 +92,16 @@ function finish(){
 
   let v;
   if(pct >= 85){
-    v = `<b>Grade 6 comprehension is solid.</b> Move up to Level C (grade 7) to find where it
-         actually stops. This score does not place him yet — it only rules out grade 6 as the ceiling.`;
+    v = `<b>Grade 6 comprehension is solid.</b> This score does not place a student yet — it only
+         rules out grade 6 as the ceiling. The next level up is not built yet, so treat this as
+         a floor: grade 6 material is not the right challenge.`;
   } else if(pct >= 60){
     v = `<b>Placed at grade 6.</b> This is a real reading level, not a failure. Look at the skill
          rows below to see what to teach — the total on its own does not tell you.`;
   } else {
-    v = `<b>Below grade 6.</b> Run Level A (grade 5) before concluding anything. A low score here
-         can mean grade 5 is the true level, or that one skill collapsed and dragged the rest down.
-         The skill rows tell you which.`;
+    v = `<b>Below grade 6.</b> Do not conclude a grade level from this alone. A low score here can
+         mean grade 6 is above the student, or that one skill collapsed and dragged the rest down.
+         The skill rows tell you which — read them before deciding anything.`;
   }
   $("verdict").innerHTML = v;
 

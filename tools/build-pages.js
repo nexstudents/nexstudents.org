@@ -2581,7 +2581,7 @@ const REDIRECTS = [
     desc: "Free reading comprehension placement exam, Level B (grade 6). Auto-scored with a breakdown by skill.",
     crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; Reading Placement',
     h1: "Reading Placement — Level B.",
-    lead: "One passage, 12 questions. About 20 minutes, and it is marked the moment it is finished.",
+    lead: "One passage, 12 questions, about 20 minutes. Level B is the grade 6 reading level, and it is marked the moment you finish.",
     head: "\n<style>\n" + css + "</style>",
     body: '<div class="wrap examwrap"><div class="exam">\n' + screens + "</div></div>",
     script: "\n<script>\n" + js + "</scr" + "ipt>",
