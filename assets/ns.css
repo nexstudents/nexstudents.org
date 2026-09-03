@@ -1307,7 +1307,12 @@ nav{border-bottom:1px solid var(--line)}
    ⚠️ margin-inline:auto as well as text-align, because .phead h1 is width
    constrained - the same trap as .contactfoot and .prose h2.mid. */
 .termshead h1{text-align:center;margin-inline:auto;margin-top:26px}
-.termshead .crumb{margin-bottom:0}
+/* 🚨 THE CRUMB CENTRES TOO. It used to sit hard left under a centred title,
+   which is what made a centred header still read as off-centre — Paul,
+   2026-09-03: "I wonder if you can make the extras title center and the
+   reading log center too", on a page whose h1 already computed as centred.
+   The title was fine; the line above it was not. */
+.termshead .crumb{margin-bottom:0;text-align:center}
 
 /* The home icon, sitting beside the burger. Sized and coloured like the other
    icon controls in the bar so it reads as one set rather than a bolt-on. */

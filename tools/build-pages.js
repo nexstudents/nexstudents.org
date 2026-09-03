@@ -1793,7 +1793,7 @@ const pages = [
     body: extrasShelf() },
 
   /* The reading log itself. Its own page so the Extras shelf can hold cards. */
-  { dir: "extras/reading-log", active: "x",
+  { dir: "extras/reading-log", active: "x", pclass: "termshead",
     title: "Reading Log — NexStudents",
     desc: "Time your reading, write what you read, and keep every session.",
     /* ⚠️ A LINKED CRUMB, WHICH IS THE HOUSE PATTERN — 110 built pages already
