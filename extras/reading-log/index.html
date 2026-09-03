@@ -536,6 +536,18 @@
     background-color:#FFFFFF;
   }
 
+
+  /* 🚨 TOUCH TARGETS ON A PHONE. Measured at 320x568: reset was 40x32 and
+     the target box 62x36, both under the 44px minimum a finger needs. They
+     were sized for a mouse, and the dock is the part of this page most
+     likely to be used one-handed while actually holding a book.
+     ⚠️ Only under 560px, so the desktop dock keeps its tighter proportions. */
+  @media (max-width:560px) {
+    .rl-ico.rl-small { min-width:46px; height:44px; }
+    .rl-target input { height:44px; padding-block:0; }
+    .rl-spot input { height:44px; }
+  }
+
   @media (max-width:520px) {
     .rl-range { gap:6px; }
     .rl-isbn { grid-template-columns:1fr; }
