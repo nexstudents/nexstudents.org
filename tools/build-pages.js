@@ -1094,6 +1094,7 @@ const lessonCards = (list, showSubject, slots) => {
    writing an adapter, never touching the pager. */
 const { UNITS, BUILT } = require("./leif-units.js");
 const { GRADE3, GRADE4, GRADE7 } = require("./english-units.js");
+const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
 
 /* Leif world history: lessons are bare strings, BUILT maps "unit:n" to a slug.
    🚨 FILTERED BY GRADE, because this course spans two. Unit 1 is Rome, which
@@ -1718,6 +1719,49 @@ const parents = () => `<div class="band"><div class="wrap">
     placement is live now and is genuinely free &mdash; no card, no account.</p>
 </div></div>`;
 
+/* ── THE EXTRAS SHELF ─────────────────────────────────────────────────────
+   Paul, 2026-09-03: "inside extras you build the thumbnail like reading log
+   just like lessons and worksheets they can click on. one will be for coding,
+   and other things I mentioned."
+
+   🚨 IT REUSES oneCard AND slotCard, it does not draw its own card. Every
+   time this site has grown a second version of a shared component the two
+   have drifted — the nav and the drawer, then the footer. Same shape here.
+
+   ⚠️ A slot is NOT A LINK. Coding and the electives have no page yet, so they
+   render through slotCard and say Coming Soon, exactly like an unbuilt lesson
+   → feedback_never_assign_an_unbuilt_lesson. Give one an `href` only when its
+   page is actually built, or the card sends a student nowhere. */
+const EXTRAS = [
+  { id: "extras/reading-log", href: "/extras/reading-log/",
+    eyebrow: "Reading &middot; Any Book",
+    title: "Reading Log",
+    blurb: "Time your reading, write what you read, and keep every session to look back at.",
+    meta: "Timer &middot; saved on this device",
+    contains: [
+      "A countdown timer that starts at 30 minutes and remembers a longer one",
+      "Somewhere to write what happened and what you liked about it",
+      "The pages you covered, so the next session starts where you stopped",
+      "Every past session kept, and a note of whether you finished the book",
+    ] },
+
+  { eyebrow: "Coding &middot; Coming Soon", title: "Coding",
+    blurb: "Write real code in the browser and see it run. Nothing to install." },
+
+  { eyebrow: "Electives &middot; Coming Soon", title: "Electives",
+    blurb: "Subjects outside the core four, for a student who wants to go wider." },
+];
+
+const extrasShelf = () => `<div class="band"><div class="wrap">
+  <div class="cardgrid">
+    ${EXTRAS.map((x) => x.href
+      ? oneCard({ id: x.id, href: x.href, title: x.title, blurb: x.blurb,
+                  meta: x.meta, price: "$0", contains: x.contains }, x.eyebrow)
+      : slotCard(x.eyebrow, x.title, x.blurb)).join("\n    ")}
+  </div>
+</div></div>`;
+
+
 const pages = [
   /* /grades/ was DELETED on 2026-08-26. Paul: "get rid of the grades tab and
      replace it with the nav panel." The dropdown lists every grade and the
@@ -1730,6 +1774,37 @@ const pages = [
     crumb: "Worksheets", h1: "Every Sheet, in One Place.",
     lead: "Free printables and term packets across English, History, Maths and Science. Filter by grade, by subject, or by whether it costs anything. Answer keys are always included free.",
     body: empty("The shelf is being built. 7th grade goes up first, then the grades either side of it.") },
+
+  /* ⭐ EXTRAS — Paul, 2026-09-03. The home for anything outside the four
+     subjects: the reading log now, coding and electives later.
+     🚨 IT IS A SHELF, NOT A PAGE OF CONTENT. Paul: "inside extras you build
+     the thumbnail like reading log just like lessons and worksheets they can
+     click on. one will be for coding, and other things I mentioned." So the
+     reading log lives at its OWN url and this page is cards, exactly like
+     /grade-3/english/lessons/. Unbuilt cards are slots and say Coming Soon.
+     ⚠️ `pclass: "termshead"` is what centres the title. Paul: "that Extras
+     title needs to be centered." It is the same centring the legal pages
+     use — do not add a second rule for it. */
+  { dir: "extras", active: "x", pclass: "termshead",
+    title: "Extras — NexStudents",
+    desc: "A reading log with a built-in timer, plus coding and electives to come.",
+    crumb: "Extras", h1: "Extras.",
+    lead: "Things that are not one of the four subjects. Pick one.",
+    body: extrasShelf() },
+
+  /* The reading log itself. Its own page so the Extras shelf can hold cards. */
+  { dir: "extras/reading-log", active: "x",
+    title: "Reading Log — NexStudents",
+    desc: "Time your reading, write what you read, and keep every session.",
+    /* ⚠️ CRUMB IS ONE WORD, NOT A TRAIL. Paul, 2026-09-03: "you also need to
+       get rid of that extra back button and we decided not to add that with
+       other pages. we did that especially when we added the home button."
+       This said "Extras > Reading Log", which reads as a back link. Every
+       other generated page uses a single word here — About, Games, Contact.
+       The nav and the Home button are how you get back. */
+    crumb: "Reading Log", h1: "Reading Log.",
+    lead: "Set a timer, read, then write down what happened and what you liked. Every session is kept underneath so you can look back at what you have read and how long you spent on it.",
+    body: readingLogMarkup(), script: readingLogScript() },
 
   { dir: "games", active: "g",
     title: "Games — NexStudents",

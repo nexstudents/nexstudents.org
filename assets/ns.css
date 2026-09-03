@@ -217,6 +217,18 @@ body.nav-open .scrim{opacity:1;visibility:visible}
    justify-content doing nothing, so the label sat hard left in a full-width
    button. Paul spotted it on the phone, 2026-08-26. */
 .drawer .btn{margin-top:auto;display:flex;align-items:center;justify-content:center;text-align:center}
+/* 🚨 THE DRAWER MUST NOT SCROLL, AND EXTRAS MADE IT A SEVENTH ROW (2026-09-03).
+   Measured in an iframe at four phone sizes: with the full-size Support button
+   it came to 578px inside a 568px viewport at 320x568. Ten pixels over.
+   Paul, 2026-09-03: "if you need to shrink the support us button go ahead."
+   So it shrinks ONLY on short screens - nothing changes on a normal phone.
+   ⚠️ Re-measure at 320x568 before adding another row. Six rows had 20px of
+   slack, which was luck rather than clearance; seven has none. */
+@media (max-height:600px){
+  .drawer .btn{padding:8px 16px;font-size:14px}
+  .drawer a,.drawer button.row,.drawer .row{padding-block:8px}
+  .drawer .note{display:none}
+}
 
 /* ── 1. HERO — the shelf is visible immediately, Start here is the CTA ── */
 .hero{padding-block:64px 72px;position:relative}

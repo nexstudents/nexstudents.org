@@ -46,6 +46,14 @@ const NAV = [
   { href: "/games/",       label: "Games",       note: "Play in the browser", key: "g",  top: true },
   { href: "/comics/",      label: "Comics",      note: "Read on the site",    key: "c",  top: true },
   { href: "/for-parents/", label: "For Parents", note: "Placement exams",     key: "p",  top: true },
+  /* ⭐ EXTRAS, added 2026-09-03. Paul: "I am considering making an Extras page
+     for many things like coding, reading, even electives we can offer possibly
+     in the future." It holds the reading log today and is the home for anything
+     that is not one of the four subjects.
+     🚨 THIS IS A SEVENTH DRAWER ROW AND THE DRAWER MUST NOT SCROLL. See the
+     note below: About and Contact were REMOVED to get it down to six, and at
+     360x640 six was clearing by only 20px. Measured after adding this one. */
+  { href: "/extras/",      label: "Extras",      note: "Reading log and more", key: "x",  top: true },
   /* ⚠️ ABOUT AND CONTACT ARE NOT HERE EITHER, 2026-09-02. Paul: "you can also
      probably remove about AND CONTACT MAYBE" - and the measurement agreed. The
      drawer must not scroll, and with these two it was 633px inside a 560px
