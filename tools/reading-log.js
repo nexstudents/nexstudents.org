@@ -61,6 +61,7 @@ function readingLogScript() {
   var KEY = "ns:readlog", TKEY = "ns:readlog:target";
   var PLAY = ${JSON.stringify(ICON.play)};
   var PAUSE = ${JSON.stringify(ICON.pause)};
+  var BELL  = ${JSON.stringify(ICON.bell)};
 
   var $ = function(id){ return document.getElementById(id); };
   var elClock = $("rlClock");
@@ -117,7 +118,61 @@ function readingLogScript() {
 
   var target = loadTarget();
   elTarget.value = target;
-  var elapsed = 0, running = false, tick = null;
+  /* 🚨 TWO NUMBERS, AND ONLY ONE OF THEM IS EVIDENCE. Paul, 2026-09-03:
+     "we made the scrub to adjust the time and in theory the child could turn
+     down the timer and it might still report they read for 30 min but really
+     only read for 5min."
+     He is right, and it was a hole I opened by making the scrub draggable.
+       elapsed  where the scrub SITS. Draggable, drives the countdown.
+       ran      seconds the timer ACTUALLY ticked. Only the interval below
+                raises it, nothing else can touch it, and it is what gets
+                saved and shown.
+     ⚠️ Never write to ran from a seek, a keypress or a target change. The
+     moment anything but the clock can raise it, the log stops being a
+     record of reading and becomes a record of dragging. */
+  var elapsed = 0, ran = 0, running = false, tick = null;
+
+  /* 🚨 TIME'S UP. Paul, 2026-09-03: "add a times up sound and make it on the
+     same play button but instead shows a bell icon and they hit it and it
+     goes back to play and reset the timer."
+     ⚠️ THE BELL RESETS THE COUNTDOWN BUT NOT THE RECORD. Pressing it puts
+     the clock back to the target so the next session starts clean, and
+     LEAVES ran alone - otherwise dismissing the alarm would silently throw
+     away the half hour just read, before it had been saved.
+     ⚠️ The sound is generated, not a file: no asset to load, nothing to 404,
+     and the AudioContext is built on the first PLAY press, which is a real
+     user gesture, so autoplay rules are satisfied by the time it rings. */
+  var ringing = false, actx = null;
+
+  function chime(){
+    try {
+      if (!actx) return;
+      var now = actx.currentTime;
+      [0, 0.28, 0.56].forEach(function(at, i){
+        var osc = actx.createOscillator(), g = actx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = i === 2 ? 1046.5 : 784;   // G5, G5, C6
+        g.gain.setValueAtTime(0.0001, now + at);
+        g.gain.exponentialRampToValueAtTime(0.22, now + at + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + at + 0.26);
+        osc.connect(g); g.connect(actx.destination);
+        osc.start(now + at); osc.stop(now + at + 0.3);
+      });
+    } catch(e){}
+  }
+
+  function ring(){
+    ringing = true;
+    pause();
+    chime();
+    paint();
+  }
+
+  function dismiss(){
+    ringing = false;
+    elapsed = 0;          /* countdown back to the target */
+    paint();              /* ran is deliberately untouched */
+  }
 
   function paint(){
     var total = target * 60, left = total - elapsed;
@@ -159,20 +214,29 @@ function readingLogScript() {
     scrub.setAttribute("aria-valuenow", String(Math.round(TICKS ? (exact / TICKS) * 100 : 0)));
     scrub.setAttribute("aria-valuetext", clockText(left) + " remaining");
 
-    elElapsed.textContent = elapsed === 0
+    /* ⚠️ This line reports ran, never elapsed. Dragging the scrub moves
+       the countdown but must not change what the page claims you read. */
+    elElapsed.textContent = ran === 0
       ? (running ? "Starting" : "Not started")
-      : "Read for " + spell(elapsed) + (left < 0 ? " - past your target" : "");
+      : "Read for " + spell(ran) + (left < 0 ? " - past your target" : "");
 
-    bPlay.innerHTML = running ? PAUSE : PLAY;
-    bPlay.setAttribute("aria-label", running ? "Pause reading" : "Start reading");
+    bPlay.innerHTML = ringing ? BELL : (running ? PAUSE : PLAY);
+    bPlay.setAttribute("aria-label", ringing ? "Time is up - tap to clear"
+                                   : (running ? "Pause reading" : "Start reading"));
+    bPlay.classList.toggle("is-ringing", ringing);
     /* left enabled on purpose - see the note in reading-log-parts.js */
     bReset.disabled = false;
   }
 
   function start(){
     if (running) return;
+    ringing = false;
     running = true;
-    tick = setInterval(function(){ elapsed++; paint(); }, 1000);
+    tick = setInterval(function(){
+      elapsed++; ran++;
+      if (elapsed >= target * 60) { ring(); return; }
+      paint();
+    }, 1000);
     paint();
   }
   function pause(){
@@ -180,8 +244,16 @@ function readingLogScript() {
     if (tick) { clearInterval(tick); tick = null; }
     paint();
   }
-  bPlay.addEventListener("click", function(){ running ? pause() : start(); });
-  bReset.addEventListener("click", function(){ pause(); elapsed = 0; paint(); });
+  bPlay.addEventListener("click", function(){
+    if (ringing) { dismiss(); return; }
+    /* Built on a real press, which is what makes the sound allowed to play. */
+    if (!actx) {
+      try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+    }
+    if (actx && actx.state === "suspended") { try { actx.resume(); } catch(e){} }
+    running ? pause() : start();
+  });
+  bReset.addEventListener("click", function(){ pause(); elapsed = 0; ran = 0; paint(); });
 
   // Dragging the scrub moves the countdown, the way dragging the lesson
   // player's bar moves the reading. It sets time ALREADY READ, so releasing
@@ -448,8 +520,13 @@ function readingLogScript() {
                 : (e.from ? ("From page " + e.from) : "Pages not recorded");
       var cover = e.cover ? "<img class='rl-cover' src='" + esc(e.cover) + "' alt='' loading='lazy'>" : "";
       return "<details class='rl-entry'>" +
+        /* ⚠️ THE DURATION IS ON THE COLLAPSED ROW. Paul, 2026-09-03: "it also needs
+           to be on the log after they hit save. you already have the date and time
+           but not how long." It was only visible after opening the entry, which
+           makes the one number the log exists to record the hardest to see. */
         "<summary>" + cover + "<b>" + esc(e.title || "Untitled") + "</b>" +
-        "<span class='rl-when'>" + esc(dateText(e.date)) + "</span>" + tag + "</summary>" +
+        "<span class='rl-when'>" + esc(dateText(e.date)) + "</span>" +
+        "<span class='rl-dur'>" + esc(spell(e.seconds || 0)) + "</span>" + tag + "</summary>" +
         "<div class='rl-body'>" +
           "<dl>" +
             (e.author ? "<dt>By</dt><dd>" + esc(e.author) + "</dd>" : "") +
@@ -476,7 +553,7 @@ function readingLogScript() {
       elTitle.focus();
       return;
     }
-    if (elapsed === 0){
+    if (ran === 0){
       elMsg.className = "rl-msg is-bad";
       elMsg.textContent = "Run the timer before saving a session.";
       return;
@@ -492,7 +569,7 @@ function readingLogScript() {
       author: pendingAuthor || null,
       cover: pendingCover || null,
       isbn: cleanIsbn(elIsbn.value) || null,
-      seconds: elapsed,
+      seconds: ran,          /* real timed reading, never the scrub */
       target: target,
       chapter: (elChapter.value || "").trim() || null,
       chapterTo: (elChapterTo.value || "").trim() || null,
@@ -515,7 +592,7 @@ function readingLogScript() {
     $("rlIsbnField").hidden = false;
     elFound.hidden = true; elFound.innerHTML = "";
     pendingCover = null; pendingAuthor = null;
-    elapsed = 0;
+    elapsed = 0; ran = 0;
     paint();
     render();
   });

@@ -117,6 +117,12 @@ const styles = `
   .rl-ico.is-go { background:var(--fg); color:var(--bg); border-color:var(--fg);
                   min-width:74px; height:46px; padding:0 20px; border-radius:3px; }
   .rl-ico.is-go svg { width:26px; height:26px; }
+  /* The bell state. A gentle pulse so it reads as ASKING for a tap rather
+     than as a new button that appeared. ⚠️ Honours reduced-motion: the
+     colour change alone still says time is up. */
+  .rl-ico.is-ringing { animation:rl-ring 1.1s ease-in-out infinite; }
+  @keyframes rl-ring { 0%,100% { transform:scale(1); } 50% { transform:scale(1.06); } }
+  @media (prefers-reduced-motion:reduce) { .rl-ico.is-ringing { animation:none; } }
   .rl-ico:hover { border-color:var(--fg); }
   /* 🚨 RESET IS NEVER DISABLED-INVISIBLE. Paul, 2026-09-03: "I do not see
      restart icon." It was there - disabled at .4 opacity, which on a dark
@@ -318,6 +324,10 @@ const styles = `
               background:var(--line); flex:0 0 auto; }
   .rl-entry b { font-size:1rem; }
   .rl-when { color:var(--dim); font-size:.85rem; }
+  /* The time read, on the closed row. Same weight as the date, in the
+     accent, because it is the number the log exists for. */
+  .rl-dur { color:var(--rl-accent); font-size:.85rem; font-weight:700;
+            white-space:nowrap; }
   .rl-tag { font-size:.72rem; font-weight:700; text-transform:uppercase;
             letter-spacing:.06em; padding:3px 9px; border-radius:999px;
             border:1px solid var(--line); color:var(--dim); }
@@ -673,6 +683,7 @@ const ICON = {
      is how the two-unit error survived a screenshot. */
   play:  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.9 5.3a1 1 0 0 1 1.52-.85l9.6 6.7a1 1 0 0 1 0 1.7l-9.6 6.7A1 1 0 0 1 6.9 18.7z"/></svg>',
   pause: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>',
+  bell:  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6a1.15 1.15 0 0 1 1.15 1.15v.7A6.1 6.1 0 0 1 18.1 10.4v3.05l1.5 2.4a.9.9 0 0 1-.76 1.38H5.16a.9.9 0 0 1-.76-1.38l1.5-2.4V10.4A6.1 6.1 0 0 1 10.85 4.45v-.7A1.15 1.15 0 0 1 12 2.6z"/><path d="M9.9 18.9h4.2a2.1 2.1 0 0 1-4.2 0z"/></svg>',
   reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4.5V10h5.5"/></svg>',
 };
 
