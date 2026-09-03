@@ -74,7 +74,8 @@ const styles = `
      text. Reset moves down beside the target, where it belongs anyway:
      both are settings, and play is the thing you press. */
   .rl-row { display:flex; align-items:center; justify-content:center; }
-  .rl-ico.rl-small { min-width:40px; height:32px; padding:0 10px; border-radius:3px; }
+  .rl-ico.rl-small { min-width:40px; height:32px; padding:0 10px; border-radius:3px;
+                     position:absolute; right:0; top:50%; transform:translateY(-50%); }
   .rl-ico.rl-small svg { width:17px; height:17px; }
   /* 🚨 SQUARE, NOT ROUND. Paul, 2026-09-03: "the play button doesnt have to
      be circle it can be square like the voice engine." The lesson player draws
@@ -94,8 +95,26 @@ const styles = `
   .rl-ico:hover { border-color:var(--fg); }
   .rl-ico:disabled { opacity:.4; cursor:default; }
 
-  .rl-target { display:flex; align-items:center; justify-content:center; gap:8px;
+  /* A visually-hidden label: present for a screen reader, gone from the eye. */
+  .rl-sr { position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+           overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  /* 🚨 THE ROW CENTRES ON THE NUMBER, NOT ON NUMBER-PLUS-RESET. Reset is
+     taken out of flow and pinned right, so the figure stays on the dock
+     centre line - the same fix as the play button, which stopped being
+     centred the moment a second control shared its row. */
+  /* 🚨 A THREE COLUMN GRID SO THE BOX ITSELF LANDS ON THE CENTRE LINE.
+     justify-content:center centred the input AND the word min as a pair,
+     which left the box 15px off. Same failure as the play button beside
+     reset, and as centring a heading whose box has a max-width: centring a
+     GROUP is not centring the thing inside it.
+     Column 2 holds only the input, so it sits dead centre; min sits in
+     column 3 and reset is absolute, neither pulling on it. */
+  .rl-target { position:relative; display:grid;
+               grid-template-columns:1fr auto 1fr; align-items:center;
+               column-gap:8px; width:100%; max-width:320px;
                color:var(--dim); font-size:.84rem; margin:0; }
+  .rl-target input { grid-column:2; }
+  .rl-target > span { grid-column:3; justify-self:start; }
   .rl-target input { font:inherit; width:4.6em; text-align:center; padding:6px 8px;
                      border-radius:9px; border:1px solid var(--line);
                      background:var(--bg); color:var(--fg); }
@@ -138,11 +157,19 @@ const styles = `
     background-size:18px 18px;
   }
 
-  .rl-pair { display:grid; grid-template-columns:minmax(0,150px) minmax(0,1fr); gap:14px;
+  /* ⚠️ CHAPTERS GET A FROM-TO PAIR TOO. Paul, 2026-09-03: "you also need to
+     do chapter page from chapter page to." A session usually spans chapters
+     the way it spans pages, so one box could not say what was covered.
+     Chapters stay TEXT, not number - a chapter can be 4, or 4a, or a name. */
+  .rl-pair { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px;
              align-items:start; }
   .rl-lab { font-weight:600; font-size:.93rem; }
   .rl-pages { display:flex; align-items:center; gap:8px; }
-  .rl-pages input { width:100%; max-width:110px; }
+  /* ⚠️ DIGITS CENTRE IN THEIR BOX. Paul, 2026-09-03: "make when you write
+     those numbers those numbers are centered in that text box." A page or
+     chapter number is one to three characters in a 110px box, so left-aligned
+     it floats against the edge. The target already did this; these did not. */
+  .rl-pages input { width:100%; max-width:110px; text-align:center; }
   .rl-dash { color:var(--dim); }
   /* ⚠️ TALLER WRITING BOXES. Paul, 2026-09-03: "on the text where you write
      your own summaries you can make those slightly bigger from top and down."
@@ -242,7 +269,17 @@ const styles = `
      needs both, which is the note already in CLAUDE.md. */
   .rl-wrap { max-width:760px; margin-inline:auto; }
   .rl-form { margin-inline:auto; }
-  .rl-card h2, .rl-card > .rl-note { text-align:center; }
+  /* 🚨 text-align ALONE DID NOT CENTRE THE HEADING. Paul, 2026-09-03: "also
+     the what you read title can be Center." It already computed
+     text-align:center - but ns.css gives a heading a max-width for line
+     length, so its BOX was 259px inside a 760px card and sat 229px left of
+     centre. The text was centred inside a box that was not.
+     ⚠️ THIRD TIME THIS EXACT TRAP HAS BITTEN ON THIS PAGE: the page header,
+     the crumb, and now this. It is already written in CLAUDE.md - anything
+     with a max-width needs margin-inline:auto as well as text-align. */
+  .rl-card h2, .rl-card > .rl-note {
+    text-align:center; margin-inline:auto; max-width:100%;
+  }
 
 
   /* ── THE VOICE PLAYER'S PALETTE ───────────────────────────────────────
@@ -377,9 +414,16 @@ const styles = `
      pale grey that vanishes on white.
      ⚠️ <option> needs its own colours. A native dropdown list is drawn by the
      OS and does not inherit the select's background on Windows or Android. */
+  /* 🚨 background-color, NOT background. Paul, 2026-09-03: "there is also a
+     bunch of down arrows right now in what book drop down window?" The
+     shorthand RESETS background-repeat to repeat, so the select arrow tiled
+     across the whole box - a row of chevrons instead of one.
+     ⚠️ This is the exact rule already written in CLAUDE.md: "Never leave a
+     shorthand after the longhand it overwrites." It caught the lesson
+     player once and it caught me here. Longhands only in this block. */
   .rl-field input, .rl-field textarea, .rl-field select,
   .rl-dock .rl-target input {
-    background:#FFFFFF; color:#17181B; border-color:#C6C7CC;
+    background-color:#FFFFFF; color:#17181B; border-color:#C6C7CC;
   }
   .rl-field input::placeholder, .rl-field textarea::placeholder,
   .rl-dock .rl-target input::placeholder { color:#7F8189; opacity:1; }
@@ -461,8 +505,12 @@ function markup() {
            "The Long Winter". -->
       <div class="rl-pair">
         <div class="rl-field">
-          <label for="rlChapter">Chapter <span class="rl-hint">optional</span></label>
-          <input type="text" id="rlChapter" placeholder="4" autocomplete="off">
+          <span class="rl-lab">Chapters <span class="rl-hint">optional</span></span>
+          <div class="rl-pages">
+            <input type="text" id="rlChapter" aria-label="First chapter read" placeholder="from" autocomplete="off">
+            <span class="rl-dash" aria-hidden="true">&ndash;</span>
+            <input type="text" id="rlChapterTo" aria-label="Last chapter read" placeholder="to" autocomplete="off">
+          </div>
         </div>
         <div class="rl-field">
           <span class="rl-lab">Pages</span>
@@ -514,7 +562,13 @@ function markup() {
     </div>
     <p class="rl-target">
       <button type="button" class="rl-ico rl-small" id="rlReset" aria-label="Reset the timer" disabled>${ICON.reset}</button>
-      <label for="rlTarget">Target</label>
+      <!-- ⚠️ NO VISIBLE "Target" LABEL. Paul, 2026-09-03: "dont put the word
+           Target in the time adjuster just put that text box and put it in
+           the center." The box sits under a clock and is followed by "min",
+           so a word saying what it is adds nothing. The label stays for
+           screen readers: a bare number input with no accessible name is a
+           real problem, not a cosmetic one. -->
+      <label class="rl-sr" for="rlTarget">Target in minutes</label>
       <input type="number" id="rlTarget" min="1" max="600" step="5" value="30">
       <span>min</span>
     </p>

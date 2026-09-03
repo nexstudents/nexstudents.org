@@ -210,7 +210,7 @@ function readingLogScript() {
   /* ── the form ─────────────────────────────────────────────────────── */
   var elTitle = $("rlTitle"), elFrom = $("rlFrom"), elTo = $("rlTo");
   var elSummary = $("rlSummary"), elLiked = $("rlLiked"), elFinished = $("rlFinished");
-  var elChapter = $("rlChapter");
+  var elChapter = $("rlChapter"), elChapterTo = $("rlChapterTo");
   var elPick = $("rlPick"), elMsg = $("rlMsg"), elList = $("rlList"), elTotal = $("rlTotal");
   var elIsbn = $("rlIsbn"), elIsbnMsg = $("rlIsbnMsg"), elFound = $("rlFound");
   var pendingCover = null, pendingAuthor = null;
@@ -315,7 +315,7 @@ function readingLogScript() {
   elPick.addEventListener("change", function(){
     var o = elPick.options[elPick.selectedIndex];
     if (!elPick.value){
-      elTitle.value = ""; elFrom.value = ""; elTo.value = ""; elChapter.value = "";
+      elTitle.value = ""; elFrom.value = ""; elTo.value = ""; elChapter.value = ""; elChapterTo.value = "";
       pendingCover = null; pendingAuthor = null;
       elFound.hidden = true; elFound.innerHTML = "";
       $("rlIsbnField").hidden = false;
@@ -374,7 +374,7 @@ function readingLogScript() {
               (e.target ? " (target " + e.target + " min)" : "") + "</dd>" +
             "<dt>Pages</dt><dd>" + esc(pages) +
               ((e.from && e.to && e.to >= e.from) ? " - " + (e.to - e.from + 1) + " pages" : "") + "</dd>" +
-            (e.chapter ? "<dt>Chapter</dt><dd>" + esc(e.chapter) + "</dd>" : "") +
+            (e.chapter ? "<dt>" + (e.chapterTo ? "Chapters" : "Chapter") + "</dt><dd>" + esc(e.chapter) + (e.chapterTo ? " to " + esc(e.chapterTo) : "") + "</dd>" : "") +
             (e.isbn ? "<dt>ISBN</dt><dd>" + esc(e.isbn) + "</dd>" : "") +
             "<dt>Finished</dt><dd>" + (e.finished ? "Yes" : "Not yet") + "</dd>" +
           "</dl>" +
@@ -412,6 +412,7 @@ function readingLogScript() {
       seconds: elapsed,
       target: target,
       chapter: (elChapter.value || "").trim() || null,
+      chapterTo: (elChapterTo.value || "").trim() || null,
       from: parseInt(elFrom.value, 10) || null,
       to: parseInt(elTo.value, 10) || null,
       summary: summary,
