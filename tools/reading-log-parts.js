@@ -516,7 +516,17 @@ const styles = `
     .rl-range { grid-template-columns:1fr; row-gap:10px; justify-items:center; }
     .rl-range > .rl-spot:first-of-type,
     .rl-range > .rl-spot:last-of-type { justify-self:center; }
+    /* 🚨 A STACKED BUTTON MUST NOT STRETCH. Paul, 2026-09-03: "that look it
+       up button on mobile is way too large. remember buttons and text boxes
+       dont need to be fully like that."
+       Dropping to one column made the button a grid ITEM in a 1fr track, so
+       it filled the width - a full-bleed bar for two words. Same complaint
+       he already made about the desktop fields. A button is sized by its
+       label; justify-self:start keeps it that size and puts it under the
+       input where a stacked control belongs. */
     .rl-isbn { grid-template-columns:1fr; }
+    .rl-isbn .rl-btn { justify-self:start; width:auto; }
+    .rl-save .rl-btn { width:auto; }
     body { padding-bottom:150px; }
   }
 </style>`;
