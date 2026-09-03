@@ -101,7 +101,7 @@
   .rl-clock { font-variant-numeric:tabular-nums; font-weight:700;
               font-size:clamp(1.9rem,7vw,2.6rem); line-height:1;
               letter-spacing:-.03em; margin:0; text-align:center; }
-  .rl-clock.is-over { color:#5cc98a; }
+  .rl-clock.is-over { color:var(--rl-accent); }
   .rl-elapsed { color:var(--dim); font-size:.82rem; margin:0; text-align:center; }
 
   /* 🚨 THE SCRUB IS TICK BARS, LIKE THE VOICE PLAYER, AND IT EMPTIES RIGHT
@@ -122,7 +122,7 @@
   .rl-tick.spent { background:var(--line); }
   .rl-tick.edge  { background:var(--fg); }
   .rl-scrub.dragging .rl-tick { transition:none; }
-  .rl-scrub.is-over .rl-tick { background:#5cc98a; }
+  .rl-scrub.is-over .rl-tick { background:var(--rl-accent); }
 
   /* 🚨 PLAY SITS ALONE SO IT IS ACTUALLY CENTRED. Paul, 2026-09-03: "the
      play button also needs to be centered and you can put the reset next to
@@ -131,14 +131,22 @@
      text. Reset moves down beside the target, where it belongs anyway:
      both are settings, and play is the thing you press. */
   .rl-row { display:flex; align-items:center; justify-content:center; }
-  .rl-ico.rl-small { width:38px; height:38px; }
+  .rl-ico.rl-small { min-width:40px; height:32px; padding:0 10px; border-radius:3px; }
   .rl-ico.rl-small svg { width:17px; height:17px; }
-  .rl-ico { width:52px; height:52px; border-radius:50%; display:grid;
+  /* 🚨 SQUARE, NOT ROUND. Paul, 2026-09-03: "the play button doesnt have to
+     be circle it can be square like the voice engine." The lesson player draws
+     every control as border-radius:3px (lesson-template.html line 230), so a
+     pill or a circle here was the last thing making the two look unrelated. */
+  /* ⚠️ RECTANGLE, wider than tall. Paul: "well I guess it is rectangle not
+     really square." The player draws its controls with padding:9px 10px on a
+     3px radius, so they come out wider than they are tall. Sized the same way
+     here - padding sets the width, height is fixed. */
+  .rl-ico { min-width:56px; height:40px; padding:0 14px; border-radius:3px; display:grid;
             place-items:center; cursor:pointer; padding:0;
             border:1px solid var(--line); background:var(--panel-2); color:var(--fg); }
   .rl-ico svg { width:22px; height:22px; display:block; }
   .rl-ico.is-go { background:var(--fg); color:var(--bg); border-color:var(--fg);
-                  width:60px; height:60px; }
+                  min-width:74px; height:46px; padding:0 20px; border-radius:3px; }
   .rl-ico.is-go svg { width:26px; height:26px; }
   .rl-ico:hover { border-color:var(--fg); }
   .rl-ico:disabled { opacity:.4; cursor:default; }
@@ -187,16 +195,45 @@
     background-size:18px 18px;
   }
 
-  .rl-pages { display:grid; grid-template-columns:minmax(0,150px) minmax(0,150px); gap:14px; }
+  .rl-pair { display:grid; grid-template-columns:minmax(0,150px) minmax(0,1fr); gap:14px;
+             align-items:start; }
+  .rl-lab { font-weight:600; font-size:.93rem; }
+  .rl-pages { display:flex; align-items:center; gap:8px; }
+  .rl-pages input { width:100%; max-width:110px; }
+  .rl-dash { color:var(--dim); }
+  /* ⚠️ TALLER WRITING BOXES. Paul, 2026-09-03: "on the text where you write
+     your own summaries you can make those slightly bigger from top and down."
+     96px was two lines and made a few sentences feel like too much to ask. */
+  .rl-field textarea { min-height:150px; }
   .rl-check { display:flex; align-items:center; gap:10px; font-weight:600; font-size:.93rem; }
-  .rl-check input { width:20px; height:20px; accent-color:#5cc98a; }
+  .rl-check input { width:20px; height:20px; accent-color:var(--rl-accent); }
   .rl-save { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-  .rl-btn { font:inherit; font-weight:600; cursor:pointer; border-radius:999px;
-            border:1px solid var(--line); background:var(--panel-2); color:var(--fg);
-            padding:11px 20px; min-height:44px; }
-  .rl-btn.is-go { background:var(--fg); color:var(--bg); border-color:var(--fg); }
+  /* ⚠️ A PLAIN BUTTON MUST NOT SINK INTO THE CARD IN DARK MODE. Paul,
+     2026-09-03: "that look up button is also a little too dark on dark
+     mode." --panel-2 is barely lighter than --panel, so on a dark card the
+     button had almost no edge and read as disabled. It sits on --panel-2
+     with a FIRMER border and full-strength text now, which is the same
+     lesson already in CLAUDE.md: light needs firmer borders than dark, and
+     a .5 opacity that reads as dimmed on one theme reads as broken on the
+     other. Here the fix runs the other way - dark needed the firmer edge. */
+  /* 🚨 GRAPHITE BLUE, SAME AS PLAY. Paul, 2026-09-03: "make the lookup play
+     button the same thing color like graphite blue." Look It Up and Save are
+     the two things you press on this page, so they wear the accent the play
+     button wears. An outline button beside a filled one read as secondary and
+     as too dark before that.
+     ⚠️ --rl-accent is declared on .rl-wrap as well as .rl-dock, which is why
+     a button inside a CARD can reach it. Declare it in one place only and
+     these go colourless. */
+  .rl-btn { font:inherit; font-weight:600; cursor:pointer; border-radius:3px;
+            border:1px solid var(--rl-accent); background:var(--rl-accent);
+            color:var(--rl-on-accent); padding:11px 20px; min-height:44px; }
+  .rl-btn:hover { filter:brightness(1.06); }
+  /* ⚠️ .is-go NO LONGER RECOLOURS. Save used to be white while Look It Up
+     went graphite blue, which made the SECONDARY action the loud one. Both
+     are accent now; is-go is kept only as a hook. */
+  .rl-btn.is-go { font-weight:700; }
   .rl-msg { color:var(--dim); font-size:.88rem; }
-  .rl-msg.is-ok { color:#5cc98a; }
+  .rl-msg.is-ok { color:var(--rl-accent); }
   .rl-msg.is-bad { color:#e0a33c; }
 
   /* ── ISBN LOOKUP ────────────────────────────────────────────────────── */
@@ -227,7 +264,7 @@
   .rl-tag { font-size:.72rem; font-weight:700; text-transform:uppercase;
             letter-spacing:.06em; padding:3px 9px; border-radius:999px;
             border:1px solid var(--line); color:var(--dim); }
-  .rl-tag.is-done { color:#5cc98a; border-color:#5cc98a; }
+  .rl-tag.is-done { color:var(--rl-accent); border-color:var(--rl-accent); }
   .rl-tag.is-todo { color:#e0a33c; border-color:#e0a33c; }
   .rl-body { padding:2px 16px 18px; display:grid; gap:12px; }
   .rl-body dl { margin:0; display:grid; grid-template-columns:auto minmax(0,1fr);
@@ -269,10 +306,15 @@
      Paul, 2026-09-03: "can you also make this match the same theme as the
      voice engine?"
 
-     🚨 THE VALUES ARE LIFTED FROM lesson-template.html, NOT INVENTED. That
-     file is the master for the reading player, and its accent is verdigris:
-       light  --verdigris:#25664A  --tick-now:#14432E  --tick-done:rgba(37,102,74,.30)
-       dark   --verdigris:#66C293  --tick-now:#3F9B69  --tick-done:rgba(102,194,147,.28)
+     🚨 GRAPHITE, NOT VERDIGRIS. Paul, 2026-09-03: "that green does not match
+     make it match like the graphite theme color." He is right and I picked the
+     wrong one: verdigris is the palette the CSS variables are NAMED after, but
+     THEMES.graphite is what the player actually loads - lesson-template.html
+     line 1107, "Graphite is the default reading theme. Paul, 2026-08-29."
+     ⚠️ Reading the variable names is not reading the theme. The values below
+     are THEMES.graphite, lifted, not invented:
+       light  accent #3A4A63  tickNow #242E3F  tickDone rgba(58,74,99,.30)  onAccent #F5F5F7
+       dark   accent #8CA5CC  tickNow #5C79A6  tickDone rgba(140,165,204,.28) onAccent #0F1013
 
      ⚠️ THEY CANNOT BE USED DIRECTLY. A lesson page defines --verdigris; an
      ns.css page does NOT, and a custom property with no declaration resolves to
@@ -285,21 +327,21 @@
      match, or the two players drift apart - which is the whole thing Paul is
      asking to avoid. */
   .rl-dock, .rl-wrap {
-    --rl-accent:#25664A;
-    --rl-live:#14432E;
-    --rl-spent:rgba(37,102,74,.30);
-    --rl-on-accent:#F2F7EF;
+    --rl-accent:#3A4A63;
+    --rl-live:#242E3F;
+    --rl-spent:rgba(58,74,99,.30);
+    --rl-on-accent:#F5F5F7;
   }
   @media (prefers-color-scheme:dark) {
     :root:not([data-theme="light"]) .rl-dock,
     :root:not([data-theme="light"]) .rl-wrap {
-      --rl-accent:#66C293; --rl-live:#3F9B69;
-      --rl-spent:rgba(102,194,147,.28); --rl-on-accent:#0B160F;
+      --rl-accent:#8CA5CC; --rl-live:#5C79A6;
+      --rl-spent:rgba(140,165,204,.28); --rl-on-accent:#0F1013;
     }
   }
   :root[data-theme="dark"] .rl-dock, :root[data-theme="dark"] .rl-wrap {
-    --rl-accent:#66C293; --rl-live:#3F9B69;
-    --rl-spent:rgba(102,194,147,.28); --rl-on-accent:#0B160F;
+    --rl-accent:#8CA5CC; --rl-live:#5C79A6;
+    --rl-spent:rgba(140,165,204,.28); --rl-on-accent:#0F1013;
   }
 
   /* The ticks read like the lesson player's: accent for time you still have,
@@ -313,14 +355,105 @@
                   border-color:var(--rl-accent); }
   .rl-ico.is-go:hover { filter:brightness(1.08); }
   .rl-clock.is-over { color:var(--rl-accent); }
-  .rl-btn.is-go { background:var(--rl-accent); color:var(--rl-on-accent);
-                  border-color:var(--rl-accent); }
+
   .rl-msg.is-ok { color:var(--rl-accent); }
   .rl-tag.is-done { color:var(--rl-accent); border-color:var(--rl-accent); }
   .rl-check input { accent-color:var(--rl-accent); }
 
+
+  /* ── THE DOCK WEARS THE PLAYER'S SKIN, NOT JUST ITS ACCENT ────────────
+     Paul, 2026-09-03: "yeah but make it look closer to the actual engine."
+     Matching only the accent left a graphite BUTTON on an ns.css panel, so
+     it still read as a different control. The lesson player's bar is built
+     from --surface, --rule, --surface-2, --ink and --control-bg, so the dock
+     takes all of them from THEMES.graphite too.
+     ⚠️ Only the DOCK. The cards above it stay on ns.css tokens, because they
+     are page furniture and should match the rest of the site - the player is
+     the thing that should feel lifted out of a lesson. */
+  .rl-dock {
+    --rl-surface:#F5F5F7; --rl-s2:#DBDBDF; --rl-rule:#C6C7CC;
+    --rl-ink:#17181B; --rl-ink-soft:#4C4E54;
+    --rl-ctl-bg:#333F55; --rl-ctl-ink:#EFF0F3; --rl-ctl-border:#242E3F;
+    background:var(--rl-surface);
+    border-top:1px solid var(--rl-rule);
+    box-shadow:0 -1px 2px rgba(21,32,24,.07), 0 -8px 24px rgba(21,32,24,.07);
+    color:var(--rl-ink);
+  }
+  @media (prefers-color-scheme:dark) {
+    :root:not([data-theme="light"]) .rl-dock {
+      --rl-surface:#1B1D21; --rl-s2:#25272D; --rl-rule:#2F323A;
+      --rl-ink:#E4E5E9; --rl-ink-soft:#989BA4;
+      --rl-ctl-bg:#222630; --rl-ctl-ink:#E0E3EA; --rl-ctl-border:#414755;
+      box-shadow:0 -6px 24px rgba(0,0,0,.34);
+    }
+  }
+  :root[data-theme="dark"] .rl-dock {
+    --rl-surface:#1B1D21; --rl-s2:#25272D; --rl-rule:#2F323A;
+    --rl-ink:#E4E5E9; --rl-ink-soft:#989BA4;
+    --rl-ctl-bg:#222630; --rl-ctl-ink:#E0E3EA; --rl-ctl-border:#414755;
+    box-shadow:0 -6px 24px rgba(0,0,0,.34);
+  }
+
+  .rl-dock .rl-clock { color:var(--rl-ink); }
+  .rl-dock .rl-elapsed, .rl-dock .rl-target { color:var(--rl-ink-soft); }
+  .rl-dock .rl-target input { background:var(--rl-surface); color:var(--rl-ink);
+                              border-color:var(--rl-rule); }
+
+  /* An unspent tick is the player's --surface-2, exactly as in a lesson. */
+  .rl-dock .rl-tick { background:var(--rl-live); }
+  .rl-dock .rl-tick.spent { background:var(--rl-s2); }
+
+  /* 🚨 PLAY IS THE ACCENT, NOT ctlBg. Paul, 2026-09-03: "you also made the
+     play button too dark so make sure it matches the same theme color."
+     I had used graphite ctlBg #222630, which is what the player uses for a
+     control - but in the player that button sits inside a lit settings row,
+     whereas here it is the one thing you press on a #1B1D21 dock. Near-black
+     on near-black. The ACCENT is the theme colour in the sense he means:
+     #8CA5CC dark, #3A4A63 light, with onAccent ink on top. */
+  .rl-dock .rl-ico.is-go { background:var(--rl-accent); color:var(--rl-on-accent);
+                           border-color:var(--rl-accent); }
+  .rl-dock .rl-ico.is-go:hover { filter:brightness(1.06); }
+  .rl-dock .rl-ico { background:var(--rl-surface); color:var(--rl-ink);
+                     border-color:var(--rl-rule); }
+  .rl-dock .rl-ico:hover { border-color:var(--rl-ctl-bg); }
+
+
+  /* ── THE FIELDS ARE WHITE INSIDE, IN BOTH THEMES ──────────────────────
+     Paul, 2026-09-03: "all of the text boxes are still black and I need them
+     to be white on the inside. including the one to a drop down options."
+
+     They were var(--bg), which is near-black in dark mode, so a form on a
+     dark page was black boxes on a dark card. They are paper now: white
+     ground, graphite ink, whatever the theme is.
+
+     🚨 THE INK MUST MOVE WITH THE GROUND. A white background with var(--fg)
+     text is white-on-white the moment dark mode is on - the exact bug already
+     recorded in CLAUDE.md about a worksheet that set background:#fff alone.
+     So every one of these sets BOTH.
+     ⚠️ AND THE PLACEHOLDER TOO. It inherits nothing useful and would stay a
+     pale grey that vanishes on white.
+     ⚠️ <option> needs its own colours. A native dropdown list is drawn by the
+     OS and does not inherit the select's background on Windows or Android. */
+  .rl-field input, .rl-field textarea, .rl-field select,
+  .rl-dock .rl-target input {
+    background:#FFFFFF; color:#17181B; border-color:#C6C7CC;
+  }
+  .rl-field input::placeholder, .rl-field textarea::placeholder,
+  .rl-dock .rl-target input::placeholder { color:#7F8189; opacity:1; }
+  .rl-field select option { background:#FFFFFF; color:#17181B; }
+  .rl-field input:focus-visible, .rl-field textarea:focus-visible,
+  .rl-field select:focus-visible {
+    outline:2px solid var(--rl-accent); outline-offset:1px; border-color:var(--rl-accent);
+  }
+  /* The arrow is drawn on that white ground now, so it needs the ink colour
+     rather than the mid grey that suited a dark box. */
+  .rl-field select {
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2317181B' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-color:#FFFFFF;
+  }
+
   @media (max-width:520px) {
-    .rl-pages { grid-template-columns:1fr; }
+    .rl-pair { grid-template-columns:1fr; }
     .rl-isbn { grid-template-columns:1fr; }
     body { padding-bottom:150px; }
   }
@@ -355,14 +488,28 @@
         <input type="text" id="rlTitle" placeholder="The title of the book" autocomplete="off">
       </div>
 
-      <div class="rl-pages">
+      <!-- 🚨 CHAPTER AND PAGES, not "from page" and "to page". Paul,
+           2026-09-03: "you can also put the page start and Page end I would
+           change it to chapter and pages."
+           ⚠️ THE TWO PAGE BOXES SURVIVE, grouped under one Pages label. They
+           are what makes "Continue [Book]" able to prefill the next page, so
+           collapsing them into one free-text box would quietly kill that.
+           Chapter is free text because a chapter can be "4" or "4-5" or
+           "The Long Winter". -->
+      <div class="rl-pair">
         <div class="rl-field">
-          <label for="rlFrom">From page</label>
-          <input type="number" id="rlFrom" min="1" max="99999" inputmode="numeric">
+          <label for="rlChapter">Chapter <span class="rl-hint">optional</span></label>
+          <input type="text" id="rlChapter" placeholder="4" autocomplete="off">
         </div>
         <div class="rl-field">
-          <label for="rlTo">To page</label>
-          <input type="number" id="rlTo" min="1" max="99999" inputmode="numeric">
+          <span class="rl-lab">Pages</span>
+          <div class="rl-pages">
+            <input type="number" id="rlFrom" min="1" max="99999" inputmode="numeric"
+                   aria-label="First page read" placeholder="from">
+            <span class="rl-dash" aria-hidden="true">&ndash;</span>
+            <input type="number" id="rlTo" min="1" max="99999" inputmode="numeric"
+                   aria-label="Last page read" placeholder="to">
+          </div>
         </div>
       </div>
 
@@ -772,6 +919,7 @@ if(panel){
   /* ── the form ─────────────────────────────────────────────────────── */
   var elTitle = $("rlTitle"), elFrom = $("rlFrom"), elTo = $("rlTo");
   var elSummary = $("rlSummary"), elLiked = $("rlLiked"), elFinished = $("rlFinished");
+  var elChapter = $("rlChapter");
   var elPick = $("rlPick"), elMsg = $("rlMsg"), elList = $("rlList"), elTotal = $("rlTotal");
   var elIsbn = $("rlIsbn"), elIsbnMsg = $("rlIsbnMsg"), elFound = $("rlFound");
   var pendingCover = null, pendingAuthor = null;
@@ -876,7 +1024,7 @@ if(panel){
   elPick.addEventListener("change", function(){
     var o = elPick.options[elPick.selectedIndex];
     if (!elPick.value){
-      elTitle.value = ""; elFrom.value = ""; elTo.value = "";
+      elTitle.value = ""; elFrom.value = ""; elTo.value = ""; elChapter.value = "";
       pendingCover = null; pendingAuthor = null;
       elFound.hidden = true; elFound.innerHTML = "";
       $("rlIsbnField").hidden = false;
@@ -935,6 +1083,7 @@ if(panel){
               (e.target ? " (target " + e.target + " min)" : "") + "</dd>" +
             "<dt>Pages</dt><dd>" + esc(pages) +
               ((e.from && e.to && e.to >= e.from) ? " - " + (e.to - e.from + 1) + " pages" : "") + "</dd>" +
+            (e.chapter ? "<dt>Chapter</dt><dd>" + esc(e.chapter) + "</dd>" : "") +
             (e.isbn ? "<dt>ISBN</dt><dd>" + esc(e.isbn) + "</dd>" : "") +
             "<dt>Finished</dt><dd>" + (e.finished ? "Yes" : "Not yet") + "</dd>" +
           "</dl>" +
@@ -971,6 +1120,7 @@ if(panel){
       isbn: cleanIsbn(elIsbn.value) || null,
       seconds: elapsed,
       target: target,
+      chapter: (elChapter.value || "").trim() || null,
       from: parseInt(elFrom.value, 10) || null,
       to: parseInt(elTo.value, 10) || null,
       summary: summary,
@@ -983,7 +1133,7 @@ if(panel){
     elMsg.textContent = (summary && liked) ? "Saved." : "Saved, and marked as needing a summary.";
 
     elSummary.value = ""; elLiked.value = "";
-    elFrom.value = ""; elTo.value = "";
+    elFrom.value = ""; elTo.value = ""; elChapter.value = "";
     elIsbn.value = ""; elIsbnMsg.textContent = "";
     elFinished.checked = false;
     elPick.value = "";

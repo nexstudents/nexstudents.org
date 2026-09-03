@@ -210,6 +210,7 @@ function readingLogScript() {
   /* ── the form ─────────────────────────────────────────────────────── */
   var elTitle = $("rlTitle"), elFrom = $("rlFrom"), elTo = $("rlTo");
   var elSummary = $("rlSummary"), elLiked = $("rlLiked"), elFinished = $("rlFinished");
+  var elChapter = $("rlChapter");
   var elPick = $("rlPick"), elMsg = $("rlMsg"), elList = $("rlList"), elTotal = $("rlTotal");
   var elIsbn = $("rlIsbn"), elIsbnMsg = $("rlIsbnMsg"), elFound = $("rlFound");
   var pendingCover = null, pendingAuthor = null;
@@ -314,7 +315,7 @@ function readingLogScript() {
   elPick.addEventListener("change", function(){
     var o = elPick.options[elPick.selectedIndex];
     if (!elPick.value){
-      elTitle.value = ""; elFrom.value = ""; elTo.value = "";
+      elTitle.value = ""; elFrom.value = ""; elTo.value = ""; elChapter.value = "";
       pendingCover = null; pendingAuthor = null;
       elFound.hidden = true; elFound.innerHTML = "";
       $("rlIsbnField").hidden = false;
@@ -373,6 +374,7 @@ function readingLogScript() {
               (e.target ? " (target " + e.target + " min)" : "") + "</dd>" +
             "<dt>Pages</dt><dd>" + esc(pages) +
               ((e.from && e.to && e.to >= e.from) ? " - " + (e.to - e.from + 1) + " pages" : "") + "</dd>" +
+            (e.chapter ? "<dt>Chapter</dt><dd>" + esc(e.chapter) + "</dd>" : "") +
             (e.isbn ? "<dt>ISBN</dt><dd>" + esc(e.isbn) + "</dd>" : "") +
             "<dt>Finished</dt><dd>" + (e.finished ? "Yes" : "Not yet") + "</dd>" +
           "</dl>" +
@@ -409,6 +411,7 @@ function readingLogScript() {
       isbn: cleanIsbn(elIsbn.value) || null,
       seconds: elapsed,
       target: target,
+      chapter: (elChapter.value || "").trim() || null,
       from: parseInt(elFrom.value, 10) || null,
       to: parseInt(elTo.value, 10) || null,
       summary: summary,
@@ -421,7 +424,7 @@ function readingLogScript() {
     elMsg.textContent = (summary && liked) ? "Saved." : "Saved, and marked as needing a summary.";
 
     elSummary.value = ""; elLiked.value = "";
-    elFrom.value = ""; elTo.value = "";
+    elFrom.value = ""; elTo.value = ""; elChapter.value = "";
     elIsbn.value = ""; elIsbnMsg.textContent = "";
     elFinished.checked = false;
     elPick.value = "";
