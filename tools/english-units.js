@@ -340,23 +340,146 @@ const GRADE4 = {
     pages: 656,
     access: "borrow-only",
   },
-  units: [],   /* ⛔ awaiting transcription — do NOT populate from memory */
+  /* 🚨 THE SCAN IS THE TEACHER'S EDITION, not the student text. Its pages carry
+     "Lesson Objective" and "Focus on Instruction" panels wrapped around the
+     student page. That is a BONUS, not a problem — it is the teaching half the
+     Spectrum workbooks are missing — but know what you are reading.
+
+     ⚠️ HM GRADE 4 SAYS "BEING VERBS", HARCOURT GRADE 3 SAYS "LINKING VERBS".
+     Confirmed from HM's own index: "Being verbs, 114-115, 121, 122, 133, 157".
+     So the wording in our built lesson matches grade 4, not grade 3. Per the
+     rule in ROADMAP.md the grade a lesson sits on wins, and that lesson sits on
+     grade 3 — but this is the seam to watch when the two shelves meet.
+
+     ⚠️ HM SPLITS WHAT HARCOURT JOINS. Action Verbs is Unit 3 Lesson 1 (p96) and
+     The Special Verb be is Unit 3 Lesson 9 (p114) — thirteen pages and eight
+     lessons apart. Harcourt teaches both inside one chapter. Our lesson teaches
+     them together. Neither book is wrong; do not "correct" one to the other.
+
+     ⛔ INCOMPLETE, AND DELIBERATELY SO. Three gaps below are marked `gap: true`.
+     The scan skips pages and several front-matter leaves came back blank, so
+     rather than invent plausible lesson titles the gaps are recorded as gaps.
+     🚨 DO NOT FILL THESE FROM MEMORY OR FROM THE GRADE 3 BOOK. Open the pages. */
+  part1: "Grammar",
+  units: [
+    { n: 1, name: "The Sentence", page: null, gap: true,
+      note: "⛔ NOT READ. Its contents leaf did not scan — pages n6 and n40 came " +
+            "back blank. Unit 2 starts at page 63, so Unit 1 occupies roughly " +
+            "pages 1-62, but NO lesson title here is confirmed. Open the book." },
+
+    { n: 2, name: "Nouns", page: 63, lessons: [
+      { n: 1, title: "What Is a Noun?", page: 64 },
+      { n: 2, title: "Common and Proper Nouns", page: 66 },
+      { title: "Revising Strategies: Writing with Nouns", page: 68, craft: true },
+      { n: 3, title: "Singular and Plural Nouns", page: 70 },
+      { n: 4, title: "Nouns Ending with y", page: 72 },
+      { n: 5, title: "More Plural Nouns", page: 74 },
+      { n: 6, title: "Singular Possessive Nouns", page: 76 },
+      { n: 7, title: "Plural Possessive Nouns", page: 78 },
+      { title: "Revising Strategies: Using Exact Nouns", page: 80, craft: true },
+      { title: "Unit 2 Checkup", page: 82, review: true },
+    ]},
+
+    /* ⭐ THE UNIT OUR BUILT LESSON WOULD LAND IN IF IT EVER MOVES TO GRADE 4.
+       Action Verbs is Lesson 1 here, page 96 — much earlier in its unit than
+       Harcourt's Chapter 10, because HM gives verbs a whole unit of their own. */
+    { n: 3, name: "Verbs", page: 95, lessons: [
+      { n: 1, title: "Action Verbs", page: 96 },
+      { n: 2, title: "Main Verbs and Helping Verbs", page: 98 },
+      { n: 3, title: "Present, Past, and Future", page: 100 },
+      { title: "Revising Strategies: Writing with Verbs", page: 102, craft: true },
+      { n: 4, title: "Subject-Verb Agreement", page: 104 },
+      { n: 5, title: "Spelling the Present Tense", page: 106 },
+      { n: 6, title: "Spelling the Past Tense", page: 108 },
+      { n: 7, title: "The Past with Helping Verbs", page: 110 },
+      { n: 8, title: "Irregular Verbs", page: 112 },
+      { n: 9, title: "The Special Verb Be", page: 114 },
+      { n: 10, title: "Contractions with Not", page: 116 },
+      { title: "Revising Strategies: Using Exact Verbs", page: 118, craft: true },
+      { title: "Unit 3 Checkup", page: 120, review: true },
+    ]},
+
+    { n: 4, name: "Adjectives", page: 135, partial: true,
+      note: "⚠️ PARTIAL. Lessons 2 and 3 sit in a fold the scan lost. Everything " +
+            "below is confirmed; the two missing numbers are NOT guessed.",
+      lessons: [
+        { n: 1, title: "What Is an Adjective?", page: 136 },
+        { title: "Revising Strategies: Writing with Adjectives", page: 138, craft: true },
+        { n: 2, title: null, page: null, gap: true },
+        { n: 3, title: null, page: null, gap: true },
+        { n: 4, title: "Making Comparisons", page: 142 },
+        { n: 5, title: "Comparing with More and Most", page: 144 },
+        { n: 6, title: "Comparing with Good and Bad", page: 146 },
+        { title: "Revising Strategies: Using Exact Adjectives", page: 148, craft: true },
+      ]},
+
+    { n: 5, name: "Capitalization and Punctuation", page: 165, lessons: [
+      { n: 1, title: "Correct Sentences", page: 166 },
+      { title: "Revising Strategies: Writing Good Sentences", page: 168, craft: true },
+      { n: 2, title: "Names of People and Pets", page: 170 },
+      { n: 3, title: "Names of Places and Things", page: 172 },
+      { n: 4, title: "Abbreviations", page: 174 },
+      { n: 5, title: "Commas in a Series", page: 176 },
+      { title: "Revising Strategies: Combining Sentences to Make a Series", page: 178, craft: true },
+      { n: 6, title: "More Uses for Commas", page: 180 },
+      { n: 7, title: "Quotation Marks", page: 182 },
+      { n: 8, title: "Quotations", page: 184 },
+      { n: 9, title: "Titles", page: 186 },
+      { title: "Unit 5 Checkup", page: 189, review: true },
+    ]},
+
+    { n: 6, name: "Pronouns", page: 203, partial: true,
+      note: "⚠️ PARTIAL. Lessons after 3 are cut off by the fold. The unit's tail " +
+            "is confirmed (Homophones 220, Checkup 222), the middle is not.",
+      lessons: [
+        { n: 1, title: "What Is a Pronoun?", page: 204 },
+        { n: 2, title: "Subject Pronouns", page: 206 },
+        { n: 3, title: "Object Pronouns", page: 208 },
+        { title: "Revising Strategies: Writing with Pronouns", page: 210, craft: true },
+        { n: 4, title: null, page: null, gap: true },
+        { title: "Revising Strategies: Homophones", page: 220, craft: true },
+        { title: "Unit 6 Checkup", page: 222, review: true },
+      ]},
+
+    { n: 7, name: "Adverbs and Prepositions", page: 233, lessons: [
+      { n: 1, title: "What Is an Adverb?", page: 234 },
+      { title: "Revising Strategies: Writing with Adverbs", page: 236, craft: true },
+      { n: 2, title: "Comparing with Adverbs", page: 238 },
+      { n: 3, title: "Using Good and Well", page: 240 },
+      { n: 4, title: "Negatives", page: 242 },
+      { n: 5, title: "What Is a Preposition?", page: 244 },
+      { title: "Revising Strategies: Writing with Prepositions", page: 246, craft: true },
+      { title: "Revising Strategies: Changing Meaning with Adverbs", page: 248, craft: true },
+      { title: "Unit 7 Checkup", page: 250, review: true },
+    ]},
+  ],
+
+  /* PART 2 is "Writing, Listening, Speaking, and Viewing" — Unit 8 Writing a
+     Personal Narrative (p254), Unit 9 Writing a Story (p291), and more beyond.
+     ⛔ NOT TRANSCRIBED. Grammar is what the site builds from today. */
+  part2: { name: "Writing, Listening, Speaking, and Viewing", transcribed: false },
 };
 
 /* ── counts, so a miscount is caught rather than believed ───────────────── */
+/* ⚠️ TWO SHAPES ON PURPOSE. Harcourt nests unit > chapter > lesson; Houghton
+   Mifflin has no chapter layer, just unit > lesson. Flattening HM into a fake
+   chapter would misrepresent the book, so `tally` handles both instead. */
 function tally(course) {
-  let chapters = 0, lessons = 0, built = 0, reviews = 0;
-  for (const u of course.units) {
-    for (const c of u.chapters) {
-      chapters++;
-      for (const l of c.lessons) {
-        lessons++;
-        if (l.slug) built++;
-        if (l.review) reviews++;
-      }
+  let chapters = 0, lessons = 0, built = 0, reviews = 0, gaps = 0;
+  const count = (list) => {
+    for (const l of list) {
+      if (l.gap) { gaps++; continue; }
+      lessons++;
+      if (l.slug) built++;
+      if (l.review) reviews++;
     }
+  };
+  for (const u of course.units) {
+    if (u.gap) { gaps++; continue; }
+    if (u.chapters) { for (const c of u.chapters) { chapters++; count(c.lessons); } }
+    else if (u.lessons) count(u.lessons);
   }
-  return { units: course.units.length, chapters, lessons, reviews, built };
+  return { units: course.units.length, chapters, lessons, reviews, built, gaps };
 }
 
 module.exports = { GRADE3, GRADE4, tally };

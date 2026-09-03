@@ -1016,7 +1016,13 @@ const group = (heading, note, cards) => `<h2 class="h2s" style="margin:0 0 4px">
    <details> lists what the item actually contains. No JS, keyboard accessible.
    The card is a div rather than an anchor - a disclosure control cannot
    legally sit inside a link. */
-const SLOT_LABEL = "Being Built";
+/* 🚨 ONE constant, because this label appears on every unbuilt slot on the
+   site. Paul, 2026-09-03: "one thing you can do on these templates is say
+   coming soon." It was "Being Built", which claims work is underway on that
+   specific item — untrue of 107 of the 108 grade 3 English slots, which are
+   a transcribed table of contents. "Coming Soon" promises the same thing
+   without the false claim. Title Case, per the UI-label rule. */
+const SLOT_LABEL = "Coming Soon";
 
 /* One card. Shared by the flat shelves and the unit pager so they cannot
    drift apart. `eyebrow` is whatever label suits that shelf. */
