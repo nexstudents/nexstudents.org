@@ -62,6 +62,7 @@ function readingLogScript() {
   var PLAY = ${JSON.stringify(ICON.play)};
   var PAUSE = ${JSON.stringify(ICON.pause)};
   var BELL  = ${JSON.stringify(ICON.bell)};
+  var TRASH = ${JSON.stringify(ICON.trash)};
 
   var $ = function(id){ return document.getElementById(id); };
   var elClock = $("rlClock");
@@ -628,7 +629,12 @@ function readingLogScript() {
            makes the one number the log exists to record the hardest to see. */
         "<summary>" + cover + "<b>" + esc(e.title || "Untitled") + "</b>" +
         "<span class='rl-when'>" + esc(dateText(e.date)) + "</span>" +
-        "<span class='rl-dur'>" + esc(spell(e.seconds || 0)) + "</span>" + tag + "</summary>" +
+        "<span class='rl-dur'>" + esc(spell(e.seconds || 0)) + "</span>" + tag +
+        "<span class='rl-side'>" +
+          "<button type='button' class='rl-trash' data-del='" + esc(e.id) + "' " +
+            "title='Delete this session' aria-label='Delete this session'>" + TRASH + "</button>" +
+        "</span>" +
+        "</summary>" +
         "<div class='rl-body'>" +
           "<dl>" +
             (e.author ? "<dt>By</dt><dd>" + esc(e.author) + "</dd>" : "") +
@@ -646,6 +652,32 @@ function readingLogScript() {
       "</details>";
     }).join("");
   }
+
+  /* 🚨 ONE TAP AND IT IS GONE. Paul: "why'd you put a delete button and a
+     trash icon? just the trash icon please." I had built a two-step confirm
+     first, which was the wrong instinct for a page a twelve year old uses -
+     it put a decision in front of him every time instead of the one time it
+     would have mattered.
+     ⚠️ There is NO UNDO. The log is localStorage and nothing else holds a
+     copy, so a stray tap takes that session for good. Paul's call, made with
+     that said out loud.
+     ⚠️ preventDefault is what stops the click ALSO toggling the entry open,
+     since the button lives inside a <summary>. Delegated on the list, so it
+     survives every re-render. */
+  elList.addEventListener("click", function(ev){
+    var t = ev.target && ev.target.closest && ev.target.closest("[data-del]");
+    if (!t) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    var id = t.getAttribute("data-del");
+    save(load().filter(function(x){ return String(x.id) !== String(id); }));
+    render();
+    /* is-ok, not a bare rl-msg: gateSave() claims any message with no class
+       for its own hint, so a plain one is overwritten on the next paint and
+       the delete looks like it did nothing. */
+    elMsg.className = "rl-msg is-ok";
+    elMsg.textContent = "Session deleted.";
+  });
 
   $("rlSave").addEventListener("click", function(){
     /* EVERY STARRED BOX IS REQUIRED. Paul: "make the info like they have to

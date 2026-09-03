@@ -346,9 +346,27 @@ const styles = `
   .rl-entry > summary { cursor:pointer; padding:12px 16px; display:flex; gap:12px;
                         align-items:center; flex-wrap:wrap; list-style:none; }
   .rl-entry > summary::-webkit-details-marker { display:none; }
-  .rl-entry > summary::after { content:"+"; margin-left:auto; color:var(--dim);
-                               font-weight:700; font-size:1.1rem; }
-  .rl-entry[open] > summary::after { content:"\\2013"; }
+  /* 🚨 THE MARKER MOVED OFF THE SUMMARY AND ONTO A STACK. Paul, on where the
+     trash goes: "you can put it above the plus and minus on the right ...
+     for the collapse of the log."
+     The +/- was a pseudo-element on the summary itself carrying
+     margin-left:auto, which pins it to the far right of a single flex row -
+     there is no "above" available to anything else. Both live in .rl-side
+     now, one over the other, and the STACK carries the auto margin. */
+  .rl-side { margin-left:auto; display:grid; gap:5px; justify-items:center;
+             flex:0 0 auto; }
+  /* 🚨 THE MARKER GETS THE TRASH'S OWN WIDTH. Paul: "center the trash can
+     icon above the plus because currently it's a little to the right."
+     Left to itself the + is only as wide as its own advance (11.3px against
+     the button's 32px), so the two boxes are different sizes and any
+     difference in the glyph's side bearings shows up as a lean. Measured
+     here at 0.35px, but the bearings change with the fallback font, and the
+     fallback is what most phones use. A fixed 32px column takes the glyph's
+     metrics out of it entirely. */
+  .rl-side::after { content:"+"; color:var(--dim); font-weight:700;
+                    font-size:1.1rem; line-height:1; width:32px;
+                    text-align:center; }
+  .rl-entry[open] .rl-side::after { content:"–"; }
   .rl-cover { width:34px; height:50px; object-fit:cover; border-radius:4px;
               background:var(--line); flex:0 0 auto; }
   .rl-entry b { font-size:1rem; }
@@ -362,6 +380,16 @@ const styles = `
             border:1px solid var(--line); color:var(--dim); }
   .rl-tag.is-done { color:var(--rl-accent); border-color:var(--rl-accent); }
   .rl-tag.is-todo { color:#e0a33c; border-color:#e0a33c; }
+  /* The delete control. One tap, no confirm - Paul: "just the trash icon
+     please." It sits above the collapse marker in .rl-side. */
+  .rl-trash { font:inherit; cursor:pointer; border-radius:8px; padding:0;
+              border:1px solid var(--rl-edge); background:transparent;
+              color:var(--dim); display:grid; place-items:center;
+              width:32px; height:32px; flex:0 0 auto; }
+  .rl-trash svg { width:17px; height:17px; }
+  .rl-trash:hover { color:#c0392b; border-color:#c0392b; }
+  :root:not([data-theme=light]) .rl-trash:hover { color:#ff8a84; border-color:#ff8a84; }
+
   .rl-body { padding:2px 16px 18px; display:grid; gap:12px; }
   .rl-body dl { margin:0; display:grid; grid-template-columns:auto minmax(0,1fr);
                 gap:6px 16px; font-size:.92rem; }
@@ -713,6 +741,7 @@ const ICON = {
   play:  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.9 5.3a1 1 0 0 1 1.52-.85l9.6 6.7a1 1 0 0 1 0 1.7l-9.6 6.7A1 1 0 0 1 6.9 18.7z"/></svg>',
   pause: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>',
   bell:  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6a1.15 1.15 0 0 1 1.15 1.15v.7A6.1 6.1 0 0 1 18.1 10.4v3.05l1.5 2.4a.9.9 0 0 1-.76 1.38H5.16a.9.9 0 0 1-.76-1.38l1.5-2.4V10.4A6.1 6.1 0 0 1 10.85 4.45v-.7A1.15 1.15 0 0 1 12 2.6z"/><path d="M9.9 18.9h4.2a2.1 2.1 0 0 1-4.2 0z"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5h16"/><path d="M9.5 6.5V4.9a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.6"/><path d="M6.3 6.5l.8 12a1.6 1.6 0 0 0 1.6 1.5h6.6a1.6 1.6 0 0 0 1.6-1.5l.8-12"/><path d="M10.2 10.3v6M13.8 10.3v6"/></svg>',
   reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4.5V10h5.5"/></svg>',
 };
 
