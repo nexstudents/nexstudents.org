@@ -1083,26 +1083,67 @@ const lessonCards = (list, showSubject, slots) => {
   ${progressScript}`;
 };
 
-/* ── the unit pager ── */
-const { UNITS, BUILT } = require("./leif-units.js");
+/* ── the unit pager ──────────────────────────────────────────────────────
+   🚨 THIS USED TO BE HARDCODED TO leif-units.js, so it could only ever page
+   grade 7 history. When the English course outlines arrived (2026-09-03,
+   108 slots for grade 3 alone) the shelf still showed one card, because
+   nothing read the new file. Paul: "I don't see the lessons on the website."
 
-const unitPager = (shelfKey) => {
-  const panels = UNITS.map((u) => {
-    const cards = u.lessons.map((title, i) => {
-      const slug = BUILT[u.n + ":" + (i + 1)];
-      const label = "Unit " + u.n + " &middot; Lesson " + (i + 1);
-      const L = slug ? LESSONS.find((x) => x.href.indexOf("/" + slug + "/") !== -1) : null;
-      return L ? oneCard(L, label) : slotCard(label, title, "Not built yet.");
+   It takes NORMALISED units now — [{ n, name, items:[{label,title,slug}] }] —
+   and each course supplies its own adapter below. Adding a course means
+   writing an adapter, never touching the pager. */
+const { UNITS, BUILT } = require("./leif-units.js");
+const { GRADE3, GRADE4 } = require("./english-units.js");
+
+/* Grade 7 history: lessons are bare strings, BUILT maps "unit:n" to a slug. */
+const leifPager = () => UNITS.map((u) => ({
+  n: u.n, name: u.name,
+  items: u.lessons.map((title, i) => ({
+    label: "Unit " + u.n + " &middot; Lesson " + (i + 1),
+    title, slug: BUILT[u.n + ":" + (i + 1)] || null,
+  })),
+}));
+
+/* English: Harcourt nests unit > chapter > lesson, Houghton Mifflin has no
+   chapter layer. Both flatten to one list per unit, with the chapter name
+   carried into the label so the nesting is not lost on the card.
+   ⚠️ A `gap` entry is a page the SCAN lost, not a lesson. It is skipped
+   entirely rather than shown as an empty slot, which would read as a lesson
+   we chose not to name. */
+const englishPager = (course) => course.units
+  .filter((u) => !u.gap)
+  .map((u) => {
+    const items = [];
+    const push = (l, chapterN) => {
+      if (l.gap || !l.title) return;
+      items.push({
+        label: "Unit " + u.n + (chapterN ? " &middot; Chapter " + chapterN : "")
+               + (l.page ? " &middot; p" + l.page : ""),
+        title: l.title, slug: l.slug || null,
+      });
+    };
+    if (u.chapters) for (const c of u.chapters) for (const l of c.lessons) push(l, c.n);
+    else if (u.lessons) for (const l of u.lessons) push(l, null);
+    return { n: u.n, name: u.name, items };
+  })
+  .filter((u) => u.items.length);
+
+const unitPager = (shelfKey, units) => {
+  units = units || leifPager();
+  const panels = units.map((u) => {
+    const cards = u.items.map((it) => {
+      const L = it.slug ? LESSONS.find((x) => x.href.indexOf("/" + it.slug + "/") !== -1) : null;
+      return L ? oneCard(L, it.label) : slotCard(it.label, it.title, "Not built yet.");
     }).join("\n        ");
-    const built = u.lessons.filter((_, i) => BUILT[u.n + ":" + (i + 1)]).length;
-    return `<section class="unitpanel" data-unit="${u.n}" data-built="${built}" data-total="${u.lessons.length}" hidden>
+    const built = u.items.filter((it) => it.slug).length;
+    return `<section class="unitpanel" data-unit="${u.n}" data-built="${built}" data-total="${u.items.length}" hidden>
       <div class="cardgrid">
         ${cards}
       </div>
     </section>`;
   }).join("\n    ");
 
-  const dots = UNITS.map((u) =>
+  const dots = units.map((u) =>
     `<button type="button" class="unitdot" data-go="${u.n}" title="${u.name}">${u.n}</button>`).join("");
 
   return `<div class="unitpager" data-shelf="${shelfKey}">
@@ -1118,59 +1159,74 @@ const unitPager = (shelfKey) => {
     ${panels}
     <div class="unitdots">${dots}</div>
   </div>
-  ${pagerScript}
+  ${pagerScript(units)}
   ${progressScript}`;
 };
 
-const pagerScript = `<script>
+/* 🚨 STEPS BY INDEX, NOT BY UNIT NUMBER. It used to do
+   parseInt(cur.dataset.unit) + step, which is only correct while unit numbers
+   run 1..N with no holes. Leif does; the grade 4 English course does NOT --
+   its Unit 1 contents leaf is missing from the scan, so its units start at 2.
+   Stepping arithmetically off 2 lands on a unit with no panel and blanks the
+   shelf. Index-stepping cannot do that. Keep it this way. */
+const pagerScript = (units) => `<script>
 (function(){
   var wrap = document.querySelector(".unitpager");
   if (!wrap) return;
   var key = "ns:unit:" + wrap.dataset.shelf;
   var panels = [].slice.call(wrap.querySelectorAll(".unitpanel"));
-  var NAMES = ${JSON.stringify(Object.fromEntries(UNITS.map(u => [u.n, u.name])))};
+  var NAMES = ${JSON.stringify(Object.fromEntries(units.map(u => [u.n, u.name])))};
   var prev = wrap.querySelectorAll(".unitnav")[0];
   var next = wrap.querySelectorAll(".unitnav")[1];
 
-  function show(n){
-    panels.forEach(function(p){ p.hidden = (p.dataset.unit !== String(n)); });
-    [].forEach.call(wrap.querySelectorAll(".unitdot"), function(b){
-      b.setAttribute("aria-current", b.dataset.go === String(n) ? "true" : "false");
-    });
-    var cur = panels.filter(function(x){ return x.dataset.unit === String(n); })[0];
-    wrap.querySelector("#utag").textContent = "Unit " + n + " of " + panels.length;
-    wrap.querySelector("#uname").textContent = NAMES[n] || "";
-    if (cur) wrap.querySelector("#ucount").textContent = cur.dataset.built + " of " + cur.dataset.total + " built";
-    try { localStorage.setItem(key, n); } catch(e){}
-    prev.disabled = (n <= 1);
-    next.disabled = (n >= panels.length);
+  function idxOf(n){
+    for (var i = 0; i < panels.length; i++){ if (panels[i].dataset.unit === String(n)) return i; }
+    return 0;
   }
 
-  // last unit viewed, else the first unit with unfinished work, else unit 1
+  function showIdx(i){
+    if (i < 0) i = 0;
+    if (i > panels.length - 1) i = panels.length - 1;
+    var cur = panels[i];
+    var n = cur.dataset.unit;
+    panels.forEach(function(p){ p.hidden = (p !== cur); });
+    [].forEach.call(wrap.querySelectorAll(".unitdot"), function(b){
+      b.setAttribute("aria-current", b.dataset.go === n ? "true" : "false");
+    });
+    wrap.querySelector("#utag").textContent = "Unit " + n + " of " + panels.length;
+    wrap.querySelector("#uname").textContent = NAMES[n] || "";
+    wrap.querySelector("#ucount").textContent = cur.dataset.built + " of " + cur.dataset.total + " built";
+    try { localStorage.setItem(key, n); } catch(e){}
+    prev.disabled = (i <= 0);
+    next.disabled = (i >= panels.length - 1);
+  }
+
+  // last unit viewed, else the first unit with unfinished work, else the first
   var start = null;
   try { start = parseInt(localStorage.getItem(key), 10) || null; } catch(e){}
-  if (!start){
-    for (var i = 0; i < panels.length && !start; i++){
+  var startIdx = null;
+  if (start !== null && idxOf(start) >= 0) startIdx = idxOf(start);
+  if (startIdx === null){
+    for (var i = 0; i < panels.length && startIdx === null; i++){
       var cards = panels[i].querySelectorAll("[data-lesson]");
       for (var j = 0; j < cards.length; j++){
         var d = null;
         try { d = JSON.parse(localStorage.getItem("ns:done:" + cards[j].dataset.lesson)); } catch(e){}
-        if (!d || d.complete === false){ start = parseInt(panels[i].dataset.unit, 10); break; }
+        if (!d || d.complete === false){ startIdx = i; break; }
       }
     }
   }
-  show(start || 1);
+  showIdx(startIdx === null ? 0 : startIdx);
 
   wrap.addEventListener("click", function(e){
     var nav = e.target.closest(".unitnav");
     if (nav && !nav.disabled){
       var cur = panels.filter(function(x){ return !x.hidden; })[0];
-      var n = parseInt(cur.dataset.unit, 10) + parseInt(nav.dataset.step, 10);
-      if (n >= 1 && n <= panels.length) show(n);
+      showIdx(panels.indexOf(cur) + parseInt(nav.dataset.step, 10));
       return;
     }
     var dot = e.target.closest(".unitdot");
-    if (dot) show(parseInt(dot.dataset.go, 10));
+    if (dot) showIdx(idxOf(parseInt(dot.dataset.go, 10)));
   });
 })();
 <\/script>`;
@@ -1462,12 +1518,29 @@ const gradeLabel = (g) => g === "K" || g === "k"
 const lessonsIn  = (g, sub) => byGrade(g).filter(l => l.subject === sub);
 const sheetsIn   = (g, sub) => sheetsByGrade(g).filter(w => w.subject === sub);
 
+/* 🚨 WHICH GRADE+SUBJECT SHELVES ARE DRIVEN BY A COURSE OUTLINE.
+   A course here is a whole transcribed textbook, so it pages by unit instead
+   of dumping every card on one shelf. Add a grade by adding a line, never by
+   editing the pager. ⚠️ `sameGrade` — grades arrive as both strings and
+   numbers, see the note further up this file. */
+const COURSE_SHELVES = [
+  { grade: 7, subject: "History", units: leifPager },
+  { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
+  { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
+];
+
+const courseFor = (g, sub) =>
+  COURSE_SHELVES.find((c) => sameGrade(c.grade, g) && c.subject === sub) || null;
+
 const gradeSubjectLessons = (g, sub) => {
   const list = lessonsIn(g, sub);
-  /* History in grade 7 is the fifty-lesson Leif sequence, so it keeps the unit
-     pager it was built for rather than becoming a wall of cards. */
-  if (g === 7 && sub === "History")
-    return `<div class="band"><div class="wrap">${unitPager("g7-" + gslug(sub) + "-lessons")}</div></div>`;
+  /* A course shelf keeps the unit pager it was built for rather than becoming
+     a wall of cards — fifty history lessons, or a hundred and eight English
+     ones, do not belong on one page. */
+  const course = courseFor(g, sub);
+  if (course)
+    return `<div class="band"><div class="wrap">${
+      unitPager("g" + g + "-" + gslug(sub) + "-lessons", course.units())}</div></div>`;
   return `<div class="band"><div class="wrap">
   ${list.length ? lessonCards(list, true, plannedFor(sub, g, "lesson"))
     : emptyTile("Nothing on screen for this subject this year yet.")}

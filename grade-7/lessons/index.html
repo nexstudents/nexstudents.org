@@ -544,45 +544,54 @@
   var prev = wrap.querySelectorAll(".unitnav")[0];
   var next = wrap.querySelectorAll(".unitnav")[1];
 
-  function show(n){
-    panels.forEach(function(p){ p.hidden = (p.dataset.unit !== String(n)); });
-    [].forEach.call(wrap.querySelectorAll(".unitdot"), function(b){
-      b.setAttribute("aria-current", b.dataset.go === String(n) ? "true" : "false");
-    });
-    var cur = panels.filter(function(x){ return x.dataset.unit === String(n); })[0];
-    wrap.querySelector("#utag").textContent = "Unit " + n + " of " + panels.length;
-    wrap.querySelector("#uname").textContent = NAMES[n] || "";
-    if (cur) wrap.querySelector("#ucount").textContent = cur.dataset.built + " of " + cur.dataset.total + " built";
-    try { localStorage.setItem(key, n); } catch(e){}
-    prev.disabled = (n <= 1);
-    next.disabled = (n >= panels.length);
+  function idxOf(n){
+    for (var i = 0; i < panels.length; i++){ if (panels[i].dataset.unit === String(n)) return i; }
+    return 0;
   }
 
-  // last unit viewed, else the first unit with unfinished work, else unit 1
+  function showIdx(i){
+    if (i < 0) i = 0;
+    if (i > panels.length - 1) i = panels.length - 1;
+    var cur = panels[i];
+    var n = cur.dataset.unit;
+    panels.forEach(function(p){ p.hidden = (p !== cur); });
+    [].forEach.call(wrap.querySelectorAll(".unitdot"), function(b){
+      b.setAttribute("aria-current", b.dataset.go === n ? "true" : "false");
+    });
+    wrap.querySelector("#utag").textContent = "Unit " + n + " of " + panels.length;
+    wrap.querySelector("#uname").textContent = NAMES[n] || "";
+    wrap.querySelector("#ucount").textContent = cur.dataset.built + " of " + cur.dataset.total + " built";
+    try { localStorage.setItem(key, n); } catch(e){}
+    prev.disabled = (i <= 0);
+    next.disabled = (i >= panels.length - 1);
+  }
+
+  // last unit viewed, else the first unit with unfinished work, else the first
   var start = null;
   try { start = parseInt(localStorage.getItem(key), 10) || null; } catch(e){}
-  if (!start){
-    for (var i = 0; i < panels.length && !start; i++){
+  var startIdx = null;
+  if (start !== null && idxOf(start) >= 0) startIdx = idxOf(start);
+  if (startIdx === null){
+    for (var i = 0; i < panels.length && startIdx === null; i++){
       var cards = panels[i].querySelectorAll("[data-lesson]");
       for (var j = 0; j < cards.length; j++){
         var d = null;
         try { d = JSON.parse(localStorage.getItem("ns:done:" + cards[j].dataset.lesson)); } catch(e){}
-        if (!d || d.complete === false){ start = parseInt(panels[i].dataset.unit, 10); break; }
+        if (!d || d.complete === false){ startIdx = i; break; }
       }
     }
   }
-  show(start || 1);
+  showIdx(startIdx === null ? 0 : startIdx);
 
   wrap.addEventListener("click", function(e){
     var nav = e.target.closest(".unitnav");
     if (nav && !nav.disabled){
       var cur = panels.filter(function(x){ return !x.hidden; })[0];
-      var n = parseInt(cur.dataset.unit, 10) + parseInt(nav.dataset.step, 10);
-      if (n >= 1 && n <= panels.length) show(n);
+      showIdx(panels.indexOf(cur) + parseInt(nav.dataset.step, 10));
       return;
     }
     var dot = e.target.closest(".unitdot");
-    if (dot) show(parseInt(dot.dataset.go, 10));
+    if (dot) showIdx(idxOf(parseInt(dot.dataset.go, 10)));
   });
 })();
 </script>
