@@ -197,13 +197,25 @@ const styles = `
   .rl-lab { font-weight:600; font-size:.93rem; }
   /* One end of the range: Ch [ ] p. [ ]. The little words carry the
      meaning so the boxes can stay small. */
-  /* The range: two ends joined by the word to. It wraps on a phone rather
-     than shrinking the boxes, so the words stay readable. */
-  .rl-range { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  /* 🚨 THREE COLUMNS: 1fr auto 1fr. Paul, 2026-09-03: "spread out the four
+     boxes ... center to in the middle. you have Ch and To too close
+     together. make the end of the second box the same distance at the end
+     of the book text box."
+     A flex row packed everything to the left and left to hard against the
+     second Ch. With 1fr on each side the first pair sits at the form's left
+     edge, the second pair ENDS on its right edge - flush with the Book
+     field above, because the range spans the same 560px form - and to lands
+     dead centre with equal air on both sides.
+     ⚠️ It is the same fix as the timer row: centring a GROUP is not centring
+     the thing inside it. Give the middle item its own column. */
+  .rl-range { display:grid; grid-template-columns:1fr auto 1fr;
+              align-items:center; column-gap:16px; width:100%; }
+  .rl-range > .rl-spot:first-of-type { justify-self:start; }
+  .rl-range > .rl-spot:last-of-type  { justify-self:end; }
   .rl-spot { display:flex; align-items:center; gap:6px; }
   .rl-spot input { width:100%; max-width:70px; text-align:center; }
   .rl-mini { color:var(--dim); font-size:.84rem; white-space:nowrap; }
-  .rl-to { color:var(--fg); font-weight:600; font-size:.9rem; }
+  .rl-to { color:var(--fg); font-weight:600; font-size:.9rem; text-align:center; }
   .rl-pages { display:flex; align-items:center; gap:8px; }
   /* ⚠️ DIGITS CENTRE IN THEIR BOX. Paul, 2026-09-03: "make when you write
      those numbers those numbers are centered in that text box." A page or
@@ -500,7 +512,10 @@ const styles = `
   }
 
   @media (max-width:520px) {
-    .rl-range { gap:6px; }
+    /* Too narrow for three columns - stack, with to on its own centred row. */
+    .rl-range { grid-template-columns:1fr; row-gap:10px; justify-items:center; }
+    .rl-range > .rl-spot:first-of-type,
+    .rl-range > .rl-spot:last-of-type { justify-self:center; }
     .rl-isbn { grid-template-columns:1fr; }
     body { padding-bottom:150px; }
   }
