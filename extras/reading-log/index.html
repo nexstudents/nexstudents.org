@@ -250,9 +250,15 @@
      screen." A control holding two or three short words should not run the
      width of a desktop page. It caps here and still fills a phone, because
      the cap is larger than any phone is wide. */
+  /* ⚠️ CENTRED, NOT LEFT. Paul, 2026-09-03: "that text box for which book
+     doesn't look centered." It is the only capped control in a 560px form,
+     so at 420px it sat left with 140px of empty space beside it while everything else
+     ran full width. margin-inline:auto puts it on the form's centre line.
+     ⚠️ Capping a width and centring its box are two separate jobs - the same
+     note that already applies to the heading and the crumb. */
   .rl-field select {
     appearance:none; -webkit-appearance:none; -moz-appearance:none;
-    max-width:420px;
+    max-width:420px; margin-inline:auto;
     padding-right:42px;
     background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat:no-repeat;
@@ -596,6 +602,14 @@
       align-items:center; column-gap:8px; justify-self:center;
     }
     .rl-range > .rl-spot input { max-width:none; width:100%; }
+    /* 🚨 THESE TWO MUST NAME THE SAME PSEUDO-CLASSES AS THE DESKTOP RULES.
+       .rl-range > .rl-spot:first-of-type is MORE SPECIFIC than
+       .rl-range > .rl-spot, so the desktop start/end pinning survived inside
+       the media query and kept the two rows hard left and hard right - which
+       is exactly the off-centre stagger Paul described. A media query does
+       not raise specificity; only the selector does. */
+    .rl-range > .rl-spot:first-of-type,
+    .rl-range > .rl-spot:last-of-type { justify-self:center; }
     .rl-to { justify-self:center; }
     /* 🚨 A STACKED BUTTON MUST NOT STRETCH. Paul, 2026-09-03: "that look it
        up button on mobile is way too large. remember buttons and text boxes
