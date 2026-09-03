@@ -87,28 +87,77 @@
   .rl-card h2 { margin:0 0 4px; font-size:1.18rem; letter-spacing:-.01em; }
   .rl-card .rl-note { margin:0 0 18px; color:var(--dim); font-size:.92rem; }
 
-  /* the clock. Big, because it is read from across a desk. */
+  /* ── THE DOCK ───────────────────────────────────────────────────────── */
+  body { padding-bottom:132px; }          /* room for the fixed dock */
+  .rl-dock {
+    position:fixed; left:0; right:0; bottom:0; z-index:40;
+    background:var(--panel); border-top:1px solid var(--line);
+    box-shadow:0 -6px 24px rgba(0,0,0,.30);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+  }
+  .rl-dockin { max-width:760px; margin-inline:auto; display:grid; gap:8px;
+               justify-items:center; }
+
   .rl-clock { font-variant-numeric:tabular-nums; font-weight:700;
-              font-size:clamp(2.6rem,11vw,4.2rem); line-height:1;
-              letter-spacing:-.03em; text-align:center; margin:6px 0 2px; }
+              font-size:clamp(1.9rem,7vw,2.6rem); line-height:1;
+              letter-spacing:-.03em; margin:0; text-align:center; }
   .rl-clock.is-over { color:#5cc98a; }
-  .rl-elapsed { text-align:center; color:var(--dim); font-size:.9rem; margin:0 0 16px; }
+  .rl-elapsed { color:var(--dim); font-size:.82rem; margin:0; text-align:center; }
 
-  .rl-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  .rl-btn { font:inherit; font-weight:600; cursor:pointer; border-radius:999px;
-            border:1px solid var(--line); background:var(--panel-2); color:var(--fg);
-            padding:11px 20px; min-height:44px; }
-  .rl-btn:hover { border-color:var(--fg); }
-  .rl-btn.is-go { background:var(--fg); color:var(--bg); border-color:var(--fg); }
-  .rl-btn:disabled { opacity:.45; cursor:default; }
+  /* 🚨 THE SCRUB IS TICK BARS, LIKE THE VOICE PLAYER, AND IT EMPTIES RIGHT
+     TO LEFT. Paul, 2026-09-03: "I also wanted the countdown bar to match the
+     scrubber with the little tiny bars and it counts down backwards from
+     right to left so you see the bars and the countdown similar to the scrub
+     exactly but instead it is a timer."
+     The lesson player is a row of flex:1 ticks with gap:2px, one per
+     sentence. Here one tick is a slice of the target, and a tick going dim
+     means that slice is spent. Because time RUNS OUT rather than fills up,
+     the dim end is the RIGHT: a full bar is a full timer.
+     ⚠️ Same shape and same gap as the lesson player on purpose. If that one
+     changes, change this one, or the two controls stop looking related. */
+  .rl-scrub { display:flex; gap:2px; height:18px; align-items:stretch;
+              cursor:pointer; touch-action:none; width:100%; }
+  .rl-tick { flex:1; background:var(--fg); border-radius:1px;
+             transition:background .14s ease, opacity .14s ease; }
+  .rl-tick.spent { background:var(--line); }
+  .rl-tick.edge  { background:var(--fg); }
+  .rl-scrub.dragging .rl-tick { transition:none; }
+  .rl-scrub.is-over .rl-tick { background:#5cc98a; }
 
-  .rl-target { display:flex; align-items:center; justify-content:center; gap:10px;
-               margin:16px 0 0; color:var(--dim); font-size:.9rem; flex-wrap:wrap; }
-  .rl-target input { font:inherit; width:5.5em; text-align:center; padding:8px 10px;
-                     border-radius:10px; border:1px solid var(--line);
+  /* 🚨 PLAY SITS ALONE SO IT IS ACTUALLY CENTRED. Paul, 2026-09-03: "the
+     play button also needs to be centered and you can put the reset next to
+     the time limit adjustment." Two buttons centred as a PAIR leaves neither
+     on the centre line - the same mistake as centring a box instead of its
+     text. Reset moves down beside the target, where it belongs anyway:
+     both are settings, and play is the thing you press. */
+  .rl-row { display:flex; align-items:center; justify-content:center; }
+  .rl-ico.rl-small { width:38px; height:38px; }
+  .rl-ico.rl-small svg { width:17px; height:17px; }
+  .rl-ico { width:52px; height:52px; border-radius:50%; display:grid;
+            place-items:center; cursor:pointer; padding:0;
+            border:1px solid var(--line); background:var(--panel-2); color:var(--fg); }
+  .rl-ico svg { width:22px; height:22px; display:block; }
+  .rl-ico.is-go { background:var(--fg); color:var(--bg); border-color:var(--fg);
+                  width:60px; height:60px; }
+  .rl-ico.is-go svg { width:26px; height:26px; }
+  .rl-ico:hover { border-color:var(--fg); }
+  .rl-ico:disabled { opacity:.4; cursor:default; }
+
+  .rl-target { display:flex; align-items:center; justify-content:center; gap:8px;
+               color:var(--dim); font-size:.84rem; margin:0; }
+  .rl-target input { font:inherit; width:4.6em; text-align:center; padding:6px 8px;
+                     border-radius:9px; border:1px solid var(--line);
                      background:var(--bg); color:var(--fg); }
 
-  .rl-form { display:grid; gap:14px; }
+  /* ── THE FORM ─────────────────────────────────────────────────────────
+     🚨 THE FIELDS DO NOT RUN THE WIDTH OF THE PAGE. Paul, 2026-09-03: "yeah
+     these text boxes they don't need to be so large. we kind of fixed this
+     issue even with the last voice engine." Same complaint, same answer: a
+     control is sized to what it holds, not to the container it sits in.
+     560px is about 70 characters, which is a comfortable line for the two
+     written answers and generous for everything shorter.
+     ⚠️ It is a MAX, not a width, so a phone still fills edge to edge. */
+  .rl-form { display:grid; gap:14px; max-width:560px; }
   .rl-field { display:grid; gap:6px; }
   .rl-field label { font-weight:600; font-size:.93rem; }
   .rl-field .rl-hint { color:var(--dim); font-size:.84rem; font-weight:400; }
@@ -116,23 +165,63 @@
     font:inherit; padding:11px 12px; border-radius:10px; border:1px solid var(--line);
     background:var(--bg); color:var(--fg); width:100%; }
   .rl-field textarea { min-height:96px; resize:vertical; line-height:1.5; }
-  .rl-pages { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+
+  /* 🚨 THE SELECT ARROW WAS OFF CENTRE. Paul: "the arrow is off center."
+     A native select draws its own arrow at a size the OS picks, and it does
+     not line up with a 10px radius box. So the arrow is ours: appearance:none
+     kills the native one and a background SVG sits at a fixed distance from
+     the right edge, vertically centred by background-position. ⚠️ The right
+     padding must clear the arrow or long titles run underneath it. */
+  /* ⚠️ AND IT IS NOT FULL WIDTH. Paul, 2026-09-03: "the text box for start
+     new book doesn't have to be so big it doesn't have to cover the entire
+     screen." A control holding two or three short words should not run the
+     width of a desktop page. It caps here and still fills a phone, because
+     the cap is larger than any phone is wide. */
+  .rl-field select {
+    appearance:none; -webkit-appearance:none; -moz-appearance:none;
+    max-width:420px;
+    padding-right:42px;
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    background-size:18px 18px;
+  }
+
+  .rl-pages { display:grid; grid-template-columns:minmax(0,150px) minmax(0,150px); gap:14px; }
   .rl-check { display:flex; align-items:center; gap:10px; font-weight:600; font-size:.93rem; }
   .rl-check input { width:20px; height:20px; accent-color:#5cc98a; }
   .rl-save { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .rl-btn { font:inherit; font-weight:600; cursor:pointer; border-radius:999px;
+            border:1px solid var(--line); background:var(--panel-2); color:var(--fg);
+            padding:11px 20px; min-height:44px; }
+  .rl-btn.is-go { background:var(--fg); color:var(--bg); border-color:var(--fg); }
   .rl-msg { color:var(--dim); font-size:.88rem; }
   .rl-msg.is-ok { color:#5cc98a; }
+  .rl-msg.is-bad { color:#e0a33c; }
 
-  /* the previous entries */
+  /* ── ISBN LOOKUP ────────────────────────────────────────────────────── */
+  .rl-isbn { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; }
+  .rl-found { display:flex; gap:14px; align-items:flex-start; padding:12px;
+              border:1px solid var(--line); border-radius:12px;
+              background:var(--panel-2); }
+  .rl-found img { width:56px; height:84px; object-fit:cover; border-radius:6px;
+                  background:var(--line); flex:0 0 auto; }
+  .rl-found div { display:grid; gap:3px; font-size:.9rem; }
+  .rl-found b { font-size:.98rem; }
+  .rl-found span { color:var(--dim); }
+
+  /* ── PAST ENTRIES ───────────────────────────────────────────────────── */
   .rl-list { display:grid; gap:10px; }
   .rl-entry { border:1px solid var(--line); border-radius:12px; background:var(--panel-2);
               overflow:hidden; }
-  .rl-entry > summary { cursor:pointer; padding:14px 16px; display:flex; gap:12px;
-                        align-items:baseline; flex-wrap:wrap; list-style:none; }
+  .rl-entry > summary { cursor:pointer; padding:12px 16px; display:flex; gap:12px;
+                        align-items:center; flex-wrap:wrap; list-style:none; }
   .rl-entry > summary::-webkit-details-marker { display:none; }
   .rl-entry > summary::after { content:"+"; margin-left:auto; color:var(--dim);
                                font-weight:700; font-size:1.1rem; }
   .rl-entry[open] > summary::after { content:"\2013"; }
+  .rl-cover { width:34px; height:50px; object-fit:cover; border-radius:4px;
+              background:var(--line); flex:0 0 auto; }
   .rl-entry b { font-size:1rem; }
   .rl-when { color:var(--dim); font-size:.85rem; }
   .rl-tag { font-size:.72rem; font-weight:700; text-transform:uppercase;
@@ -150,41 +239,37 @@
   .rl-body p { margin:0; line-height:1.6; white-space:pre-wrap; }
   .rl-empty { color:var(--dim); }
   .rl-total { color:var(--dim); font-size:.9rem; margin:0 0 14px; }
-  @media (max-width:520px) { .rl-pages { grid-template-columns:1fr; } }
+
+  @media (max-width:520px) {
+    .rl-pages { grid-template-columns:1fr; }
+    .rl-isbn { grid-template-columns:1fr; }
+    body { padding-bottom:150px; }
+  }
 </style>
 <div class="rl-wrap">
 
   <section class="rl-card">
-    <h2>The Timer</h2>
-    <p class="rl-note">Set how long you mean to read, then press Start. It counts down, but it
-      keeps going past zero and logs the time you actually read.</p>
-
-    <p class="rl-clock" id="rlClock">30:00</p>
-    <p class="rl-elapsed" id="rlElapsed">Not started</p>
-
-    <div class="rl-row">
-      <button type="button" class="rl-btn is-go" id="rlStart">Start</button>
-      <button type="button" class="rl-btn" id="rlPause" disabled>Pause</button>
-      <button type="button" class="rl-btn" id="rlReset" disabled>Reset</button>
-    </div>
-
-    <p class="rl-target">
-      <label for="rlTarget">Target</label>
-      <input type="number" id="rlTarget" min="1" max="600" step="5" value="30">
-      <span>minutes</span>
-    </p>
-  </section>
-
-  <section class="rl-card">
     <h2>What You Read</h2>
-    <p class="rl-note">Fill this in when you stop. If you are not ready to write the summary yet,
-      save anyway and it will be kept and marked as needing one.</p>
+    <p class="rl-note">Start the timer at the bottom of the screen, then fill this in when you stop.
+      If you are not ready to write the summary yet, save anyway and it will be kept and marked as
+      needing one.</p>
 
     <div class="rl-form">
       <div class="rl-field">
-        <label for="rlUnfinished">Carry on with a book <span class="rl-hint">picks up where you stopped</span></label>
-        <select id="rlUnfinished"><option value="">Start something new</option></select>
+        <label for="rlPick">Which book</label>
+        <select id="rlPick"><option value="">Start New Book</option></select>
       </div>
+
+      <div class="rl-field" id="rlIsbnField">
+        <label for="rlIsbn">ISBN <span class="rl-hint">the number on the barcode, and it fills the rest in</span></label>
+        <div class="rl-isbn">
+          <input type="text" id="rlIsbn" placeholder="9780261102217" inputmode="numeric" autocomplete="off">
+          <button type="button" class="rl-btn" id="rlLookup">Look It Up</button>
+        </div>
+        <span class="rl-msg" id="rlIsbnMsg"></span>
+      </div>
+
+      <div id="rlFound" hidden></div>
 
       <div class="rl-field">
         <label for="rlTitle">Book</label>
@@ -227,6 +312,25 @@
     <div class="rl-list" id="rlList"></div>
   </section>
 
+</div>
+
+<div class="rl-dock" id="rlDock">
+  <div class="rl-dockin">
+    <p class="rl-clock" id="rlClock">30:00</p>
+    <div class="rl-scrub" id="rlScrub" role="slider" tabindex="0"
+         aria-label="Time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    </div>
+    <div class="rl-row">
+      <button type="button" class="rl-ico is-go" id="rlPlay" aria-label="Start reading"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.6v12.8c0 .8.9 1.3 1.6.9l10-6.4c.6-.4.6-1.3 0-1.7l-10-6.4c-.7-.5-1.6 0-1.6.8z"/></svg></button>
+    </div>
+    <p class="rl-target">
+      <button type="button" class="rl-ico rl-small" id="rlReset" aria-label="Reset the timer" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4.5V10h5.5"/></svg></button>
+      <label for="rlTarget">Target</label>
+      <input type="number" id="rlTarget" min="1" max="600" step="5" value="30">
+      <span>min</span>
+    </p>
+    <p class="rl-elapsed" id="rlElapsed">Not started</p>
+  </div>
 </div>
 
 <footer><div class="wrap">
@@ -438,7 +542,11 @@ if(panel){
 </script><script>
 (function(){
   var KEY = "ns:readlog", TKEY = "ns:readlog:target";
-  var elClock = document.getElementById("rlClock");
+  var PLAY = "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M8 5.6v12.8c0 .8.9 1.3 1.6.9l10-6.4c.6-.4.6-1.3 0-1.7l-10-6.4c-.7-.5-1.6 0-1.6.8z\"/></svg>";
+  var PAUSE = "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><rect x=\"6.5\" y=\"5\" width=\"4\" height=\"14\" rx=\"1.2\"/><rect x=\"13.5\" y=\"5\" width=\"4\" height=\"14\" rx=\"1.2\"/></svg>";
+
+  var $ = function(id){ return document.getElementById(id); };
+  var elClock = $("rlClock");
   if (!elClock) return;
 
   function load(){
@@ -449,8 +557,7 @@ if(panel){
   function loadTarget(){
     var n = 30;
     try { n = parseInt(localStorage.getItem(TKEY), 10) || 30; } catch(e){}
-    if (n < 1 || n > 600) n = 30;
-    return n;
+    return (n < 1 || n > 600) ? 30 : n;
   }
   function saveTarget(n){ try { localStorage.setItem(TKEY, String(n)); } catch(e){} }
 
@@ -458,8 +565,7 @@ if(panel){
   function clockText(sec){
     var neg = sec < 0, s = Math.abs(sec);
     var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
-    var out = h > 0 ? h + ":" + two(m) + ":" + two(r) : m + ":" + two(r);
-    return (neg ? "+" : "") + out;
+    return (neg ? "+" : "") + (h > 0 ? h + ":" + two(m) + ":" + two(r) : m + ":" + two(r));
   }
   function spell(sec){
     var m = Math.round(sec / 60);
@@ -468,29 +574,59 @@ if(panel){
     var h = Math.floor(m / 60), r = m % 60;
     return h + (h === 1 ? " hour" : " hours") + (r ? " " + r + " min" : "");
   }
+  function esc(s){
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
 
-  var elTarget = document.getElementById("rlTarget");
-  var elElapsed = document.getElementById("rlElapsed");
-  var bStart = document.getElementById("rlStart");
-  var bPause = document.getElementById("rlPause");
-  var bReset = document.getElementById("rlReset");
+  /* ── the dock ─────────────────────────────────────────────────────── */
+  var elTarget = $("rlTarget"), elElapsed = $("rlElapsed");
+  var bPlay = $("rlPlay"), bReset = $("rlReset");
+  var scrub = $("rlScrub");
+
+  /* One tick per minute of the target, capped so a three hour target does
+     not draw 180 slivers a pixel wide. 40 is about the most that stays
+     readable on a phone. */
+  var TICKS = 0;
+  function buildTicks(){
+    TICKS = Math.max(6, Math.min(40, target));
+    scrub.innerHTML = "";
+    for (var i = 0; i < TICKS; i++){
+      var t = document.createElement("span");
+      t.className = "rl-tick";
+      scrub.appendChild(t);
+    }
+  }
 
   var target = loadTarget();
   elTarget.value = target;
-
   var elapsed = 0, running = false, tick = null;
 
   function paint(){
-    var left = target * 60 - elapsed;
+    var total = target * 60, left = total - elapsed;
     elClock.textContent = clockText(left);
     elClock.classList.toggle("is-over", left < 0);
+
+    /* 🚨 RIGHT TO LEFT. The bar starts full and empties from the right end,
+       so what you see is time REMAINING, not time spent. Tick i is spent
+       once the countdown has eaten past it counting from the right. */
+    var pct = total > 0 ? Math.min(100, (elapsed / total) * 100) : 0;
+    var spent = Math.round((pct / 100) * TICKS);
+    var kids = scrub.children;
+    for (var i = 0; i < kids.length; i++){
+      kids[i].classList.toggle("spent", i >= (TICKS - spent));
+    }
+    scrub.classList.toggle("is-over", left < 0);
+    scrub.setAttribute("aria-valuenow", String(Math.round(pct)));
+    scrub.setAttribute("aria-valuetext", clockText(left) + " remaining");
+
     elElapsed.textContent = elapsed === 0
       ? (running ? "Starting" : "Not started")
       : "Read for " + spell(elapsed) + (left < 0 ? " - past your target" : "");
-    bPause.disabled = !running;
+
+    bPlay.innerHTML = running ? PAUSE : PLAY;
+    bPlay.setAttribute("aria-label", running ? "Pause reading" : "Start reading");
     bReset.disabled = (elapsed === 0 && !running);
-    bStart.textContent = running ? "Reading" : (elapsed > 0 ? "Continue" : "Start");
-    bStart.disabled = running;
   }
 
   function start(){
@@ -504,10 +640,43 @@ if(panel){
     if (tick) { clearInterval(tick); tick = null; }
     paint();
   }
-  bStart.addEventListener("click", start);
-  bPause.addEventListener("click", pause);
-  bReset.addEventListener("click", function(){
-    pause(); elapsed = 0; paint();
+  bPlay.addEventListener("click", function(){ running ? pause() : start(); });
+  bReset.addEventListener("click", function(){ pause(); elapsed = 0; paint(); });
+
+  // Dragging the scrub moves the countdown, the way dragging the lesson
+  // player's bar moves the reading. It sets time ALREADY READ, so releasing
+  // part way through a 30 minute target means 15 minutes are logged.
+  function seekFromEvent(e){
+    var r = scrub.getBoundingClientRect();
+    var x = (e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX) - r.left;
+    var pct = Math.max(0, Math.min(1, r.width ? x / r.width : 0));
+    elapsed = Math.round(pct * target * 60);
+    paint();
+  }
+  var dragging = false;
+  scrub.addEventListener("pointerdown", function(e){
+    dragging = true; scrub.classList.add("dragging");
+    /* 🚨 setPointerCapture THROWS if the pointer id is not currently active,
+       and an uncaught throw here aborts the handler BEFORE the seek runs -
+       the bar then looks dead while every other control still works. Found
+       2026-09-03 by dragging twice in a row during testing: the first drag
+       moved the timer, the second silently did nothing. Capture is a nicety
+       (it keeps a drag alive if the finger leaves the bar); the seek is the
+       point. So it is wrapped, and the seek happens either way. */
+    try { scrub.setPointerCapture && scrub.setPointerCapture(e.pointerId); } catch(err){}
+    seekFromEvent(e); e.preventDefault();
+  });
+  scrub.addEventListener("pointermove", function(e){ if (dragging) seekFromEvent(e); });
+  function endDrag(e){
+    dragging = false; scrub.classList.remove("dragging");
+    try { if (e && e.pointerId != null) scrub.releasePointerCapture(e.pointerId); } catch(err){}
+  }
+  scrub.addEventListener("pointerup", endDrag);
+  scrub.addEventListener("pointercancel", endDrag);
+  scrub.addEventListener("keydown", function(e){
+    var step = e.shiftKey ? 300 : 60;
+    if (e.key === "ArrowRight" || e.key === "ArrowUp"){ elapsed += step; paint(); e.preventDefault(); }
+    if (e.key === "ArrowLeft" || e.key === "ArrowDown"){ elapsed = Math.max(0, elapsed - step); paint(); e.preventDefault(); }
   });
 
   // A longer target is remembered. Paul: "saves your timer if you add like
@@ -516,66 +685,136 @@ if(panel){
     var n = parseInt(elTarget.value, 10);
     if (!n || n < 1) n = 30;
     if (n > 600) n = 600;
-    target = n;
-    elTarget.value = n;
+    target = n; elTarget.value = n; buildTicks();
     if (n > 30) saveTarget(n);
     paint();
   });
 
-  var elTitle = document.getElementById("rlTitle");
-  var elFrom = document.getElementById("rlFrom");
-  var elTo = document.getElementById("rlTo");
-  var elSummary = document.getElementById("rlSummary");
-  var elLiked = document.getElementById("rlLiked");
-  var elFinished = document.getElementById("rlFinished");
-  var elUnfinished = document.getElementById("rlUnfinished");
-  var elMsg = document.getElementById("rlMsg");
-  var elList = document.getElementById("rlList");
-  var elTotal = document.getElementById("rlTotal");
+  /* ── the form ─────────────────────────────────────────────────────── */
+  var elTitle = $("rlTitle"), elFrom = $("rlFrom"), elTo = $("rlTo");
+  var elSummary = $("rlSummary"), elLiked = $("rlLiked"), elFinished = $("rlFinished");
+  var elPick = $("rlPick"), elMsg = $("rlMsg"), elList = $("rlList"), elTotal = $("rlTotal");
+  var elIsbn = $("rlIsbn"), elIsbnMsg = $("rlIsbnMsg"), elFound = $("rlFound");
+  var pendingCover = null, pendingAuthor = null;
+  /* ⚠️ A LOOKUP TOKEN. Two lookups can be in flight at once (type, click,
+     correct a digit, click again) and the SLOWER one can land last and
+     overwrite the newer answer with a stale book. Each call takes a ticket
+     and a response that is not the current ticket is dropped. */
+  var lookupSeq = 0;
 
-  // Books started and not finished, with the furthest page reached.
+  /* ── ISBN lookup ──────────────────────────────────────────────────────
+     Open Library, because it needs no key and no account. Two calls in one:
+     the data endpoint gives title, authors and a cover url.
+     ⚠️ EVERY FAILURE IS SILENT-SAFE. No network, a bad number, or a book
+     nobody has catalogued all end the same way: a message, and the title
+     field still typeable by hand. The lookup is a shortcut, never a gate. */
+  function cleanIsbn(s){ return String(s || "").replace(/[^0-9Xx]/g, "").toUpperCase(); }
+
+  function showFound(title, author, cover){
+    elFound.hidden = false;
+    elFound.innerHTML = "<div class='rl-found'>" +
+      (cover ? "<img src='" + esc(cover) + "' alt='' loading='lazy'>" : "") +
+      "<div><b>" + esc(title) + "</b>" +
+      (author ? "<span>" + esc(author) + "</span>" : "") + "</div></div>";
+  }
+
+  function lookup(){
+    var mine = ++lookupSeq;
+    var isbn = cleanIsbn(elIsbn.value);
+    if (isbn.length !== 10 && isbn.length !== 13){
+      elIsbnMsg.className = "rl-msg is-bad";
+      elIsbnMsg.textContent = "An ISBN is 10 or 13 digits.";
+      return;
+    }
+    elIsbnMsg.className = "rl-msg";
+    elIsbnMsg.textContent = "Looking...";
+    var url = "https://openlibrary.org/api/books?bibkeys=ISBN:" + isbn +
+              "&format=json&jscmd=data";
+    fetch(url).then(function(r){ return r.json(); }).then(function(j){
+      if (mine !== lookupSeq) return;   // a newer lookup has started
+      var b = j["ISBN:" + isbn];
+      if (!b){
+        elIsbnMsg.className = "rl-msg is-bad";
+        elIsbnMsg.textContent = "No book found for that number. Type the title yourself.";
+        return;
+      }
+      var title = b.title || "";
+      if (b.subtitle) title += ": " + b.subtitle;
+      var author = (b.authors || []).map(function(a){ return a.name; }).join(", ");
+      var cover = b.cover ? (b.cover.medium || b.cover.small || "") : "";
+      elTitle.value = title;
+      pendingAuthor = author || null;
+      pendingCover = cover || null;
+      showFound(title, author, cover);
+      elIsbnMsg.className = "rl-msg is-ok";
+      elIsbnMsg.textContent = "Found it.";
+    }).catch(function(){
+      if (mine !== lookupSeq) return;
+      elIsbnMsg.className = "rl-msg is-bad";
+      elIsbnMsg.textContent = "Could not reach the book service. Type the title yourself.";
+    });
+  }
+  $("rlLookup").addEventListener("click", lookup);
+  elIsbn.addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); lookup(); } });
+
+  /* Books started and not finished, with the furthest page and any cover. */
   function openBooks(list){
     var seen = {}, order = [];
     for (var i = list.length - 1; i >= 0; i--){
       var e = list[i], t = (e.title || "").trim();
       if (!t) continue;
-      if (!seen[t]) { seen[t] = { title: t, last: 0, done: false }; order.push(t); }
+      if (!seen[t]) { seen[t] = { title: t, last: 0, done: false, cover: null, author: null }; order.push(t); }
       if (e.to && e.to > seen[t].last) seen[t].last = e.to;
+      if (e.cover && !seen[t].cover) seen[t].cover = e.cover;
+      if (e.author && !seen[t].author) seen[t].author = e.author;
       if (e.finished) seen[t].done = true;
     }
     return order.map(function(t){ return seen[t]; }).filter(function(b){ return !b.done; });
   }
 
-  function fillCarryOn(list){
-    var books = openBooks(list);
-    var keep = elUnfinished.value;
-    elUnfinished.innerHTML = "";
+  /* 🚨 EXACTLY TWO WORDINGS. Paul: "maybe say Start New Book. then the option
+     is after you create one is is two options Start New Book or Continue
+     [Book Name]." So the blank option is Start New Book, and every unfinished
+     book reads Continue followed by its title. Nothing else goes in here. */
+  function fillPick(list){
+    var books = openBooks(list), keep = elPick.value;
+    elPick.innerHTML = "";
     var first = document.createElement("option");
-    first.value = ""; first.textContent = "Start something new";
-    elUnfinished.appendChild(first);
+    first.value = ""; first.textContent = "Start New Book";
+    elPick.appendChild(first);
     books.forEach(function(b){
       var o = document.createElement("option");
       o.value = b.title;
-      o.textContent = b.title + (b.last ? " - reached page " + b.last : "");
+      o.textContent = "Continue " + b.title;
       o.dataset.last = b.last || 0;
-      elUnfinished.appendChild(o);
+      o.dataset.cover = b.cover || "";
+      o.dataset.author = b.author || "";
+      elPick.appendChild(o);
     });
-    if (keep) elUnfinished.value = keep;
+    if (keep) elPick.value = keep;
   }
 
-  elUnfinished.addEventListener("change", function(){
-    var o = elUnfinished.options[elUnfinished.selectedIndex];
-    if (!elUnfinished.value) return;
-    elTitle.value = elUnfinished.value;
+  elPick.addEventListener("change", function(){
+    var o = elPick.options[elPick.selectedIndex];
+    if (!elPick.value){
+      elTitle.value = ""; elFrom.value = ""; elTo.value = "";
+      pendingCover = null; pendingAuthor = null;
+      elFound.hidden = true; elFound.innerHTML = "";
+      $("rlIsbnField").hidden = false;
+      return;
+    }
+    elTitle.value = elPick.value;
     var last = parseInt(o.dataset.last, 10) || 0;
     if (last) elFrom.value = last + 1;
     elTo.value = "";
+    pendingCover = o.dataset.cover || null;
+    pendingAuthor = o.dataset.author || null;
+    // Carrying on a known book needs no ISBN - it is already identified.
+    $("rlIsbnField").hidden = true;
+    if (pendingCover || pendingAuthor) showFound(elPick.value, pendingAuthor, pendingCover);
+    else { elFound.hidden = true; elFound.innerHTML = ""; }
   });
 
-  function esc(s){
-    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  }
   function dateText(iso){
     var d = new Date(iso);
     if (isNaN(d)) return "";
@@ -585,7 +824,7 @@ if(panel){
 
   function render(){
     var list = load();
-    fillCarryOn(list);
+    fillPick(list);
 
     if (!list.length){
       elList.innerHTML = "<p class='rl-empty'>Nothing logged yet. Your first session will appear here.</p>";
@@ -606,15 +845,18 @@ if(panel){
         : (needs ? "<span class='rl-tag is-todo'>Needs Summary</span>" : "");
       var pages = (e.from && e.to) ? ("Pages " + e.from + " to " + e.to)
                 : (e.from ? ("From page " + e.from) : "Pages not recorded");
+      var cover = e.cover ? "<img class='rl-cover' src='" + esc(e.cover) + "' alt='' loading='lazy'>" : "";
       return "<details class='rl-entry'>" +
-        "<summary><b>" + esc(e.title || "Untitled") + "</b>" +
+        "<summary>" + cover + "<b>" + esc(e.title || "Untitled") + "</b>" +
         "<span class='rl-when'>" + esc(dateText(e.date)) + "</span>" + tag + "</summary>" +
         "<div class='rl-body'>" +
           "<dl>" +
+            (e.author ? "<dt>By</dt><dd>" + esc(e.author) + "</dd>" : "") +
             "<dt>Read for</dt><dd>" + esc(spell(e.seconds || 0)) +
               (e.target ? " (target " + e.target + " min)" : "") + "</dd>" +
             "<dt>Pages</dt><dd>" + esc(pages) +
               ((e.from && e.to && e.to >= e.from) ? " - " + (e.to - e.from + 1) + " pages" : "") + "</dd>" +
+            (e.isbn ? "<dt>ISBN</dt><dd>" + esc(e.isbn) + "</dd>" : "") +
             "<dt>Finished</dt><dd>" + (e.finished ? "Yes" : "Not yet") + "</dd>" +
           "</dl>" +
           "<h4>What happened</h4><p>" + (((e.summary || "").trim()) ? esc(e.summary) : "<span class='rl-empty'>Not written yet.</span>") + "</p>" +
@@ -624,35 +866,34 @@ if(panel){
     }).join("");
   }
 
-  document.getElementById("rlSave").addEventListener("click", function(){
+  $("rlSave").addEventListener("click", function(){
     var title = elTitle.value.trim();
     if (!title){
-      elMsg.className = "rl-msg";
+      elMsg.className = "rl-msg is-bad";
       elMsg.textContent = "Type the book first.";
       elTitle.focus();
       return;
     }
     if (elapsed === 0){
-      elMsg.className = "rl-msg";
+      elMsg.className = "rl-msg is-bad";
       elMsg.textContent = "Run the timer before saving a session.";
       return;
     }
     pause();
 
-    var from = parseInt(elFrom.value, 10) || null;
-    var to = parseInt(elTo.value, 10) || null;
-    var summary = elSummary.value.trim();
-    var liked = elLiked.value.trim();
-
+    var summary = elSummary.value.trim(), liked = elLiked.value.trim();
     var list = load();
     list.unshift({
       id: String(Date.now()),
       date: new Date().toISOString(),
       title: title,
+      author: pendingAuthor || null,
+      cover: pendingCover || null,
+      isbn: cleanIsbn(elIsbn.value) || null,
       seconds: elapsed,
       target: target,
-      from: from,
-      to: to,
+      from: parseInt(elFrom.value, 10) || null,
+      to: parseInt(elTo.value, 10) || null,
       summary: summary,
       liked: liked,
       finished: elFinished.checked
@@ -660,19 +901,38 @@ if(panel){
     save(list);
 
     elMsg.className = "rl-msg is-ok";
-    elMsg.textContent = (summary && liked)
-      ? "Saved."
-      : "Saved, and marked as needing a summary.";
+    elMsg.textContent = (summary && liked) ? "Saved." : "Saved, and marked as needing a summary.";
 
     elSummary.value = ""; elLiked.value = "";
     elFrom.value = ""; elTo.value = "";
+    elIsbn.value = ""; elIsbnMsg.textContent = "";
     elFinished.checked = false;
-    elUnfinished.value = "";
+    elPick.value = "";
+    $("rlIsbnField").hidden = false;
+    elFound.hidden = true; elFound.innerHTML = "";
+    pendingCover = null; pendingAuthor = null;
     elapsed = 0;
     paint();
     render();
   });
 
+  buildTicks();
+  /* 🚨 THE PAGE MUST RESERVE THE DOCK'S REAL HEIGHT. A hardcoded
+     padding-bottom was 150px while the dock measured 230px on a 320px
+     phone, so the dock sat over the last 80px of the page - the Save button
+     among it. The dock wraps differently at every width, so the number
+     cannot be guessed: it is measured, and re-measured on resize.
+     ⚠️ Found 2026-09-03 by measuring in an iframe, not by looking. */
+  var dock = $("rlDock");
+  function reserve(){
+    if (!dock) return;
+    document.body.style.paddingBottom = (dock.offsetHeight + 16) + "px";
+  }
+  reserve();
+  window.addEventListener("resize", reserve);
+  if (window.ResizeObserver) new ResizeObserver(reserve).observe(dock);
+
+  buildTicks();
   paint();
   render();
 })();
