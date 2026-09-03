@@ -1,5 +1,15 @@
 # NexStudents — Design System
-**Last modified: 2026-08-01** · Documents what is built. Changes no pixels.
+**Last modified: 2026-09-02** · Documents what is built. Changes no pixels.
+
+> ⚠️ **THIS FILE DESCRIBES THE OLD CREAM DESIGN, WHICH NO LONGER EXISTS ON THE SITE.**
+> `assets/site.css` and `assets/site.js` were **deleted on 2026-09-02**, at Paul's instruction,
+> once the reading placement exam — the last page using them — was rebuilt on `ns.css`. Nothing
+> in the repo referenced them any more.
+>
+> **Kept as history, not as a contract.** The reasoning below is still worth reading: it is why
+> the exam is shaped the way it is, and several of its rules were carried into `ns.css`. But the
+> live design system is now **`assets/ns.css`**, and where the two disagree, `ns.css` wins.
+> The files are recoverable from git history (`674f0353` was the last commit to touch them).
 
 > **Why this file exists.** Every decision below previously lived only as a comment in
 > `assets/site.css`. That meant the reasoning survived exactly as long as nobody edited without
