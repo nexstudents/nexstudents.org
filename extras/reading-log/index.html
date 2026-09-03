@@ -589,31 +589,31 @@
            two ends, and each end is a chapter AND a page. Grouped by end now.
            ⚠️ The four input ids are unchanged, so the engine, the saved
            entries and the Continue prefill all still work. -->
-      <!-- 🚨 WORDS, NOT ABBREVIATIONS, AND "to" BETWEEN THE TWO ENDS. Paul,
-           2026-09-03: "I don't like that chapter Ch and p for your
-           abbreviations. you should also put the text to in between them."
-           "Ch" and "p." are the abbreviations a citation uses, not the ones a
-           twelve year old reads at a glance, and the form has room for the
-           whole word. The word "to" is what makes the two halves read as one
-           range instead of two separate questions - it was carried only by
-           the "Started at" / "Stopped at" labels before, which is weaker. -->
+      <!-- ⚠️ Ch and Pg. Paul, 2026-09-03, in two steps: first "I don't like
+           that chapter Ch and p for your abbreviations", then "instead of
+           chapter and page you can use abbreviations Ch and Pg."
+           The objection was to "p." specifically, not to abbreviating at
+           all - p. is a citation mark, Pg is what a person actually writes.
+           Spelling both words out was the overcorrection in between.
+           The word "to" stays: it is what makes the two halves read as ONE
+           range rather than two separate questions. -->
       <div class="rl-field">
         <span class="rl-lab">What you read</span>
         <div class="rl-range">
           <span class="rl-spot">
-            <span class="rl-mini">Chapter</span>
+            <span class="rl-mini">Ch</span>
             <input type="text" id="rlChapter" aria-label="Chapter you started at"
                    placeholder="3" autocomplete="off">
-            <span class="rl-mini">Page</span>
+            <span class="rl-mini">Pg</span>
             <input type="number" id="rlFrom" min="1" max="99999" inputmode="numeric"
                    aria-label="Page you started at" placeholder="8">
           </span>
           <span class="rl-to">to</span>
           <span class="rl-spot">
-            <span class="rl-mini">Chapter</span>
+            <span class="rl-mini">Ch</span>
             <input type="text" id="rlChapterTo" aria-label="Chapter you stopped at"
                    placeholder="5" autocomplete="off">
-            <span class="rl-mini">Page</span>
+            <span class="rl-mini">Pg</span>
             <input type="number" id="rlTo" min="1" max="99999" inputmode="numeric"
                    aria-label="Page you stopped at" placeholder="9">
           </span>
@@ -627,7 +627,7 @@
 
       <div class="rl-field">
         <label for="rlLiked">What you liked <span class="rl-hint">or did not like, that counts too</span></label>
-        <textarea id="rlLiked" placeholder="What was good about it?"></textarea>
+        <textarea id="rlLiked" placeholder="What you liked about it?"></textarea>
       </div>
 
       <label class="rl-check"><input type="checkbox" id="rlFinished"> I finished this book</label>
