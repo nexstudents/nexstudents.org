@@ -1123,9 +1123,15 @@ const englishPager = (course) => course.units
     const items = [];
     const push = (l, chapterN) => {
       if (l.gap || !l.title) return;
+      /* 🚨 NO PAGE NUMBERS ON THE CARD. Paul, 2026-09-03: "was that for you to
+         remember because we need you to remember these books but I don't want
+         those pages on our lessons." `page` stays in english-units.js — it is
+         how the right spread gets opened when a lesson is built — but it is a
+         build-time note, not something a student should ever see. A page
+         number on a card also implies the reader has the book, which they
+         do not; these are borrow-only scans. */
       items.push({
-        label: "Unit " + u.n + (chapterN ? " &middot; Chapter " + chapterN : "")
-               + (l.page ? " &middot; p" + l.page : ""),
+        label: "Unit " + u.n + (chapterN ? " &middot; Chapter " + chapterN : ""),
         title: l.title, slug: l.slug || null,
       });
     };
