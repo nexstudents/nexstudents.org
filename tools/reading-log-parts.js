@@ -75,11 +75,6 @@ const styles = `
      both are settings, and play is the thing you press. */
   .rl-row { display:flex; align-items:center; justify-content:center; }
   .rl-ico.rl-small { min-width:40px; height:32px; padding:0 10px; border-radius:3px;
-                     /* ⚠️ LEFT, not right. Paul, 2026-09-03: "you moved it to the
-                        right side I want you to put it back on the left side."
-                        Absolute either way, so it never pulls the number box
-                        off the centre line. */
-                     position:absolute; left:0; top:50%; transform:translateY(-50%);
                      opacity:1; }
   .rl-ico.rl-small svg { width:17px; height:17px; }
   /* 🚨 SQUARE, NOT ROUND. Paul, 2026-09-03: "the play button doesnt have to
@@ -125,6 +120,14 @@ const styles = `
                column-gap:8px; width:100%; max-width:320px;
                color:var(--dim); font-size:.84rem; margin:0; }
   .rl-target input { grid-column:2; }
+  /* ⚠️ RESET HUGS THE BOX, MIRRORING "min". Paul, 2026-09-03: "move that
+     restart icon closer to the timer text about the same length as the min
+     abbreviation." It was absolute at left:0 of a 320px row, so it sat far
+     out on its own. It is column 1 with justify-self:end now, so the gap on
+     its side equals the column-gap on min's side - symmetric, and the input
+     still owns column 2 and stays dead centre. */
+  .rl-target .rl-ico.rl-small { grid-column:1; justify-self:end; position:static;
+                                transform:none; }
   .rl-target > span { grid-column:3; justify-self:start; }
   .rl-target input { font:inherit; width:4.6em; text-align:center; padding:6px 8px;
                      border-radius:9px; border:1px solid var(--line);
@@ -188,18 +191,16 @@ const styles = `
     background-size:18px 18px;
   }
 
-  /* ⚠️ CHAPTERS GET A FROM-TO PAIR TOO. Paul, 2026-09-03: "you also need to
-     do chapter page from chapter page to." A session usually spans chapters
-     the way it spans pages, so one box could not say what was covered.
-     Chapters stay TEXT, not number - a chapter can be 4, or 4a, or a name. */
-  .rl-pair { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px;
-             align-items:start; }
   .rl-lab { font-weight:600; font-size:.93rem; }
   /* One end of the range: Ch [ ] p. [ ]. The little words carry the
      meaning so the boxes can stay small. */
+  /* The range: two ends joined by the word to. It wraps on a phone rather
+     than shrinking the boxes, so the words stay readable. */
+  .rl-range { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .rl-spot { display:flex; align-items:center; gap:6px; }
-  .rl-spot input { width:100%; max-width:76px; text-align:center; }
-  .rl-mini { color:var(--dim); font-size:.84rem; }
+  .rl-spot input { width:100%; max-width:70px; text-align:center; }
+  .rl-mini { color:var(--dim); font-size:.84rem; white-space:nowrap; }
+  .rl-to { color:var(--fg); font-weight:600; font-size:.9rem; }
   .rl-pages { display:flex; align-items:center; gap:8px; }
   /* ⚠️ DIGITS CENTRE IN THEIR BOX. Paul, 2026-09-03: "make when you write
      those numbers those numbers are centered in that text box." A page or
@@ -479,7 +480,7 @@ const styles = `
   }
 
   @media (max-width:520px) {
-    .rl-pair { grid-template-columns:1fr; }
+    .rl-range { gap:6px; }
     .rl-isbn { grid-template-columns:1fr; }
     body { padding-bottom:150px; }
   }
@@ -551,28 +552,34 @@ function markup() {
            two ends, and each end is a chapter AND a page. Grouped by end now.
            ⚠️ The four input ids are unchanged, so the engine, the saved
            entries and the Continue prefill all still work. -->
-      <div class="rl-pair">
-        <div class="rl-field">
-          <span class="rl-lab">Started at</span>
-          <div class="rl-spot">
-            <span class="rl-mini">Ch</span>
+      <!-- 🚨 WORDS, NOT ABBREVIATIONS, AND "to" BETWEEN THE TWO ENDS. Paul,
+           2026-09-03: "I don't like that chapter Ch and p for your
+           abbreviations. you should also put the text to in between them."
+           "Ch" and "p." are the abbreviations a citation uses, not the ones a
+           twelve year old reads at a glance, and the form has room for the
+           whole word. The word "to" is what makes the two halves read as one
+           range instead of two separate questions - it was carried only by
+           the "Started at" / "Stopped at" labels before, which is weaker. -->
+      <div class="rl-field">
+        <span class="rl-lab">What you read</span>
+        <div class="rl-range">
+          <span class="rl-spot">
+            <span class="rl-mini">Chapter</span>
             <input type="text" id="rlChapter" aria-label="Chapter you started at"
                    placeholder="3" autocomplete="off">
-            <span class="rl-mini">p.</span>
+            <span class="rl-mini">Page</span>
             <input type="number" id="rlFrom" min="1" max="99999" inputmode="numeric"
                    aria-label="Page you started at" placeholder="8">
-          </div>
-        </div>
-        <div class="rl-field">
-          <span class="rl-lab">Stopped at</span>
-          <div class="rl-spot">
-            <span class="rl-mini">Ch</span>
+          </span>
+          <span class="rl-to">to</span>
+          <span class="rl-spot">
+            <span class="rl-mini">Chapter</span>
             <input type="text" id="rlChapterTo" aria-label="Chapter you stopped at"
                    placeholder="5" autocomplete="off">
-            <span class="rl-mini">p.</span>
+            <span class="rl-mini">Page</span>
             <input type="number" id="rlTo" min="1" max="99999" inputmode="numeric"
                    aria-label="Page you stopped at" placeholder="9">
-          </div>
+          </span>
         </div>
       </div>
 

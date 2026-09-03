@@ -338,8 +338,8 @@ function readingLogScript() {
      and a page together. Either half may be blank. */
   function spot(ch, pg){
     var bits = [];
-    if (ch) bits.push("Ch " + ch);
-    if (pg) bits.push("p. " + pg);
+    if (ch) bits.push("Chapter " + ch);
+    if (pg) bits.push("page " + pg);
     return bits.length ? bits.join(", ") : "not recorded";
   }
 
