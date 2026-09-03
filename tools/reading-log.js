@@ -124,17 +124,39 @@ function readingLogScript() {
     elClock.textContent = clockText(left);
     elClock.classList.toggle("is-over", left < 0);
 
-    /* 🚨 RIGHT TO LEFT. The bar starts full and empties from the right end,
-       so what you see is time REMAINING, not time spent. Tick i is spent
-       once the countdown has eaten past it counting from the right. */
-    var pct = total > 0 ? Math.min(100, (elapsed / total) * 100) : 0;
-    var spent = Math.round((pct / 100) * TICKS);
+    /* 🚨 RIGHT TO LEFT, AND THE BOUNDARY TICK FADES. Paul, 2026-09-03: "the
+       scrub timer is a little too fast and not smooth. look at the reference
+       at the voice engine for it."
+       It was Math.round on whole ticks, so nothing moved for a minute and
+       then a whole bar flipped at once - a step, not a drain. The lesson
+       player avoids this by marking the CURRENT position separately from the
+       done ones (.tick.now against .tick.done), so the eye always has
+       something in between to read.
+       Same idea here: whole ticks past the edge go spent, and the ONE tick
+       being consumed carries a partial opacity that falls smoothly across
+       its own minute. Nothing jumps.
+       ⚠️ opacity is set inline because it is a continuous value; the class
+       only says which tick is the live edge. */
+    var exact = total > 0 ? (elapsed / total) * TICKS : 0;
+    var whole = Math.floor(exact);
+    var frac  = exact - whole;
+    var edgeIdx = TICKS - whole - 1;
     var kids = scrub.children;
     for (var i = 0; i < kids.length; i++){
-      kids[i].classList.toggle("spent", i >= (TICKS - spent));
+      var k = kids[i];
+      var isSpent = i > edgeIdx;
+      k.classList.toggle("spent", isSpent);
+      k.classList.toggle("edge", i === edgeIdx && frac > 0);
+      k.style.opacity = (i === edgeIdx && frac > 0) ? String(1 - frac * 0.72) : "";
     }
     scrub.classList.toggle("is-over", left < 0);
-    scrub.setAttribute("aria-valuenow", String(Math.round(pct)));
+    /* ⚠️ NO BACKTICKS IN THIS FILE, not even here. Derived from exact rather
+       than from a pct variable: an earlier edit removed pct but left this
+       line, so paint() threw on EVERY call. Because reset calls pause, and
+       pause calls paint, the throw killed reset before it zeroed the timer.
+       The clock still updated, because that happens above the throw - which
+       is why it looked like a dead button rather than a crash. */
+    scrub.setAttribute("aria-valuenow", String(Math.round(TICKS ? (exact / TICKS) * 100 : 0)));
     scrub.setAttribute("aria-valuetext", clockText(left) + " remaining");
 
     elElapsed.textContent = elapsed === 0

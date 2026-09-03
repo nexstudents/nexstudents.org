@@ -60,10 +60,13 @@ const styles = `
      changes, change this one, or the two controls stop looking related. */
   .rl-scrub { display:flex; gap:2px; height:18px; align-items:stretch;
               cursor:pointer; touch-action:none; width:100%; }
+  /* .14s ease is the lesson player's own timing - lesson-template.html
+     line 252. Kept identical so the two bars feel like one control. */
   .rl-tick { flex:1; background:var(--fg); border-radius:1px;
-             transition:background .14s ease, opacity .14s ease; }
+             transition:background .14s ease, opacity .14s linear; }
   .rl-tick.spent { background:var(--line); }
-  .rl-tick.edge  { background:var(--fg); }
+  /* The live edge keeps the unspent colour and fades by inline opacity. */
+  .rl-tick.edge { background:var(--rl-live); }
   .rl-scrub.dragging .rl-tick { transition:none; }
   .rl-scrub.is-over .rl-tick { background:var(--rl-accent); }
 
@@ -432,9 +435,14 @@ const styles = `
   .rl-dock .rl-ico.is-go:hover { filter:brightness(1.06); }
   .rl-dock .rl-ico { background:var(--rl-surface); color:var(--rl-ink);
                      border-color:var(--rl-rule); }
-  .rl-dock .rl-ico.rl-small { border-color:var(--rl-accent); color:var(--rl-accent);
-                              background:transparent; opacity:1; }
-  .rl-dock .rl-ico.rl-small:hover { background:var(--rl-accent); color:var(--rl-on-accent); }
+  /* ⚠️ RESET IS A FILLED GRAPHITE BOX WITH A DARK GLYPH. Paul, 2026-09-03:
+     "on the reset timer icon box can you make that the same graphite color
+     and then the icon itself make that black." It was an outline, which read
+     as secondary next to the filled play button. Filled now, same accent as
+     play, with the on-accent ink on top so the glyph reads dark. */
+  .rl-dock .rl-ico.rl-small { background:var(--rl-accent); color:var(--rl-on-accent);
+                              border-color:var(--rl-accent); opacity:1; }
+  .rl-dock .rl-ico.rl-small:hover { filter:brightness(1.06); }
   .rl-dock .rl-ico:hover { border-color:var(--rl-ctl-bg); }
 
 
