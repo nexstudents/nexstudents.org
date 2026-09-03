@@ -1796,13 +1796,15 @@ const pages = [
   { dir: "extras/reading-log", active: "x",
     title: "Reading Log — NexStudents",
     desc: "Time your reading, write what you read, and keep every session.",
-    /* ⚠️ CRUMB IS ONE WORD, NOT A TRAIL. Paul, 2026-09-03: "you also need to
-       get rid of that extra back button and we decided not to add that with
-       other pages. we did that especially when we added the home button."
-       This said "Extras > Reading Log", which reads as a back link. Every
-       other generated page uses a single word here — About, Games, Contact.
-       The nav and the Home button are how you get back. */
-    crumb: "Reading Log", h1: "Reading Log.",
+    /* ⚠️ A LINKED CRUMB, WHICH IS THE HOUSE PATTERN — 110 built pages already
+       do this. Paul, 2026-09-03, first: "get rid of that extra back button";
+       then, seeing the bare word: "if you really want to do it properly you
+       can always do something like home/extras/reading_log ... you just need
+       to do it properly so it looks good." I over-corrected to a single word
+       the first time. The rule is the one /resources/books-and-readers/ and
+       every grade shelf follow: PARENT LINKED, current page plain text, no
+       arrow button anywhere → feedback_grade_path_not_subject_wide. */
+    crumb: '<a href="/extras/">Extras</a> &rsaquo; Reading Log', h1: "Reading Log.",
     lead: "Set a timer, read, then write down what happened and what you liked. Every session is kept underneath so you can look back at what you have read and how long you spent on it.",
     body: readingLogMarkup(), script: readingLogScript() },
 
