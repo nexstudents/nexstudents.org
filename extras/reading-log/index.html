@@ -582,7 +582,16 @@
        label; justify-self:start keeps it that size and puts it under the
        input where a stacked control belongs. */
     .rl-isbn { grid-template-columns:1fr; }
-    .rl-isbn .rl-btn { justify-self:start; width:auto; }
+    /* ⚠️ CENTRED ON MOBILE. Paul, 2026-09-03: "center that lookup button on
+       mobile. make it on the left side on desktop if you want."
+       Centred here because a stacked control under a full-width input has
+       no edge to belong to, so left-aligned it reads as orphaned.
+       ⚠️ DESKTOP LEFT WAS OFFERED AND DECLINED. There the button sits to the
+       RIGHT of the ISBN field, which is the order you use it in - type the
+       number, then press. Putting it left would have you reaching back past
+       the field you just filled. Say the word if you would rather have it
+       left anyway; this is a judgement call, not a rule. */
+    .rl-isbn .rl-btn { justify-self:center; width:auto; }
     .rl-save .rl-btn { width:auto; }
     body { padding-bottom:150px; }
   }
