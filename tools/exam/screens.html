@@ -1,0 +1,86 @@
+  <!-- ============ SCREEN 1: INSTRUCTIONS ============ -->
+  <section id="s-intro">
+    <div class="card">
+      <ul class="rule">
+        <li>Read the passage all the way through before you answer anything.</li>
+        <li>You can scroll back to the passage at any time. It stays on screen.</li>
+        <li>Every answer is in the text. Nothing here needs outside knowledge.</li>
+        <li>Answer on your own. No help, no searching.</li>
+        <li>You can only submit once, so take your time on each question.</li>
+      </ul>
+      <p class="sub" style="margin:20px 0 18px">
+        This is not a graded test and it does not affect anything. It finds the right level to teach
+        from. Answering honestly is the whole point — a score that is too high just means being
+        taught the wrong things.
+      </p>
+      <button onclick="start()">Start</button>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 2: TEST ============ -->
+  <section id="s-test" class="hide">
+    <div class="passage">
+      <h3>The Master of Disguise</h3>
+      <p>An octopus has no bones, no shell, and no claws worth fearing. In an ocean full of sharks,
+      eels, and hungry seabirds, that sounds like a losing hand. Yet octopuses have survived for
+      millions of years, and their secret is not strength. It is deception.</p>
+      <p>The skin of an octopus is covered with millions of tiny sacs of color called chromatophores.
+      Each sac is ringed by a set of muscles. When those muscles pull, the sac stretches wide and its
+      color spreads across the skin. When they relax, the color shrinks to a dot and disappears. An
+      octopus can flood its whole body with red, brown, or yellow in less than a second, faster than
+      you can blink.</p>
+      <p>Color alone would not be enough. A flat patch of brown on a rough coral reef would still
+      stand out. So an octopus also changes its texture. Small bumps in the skin, called papillae,
+      can rise and flatten on command. Within moments a smooth arm can become as rough and spiky as
+      the rock beside it.</p>
+      <p>The strangest part is what the octopus does not have. Every experiment so far suggests that
+      octopuses are colorblind. They have only one kind of light-detecting cell in their eyes, while
+      humans have three. An animal that cannot see color is somehow matching color better than any
+      painter.</p>
+      <p>Researchers are still arguing about how. One leading idea is that octopuses "see" with their
+      skin. Scientists have found light-sensitive proteins, the same kind found in eyes, scattered
+      across the octopus's body. If that is true, an octopus resting on a stone may be sensing that
+      stone's color through its arms rather than looking at it at all.</p>
+      <p>Camouflage is only the first line of defense. If a predator spots the octopus anyway, the
+      animal has a second trick: it fires a cloud of black ink and jets away. The ink does more than
+      blind. It carries a chemical that dulls the predator's sense of smell, so even a shark tracking
+      by scent loses the trail.</p>
+      <p>None of this makes the octopus safe. Most species live only one or two years, and many die
+      shortly after reproducing. But for a soft, boneless animal in a hard ocean, disappearing has
+      proven to be a better strategy than fighting.</p>
+    </div>
+
+    <div class="card">
+      <div class="meta"><span id="prog">Question 1 of 12</span><span id="ans">0 answered</span></div>
+      <div class="bar"><i id="progbar" style="width:0"></i></div>
+      <h2 id="qtext"></h2>
+      <div id="opts"></div>
+      <div style="display:flex;gap:10px;margin-top:18px">
+        <button class="ghost" id="back" onclick="go(-1)">Back</button>
+        <button id="next" onclick="go(1)" disabled>Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3: RESULT ============ -->
+  <section id="s-done" class="hide">
+    <div class="card">
+      <h2>Result</h2>
+      <p class="score" id="scoreline"></p>
+      <div class="verdict" id="verdict"></div>
+    </div>
+    <div class="card">
+      <h2>Breakdown by skill</h2>
+      <table>
+        <thead><tr><th>Skill</th><th style="width:38%"></th><th class="n">Score</th></tr></thead>
+        <tbody id="skills"></tbody>
+      </table>
+      <p class="miss" id="readnote"></p>
+    </div>
+    <div class="card" id="missbox">
+      <h2>Questions missed</h2>
+      <div id="misses"></div>
+    </div>
+    <p class="foot">NexStudents · free placement assessment prototype</p>
+  </section>
+

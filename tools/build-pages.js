@@ -47,7 +47,7 @@ function shell(o) {
 <meta name="theme-color" content="#0a0b0d">
 ${faviconTags()}
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
-${modeBoot()}
+${modeBoot()}${o.head || ""}
 </head>
 <body>
 
@@ -64,7 +64,7 @@ ${o.body}
 
 ${footerMarkup()}
 
-${navScript()}
+${navScript()}${o.script || ""}
 </body>
 </html>
 `;
@@ -2526,6 +2526,70 @@ const REDIRECTS = [
              '<meta name="robots" content="noindex">');
   if (h.includes("canonical")) { console.error("FAIL: 404 kept a canonical"); process.exit(1); }
   fs.writeFileSync(path.join(ROOT, "404.html"), h, "utf8");
+}
+
+/* ── THE READING PLACEMENT EXAM ────────────────────────────────────────────
+   🚨 THIS WAS THE LAST PAGE ON THE OLD CREAM STYLESHEET, and it was linked
+   from 162 pages - the drawer, the For Parents sheet and, since 2026-09-02,
+   the footer of every page on the site. So the most prominent outbound link
+   we have went to the one page that looked like a different website. Paul,
+   2026-09-02: "can you rebuild and replace the placement test exam".
+   It is built from the same shell as everything else now: same nav, same
+   drawer, same footer, same day/night switch, `ns.css` only.
+
+   ⚠️ THE URL DOES NOT CHANGE. It stays /placement-exam.html rather than
+   becoming /placement-exam/, because 162 pages point at it and a rename buys
+   nothing. That is why this writes a ROOT FILE and fixes its own canonical,
+   the same way the 404 above does.
+
+   🚨 THE EXAM'S CSS, MARKUP AND JS LIVE IN tools/exam/ AND ARE READ FROM
+   DISK, NOT PASTED INTO THIS FILE. exam.js contains SIXTEEN BACKTICKS - it
+   builds its rows with template literals - and pasting it into a template
+   literal here would close the string and kill the build on the next word.
+   That trap has already cost this project two builds (progressScript, and
+   build-worksheets.js on 2026-09-02). Reading the file sidesteps it entirely.
+
+   ⚠️ THE EXAM LOGIC IS UNTOUCHED. The encoded item bank, the 3/3/3/3 answer
+   spread, the scoring, the skill breakdown and the localStorage key are byte
+   for byte what they were. Only the shell and the colour mapping changed -
+   this is a re-skin, not a rewrite of a working assessment. */
+{
+  const dir = path.join(__dirname, "exam");
+  const css = fs.readFileSync(path.join(dir, "exam.css"), "utf8");
+  const screens = fs.readFileSync(path.join(dir, "screens.html"), "utf8");
+  const js = fs.readFileSync(path.join(dir, "exam.js"), "utf8");
+
+  /* Guards. Each one is a thing that would ship silently broken. */
+  if (!/\.exam /.test(css)) {
+    console.error("FAIL: exam.css is not scoped under .exam"); process.exit(1);
+  }
+  if (/var\(--(bg-2|bg-3|muted|accent|accent-2|max|gutter|good|warn|bad)\)/.test(css + js)) {
+    console.error("FAIL: exam still references an old site.css token"); process.exit(1);
+  }
+  for (const id of ["s-intro", "s-test", "s-done", "qtext", "opts", "progbar", "skills", "misses"]) {
+    if (!screens.includes('id="' + id + '"')) {
+      console.error("FAIL: exam screens lost #" + id); process.exit(1);
+    }
+  }
+  if (!/nexstudents\.placement\.readingB/.test(js)) {
+    console.error("FAIL: exam lost its storage key"); process.exit(1);
+  }
+
+  const page = {
+    dir: "", active: "p", pclass: "examhead",
+    title: "Reading Placement — Level B | NexStudents",
+    desc: "Free reading comprehension placement exam, Level B (grade 6). Auto-scored with a breakdown by skill.",
+    crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; Reading Placement',
+    h1: "Reading Placement — Level B.",
+    lead: "One passage, 12 questions. About 20 minutes, and it is marked the moment it is finished.",
+    head: "\n<style>\n" + css + "</style>",
+    body: '<div class="wrap examwrap"><div class="exam">\n' + screens + "</div></div>",
+    script: "\n<script>\n" + js + "</scr" + "ipt>",
+  };
+  let h = shell(page).replace('<link rel="canonical" href="' + SITE + '//">',
+                              '<link rel="canonical" href="' + SITE + '/placement-exam.html">');
+  if (h.includes(SITE + "//")) { console.error("FAIL: exam canonical not fixed"); process.exit(1); }
+  fs.writeFileSync(path.join(ROOT, "placement-exam.html"), h, "utf8");
 }
 
 const redirects = [];

@@ -1,0 +1,97 @@
+/* ── THE READING PLACEMENT EXAM ────────────────────────────────────────────
+   Inlined into /placement-exam.html by build-pages.js. It is NOT in ns.css on
+   purpose: these rules serve exactly one URL, and ns.css is downloaded by all
+   174 pages. Same reasoning as the separate worksheet.css.
+
+   🚨 EVERY RULE IS SCOPED UNDER .exam, AND THAT IS LOAD-BEARING. The exam was
+   built standalone against the old cream site.css and five of its class names
+   collide with ns.css: .wrap (nav, page head and footer all use it), .card
+   (9 rules - the lesson and worksheet cards), .sub, .meta and .tag. It also
+   styled bare button, table, th, td, h1, h2 and body, which would have
+   repainted the nav and the footer on this page only.
+   ⚠️ Unscope any of this and the damage lands on the shared furniture, not on
+   the exam - which is the hard kind to notice.
+
+   ⚠️ THE CLASS NAMES INSIDE ARE UNCHANGED, deliberately. exam.js addresses
+   everything by id and uses one .closest(".card"); renaming would mean editing
+   working exam logic to achieve nothing. */
+
+/* The exam column is deliberately narrow for readability. It is its own
+   element rather than an override of .wrap, because .wrap belongs to the nav,
+   the page head and the footer, and the old page had to patch footer .wrap
+   back out afterwards. */
+.examwrap{max-width:816px;margin:0 auto;padding:4px 28px 64px}
+
+/* ⚠️ THE PAGE HEAD HAS TO SHARE THE EXAM'S COLUMN or the title and lead run the
+   full site width while the card sits in a 760px reading column, and the two
+   are visibly out of line down the left edge. Same 816px, same 28px gutter as
+   .wrap, so the text edges match exactly.
+   ⚠️ THIS ONE RULE IS DELIBERATELY OUTSIDE .exam - it styles the shell's own
+   .phead, which is not inside the exam wrapper. It is safe because .examhead
+   exists on this page alone. Nothing else here may reach outside .exam. */
+.phead.examhead{max-width:816px;margin-inline:auto}
+
+/* ⚠️ THE OLD PAGE SPLIT ORANGE FOR ACTIONS AND BLUE FOR INFORMATION. That was
+   the cream palette; ns.css is monochrome by design and has no second hue to
+   spend. Both roles map to --a, and the difference is carried by weight and
+   position instead. The three verdict colours below stay real colours because
+   right/partial/wrong is not branding - it is the result. */
+.exam .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:22px;margin-bottom:16px}
+.exam h2{font-size:19px;margin:0 0 12px;color:var(--fg)}
+.exam .sub{color:var(--dim);margin:0 0 22px;font-size:15px}
+.exam .rule{list-style:none;padding:0;margin:0}
+.exam .rule li{padding:10px 0 10px 28px;position:relative;border-bottom:1px solid var(--line);
+  color:var(--dim)}
+.exam .rule li:last-child{border-bottom:0}
+.exam .rule li::before{content:"";position:absolute;left:6px;top:19px;width:7px;height:7px;
+  border-radius:50%;background:var(--a)}
+.exam button{font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:10px;
+  padding:13px 22px;background:var(--a);color:var(--a-ink)}
+.exam button:disabled{opacity:.4;cursor:not-allowed}
+.exam button.ghost{background:var(--panel-2);color:var(--fg);border:1px solid var(--line)}
+
+/* the passage is the test — it gets the room, not the answers */
+.exam .passage{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;
+  padding:26px 28px;margin-bottom:20px}
+.exam .passage h3{margin:0 0 14px;font-size:20px;letter-spacing:-.01em;color:var(--fg)}
+.exam .passage p{margin:0 0 15px;font-size:17px;line-height:1.75;max-width:64ch;color:var(--dim)}
+.exam .passage p:last-child{margin:0}
+@media(max-width:560px){ .exam .passage{padding:20px 18px} .exam .passage p{font-size:16px} }
+
+.exam .bar{height:5px;background:var(--panel-2);border-radius:3px;overflow:hidden;margin-bottom:18px}
+.exam .bar > i{display:block;height:100%;background:var(--a);transition:width .25s}
+.exam .meta{display:flex;justify-content:space-between;color:var(--dim);font-size:13px;
+  margin-bottom:10px}
+.exam .opt{display:block;width:100%;text-align:left;background:var(--panel-2);color:var(--fg);
+  border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:7px;
+  font-weight:400;cursor:pointer;line-height:1.5}
+@media(hover:hover){ .exam .opt:hover{border-color:var(--a)} }
+.exam .opt.sel{border-color:var(--a);background:color-mix(in srgb,var(--a) 14%,var(--panel-2))}
+.exam .opt b{display:inline-block;width:22px;color:var(--dim);font-weight:700}
+.exam .opt.sel b{color:var(--a)}
+
+.exam .score{font-size:44px;font-weight:800;letter-spacing:-.03em;margin:0;color:var(--fg)}
+.exam .score span{font-size:22px;color:var(--dim);font-weight:600}
+.exam .verdict{border-left:3px solid var(--a);padding:12px 0 12px 16px;margin:18px 0;color:var(--dim)}
+.exam .verdict b{color:var(--fg)}
+.exam table{width:100%;border-collapse:collapse;font-size:15px}
+.exam th,.exam td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);color:var(--dim)}
+.exam th{font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.exam td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--fg)}
+.exam .sk{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden;width:100%;min-width:80px}
+.exam .sk > i{display:block;height:100%}
+.exam .miss{font-size:14px;color:var(--dim);margin-top:6px}
+.exam .miss b{color:var(--fg)}
+.exam .missq{padding:14px 0;border-bottom:1px solid var(--line);color:var(--dim)}
+.exam .missq:last-child{border-bottom:0}
+.exam .tag{display:inline-block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--dim);border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin-bottom:6px}
+.exam .hide{display:none}
+.exam .foot{color:var(--dim);font-size:13px;text-align:center;margin-top:26px}
+
+/* ⚠️ RESULT COLOURS ARE SET PER THEME, not once. The originals were picked to
+   pass AA on the cream background and are too dark on near-black - the same
+   both-ends rule that the day/night knob and the banner tint both taught. */
+:root{ --ex-good:#4ade80; --ex-warn:#e0a13a; --ex-bad:#ff6a4d; }
+:root[data-theme="light"]{ --ex-good:#1d7f4f; --ex-warn:#a3690f; --ex-bad:#b8352c; }
