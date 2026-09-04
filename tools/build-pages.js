@@ -1097,6 +1097,7 @@ const lessonCards = (list, showSubject, slots) => {
 const { UNITS, BUILT } = require("./leif-units.js");
 const { GRADE3, GRADE4, GRADE7 } = require("./english-units.js");
 const { COURSE2 } = require("./maths-units.js");
+const { LIFE } = require("./science-units.js");
 const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
 
 /* Leif world history: lessons are bare strings, BUILT maps "unit:n" to a slug.
@@ -1154,6 +1155,22 @@ const mathsPager = (course) => course.units
     /* ⚠️ "Lesson 5-3", not "Unit 5 · Lesson 5-3". Glencoe's numbering already carries
        the chapter, so the long form says five twice. This differs from the English and
        history pagers on purpose - their lessons are not numbered by the book. */
+    items: u.items.filter((i) => i.kind === "lesson").map((i) => ({
+      label: "Lesson " + i.label,
+      title: i.title, slug: i.slug || null,
+    })),
+  }))
+  .filter((u) => u.items.length);
+
+/* Science. Merrill numbers its sections 1-1, 1-2 the way Glencoe does, so the
+   label follows the maths pattern rather than the history one — "Lesson 1-1"
+   already carries the chapter, and "Unit 1 · Lesson 1-1" would say one twice.
+   ⚠️ The pager's UNIT is the book's CHAPTER. See the header of science-units.js:
+   a book unit runs up to 6 chapters and 26 sections, which is not a panel. */
+const sciencePager = (course) => course.units
+  .map((u) => ({
+    n: u.n,
+    name: u.title,
     items: u.items.filter((i) => i.kind === "lesson").map((i) => ({
       label: "Lesson " + i.label,
       title: i.title, slug: i.slug || null,
@@ -1616,6 +1633,11 @@ const COURSE_SHELVES = [
   /* Grade 7 maths, Glencoe Course 2 - 14 chapters, structure only for now. Paul,
      2026-09-03: "for now i just want the strcuture". */
   { grade: 7, subject: "Maths",   units: () => mathsPager(COURSE2) },
+  /* Grade 7 science, Merrill Life Science 1994 — 28 chapters, 106 sections.
+     Chapter 1 is the only complete one: all four of its sections are built, in
+     Paul's own words. Added 2026-09-04, the day science stopped being the one
+     subject whose lessons had no course behind them. */
+  { grade: 7, subject: "Science", units: () => sciencePager(LIFE) },
 ];
 
 const courseFor = (g, sub) =>
