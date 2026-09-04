@@ -1207,7 +1207,16 @@ const pagerScript = (units) => `<script>
     [].forEach.call(wrap.querySelectorAll(".unitdot"), function(b){
       b.setAttribute("aria-current", b.dataset.go === n ? "true" : "false");
     });
-    wrap.querySelector("#utag").textContent = "Unit " + n + " of " + panels.length;
+    /* 🚨 "UNIT 5 OF 4". This read `n + " of " + panels.length`, which mixes two
+       different numbers: `n` is the unit's number IN THE BOOK, panels.length is how
+       many units THIS SHELF happens to show. Leif Unit 1 is Rome and sits on grade 6,
+       so grade 7 shows units 2-5 - four panels - and unit 5 rendered as "Unit 5 of 4".
+       Paul saw it on the 7th grade history shelf, 2026-09-03.
+       The fraction cannot be made true without either renumbering the book to suit a
+       shelf or counting units the shelf does not show, and both are worse than not
+       claiming a total. The dots underneath already say where you are, so the number
+       that matters is the book's. */
+    wrap.querySelector("#utag").textContent = "Unit " + n;
     wrap.querySelector("#uname").textContent = NAMES[n] || "";
     wrap.querySelector("#ucount").textContent = cur.dataset.built + " of " + cur.dataset.total + " built";
     try { localStorage.setItem(key, n); } catch(e){}
