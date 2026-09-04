@@ -1414,7 +1414,19 @@ const LESSONS = [
       "A command can also have strong feeling.",
       "Watch out!",
       "That is still an imperative sentence because it gives a command.",
-      "The exclamation point simply shows urgency or strong feeling."
+      "The exclamation point simply shows urgency or strong feeling.",
+      "",
+      /* 🚨 PAUL'S OWN SENTENCE, LIFTED OUT OF HIS TEACHER NOTES, 2026-09-04.
+         He asked for the imperative and exclamatory difference to be clearer:
+         "it needs more clarification why a certain sentence is imperative over
+         exclamatory." The rule that settles it was already written - it was just
+         in the teacher panel, where only a parent reads it. Nothing invented;
+         the line is moved to where the student meets the problem.
+         ⚠️ The two sentences either side of it are mine, and they are signposts,
+         not teaching. Say the word and they go. */
+      "So how do you tell them apart when both end the same way?",
+      "Punctuation gives clues, but the purpose of the sentence tells us what kind it is.",
+      "Ask what the sentence is DOING. If it tells someone to do something, it is imperative, whatever mark is on the end."
     ]},
     { title: "Exclamatory Sentences", s: [
       "An exclamatory sentence expresses strong emotion or excitement.",
@@ -1484,7 +1496,7 @@ const LESSONS = [
   /* 🚨 findsAt = the number of STORY sentences these indexes were verified
      against. Change the reading and checkFinds() stops the build. Computed by
      walking the flattened list, never counted by hand. */
-  findsAt: 52,
+  findsAt: 55,
   questions: [
     { q: "The game begins after dinner.", find: [6],
       hint: "Read the Declarative section again. What job is this sentence doing?",
@@ -1498,7 +1510,7 @@ const LESSONS = [
       hint: "Read the Imperative section again.",
       choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 2,
       why: "It gives a polite command or request." },
-    { q: "That was an incredible shot!", find: [32],
+    { q: "That was an incredible shot!", find: [35],
       hint: "Read the Exclamatory section again.",
       choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 3,
       why: "It expresses strong excitement." },
@@ -1514,7 +1526,7 @@ const LESSONS = [
       hint: "Who is this sentence speaking to?",
       choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 2,
       why: "It gives a command." },
-    { q: "I cannot believe we won!", find: [32],
+    { q: "I cannot believe we won!", find: [35],
       hint: "Is anyone being told to do something here?",
       choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 3,
       why: "It expresses strong excitement." },
@@ -1534,14 +1546,16 @@ const LESSONS = [
   /* Paul's own closing task. ⚠️ The full Your Turn writing task, with the
      underlining and the challenge, is the WORKSHEET. This is the on-screen
      instruction only. */
+  /* ⚠️ REWRITTEN 2026-09-04. The first version opened "That is the reading done.
+     Two things are left, and they both happen today," and Paul read it back to me:
+     "that is the reading done... really?" He was right - it read like a manual
+     narrating itself. This is mine, not his, so it was free to change. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. Two things are left, and they both happen today.",
-      "First, the questions. Ten of them, and every answer is decided by the JOB the sentence is doing, not by the mark on the end.",
-      "If one is hard, go back to the section that names that kind and read the first line of it again.",
-      "The one people trip on is a command said with strong feeling. Read the Imperative section again and look at Watch out!",
-      "Then the word cards. Four words, and each one is explained in the section that carries its name.",
-      "Tap each card to check yourself, then answer the question underneath it.",
-      "When you can say why Get out of the way! is not exclamatory, you have understood the hardest idea in this lesson."
+      "Answer the ten questions below.",
+      "For each sentence, decide what it is doing: telling, asking, commanding, or shouting.",
+      "The mark on the end is a clue, not the answer.",
+      "Then work through the four word cards. Tap each card, then answer the question underneath it.",
+      "If you get stuck, go back to the section with that name and read its first line again."
   ] },
 }
 ];
