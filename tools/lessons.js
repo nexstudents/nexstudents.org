@@ -1301,6 +1301,248 @@ const LESSONS = [
         "Using science to create technology."
       ], right: 1 }
   ]
+},
+
+/* ═════════ English · Unit 1 · Lesson 1-1 — Kinds of Sentences ═════════════
+   🚨 PAUL'S TEXT, pasted 2026-09-04, and it is the source. Written by him in
+   ChatGPT from a brief read off Houghton Mifflin English Grade 7 (2001) pp32-33.
+   Do not rewrite, tighten or "improve" any of it → BEHAVIOR.md.
+
+   ⚠️ IT ARRIVED IN ~150 SEPARATE MESSAGES from his phone and twelve lines came
+   through damaged, always the same way: one letter jumped to the end of the line.
+   "qstion" for question, "basketll?ba" for basketball, "needsxtra emotion. e"
+   for needs extra emotion. Every repair was shown to him as it happened and the
+   full list is in the session log. NOTHING ELSE WAS CHANGED.
+   ⚠️ "alway" in Colossians 4:6 is the King James wording and is NOT a repair.
+
+   🚨 THIS IS THE FIRST ENGLISH LESSON BUILT ON THE READING SHAPE, not on
+   build-english.js. That generator is hard-wired to the Verbs lesson - it
+   validates that a `verb` appears in each sentence and that `kind` is "action"
+   or "being" - so it cannot carry this lesson without being rewritten. Paul's
+   content is a reading, a scripture block, four word cards and ten multiple
+   choice questions, which is exactly what build-lessons.js already does.
+   ⚠️ Part B, the six punctuation items, and Your Turn are NOT on this page. Paul:
+   "maybe this one for homework or something like a worksheet." They go to
+   build-worksheets.js.
+   ────────────────────────────────────────────────────────────────────────── */
+{
+  id: "english/kinds-of-sentences",
+  slug: "kinds-of-sentences",
+  title: "Kinds of Sentences",
+  unit: "English &middot; Unit 1 &middot; Lesson 1-1",
+  /* Houghton Mifflin puts this first in Unit 1, The Sentence, at page 32.
+     `seq` is the order; the `unit` string above is a label and is never parsed. */
+  seq: { unit: 1, unitTitle: "The Sentence", n: 1 },
+  shelf: { grades: [7], subject: "English",
+    blurb: "Four kinds of sentences, four different jobs, and the one case where the punctuation lies to you.",
+    contains: [
+      "A Ground Control panel for the teacher, in Paul's own words",
+      "The lesson read aloud, one line at a time, highlighted as it goes",
+      "Four vocabulary cards, each with a check question",
+      "Ten questions, including the command that ends in an exclamation point",
+    ] },
+  eyebrow: ["English", "Unit 1 &middot; Lesson 1-1", "The Sentence"],
+  dek: "A statement, a question, a command and a shout all look like sentences. Only their job tells you which is which.",
+  scripture: {
+    ref: "Proverbs 25:11",
+    text: "A word fitly spoken is like apples of gold in pictures of silver.",
+  },
+
+  /* Paul's Teacher Notes, verbatim. Same four-section shape the science lessons
+     use, plus the generated Key Vocabulary block. */
+  ground: {
+    sections: [
+      { h: "Lesson Goal", p: [
+        "Students will learn the four kinds of sentences and the punctuation that usually goes with each one: declarative, interrogative, imperative, and exclamatory."
+      ]},
+      { h: "Key Concepts", p: [
+        "A declarative sentence makes a statement and usually ends with a period. An interrogative sentence asks a question and ends with a question mark. An imperative sentence gives a command or direction and usually ends with a period. An exclamatory sentence expresses strong feeling and ends with an exclamation point."
+      ]},
+      { h: "Where Students Get Stuck", p: [
+        "The tricky part is commands with strong feeling. “Put your shoes away.” is an imperative sentence. “Get out of the way!” is also imperative because it gives a command, even though the exclamation point adds urgency."
+      ]},
+      { h: "Teaching Suggestion", p: [
+        "Remind students that punctuation gives clues, but the purpose of the sentence tells us what kind it is. Also explain that exclamation points lose their power when we use them too often."
+      ]},
+      { h: "Key Vocabulary", vocab: true }
+    ]
+  },
+
+  parts: [
+    { title: "Four Sentences, Four Jobs", s: [
+      "Imagine you are playing a game when someone walks into the room and says, “Dinner is ready.”",
+      "You ask, “Can I finish this round?”",
+      "Then you hear, “Put the controller down.”",
+      "Suddenly someone yells, “The dog has your sandwich!”",
+      "Those sentences are doing four different jobs.",
+      "Let's find out what they are."
+    ]},
+    { title: "Declarative Sentences", s: [
+      "A declarative sentence makes a statement.",
+      "It gives information, tells a fact, or shares an idea.",
+      "Declarative sentences usually end with a period.",
+      "",
+      "The game starts at seven.",
+      "My brother finished the dishes.",
+      "We studied Proverbs at church.",
+      "",
+      "Think of declarative as declare.",
+      "You are declaring or telling something."
+    ]},
+    { title: "Interrogative Sentences", s: [
+      "An interrogative sentence asks a question.",
+      "It ends with a question mark.",
+      "",
+      "Did you finish your homework?",
+      "Where is the basketball?",
+      "Can we play one more round?",
+      "",
+      "If the sentence is asking for an answer, it is probably interrogative."
+    ]},
+    { title: "Imperative Sentences", s: [
+      "An imperative sentence gives a command, direction, instruction, or request.",
+      "It usually ends with a period.",
+      "",
+      "Clean your room.",
+      "Pass me the basketball.",
+      "Please open your Bible.",
+      "",
+      "Imperative sentences often leave out the subject because the sentence is speaking directly to you.",
+      "When someone says, “Take out the trash,” the understood meaning is “You take out the trash.”",
+      "",
+      "But here is the tricky part.",
+      "A command can also have strong feeling.",
+      "Watch out!",
+      "That is still an imperative sentence because it gives a command.",
+      "The exclamation point simply shows urgency or strong feeling."
+    ]},
+    { title: "Exclamatory Sentences", s: [
+      "An exclamatory sentence expresses strong emotion or excitement.",
+      "It ends with an exclamation point.",
+      "",
+      "That goal was incredible!",
+      "I cannot believe we won!",
+      "This is the best pizza ever!",
+      "",
+      "Exclamation points are powerful because they make a sentence feel louder or stronger.",
+      "But if every sentence ends with one, they stop feeling special.",
+      "Think of an exclamation point like shouting.",
+      "You would not want to shout everything you say!",
+      "Use it when the sentence really needs extra emotion."
+    ]},
+    { title: "Words Have a Purpose", s: [
+      "God gave us the ability to communicate, and the words we choose matter.",
+      "Proverbs 25:11 says, “A word fitly spoken is like apples of gold in pictures of silver.”",
+      "In other words, the right words used at the right time have value.",
+      "",
+      "The Bible itself contains statements, questions, commands, and powerful expressions of emotion.",
+      "God uses language to teach, correct, encourage, warn, and communicate truth.",
+      "",
+      "Learning how sentences work helps us communicate our own thoughts clearly.",
+      "Whether we are speaking to our family, answering a teacher, encouraging someone at church, or writing something important, we should think about what our words are meant to do.",
+      "As Colossians 4:6 says, “Let your speech be alway with grace.”",
+      "Good communication is not only about correct punctuation.",
+      "It is also about using our words wisely."
+    ]},
+  ],
+
+  /* ⚠️ Paul gave a definition AND a check question for all four words, which is
+     better than the science lessons, where two cards had no check and the build
+     had to warn. Nothing invented here. */
+  words: [
+    ["Declarative", "A declarative sentence makes a statement and usually ends with a period."],
+    ["Interrogative", "An interrogative sentence asks a question and ends with a question mark."],
+    ["Imperative", "An imperative sentence gives a command, direction, instruction, or request. It usually ends with a period, but strong commands can end with an exclamation point."],
+    ["Exclamatory", "An exclamatory sentence expresses strong feeling and ends with an exclamation point."]
+  ],
+
+  /* 🚨 PAUL WROTE THESE WITH TWO OPTIONS EACH AND ALL FOUR ANSWERS WERE "A".
+     A student spots that in thirty seconds. The pairs are his; only the ORDER
+     is dealt, the same way the lesson questions already are. */
+  vocabQuestions: [
+    { q: "Which sentence is <i>declarative</i>?",
+      choices: ["The service begins at ten.", "When does the service begin?"],
+      right: 0, why: "It makes a statement." },
+    { q: "Which sentence is <i>interrogative</i>?",
+      choices: ["Where did you put the controller?", "Put the controller away."],
+      right: 0, why: "It asks a question." },
+    { q: "Which sentence is <i>imperative</i>?",
+      choices: ["Please wash the dishes.", "The dishes are clean."],
+      right: 0, why: "It gives a request or command." },
+    { q: "Which sentence is <i>exclamatory</i>?",
+      choices: ["That catch was amazing!", "Did you see that catch?"],
+      right: 0, why: "It expresses strong feeling." }
+  ],
+
+  /* Part A, all ten. The four options are the same every time because the
+     question is always which of the four kinds it is - so the ORDER is what
+     gets dealt, not the wording.
+     ⚠️ `find` points at the sentence in the reading that DEFINES that kind, so
+     "find it in the story" sends him to the rule rather than to an example.
+     ⚠️ Q8 "I cannot believe we won!" is word for word one of Paul's own
+     exclamatory examples in the reading. Flagged to him; his call. */
+  /* 🚨 findsAt = the number of STORY sentences these indexes were verified
+     against. Change the reading and checkFinds() stops the build. Computed by
+     walking the flattened list, never counted by hand. */
+  findsAt: 52,
+  questions: [
+    { q: "The game begins after dinner.", find: [6],
+      hint: "Read the Declarative section again. What job is this sentence doing?",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 0,
+      why: "It makes a statement and ends with a period." },
+    { q: "Did you feed the dog?", find: [14],
+      hint: "Read the Interrogative section again.",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 1,
+      why: "It asks a question." },
+    { q: "Please put your shoes away.", find: [20],
+      hint: "Read the Imperative section again.",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 2,
+      why: "It gives a polite command or request." },
+    { q: "That was an incredible shot!", find: [32],
+      hint: "Read the Exclamatory section again.",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 3,
+      why: "It expresses strong excitement." },
+    { q: "We are studying the book of John tonight.", find: [6],
+      hint: "Is this telling you something, or asking you something?",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 0,
+      why: "It gives information." },
+    { q: "Where is my other sock?", find: [14],
+      hint: "What mark is on the end, and what does that mark mean?",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 1,
+      why: "It asks a question." },
+    { q: "Turn the television down.", find: [20],
+      hint: "Who is this sentence speaking to?",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 2,
+      why: "It gives a command." },
+    { q: "I cannot believe we won!", find: [32],
+      hint: "Is anyone being told to do something here?",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 3,
+      why: "It expresses strong excitement." },
+    { q: "The team practices every Tuesday.", find: [6],
+      hint: "Nothing is being asked and nobody is being told to do anything.",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 0,
+      why: "It makes a statement." },
+    /* 🚨 THE HARD ONE, and it is deliberately last. The exclamation point says
+       exclamatory and the job says imperative. The job wins. Paul's teacher
+       notes set this trap up on purpose. */
+    { q: "Get out of the way!", find: [30],
+      hint: "The mark on the end is not the test. Ask what the sentence is telling someone to DO.",
+      choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 2,
+      why: "It commands someone to move. The exclamation point adds urgency, but it is still a command." }
+  ],
+
+  /* Paul's own closing task. ⚠️ The full Your Turn writing task, with the
+     underlining and the challenge, is the WORKSHEET. This is the on-screen
+     instruction only. */
+  todo: { title: "What To Do Now", s: [
+      "That is the reading done. Two things are left, and they both happen today.",
+      "First, the questions. Ten of them, and every answer is decided by the JOB the sentence is doing, not by the mark on the end.",
+      "If one is hard, go back to the section that names that kind and read the first line of it again.",
+      "The one people trip on is a command said with strong feeling. Read the Imperative section again and look at Watch out!",
+      "Then the word cards. Four words, and each one is explained in the section that carries its name.",
+      "Tap each card to check yourself, then answer the question underneath it.",
+      "When you can say why Get out of the way! is not exclamatory, you have understood the hardest idea in this lesson."
+  ] },
 }
 ];
 

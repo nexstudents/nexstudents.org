@@ -108,18 +108,41 @@ function placeAnswer(choices, rightIdx, target, seed) {
 
 /* Proves the deal actually worked rather than trusting that it did. Fails the build on
    a spread that could be guessed - the exact thing this replaced. */
+/* 🚨 THE SPREAD IS JUDGED PER OPTION COUNT, NOT ACROSS THE WHOLE LESSON.
+   It used to measure every question against the LARGEST choices.length in the
+   lesson, which is correct only while every question has the same number of
+   options. It broke on english/kinds-of-sentences, 2026-09-04: Paul wrote the
+   four vocabulary checks with TWO options each and the ten lesson questions with
+   four, so the two-option answers can only ever land at 0 or 1 and slots 2 and 3
+   were always short. The build failed a lesson that was correctly dealt.
+
+   ⚠️ THE GUARD WAS RIGHT TO FAIL, AND IT IS STILL RIGHT NOW. It just has to
+   compare like with like: a 4-option question spreads across 4, a 2-option
+   question across 2. A clumped set inside either group still stops the build.
+   ⚠️ A two-option question has a 50% guessing floor whatever the spread does -
+   that is a content matter, not a build one, and it is noted in BEHAVIOR.md
+   under the verbs Part B rule. */
 function checkSpread(L, qs) {
-  const n = {};
-  qs.forEach((q) => { n[q.right] = (n[q.right] || 0) + 1; });
-  const counts = Object.values(n);
-  const most = Math.max.apply(null, counts);
-  const slots = Math.max.apply(null, qs.map((q) => q.choices.length));
-  const fewest = counts.length < slots ? 0 : Math.min.apply(null, counts);
-  if (most - fewest > 1) {
-    console.error("FAIL: " + L.id + ": answers land " + JSON.stringify(n) + " across " +
-      qs.length + " questions. A dealt spread is even to within one; this is not,\n" +
-      "      so dealPositions() did not do its job.");
-    process.exit(1);
+  const groups = {};
+  qs.forEach((q) => {
+    const k = q.choices.length;
+    (groups[k] = groups[k] || []).push(q);
+  });
+  for (const k of Object.keys(groups)) {
+    const slots = Number(k);
+    const set = groups[k];
+    const n = {};
+    set.forEach((q) => { n[q.right] = (n[q.right] || 0) + 1; });
+    const counts = Object.values(n);
+    const most = Math.max.apply(null, counts);
+    const fewest = counts.length < slots ? 0 : Math.min.apply(null, counts);
+    if (most - fewest > 1) {
+      console.error("FAIL: " + L.id + ": among its " + set.length + " questions with " +
+        slots + " options, answers land " + JSON.stringify(n) + ".\n" +
+        "      A dealt spread is even to within one; this is not, so dealPositions()\n" +
+        "      did not do its job for that group.");
+      process.exit(1);
+    }
   }
 }
 
