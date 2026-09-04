@@ -742,15 +742,22 @@ const ICON = {
   pause: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>',
   bell:  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6a1.15 1.15 0 0 1 1.15 1.15v.7A6.1 6.1 0 0 1 18.1 10.4v3.05l1.5 2.4a.9.9 0 0 1-.76 1.38H5.16a.9.9 0 0 1-.76-1.38l1.5-2.4V10.4A6.1 6.1 0 0 1 10.85 4.45v-.7A1.15 1.15 0 0 1 12 2.6z"/><path d="M9.9 18.9h4.2a2.1 2.1 0 0 1-4.2 0z"/></svg>',
   trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5h16"/><path d="M9.5 6.5V4.9a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.6"/><path d="M6.3 6.5l.8 12a1.6 1.6 0 0 0 1.6 1.5h6.6a1.6 1.6 0 0 0 1.6-1.5l.8-12"/><path d="M10.2 10.3v6M13.8 10.3v6"/></svg>',
-  /* 🚨 THE ARC MUST END WHERE THE ARROWHEAD STARTS. Paul, 2026-09-03: "your reset
-     icon looks weird." It was two shapes that never met - the arc ran to (6, 5.3)
-     while the bracket sat at (3,4.5)-(3,10)-(8.5,10), below and left of it, opening
-     the wrong way. So it read as a loose corner beside a circle instead of an arrow
-     turning back on itself.
-     The arc now finishes at (3,8) and the bracket is M3 3 v5 h5, so the two share
-     that point and the corner becomes the head of the arrow. ⚠️ If either path is
-     ever adjusted, move BOTH - the join is the whole icon. */
-  reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>',
+  /* 🚨 PAUL CHOSE THIS ONE - svgrepo.com/svg/501336/reset, 2026-09-03, after
+     "your reset icon looks weird" and then "looks a bit better" about the stroked
+     replacement. He linked the icon he actually wanted, so it is his, not a judgement
+     call to revisit.
+     ⚠️ It is FILLED and on a 1920 viewBox while everything else here is 24. That is
+     fine and it is deliberate: play, pause and bell are all fill="currentColor" too,
+     so a filled reset matches the dock better than the stroked one it replaces. Only
+     `trash` is stroked, and it lives on a list row rather than in the dock.
+     ⚠️ Keep the 1920 viewBox. Rescaling the path by hand to sit at 24 is how a curve
+     picks up rounding error; .rl-ico svg is sized in CSS and does not care.
+     The original had a black `fill` baked in - it is currentColor here so the icon
+     follows the button's own colour in both themes.
+     HISTORY: the first version was two shapes that never met - an arc ending at
+     (6, 5.3) with a bracket at (3,4.5)-(3,10)-(8.5,10) below and left of it, opening
+     the wrong way, so it read as a loose corner beside a circle. */
+  reset: '<svg viewBox="0 0 1920 1920" fill="currentColor" aria-hidden="true"><path d="M960 0v213.333c411.627 0 746.667 334.934 746.667 746.667S1371.627 1706.667 960 1706.667 213.333 1371.733 213.333 960c0-197.013 78.4-382.507 213.334-520.747v254.08H640V106.667H53.333V320h191.04C88.64 494.08 0 720.96 0 960c0 529.28 430.613 960 960 960s960-430.72 960-960S1489.387 0 960 0" fill-rule="evenodd"/></svg>',
 };
 
 function markup() {
