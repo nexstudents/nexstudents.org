@@ -1173,7 +1173,15 @@ const sciencePager = (course) => course.units
     name: u.title,
     items: u.items.filter((i) => i.kind === "lesson").map((i) => ({
       label: "Lesson " + i.label,
-      title: i.title, slug: i.slug || null,
+      /* 🚨 `title` is OURS or it is nothing. The book's wording lives in `book`
+         and is a build note, exactly like `page`. Paul, 2026-09-04: "we agree
+         not use the titles because of copyright", and the names were ours by
+         design anyway - the four built lessons are the creation-lens framing we
+         settled on, not Merrill's section headings.
+         An unnamed slot says Coming Soon under its real lesson number. That is
+         honest: the number is the book's structure, which is fact, and the name
+         is ours to write when the lesson is built. */
+      title: i.title || "Coming Soon", slug: i.slug || null,
     })),
   }))
   .filter((u) => u.items.length);
