@@ -25,7 +25,7 @@ const LESSONS = [
      second hand-written entry in build-pages.js, which meant every lesson was
      registered twice and the two could disagree. Worksheets never had that
      problem because their cards were always derived from worksheets.js. */
-  shelf: { grades: [6], subject: "History",
+  shelf: { grades: [7], subject: "History",
     blurb: "Republic to empire, read aloud, then five questions hidden in the text.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",
@@ -138,7 +138,7 @@ const LESSONS = [
   slug: "roman-government",
   title: "Roman Government and Citizenship",
   unit: "Ancient Rome &middot; Unit 1 &middot; Lesson 2",
-  shelf: { grades: [6], subject: "History",
+  shelf: { grades: [7], subject: "History",
     blurb: "Offices, consuls and citizenship, and why one-year terms mattered.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",

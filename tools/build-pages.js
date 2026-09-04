@@ -1098,6 +1098,7 @@ const { UNITS, BUILT } = require("./leif-units.js");
 const { GRADE3, GRADE4, GRADE7 } = require("./english-units.js");
 const { COURSE2 } = require("./maths-units.js");
 const { LIFE } = require("./science-units.js");
+const { WORLD } = require("./history-units.js");
 const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
 
 /* Leif world history: lessons are bare strings, BUILT maps "unit:n" to a slug.
@@ -1181,6 +1182,24 @@ const sciencePager = (course) => course.units
          An unnamed slot says Coming Soon under its real lesson number. That is
          honest: the number is the book's structure, which is fact, and the name
          is ours to write when the lesson is built. */
+      title: i.title || "Coming Soon", slug: i.slug || null,
+    })),
+  }))
+  .filter((u) => u.items.length);
+
+/* OUR world history plan, filtered to one grade. Unit 1 is Rome and sits on
+   grade 6; units 2-10 are grade 7. Same rule leif-units.js already followed -
+    on a unit is load-bearing, not a label.
+   ⚠️ A unit REVIEW is shelved like a lesson. It is a real page a student does. */
+const historyPager = (course, grade) => course.units
+  .filter((u) => sameGrade(u.grade, grade))
+  .map((u) => ({
+    n: u.n,
+    name: u.title,
+    items: u.items.map((i) => ({
+      label: i.label,
+      /* Ours or Coming Soon. Never Leif's wording, never McDougal's.
+         Both live on the item as build notes and neither is rendered. */
       title: i.title || "Coming Soon", slug: i.slug || null,
     })),
   }))
@@ -1633,8 +1652,15 @@ const sheetsIn   = (g, sub) => sheetsByGrade(g).filter(w => w.subject === sub);
    editing the pager. ⚠️ `sameGrade` — grades arrive as both strings and
    numbers, see the note further up this file. */
 const COURSE_SHELVES = [
-  { grade: 6, subject: "History", units: () => leifPager(6) },   /* Rome */
-  { grade: 7, subject: "History", units: () => leifPager(7) },   /* medieval onward */
+  /* 🚨 HISTORY MOVED OFF leif-units.js ON 2026-09-04 and onto OUR plan.
+     Paul: "we're kind of merging did you together ... into our own lesson plan",
+     then "we can build our own entirely but it still needs to be a full year."
+     `history-units.js` is 10 units, 74 lessons and 5 reviews - 37 weeks at two a
+     week - with Leif as the printable spine and McDougal filling the four regions
+     Leif never reaches. ⚠️ `leif-units.js` is STILL REQUIRED, by `LESSONS` and
+     `BUILT`; only the shelving moved. Do not delete it. */
+  { grade: 6, subject: "History", units: () => historyPager(WORLD, 6) },  /* Rome */
+  { grade: 7, subject: "History", units: () => historyPager(WORLD, 7) },  /* medieval onward */
   { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
   { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
   { grade: 7, subject: "English", units: () => englishPager(GRADE7) },
