@@ -1233,12 +1233,35 @@ if(panel){
      and ran stood at that moment. Anything that moves elapsed out of band
      (a seek, a new target) must call rebase() or the next paint undoes it. */
   var runStart = 0, ranBase = 0, elapsedBase = 0;
-  function rebase(){ runStart = Date.now(); ranBase = ran; elapsedBase = elapsed; }
+
+  /* 🚨 elapsed IS CLAMPED TO THE TARGET, AND THIS IS A REAL BUG FIX, NOT TIDYING.
+     Paul, 2026-09-03, from his phone: "the timer keeps resetting me back at a 2 hour
+     time limit, it doesn't play the sound after the clock runs down and does not show
+     the bell icon, and last instead of counting down it counts back up."
+     All three were ONE fault. seekFromEvent() sets elapsed straight from the finger,
+     so tapping the LEFT end of the scrub - easy to do by accident while scrolling a
+     phone - set elapsed to the whole target while ran stayed 0. Press play and it
+     rebased from there: 3 seconds read, elapsed 2 hours 3 seconds, so left went
+     negative and the clock counted UP from the first tick.
+     And it could never recover. The bell watches ran, correctly, so it would have
+     needed two real hours to fire - which means no sound, no bell icon, and Save
+     locked forever, because rangOut is raised only by ring().
+     ⚠️ DO NOT "FIX" THIS BY LETTING THE DRAG RAISE ran. That is the exact hole the
+     two-number split was built to close - a child could then drag to the end and log
+     a half hour he never read. elapsed is display; ran is evidence. Clamping the
+     DISPLAY is the fix; the evidence is left alone. */
+  function clampElapsed(){
+    var total = target * 60;
+    if (elapsed < 0) elapsed = 0;
+    if (elapsed > total) elapsed = total;
+  }
+  function rebase(){ clampElapsed(); runStart = Date.now(); ranBase = ran; elapsedBase = elapsed; }
   function sync(){
     if (!running) return;
     var d = Math.max(0, Math.round((Date.now() - runStart) / 1000));
     ran = ranBase + d;
     elapsed = elapsedBase + d;
+    clampElapsed();
   }
 
   /* 🚨 SAVE IS LOCKED UNTIL THE TIMER HAS RUNG. Paul: "save this session
@@ -1338,10 +1361,18 @@ if(panel){
     scrub.setAttribute("aria-valuetext", clockText(left) + " remaining");
 
     /* ⚠️ This line reports ran, never elapsed. Dragging the scrub moves
-       the countdown but must not change what the page claims you read. */
+       the countdown but must not change what the page claims you read.
+       🚨 AND IT SAYS SO WHEN THE TWO DISAGREE. With elapsed clamped, dragging the
+       bar to the end parks the clock at 0:00 while the bell still waits on ran -
+       correct, but silent, and a timer that reaches zero and does nothing reads as
+       broken. That silence is what Paul hit: "it doesn't play the sound after the
+       clock runs down and does not show the bell icon." So when the bar is spent
+       and the reading is not, the page explains itself instead of just sitting. */
+    var short = target * 60 - ran;
     elElapsed.textContent = ran === 0
       ? (running ? "Starting" : "Not started")
-      : "Read for " + spell(ran) + (left < 0 ? " - past your target" : "");
+      : "Read for " + spell(ran) +
+        (left <= 0 && short > 0 ? " - the bar was moved, so there is still " + spell(short) + " to read" : "");
 
     bPlay.innerHTML = ringing ? BELL : (running ? PAUSE : PLAY);
     bPlay.setAttribute("aria-label", ringing ? "Time is up - tap to clear"
@@ -1486,16 +1517,32 @@ if(panel){
     if (e.key === "ArrowLeft" || e.key === "ArrowDown"){ elapsed += step; rebase(); paint(); e.preventDefault(); }
   });
 
-  // A longer target is remembered. Paul: "saves your timer if you add like
-  // more than 30 minutes." A shorter one is a one-off and is not stored.
-  elTarget.addEventListener("change", function(){
+  /* 🚨 EVERY TARGET IS REMEMBERED NOW, not only one over 30 minutes.
+     It used to store a longer target and treat a shorter one as a one-off, which
+     read as the box resetting itself. Paul, 2026-09-03: "the timer keeps resetting
+     me back at a 2 hour time limit." It was doing exactly what it was written to do
+     - he had once set 120, then set something shorter, and the shorter one was
+     thrown away on reload - and the rule was simply wrong. The box should say what
+     he last set.
+     ⚠️ input as well as change. On Android a number field often does not fire
+     change until it loses focus, so typing 15 and going straight to Play left the
+     target at the old value while the box showed the new one - the timer and the
+     screen disagreeing about the same number. */
+  function applyTarget(store){
     var n = parseInt(elTarget.value, 10);
-    if (!n || n < 1) n = 30;
-    if (n > 600) n = 600;
-    target = n; elTarget.value = n; buildTicks();
-    if (n > 30) saveTarget(n);
+    if (!n || n < 1) return;                 /* mid-typing, not yet a number */
+    if (n > 600) { n = 600; elTarget.value = n; }
+    target = n; buildTicks();
+    if (store) saveTarget(n);
+    clampElapsed();
     rebase();
     paint();
+  }
+  elTarget.addEventListener("input", function(){ applyTarget(false); });
+  elTarget.addEventListener("change", function(){
+    var n = parseInt(elTarget.value, 10);
+    if (!n || n < 1) { elTarget.value = target; return; }   /* left empty - put it back */
+    applyTarget(true);
   });
 
   /* ── the form ─────────────────────────────────────────────────────── */
