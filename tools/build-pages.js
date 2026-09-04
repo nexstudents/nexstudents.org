@@ -1102,12 +1102,25 @@ const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
    early modern, which is grade 7. See the header of leif-units.js for the
    evidence. Calling this with no grade returns the whole course, which is
    right for the subject-wide /history/ shelf and wrong for a grade page. */
+/* 🚨 UNITS ARE NUMBERED PER SHELF, NOT BY THE BOOK. Paul, 2026-09-03, three times:
+   "on this page there is a page 2 and no page 1", "this one starts a two and ends at
+   5", and "it still shows 2 right now" after being given an explanation instead of a
+   fix. Leif Unit 1 is Rome, which is ancient and shelved on grade 6, so grade 7 was
+   showing the book's units 2-5 and opening on a "2".
+   ⚠️ THE RENUMBER HAS TO REACH EVERYTHING ON THE SHELF. Changing only the dots would
+   leave the heading saying "Unit 5" and every card still labelled "UNIT 5 · LESSON 3",
+   which is the same confusion wearing a different hat. `n` is the DISPLAY number and
+   drives the dots, the heading and the card labels together.
+   🚨 `bookN` IS THE REAL ONE AND THE BUILT LOOKUP USES IT. BUILT is keyed by the
+   book's unit number, so keying it off the display number would silently unlink every
+   built lesson on any shelf that does not start at unit 1 - the cards would all go
+   back to "Not built yet". Keep the two apart. */
 const leifPager = (grade) => UNITS
   .filter((u) => grade == null || sameGrade(u.grade, grade))
-  .map((u) => ({
-    n: u.n, name: u.name,
+  .map((u, idx) => ({
+    n: idx + 1, bookN: u.n, name: u.name,
     items: u.lessons.map((title, i) => ({
-      label: "Unit " + u.n + " &middot; Lesson " + (i + 1),
+      label: "Unit " + (idx + 1) + " &middot; Lesson " + (i + 1),
       title, slug: BUILT[u.n + ":" + (i + 1)] || null,
     })),
   }));
@@ -1518,7 +1531,7 @@ const gradeLessons = (g) => {
     const others = list.filter((l) => l.subject !== "History");
     const mine = leifPager(g);
     return `<div class="band"><div class="wrap">${
-      unitPager("g" + g + "-lessons", mine, pagerNote("History", mine.length ? Number(mine[0].n) : 1))}</div></div>` +
+      unitPager("g" + g + "-lessons", mine, pagerNote("History", mine))}</div></div>` +
       (others.length ? `<div class="band"><div class="wrap">
   <h2 class="section-head">The Other Subjects</h2>
   ${lessonCards(others, true, plannedFor(null, g, "lesson").filter(p => p.subject !== "History"))}
@@ -1585,16 +1598,22 @@ const courseFor = (g, sub) =>
    start at unit 1, which is every other shelf on the site today.
    ⚠️ History only for now. English and the rest all start at unit 1; the day one does
    not, give it its own branch rather than bending this sentence. */
-const pagerNote = (sub, first) => {
-  if (sub !== "History" || !(first > 1)) return "";
-  const earlier = UNITS.filter((u) => Number(u.n) < first);
-  if (!earlier.length) return "";
-  const home = earlier[0];
-  const many = earlier.length > 1;
-  return "This shelf starts at Unit " + first + ". Unit " + earlier.map((u) => u.n).join(" and ") +
-    " " + (many ? "are" : "is") + " " + home.name + ", which " + (many ? "are" : "is") +
-    " ancient rather than medieval history and " + (many ? "sit" : "sits") + " on the " +
-    '<a href="/grade-' + home.grade + '/history/lessons/">' + gradeLabel(home.grade) + " shelf</a>.";
+/* ⚠️ Takes the shelf's units and says what is NOT on it. Since units are renumbered
+   per shelf the dots always start at 1, so this no longer explains a gap in the
+   numbering - it points at the material that lives on the neighbouring grade, which
+   is still worth a line. Empty when the shelf holds the whole course. */
+const pagerNote = (sub, units) => {
+  if (sub !== "History" || !units || !units.length) return "";
+  const here = new Set(units.map((u) => Number(u.bookN)));
+  const missing = UNITS.filter((u) => !here.has(Number(u.n)));
+  if (!missing.length) return "";
+  const home = missing[0];
+  const many = missing.length > 1;
+  return (many ? missing.map((u) => u.name).join("; ") : home.name) + " " +
+    (many ? "are" : "is") + " on the " +
+    '<a href="/grade-' + home.grade + '/history/lessons/">' + gradeLabel(home.grade) +
+    " shelf</a>, because " + (many ? "they are" : "it is") + " ancient rather than " +
+    "medieval history.";
 };
 
 const gradeSubjectLessons = (g, sub) => {
@@ -1611,7 +1630,7 @@ const gradeSubjectLessons = (g, sub) => {
     const us = course.units();
     const first = us.length ? Number(us[0].n) : 1;
     return `<div class="band"><div class="wrap">${
-      unitPager("g" + g + "-" + gslug(sub) + "-lessons", us, pagerNote(sub, first))}</div></div>`;
+      unitPager("g" + g + "-" + gslug(sub) + "-lessons", us, pagerNote(sub, us))}</div></div>`;
   }
   return `<div class="band"><div class="wrap">
   ${list.length ? lessonCards(list, true, plannedFor(sub, g, "lesson"))
