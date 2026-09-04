@@ -1271,20 +1271,47 @@ if(panel){
      same protection, one on the number and one on the button. */
   var rangOut = false;
 
+  /* 🚨 THE BELL WAS SILENT, AND IT WAS THE AUDIO CONTEXT BEING ASLEEP.
+     Paul, 2026-09-03: "the timer works on the local host timer sound but not the
+     website", then "actually it doesnt now on the local" - so it was never the two
+     pages differing. They are byte for byte identical; it is the CONTEXT.
+     A context suspends when the tab is hidden or the phone screen goes off, and this
+     page is MEANT to be put down while a paper book is read - the alarm's whole job
+     happens at the moment it is least likely to be awake.
+     🚨 AND resume() IS ASYNCHRONOUS, which is what made the first attempt at this
+     useless. Calling resume() and then scheduling against actx.currentTime schedules
+     against a clock that has not restarted, so every note lands in the past and is
+     dropped without an error. The notes have to be scheduled AFTER the resume
+     settles. That is the whole bug.
+     ⚠️ A 0.06s lead on every note, never currentTime exactly. A note scheduled at
+     "now" is already marginally late by the time the graph is built, and some
+     browsers drop it rather than play it late. */
+  function notes(){
+    if (!actx) return;
+    var now = actx.currentTime + 0.06;
+    [0, 0.28, 0.56].forEach(function(at, i){
+      var osc = actx.createOscillator(), g = actx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = i === 2 ? 1046.5 : 784;   // G5, G5, C6
+      g.gain.setValueAtTime(0.0001, now + at);
+      g.gain.exponentialRampToValueAtTime(0.22, now + at + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + at + 0.26);
+      osc.connect(g); g.connect(actx.destination);
+      osc.start(now + at); osc.stop(now + at + 0.3);
+    });
+  }
+
   function chime(){
+    /* ⚠️ VIBRATE TOO, AND FIRST. Audio can be refused outright - a silent phone, a
+       muted tab, a browser that will not resume without a fresh tap - and a bell
+       nobody can hear is the bug being reported. Vibration has none of those
+       conditions. Unsupported on desktop and on iOS, where it is simply ignored. */
+    try { if (navigator.vibrate) navigator.vibrate([180, 90, 180]); } catch(e){}
     try {
       if (!actx) return;
-      var now = actx.currentTime;
-      [0, 0.28, 0.56].forEach(function(at, i){
-        var osc = actx.createOscillator(), g = actx.createGain();
-        osc.type = "sine";
-        osc.frequency.value = i === 2 ? 1046.5 : 784;   // G5, G5, C6
-        g.gain.setValueAtTime(0.0001, now + at);
-        g.gain.exponentialRampToValueAtTime(0.22, now + at + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, now + at + 0.26);
-        osc.connect(g); g.connect(actx.destination);
-        osc.start(now + at); osc.stop(now + at + 0.3);
-      });
+      if (actx.state === "running") { notes(); return; }
+      var p = actx.resume();
+      if (p && p.then) { p.then(notes, notes); } else { notes(); }
     } catch(e){}
   }
 
