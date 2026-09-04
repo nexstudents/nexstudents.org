@@ -66,9 +66,6 @@ body.nav-open .scrim{opacity:1;visibility:visible}
   text-transform:uppercase;color:var(--nv-dim);margin-top:4px}
 /* Centred, because `.drawer a` is display:block and would otherwise leave the
    label hard left in a full-width button. That bug shipped once already. */
-.drawer .navbtn{margin-top:auto;margin-left:0;display:flex;align-items:center;
-  justify-content:center;text-align:center;border-bottom:0;
-  background:var(--nv-accent);color:var(--nv-on);border-radius:999px;padding:14px 20px}
 
 /* ══════════════════════════════════════════════════════════════════════
    MEGA MENU — ONE panel, contents cross-fade
@@ -442,3 +439,87 @@ html{-webkit-tap-highlight-color:transparent}
 }
 
 .ns-nav{border-bottom:1px solid var(--nv-line)}
+
+/* ── THE DAY / NIGHT SWITCH ────────────────────────────────────────────────
+   🚨 THIS WAS MISSING ENTIRELY AND IT IS WHY THE CONTROL LOOKED "RETIRED".
+   Paul, 2026-09-03, from his phone: "not only do we have the login, the cart,
+   the day mode /night mode icon (retired version) and the logo out of order".
+   It was never a retired control. nav.js emits the SAME `.mswitch` markup on
+   every page, but the rules for it live in ns.css - which a lesson page does
+   not load. So on a lesson the track and the knob had no size, no colour and
+   no position, and the button fell back to the browser default: a white slab
+   with the words "Night Mode" in it. Identical HTML, no CSS, and it read as an
+   older design that had been left behind.
+   ⚠️ This is the trap already written down in CLAUDE.md - ns.css class names
+   resolve to NOTHING inside a lesson page - and the switch walked straight
+   into it the day it was added. Anything nav.js grows from here needs a rule
+   in BOTH stylesheets or it ships unstyled on every lesson.
+   ⚠️ Mapped onto --nv-* only. There is no --panel, --line or --a here; those
+   are ns.css names and would resolve to nothing, which is the same bug again. */
+.mswitch{margin-right:auto;background:none;border:0;padding:0;cursor:pointer;
+  display:inline-flex;align-items:center;gap:9px;
+  font:inherit;font-weight:700;color:var(--nv-fg);-webkit-tap-highlight-color:transparent}
+.mswitch-track{position:relative;width:40px;height:13px;border-radius:999px;
+  background:var(--nv-line);border:1px solid var(--nv-line);flex:none}
+/* 🚨 ONLY THE KNOB'S POSITION ANIMATES, never its colour. Both ends invert
+   between themes, so a cross-fade passes through a mid-grey where the knob and
+   its track match and the knob vanishes. Same reasoning as in ns.css - if that
+   rule is ever changed, change it here too. */
+.mswitch-knob{position:absolute;top:50%;left:2px;width:9px;height:9px;border-radius:999px;
+  background:var(--nv-accent);transform:translateY(-50%);
+  transition:transform .34s cubic-bezier(.4,.05,.2,1)}
+@media(prefers-reduced-motion:reduce){ .mswitch-knob{transition:none} }
+:root[data-theme="light"] .mswitch-knob{transform:translateY(-50%) translateX(26px)}
+@media(hover:hover){ .mswitch:hover .mswitch-track{background:var(--nv-dim)} }
+.mswitch:focus-visible{outline:2px solid var(--nv-accent);outline-offset:3px;border-radius:4px}
+.mswitch-drawer{width:100%;margin:16px 0 0;padding:14px 2px 0;
+  border-top:1px solid var(--nv-line);border-radius:0;
+  justify-content:space-between;flex-direction:row-reverse}
+
+/* ── THE NAV AND DRAWER USE THE SITE UI FONT, NOT THE PAGE'S ───────────────
+   🚨 Paul, 2026-09-03: "this is not the same side menu page as the one on the
+   home page ... and the text on the links". The markup IS the same - nav.js
+   emits it once for every page. The FONT was not.
+   `.drawer a` inherits, and a lesson page sets body to "Source Serif 4", the
+   READING face, while an ns.css page sets Archivo. So the identical drawer came
+   out serif on a lesson and sans everywhere else, which is exactly what he saw.
+   It is declared here rather than inherited, so the nav is the same object on
+   every page regardless of what the page around it is set in.
+   ⚠️ Same @font-face as ns.css, same file, so it is already cached for anyone
+   who has opened any other page. Keep the two declarations identical. */
+@font-face{font-family:'Archivo';src:url('/assets/fonts/archivo-var.woff2') format('woff2-variations');
+  font-weight:400 900;font-display:swap}
+.ns-nav, .ns-nav *, .drawer, .drawer *{
+  font-family:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+
+/* ── THE HEADER LAYOUT FIX, WHICH ONLY EVER EXISTED IN ns.css ──────────────
+   🚨 THIS IS WHY THE HEADER WAS STILL WRONG AFTER IT WAS "FIXED". The .navleft
+   wrapper went into nav.js on 2026-09-02 to keep the burger and the home icon in
+   ONE grid cell - without it .nv is a three column grid handed four items, so the
+   logo, account and cart drop onto a second row. Paul at the time: "well you moved
+   all the logo cart and login", and again on 2026-09-03 from his phone.
+   The MARKUP reached lesson pages on 2026-09-03. The RULE never did, because it
+   lives in ns.css and a lesson page does not load ns.css. Identical HTML, no CSS,
+   header still broken - and it looked like the fix had been reverted.
+   ⚠️ Any future nav element needs a rule in BOTH stylesheets. check-nav-css.js
+   fails the build when one of them is missing. */
+.navleft{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.homeb{display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:4px;color:var(--nv-dim);
+  text-decoration:none;flex:0 0 auto}
+.homeb:hover{color:var(--nv-fg)}
+@media(max-width:520px){ .homeb{width:32px;height:32px} }
+
+/* ── SUPPORT US, MATCHING THE ONE ON EVERY OTHER PAGE ──────────────────────
+   🚨 Paul: "the support looks off". It was a PILL here and a 4px rounded
+   rectangle everywhere else, with different padding and a smaller label - because
+   ns.css styles `.btn` and this file styles `.navbtn`, and the two were written
+   months apart. navMarkup() takes the class precisely so the two shells can theme
+   it, but the SHAPE should not have been part of that.
+   Matched to ns.css `.btn`: 16px/32px padding, 15px label, 4px radius. Colours
+   still come from --nv-* so a lesson keeps its own palette. */
+.drawer .navbtn{margin-top:auto;margin-left:0;display:flex;align-items:center;
+  justify-content:center;text-align:center;border-bottom:0;line-height:1.1;
+  background:var(--nv-accent);color:var(--nv-on);
+  border-radius:4px;padding:16px 32px;font-size:15px;font-weight:700}
+@media(hover:hover){ .drawer .navbtn:hover{filter:brightness(1.08)} }
