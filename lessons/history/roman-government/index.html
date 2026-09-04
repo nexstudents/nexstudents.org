@@ -2795,7 +2795,23 @@ function startHunt(qi){
   SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
   huntLabel.innerHTML = "<b>Question " + (qi + 1) + ".</b> Tap the sentence that answers it.";
   huntBar.classList.add("show");
-  nsReveal(storyEl, "start");
+  /* 🚨 SCROLL TO THE PARAGRAPH, NOT THE STORY TOP AND NOT THE SENTENCE.
+     Paul, 2026-09-04: "i think find in story should give you the top of the
+     paragraph not the direct place but does put you in the region to find it."
+
+     It used to reveal storyEl itself, which dumps the student at the very top of
+     the reading and makes him scan the whole lesson - fine when the story was
+     six sentences, useless at fifty-five. Revealing the target SENTENCE would be
+     the opposite mistake: it hands him the answer and there is nothing left to
+     hunt for.
+
+     The paragraph is the honest middle. He lands in the right region and still
+     has to read to find the line.
+     ⚠️ Falls back to the story top when a sentence has no .para parent, which is
+     the state during a render, not a normal one. */
+  var first = SENT[QUESTIONS[qi].find[0]];
+  var region = (first && first.el.closest) ? first.el.closest(".para") : null;
+  nsReveal(region || storyEl, "start");
 }
 
 function endHunt(){
