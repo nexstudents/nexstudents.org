@@ -8,10 +8,24 @@ because they are the only things that can rebuild the site.
 
 ## Rebuild everything
 
+🚨 **RUN EVERY GENERATOR, NOT THE ONE YOU THINK YOU CHANGED.** `nav.js` feeds
+four of them. On 2026-09-02 the header fix went in, three were re-run, and
+`build-lessons.js` was not — commit `f4bf66aa` touched 27 site pages, 12
+worksheets and **zero lesson pages**. For a day every lesson on the live site
+carried the old header and the old drawer while the home page carried the new
+ones, and nothing said so. Paul found it on his phone.
+
 ```
 node tools/build-worksheets.js .
 node tools/build-lessons.js . tools/lesson-template.html
+node tools/build-math.js .
+node tools/build-english.js .
+node tools/build-integers.js .
 node tools/build-pages.js .
+node tools/build-sitemap.js .
+
+node tools/check-nav-css.js .    # the shared nav is styled in BOTH stylesheets
+node tools/check-links.js .      # LAST OF ALL
 ```
 
 Order matters only in that `build-pages.js` reads `worksheets.js` for the
