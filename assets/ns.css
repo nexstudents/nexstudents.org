@@ -663,14 +663,22 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    ⚠️ The top padding is what "move down" means. 56px to 96px, and 64px below, so
    the heading is not pinned under the nav. The bottom rule stays full width - it
    separates the head from the shelf and is not part of the centred column. */
-.phead{padding-block:132px 72px;border-bottom:1px solid var(--line);text-align:center}
-.phead h1{font-size:clamp(2rem,4.6vw,3.3rem);margin-bottom:14px}
+/* 🚨 THE TITLE MOVES DOWN, THE BREADCRUMB DOES NOT. Paul, 2026-09-03: "i dont see
+   you moved down the title too ... if you did i think you also moved down 7th
+   grade>History>lessons with it." He was right - padding on .phead pushes the
+   WHOLE block, breadcrumb and all, which just relocates the same layout further
+   down the page instead of giving the heading room.
+   The gap belongs BETWEEN the crumb and the h1, so the crumb stays up near the
+   nav where a breadcrumb belongs and the title sits in open space below it.
+   ⚠️ Do not answer a "move the title down" with padding on the container again.
+   The container holds four things and only one of them was meant to move. */
+.phead{padding-block:40px 72px;border-bottom:1px solid var(--line);text-align:center}
+.phead h1{font-size:clamp(2rem,4.6vw,3.3rem);margin-top:72px;margin-bottom:14px}
 .phead p{color:var(--dim);max-width:56ch;margin-inline:auto;margin-block:0;font-size:1.04rem}
-/* ⚠️ Still a long way down on a phone. Paul asked twice - 56px, then 96px, then
-   "move it down too" - so the phone step is generous rather than a token
-   reduction. It is the FIRST thing on the page under a sticky nav, and the
-   breathing room above it is most of what makes it read as a title page. */
-@media(max-width:620px){ .phead{padding-block:88px 52px} }
+@media(max-width:620px){
+  .phead{padding-block:28px 52px}
+  .phead h1{margin-top:52px}
+}
 .crumb{font-size:.8rem;color:var(--dim);margin:0 0 16px}
 .crumb a{color:var(--dim)}
 @media(hover:hover){ .crumb a:hover{color:var(--fg)} }
