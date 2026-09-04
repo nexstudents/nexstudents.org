@@ -494,7 +494,13 @@ const GRADE7 = {
   part1: "Grammar, Usage, and Mechanics",
   units: [
     { n: 1, name: "The Sentence", page: 31, lessons: [
-      { n: 1, title: "Kinds of Sentences", page: 32 },
+      /* 🚨 `slug` IS WHAT TURNS A SLOT INTO A LINK. unitPager() looks the lesson
+         up by it; without one the card renders as "Not built yet" no matter how
+         finished the page is. Built 2026-09-04 and the card stayed dead until
+         this line was added - Paul: "I can't click on it on the website."
+         ⚠️ Adding a lesson to lessons.js is only half the job. The outline has
+         to point at it too. */
+      { n: 1, title: "Kinds of Sentences", page: 32, slug: "english/kinds-of-sentences" },
       { title: "Writing Good Sentences", book: "Revising Strategies: Writing Good Sentences", page: 35, craft: true },
       { n: 2, title: "Complete Subjects and Complete Predicates", page: 37 },
       { n: 3, title: "Simple Subjects and Simple Predicates", page: 40 },
