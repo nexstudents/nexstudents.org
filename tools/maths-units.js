@@ -47,7 +47,31 @@
    ───────────────────────────────────────────────────────────────────────── */
 "use strict";
 
-const L = (label, title, page) => ({ label, title, page, kind: "lesson" });
+/* 🚨 GLENCOE'S LESSON-TYPE LABEL IS MOVED OUT OF THE TITLE, NOT DELETED.
+   "Problem-Solving Strategy: Make a Table" is their phrasing, but the half in
+   front of the colon says what KIND of lesson it is, and that is real structure.
+   So the card shows "Make a Table", `strand` keeps the type for grouping or
+   badging later, and `book` keeps the original wording for finding the spread -
+   exactly the arrangement in BEHAVIOR.md's titles rule.
+
+   ⚠️ THE SPLIT HAPPENS HERE, IN THE HELPER, so all 37 rows are handled by one
+   change and any row added later is handled automatically. Do not strip labels
+   in the data - a title with a colon that is NOT one of these is left alone, and
+   that is why the list is explicit rather than "everything before a colon". */
+const STRANDS = [
+  "Problem-Solving Strategy", "Algebra Connection", "Geometry Connection",
+  "Estimation Strategy", "Probability Connection", "Art Connection",
+  "Statistics Connection", "Mental Math Strategy", "Application",
+];
+const L = (label, title, page) => {
+  const at = title.indexOf(": ");
+  const head = at === -1 ? null : title.slice(0, at);
+  if (head && STRANDS.indexOf(head) !== -1) {
+    return { label, title: title.slice(at + 2), strand: head, book: title,
+             page, kind: "lesson" };
+  }
+  return { label, title, page, kind: "lesson" };
+};
 const LAB = (label, title, page) => ({ label, title, page, kind: "lab" });
 const REV = (title, page) => ({ label: "", title, page, kind: "review" });
 const TEST = (title, page) => ({ label: "", title, page, kind: "test" });
@@ -326,5 +350,33 @@ const tally = () => COURSE2.units.map((u) => ({
   labs: u.items.filter((i) => i.kind === "lab").length,
   rows: u.items.length,
 }));
+
+/* ── THE REVIEWS GET OUR NAMES AND REAL NUMBERS ───────────────────────────
+   🚨 GLENCOE ALREADY HAS THE SHAPE PAUL ASKED FOR, two reviews per chapter:
+     "Mid-Chapter Review"     a check partway through -> our Halfway Check
+     "Study Guide and Review" the test at the end     -> our Unit N Review
+   That is the mixed-review-then-unit-test structure in BEHAVIOR.md, written by
+   the publisher in 1998. We are not inventing it, we are naming it.
+
+   ⚠️ They shipped with `label: ""`, which rendered as "Review " with nothing
+   after it once the pager started shelving reviews. Numbered here, in the data,
+   so every subject's reviews carry a label the same way.
+   ⚠️ Runs ONCE at module load. Do not call it again - it would renumber. */
+for (const u of COURSE2.units) {
+  const lessons = u.items.filter((i) => i.kind === "lesson").length;
+  let seen = 0;
+  for (const it of u.items) {
+    if (it.kind !== "review") continue;
+    seen++;
+    it.book = it.title;
+    if (/^Mid-Chapter/.test(it.title)) {
+      it.label = u.n + "-M";
+      it.title = "Halfway Check: " + u.title;
+    } else {
+      it.label = u.n + "-" + (lessons + 1);
+      it.title = "Unit " + u.n + " Review: " + u.title;
+    }
+  }
+}
 
 module.exports = { COURSE2, BUILT_NOTES, tally };
