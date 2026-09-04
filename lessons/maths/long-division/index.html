@@ -304,7 +304,14 @@ h2{
   color:var(--ink-faint, var(--dim));
   margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--rule, var(--line));
 }
-.para{margin:0}
+/* 🚨 THE PARAGRAPH NEEDS THE SAME SCROLL ALLOWANCE AS A SENTENCE.
+   "Find it in the story" reveals the .para now, not the story top, and without
+   this the paragraph's first lines land UNDER the sticky nav - so the student is
+   dropped into the middle of the very paragraph he was sent to read. Caught on
+   the live page 2026-09-04, testing Question 10: the view opened on "command.
+   The exclamation point simply shows urgency", with the three sentences before
+   it hidden behind the header. */
+.para{margin:0;scroll-margin-top:180px}
 .sent{
   border-radius:3px;padding:1px 0;
   transition:background .2s;

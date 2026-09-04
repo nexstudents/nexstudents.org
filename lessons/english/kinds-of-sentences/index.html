@@ -454,7 +454,14 @@ h2{
   color:var(--ink-faint, var(--dim));
   margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--rule, var(--line));
 }
-.para{margin:0}
+/* 🚨 THE PARAGRAPH NEEDS THE SAME SCROLL ALLOWANCE AS A SENTENCE.
+   "Find it in the story" reveals the .para now, not the story top, and without
+   this the paragraph's first lines land UNDER the sticky nav - so the student is
+   dropped into the middle of the very paragraph he was sent to read. Caught on
+   the live page 2026-09-04, testing Question 10: the view opened on "command.
+   The exclamation point simply shows urgency", with the three sentences before
+   it hidden behind the header. */
+.para{margin:0;scroll-margin-top:180px}
 .sent{
   border-radius:3px;padding:1px 0;
   transition:background .2s;
@@ -558,10 +565,27 @@ h2{
 .choice:disabled{cursor:default}
 .choice.right{background:var(--verdigris-soft);border-color:var(--verdigris);font-weight:600}
 .choice.wrong{background:var(--porphyry-soft);border-color:var(--porphyry)}
-.verdict{font-size:14px;line-height:1.6;margin-top:12px;display:none}
+/* 🚨 A BOX, AND PLAIN GREEN OR RED. Paul, 2026-09-04: "make the box and this
+   answer green text ... if wrong say incorrect making everything red."
+   It used to be bare text tinted with the lesson's own palette tokens -
+   --verdigris-ink and --porphyry - which are a blue-green and a purple-red.
+   They read as "the lesson's colours", not as right and wrong.
+   ⚠️ These are LITERAL colours on purpose, not palette tokens. Right and wrong
+   must not change hue when a student picks a different lesson theme, and both
+   pairs are chosen to hold their contrast on the light and dark grounds. */
+.verdict{
+  font-size:14px;line-height:1.6;margin-top:12px;display:none;
+  padding:10px 13px;border-radius:4px;border:1px solid transparent;
+}
 .verdict.show{display:block}
-.verdict.good{color:var(--verdigris-ink)}
-.verdict.bad{color:var(--porphyry)}
+.verdict.good{color:#1c7a4a;border-color:#1c7a4a;background:rgba(28,122,74,.10)}
+.verdict.bad{color:#c0392b;border-color:#c0392b;background:rgba(192,57,43,.10)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .verdict.good{color:#5fcf95;border-color:#3f9d6d;background:rgba(95,207,149,.12)}
+  :root:not([data-theme="light"]) .verdict.bad{color:#ff7a6b;border-color:#c9564a;background:rgba(255,122,107,.12)}
+}
+:root[data-theme="dark"] .verdict.good{color:#5fcf95;border-color:#3f9d6d;background:rgba(95,207,149,.12)}
+:root[data-theme="dark"] .verdict.bad{color:#ff7a6b;border-color:#c9564a;background:rgba(255,122,107,.12)}
 
 /* ---------- hunt banner ---------- */
 .hunt-bar{
@@ -2993,14 +3017,29 @@ function answer(qi, ci){
     else if (k === ci) b.classList.add("wrong");
   });
 
+  /* 🚨 THE VERDICT EXPLAINS, IT DOES NOT SET HOMEWORK. Paul, 2026-09-04:
+     "if they get the question right the correct Correct. Write that into your
+     notebook in your own words. this needs to be correct becaue there is not
+     notebook. just explain why its correct ... if wrong say incorrect making
+     everything red and show the right one."
+
+     He is right twice over. The old line told every student to write the answer
+     into a notebook, which was a leftover from the printed Rome workbook and is
+     not true of anyone using the site. And a verdict that says only "Correct"
+     teaches nothing - the WHY is the teaching.
+
+     ⚠️ `why` EXISTS ONLY ON THE ENGLISH LESSON TODAY. The four science and two
+     history lessons have none, so the text degrades to plain Correct/Incorrect
+     rather than printing "undefined". Add `why` to a question and the
+     explanation appears with no code change. */
   var v = card.querySelector(".verdict");
   v.className = "verdict show " + (ci === Q.right ? "good" : "bad");
+  var why = (Q.why || "").trim();
   v.textContent = ci === Q.right
-    /* ⚠️ These two lines used to name a printed workbook that only the Rome lessons had.
-       Every lesson shows them, so they must be true of every lesson - a notebook is
-       something the student always has. See the Day Two note above, same leftover. */
-    ? "Correct. Write that into your notebook in your own words."
-    : "Not quite. The correct answer is marked above — read it, then write it into your notebook in your own words.";
+    ? (why ? "Correct. " + why : "Correct.")
+    : (why
+        ? "Incorrect. The right answer is marked above. " + why
+        : "Incorrect. The right answer is marked above.");
 
   paintProgress();
 
