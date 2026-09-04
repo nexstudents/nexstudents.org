@@ -1142,7 +1142,16 @@ const englishPager = (course) => course.units
   })
   .filter((u) => u.items.length);
 
-const unitPager = (shelfKey, units) => {
+/* 🚨 `note` EXPLAINS A SHELF THAT DOES NOT START AT UNIT 1. Paul, 2026-09-03, on
+   the grade 7 history shelf: "on this page there is a page 2 and no page 1" and
+   "the buttons at the bottom to scroll the lessons this one starts a two and ends
+   at 5". Nothing is missing - Leif Unit 1 is Rome, which is ancient history and
+   sits on the GRADE 6 shelf, so grade 7 legitimately runs 2-5.
+   ⚠️ THE DOTS KEEP THE BOOK'S UNIT NUMBERS. Renumbering them 1-4 would make the
+   dots disagree with the "Unit 5" heading and tell a student they are on unit 4 of
+   a book where it is unit 5. The numbers are right; what was missing was the
+   sentence saying where unit 1 went. Fix the confusion, not the numbering. */
+const unitPager = (shelfKey, units, note) => {
   units = units || leifPager();
   const panels = units.map((u) => {
     const cards = u.items.map((it) => {
@@ -1172,6 +1181,7 @@ const unitPager = (shelfKey, units) => {
     </div>
     ${panels}
     <div class="unitdots">${dots}</div>
+    ${note ? '<p class="unitnote">' + note + "</p>" : ""}
   </div>
   ${pagerScript(units)}
   ${progressScript}`;
@@ -1506,7 +1516,9 @@ const gradeLessons = (g) => {
      including the Rome one whose two built lessons are shelved at grade 6. */
   if (g === 7 || g === 6) {
     const others = list.filter((l) => l.subject !== "History");
-    return `<div class="band"><div class="wrap">${unitPager("g" + g + "-lessons", leifPager(g))}</div></div>` +
+    const mine = leifPager(g);
+    return `<div class="band"><div class="wrap">${
+      unitPager("g" + g + "-lessons", mine, pagerNote("History", mine.length ? Number(mine[0].n) : 1))}</div></div>` +
       (others.length ? `<div class="band"><div class="wrap">
   <h2 class="section-head">The Other Subjects</h2>
   ${lessonCards(others, true, plannedFor(null, g, "lesson").filter(p => p.subject !== "History"))}
@@ -1563,15 +1575,44 @@ const COURSE_SHELVES = [
 const courseFor = (g, sub) =>
   COURSE_SHELVES.find((c) => sameGrade(c.grade, g) && c.subject === sub) || null;
 
+/* 🚨 EXPLAINS A SHELF THAT DOES NOT START AT UNIT 1. Paul, 2026-09-03: "on this page
+   there is a page 2 and no page 1" and "the buttons at the bottom to scroll the
+   lessons this one starts a two and ends at 5". Nothing is missing - Leif Unit 1 is
+   Rome, ancient rather than medieval, so it sits on the GRADE 6 shelf and grade 7
+   correctly runs 2-5.
+   ⚠️ It is DERIVED from where the earlier units actually live, not written per grade,
+   so it cannot go stale if a unit is ever re-shelved. Returns "" when the shelf does
+   start at unit 1, which is every other shelf on the site today.
+   ⚠️ History only for now. English and the rest all start at unit 1; the day one does
+   not, give it its own branch rather than bending this sentence. */
+const pagerNote = (sub, first) => {
+  if (sub !== "History" || !(first > 1)) return "";
+  const earlier = UNITS.filter((u) => Number(u.n) < first);
+  if (!earlier.length) return "";
+  const home = earlier[0];
+  const many = earlier.length > 1;
+  return "This shelf starts at Unit " + first + ". Unit " + earlier.map((u) => u.n).join(" and ") +
+    " " + (many ? "are" : "is") + " " + home.name + ", which " + (many ? "are" : "is") +
+    " ancient rather than medieval history and " + (many ? "sit" : "sits") + " on the " +
+    '<a href="/grade-' + home.grade + '/history/lessons/">' + gradeLabel(home.grade) + " shelf</a>.";
+};
+
 const gradeSubjectLessons = (g, sub) => {
   const list = lessonsIn(g, sub);
   /* A course shelf keeps the unit pager it was built for rather than becoming
      a wall of cards — fifty history lessons, or a hundred and eight English
      ones, do not belong on one page. */
   const course = courseFor(g, sub);
-  if (course)
+  if (course) {
+    /* 🚨 THE NOTE BELONGS HERE, NOT ONLY ON THE ALL-SUBJECTS SHELF. This is the page
+       Paul was looking at - /grade-7/history/lessons/ - and the first attempt put the
+       note on /grade-7/lessons/ instead, so it never appeared. Two call sites build a
+       unit pager for a grade; a shelf-level explanation has to be on both. */
+    const us = course.units();
+    const first = us.length ? Number(us[0].n) : 1;
     return `<div class="band"><div class="wrap">${
-      unitPager("g" + g + "-" + gslug(sub) + "-lessons", course.units())}</div></div>`;
+      unitPager("g" + g + "-" + gslug(sub) + "-lessons", us, pagerNote(sub, first))}</div></div>`;
+  }
   return `<div class="band"><div class="wrap">
   ${list.length ? lessonCards(list, true, plannedFor(sub, g, "lesson"))
     : emptyTile("Nothing on screen for this subject this year yet.")}

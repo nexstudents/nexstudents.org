@@ -1447,3 +1447,9 @@ nav{border-bottom:1px solid var(--line)}
    sentence appeared twice. The lead is the greeting now; the body keeps the
    sentence. */
 .termshead p{font-weight:800;color:var(--fg);font-size:19px;letter-spacing:-.01em}
+
+/* The line under the unit dots explaining a shelf that does not start at Unit 1.
+   See unitPager() in build-pages.js — Paul: "this one starts a two and ends at 5". */
+.unitnote{margin:14px 0 0;text-align:center;font-size:.85rem;color:var(--dim);
+  max-width:60ch;margin-inline:auto;line-height:1.55}
+.unitnote a{color:var(--fg);text-decoration:underline;text-underline-offset:3px}
