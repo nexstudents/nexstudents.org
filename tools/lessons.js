@@ -397,15 +397,15 @@ const LESSONS = [
       "Studying creation can also lead us to wonder about the Creator."
     ]}
   ],
-  /* ⚠️ The day order here MUST match lesson-template.html: Day One is The Questions,
-     Day Two is The Words. This block used to say word cards FIRST, the same way
+  /* ⚠️ ONE SITTING as of 2026-09-04. The questions come first and the word cards
+     second, matching lesson-template.html's panel order. This block used to say word cards FIRST, the same way
      Lesson 2's did before Paul caught it on the page on 2026-09-03. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and the rest of this lesson is split across two days.",
-      "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "That is the reading done. Two things are left, and they both happen today.",
+      "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is the difference between a response and an adaptation. Read Adaptation again and look for which one is passed down and which one is decided in the moment.",
-      "Day Two is the word cards. Five words, and every one of them is explained somewhere in the story you just heard.",
+      "Then the word cards. Five words, and every one of them is explained somewhere in the story you just heard.",
       "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
       "If you can explain why a polar bear's fur is not a response, you have understood the hardest idea in this lesson."
   ] },
@@ -678,11 +678,11 @@ const LESSONS = [
      ⚠️ It is the LAST thing the student hears, so it is the instruction that actually
      gets followed. Check it against the template whenever the day split changes. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and the rest of this lesson is split across two days.",
-      "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "That is the reading done. Two things are left, and they both happen today.",
+      "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is what Pasteur's curved neck was for. Read Pasteur Solves the Mystery again and look for what the shape let IN and what it kept OUT.",
-      "Day Two is the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
+      "Then the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
       "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
       "If you can explain why the neck had to stay open, you have understood the best experiment in this lesson."
   ] },
@@ -951,15 +951,15 @@ const LESSONS = [
       "Science is one way we can search out the amazing details of the world God made."
     ]}
   ],
-  /* ⚠️ The day order here MUST match lesson-template.html: Day One is The Questions,
-     Day Two is The Words. Lesson 2 shipped with them the wrong way round and Paul
+  /* ⚠️ ONE SITTING as of 2026-09-04. The questions come first and the word cards
+     second, matching lesson-template.html's panel order. Lesson 2 shipped with them the wrong way round and Paul
      caught it on the page, not in the data. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and the rest of this lesson is split across two days.",
-      "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "That is the reading done. Two things are left, and they both happen today.",
+      "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is the difference between a theory and a law. Read Theory Does Not Mean Guess again and look for what each one is FOR.",
-      "Day Two is the word cards. Five words this time, and every one of them is explained somewhere in the story you just heard.",
+      "Then the word cards. Five words this time, and every one of them is explained somewhere in the story you just heard.",
       "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
       "If you can say why a theory never turns into a law, you have understood the hardest idea in this lesson."
   ] },
@@ -1211,15 +1211,15 @@ const LESSONS = [
       "The unit may be ending, but there is still an entire creation waiting to be explored."
     ]}
   ],
-  /* ⚠️ The day order here MUST match lesson-template.html: Day One is The Questions,
-     Day Two is The Words. This block used to say word cards first, like Lessons 1 and 2
+  /* ⚠️ ONE SITTING as of 2026-09-04. The questions come first and the word cards
+     second, matching lesson-template.html's panel order. This block used to say word cards first, like Lessons 1 and 2
      did before Paul caught it on the page on 2026-09-03. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and the rest of this lesson is split across two days.",
-      "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "That is the reading done. Two things are left, and they both happen today.",
+      "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is the difference between science and technology. Read Science and Technology again and look for which one investigates and which one applies.",
-      "Day Two is the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
+      "Then the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
       "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
       "This is the last lesson in the unit, so if you can say what ethics asks that science cannot, you have finished it properly."
   ] },

@@ -1156,8 +1156,12 @@ const mathsPager = (course) => course.units
     /* ⚠️ "Lesson 5-3", not "Unit 5 · Lesson 5-3". Glencoe's numbering already carries
        the chapter, so the long form says five twice. This differs from the English and
        history pagers on purpose - their lessons are not numbered by the book. */
-    items: u.items.filter((i) => i.kind === "lesson").map((i) => ({
-      label: "Lesson " + i.label,
+    /* 🚨 REVIEWS ARE SHELVED TOO. A unit review is a test the student sits, so it
+       is a slot like any other. Paul, 2026-09-04: "I really want a review unit that
+       identifies that the student knows the material after the unit ... basically like
+       a test." Filtering to kind === "lesson" would hide every one of them. */
+    items: u.items.filter((i) => i.kind === "lesson" || i.kind === "review").map((i) => ({
+      label: (i.kind === "review" ? "Review " : "Lesson ") + i.label,
       title: i.title, slug: i.slug || null,
     })),
   }))
@@ -1172,8 +1176,12 @@ const sciencePager = (course) => course.units
   .map((u) => ({
     n: u.n,
     name: u.title,
-    items: u.items.filter((i) => i.kind === "lesson").map((i) => ({
-      label: "Lesson " + i.label,
+    /* 🚨 REVIEWS ARE SHELVED TOO. A unit review is a test the student sits, so it
+       is a slot like any other. Paul, 2026-09-04: "I really want a review unit that
+       identifies that the student knows the material after the unit ... basically like
+       a test." Filtering to kind === "lesson" would hide every one of them. */
+    items: u.items.filter((i) => i.kind === "lesson" || i.kind === "review").map((i) => ({
+      label: (i.kind === "review" ? "Review " : "Lesson ") + i.label,
       /* 🚨 `title` is OURS or it is nothing. The book's wording lives in `book`
          and is a build note, exactly like `page`. Paul, 2026-09-04: "we agree
          not use the titles because of copyright", and the names were ours by
