@@ -1495,8 +1495,15 @@ nav{border-bottom:1px solid var(--line)}
 
 /* The two ways to read the plan: by week, or by unit. */
 .plan-views{display:flex;gap:8px;margin:0 0 26px}
-.plan-vb{font:600 13px/1 inherit;font-family:inherit;padding:8px 15px;border-radius:999px;
-  border:1px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
+/* 🚨 THE SHORTHAND WAS INVALID AND KILLED THE WHOLE RULE. "font:600 13px/1 inherit"
+   names "inherit" as the family, which is not a legal family in the shorthand, so
+   every property in that declaration was dropped and the buttons rendered as bare
+   dim text on a transparent ground - invisible on the dark theme. Paul: "I don't
+   see where I can switch between unit and lessons?" Set the properties longhand. */
+.plan-vb{font-family:inherit;font-size:14px;font-weight:600;line-height:1;
+  padding:10px 18px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:var(--panel-2,var(--panel));color:var(--fg)}
+.plan-vb:hover{border-color:var(--a)}
 .plan-vb[aria-pressed="true"]{background:var(--a);color:var(--a-ink);border-color:var(--a)}
 .plan-vb:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 
@@ -1514,3 +1521,16 @@ nav{border-bottom:1px solid var(--line)}
 .plan-ul .plan-pip{align-self:center}
 .plan-ull{font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
 @media (max-width:520px){.plan-uspan{margin-left:0;width:100%}}
+
+/* The compact year outline, on /grade-7/lessons/ and /grade-7/worksheets/. */
+.out-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:26px}
+.out-col{min-width:0}
+.out-h{display:flex;align-items:center;gap:9px;margin:0 0 10px;font-size:15px;font-weight:700}
+.out-h em{font-style:normal;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
+.out-list{list-style:none;margin:0;padding:0}
+.out-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:baseline;
+  padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.out-row:first-child{border-top:0}
+.out-n{font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums;min-width:1.3em;text-align:right}
+.out-t{min-width:0;overflow-wrap:break-word}
+.out-w{font-size:11.5px;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}

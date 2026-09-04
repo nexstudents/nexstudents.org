@@ -1597,6 +1597,54 @@ const planRow = (g) => sameGrade(g, 7) ? `
     </div>`)}
 </div>` : "";
 
+/* ── THE YEAR OUTLINE, a compact form of the plan ─────────────────────────
+   Paul, 2026-09-04, asked for the outline to show on the lessons and worksheets
+   pages too, not only on /grade-7/plan/. This is the unit view WITHOUT the
+   lesson rows - subject, unit, week span - so it orients a parent in one screen
+   instead of repeating 429 lines on three separate pages.
+   🚨 GRADE 7 ONLY, the same reason planRow() is: it is the only grade with a
+   plan, and linking to one that does not exist fails check-links.js.
+   ⚠️ Derived from YEAR.build() every time, so it cannot drift from the plan. */
+const yearOutline = (g) => {
+  if (!sameGrade(g, 7)) return "";
+  const plan = YEAR.build();
+  const seen = {};
+  for (const w of plan.weeks) {
+    if (w.kind !== "week") continue;
+    for (const d of w.days) for (const sl of d.slots) {
+      const k = sl.subject + "|" + sl.unit;
+      const u = (seen[k] = seen[k] || { subject: sl.subject, n: sl.unit,
+        title: sl.unitTitle, first: w.n, last: w.n, count: 0 });
+      u.first = Math.min(u.first, w.n);
+      u.last = Math.max(u.last, w.n);
+      u.count++;
+    }
+  }
+  const ORDER = ["English", "History", "Maths", "Science"];
+  const cols = ORDER.map((subject) => {
+    const list = Object.values(seen)
+      .filter((u) => u.subject === subject)
+      .sort((a, b) => a.first - b.first);
+    const rows = list.map((u) => {
+      const span = u.first === u.last ? "Wk " + u.first : "Wks " + u.first + "-" + u.last;
+      return '<li class="out-row"><span class="out-n">' + u.n + '</span>' +
+        '<span class="out-t">' + u.title + '</span>' +
+        '<span class="out-w">' + span + '</span></li>';
+    }).join("\n        ");
+    return '<div class="out-col"><h4 class="out-h">' +
+      '<span class="plan-tag t-' + SUBJ_ABBR[subject] + '">' + SUBJ_ABBR[subject] + '</span>' +
+      subject + ' <em>' + list.length + ' units</em></h4>' +
+      '<ul class="out-list">' + rows + '</ul></div>';
+  }).join("\n      ");
+
+  return '<div class="wrap" style="padding-top:52px;padding-bottom:8px">' +
+    group("The Year at a Glance",
+      'Every unit in the 7th grade year and the weeks it runs. ' +
+      '<a href="/grade-7/plan/">Open the full week-by-week plan</a> for the daily version.',
+      '<div class="out-grid">' + cols + '</div>') +
+    '</div>';
+};
+
 const gradeLanding = (g) => `<div class="band"><div class="wrap">
   ${group("Pick a Subject", "All four core subjects. Each one opens its lessons or its printables for this year.", subjectRows(g))}
 </div></div>
@@ -2271,14 +2319,14 @@ const pages = [
     desc: "Every 7th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Lessons', h1: "7th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
-    count: gradeSwitch(7, "l"), body: gradeLessons(7) },
+    count: gradeSwitch(7, "l"), body: gradeLessons(7) + yearOutline(7) },
 
   { dir: "grade-7/worksheets", active: "gr",
     title: "7th Grade Worksheets | NexStudents",
     desc: "Every 7th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Worksheets', h1: "7th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
-    count: gradeSwitch(7, "w"), body: gradeSheets(7) },
+    count: gradeSwitch(7, "w"), body: gradeSheets(7) + yearOutline(7) },
 
   { dir: "grade-8", active: "gr",
     title: "8th Grade | NexStudents",
@@ -2526,7 +2574,7 @@ for (const g of ALL_GRADES) {
       crumb: '<a href="/grade-' + gs + '/">' + gradeLabel(g) + "</a> &rsaquo; Lessons",
       h1: gradeLabel(g) + " Lessons.",
       lead: "Nothing on screen for this year yet. Pick a subject from the year's page to see where each one stands.",
-      count: gradeSwitch(g, "l"), body: gradeLessons(g) });
+      count: gradeSwitch(g, "l"), body: gradeLessons(g) + yearOutline(g) });
 
     pages.push({
       dir: "grade-" + gs + "/worksheets", active: "gr",
@@ -2535,7 +2583,7 @@ for (const g of ALL_GRADES) {
       crumb: '<a href="/grade-' + gs + '/">' + gradeLabel(g) + "</a> &rsaquo; Worksheets",
       h1: gradeLabel(g) + " Worksheets.",
       lead: "No printables for this year yet. They go up as each unit is finished.",
-      count: gradeSwitch(g, "w"), body: gradeSheets(g) });
+      count: gradeSwitch(g, "w"), body: gradeSheets(g) + yearOutline(g) });
   }
 
   for (const s of SUBJECTS) {
