@@ -1173,12 +1173,21 @@ var MEDIA_BASE = "";
 /* Google Cloud voices, fetched live with the viewer's own key. Curated rather
    than listed from the API: these are the ones that support SSML marks, which
    is what gives exact per-word timing. British first, per Paul. */
+/* 🚨 UK ONLY. THE TWO US VOICES ARE GONE, 2026-09-04.
+   They should never have been offered: the UK-only rule was settled on
+   2026-08-29 and it is a correctness argument, not taste. Paul: "even if i
+   select US voices it wont say 3s as three's it will say instead three es."
+   A voice that mispronounces the material is not a lesser option, it is a
+   wrong one.
+   They also caused the highlight bug he found on 2026-09-04 - picking one put
+   the player in word-highlight mode, the request failed, and the lesson read
+   aloud with nothing lit up.
+   ⚠️ Do not add a US voice back. If one is ever needed, the pronunciation
+   problem has to be solved first. */
 var GOOGLE_VOICES = [
   { id:"en-GB-Neural2-B", label:"UK male (Neural2 B)" },
   { id:"en-GB-Neural2-D", label:"UK male (Neural2 D)" },
-  { id:"en-GB-Neural2-A", label:"UK female (Neural2 A)" },
-  { id:"en-US-Neural2-D", label:"US male (Neural2 D)" },
-  { id:"en-US-Neural2-J", label:"US male (Neural2 J)" }
+  { id:"en-GB-Neural2-A", label:"UK female (Neural2 A)" }
 ];
 var ttsKey = load("ttskey", "");
 
@@ -1945,6 +1954,20 @@ function playGoogle(mine){
     note(String(err.message || err), "bad");
     engine = "device";
     syncVoiceUI();
+    /* 🚨 REPAINT AFTER THE FALLBACK OR NOTHING EVER HIGHLIGHTS AGAIN.
+       paint() ran in speak(), BEFORE this request was made, and at that moment
+       wordMode() was true because a Google voice was selected and a key exists -
+       so the sentence band was deliberately suppressed to leave room for per-word
+       timings. The request then failed, we dropped to the device voice, and the
+       band was never asked for again. The lesson reads aloud with NOTHING lit up.
+
+       Paul found it on 2026-09-04: "US male Neural2 D that didnt highlight at all
+       but when i swith to UK male and uk female it worked", and "it sounded like
+       the UK male until i checked and switched it even though it was wrong" -
+       which is this exact path: Google voice selected, Google request failed,
+       device voice heard, picker still showing the Google one, no highlight.
+       ⚠️ engine changed, so wordMode() is false now and paint() will draw the band. */
+    paint();
     playSynth(mine);
   });
 }
