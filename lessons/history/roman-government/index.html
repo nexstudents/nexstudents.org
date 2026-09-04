@@ -291,17 +291,21 @@ h1{
 /* The score the parent sees first, at the top of the teacher box. */
 .gscore{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
   padding:11px 0 13px;margin-bottom:4px;border-bottom:1px solid var(--rule)}
-.gscore-line{margin:0;font-weight:600;font-size:14.5px;color:var(--ink)}
-.gscore-line.good{color:#1c7a4a}
-.gscore-line.part{color:var(--ink-soft, var(--ink))}
-.gscore-line.bad{color:#c0392b}
+/* 🚨 SPECIFICITY: `.ground .gbody p` sets a 9px bottom margin and beats a bare
+   .gscore-line, so the score sat 4.5px above the button it is meant to line up
+   with. Measured on the live page, not guessed: line mid 439, button mid 444.
+   Scoped under .gscore so it wins, and the row centres properly. */
+.gscore .gscore-line{margin:0;font-weight:600;font-size:14.5px;color:var(--ink);line-height:1.3}
+.gscore .gscore-line.good{color:#1c7a4a}
+.gscore .gscore-line.part{color:var(--ink-soft, var(--ink))}
+.gscore .gscore-line.bad{color:#c0392b}
 .gscore .btn{margin-left:auto;font-size:12.5px;padding:6px 12px}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]) .gscore-line.good{color:#5fcf95}
-  :root:not([data-theme="light"]) .gscore-line.bad{color:#ff7a6b}
+  :root:not([data-theme="light"]) .gscore .gscore-line.good{color:#5fcf95}
+  :root:not([data-theme="light"]) .gscore .gscore-line.bad{color:#ff7a6b}
 }
-:root[data-theme="dark"] .gscore-line.good{color:#5fcf95}
-:root[data-theme="dark"] .gscore-line.bad{color:#ff7a6b}
+:root[data-theme="dark"] .gscore .gscore-line.good{color:#5fcf95}
+:root[data-theme="dark"] .gscore .gscore-line.bad{color:#ff7a6b}
 .ground .gbody{padding:2px 17px 18px;border-top:1px solid var(--rule);
   color:var(--ink-soft);font-size:15.5px}
 .ground h3{margin:17px 0 5px;font-size:.79rem;letter-spacing:.09em;
@@ -556,6 +560,21 @@ h2{
 .card .def{font-size:14px;line-height:1.55;color:var(--ink-soft);margin-top:7px;display:none}
 .card.open .def{display:block}
 .card.open .prompt{display:none}
+/* 🚨 GREEN OUTLINE ONCE READ, and it stays after the card is closed again.
+   Paul, 2026-09-04: "if you clicked on the vocab section they turn green outline
+   too to show you read them." A parent scanning the row can see at a glance
+   which words the student actually opened.
+   ⚠️ LITERAL green, not a palette token, for the same reason the verdict box is:
+   read and unread must not change hue when a lesson theme changes. Same pair as
+   the correct verdict, so the page has one green and not two. */
+.card.read{border-color:#1c7a4a}
+.card.read:hover{border-color:#1c7a4a}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .card.read{border-color:#3f9d6d}
+  :root:not([data-theme="light"]) .card.read:hover{border-color:#5fcf95}
+}
+:root[data-theme="dark"] .card.read{border-color:#3f9d6d}
+:root[data-theme="dark"] .card.read:hover{border-color:#5fcf95}
 
 /* ---------- questions ---------- */
 .q{
@@ -2775,7 +2794,16 @@ WORDS.forEach(function(pair){
   b.innerHTML = '<span class="term"></span><span class="prompt">What is it?</span><span class="def"></span>';
   b.querySelector(".term").textContent = pair[0];
   b.querySelector(".def").textContent = pair[1];
-  b.addEventListener("click", function(){ b.classList.toggle("open"); });
+  /* 🚨 `read` STICKS, `open` DOES NOT. Paul, 2026-09-04: "if you clicked on the
+     vocab section they turn green outline too to show you read them."
+     Opening a card is a toggle - he will close it again - but having read it is
+     not something that un-happens. So the green outline is a separate class that
+     is only ever added, and it survives closing the card. It is a record of what
+     he has looked at, which is exactly what a parent scanning the row wants. */
+  b.addEventListener("click", function(){
+    b.classList.toggle("open");
+    b.classList.add("read");
+  });
   cardsEl.appendChild(b);
 });
 

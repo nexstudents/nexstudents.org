@@ -349,7 +349,7 @@ function groundMarkup(L) {
   const scoreBlock =
     '      <div class="gscore" id="gscore">\n' +
     '        <p class="gscore-line" id="gscoreline">Not started yet.</p>\n' +
-    '        <button class="btn ghost" type="button" id="greset" hidden>Reset for another try</button>\n' +
+    '        <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>\n' +
     "      </div>\n";
   return '<details class="ground">\n' +
     '    <summary>Teacher Notes</summary>\n' +
