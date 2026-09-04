@@ -158,7 +158,12 @@ function buildQuestions(L) {
 
   // Day 1 — findable in the text
   L.questions.forEach((q) => {
-    raw.push({ day: 1, q: q.q, find: q.find, hint: q.hint, choices: q.choices, right: q.right });
+    raw.push({ day: 1, q: q.q, find: q.find, hint: q.hint, choices: q.choices, right: q.right,
+               /* 🚨 CARRY `why` THROUGH. The verdict box explains the answer now, and
+                  without this the explanation is silently dropped between the data and
+                  the page - the box renders with the bare Correct/Incorrect line and
+                  nothing else. Found live on 2026-09-04 testing Question 10. */
+               why: q.why });
   });
 
   /* Day 2 — vocabulary.
@@ -193,7 +198,7 @@ function buildQuestions(L) {
       raw.push({
         day: 2, q: q.q, find: null,
         note: "Vocabulary. Use the word cards above, not the story.",
-        choices: q.choices, right: q.right
+        choices: q.choices, right: q.right, why: q.why
       });
     });
   } else {
@@ -212,6 +217,7 @@ function buildQuestions(L) {
   const out = raw.map((q, i) => {
     const s = placeAnswer(q.choices, q.right, targets[i], L.id + ":opts:" + i);
     const built = { day: q.day, q: q.q, find: q.find, choices: s.choices, right: s.right };
+    if (q.why) built.why = q.why;
     if (q.hint) built.hint = q.hint;
     if (q.note) built.note = q.note;
     return built;
@@ -345,6 +351,11 @@ function serialise(L) {
     "    find: " + (q.find ? "[" + q.find.join(", ") + "]" : "null") + ",\n" +
     (q.hint ? '    hint: "' + esc(q.hint) + '",\n' : "") +
     (q.note ? '    note: "' + esc(q.note) + '",\n' : "") +
+    /* The one-line reason the answer is right. The verdict box prints it after
+       Correct or Incorrect, so a student is told WHY rather than just whether.
+       Optional - lessons written before 2026-09-04 have none and fall back to
+       the bare verdict. */
+    (q.why ? '    why: "' + esc(q.why) + '",\n' : "") +
     "    choices: " + jsArr(q.choices) + ",\n" +
     "    right: " + q.right + "\n  }").join(",\n") + "\n];";
 
