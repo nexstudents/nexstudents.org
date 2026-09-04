@@ -650,9 +650,23 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .gbody p{margin:0;font-size:.83rem;color:var(--dim);line-height:1.45}
 
 /* ── page header, for the inner pages ── */
-.phead{padding-block:56px 40px;border-bottom:1px solid var(--line)}
+/* 🚨 CENTRED, AND SITTING LOWER. Paul, 2026-09-03: "the 7th grade History Lessons
+   title can move down and centered", then "well you can move all the titles down
+   for all the lessons and center them" and "all the grades too". One block, so
+   all 138 pages that use .phead move together - grades, subjects, shelves, the
+   policy pages, everything built by build-pages.js.
+   🚨 CENTRING THE TEXT IS NOT CENTRING THE BOX. `.phead p` carries max-width:56ch,
+   so text-align alone leaves a 56ch box hard left with centred text inside it -
+   exactly the mistake made five different ways on the reading log the same day.
+   It needs margin-inline:auto as well, and so does anything else here that ever
+   grows a max-width. → the centring notes in CLAUDE.md.
+   ⚠️ The top padding is what "move down" means. 56px to 96px, and 64px below, so
+   the heading is not pinned under the nav. The bottom rule stays full width - it
+   separates the head from the shelf and is not part of the centred column. */
+.phead{padding-block:96px 64px;border-bottom:1px solid var(--line);text-align:center}
 .phead h1{font-size:clamp(2rem,4.6vw,3.3rem);margin-bottom:14px}
-.phead p{color:var(--dim);max-width:56ch;margin:0;font-size:1.04rem}
+.phead p{color:var(--dim);max-width:56ch;margin-inline:auto;margin-block:0;font-size:1.04rem}
+@media(max-width:620px){ .phead{padding-block:60px 44px} }
 .crumb{font-size:.8rem;color:var(--dim);margin:0 0 16px}
 .crumb a{color:var(--dim)}
 @media(hover:hover){ .crumb a:hover{color:var(--fg)} }

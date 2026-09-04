@@ -1958,7 +1958,14 @@ const pages = [
     title: "English Lessons — NexStudents",
     desc: "English lessons worked through on screen.",
     crumb: '<a href="/english/">English</a> &rsaquo; Lessons', h1: "English Lessons.",
-    lead: "Nothing on screen for English yet. The printables came first, because spelling and writing are worked on paper.",
+    /* ⚠️ THIS SAID "Nothing on screen for English yet" WHILE THE COUNT UNDERNEATH IT SAID
+       "1 lesson available". The lead was hand-written when the shelf was empty and never
+       revisited; the count is derived, so the page argued with itself. Found 2026-09-03
+       while removing an overclaim on the history shelf.
+       🚨 A LEAD THAT ASSERTS EMPTINESS GOES STALE THE DAY SOMETHING SHIPS. Say what the
+       shelf is for, not how much is on it - the count is already right there and is
+       generated. checkLeads() below fails the build if one of these disagrees again. */
+    lead: "Grammar, verbs and sentence work, read on screen with the reading built in. The printables came first, because spelling and writing are worked on paper.",
     count: countLabel(bySubject("English").length, "lesson", "lessons") + " available", body: subjectLessons("English") },
 
   { dir: "english/worksheets", active: "w",
@@ -1983,7 +1990,10 @@ const pages = [
     title: "Science Lessons — NexStudents",
     desc: "Science lessons worked through on screen.",
     crumb: '<a href="/science/">Science</a> &rsaquo; Lessons', h1: "Science Lessons.",
-    lead: "Nothing on screen for science yet. The printables came first.",
+    /* ⚠️ Same fault as the English lead: this said "Nothing on screen for science yet" with
+       "4 lessons available" printed directly beneath it - the whole of Life Science Unit 1,
+       written by Paul himself. See the note on the English lead. */
+    lead: "Life science, worked through on screen with the reading built in and the words explained inside the story. The printables came first.",
     count: countLabel(bySubject("Science").length, "lesson", "lessons") + " available", body: subjectLessons("Science") },
 
   { dir: "science/worksheets", active: "w",
@@ -1997,7 +2007,15 @@ const pages = [
     title: "History — NexStudents",
     desc: "History lessons and worksheets, worked through on screen.",
     crumb: "History", h1: "History.",
-    lead: "American and Biblical history, taught properly rather than skipped over. Lessons are worked through on screen with the reading built in; worksheets get printed.",
+    /* 🚨 CLAIM REMOVED, Paul 2026-09-03: "it says American and Biblical history taught
+       properly rather than skipped over. i would remove this because this is a bold claim."
+       He is right, and it was WRONG as well as bold: the history LESSONS are Rome through
+       the Reformation (Leif, McDougal Littell). The American material is worksheets, and
+       there is no Biblical history strand built at all. It promised a stance and described
+       a course that does not exist.
+       ⚠️ Describe the shelf. A subject lead is read by a parent deciding whether to
+       bother, so it has to survive them clicking through. */
+    lead: "The ancient and medieval world in the lessons, from Rome to the Reformation, with American history on the worksheet shelf. Lessons are worked through on screen with the reading built in; worksheets get printed.",
     body: subjectLanding("History") },
 
   { dir: "history/lessons", active: "w",

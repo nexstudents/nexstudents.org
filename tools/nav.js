@@ -81,8 +81,12 @@ const NAV = [
 const SUBJECTS = [
   { name: "English", slug: "english", live: true,
     blurb: "Spelling, book reports, comprehension and reading lists worth actually reading." },
+  /* 🚨 THE OLD BLURB WAS REMOVED BY PAUL, 2026-09-03: "American and Biblical history taught
+     properly rather than skipped over ... i would remove this because this is a bold claim."
+     It was also inaccurate - the lessons are Rome to the Reformation, the American material
+     is worksheets, and no Biblical history strand is built. Same wording was on /history/. */
   { name: "History", slug: "history", live: true,
-    blurb: "American and Biblical history, taught properly rather than skipped over." },
+    blurb: "Rome to the Reformation on screen, with American history on the worksheet shelf." },
   { name: "Maths", slug: "maths", live: true,
     blurb: "Practice that teaches, without punishing a student for getting things wrong." },
   /* Live from 2026-08-30, when the first science worksheet shipped (Newton's
@@ -92,8 +96,16 @@ const SUBJECTS = [
      ⚠️ This blurb claims a creation lens and the first sheet on the shelf is
      worldview-neutral physics. That is Paul's copy to keep or change - see
      ROADMAP item 18, which is still open. */
+  /* 🚨 THIS PROMISED THREE THINGS THAT DO NOT EXIST - experiments to run at home, video
+     walkthroughs, and record sheets. None are built. Rewritten 2026-09-03 in the same pass
+     as the history blurb, after Paul: "i would remove this because this is a bold claim ...
+     check other ones too." A blurb that promises features is a worse overclaim than one that
+     takes a stance, because a parent can click through and find nothing.
+     ⚠️ The creation lens is REAL and stays - it is the side-by-side rule in BEHAVIOR.md and
+     it is in all four live lessons. It is the video and the record sheets that were fiction.
+     ⚠️ Paul's copy. Say so and change it back if he wants the original. */
   { name: "Science", slug: "science", live: true,
-    blurb: "Experiments you can run at home, taught through a creation lens, with video walkthroughs and record sheets." },
+    blurb: "Life science read on screen, with the origin question handled side by side rather than skipped." },
 ];
 
 /* 4 and 5 joined the list on 2026-08-29, when the lessons were re-shelved by
