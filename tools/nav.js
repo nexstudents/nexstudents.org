@@ -444,14 +444,17 @@ const faviconTags = () =>
 
 const SITE_ORIGIN = "https://nexstudents.org";
 
-/* ⚠️ 512x512, because it is the only brand image that exists. og:image wants
-   1200x630 and a square gets centre-cropped by some readers, so the twitter
-   card is deliberately "summary" (small square thumb) rather than
-   "summary_large_image" - the root index.html declared the large card while
-   supplying NO image at all, which renders as a blank slab. When Paul makes a
-   real 1200x630 share image, change these two lines together. */
-const SHARE_IMAGE = SITE_ORIGIN + "/assets/brand/logo.png";
-const TWITTER_CARD = "summary";
+/* Paul's own share card, made in Canva 2026-09-04: 1200x630, the red logo and
+   NEXSTUDENTS wordmark on solid black, 192 KB, indexed PNG with NO tRNS chunk -
+   verified opaque, because a transparent PNG gets flattened onto WHITE by most
+   readers and this artwork is built for the dark site.
+
+   🚨 THESE TWO CHANGE TOGETHER. The card size and the image have to agree:
+   "summary_large_image" with a square image gets centre-cropped, and it was
+   previously the reverse mistake - the root index.html declared the large card
+   while supplying no image at all, which renders as a blank slab. */
+const SHARE_IMAGE = SITE_ORIGIN + "/assets/brand/share.png";
+const TWITTER_CARD = "summary_large_image";
 
 /* `path` is root-absolute and starts with "/". `type` is "website" for a shelf
    or an index and "article" for a lesson or a worksheet. */
