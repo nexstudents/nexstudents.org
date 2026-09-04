@@ -2000,6 +2000,49 @@ const yearPlanBody = () => {
       '<div class="plan-days">' + days + '</div></section>';
   }).join("\n    ");
 
+  /* ── BY UNIT ────────────────────────────────────────────────────────────
+     The same plan, turned ninety degrees. Paul, 2026-09-04: "I want to know if
+     you can do a unit view and a lesson view. so if they click on unit view they
+     can see all the weeks of units."
+     🚨 THE WEEK SPAN IS DERIVED, never stored. A unit's weeks are simply the
+     first and last week its lessons were dealt into, so re-balancing the year
+     moves the spans automatically and they cannot go stale. */
+  const bySubject = {};
+  for (const w of plan.weeks) {
+    if (w.kind !== "week") continue;
+    for (const d of w.days) for (const sl of d.slots) {
+      const subj = (bySubject[sl.subject] = bySubject[sl.subject] || {});
+      const key = sl.unit;
+      const u = (subj[key] = subj[key] || {
+        n: sl.unit, title: sl.unitTitle, first: w.n, last: w.n, items: [],
+      });
+      u.first = Math.min(u.first, w.n);
+      u.last = Math.max(u.last, w.n);
+      u.items.push(sl);
+    }
+  }
+
+  const SUBJECT_ORDER = ["English", "History", "Maths", "Science"];
+  const units = SUBJECT_ORDER.filter((s) => bySubject[s]).map((subject) => {
+    const list = Object.values(bySubject[subject]).sort((a, b) => a.first - b.first);
+    const blocks = list.map((u) => {
+      const span = u.first === u.last ? "Week " + u.first : "Weeks " + u.first + " to " + u.last;
+      const rows = u.items.map((sl) =>
+        '<li class="plan-ul"><i class="plan-pip p-' + sl.state + '"></i>' +
+        '<span class="plan-ull">' + sl.label + '</span>' +
+        '<span>' + sl.title + '</span></li>').join("\n          ");
+      return '<article class="plan-unit">' +
+        '<div class="plan-uh">' +
+          '<span class="plan-tag t-' + SUBJ_ABBR[subject] + '">' + SUBJ_ABBR[subject] + '</span>' +
+          '<h4>Unit ' + u.n + ' &middot; ' + u.title + '</h4>' +
+          '<span class="plan-uspan">' + span + '</span>' +
+        '</div>' +
+        '<ul class="plan-ulist">' + rows + '</ul></article>';
+    }).join("\n      ");
+    return '<div class="plan-subject"><h3 class="plan-sh">' + subject +
+      ' <em>' + list.length + ' units</em></h3>' + blocks + '</div>';
+  }).join("\n    ");
+
   return `<div class="band"><div class="wrap">
     <div class="plan-figs">
       <div class="plan-fig"><b>36</b><span>Teaching weeks</span></div>
@@ -2012,12 +2055,47 @@ const yearPlanBody = () => {
       <span><i class="plan-pip p-paper"></i>${state.paper} printable from the workbook</span>
       <span><i class="plan-pip p-todo"></i>${state.todo} still to write</span>
     </p>
-    <p class="plan-note">This is the plan, not the build. Each day lists what a student does;
+    <p class="plan-note">This is the plan, not the build. Each row says what a student does;
       the dot says whether that page exists yet. Monday to Thursday, four days a week, from
       ${prettyDate(plan.firstDay)} 2026 to ${prettyDate(plan.lastDay)} 2027.</p>
+
+    <div class="plan-views" role="group" aria-label="How to read the plan">
+      <button type="button" class="plan-vb" data-view="weeks" aria-pressed="true">By week</button>
+      <button type="button" class="plan-vb" data-view="units" aria-pressed="false">By unit</button>
+    </div>
+
+    <div id="plan-view-weeks">
     ${weeks}
-  </div></div>`;
+    </div>
+
+    <div id="plan-view-units" hidden>
+    ${units}
+    </div>
+  </div></div>
+${planViewScript}`;
 };
+
+/* 🚨 NO BACKTICKS ANYWHERE INSIDE THIS STRING, comments included. It is returned
+   into a template literal above, and a stray backtick closes it and kills the
+   build on the next word - the same trap that cost a build on 2026-08-31. */
+const planViewScript = '<script>\n' +
+'(function(){\n' +
+'  var btns = document.querySelectorAll(".plan-vb");\n' +
+'  var views = {\n' +
+'    weeks: document.getElementById("plan-view-weeks"),\n' +
+'    units: document.getElementById("plan-view-units")\n' +
+'  };\n' +
+'  if (!btns.length || !views.weeks || !views.units) return;\n' +
+'  btns.forEach(function(b){\n' +
+'    b.addEventListener("click", function(){\n' +
+'      var want = b.dataset.view;\n' +
+'      btns.forEach(function(o){ o.setAttribute("aria-pressed", String(o === b)); });\n' +
+'      views.weeks.hidden = (want !== "weeks");\n' +
+'      views.units.hidden = (want !== "units");\n' +
+'    });\n' +
+'  });\n' +
+'})();\n' +
+'</scr' + 'ipt>';
 
 const extrasShelf = () => `<div class="band"><div class="wrap">
   <div class="cardgrid">

@@ -48,7 +48,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=7bf05e5e">
+<link rel="stylesheet" href="/assets/ns.css?v=ed640051">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -126,9 +126,16 @@
       <span><i class="plan-pip p-paper"></i>51 printable from the workbook</span>
       <span><i class="plan-pip p-todo"></i>372 still to write</span>
     </p>
-    <p class="plan-note">This is the plan, not the build. Each day lists what a student does;
+    <p class="plan-note">This is the plan, not the build. Each row says what a student does;
       the dot says whether that page exists yet. Monday to Thursday, four days a week, from
       24 Aug 2026 to 27 May 2027.</p>
+
+    <div class="plan-views" role="group" aria-label="How to read the plan">
+      <button type="button" class="plan-vb" data-view="weeks" aria-pressed="true">By week</button>
+      <button type="button" class="plan-vb" data-view="units" aria-pressed="false">By unit</button>
+    </div>
+
+    <div id="plan-view-weeks">
     <section class="plan-week" id="week-1"><div class="plan-wh"><span class="plan-wn">Week 1</span><span class="plan-wd">24 Aug &ndash; 27 Aug</span></div><div class="plan-days"><div class="plan-day"><p class="plan-dh"><span>Mon</span><span>24 Aug</span></p><div class="plan-slot"><span class="plan-tag t-M">M</span><span class="plan-t">A Plan for Problem Solving<span class="plan-m"><i class="plan-pip p-todo"></i>Maths &middot; Unit 1 &middot; 1-1</span></span></div>
         <div class="plan-slot"><span class="plan-tag t-S">S</span><span class="plan-t">What Makes Something Alive<span class="plan-m"><i class="plan-pip p-built"></i>Science &middot; Unit 1 &middot; 1-1</span></span></div>
         <div class="plan-slot"><span class="plan-tag t-E">E</span><span class="plan-t">Kinds of Sentences<span class="plan-m"><i class="plan-pip p-todo"></i>English &middot; Unit 1 &middot; 1-1</span></span></div></div>
@@ -565,7 +572,458 @@
         <div class="plan-slot"><span class="plan-tag t-E">E</span><span class="plan-t">Compound and Complex Sentences<span class="plan-m"><i class="plan-pip p-todo"></i>English &middot; Unit 8 &middot; 8-2</span></span></div></div>
       <div class="plan-day"><p class="plan-dh"><span>Thu</span><span>27 May</span></p><div class="plan-slot"><span class="plan-tag t-E">E</span><span class="plan-t">Revising Strategies: Forming Complex and Compound-Complex Sentences<span class="plan-m"><i class="plan-pip p-todo"></i>English &middot; Unit 8 &middot; 8-3</span></span></div>
         <div class="plan-slot"><span class="plan-tag t-E">E</span><span class="plan-t">Unit 8 Checkup<span class="plan-m"><i class="plan-pip p-todo"></i>English &middot; Unit 8 &middot; 8-4</span></span></div></div></div></section>
+    </div>
+
+    <div id="plan-view-units" hidden>
+    <div class="plan-subject"><h3 class="plan-sh">English <em>8 units</em></h3><article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-E">E</span><h4>Unit 1 &middot; The Sentence</h4><span class="plan-uspan">Weeks 1 to 5</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-1</span><span>Kinds of Sentences</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-2</span><span>Revising Strategies: Writing Good Sentences</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-3</span><span>Complete Subjects and Complete Predicates</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-4</span><span>Simple Subjects and Simple Predicates</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-5</span><span>Revising Strategies: Forming Compound Subjects and Predicates</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-6</span><span>Finding the Subject</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-7</span><span>Conjunctions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-8</span><span>Fragments and Run-ons</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-9</span><span>Revising Strategies: Forming Compound and Complex Sentences</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-10</span><span>Unit 1 Checkup</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-E">E</span><h4>Unit 2 &middot; Nouns</h4><span class="plan-uspan">Weeks 5 to 8</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-1</span><span>Kinds of Nouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-2</span><span>Collective and Compound Nouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-3</span><span>Singular and Plural Nouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-4</span><span>Revising Strategies: Writing with Nouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-5</span><span>Possessive Nouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-6</span><span>Revising Strategies: Writing with Possessive Nouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-7</span><span>Revising Strategies: Exact Nouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-8</span><span>Unit 2 Checkup</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-E">E</span><h4>Unit 3 &middot; Verbs</h4><span class="plan-uspan">Weeks 8 to 16</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-1</span><span>Kinds of Verbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-2</span><span>Verb Phrases</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-3</span><span>Simple Verb Tenses</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-4</span><span>Be, Have, and Do</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-5</span><span>Perfect Tenses</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-6</span><span>Irregular Verbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-7</span><span>More Irregular Verbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-8</span><span>Progressive Forms</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-9</span><span>Revising Strategies: Writing with Verbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-10</span><span>Transitive and Intransitive Verbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-11</span><span>Direct and Indirect Objects</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-12</span><span>Predicate Nouns and Predicate Adjectives</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-13</span><span>Active and Passive Voices</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-14</span><span>Revising Strategies: Writing with Verbs (Voice)</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-15</span><span>Subject-Verb Agreement</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-16</span><span>Inverted and Interrupted Order</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-17</span><span>Rise/Raise, Lie/Lay, Sit/Set</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-18</span><span>Bring/Take, Let/Leave, Lend/Loan</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-19</span><span>Revising Strategies: Choosing Different Verbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-20</span><span>Unit 3 Checkup</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-E">E</span><h4>Unit 4 &middot; Modifiers</h4><span class="plan-uspan">Weeks 16 to 20</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-1</span><span>Adjectives</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-2</span><span>Revising Strategies: Writing with Adjectives</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-3</span><span>Comparing with Adjectives</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-4</span><span>Adverbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-5</span><span>Revising Strategies: Writing with Adverbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-6</span><span>Comparing with Adverbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-7</span><span>Negatives</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-8</span><span>Adjective or Adverb?</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-9</span><span>Revising Strategies: Choosing Different Adjectives and Adverbs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-10</span><span>Unit 4 Checkup</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-E">E</span><h4>Unit 5 &middot; Capitalization and Punctuation</h4><span class="plan-uspan">Weeks 21 to 27</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-1</span><span>Correct Sentences</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-2</span><span>Proper Nouns and Proper Adjectives</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-3</span><span>Interjections</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-4</span><span>Uses for Commas</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-5</span><span>Revising Strategies: Writing Sentences with Commas</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-6</span><span>More Uses for Commas</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-7</span><span>Dates, Addresses, and Letters</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-8</span><span>Direct Quotations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-9</span><span>Titles</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-10</span><span>Semicolons and Colons</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-11</span><span>Revising Strategies: Writing with Colons and Semicolons</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-12</span><span>Abbreviations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-13</span><span>Apostrophes</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-14</span><span>Hyphens, Dashes, and Parentheses</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-15</span><span>Unit 5 Checkup</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-E">E</span><h4>Unit 6 &middot; Pronouns</h4><span class="plan-uspan">Weeks 27 to 32</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-1</span><span>Pronouns and Antecedents</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-2</span><span>Revising Strategies: Writing Clearly with Pronouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-3</span><span>Personal Pronouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-4</span><span>Subject and Object Pronouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-5</span><span>Pronouns in Compound Subjects and Objects</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-6</span><span>Possessive Pronouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-7</span><span>Interrogative Pronouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-8</span><span>Demonstrative Pronouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-9</span><span>Indefinite Pronouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-10</span><span>Reflexive and Intensive Pronouns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-11</span><span>Revising Strategies: Homophones</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-12</span><span>Unit 6 Checkup</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-E">E</span><h4>Unit 7 &middot; Prepositional Phrases</h4><span class="plan-uspan">Weeks 32 to 35</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-1</span><span>Prepositional Phrases</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-2</span><span>Pronouns After Prepositions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-3</span><span>Adjective Phrases</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-4</span><span>Adverb Phrases</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-5</span><span>Placing Phrases Correctly</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-6</span><span>Revising Strategies: Writing with Prepositional Phrases</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-7</span><span>Choosing Correct Prepositions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-8</span><span>Revising Strategies: Idioms</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-9</span><span>Unit 7 Checkup</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-E">E</span><h4>Unit 8 &middot; Complex Sentences</h4><span class="plan-uspan">Week 36</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-1</span><span>Clauses</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-2</span><span>Compound and Complex Sentences</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-3</span><span>Revising Strategies: Forming Complex and Compound-Complex Sentences</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-4</span><span>Unit 8 Checkup</span></li></ul></article></div>
+    <div class="plan-subject"><h3 class="plan-sh">History <em>10 units</em></h3><article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 1 &middot; Rome, and the Church That Outlived It</h4><span class="plan-uspan">Weeks 1 to 4</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-built"></i><span class="plan-ull">1-1</span><span>From Republic to Empire</span></li>
+          <li class="plan-ul"><i class="plan-pip p-built"></i><span class="plan-ull">1-2</span><span>Roman Government and Citizenship</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">1-3</span><span>Roads, Bridges, and the Roman Army</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">1-4</span><span>Conquest, Provinces, and City Life</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">1-5</span><span>Class, Slavery, and Daily Life in Rome</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">1-6</span><span>Judea Under Roman Rule</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">1-7</span><span>Jesus and the First Christians</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">1-8</span><span>Paul, Persecution, and a Church That Spread</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">1-9</span><span>Crisis, Reform, and the Fall of the West</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">1-10</span><span>Unit 1 Review: Rome and the Early Church</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 2 &middot; The East Endures, and Islam Rises</h4><span class="plan-uspan">Weeks 5 to 8</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-1</span><span>Constantinople, and the Empire That Did Not Fall</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-2</span><span>Justinian and the Law We Still Use</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-3</span><span>One Church Becomes Two</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-4</span><span>The Rise of Islam</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-5</span><span>Trade, Learning, and the Islamic Golden Age</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-6</span><span>Contact and Conflict Across the Mediterranean</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-7</span><span>Monasteries, Missionaries, and Medieval Faith</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-8</span><span>The Franks and Charlemagne</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-9</span><span>Reading the Map: Europe, North Africa, and Southwest Asia</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">2-10</span><span>Unit 2 Review: The East, Islam, and Early Medieval Europe</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 3 &middot; Life Under Feudalism</h4><span class="plan-uspan">Weeks 9 to 12</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-1</span><span>What Feudalism Actually Was</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-2</span><span>Lords, Vassals, and the Oath</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-3</span><span>The Manor, the Peasant, and the Plough</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-4</span><span>Castles, Knights, and How Wars Were Fought</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-5</span><span>The Power of the Medieval Church</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-6</span><span>Towns, Guilds, and the Roads Between Them</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-7</span><span>The Vikings, and the Kingdoms They Made</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-8</span><span>The Norman Conquest</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-9</span><span>Kings, Law, and Magna Carta</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">3-10</span><span>Unit 3 Review: Life Under Feudalism</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 4 &middot; Plague, War, and the End of the Middle Ages</h4><span class="plan-uspan">Weeks 13 to 16</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-1</span><span>Universities and the Life of the Mind</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-2</span><span>Cathedrals, and What They Were Built to Say</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-3</span><span>The Crusades</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-4</span><span>Christians, Muslims, and Jews in Contact</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-5</span><span>The Mongols, and the Roads They Opened</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-6</span><span>The Black Death</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-7</span><span>Revolt, Hunger, and a Strained Society</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-8</span><span>The Hundred Years' War</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-9</span><span>Joan of Arc and the Birth of Nations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">4-10</span><span>Unit 4 Review: Plague, War, and Change</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 5 &middot; The Renaissance, and the Church Divided</h4><span class="plan-uspan">Weeks 17 to 20</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-1</span><span>The Italian City-States</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-2</span><span>Humanism and the Return to the Classics</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-3</span><span>Art, Money, and Power</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-4</span><span>Printing, and How Ideas Travelled</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-5</span><span>The Northern Renaissance</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-6</span><span>Martin Luther and the Ninety-Five Theses</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-7</span><span>Calvin, Henry VIII, and the Protestant Movements</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-8</span><span>The Catholic Reformation</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-9</span><span>New Science, New Maps, New Questions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">5-10</span><span>Unit 5 Review: Renaissance and Reformation</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 6 &middot; The Kingdoms of West and Southern Africa</h4><span class="plan-uspan">Weeks 21 to 23</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-1</span><span>Daily Life and Culture in West Africa</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-2</span><span>The Empire of Ghana</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-3</span><span>The Empire of Mali</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-4</span><span>The Coastal Trading Cities</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-5</span><span>Empires Built on Gold and Trade</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-6</span><span>The Kingdom of Kongo</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-7</span><span>Unit 6 Review: The Kingdoms of West and Southern Africa</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 7 &middot; China, Japan, and the Lands Between</h4><span class="plan-uspan">Weeks 24 to 27</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-1</span><span>China Reunited</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-2</span><span>The Tang and the Song: A Golden Age</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">7-1</span><span>China Reunited</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-4</span><span>A Return to Chinese Rule</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-5</span><span>Japan, the Land of the Rising Sun</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-6</span><span>The Growth of Japanese Culture</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-7</span><span>Samurai and Shoguns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-8</span><span>Korea and Southeast Asia</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-9</span><span>Unit 7 Review: China, Japan, and the Lands Between</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 8 &middot; The Civilizations of the Americas</h4><span class="plan-uspan">Weeks 27 to 29</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-1</span><span>Geography and Farming in Mesoamerica</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-2</span><span>The Olmec</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-3</span><span>The Maya</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-4</span><span>The Aztec</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-5</span><span>The Inca</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-6</span><span>Unit 8 Review: The Civilizations of the Americas</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 9 &middot; New Questions, New Worlds, and the Age of Reason</h4><span class="plan-uspan">Weeks 30 to 32</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-1</span><span>Where Scientific Thinking Came From</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">9-1</span><span>Where Scientific Thinking Came From</span></li>
+          <li class="plan-ul"><i class="plan-pip p-paper"></i><span class="plan-ull">9-2</span><span>The Scientific Revolution</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-4</span><span>What Exploration Changed</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-5</span><span>The Enlightenment</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-6</span><span>Democratic Ideas Take Hold</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-7</span><span>Unit 9 Review: New Questions, New Worlds, and the Age of Reason</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-H">H</span><h4>Unit 10 &middot; How We Know What Happened</h4><span class="plan-uspan">Weeks 32 to 34</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-1</span><span>Geography: Reading the World</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-2</span><span>Mapping the World</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-3</span><span>How the Past Is Discovered</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-4</span><span>How the Past Is Interpreted</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-5</span><span>Unit 10 Review: How We Know What Happened</span></li></ul></article></div>
+    <div class="plan-subject"><h3 class="plan-sh">Maths <em>14 units</em></h3><article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 1 &middot; Tools for Problem Solving</h4><span class="plan-uspan">Weeks 1 to 3</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-1</span><span>A Plan for Problem Solving</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-2</span><span>Estimation Strategy: Using Rounding</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-3</span><span>Estimation Strategy: Using Patterns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-4</span><span>Problem-Solving Strategy: Determine Reasonable Answers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-5</span><span>Problem-Solving Strategy: Choose the Method of Computation</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-6</span><span>Problem-Solving Strategy: Classify Information</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-7</span><span>Order of Operations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-8</span><span>Algebra Connection: Variables and Expressions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-9</span><span>Algebra Connection: Powers and Exponents</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-10</span><span>Algebra Connection: Solving Equations Mentally</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 2 &middot; Applications with Decimals</h4><span class="plan-uspan">Weeks 4 to 6</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-1</span><span>Comparing and Ordering Decimals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-2</span><span>Rounding Decimals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-3</span><span>Estimating with Decimals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-4</span><span>Multiplying Decimals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-5</span><span>Mental Math Strategy: Powers of Ten</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-6</span><span>Scientific Notation</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-7</span><span>Dividing Decimals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-8</span><span>Rounding Quotients</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-9</span><span>The Metric System</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-10</span><span>Problem-Solving Strategy: Determine Reasonable Answers</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 3 &middot; Statistics and Data Analysis</h4><span class="plan-uspan">Weeks 7 to 9</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-1</span><span>Problem-Solving Strategy: Use a Graph</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-2</span><span>Problem-Solving Strategy: Make a Table</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-3</span><span>Range and Scales</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-4</span><span>Line Plots</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-5</span><span>Mean, Median, and Mode</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-6</span><span>Stem-and-Leaf Plots</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-7</span><span>Making Predictions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-8</span><span>Misleading Statistics</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 4 &middot; Patterns and Number Sense</h4><span class="plan-uspan">Weeks 9 to 11</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-1</span><span>Divisibility Patterns</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-2</span><span>Prime Factorization</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-3</span><span>Sequences</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-4</span><span>Problem-Solving Strategy: Make a List</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-5</span><span>Greatest Common Factor</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-6</span><span>Fractions in Simplest Form</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-7</span><span>Fractions and Decimals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-8</span><span>Probability Connection: Simple Events</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-9</span><span>Least Common Multiple</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-10</span><span>Comparing and Ordering Fractions and Decimals</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 5 &middot; Applications with Fractions</h4><span class="plan-uspan">Weeks 12 to 15</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-1</span><span>Mixed Numbers and Improper Fractions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-2</span><span>Estimating with Fractions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-3</span><span>Adding and Subtracting Fractions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-4</span><span>Adding and Subtracting Mixed Numbers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-5</span><span>Multiplying Fractions and Mixed Numbers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-6</span><span>Geometry Connection: Perimeter</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-7</span><span>Circles and Circumference</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-8</span><span>Probability Connection: Expected Value</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-9</span><span>Properties</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-10</span><span>Dividing Fractions and Mixed Numbers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-11</span><span>Problem-Solving Strategy: Eliminate Possibilities</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 6 &middot; An Introduction to Algebra</h4><span class="plan-uspan">Weeks 15 to 17</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-1</span><span>Solving Equations Using Inverse Operations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-2</span><span>Solving Addition and Subtraction Equations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-3</span><span>Solving Multiplication and Division Equations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-4</span><span>Writing Algebraic Expressions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-5</span><span>Problem-Solving Strategy: Use an Equation</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-6</span><span>Changing Units in the Customary System</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-7</span><span>Geometry Connection: Area</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 7 &middot; Integers</h4><span class="plan-uspan">Weeks 17 to 20</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-1</span><span>Integers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-2</span><span>Comparing and Ordering Integers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-3</span><span>The Coordinate System</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-4</span><span>Adding Integers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-5</span><span>Subtracting Integers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-6</span><span>Problem-Solving Strategy: Find a Pattern</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-7</span><span>Multiplying Integers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-8</span><span>Dividing Integers</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-9</span><span>Algebra Connection: Solving Equations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-10</span><span>Integers as Exponents</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 8 &middot; Investigations in Geometry</h4><span class="plan-uspan">Weeks 20 to 22</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-1</span><span>Angles</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-2</span><span>Polygons</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-3</span><span>Triangles and Quadrilaterals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-4</span><span>Congruent Triangles</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-5</span><span>Problem-Solving Strategy: Use Logical Reasoning</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-6</span><span>Tessellations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-7</span><span>Art Connection: Translations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-8</span><span>Art Connection: Reflections</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 9 &middot; Area</h4><span class="plan-uspan">Weeks 22 to 25</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-1</span><span>Problem-Solving Strategy: Guess and Check</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-2</span><span>Squares and Square Roots</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-3</span><span>Estimating Square Roots</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-4</span><span>The Pythagorean Theorem</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-5</span><span>Using the Pythagorean Theorem</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-6</span><span>Area of Irregular Figures</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-7</span><span>Area of Triangles and Trapezoids</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-8</span><span>Area of Circles</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-9</span><span>Area Models and Probability</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 10 &middot; Surface Area and Volume</h4><span class="plan-uspan">Weeks 25 to 27</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-1</span><span>Drawing Three-Dimensional Figures</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-2</span><span>Problem-Solving Strategy: Make a Model</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-3</span><span>Surface Area of Prisms</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-4</span><span>Surface Area of Cylinders</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-5</span><span>Volume of Prisms</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-6</span><span>Volume of Cylinders</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-7</span><span>Problem-Solving Strategy: Use a Formula</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 11 &middot; Ratio, Proportion, and Percent</h4><span class="plan-uspan">Weeks 27 to 30</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-1</span><span>Ratios</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-2</span><span>Rates</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-3</span><span>Proportions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-4</span><span>Geometry Connection: Similar Polygons</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-5</span><span>Application: Scale Drawings</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-6</span><span>Problem-Solving Strategy: Draw a Diagram</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-7</span><span>Percent</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-8</span><span>Percents and Fractions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-9</span><span>Percents and Decimals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-10</span><span>Percents Greater Than 100% and Percents Less Than 1%</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 12 &middot; Applications with Percent</h4><span class="plan-uspan">Weeks 30 to 32</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-1</span><span>Percent of a Number</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-2</span><span>Problem-Solving Strategy: Solve a Simpler Problem</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-3</span><span>Percent and Estimation</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-4</span><span>The Percent Proportion</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-5</span><span>Algebra Connection: The Percent Equation</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-6</span><span>Statistics Connection: Circle Graphs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-7</span><span>Percent of Change</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-8</span><span>Discount and Sales Tax</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-9</span><span>Simple Interest</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 13 &middot; Discrete Math and Probability</h4><span class="plan-uspan">Weeks 33 to 35</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-1</span><span>Tree Diagrams</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-2</span><span>Counting Using Multiplication</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-3</span><span>Theoretical and Experimental Probability</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-4</span><span>Problem-Solving Strategy: Act It Out</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-5</span><span>Statistics Connection: Using Statistics to Predict</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-6</span><span>Probability of Two Events</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-7</span><span>Permutations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-8</span><span>Combinations</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-M">M</span><h4>Unit 14 &middot; Functions and Graphs</h4><span class="plan-uspan">Weeks 35 to 36</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-1</span><span>Problem-Solving Strategy: Work Backward</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-2</span><span>Solving Two-Step Equations</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-3</span><span>Equations with Two Variables</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-4</span><span>Graphing Equations with Two Variables</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-5</span><span>Functions</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-6</span><span>Geometry Connection: Graphing Transformations</span></li></ul></article></div>
+    <div class="plan-subject"><h3 class="plan-sh">Science <em>28 units</em></h3><article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 1 &middot; What Life Is, and How We Study It</h4><span class="plan-uspan">Weeks 1 to 2</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-built"></i><span class="plan-ull">1-1</span><span>What Makes Something Alive</span></li>
+          <li class="plan-ul"><i class="plan-pip p-built"></i><span class="plan-ull">1-2</span><span>Life Only Comes From Life</span></li>
+          <li class="plan-ul"><i class="plan-pip p-built"></i><span class="plan-ull">1-3</span><span>How We Know What We Know</span></li>
+          <li class="plan-ul"><i class="plan-pip p-built"></i><span class="plan-ull">1-4</span><span>Science You Use Every Day</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">1-5</span><span>Unit 1 Review: What Life Is, and How We Study It</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 2 &middot; Inside the Cell</h4><span class="plan-uspan">Weeks 2 to 3</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-1</span><span>Cells: The Building Blocks of Life</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-2</span><span>Inside a Cell, Part by Part</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-3</span><span>From Cells to Tissues to Organs</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-4</span><span>Organ Transplants, and the Questions They Raise</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">2-5</span><span>Unit 2 Review: Inside the Cell</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 3 &middot; How Cells Work</h4><span class="plan-uspan">Weeks 3 to 4</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-1</span><span>What Living Things Are Made Of</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-2</span><span>How Things Get In and Out of a Cell</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-3</span><span>Where a Cell Gets Its Energy</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-4</span><span>What We Throw Away, and Where It Goes</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">3-5</span><span>Unit 3 Review: How Cells Work</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 4 &middot; How Cells Make More Cells</h4><span class="plan-uspan">Weeks 5 to 6</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-1</span><span>How a Cell Grows and Divides</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-2</span><span>Two Parents, and How Traits Combine</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-3</span><span>DNA: The Instructions Inside</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-4</span><span>Engineering Living Things, and Where the Line Is</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">4-5</span><span>Unit 4 Review: How Cells Make More Cells</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 5 &middot; How Traits Pass Down</h4><span class="plan-uspan">Weeks 6 to 7</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-1</span><span>Why You Look Like Your Parents</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-2</span><span>What We Learned After Mendel</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-3</span><span>Traits, Disorders, and Human Genetics</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-4</span><span>Mapping the Human Genome</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">5-5</span><span>Unit 5 Review: How Traits Pass Down</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 6 &middot; Origins: Evolution and Creation, Side by Side</h4><span class="plan-uspan">Weeks 7 to 8</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-1</span><span>What Evolution Claims, and What It Rests On</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-2</span><span>The Evidence, Examined Honestly</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-3</span><span>Extinction, and Caring for What Remains</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-4</span><span>Human Origins: Two Accounts, Side by Side</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">6-5</span><span>Unit 6 Review: Origins: Evolution and Creation, Side by Side</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 7 &middot; Sorting and Naming Living Things</h4><span class="plan-uspan">Weeks 8 to 9</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-1</span><span>Why We Sort Living Things</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-2</span><span>How Scientists Classify Today</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-3</span><span>The Rain Forest, and What Is Being Lost</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-4</span><span>Identifying an Organism Yourself</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">7-5</span><span>Unit 7 Review: Sorting and Naming Living Things</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 8 &middot; The Smallest Living Things</h4><span class="plan-uspan">Weeks 10 to 11</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-1</span><span>Viruses: Alive, or Not?</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-2</span><span>What It Costs to Cure a Disease</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-3</span><span>Bacteria, the Kingdom Monera</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-4</span><span>The Bacteria You Live With Every Day</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">8-5</span><span>Unit 8 Review: The Smallest Living Things</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 9 &middot; Protists and Fungi</h4><span class="plan-uspan">Weeks 11 to 12</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-1</span><span>Protists: The Odd Ones Out</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-2</span><span>Fungi, and What They Break Down</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-3</span><span>Why We Could Not Live Without Fungi</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">9-4</span><span>Unit 9 Review: Protists and Fungi</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 10 &middot; Meet the Plants</h4><span class="plan-uspan">Weeks 12 to 13</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-1</span><span>What Makes a Plant a Plant</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-2</span><span>Mosses, Ferns, and Plants Without Seeds</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-3</span><span>Peat, Fuel, and Using a Bog</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">10-4</span><span>Unit 10 Review: Meet the Plants</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 11 &middot; Seeds, Roots, and Flowers</h4><span class="plan-uspan">Weeks 13 to 14</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-1</span><span>Seeds, and Why They Changed Everything</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-2</span><span>Roots, Stems, and Leaves</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-3</span><span>How Seed Plants Reproduce</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-4</span><span>Acid Rain, and What It Does to Plants</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">11-5</span><span>Unit 11 Review: Seeds, Roots, and Flowers</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 12 &middot; How Plants Live and Grow</h4><span class="plan-uspan">Weeks 14 to 15</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-1</span><span>Photosynthesis and Respiration</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-2</span><span>How a Plant Responds to the World</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-3</span><span>Plants Living With Other Living Things</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-4</span><span>The Tropics, and the Plants We Have Not Studied Yet</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">12-5</span><span>Unit 12 Review: How Plants Live and Grow</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 13 &middot; Meet the Animals</h4><span class="plan-uspan">Weeks 15 to 16</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-1</span><span>What Makes an Animal an Animal</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-2</span><span>Using Animals in Experiments</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-3</span><span>Sponges, Jellyfish, and the Simplest Animals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-4</span><span>The Simple Worms</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">13-5</span><span>Unit 13 Review: Meet the Animals</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 14 &middot; Animals Without Backbones</h4><span class="plan-uspan">Weeks 17 to 18</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-1</span><span>Mollusks</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-2</span><span>Segmented Worms</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-3</span><span>Arthropods: The Largest Group of All</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-4</span><span>Pesticides, and What Else They Kill</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-5</span><span>Sea Stars and Their Relatives</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">14-6</span><span>Unit 14 Review: Animals Without Backbones</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 15 &middot; Fish, Frogs, and Reptiles</h4><span class="plan-uspan">Weeks 18 to 19</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">15-1</span><span>Fish</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">15-2</span><span>Amphibians</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">15-3</span><span>Why Frogs Are Disappearing</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">15-4</span><span>Reptiles</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">15-5</span><span>Unit 15 Review: Fish, Frogs, and Reptiles</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 16 &middot; Birds and Mammals</h4><span class="plan-uspan">Week 20</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">16-1</span><span>Birds</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">16-2</span><span>Mammals</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">16-3</span><span>Saving the Manatee</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">16-4</span><span>Unit 16 Review: Birds and Mammals</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 17 &middot; Why Animals Do What They Do</h4><span class="plan-uspan">Week 21</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">17-1</span><span>Instinct and Learned Behaviour</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">17-2</span><span>How Animals Adapt Their Behaviour</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">17-3</span><span>Returning a Wild Animal to the Wild</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">17-4</span><span>Unit 17 Review: Why Animals Do What They Do</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 18 &middot; Bones, Muscles, and Skin</h4><span class="plan-uspan">Weeks 22 to 23</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">18-1</span><span>The Skeleton, and What It Does</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">18-2</span><span>Muscles, and How They Pull</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">18-3</span><span>Drugs for Fitness, and What They Cost</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">18-4</span><span>Skin, the Organ You Can See</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">18-5</span><span>Unit 18 Review: Bones, Muscles, and Skin</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 19 &middot; Food and Digestion</h4><span class="plan-uspan">Weeks 23 to 24</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">19-1</span><span>What Food Is Actually Made Of</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">19-2</span><span>The Journey Food Takes</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">19-3</span><span>Eating Disorders, and Getting Help</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">19-4</span><span>Unit 19 Review: Food and Digestion</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 20 &middot; The Heart and the Blood</h4><span class="plan-uspan">Weeks 24 to 25</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">20-1</span><span>The Heart and How Blood Moves</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">20-2</span><span>What Blood Is Made Of</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">20-3</span><span>Giving Blood, and Receiving It</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">20-4</span><span>The Lymphatic System</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">20-5</span><span>Unit 20 Review: The Heart and the Blood</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 21 &middot; Breathing, and Cleaning the Blood</h4><span class="plan-uspan">Weeks 25 to 26</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">21-1</span><span>Breathing, and What the Lungs Do</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">21-2</span><span>Air That Is Not Safe to Breathe</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">21-3</span><span>The Kidneys, and Cleaning the Blood</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">21-4</span><span>Unit 21 Review: Breathing, and Cleaning the Blood</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 22 &middot; The Brain, the Nerves, and the Senses</h4><span class="plan-uspan">Weeks 26 to 27</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">22-1</span><span>The Brain, the Spinal Cord, and the Nerves</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">22-2</span><span>The Five Senses</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">22-3</span><span>Alzheimer's Disease</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">22-4</span><span>Hormones, and the Endocrine System</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">22-5</span><span>Unit 22 Review: The Brain, the Nerves, and the Senses</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 23 &middot; How People Are Made, and How They Grow</h4><span class="plan-uspan">Weeks 28 to 29</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">23-1</span><span>How Life Begins</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">23-2</span><span>From Conception to Birth</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">23-3</span><span>Growing Up, and Growing Older</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">23-4</span><span>Your Body, and Treating It as a Gift</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">23-5</span><span>Unit 23 Review: How People Are Made, and How They Grow</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 24 &middot; Sickness, and How the Body Defends Itself</h4><span class="plan-uspan">Weeks 29 to 30</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">24-1</span><span>What Disease Is, and How It Spreads</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">24-2</span><span>How the Body Fights Back</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">24-3</span><span>Preventing Disease Before It Starts</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">24-4</span><span>Diseases You Cannot Catch</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">24-5</span><span>Unit 24 Review: Sickness, and How the Body Defends Itself</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 25 &middot; Drugs, Medicine, and the Body</h4><span class="plan-uspan">Weeks 30 to 31</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">25-1</span><span>Medicine, and How Drugs Affect the Body</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">25-2</span><span>Drugs and the Society Around Them</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">25-3</span><span>Illegal Drugs, and What They Do</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">25-4</span><span>Unit 25 Review: Drugs, Medicine, and the Body</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 26 &middot; Living Things and Where They Live</h4><span class="plan-uspan">Weeks 31 to 32</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">26-1</span><span>Where a Living Thing Fits</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">26-2</span><span>How Living Things Depend on Each Other</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">26-3</span><span>Sunlight, Water, Soil, and Air</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">26-4</span><span>Fire, and When It Helps</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">26-5</span><span>Unit 26 Review: Living Things and Where They Live</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 27 &middot; The Earth's Biomes</h4><span class="plan-uspan">Weeks 32 to 33</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">27-1</span><span>What Makes One Place Different From Another</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">27-2</span><span>The Land Biomes</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">27-3</span><span>Rivers, Lakes, and Oceans</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">27-4</span><span>Wetlands, and Why They Matter</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">27-5</span><span>Unit 27 Review: The Earth's Biomes</span></li></ul></article>
+      <article class="plan-unit"><div class="plan-uh"><span class="plan-tag t-S">S</span><h4>Unit 28 &middot; Caring for What We Were Given</h4><span class="plan-uspan">Weeks 34 to 35</span></div><ul class="plan-ulist"><li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">28-1</span><span>The Resources We Depend On</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">28-2</span><span>Conservation and Protection</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">28-3</span><span>Responsibility for What Comes Next</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">28-4</span><span>The Earth in 2030</span></li>
+          <li class="plan-ul"><i class="plan-pip p-todo"></i><span class="plan-ull">28-5</span><span>Unit 28 Review: Caring for What We Were Given</span></li></ul></article></div>
+    </div>
   </div></div>
+<script>
+(function(){
+  var btns = document.querySelectorAll(".plan-vb");
+  var views = {
+    weeks: document.getElementById("plan-view-weeks"),
+    units: document.getElementById("plan-view-units")
+  };
+  if (!btns.length || !views.weeks || !views.units) return;
+  btns.forEach(function(b){
+    b.addEventListener("click", function(){
+      var want = b.dataset.view;
+      btns.forEach(function(o){ o.setAttribute("aria-pressed", String(o === b)); });
+      views.weeks.hidden = (want !== "weeks");
+      views.units.hidden = (want !== "units");
+    });
+  });
+})();
+</script>
 
 <footer><div class="wrap">
   <div class="fgrid">
