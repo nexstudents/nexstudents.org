@@ -269,15 +269,39 @@ h1{
    and English panels - Paul, 2026-08-30. */
 .ground{border:1px solid var(--rule);border-radius:12px;margin:20px 0 4px;
   background:var(--surface);overflow:hidden}
+/* 🚨 THE TITLE IS CENTRED, and the chevron must not push it off centre.
+   Paul, 2026-09-04: "just call this box and center the title simply Teacher
+   Notes." A flex row with the arrow on margin-left:auto centres the text only
+   in the space LEFT OVER, which is not centred at all. So the row is a
+   1fr auto 1fr grid: an empty cell, the title, the chevron. The title sits on
+   the true centre line whatever the arrow does.
+   ⚠️ This is the same trap recorded in CLAUDE.md under the five ways to get
+   centring wrong: centring a GROUP is not centring the middle item. */
 .ground summary{cursor:pointer;padding:14px 17px;font-weight:700;list-style:none;
-  display:flex;align-items:center;gap:10px;color:var(--ink)}
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  text-align:center;color:var(--ink)}
+.ground summary::before{content:""}
 .ground summary::-webkit-details-marker{display:none}
-.ground summary::after{content:"\25B8";margin-left:auto;color:var(--ink-faint);
+.ground summary::after{content:"\25B8";justify-self:end;color:var(--ink-faint);
   transition:transform .18s;display:inline-block}
 .ground[open] summary::after{transform:rotate(90deg)}
 .ground summary:hover{color:var(--verdigris)}
 .ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
   color:var(--ink-faint);font-weight:600}
+/* The score the parent sees first, at the top of the teacher box. */
+.gscore{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:11px 0 13px;margin-bottom:4px;border-bottom:1px solid var(--rule)}
+.gscore-line{margin:0;font-weight:600;font-size:14.5px;color:var(--ink)}
+.gscore-line.good{color:#1c7a4a}
+.gscore-line.part{color:var(--ink-soft, var(--ink))}
+.gscore-line.bad{color:#c0392b}
+.gscore .btn{margin-left:auto;font-size:12.5px;padding:6px 12px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .gscore-line.good{color:#5fcf95}
+  :root:not([data-theme="light"]) .gscore-line.bad{color:#ff7a6b}
+}
+:root[data-theme="dark"] .gscore-line.good{color:#5fcf95}
+:root[data-theme="dark"] .gscore-line.bad{color:#ff7a6b}
 .ground .gbody{padding:2px 17px 18px;border-top:1px solid var(--rule);
   color:var(--ink-soft);font-size:15.5px}
 .ground h3{margin:17px 0 5px;font-size:.79rem;letter-spacing:.09em;
@@ -1125,7 +1149,14 @@ body.player-hidden .scrub{margin:0}
       <span class="dayprog" id="prog1">0 of 0</span>
     </div>
     <div class="daybar"><i id="bar1"></i></div>
-    <p class="section-note">Four questions about the story you just read. Pick your answer straight off, or press Find it in the story if you would rather hunt for the sentence first.</p>
+    <!-- 🚨 THE COUNT IS FILLED IN BY SCRIPT, NEVER TYPED. This line read "Four
+         questions about the story you just read" on every lesson, hardcoded, and
+         Kinds of Sentences has TEN. Same class of stale number as the deks and
+         blurbs caught on 2026-09-03: a count written in prose goes wrong the
+         moment the data changes and nothing complains.
+         ⚠️ The fallback text below carries NO number, so if the script never
+         runs the sentence is still true. -->
+    <p class="section-note" id="day1note">Questions about the story you just read. Pick your answer straight off, or press Find it in the story if you would rather hunt for the sentence first.</p>
     <div id="questions1"></div>
   </div>
 
@@ -2758,6 +2789,24 @@ var foundFirstTry = 0, huntTotal = 0;
 var qEl1 = document.getElementById("questions1");
 var qEl2 = document.getElementById("questions2");
 
+/* 🚨 THE QUESTION COUNT IS DERIVED. The note above questions used to say "Four
+   questions" on every lesson regardless - true of the science and history
+   lessons, wrong by six on Kinds of Sentences. Written from the data now, so it
+   cannot go stale. Spelled out to ten because a sentence reads better that way,
+   then digits beyond it. */
+(function day1Note(){
+  var el = document.getElementById("day1note");
+  if (!el) return;
+  var n = QUESTIONS.filter(function(q){ return q.day === 1; }).length;
+  if (!n) return;
+  var words = ["", "One", "Two", "Three", "Four", "Five",
+               "Six", "Seven", "Eight", "Nine", "Ten"];
+  var count = n <= 10 ? words[n] : String(n);
+  el.textContent = count + " question" + (n === 1 ? "" : "s") +
+    " about the story you just read. Pick your answer straight off, or press " +
+    "Find it in the story if you would rather hunt for the sentence first.";
+})();
+
 QUESTIONS.forEach(function(Q, qi){
   if (Q.find) huntTotal++;
   var card = document.createElement("div");
@@ -2949,6 +2998,9 @@ function dayStats(day){
 }
 
 function paintProgress(){
+  /* The teacher line follows every answer and every reset. One call site, so it
+     cannot fall out of step with the progress bars. */
+  paintTeacherScore();
   [1, 2].forEach(function(day){
     var st = dayStats(day);
     var label = document.getElementById("prog" + day);
@@ -3025,6 +3077,50 @@ function paintStatus(){
     "Retaking keeps your best score.</small>";
   box.classList.add("show");
 }
+
+/* ── THE TEACHER'S SCORE LINE ──────────────────────────────────────────────
+   🚨 IT REPORTS, IT DOES NOT MARK. The percentage is computed from `answered`
+   against the dealt `right` for every question in the lesson, both days
+   together, because a parent wants one number for the sitting.
+
+   ⚠️ THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE. Nine right out
+   of ten answered is not 90% if the lesson has fourteen - it is a lesson still
+   in progress, and the line says so rather than flattering the number.
+   ⚠️ Locking is not done here. answer() already refuses a second attempt at an
+   answered question; this only shows what that lock has produced. */
+function paintTeacherScore(){
+  var line = document.getElementById("gscoreline");
+  var btn = document.getElementById("greset");
+  if (!line) return;
+  var total = QUESTIONS.length;
+  var done = 0, right = 0;
+  QUESTIONS.forEach(function(Q, i){
+    if (answered[i] === undefined) return;
+    done++;
+    if (answered[i] === Q.right) right++;
+  });
+  if (btn) btn.hidden = (done === 0);
+  if (!done){ line.textContent = "Not started yet."; line.className = "gscore-line"; return; }
+  var pct = Math.round((right / total) * 100);
+  if (done < total){
+    line.textContent = right + " right out of " + done + " answered, " +
+      (total - done) + " still to do.";
+    line.className = "gscore-line part";
+  } else {
+    line.textContent = "Score " + pct + "%  ·  " + right + " out of " + total + " correct.";
+    line.className = "gscore-line " + (pct >= 80 ? "good" : pct >= 60 ? "part" : "bad");
+  }
+}
+
+/* The reset the teacher owns. Same wipe as the retake button at the foot of the
+   lesson, so there is one behaviour and not two that drift. */
+function resetAttempt(){
+  document.getElementById("retake").click();
+}
+(function wireTeacherReset(){
+  var btn = document.getElementById("greset");
+  if (btn) btn.addEventListener("click", resetAttempt);
+})();
 
 document.getElementById("retake").addEventListener("click", function(){
   // Wipe the attempt, keep the record. Nothing about the saved score changes.

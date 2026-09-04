@@ -328,9 +328,32 @@ function groundMarkup(L) {
       ? "<dl>" + L.words.map(([t, d]) => "<dt>" + t + "</dt><dd>" + d + "</dd>").join("") + "</dl>"
       : s.p.map((t) => "<p>" + t + "</p>").join("\n      "))
   ).join("\n");
+  /* 🚨 NO "FOR THE TEACHER" EYEBROW. Paul, 2026-09-04: "the teahcer note For the
+     teacher in front of it looks really wrong just call this box and center the
+     title simply Teacher Notes."
+     The eyebrow said the same thing the title says, in smaller capitals, on the
+     same line - two labels for one box. The box is titled and centred now. */
+  /* 🚨 THE SCORE AND THE RESET LIVE IN THE TEACHER BOX. Paul, 2026-09-04:
+     "the teacher notes shows the percentage score at the top and if the teacher
+     can reset the test for the student to try again otherwise the answers are
+     locked to that percentage ... this would allow the teacher / parent to see
+     the score directly at the top."
+
+     Both halves matter. The score belongs where the PARENT looks, not buried at
+     the foot of the questions, and the reset has to be somewhere a student will
+     not casually hit - a lesson he can re-roll at will records nothing.
+     ⚠️ The lock itself already existed: answer() returns early once a question
+     is answered. This surfaces the state rather than creating it.
+     ⚠️ Filled in by script; the fallback text carries no number so it is never
+     wrong before the script runs. */
+  const scoreBlock =
+    '      <div class="gscore" id="gscore">\n' +
+    '        <p class="gscore-line" id="gscoreline">Not started yet.</p>\n' +
+    '        <button class="btn ghost" type="button" id="greset" hidden>Reset for another try</button>\n' +
+    "      </div>\n";
   return '<details class="ground">\n' +
-    '    <summary><span class="who">For the teacher</span> Teacher Notes</summary>\n' +
-    '    <div class="gbody">\n' + body + "\n    </div>\n  </details>";
+    '    <summary>Teacher Notes</summary>\n' +
+    '    <div class="gbody">\n' + scoreBlock + body + "\n    </div>\n  </details>";
 }
 
 function serialise(L) {
