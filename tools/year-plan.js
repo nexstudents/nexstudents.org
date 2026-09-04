@@ -94,8 +94,25 @@ const flatten = {
     label: u.n + "-" + (idx + 1), title: typeof l === "string" ? l : l.title,
     state: (typeof l === "object" && l.slug) ? "built" : "todo",
   }))),
+  /* 🚨 THE END-OF-CHAPTER REVIEW IS SCHEDULED. THE HALFWAY CHECK IS NOT.
+     Paul, 2026-09-04: "I still want to make it easy on him. but I also want him
+     to have some kind of a review. I want to make sure that all of the stuff
+     sticks."
+
+     Those are two different jobs and only one of them needs a day:
+       Unit Review   proves he learned THIS chapter. A test. Scheduled - 14 of them.
+       Halfway Check a mid-chapter pulse. Kept in the data, NOT scheduled, so a
+                     parent can reach for it when a chapter is going badly.
+       Mixed Review  what actually makes material stick, because it returns to
+                     EARLIER lessons after he has moved on. It belongs INSIDE a
+                     lesson, costs no extra day, and is ROADMAP 36's missing part.
+
+     ⚠️ Adding the 14 reviews takes the year from 429 to 443, 3.04 -> 3.14 a day.
+     That was a deliberate call, not a tidy-up. Do not quietly add the 14 halfway
+     checks as well without re-running the deal and re-checking the fit. */
   Maths: () => COURSE2.units.flatMap((u) => u.items
-    .filter((i) => i.kind === "lesson")
+    .filter((i) => i.kind === "lesson" ||
+                   (i.kind === "review" && !/^Halfway Check/.test(i.title)))
     .map((i) => ({
       subject: "Maths", unit: u.n, unitTitle: u.title,
       label: i.label, title: i.title,
