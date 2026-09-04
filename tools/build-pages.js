@@ -1207,8 +1207,11 @@ const pagerScript = (units) => `<script>
     [].forEach.call(wrap.querySelectorAll(".unitdot"), function(b){
       b.setAttribute("aria-current", b.dataset.go === n ? "true" : "false");
     });
-    /* 🚨 "UNIT 5 OF 4". This read `n + " of " + panels.length`, which mixes two
-       different numbers: `n` is the unit's number IN THE BOOK, panels.length is how
+    /* 🚨 "UNIT 5 OF 4". NO BACKTICKS IN THIS COMMENT - the pager script is inside a
+       JS template literal and a backtick here closes the string, which is how this
+       very fix failed its first build.
+       The label mixed two different numbers: n is the unit's number IN THE BOOK, and
+       panels.length is how
        many units THIS SHELF happens to show. Leif Unit 1 is Rome and sits on grade 6,
        so grade 7 shows units 2-5 - four panels - and unit 5 rendered as "Unit 5 of 4".
        Paul saw it on the 7th grade history shelf, 2026-09-03.
