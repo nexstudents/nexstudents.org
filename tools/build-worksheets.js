@@ -82,7 +82,7 @@ function sheetHead(s) {
   const back = backTarget(s);
   return [
     '<link rel="canonical" href="https://nexstudents.org' + url + '">',
-    socialTags({ path: url, title: s.title + " — NexStudents", desc: s.blurb, type: "article",
+    socialTags({ path: url, title: s.title + " | NexStudents", desc: s.blurb, type: "article",
                  image: s.thumb ? "https://nexstudents.org" + url + "thumb.jpg" : null }),
     breadcrumbLd([{ name: "Home", path: "/" }, { name: back.label, path: back.href }], s.title),
   ].join("\n");
@@ -135,7 +135,7 @@ function bundleHtml(s) {
 ${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
-<title>${s.title} — NexStudents</title>
+<title>${s.title} | NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
@@ -230,7 +230,7 @@ function blankHtml(s) {
 ${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
-<title>${s.title} — NexStudents</title>
+<title>${s.title} | NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
@@ -335,7 +335,7 @@ function flashHtml(s) {
 ${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
-<title>${s.title} — NexStudents</title>
+<title>${s.title} | NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
@@ -446,7 +446,7 @@ function sheetHtml(s) {
 ${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
-<title>${s.title} — NexStudents</title>
+<title>${s.title} | NexStudents</title>
 <meta name="description" content="A printable grade ${s.grade} ${s.subject.toLowerCase()} worksheet. ${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
@@ -545,7 +545,7 @@ function handwritingHtml(s) {
 ${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
-<title>${s.title} — NexStudents</title>
+<title>${s.title} | NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
@@ -645,7 +645,7 @@ function imageHtml(s) {
 ${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
-<title>${s.title} — NexStudents</title>
+<title>${s.title} | NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
@@ -762,7 +762,7 @@ function pdfHtml(s) {
 ${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
-<title>${s.title} — NexStudents</title>
+<title>${s.title} | NexStudents</title>
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">

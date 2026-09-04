@@ -1896,7 +1896,7 @@ const pages = [
      left. It redirects rather than 404s - see REDIRECTS below. */
 
   { dir: "worksheets", active: "w",
-    title: "Worksheets — NexStudents",
+    title: "Worksheets | NexStudents",
     desc: "Every free worksheet and term packet, all grades and subjects, in one place.",
     crumb: "Worksheets", h1: "Every Sheet, in One Place.",
     lead: "Free printables and term packets across English, History, Maths and Science. Filter by grade, by subject, or by whether it costs anything. Answer keys are always included free.",
@@ -1913,7 +1913,7 @@ const pages = [
      title needs to be centered." It is the same centring the legal pages
      use — do not add a second rule for it. */
   { dir: "extras", active: "x", pclass: "termshead",
-    title: "Extras — NexStudents",
+    title: "Extras | NexStudents",
     desc: "A reading log with a built-in timer, plus coding and electives to come.",
     crumb: "Extras", h1: "Extras.",
     lead: "Things that are not one of the four subjects. Pick one.",
@@ -1921,7 +1921,7 @@ const pages = [
 
   /* The reading log itself. Its own page so the Extras shelf can hold cards. */
   { dir: "extras/reading-log", active: "x", pclass: "termshead",
-    title: "Reading Log — NexStudents",
+    title: "Reading Log | NexStudents",
     desc: "Time your reading, write what you read, and keep every session.",
     /* ⚠️ A LINKED CRUMB, WHICH IS THE HOUSE PATTERN — 110 built pages already
        do this. Paul, 2026-09-03, first: "get rid of that extra back button";
@@ -1940,21 +1940,21 @@ const pages = [
     body: readingLogMarkup(), script: readingLogScript() },
 
   { dir: "games", active: "g",
-    title: "Games — NexStudents",
+    title: "Games | NexStudents",
     desc: "Browser games that practise the same skills as the worksheets.",
     crumb: "Games", h1: "Practice that does not feel like a worksheet.",
     lead: "Short browser games built around the same skills the worksheets cover. Nothing to install and nothing to sign up for, and getting one wrong never sends a student back to the start.",
     body: gamesPage() },
 
   { dir: "comics", active: "c",
-    title: "Comics — NexStudents",
+    title: "Comics | NexStudents",
     desc: "The Adventures of Donut Boy: The Hole Wonder, and more to follow.",
     crumb: "Comics", h1: "Comics worth coming back for.",
     lead: "Short strips your student reads right here on the page. Pick a series and read straight through - no download, no account, and no reason to stop at one.",
     body: comicsPage() },
 
   { dir: "subjects", active: "w",
-    title: "Subjects — NexStudents",
+    title: "Subjects | NexStudents",
     desc: "Every subject on NexStudents, with its lessons and worksheets.",
     crumb: "Subjects", h1: "Subjects.",
     lead: "Four core subjects. Each one holds lessons that are worked through on screen and worksheets that get printed. What is built is at the top.",
@@ -1967,21 +1967,21 @@ const pages = [
      LIVE_GRADES in nav.js lists "K" first, so these three pages MUST exist -
      without them the grade picker links at nothing. */
   { dir: "grade-k", active: "gr",
-    title: "Kindergarten — NexStudents",
+    title: "Kindergarten | NexStudents",
     desc: "Free kindergarten printables. Handwriting, letters and early practice.",
     crumb: "Kindergarten", h1: "Kindergarten.",
     lead: "Everything on the kindergarten shelf is free, and stays free. This is where a child meets letters for the first time, and that should not sit behind a price.",
     body: gradeLanding("K") },
 
   { dir: "grade-k/lessons", active: "gr",
-    title: "Kindergarten Lessons — NexStudents",
+    title: "Kindergarten Lessons | NexStudents",
     desc: "Kindergarten lessons worked through on screen.",
     crumb: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Lessons', h1: "Kindergarten Lessons.",
     lead: "Nothing on screen for this year yet. At this age the work belongs on paper with a pencil in hand, so the printables came first.",
     count: gradeSwitch("K", "l"), body: gradeLessons("K") },
 
   { dir: "grade-k/worksheets", active: "gr",
-    title: "Kindergarten Worksheets — NexStudents",
+    title: "Kindergarten Worksheets | NexStudents",
     desc: "Free kindergarten printables, starting with handwriting.",
     crumb: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Worksheets', h1: "Kindergarten Worksheets.",
     lead: "Print these at full size and work one letter at a time. All free.",
@@ -1991,98 +1991,98 @@ const pages = [
      is blank, so it serves any year, and a 3rd grade shelf is where a parent
      looking for spelling practice actually goes. */
   { dir: "grade-3", active: "gr",
-    title: "3rd Grade — NexStudents",
+    title: "3rd Grade | NexStudents",
     desc: "3rd grade worksheets and printables, organised by subject.",
     crumb: "3rd Grade", h1: "3rd Grade.",
     lead: "The 3rd grade shelf is just getting started. What is here now is spelling practice you can use with any word list, week after week.",
     body: gradeLanding(3) },
 
   { dir: "grade-3/lessons", active: "gr",
-    title: "3rd Grade Lessons — NexStudents",
+    title: "3rd Grade Lessons | NexStudents",
     desc: "Every 3rd grade lesson, worked through on screen.",
     crumb: '<a href="/grade-3/">3rd Grade</a> &rsaquo; Lessons', h1: "3rd Grade Lessons.",
     lead: "Nothing on screen for this year yet. The printables came first, because spelling is worked on paper.",
     count: gradeSwitch(3, "l"), body: gradeLessons(3) },
 
   { dir: "grade-3/worksheets", active: "gr",
-    title: "3rd Grade Worksheets — NexStudents",
+    title: "3rd Grade Worksheets | NexStudents",
     desc: "Every 3rd grade printable worksheet.",
     crumb: '<a href="/grade-3/">3rd Grade</a> &rsaquo; Worksheets', h1: "3rd Grade Worksheets.",
     lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
     count: gradeSwitch(3, "w"), body: gradeSheets(3) },
 
   { dir: "grade-6", active: "gr",
-    title: "6th Grade — NexStudents",
+    title: "6th Grade | NexStudents",
     desc: "Every 6th grade lesson and worksheet on NexStudents.",
     crumb: "6th Grade", h1: "6th Grade.",
     lead: "The year before 7th, and the one worth going back to when something is still shaky. Lessons are worked through on screen; worksheets get printed. Pick whichever you need.",
     body: gradeLanding(6) },
 
   { dir: "grade-6/lessons", active: "gr",
-    title: "6th Grade Lessons — NexStudents",
+    title: "6th Grade Lessons | NexStudents",
     desc: "Every 6th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-6/">6th Grade</a> &rsaquo; Lessons', h1: "6th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
     count: gradeSwitch(6, "l"), body: gradeLessons(6) },
 
   { dir: "grade-6/worksheets", active: "gr",
-    title: "6th Grade Worksheets — NexStudents",
+    title: "6th Grade Worksheets | NexStudents",
     desc: "Every 6th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-6/">6th Grade</a> &rsaquo; Worksheets', h1: "6th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
     count: gradeSwitch(6, "w"), body: gradeSheets(6) },
 
   { dir: "grade-7", active: "gr",
-    title: "7th Grade — NexStudents",
+    title: "7th Grade | NexStudents",
     desc: "Every 7th grade lesson and worksheet on NexStudents.",
     crumb: "7th Grade", h1: "7th Grade.",
     lead: "The year being taught in our own house right now, which is why it went up first. Lessons are worked through on screen; worksheets get printed. Pick whichever you need.",
     body: gradeLanding(7) },
 
   { dir: "grade-7/lessons", active: "gr",
-    title: "7th Grade Lessons — NexStudents",
+    title: "7th Grade Lessons | NexStudents",
     desc: "Every 7th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Lessons', h1: "7th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
     count: gradeSwitch(7, "l"), body: gradeLessons(7) },
 
   { dir: "grade-7/worksheets", active: "gr",
-    title: "7th Grade Worksheets — NexStudents",
+    title: "7th Grade Worksheets | NexStudents",
     desc: "Every 7th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Worksheets', h1: "7th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
     count: gradeSwitch(7, "w"), body: gradeSheets(7) },
 
   { dir: "grade-8", active: "gr",
-    title: "8th Grade — NexStudents",
+    title: "8th Grade | NexStudents",
     desc: "Every 8th grade lesson and worksheet on NexStudents.",
     crumb: "8th Grade", h1: "8th Grade.",
     lead: "American history, the course usually taught the year before high school. Lessons are worked through on screen; worksheets get printed. Pick whichever you need.",
     body: gradeLanding(8) },
 
   { dir: "grade-8/lessons", active: "gr",
-    title: "8th Grade Lessons — NexStudents",
+    title: "8th Grade Lessons | NexStudents",
     desc: "Every 8th grade lesson, worked through on screen.",
     crumb: '<a href="/grade-8/">8th Grade</a> &rsaquo; Lessons', h1: "8th Grade Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
     count: gradeSwitch(8, "l"), body: gradeLessons(8) },
 
   { dir: "grade-8/worksheets", active: "gr",
-    title: "8th Grade Worksheets — NexStudents",
+    title: "8th Grade Worksheets | NexStudents",
     desc: "Every 8th grade printable worksheet and term packet.",
     crumb: '<a href="/grade-8/">8th Grade</a> &rsaquo; Worksheets', h1: "8th Grade Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
     count: gradeSwitch(8, "w"), body: gradeSheets(8) },
 
   { dir: "english", active: "w",
-    title: "English — NexStudents",
+    title: "English | NexStudents",
     desc: "Spelling, reading and writing worksheets you print and work on paper.",
     crumb: "English", h1: "English.",
     lead: "Spelling, book reports, comprehension and reading lists worth actually reading. The spelling test is blank on purpose, so it works with whatever list you are teaching from.",
     body: subjectLanding("English") },
 
   { dir: "english/lessons", active: "w",
-    title: "English Lessons — NexStudents",
+    title: "English Lessons | NexStudents",
     desc: "English lessons worked through on screen.",
     crumb: '<a href="/english/">English</a> &rsaquo; Lessons', h1: "English Lessons.",
     /* ⚠️ THIS SAID "Nothing on screen for English yet" WHILE THE COUNT UNDERNEATH IT SAID
@@ -2096,7 +2096,7 @@ const pages = [
     count: countLabel(bySubject("English").length, "lesson", "lessons") + " available", body: subjectLessons("English") },
 
   { dir: "english/worksheets", active: "w",
-    title: "English Worksheets — NexStudents",
+    title: "English Worksheets | NexStudents",
     desc: "Printable English worksheets, including a blank weekly spelling test.",
     crumb: '<a href="/english/">English</a> &rsaquo; Worksheets', h1: "English Worksheets.",
     lead: "Printables for working on paper. A blank sheet is one you print once a week and fill with your own words.",
@@ -2107,14 +2107,14 @@ const pages = [
      flipping `live` in nav.js is not enough on its own, and the link checker
      is what catches the difference. */
   { dir: "science", active: "w",
-    title: "Science — NexStudents",
+    title: "Science | NexStudents",
     desc: "Science worksheets and lessons you can work through at home.",
     crumb: "Science", h1: "Science.",
     lead: "Forces, motion and how things actually work, written so a student can follow it without a lab full of equipment. Worksheets get printed; the answer key is always included.",
     body: subjectLanding("Science") },
 
   { dir: "science/lessons", active: "w",
-    title: "Science Lessons — NexStudents",
+    title: "Science Lessons | NexStudents",
     desc: "Science lessons worked through on screen.",
     crumb: '<a href="/science/">Science</a> &rsaquo; Lessons', h1: "Science Lessons.",
     /* ⚠️ Same fault as the English lead: this said "Nothing on screen for science yet" with
@@ -2124,14 +2124,14 @@ const pages = [
     count: countLabel(bySubject("Science").length, "lesson", "lessons") + " available", body: subjectLessons("Science") },
 
   { dir: "science/worksheets", active: "w",
-    title: "Science Worksheets — NexStudents",
+    title: "Science Worksheets | NexStudents",
     desc: "Printable science worksheets with answer keys included.",
     crumb: '<a href="/science/">Science</a> &rsaquo; Worksheets', h1: "Science Worksheets.",
     lead: "Printables for working on paper. Read the passage, then answer &mdash; no equipment needed. Answer keys are always included free.",
     count: countLabel(sheetsBySubject("Science").length, "sheet", "sheets") + " available", body: subjectSheets("Science") },
 
   { dir: "history", active: "w",
-    title: "History — NexStudents",
+    title: "History | NexStudents",
     desc: "History lessons and worksheets, worked through on screen.",
     crumb: "History", h1: "History.",
     /* 🚨 CLAIM REMOVED, Paul 2026-09-03: "it says American and Biblical history taught
@@ -2146,35 +2146,35 @@ const pages = [
     body: subjectLanding("History") },
 
   { dir: "history/lessons", active: "w",
-    title: "History Lessons — NexStudents",
+    title: "History Lessons | NexStudents",
     desc: "Every history lesson on NexStudents, worked through on screen.",
     crumb: '<a href="/history/">History</a> &rsaquo; Lessons', h1: "History Lessons.",
     lead: "Each one opens straight away. The reading is read aloud with the words highlighted, and the questions send your student back into the text to find the answer rather than guess it.",
     count: countLabel(bySubject("History").length, "lesson", "lessons") + " available", body: subjectLessons("History") },
 
   { dir: "history/worksheets", active: "w",
-    title: "History Worksheets — NexStudents",
+    title: "History Worksheets | NexStudents",
     desc: "Printable history worksheets and term packets.",
     crumb: '<a href="/history/">History</a> &rsaquo; Worksheets', h1: "History Worksheets.",
     lead: "Printables and term packets for working on paper. Answer keys are always included free.",
     count: countLabel(sheetsBySubject("History").length, "sheet", "sheets") + " available", body: subjectSheets("History") },
 
   { dir: "maths", active: "w",
-    title: "Maths — NexStudents",
+    title: "Maths | NexStudents",
     desc: "Maths lessons and worksheets, worked through on screen.",
     crumb: "Maths", h1: "Maths.",
     lead: "Practice that teaches, without punishing a student for getting things wrong. Lessons are worked through on screen with the explanation read aloud; worksheets get printed.",
     body: subjectLanding("Maths") },
 
   { dir: "maths/lessons", active: "w",
-    title: "Maths Lessons — NexStudents",
+    title: "Maths Lessons | NexStudents",
     desc: "Every maths lesson on NexStudents, worked through on screen.",
     crumb: '<a href="/maths/">Maths</a> &rsaquo; Lessons', h1: "Maths Lessons.",
     lead: "Each one opens straight away. The method is read aloud one step at a time, with a full worked example, and the questions send your student back into the steps rather than leaving them to guess.",
     count: countLabel(bySubject("Maths").length, "lesson", "lessons") + " available", body: subjectLessons("Maths") },
 
   { dir: "maths/worksheets", active: "w",
-    title: "Maths Worksheets — NexStudents",
+    title: "Maths Worksheets | NexStudents",
     desc: "Printable maths worksheets and practice sets.",
     crumb: '<a href="/maths/">Maths</a> &rsaquo; Worksheets', h1: "Maths Worksheets.",
     lead: "Printables and practice sets for working on paper. Answer keys are always included free.",
@@ -2184,21 +2184,21 @@ const pages = [
      while two of them are empty, because a nav link to nowhere is worse than
      an honest empty page. */
   { dir: "resources", active: "r",
-    title: "Resources — NexStudents",
+    title: "Resources | NexStudents",
     desc: "The books, tools and supplies we actually use for homeschooling.",
     crumb: "Resources", h1: "What We Actually Use.",
     lead: "Books, tools and supplies from our own shelf, not a list copied off somebody else's blog. Every entry says why it earned a place, because a list with no reasoning on it is just a list. Worksheets and lessons are not here; those live under each grade.",
     body: resourcesIndex() },
 
   { dir: "about", active: "a",
-    title: "About — NexStudents",
+    title: "About | NexStudents",
     desc: "Who makes NexStudents, and why.",
     crumb: "About", h1: "About NexStudents.",
     lead: "A homeschool family building the resources it needed and could not find, then leaving them up for everyone else.",
     body: empty("This page is being written.") },
 
   { dir: "contact", active: "ct", pclass: "termshead",
-    title: "Contact — NexStudents",
+    title: "Contact | NexStudents",
     desc: "How to reach NexStudents.",
     crumb: "", h1: "Get in Touch.",
     lead: "Questions about a worksheet, a broken link, or something you would like built. We read everything.",
@@ -2219,7 +2219,7 @@ const pages = [
      purchase and refund section - not before, or it makes a claim the site
      cannot keep. Same rule as the unsafe-claims list in BEHAVIOR.md. */
   { dir: "terms", active: "", noindex: false, pclass: "termshead",
-    title: "Terms of Use — NexStudents",
+    title: "Terms of Use | NexStudents",
     desc: "What you may and may not do with NexStudents worksheets and lessons. Free to use with your own students; not to redistribute or resell.",
     crumb: "", h1: "Terms of Use.",
     lead: "Welcome to NexStudents",
@@ -2227,7 +2227,7 @@ const pages = [
 
   /* Paired with /terms/. Same head treatment so the two read as a set. */
   { dir: "privacy", active: "", pclass: "termshead",
-    title: "Privacy Policy — NexStudents",
+    title: "Privacy Policy | NexStudents",
     desc: "What NexStudents collects, why, and how parents can request deletion. No accounts, no payments, nothing sold.",
     crumb: "", h1: "Privacy Policy.",
     lead: "NexStudents is built for families and educators, so we believe privacy should be simple and easy to understand.",
@@ -2239,14 +2239,14 @@ const pages = [
      refundBody(). Paul asked for it now rather than at launch: a policy written
      under pressure after the first refund request is a worse policy. */
   { dir: "refund", active: "", pclass: "termshead",
-    title: "Refund Policy — NexStudents",
+    title: "Refund Policy | NexStudents",
     desc: "How refunds work on NexStudents. Digital downloads only, a 30-day window, and what happens with donations and affiliate purchases.",
     crumb: "", h1: "Refund Policy.",
     lead: "We want you to feel comfortable purchasing from NexStudents.",
     body: refundBody() },
 
   { dir: "for-parents", active: "p",
-    title: "For Parents — NexStudents",
+    title: "For Parents | NexStudents",
     desc: "Placement exams and planning tools for the parent doing the teaching.",
     crumb: "For Parents", h1: "Not sure which grade to start at?",
     lead: "A placement exam, taken online, marked the moment your student finishes. Results appear on screen and land in your inbox. One short version that costs nothing, one fuller version that covers every subject.",
@@ -2281,7 +2281,7 @@ for (const g of ALL_GRADES) {
   if (!HAND_WRITTEN_GRADES.has("grade-" + gs)) {
     pages.push({
       dir: "grade-" + gs, active: "gr",
-      title: gradeLabel(g) + " — NexStudents",
+      title: gradeLabel(g) + " | NexStudents",
       desc: gradeLabel(g) + " lessons and printables, organised by subject.",
       crumb: gradeLabel(g), h1: gradeLabel(g) + ".",
       lead: "Nothing is built for this year yet. The shelves below are ready and fill up as each subject goes in — pick a subject to see where it stands.",
@@ -2294,7 +2294,7 @@ for (const g of ALL_GRADES) {
        reason that checker exists. */
     pages.push({
       dir: "grade-" + gs + "/lessons", active: "gr",
-      title: gradeLabel(g) + " Lessons — NexStudents",
+      title: gradeLabel(g) + " Lessons | NexStudents",
       desc: gradeLabel(g) + " lessons, worked through on screen.",
       crumb: '<a href="/grade-' + gs + '/">' + gradeLabel(g) + "</a> &rsaquo; Lessons",
       h1: gradeLabel(g) + " Lessons.",
@@ -2303,7 +2303,7 @@ for (const g of ALL_GRADES) {
 
     pages.push({
       dir: "grade-" + gs + "/worksheets", active: "gr",
-      title: gradeLabel(g) + " Worksheets — NexStudents",
+      title: gradeLabel(g) + " Worksheets | NexStudents",
       desc: gradeLabel(g) + " printables, with answer keys included free.",
       crumb: '<a href="/grade-' + gs + '/">' + gradeLabel(g) + "</a> &rsaquo; Worksheets",
       h1: gradeLabel(g) + " Worksheets.",
@@ -2318,7 +2318,7 @@ for (const g of ALL_GRADES) {
 
     pages.push({
       dir: base + "/lessons", active: "gr",
-      title: gradeLabel(g) + " " + s.name + " Lessons — NexStudents",
+      title: gradeLabel(g) + " " + s.name + " Lessons | NexStudents",
       desc: gradeLabel(g) + " " + s.name.toLowerCase() + " lessons, worked through on screen.",
       crumb: crumb + " &rsaquo; Lessons",
       h1: gradeLabel(g) + " " + s.name + " Lessons.",
@@ -2327,7 +2327,7 @@ for (const g of ALL_GRADES) {
 
     pages.push({
       dir: base + "/worksheets", active: "gr",
-      title: gradeLabel(g) + " " + s.name + " Worksheets — NexStudents",
+      title: gradeLabel(g) + " " + s.name + " Worksheets | NexStudents",
       desc: gradeLabel(g) + " " + s.name.toLowerCase() + " printables, with answer keys included free.",
       crumb: crumb + " &rsaquo; Worksheets",
       h1: gradeLabel(g) + " " + s.name + " Worksheets.",
@@ -2367,7 +2367,7 @@ const soonPage = (heading, what, why, when) => `<div class="band"><div class="wr
 
 const SOON_PAGES = [
   { dir: "games/remainder-race", active: "g",
-    title: "Remainder Race — NexStudents",
+    title: "Remainder Race | NexStudents",
     desc: "A division game where the remainder is the point, not the mistake.",
     crumb: '<a href="/games/">Games</a> &rsaquo; Remainder Race',
     h1: "Remainder Race.",
@@ -2378,7 +2378,7 @@ const SOON_PAGES = [
       "It follows the Long Division lesson. That lesson is live now.") },
 
   { dir: "games/fraction-match", active: "g",
-    title: "Fraction Match — NexStudents",
+    title: "Fraction Match | NexStudents",
     desc: "Match fractions that look different and are worth the same.",
     crumb: '<a href="/games/">Games</a> &rsaquo; Fraction Match',
     h1: "Fraction Match.",
@@ -2389,7 +2389,7 @@ const SOON_PAGES = [
       "After the maths shelf covers fractions.") },
 
   { dir: "games/spelling-ladder", active: "g",
-    title: "Spelling Ladder — NexStudents",
+    title: "Spelling Ladder | NexStudents",
     desc: "Climb a word one letter at a time, from the weekly spelling list.",
     crumb: '<a href="/games/">Games</a> &rsaquo; Spelling Ladder',
     h1: "Spelling Ladder.",
@@ -2400,7 +2400,7 @@ const SOON_PAGES = [
       "Cheapest of the games to build, because the word list already exists.") },
 
   { dir: "games/comma-catcher", active: "g",
-    title: "Comma Catcher — NexStudents",
+    title: "Comma Catcher | NexStudents",
     desc: "Find the missing comma before the sentence changes meaning.",
     crumb: '<a href="/games/">Games</a> &rsaquo; Comma Catcher',
     h1: "Comma Catcher.",
@@ -2411,7 +2411,7 @@ const SOON_PAGES = [
       "After the parts of speech run, since it assumes clauses.") },
 
   { dir: "games/sort-the-mixture", active: "g",
-    title: "Sort the Mixture — NexStudents",
+    title: "Sort the Mixture | NexStudents",
     desc: "Separate a mixture the way you actually would on a bench.",
     crumb: '<a href="/games/">Games</a> &rsaquo; Sort the Mixture',
     h1: "Sort the Mixture.",
@@ -2422,7 +2422,7 @@ const SOON_PAGES = [
       "Waiting on the science shelf, which has nothing on it yet.") },
 
   { dir: "comics/more-strips", active: "c",
-    title: "More Strips — NexStudents",
+    title: "More Strips | NexStudents",
     desc: "What is coming after Donut Boy.",
     crumb: '<a href="/comics/">Comics</a> &rsaquo; More Strips',
     h1: "More Strips.",
@@ -2433,7 +2433,7 @@ const SOON_PAGES = [
       "New episodes go up as they are finished. Nothing to download, all read on the site.") },
 
   { dir: "resources/books-and-readers", active: "r",
-    title: "Books and Readers — NexStudents",
+    title: "Books and Readers | NexStudents",
     desc: "The books we actually read, and the older readers we teach from.",
     crumb: '<a href="/resources/">Resources</a> &rsaquo; Books and Readers',
     h1: "Books and Readers.",
@@ -2442,7 +2442,7 @@ const SOON_PAGES = [
       "The first books are being written up.") },
 
   { dir: "resources/tools-and-supplies", active: "r",
-    title: "Tools and Supplies — NexStudents",
+    title: "Tools and Supplies | NexStudents",
     desc: "The paper, pencils and gear we actually use.",
     crumb: '<a href="/resources/">Resources</a> &rsaquo; Tools and Supplies',
     h1: "Tools and Supplies.",
@@ -2451,7 +2451,7 @@ const SOON_PAGES = [
       "The first tools are being written up.") },
 
   { dir: "resources/science-experiments", active: "r",
-    title: "Science Experiments — NexStudents",
+    title: "Science Experiments | NexStudents",
     desc: "Experiments you can run at home with what is in the kitchen.",
     crumb: '<a href="/resources/">Resources</a> &rsaquo; Science Experiments',
     h1: "Science Experiments.",
@@ -2462,7 +2462,7 @@ const SOON_PAGES = [
       "Several are already run here and not yet written up: static electricity, surface tension, centre of mass.") },
 
   { dir: "resources/placement-tests", active: "r",
-    title: "Free Placement Tests — NexStudents",
+    title: "Free Placement Tests | NexStudents",
     desc: "Free placement tests for maths and reading, and how to read the results honestly.",
     crumb: '<a href="/resources/">Resources</a> &rsaquo; Placement Tests',
     h1: "Placement Tests.",
@@ -2471,7 +2471,7 @@ const SOON_PAGES = [
       "The placement tests are being written up.") },
 
   { dir: "resources/reading-lists", active: "r",
-    title: "Reading Lists — NexStudents",
+    title: "Reading Lists | NexStudents",
     desc: "Reading lists by grade, with a reason attached to every book.",
     crumb: '<a href="/resources/">Resources</a> &rsaquo; Reading Lists',
     h1: "Reading Lists.",
@@ -2485,7 +2485,7 @@ const SOON_PAGES = [
      (ROADMAP 7) exists, so these say where things stand instead of being
      buttons that ignore you. */
   { dir: "account", active: "p",
-    title: "Sign In — NexStudents",
+    title: "Sign In | NexStudents",
     desc: "Accounts are being built. Here is what one will do.",
     crumb: "Sign In", h1: "Sign In.",
     lead: "There are no accounts yet. Here is what one will be for, and why it is taking a while.",
@@ -2495,7 +2495,7 @@ const SOON_PAGES = [
       "Accounts will be parent-owned, with students added underneath. A children's site holding children's own email addresses is a legal problem we are not going to create.") },
 
   { dir: "cart", active: "p",
-    title: "Cart — NexStudents",
+    title: "Cart | NexStudents",
     desc: "The cart is being built. Most of the site is free in the meantime.",
     crumb: "Cart", h1: "Cart.",
     lead: "Nothing in it, because there is no cart yet.",
@@ -2505,7 +2505,7 @@ const SOON_PAGES = [
       "Answer keys are always included free with the sheet, and are never sold separately.") },
 
   { dir: "blog", active: "r",
-    title: "Blog — NexStudents",
+    title: "Blog | NexStudents",
     desc: "Notes on teaching this material, from someone doing it.",
     crumb: '<a href="/resources/">Resources</a> &rsaquo; Blog',
     h1: "Blog.",
@@ -2838,7 +2838,7 @@ const REDIRECTS = [
 {
   const page = {
     dir: "", active: null,
-    title: "Page not found — NexStudents",
+    title: "Page not found | NexStudents",
     desc: "That page does not exist.",
     crumb: "Not found", h1: "That page is not here.",
     /* No share card and no breadcrumb on a 404: both describe a real page. */
@@ -2902,7 +2902,7 @@ const REDIRECTS = [
 
   const page = {
     dir: "", canon: "/placement-exam.html", active: "p", pclass: "examhead",
-    title: "Reading Comprehension — Short Exam | NexStudents",
+    title: "Reading Comprehension: A Short Exam | NexStudents",
     desc: "A free short reading comprehension exam, written at a grade 6 reading level. Marked instantly, with a breakdown by skill.",
     crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; Reading Exam',
     h1: "Reading Comprehension: a short exam.",

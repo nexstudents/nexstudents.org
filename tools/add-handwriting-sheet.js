@@ -62,7 +62,7 @@ function handwritingHtml(s) {
 <link rel="canonical" href="https://nexstudents.org/worksheets/\${subjectSlug}/\${s.slug}/">
 \${modeBoot()}
 \${faviconTags()}
-<title>\${s.title} — NexStudents</title>
+<title>\${s.title} | NexStudents</title>
 <meta name="description" content="\${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=\${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=\${CSS_V}">

@@ -516,7 +516,7 @@ const lessonHead = (o) => {
   const trail = [{ name: "Home", path: "/" }];
   if (o.backLabel && o.backHref) trail.push({ name: o.backLabel, path: o.backHref });
   return '<link rel="canonical" href="' + SITE_ORIGIN + path + '">\n' +
-    socialTags({ path, title: o.title + " — NexStudents", desc, type: "article", image: o.image }) +
+    socialTags({ path, title: o.title + " | NexStudents", desc, type: "article", image: o.image }) +
     (trail.length > 1 ? "\n" + breadcrumbLd(trail, o.title) : "");
 };
 

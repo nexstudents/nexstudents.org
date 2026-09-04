@@ -16,7 +16,7 @@ const sub = (f, pairs) => {
 sub("games/states-template.html".replace("games/", "games/"), []);   /* no-op guard */
 
 sub("games/states-template.html", [
-  ["<title>Place the State — NexStudents</title>", "<title>Show Me The States — NexStudents</title>"],
+  ["<title>Place the State | NexStudents</title>", "<title>Show Me The States | NexStudents</title>"],
   ["<h1>Place the State</h1>", "<h1>Show Me The States</h1>"],
 ]);
 

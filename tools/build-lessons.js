@@ -352,7 +352,7 @@ for (const L of LESSONS) {
   h = h.replace(/var LESSON_ID = "[^"]*";/, 'var LESSON_ID = "' + L.id + '";');
   h = h.replace(/var LESSON_TITLE = "[^"]*";/, 'var LESSON_TITLE = "' + esc(L.title) + '";');
   h = h.replace(/var LESSON_UNIT\s*= "[^"]*";/, 'var LESSON_UNIT  = "' + L.unit.replace(/&middot;/g, "·") + '";');
-  h = h.replace(/<title>[^<]*<\/title>/, "<title>" + L.title + " — NexStudents</title>");
+  h = h.replace(/<title>[^<]*<\/title>/, "<title>" + L.title + " | NexStudents</title>");
   h = h.replace(/<h1>[^<]*<\/h1>/, "<h1>" + L.title + "</h1>");
   h = h.replace(/<p class="dek">[\s\S]*?<\/p>/, '<p class="dek">' + L.dek + "</p>");
   /* 🚨 ALL THREE eyebrow slots, not just the middle one. Only eyebrow[1] was ever

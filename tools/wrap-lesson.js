@@ -40,7 +40,7 @@ const html = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>${title} — NexStudents</title>
+<title>${title} | NexStudents</title>
 <meta name="description" content="A NexStudents history lesson: read along, then find the answers in the text.">
 ${links.join("\n")}
 <style>
