@@ -1819,18 +1819,28 @@ if (!supported && !hasStudio() && !hasKey()){
 
     voiceSel.innerHTML = "";
 
-    // Google Cloud voices, only once a key is saved
-    if (hasKey()){
-      var gg = document.createElement("optgroup");
-      gg.label = "Google Cloud (your key)";
-      GOOGLE_VOICES.forEach(function(g){
-        var o = document.createElement("option");
-        o.value = "g:" + g.id;
-        o.textContent = g.label;
-        gg.appendChild(o);
-      });
-      voiceSel.appendChild(gg);
-    }
+    /* 🚨 THE LIVE GOOGLE VOICES ARE NOT OFFERED, 2026-09-04.
+       They appeared whenever a key was stored in the browser, and Paul still had
+       one from testing on 2026-08-29. It no longer works, so every Neural2 option
+       failed: the player switched to word-highlight mode, suppressed the sentence
+       band, lost the request, fell back to a device voice, and read the whole
+       lesson with nothing lit up.
+
+       Paul, after finding it himself: "you have now two uk male voices on the pc.
+       i think you added voices in but its not the Neural2 ones that work at all.
+       just the regular ones for UK Voice Male and UK Voice Female work for the
+       highlighted."
+
+       He is right. Three broken options, two working ones, and duplicate "UK
+       male" labels between the two groups. The picker now offers only what
+       actually plays: NexVoice where a lesson is baked, and the device's own UK
+       voices otherwise.
+       ⚠️ THIS IS NOT THE SAME AS NexVoice. Baked audio comes from
+       tools/bake-voice.js at BUILD time and still works - that is the path with
+       real per-word timings. What is gone is the in-page live fetch.
+       ⚠️ GOOGLE_VOICES and the fetch code are left in place, unreferenced by the
+       picker, so re-enabling is one block when a key is rotated (ROADMAP 14).
+       Deleting them would mean rebuilding the SSML mark handling from scratch. */
     /* NexVoice is always listed. When a lesson has not been recorded yet it
        is greyed out rather than hidden, so a reader can see it is coming and
        we can keep writing lessons without waiting on the audio. */
@@ -1962,15 +1972,19 @@ if (!supported && !hasStudio() && !hasKey()){
       voice = picks[0][0];
     }
 
-    // Restore the saved pick, falling back sensibly if it is not on this device
+    /* 🚨 DROP A SAVED GOOGLE PICK. The live Google voices are no longer offered
+       (see the note above), but a reader who chose one before still has "g:..."
+       in their browser storage. Without this it is restored, fails to match any
+       option, and the fallback below is reached only by luck. Paul had exactly
+       this state on his PC on 2026-09-04. */
     var want = saved();
+    if (want && want.indexOf("g:") === 0) { want = null; store("voice", ""); }
     if (!want || !selectValue(want)){
       /* NexVoice first when the lesson has it - it is the reason the site has
          a voice at all. A saved pick still wins, so a reader who chose
          something else keeps it. */
       if (AUDIO_TRACKS.length) selectValue("__studio__:" + AUDIO_TRACKS[0].id);
       else if (AUDIO_TRACKS.length) selectValue("__studio__:" + AUDIO_TRACKS[0].id);
-      else if (hasKey()) selectValue("g:" + googleVoice);
       else if (voice) selectValue("d:" + voice.name);
     }
     applyVoiceChoice(voiceSel.value, false);
