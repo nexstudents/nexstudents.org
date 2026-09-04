@@ -523,3 +523,21 @@ html{-webkit-tap-highlight-color:transparent}
   background:var(--nv-accent);color:var(--nv-on);
   border-radius:4px;padding:16px 32px;font-size:15px;font-weight:700}
 @media(hover:hover){ .drawer .navbtn:hover{filter:brightness(1.08)} }
+
+/* ── SUPPORT US IS SITE CHROME, SO IT IS THE SITE'S COLOUR ─────────────────
+   🚨 Paul, 2026-09-03: "even the support button is a different color". It was
+   painted with --nv-accent, which every lesson template maps from its OWN
+   palette - so the button came out verdigris on one lesson, periwinkle on
+   another, and white on the home page. Three colours for one button.
+   The drawer is site chrome, not lesson content. It should look the same
+   wherever it is opened, which is the whole of what he asked for with "you cant
+   use the same side menu or what?".
+   ⚠️ So these two are LITERAL, matching ns.css --a / --a-ink exactly rather
+   than pointing at --nv-accent. A lesson's palette must not reach this button.
+   Keep them in step with ns.css if that ever changes: white on dark, #27313f on
+   light, and the ink inverts with it.
+   ⚠️ Everything ELSE in the drawer still uses --nv-*. The knob and the active
+   link stay per lesson on purpose; it is only the solid button that has to
+   match, because a filled block of colour is what the eye compares. */
+.drawer .navbtn{background:#ffffff;color:#0a0b0d}
+:root[data-theme="light"] .drawer .navbtn{background:#27313f;color:#ffffff}

@@ -83,33 +83,12 @@ function depsFor(extra) {
 }
 
 /* Called at the end of a generator that finished without exiting. A generator
-   that fails calls process.exit() long before this, so a failed build never
-   records a stamp and stays correctly stale. */
+   that FAILS calls process.exit() long before this, so a failed build never
+   records a stamp and correctly stays stale - which is the behaviour you want:
+   a build that died halfway has not brought its pages up to date.
+   `each` is stored beside the combined hash so the checker can name the file
+   that moved, not just the generator. "nav.js changed" is the useful half. */
 function record(name, extra) {
-  const files = depsFor(extra);
-  const all = read();
-  all[name] = { hash: hashOf(files), files: files, at: new Date().toISOString() };
-  fs.writeFileSync(FILE, JSON.stringify(all, null, 1) + "\n", "utf8");
-}
-
-/* Returns the generators whose inputs have changed since they last ran. */
-function stale() {
-  const all = read();
-  return Object.keys(all).sort().filter((name) => hashOf(all[name].files) !== all[name].hash);
-}
-
-/* Which recorded files changed, so the message can name the culprit rather
-   than just the generator - "nav.js changed" is the useful half. */
-function changedFiles(name) {
-  const rec = read()[name];
-  if (!rec) return [];
-  return rec.files.filter((rel) => hashOf([rel]) !== hashOf([rel]) ? false : false)
-    .concat([]);   /* placeholder - per-file detail comes from compare() below */
-}
-
-/* A per-file record lets the checker say WHICH dependency moved. Stored beside
-   the combined hash so an old stamp file without it still verifies. */
-function recordDetailed(name, extra) {
   const files = depsFor(extra);
   const each = {};
   files.forEach((rel) => { each[rel] = hashOf([rel]); });
@@ -118,10 +97,16 @@ function recordDetailed(name, extra) {
   fs.writeFileSync(FILE, JSON.stringify(all, null, 1) + "\n", "utf8");
 }
 
+/* The generators whose inputs have changed since they last ran. */
+function stale() {
+  const all = read();
+  return Object.keys(all).sort().filter((name) => hashOf(all[name].files) !== all[name].hash);
+}
+
 function movedSince(name) {
   const rec = read()[name];
   if (!rec || !rec.each) return [];
   return rec.files.filter((rel) => rec.each[rel] !== hashOf([rel]));
 }
 
-module.exports = { record: recordDetailed, stale, movedSince, read, FILE };
+module.exports = { record, stale, movedSince, read, FILE };
