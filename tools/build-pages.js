@@ -1094,6 +1094,7 @@ const lessonCards = (list, showSubject, slots) => {
    writing an adapter, never touching the pager. */
 const { UNITS, BUILT } = require("./leif-units.js");
 const { GRADE3, GRADE4, GRADE7 } = require("./english-units.js");
+const { COURSE2 } = require("./maths-units.js");
 const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
 
 /* Leif world history: lessons are bare strings, BUILT maps "unit:n" to a slug.
@@ -1131,6 +1132,33 @@ const leifPager = (grade) => UNITS
    ⚠️ A `gap` entry is a page the SCAN lost, not a lesson. It is skipped
    entirely rather than shown as an empty slot, which would read as a lesson
    we chose not to name. */
+/* 🚨 MATHS SHELVES THE NUMBERED LESSONS ONLY. maths-units.js records every row the
+   contents page prints - labs, mid-chapter reviews, chapter tests, DECISION MAKING
+   features - because dropping them would mean re-reading the book to get them back.
+   But a shelf of "Chapter Test" slots is not a shelf of lessons, so only
+   `kind === "lesson"` becomes a card. The rest stay in the data.
+   ⚠️ THE 39 MATHEMATICS LABS ARE THE OPEN QUESTION, not an oversight. They are
+   hands-on paper activities and may belong on the WORKSHEET shelf rather than here.
+   Paul's call → ROADMAP item 36. Change the filter, not the data, when he decides.
+   ⚠️ No slugs yet. Nothing is wired to a built lesson because the mappings are not
+   decided - the two integers lessons sit on grade 6 and long division has no Course 2
+   row at all → BUILT_NOTES in maths-units.js. Every card is a slot on purpose;
+   claiming a lesson is built when it teaches something else is the worse error
+   → [[feedback-never-assign-an-unbuilt-lesson]]. */
+const mathsPager = (course) => course.units
+  .map((u) => ({
+    n: u.n,
+    name: u.title,
+    /* ⚠️ "Lesson 5-3", not "Unit 5 · Lesson 5-3". Glencoe's numbering already carries
+       the chapter, so the long form says five twice. This differs from the English and
+       history pagers on purpose - their lessons are not numbered by the book. */
+    items: u.items.filter((i) => i.kind === "lesson").map((i) => ({
+      label: "Lesson " + i.label,
+      title: i.title, slug: i.slug || null,
+    })),
+  }))
+  .filter((u) => u.items.length);
+
 const englishPager = (course) => course.units
   .filter((u) => !u.gap)
   .map((u) => {
@@ -1583,6 +1611,9 @@ const COURSE_SHELVES = [
   { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
   { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
   { grade: 7, subject: "English", units: () => englishPager(GRADE7) },
+  /* Grade 7 maths, Glencoe Course 2 - 14 chapters, structure only for now. Paul,
+     2026-09-03: "for now i just want the strcuture". */
+  { grade: 7, subject: "Maths",   units: () => mathsPager(COURSE2) },
 ];
 
 const courseFor = (g, sub) =>
