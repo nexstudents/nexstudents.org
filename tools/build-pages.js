@@ -1099,6 +1099,7 @@ const { GRADE3, GRADE4, GRADE7 } = require("./english-units.js");
 const { COURSE2 } = require("./maths-units.js");
 const { LIFE } = require("./science-units.js");
 const { WORLD } = require("./history-units.js");
+const YEAR = require("./year-plan.js");
 const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
 
 /* Leif world history: lessons are bare strings, BUILT maps "unit:n" to a slug.
@@ -1579,9 +1580,27 @@ const resourcesIndex = () => {
 /* The grade landing: pick a grade, then pick lessons or worksheets.
    Two doors, because a lesson and a printable are different jobs -
    one is worked through on screen, the other gets printed. */
+/* 🚨 THE YEAR PLAN LINK IS GRADE 7 ONLY, for now, because /grade-7/plan/ is the
+   only plan page that exists. A link on every grade would be a link to nowhere on
+   eight of them, and check-links.js would - correctly - fail the build.
+   ⚠️ When grade 6 or 8 gets a plan, widen this test rather than copying the block. */
+const planRow = (g) => sameGrade(g, 7) ? `
+<div class="wrap" style="padding-top:56px">
+  ${group("Start With the Year Plan",
+    "The whole year on real dates, four days a week, with the holidays already taken out. " +
+    "Read this first if you are teaching it.",
+    `<div class="subj-sub">
+      <a class="minibox" href="/grade-7/plan/">
+        <b>The 7th Grade Year</b><span>36 weeks, Monday to Thursday</span>
+        <u>429 lessons in order &rarr;</u>
+      </a>
+    </div>`)}
+</div>` : "";
+
 const gradeLanding = (g) => `<div class="band"><div class="wrap">
   ${group("Pick a Subject", "All four core subjects. Each one opens its lessons or its printables for this year.", subjectRows(g))}
 </div></div>
+${planRow(g)}
 
 <div class="wrap" style="padding-top:56px;padding-bottom:56px">
   ${group("Or Take the Whole Year at Once", "Everything built for this grade, all subjects together.",
@@ -1921,6 +1940,85 @@ const EXTRAS = [
     blurb: "Subjects outside the core four, for a student who wants to go wider." },
 ];
 
+
+/* ── THE YEAR PLAN PAGE ───────────────────────────────────────────────────
+   🚨 GENERATED FROM year-plan.js, which is generated from the four course
+   files. Nothing here is hand-maintained, so the day a course changes this
+   page changes with it. That is the whole reason it lives in the generator
+   rather than being written once and going stale like the home page did
+   four separate times.
+
+   Paul, 2026-09-04: "I want to keep it as a reference that this is our lesson
+   plan structure."
+
+   ⚠️ IT SHOWS THE PLAN, NOT THE BUILD. The dot on each row says whether the
+   page exists: built, printable from Leif, or not written yet. A parent
+   reading this must never be sent to a lesson that does not exist
+   -> [[feedback-never-assign-an-unbuilt-lesson]]. */
+const SUBJ_ABBR = { Maths: "M", Science: "S", English: "E", History: "H" };
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const prettyDate = (iso) => {
+  const p = iso.split("-");
+  return Number(p[2]) + " " + MONTHS[Number(p[1]) - 1];
+};
+
+const yearPlanBody = () => {
+  const plan = YEAR.build();
+  const state = { built: 0, paper: 0, todo: 0 };
+  for (const w of plan.weeks) {
+    if (w.kind !== "week") continue;
+    for (const d of w.days) for (const sl of d.slots) state[sl.state]++;
+  }
+
+  const weeks = plan.weeks.map((w) => {
+    if (w.kind === "break") {
+      return '<div class="plan-break"><b>' + w.name + '</b>' +
+             '<span>week of ' + prettyDate(w.monday) + ' &middot; no school</span></div>';
+    }
+    const days = w.days.map((d) => {
+      const head = '<p class="plan-dh"><span>' + d.day + '</span><span>' +
+                   prettyDate(d.date) + '</span></p>';
+      if (d.holiday) {
+        return '<div class="plan-day">' + head +
+               '<p class="plan-off">' + d.holiday + ' &mdash; no school</p></div>';
+      }
+      const rows = d.slots.map((sl) =>
+        '<div class="plan-slot">' +
+          '<span class="plan-tag t-' + SUBJ_ABBR[sl.subject] + '">' + SUBJ_ABBR[sl.subject] + '</span>' +
+          '<span class="plan-t">' + sl.title +
+            '<span class="plan-m"><i class="plan-pip p-' + sl.state + '"></i>' +
+              sl.subject + ' &middot; Unit ' + sl.unit + ' &middot; ' + sl.label +
+            '</span>' +
+          '</span>' +
+        '</div>').join("\n        ");
+      return '<div class="plan-day">' + head + rows + '</div>';
+    }).join("\n      ");
+    return '<section class="plan-week" id="week-' + w.n + '">' +
+      '<div class="plan-wh"><span class="plan-wn">Week ' + w.n + '</span>' +
+      '<span class="plan-wd">' + prettyDate(w.days[0].date) + ' &ndash; ' +
+      prettyDate(w.days[w.days.length - 1].date) + '</span></div>' +
+      '<div class="plan-days">' + days + '</div></section>';
+  }).join("\n    ");
+
+  return `<div class="band"><div class="wrap">
+    <div class="plan-figs">
+      <div class="plan-fig"><b>36</b><span>Teaching weeks</span></div>
+      <div class="plan-fig"><b>${plan.schoolDays}</b><span>School days</span></div>
+      <div class="plan-fig"><b>${state.built + state.paper + state.todo}</b><span>Lessons</span></div>
+      <div class="plan-fig"><b>3.0</b><span>Lessons a day</span></div>
+    </div>
+    <p class="plan-key">
+      <span><i class="plan-pip p-built"></i>${state.built} built and ready</span>
+      <span><i class="plan-pip p-paper"></i>${state.paper} printable from the workbook</span>
+      <span><i class="plan-pip p-todo"></i>${state.todo} still to write</span>
+    </p>
+    <p class="plan-note">This is the plan, not the build. Each day lists what a student does;
+      the dot says whether that page exists yet. Monday to Thursday, four days a week, from
+      ${prettyDate(plan.firstDay)} 2026 to ${prettyDate(plan.lastDay)} 2027.</p>
+    ${weeks}
+  </div></div>`;
+};
+
 const extrasShelf = () => `<div class="band"><div class="wrap">
   <div class="cardgrid">
     ${EXTRAS.map((x) => x.href
@@ -1954,6 +2052,15 @@ const pages = [
      ⚠️ `pclass: "termshead"` is what centres the title. Paul: "that Extras
      title needs to be centered." It is the same centring the legal pages
      use — do not add a second rule for it. */
+  /* The year plan. Linked from the grade 7 page; see yearPlanBody above. */
+  { dir: "grade-7/plan", active: null, pclass: "termshead",
+    title: "7th Grade Year Plan | NexStudents",
+    desc: "The whole 7th grade year on real dates: 36 weeks, Monday to Thursday, every lesson in order across English, History, Maths and Science.",
+    crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Year Plan',
+    h1: "The 7th Grade Year, Week by Week.",
+    lead: "Four subjects, 36 weeks, Monday to Thursday. Every lesson in the order it should be taught, with the holidays and breaks already taken out.",
+    body: yearPlanBody() },
+
   { dir: "extras", active: "x", pclass: "termshead",
     title: "Extras | NexStudents",
     desc: "A reading log with a built-in timer, plus coding and electives to come.",
