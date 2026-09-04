@@ -283,9 +283,11 @@ const LESSONS = [
        what ships. 🚨 The art is Paul's - do not restyle it or regenerate it. */
     thumb: true,
     blurb: "The characteristics every living thing shares, and what that complexity might point to.",
+    /* ⚠️ FIVE words, not four. Paul added Response on 2026-09-03. A count in a blurb
+       goes stale silently - check it whenever `words` changes. */
     contains: [
       "A story-form reading, read aloud with the words highlighted",
-      "Four vocabulary words, each one defined inside the reading",
+      "Five vocabulary words, each one defined inside the reading",
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
@@ -294,6 +296,28 @@ const LESSONS = [
   scripture: {
     ref: "Genesis 2:7",
     text: "And the LORD God formed man of the dust of the ground, and breathed into his nostrils the breath of life; and man became a living soul.",
+  },
+  /* 🚨 TEACHER NOTES, Paul's own text, 2026-09-03. Same headings as Lesson 3 -
+     Goal / Key Concepts / Teaching Suggestion - which is why `ground` is a list of
+     sections and not the fixed fields Lesson 2 started with.
+     ⚠️ "Key Vocabulary" is MINE, not his; it renders from `words` so it duplicates
+     nothing. Same addition as Lessons 2 and 3. */
+  ground: {
+    sections: [
+      { h: "Lesson Goal", p: [
+        "Students will learn the basic characteristics scientists use to identify living things and understand how organisms interact with their surroundings."
+      ]},
+      { h: "Key Concepts", p: [
+        "All living things are called organisms and are made of one or more cells. Living things use energy, grow and develop, respond to their environment, maintain stable internal conditions, reproduce, and have inherited characteristics that help them survive.",
+        "Pay special attention to stimulus, response, and adaptation. A stimulus causes a reaction. A response is what the organism does because of that stimulus. An adaptation is an inherited characteristic that helps an organism survive.",
+        "Students should also understand homeostasis, which is an organism's ability to maintain relatively stable conditions inside itself."
+      ]},
+      { h: "Teaching Suggestion", p: [
+        "Ask the student to compare a dog, a plant, and a rock. Have them explain which are alive and why. If they say, “Living things move,” point out that water and clouds move too. This helps students discover that scientists need several characteristics to determine whether something is alive.",
+        "Near the end of the lesson, connect the complexity and organization of living things to God as Creator. Scripture teaches that life was intentionally created by God and that creation displays His workmanship."
+      ]},
+      { h: "Key Vocabulary", vocab: true }
+    ]
   },
   parts: [
     { title: "Beside the Stream", s: [
@@ -373,53 +397,100 @@ const LESSONS = [
       "Studying creation can also lead us to wonder about the Creator."
     ]}
   ],
+  /* ⚠️ The day order here MUST match lesson-template.html: Day One is The Questions,
+     Day Two is The Words. This block used to say word cards FIRST, the same way
+     Lesson 2's did before Paul caught it on the page on 2026-09-03. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. There are two things left, and both of them send you back into the text.",
-      "First the word cards. Four words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
-      "Then four questions. The answer to every one of them is somewhere in the reading above, not in your memory.",
-      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",
-      "Finding the answer in the text is the skill this lesson is teaching. Getting it right from memory is not the same thing.",
-      "The one people trip on is the difference between a response and an adaptation, because both are about an organism and its surroundings. Read the Adaptation section again and look for the word inherited."
+      "That is the reading done, and the rest of this lesson is split across two days.",
+      "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
+      "The one people trip on is the difference between a response and an adaptation. Read Adaptation again and look for which one is passed down and which one is decided in the moment.",
+      "Day Two is the word cards. Five words, and every one of them is explained somewhere in the story you just heard.",
+      "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
+      "If you can explain why a polar bear's fur is not a response, you have understood the hardest idea in this lesson."
   ] },
+  /* Paul's definitions, 2026-09-03. FIVE words - Response is new; this lesson had four
+     before and taught the word in the story without ever putting it on a card.
+     ⚠️ Only four have a check question on Day Two: Paul wrote none for Response and one
+     was NOT invented for him. build-lessons.js warns about the gap on every build. */
   words: [
-    ["Organism", "Any living thing. Organisms are made of cells, the tiny building blocks that carry out the processes of life."],
-    ["Stimulus", "Something in the environment that causes an organism to react. A can of dog food opening is a stimulus."],
-    ["Homeostasis", "Keeping the inside of your body relatively stable. Your heart speeds up when you run, then settles back toward normal when you stop."],
-    ["Adaptation", "An inherited characteristic that helps an organism survive where it lives. The polar bear's thick fur in a freezing environment."]
+    ["Organism", "A living thing."],
+    ["Stimulus", "Something that causes an organism to react."],
+    ["Response", "The reaction an organism makes because of a stimulus."],
+    ["Homeostasis", "The ability to maintain relatively stable internal conditions."],
+    ["Adaptation", "An inherited characteristic that helps an organism survive in its environment."]
   ],
+  /* 🚨 findsAt = the story sentence count these `find` indexes were verified against.
+     Change the story and the build stops until they are re-checked. See checkFinds(). */
+  findsAt: 64,
+  /* Paul's questions, 2026-09-03. The story was NOT rewritten for these - he confirmed
+     it stays as it was - so every `find` was computed against the existing sentences. */
   questions: [
-    { q: "Which characteristics do scientists use to recognize living things?", find: [7, 8, 10, 11, 12, 13, 14, 15],
-      hint: "The list is in The Signs of Life, given one line at a time.",
+    { q: "Which statement best describes living things?", find: [7, 8, 10, 12, 14],
+      hint: "The stream moves too. Look for the list of characteristics, not for one test.",
       choices: [
-        "They are made of cells, use energy, grow and develop, respond to their surroundings, keep their internal conditions stable, reproduce, and have characteristics that help them survive.",
-        "They move on their own, and anything that moves on its own is alive.",
-        "They are made of chemicals, and anything made of chemicals is alive.",
-        "They are warm to the touch and big enough to see without a microscope."
-      ], right: 0 },
-    { q: "What does homeostasis mean?", find: [16, 17, 18, 19],
-      hint: "Look at the end of The Signs of Life, at what your body does after you stop running.",
+        "Anything that moves is alive.",
+        "Living things share characteristics such as being made of cells, using energy, growing, responding, and reproducing.",
+        "Anything that needs water is alive.",
+        "Living things must be animals or plants."
+      ], right: 1 },
+    { q: "A dog hears its food bowl being filled and runs into the kitchen. Which choice correctly identifies the stimulus and response?", find: [23, 24, 26, 27],
+      hint: "One of them causes the other. Work out which came first.",
       choices: [
-        "Keeping the inside of the body relatively stable, the way your heart rate comes back toward normal after you stop running.",
-        "Growing steadily larger until an organism reaches its full size.",
-        "Passing an inherited characteristic down to the next generation.",
-        "Reacting quickly to anything that happens in the environment."
-      ], right: 0 },
+        "The dog is the stimulus and the food is the response.",
+        "Running is the stimulus and hearing is the response.",
+        "The sound of the food being poured is the stimulus, and the dog running into the kitchen is the response.",
+        "The dog's hunger is an adaptation."
+      ], right: 2 },
     { q: "What is the difference between a response and an adaptation?", find: [25, 29, 31, 32],
-      hint: "Look for the words inherited and passed down. They are what separate the two.",
+      hint: "One is decided in the moment. The other was passed down.",
       choices: [
-        "A response is the reaction an organism makes at the time, while an adaptation is an inherited characteristic passed down through generations.",
-        "A response happens in animals and an adaptation happens only in plants.",
-        "A response is slow and an adaptation is fast.",
-        "A response is something an organism is born with and an adaptation is something it learns."
+        "A response is a reaction to something happening, while an adaptation is an inherited characteristic that helps an organism survive.",
+        "Responses happen only in animals, while adaptations happen only in plants.",
+        "A response is inherited, while an adaptation happens immediately.",
+        "There is no difference between them."
       ], right: 0 },
-    { q: "What is the basic idea behind intelligent design, as the reading explains it?", find: [43, 44, 46, 47, 53],
-      hint: "Look at the LEGO creation in the woods, and at what you would go looking for.",
+    { q: "What is homeostasis?", find: [13, 16, 19],
+      hint: "Think about what your body does after you stop running.",
       choices: [
-        "When something contains information, organization and purposeful design, we normally recognize it came from intelligence, so it is reasonable to ask whether there is an intelligent Designer.",
-        "That science cannot tell us anything true about how living things work.",
-        "That every machine humans build is more complex than any living thing.",
-        "That a watch found in the woods most likely assembled itself over a long time."
-      ], right: 0 }
+        "The ability of an organism to move.",
+        "The process of producing offspring.",
+        "The ability of an organism to maintain relatively stable conditions inside itself.",
+        "The way plants get energy from sunlight."
+      ], right: 2 }
+  ],
+  /* Paul's hand-written Day Two, 2026-09-03, replacing the generated check whose wrong
+     answers were the other three definitions from this same lesson. Four checks for five
+     cards - see `words`. */
+  vocabQuestions: [
+    { q: "What is an <i>organism</i>?",
+      choices: [
+        "Any object that moves.",
+        "A living thing.",
+        "Something made only of water.",
+        "A nonliving part of the environment."
+      ], right: 1 },
+    { q: "What is a <i>stimulus</i>?",
+      choices: [
+        "Something that causes an organism to react.",
+        "The reaction an organism makes.",
+        "An inherited characteristic.",
+        "The process of growing."
+      ], right: 0 },
+    { q: "What is <i>homeostasis</i>?",
+      choices: [
+        "Responding to a sound.",
+        "Maintaining relatively stable conditions inside an organism.",
+        "An organism growing larger.",
+        "An inherited characteristic that helps survival."
+      ], right: 1 },
+    { q: "What is an <i>adaptation</i>?",
+      choices: [
+        "Any movement made by an animal.",
+        "Something an organism learns during its lifetime.",
+        "An inherited characteristic that helps an organism survive in its environment.",
+        "Any change that happens around an organism."
+      ], right: 2 }
   ]
 }
 ,
@@ -442,7 +513,11 @@ const LESSONS = [
   seq: { unit: 1, unitTitle: "Life and How We Study It", n: 2 },
   shelf: { grades: [7], subject: "Science",
     thumb: true,   /* Paul's art, 2026-08-31. Source PNG on his Desktop; see Lesson 1. */
-    blurb: "Three experiments across two hundred years, and the question none of them could reach.",
+    /* ⚠️ "Two", not "three". Said three while Spallanzani was in the story; his
+       section came out in Paul's 2026-09-03 rewrite and this line did not follow it.
+       Counts in a blurb or a dek are content that goes stale silently - check them
+       whenever a section is added or removed. */
+    blurb: "Two experiments across two hundred years, and the question neither of them could reach.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",
       "Four vocabulary words, each one defined inside the reading",
@@ -450,138 +525,255 @@ const LESSONS = [
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
   eyebrow: ["Science", "Unit 1 &middot; Lesson 2", "Life Science"],
-  dek: "For two thousand years people thought meat made maggots. Finding out it did not took three scientists, two hundred years, and one very oddly shaped bottle.",
+  dek: "For hundreds of years people thought meat made maggots. Finding out it did not took two scientists, two hundred years, and one very oddly shaped bottle.",
   scripture: {
     ref: "Genesis 1:11",
     text: "And God said, Let the earth bring forth grass, the herb yielding seed, and the fruit tree yielding fruit after his kind, whose seed is in itself, upon the earth: and it was so.",
   },
+  /* 🚨 REWRITTEN 2026-09-03 FROM PAUL'S OWN TEXT, sent in chat, the same way
+     Lesson 1 was on 2026-08-31. This is item 29 - he said the lessons did not
+     sound natural, and the fix is his voice, not a better edit of mine.
+     ⚠️ His version DROPS Lazzaro Spallanzani, who used to sit between Redi and
+     Pasteur as the "sealed flask, ruined air" objection. That is a choice, not
+     an oversight: Pasteur's open curved neck answers the same objection on its
+     own, so the middle step was costing a section and buying little. Do not
+     quietly put him back.
+     ⚠️ Markdown emphasis was stripped on the way in. Sentences render through
+     textContent as word spans (see lesson-template.html), so a `**bold**` would
+     ship as literal asterisks. The four terms he bolded are exactly the four
+     word cards, so the emphasis is carried there instead.
+     🚨 SENTENCE NUMBERS ARE LOAD-BEARING. `questions[].find` holds positions in
+     this flat list. Adding or removing ANY sentence renumbers them - checkFinds()
+     in build-lessons.js fails the build if they drift, so trust that, not memory. */
   parts: [
-    { title: "What People Used To Believe", s: [
-      "For most of history, people believed that living things could simply appear out of non-living material.",
-      "Leave a pile of old rags in a dark corner and mice would turn up, so the rags must have made the mice.",
-      "Leave meat sitting out in the open and maggots would appear on it, so the meat must have made the maggots.",
-      "This idea had a name.",
-      "It was called spontaneous generation.",
-      "It was not a stupid idea, and that is worth saying plainly.",
-      "People were watching events that really happened and drawing the obvious conclusion from them.",
-      "What they were missing was not intelligence.",
-      "It was a careful test."
+    { title: "Did Meat Really Make Maggots?", s: [
+      "Hundreds of years ago, people noticed something strange.",
+      "If meat was left outside, maggots eventually appeared.",
+      "Since nobody could see where the maggots came from, many people believed the meat actually produced them.",
+      "",
+      "This idea became known as spontaneous generation, the belief that living things could naturally appear from nonliving material.",
+      "",
+      "It seemed reasonable at the time.",
+      "The problem was that nobody had carefully tested it."
     ]},
-    { title: "Redi and the Jars", s: [
-      "In 1668 an Italian doctor named Francesco Redi decided to stop arguing about the meat and actually test it.",
-      "He put meat into a set of jars.",
-      "Some jars he left wide open.",
-      "Some he sealed shut completely.",
-      "And some he covered with a fine gauze, which let air through but kept flies out.",
-      "The open jars grew maggots.",
-      "The sealed jars did not.",
-      "The gauze-covered jars did not either, but maggots appeared on top of the gauze.",
-      "Flies had landed there and laid their eggs.",
-      "The meat was never making anything at all.",
-      "Flies were.",
-      "Redi had done something more important than finding the answer.",
-      "He changed one thing from jar to jar and kept everything else the same, and the one thing you change on purpose like that is called the variable.",
-      "That is what makes a test a controlled experiment, and it is the only way to know what is really causing what."
+    { title: "Redi Puts It to the Test", s: [
+      "In 1668, Italian scientist Francesco Redi decided to experiment.",
+      "He placed meat into different jars.",
+      "Some were open, some were sealed, and others were covered with gauze that allowed air inside but prevented flies from reaching the meat.",
+      "",
+      "Maggots appeared on the meat in the open jars.",
+      "They did not appear on the meat protected from flies.",
+      "On the gauze covered jars, maggots appeared on the gauze where flies had laid their eggs.",
+      "",
+      "The answer became clear.",
+      "The meat was not producing maggots.",
+      "Flies were producing more flies.",
+      "",
+      "Redi had also demonstrated an important part of good science.",
+      "He changed one variable while keeping other conditions similar.",
+      "Experiments designed this way help scientists determine what is actually causing a result."
     ]},
-    { title: "The Argument Was Not Over", s: [
-      "Redi convinced most people about maggots, and then the microscope arrived and reopened everything.",
-      "Scientists looked at broth that had been left standing and found it swarming with organisms nobody had ever seen.",
-      "The old idea came straight back.",
-      "Large creatures may well need parents, people argued, but surely these tiny ones form on their own.",
-      "In the 1760s an Italian priest and scientist named Lazzaro Spallanzani boiled broth and sealed the flasks shut.",
-      "Nothing grew.",
-      "His critics had an answer ready before he finished.",
-      "Boiling and sealing, they said, had ruined the air inside, and air was exactly what a new living thing would need in order to form.",
-      "That was a fair objection, not a cheat.",
-      "It kept the question open for another hundred years."
+    { title: "Pasteur Solves the Mystery", s: [
+      "Scientists later discovered microorganisms, and some wondered whether these tiny living things might still appear spontaneously.",
+      "",
+      "In 1861, French scientist Louis Pasteur designed a clever experiment to find out.",
+      "",
+      "Pasteur boiled broth inside a special flask with a long curved neck.",
+      "Air could still enter the flask, but dust and microorganisms became trapped in the curve before they could reach the broth.",
+      "",
+      "The broth remained free of microbial growth.",
+      "When Pasteur allowed the broth to contact the trapped dust, microorganisms began growing.",
+      "",
+      "The microorganisms had not appeared from the broth.",
+      "They had come from other microorganisms in the environment."
     ]},
-    { title: "Pasteur Settles It", s: [
-      "In 1861 a French scientist named Louis Pasteur designed the experiment that ended the argument for good.",
-      "He used a flask with a long neck bent into an S-shaped curve, like a swan's neck.",
-      "The neck stayed open the entire time, so air passed in and out freely.",
-      "That removed the objection about ruined air completely, which was the whole point of the shape.",
-      "But dust, and anything riding on the dust, settled in the bend of the neck and never reached the broth.",
-      "He boiled the broth and waited.",
-      "Nothing grew, and nothing kept on growing for month after month.",
-      "Then he tilted a flask so the broth ran up into the curve of the neck and back down again.",
-      "Within a day it was swarming.",
-      "The living things had been sitting in the dust the whole time.",
-      "Spontaneous generation had been given every chance and had failed every test.",
-      "What replaced it is called biogenesis, which means that living things come only from other living things."
+    { title: "Life Comes From Life", s: [
+      "Experiments like these helped establish the principle of biogenesis.",
+      "Biogenesis means that living things come from other living things.",
+      "",
+      "Dogs come from dogs.",
+      "Trees grow from seeds produced by other plants.",
+      "Bacteria come from existing bacteria.",
+      "Scientists have repeatedly observed this pattern in living things.",
+      "",
+      "But that creates an even bigger question.",
+      "If life comes from life, where did the first life come from?"
     ]},
-    { title: "What The Experiments Showed, And What They Did Not", s: [
-      "Now be careful, because it is easy to claim too much for these experiments.",
-      "What they showed is that under the conditions tested, life did not arise from non-living material.",
-      "That is a real result and a useful one.",
-      "It is why your food goes in the refrigerator and why a surgeon's instruments are sterilised before an operation.",
-      "But notice the question none of them touched.",
-      "Every single one of those experiments began with life already existing somewhere in the room.",
-      "Redi had flies. Spallanzani and Pasteur had organisms riding in the dust.",
-      "Not one of them explains where the very first living thing came from.",
-      "Pasteur was not trying to answer that, and he never claimed to have.",
-      "A test can only measure what you put in front of it."
-    ]},
+    /* 🚨 CLOSING SECTION REPLACED BY PAUL, 2026-09-03, later the same evening. The
+       first version stopped at "we will keep asking both kinds of questions" - it
+       named the two kinds of question and left it there. His version names the answer
+       and quotes the two verses that carry it (Genesis 1:1, Acts 17:25).
+       ⚠️ This does NOT breach the side-by-side rule → [[project-nexstudents-science-strand]].
+       The rule is about the ORIGIN claim, and above this the two answers still sit
+       beside each other with the experiments left undisputed. This is the lesson
+       saying which one it holds, in a lesson whose own scripture block is Genesis 1:11.
+       ⚠️ Straight quotes are escaped by esc() in build-lessons.js; the curly quotes in
+       the two verse quotations are literal characters and pass through untouched. */
     { title: "The First Life", s: [
-      "So the harder question is still sitting there, exactly where it was.",
-      "If life comes only from life, where did the first life come from?",
-      "Nobody was watching, and it has never once been repeated in a laboratory, so it cannot be tested the way Pasteur tested his flasks.",
-      "Many scientists answer that the first living thing assembled itself from non-living chemicals across an enormous span of time, under conditions that no longer exist anywhere on Earth.",
-      "The Bible answers that God made living things on purpose, each one able to reproduce after its own kind.",
-      "Genesis 1 describes the earth bringing forth plants after their kind, with the seed already in them.",
-      "That is the same pattern biogenesis describes: life producing life like itself.",
-      "Notice carefully that the two answers are not arguing about the experiments.",
-      "Redi, Spallanzani and Pasteur are not in dispute, and nobody is asking you to pick a side on them.",
-      "The disagreement is about a single event that no experiment has ever reached.",
-      "Knowing the difference between those two kinds of question is worth more than either answer on its own."
+      "Redi and Pasteur did not answer where the first life came from.",
+      "Their experiments began in a world where life already existed.",
+      "Redi had flies around his jars, and Pasteur had microorganisms in the environment.",
+      "Their experiments showed where new organisms came from under the conditions they tested, but they did not recreate or observe the beginning of life itself.",
+      "",
+      "Scientists continue to investigate ideas about how the earliest life could have arisen from nonliving chemistry.",
+      "The Bible gives a different answer by identifying the source of life as God Himself.",
+      "",
+      "Genesis 1 describes God creating plants and animals and commanding them to reproduce according to their kinds.",
+      "Genesis 2:7 describes God forming man from the dust of the ground and giving him the breath of life.",
+      "This connects with something we still observe today: life comes from life.",
+      "Scripture takes that pattern back to its beginning and points to God as the ultimate giver of life.",
+      "",
+      "The incredible complexity of life gives us something else to consider.",
+      "Even a tiny cell contains organized structures and biological information that work together to keep it alive.",
+      "Christians can look at this complexity and recognize evidence of purposeful and intelligent design.",
+      "",
+      "If life shows evidence of intelligent design, it is reasonable to ask about an Intelligent Designer.",
+      "The Bible identifies that Designer as God, our Creator.",
+      "He is called the Creator for a reason.",
+      "Genesis begins, “In the beginning God created the heaven and the earth” (Genesis 1:1).",
+      "Acts 17:25 also tells us that God “giveth to all life, and breath, and all things.”",
+      "",
+      "Science gives us powerful tools for studying how living things work and reproduce.",
+      "Scripture takes us to the deeper question of who stands behind life and creation.",
+      "As we continue studying life science, we can examine the evidence carefully while recognizing the amazing order and design of the world God created."
     ]}
   ],
+  /* 🚨 TEACHER NOTES, Paul's own text, 2026-09-03. The first `ground` block on a
+     READING lesson - maths and English already had one, this pipeline did not.
+     ⚠️ The shape is deliberately NOT the maths/English one (whatItIs, whyItMatters,
+     commonMistake, whenStuck). Paul wrote these as Goal / Teaching / Vocabulary /
+     Biblical Connection and a reading lesson is a different animal, so it gets its
+     own shape rather than having his words folded into fields they do not fit.
+     🚨 THERE IS NO `vocab` FIELD HERE ON PURPOSE. His notes listed the same four
+     terms that are already in `words` below. Storing them twice is how a definition
+     gets changed in one place and silently disagrees in the other - the same drift
+     that came off the home page six times. requireGround() REFUSES a vocab key and
+     the template renders the list from `words`.
+     ⚠️ No "when stuck" field yet. That is the field that earns its keep in the maths
+     notes and this shape drops it; `teaching` half covers it. Optional fifth block
+     if Paul wants it - do not invent one for him. */
+  ground: {
+    sections: [
+      { h: "Lesson Goal", p: [
+        "Students will learn how experiments by Francesco Redi and Louis Pasteur challenged spontaneous generation and helped establish the principle of biogenesis, which states that living things come from other living things."
+      ]},
+      { h: "Teaching the Lesson", p: [
+        "Begin by asking: “If you leave food outside and maggots appear, where did the maggots come from?” Explain that people once believed they came directly from the meat. This idea was called spontaneous generation.",
+        "Redi tested this idea using meat in different jars. Later, Pasteur performed an even stronger experiment using his famous swan neck flask. His flask allowed air inside while keeping dust and microorganisms away from the broth. Life appeared only when microorganisms were able to reach it.",
+        "Explain that this evidence supported biogenesis."
+      ]},
+      { h: "Key Vocabulary", vocab: true },
+      { h: "Biblical Connection", p: [
+        "Science can study how living things reproduce and where new organisms come from today. The Bible takes the question further by identifying God as the Creator and source of life.",
+        "Genesis 1 repeatedly describes living things reproducing according to their kinds. This provides a natural connection to the pattern students observe in biogenesis: life produces life."
+      ]}
+    ]
+  },
+  /* 🚨 THE ORDER HERE MUST MATCH THE PAGE, and it did not. Paul caught it 2026-09-03:
+     this said word cards FIRST, then questions. The page is the other way round -
+     lesson-template.html has Day One = "The Questions" and Day Two = "The Words",
+     and build-lessons.js builds day 1 from `questions` and day 2 from the vocabulary.
+     It also never mentioned that the work is split across two days at all, which is
+     the single most useful thing it could say.
+     ⚠️ It is the LAST thing the student hears, so it is the instruction that actually
+     gets followed. Check it against the template whenever the day split changes. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. Two things left, and both of them send you back into the text.",
-      "First the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
-      "Then four questions. The answer to each one is in the reading above, not in your memory.",
+      "That is the reading done, and the rest of this lesson is split across two days.",
+      "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
-      "The one people trip on is what Pasteur's curved neck was for. Read Pasteur Settles It again and look for what the shape let IN and what it kept OUT.",
+      "The one people trip on is what Pasteur's curved neck was for. Read Pasteur Solves the Mystery again and look for what the shape let IN and what it kept OUT.",
+      "Day Two is the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
+      "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
       "If you can explain why the neck had to stay open, you have understood the best experiment in this lesson."
   ] },
+  /* ⚠️ VARIABLE was worded three different ways across Paul's three documents -
+     the old card said "the one thing you change on purpose", his teacher notes said
+     "something that is changed", his answer key said "can change or be measured".
+     The card has to agree with the vocabulary check or a student reasons his way to
+     the wrong box, so the ANSWER KEY wording wins here and in Q7. */
   words: [
-    ["Spontaneous Generation", "The old idea that living things could appear straight out of non-living material. Rags making mice, meat making maggots. Every careful test of it failed."],
-    ["Biogenesis", "The principle that living things come only from other living things. What replaced spontaneous generation after Pasteur."],
-    ["Variable", "The one thing you change on purpose in an experiment while keeping everything else the same. Redi changed only the covering on the jars."],
-    ["Controlled Experiment", "A test where one variable is changed and everything else is held steady, so you can tell what actually caused the result."]
+    ["Spontaneous Generation", "The old belief that living things could naturally appear from nonliving material. Rags making mice, meat making maggots. Every careful test of it failed."],
+    ["Biogenesis", "The principle that living things come from other living things. What replaced spontaneous generation after Pasteur."],
+    ["Variable", "Something that can change or be measured during an experiment. Redi changed only the covering on the jars."],
+    ["Controlled Experiment", "A test designed to determine how changing one factor affects the result."]
   ],
+  /* Paul's questions, 2026-09-03. Every `find` was checked line by line against the
+     rewritten story, not carried over. */
+  /* 🚨 findsAt = the number of STORY sentences those indexes were verified against.
+     Change the story and the build stops until they are re-checked. It exists because
+     an index can stay in range and still be wrong: merging two sentences into one on
+     2026-09-03 left question 4 pointing one line into the next paragraph, and the
+     range check passed. See checkFinds() in build-lessons.js. */
+  findsAt: 55,
   questions: [
-    { q: "What did Redi's gauze-covered jars show that the sealed jars could not?", find: [13, 16, 17, 18],
-      hint: "Look at what appeared ON TOP of the gauze, and what that ruled out.",
+    { q: "What did Redi's experiment with meat show?", find: [9, 10, 11, 13, 14],
+      hint: "Compare the open jars with the ones the flies could not reach.",
       choices: [
-        "Air could still reach the meat and no maggots grew in it, while maggots appeared on top of the gauze where flies had laid eggs.",
-        "The meat rotted faster when it could not breathe.",
-        "Maggots grew inside the gauze jars just as fast as in the open ones.",
-        "Sealing a jar is the only way to keep meat fresh."
-      ], right: 0 },
-    { q: "Why was the S-shaped neck on Pasteur's flask so important?", find: [34, 35, 36, 37],
-      hint: "His critics had complained about one thing. The shape answered that complaint.",
+        "Meat needs air to stay alive.",
+        "Maggots came from flies, not from the meat itself.",
+        "Maggots only grow inside sealed jars.",
+        "Meat can produce living things."
+      ], right: 1 },
+    { q: "Why was the curved neck on Pasteur's flask important?", find: [20, 21, 22],
+      hint: "Think about what the shape let IN and what it kept OUT.",
       choices: [
-        "It let air pass in and out freely, answering the objection about ruined air, while trapping dust in the bend so nothing living reached the broth.",
-        "It kept all air out of the flask, which stopped anything from growing.",
-        "It made the broth boil faster and killed more organisms.",
-        "It let him pour the broth without spilling it."
-      ], right: 0 },
-    { q: "What does biogenesis mean?", find: [43, 44],
+        "It prevented all air from entering.",
+        "It made the broth boil faster.",
+        "It allowed air inside while trapping dust and microorganisms.",
+        "It kept the broth colder."
+      ], right: 2 },
+    { q: "What does biogenesis mean?", find: [26, 27],
       hint: "It is the principle that replaced spontaneous generation.",
       choices: [
-        "That living things come only from other living things.",
-        "That living things can form from non-living material given enough time.",
-        "That all living things are made of cells.",
-        "That boiling a liquid always kills everything in it."
-      ], right: 0 },
-    { q: "Why can these experiments not settle where the first life came from?", find: [49, 50, 51, 52],
-      hint: "Look at what was already in the room before each experiment started.",
+        "Life can appear from nonliving material.",
+        "All living things are made of cells.",
+        "Living things come from other living things.",
+        "All organisms need sunlight."
+      ], right: 2 },
+    { q: "Why did Pasteur's experiment not answer where the first life came from?", find: [35, 36, 37],
+      hint: "Look at what was already in the room before the experiment started.",
       choices: [
-        "Because every one of them began with life already existing somewhere, so none of them reached the question of the very first living thing.",
-        "Because Pasteur made a mistake that nobody noticed until later.",
-        "Because the experiments were never repeated by anyone else.",
-        "Because microscopes in the 1800s were not powerful enough to see anything."
-      ], right: 0 }
+        "His microscope was not powerful enough.",
+        "His experiment already took place in a world containing living organisms.",
+        "His experiment failed.",
+        "He forgot to test the broth."
+      ], right: 1 }
+  ],
+  /* 🚨 HAND-WRITTEN DAY 2, Paul's Q5-8. Without this key build-lessons.js GENERATES
+     the vocabulary check, using the other three definitions as the wrong answers.
+     That works, but every distractor is then a definition from the same short list,
+     so the shape of the question gives the game away. Paul's distractors are real
+     wrong ideas ("the study of microscopes"), which is a harder and fairer test.
+     ⚠️ The generator stays as the fallback for lessons with no hand-written set. */
+  vocabQuestions: [
+    { q: "What is <i>spontaneous generation</i>?",
+      choices: [
+        "The old belief that living things could naturally appear from nonliving material.",
+        "The principle that life comes from other life.",
+        "Something changed during an experiment.",
+        "An experiment using controlled conditions."
+      ], right: 0 },
+    { q: "What is <i>biogenesis</i>?",
+      choices: [
+        "Life appearing from nonliving material.",
+        "The principle that living things come from other living things.",
+        "A change made during an experiment.",
+        "The study of microscopes."
+      ], right: 1 },
+    { q: "What is a <i>variable</i>?",
+      choices: [
+        "The final answer to an experiment.",
+        "Something that can be changed or measured in an experiment.",
+        "A living organism used in an experiment.",
+        "Something that must always stay the same."
+      ], right: 1 },
+    { q: "What is a <i>controlled experiment</i>?",
+      choices: [
+        "An experiment where everything is changed.",
+        "An experiment without a question.",
+        "A test designed to determine how changing one factor affects the result.",
+        "An experiment that always proves the scientist correct."
+      ], right: 2 }
   ]
 }
 ,
@@ -601,9 +793,12 @@ const LESSONS = [
   shelf: { grades: [7], subject: "Science",
     thumb: true,   /* Paul's art, 2026-08-31. Source PNG on his Desktop; see Lesson 1. */
     blurb: "Science is a method, not a pile of facts. What the method can settle, and what it cannot.",
+    /* ⚠️ FIVE words here, not four. Paul added Observation on 2026-09-03. A count in a
+       blurb goes stale silently - check it whenever `words` changes. Same class of bug
+       as the "three scientists" dek on Lesson 2. */
     contains: [
       "A story-form reading, read aloud with the words highlighted",
-      "Four vocabulary words, each one defined inside the reading",
+      "Five vocabulary words, each one defined inside the reading",
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
@@ -613,118 +808,238 @@ const LESSONS = [
     ref: "Proverbs 25:2",
     text: "It is the glory of God to conceal a thing: but the honour of kings is to search out a matter.",
   },
+  /* 🚨 TEACHER NOTES, Paul's own text, 2026-09-03. HIS HEADINGS ARE NOT LESSON 2's -
+     Goal / Key Concepts / Teaching Suggestion, with the point about creation folded
+     into the closing paragraph instead of standing as its own Biblical Connection.
+     That difference is why `ground` is a list of sections rather than fixed fields.
+     ⚠️ "Key Vocabulary" is MINE, not his, matching Lesson 2. It renders from `words`
+     so it duplicates nothing, but it is the one heading here he did not write. */
+  ground: {
+    sections: [
+      { h: "Lesson Goal", p: [
+        "Students will learn that science is not simply a collection of facts. It is a method of asking questions, testing ideas, studying evidence, and correcting mistakes."
+      ]},
+      { h: "Key Concepts", p: [
+        "The scientific process begins with observation. Observations lead to questions, and questions can lead to a hypothesis, which is a possible explanation that can be tested. Scientists then design experiments, compare results, and draw conclusions based on evidence.",
+        "Students should also understand that a scientific theory and a scientific law are different. A theory explains patterns or events using a large body of evidence. A law describes a consistent pattern or relationship in nature. A theory does not eventually become a law."
+      ]},
+      { h: "Teaching Suggestion", p: [
+        "Begin with something simple. Drop a pencil and ask, “Why did it fall?” The student observed something, but observation alone does not explain it. This is a good way to introduce the difference between seeing something happen and investigating why it happens.",
+        "Near the end, remind students that science is an excellent tool for studying the physical world, but it cannot answer every kind of question. Scripture teaches that the world science investigates is God's creation."
+      ]},
+      { h: "Key Vocabulary", vocab: true }
+    ]
+  },
+  /* 🚨 REWRITTEN 2026-09-03 FROM PAUL'S OWN TEXT, the third lesson through item 29 after
+     Lesson 1 (2026-08-31) and Lesson 2 (earlier the same evening).
+     ⚠️ Markdown emphasis stripped on the way in - sentences render through textContent as
+     word spans, so a `**bold**` would ship as literal asterisks. The five terms he bolded
+     are the five word cards.
+     ⚠️ The verse quotations keep their curly quotes; esc() only touches backslashes and
+     straight double quotes, so they pass through untouched.
+     🚨 SENTENCE NUMBERS ARE LOAD-BEARING - see `findsAt` below. */
   parts: [
-    { title: "Not A Pile Of Facts", s: [
-      "Ask most people what science is and they will describe a subject full of facts to be memorised.",
-      "That is what science has produced, not what science is.",
-      "Science is a method for finding out whether something is true, built to work even when the person using it is wrong.",
-      "That last part is the clever bit.",
-      "Everybody is wrong sometimes, including careful and honest people.",
-      "So the method is designed to catch mistakes rather than to trust anyone's judgement.",
-      "Redi did not settle the maggot question by being respected.",
-      "He settled it by running a test that anyone else could run for themselves."
+    { title: "Science Is More Than Facts", s: [
+      "When you hear the word science, you might picture a giant textbook filled with facts you have to memorize.",
+      "But science is much more interesting than that.",
+      "",
+      "Science is a way of investigating the natural world.",
+      "Scientists observe what happens, ask questions, test ideas, and examine the results.",
+      "Most importantly, good science allows ideas to be tested and corrected when the evidence does not support them.",
+      "",
+      "Think back to Redi and Pasteur.",
+      "Redi did not prove his idea simply by saying, “Trust me, I am a scientist.”",
+      "He designed an experiment that other people could examine and repeat.",
+      "",
+      "That is an important part of science."
     ]},
-    { title: "It Starts With Noticing", s: [
-      "Every piece of science starts with an observation, which just means something you noticed.",
-      "Maggots keep appearing on meat left in the open.",
-      "The broth in the flask on the left went cloudy and the one on the right did not.",
-      "An observation on its own is not science yet.",
-      "It becomes science when it turns into a question you can actually chase.",
-      "Where do the maggots come from is a chaseable question.",
-      "Notice that a good question is narrow.",
-      "Why is there life is enormous and interesting, but you cannot build a test around it, so it belongs to a different kind of thinking."
+    { title: "It Starts With Observation", s: [
+      "Science often begins when someone notices something interesting.",
+      "This is called an observation.",
+      "",
+      "Maybe one plant near a window grows faster than another.",
+      "Maybe bread left on the counter develops mold.",
+      "Maybe you notice that objects always fall toward the ground when you drop them.",
+      "",
+      "Observation leads to questions.",
+      "",
+      "Why did that happen?",
+      "What caused it?",
+      "Would it happen again?",
+      "",
+      "A good scientific question is one that scientists can investigate using observations, measurements, experiments, or other evidence."
     ]},
-    { title: "A Hypothesis Is A Guess With Consequences", s: [
-      "Once you have a question you make a hypothesis, which is a proposed answer to it.",
-      "The word gets used loosely, so be precise here.",
-      "A hypothesis is not just any guess.",
-      "It is a guess that commits you to something, because it tells you what you should find if it is right and what you should find if it is wrong.",
-      "Flies lay eggs on meat is a hypothesis, because it predicts that meat flies cannot reach will grow no maggots.",
-      "That prediction is what makes it testable.",
-      "If an idea is arranged so that nothing could ever count against it, it may still be true, but it is not doing science.",
-      "It has simply stepped out of the method's reach."
+    { title: "From Question to Hypothesis", s: [
+      "After asking a question, a scientist may form a hypothesis.",
+      "A hypothesis is a possible explanation or answer that can be tested.",
+      "",
+      "Imagine you notice that a plant near the window grows faster than a plant across the room.",
+      "You might form the hypothesis:",
+      "The plant grows faster because it receives more sunlight.",
+      "",
+      "Now you have something you can test.",
+      "You could grow similar plants while changing the amount of light they receive and compare what happens.",
+      "",
+      "A good hypothesis must allow evidence to support it or show that it needs to be changed."
     ]},
-    { title: "The Test", s: [
-      "Now you build the experiment, and the whole craft of it is holding things steady.",
-      "You change one variable and keep everything else the same, because if you change two things at once you will never know which one mattered.",
-      "The jar you leave alone is called the control, and it is the thing you compare against.",
-      "Without a control you have a story, not a result.",
-      "Then you run it, write down what actually happened, and report it whether or not it is what you hoped for.",
-      "Spallanzani's critics were allowed to object, and they were right to.",
-      "Their objection is what forced Pasteur's better flask a century later, which is the method working exactly as intended.",
-      "Being corrected is not a failure inside science. It is the point of it."
+    { title: "Testing the Idea", s: [
+      "Scientists use experiments to test hypotheses.",
+      "A good experiment tries to change one important factor while keeping other conditions as similar as possible.",
+      "Scientists may also use a control, which provides something to compare the experimental results against.",
+      "",
+      "Then comes one of the most important parts of science: following the evidence.",
+      "",
+      "Sometimes the results support the hypothesis.",
+      "Sometimes they do not.",
+      "",
+      "Finding out that your hypothesis was wrong does not mean the experiment failed.",
+      "It means you learned something.",
+      "Scientists can change their ideas and test again.",
+      "That is one of the strengths of science."
     ]},
     { title: "Theory Does Not Mean Guess", s: [
-      "In everyday speech a theory is a hunch, and that is where a lot of confusion comes from.",
-      "In science a theory is nearly the opposite.",
-      "A scientific theory is an explanation that has survived a very large amount of testing and ties many separate observations together.",
-      "Biogenesis is at that level, and so is the idea that living things are made of cells.",
-      "A scientific law is different again.",
-      "A law describes what reliably happens without explaining why it happens.",
-      "Gravity is a law in that sense: we can predict it precisely, and describing it is not the same as explaining it.",
-      "So a theory never grows up into a law. They are two different jobs."
+      "You may hear someone say, “That's just a theory.”",
+      "In everyday conversation, theory can mean a guess.",
+      "In science, it means something much stronger.",
+      "",
+      "A scientific theory is a broad explanation of the natural world that is supported by a large amount of evidence and has been tested many times.",
+      "A scientific law has a different job.",
+      "A law describes a consistent pattern or relationship observed in nature.",
+      "",
+      "A simple way to remember the difference is:",
+      "A theory helps explain. A law describes a pattern or relationship.",
+      "",
+      "A theory does not become a law when scientists collect enough evidence.",
+      "They have different purposes."
     ]},
-    { title: "What The Method Cannot Reach", s: [
-      "Here is the part that is usually skipped, and it matters more than the rest.",
-      "The method needs an event you can observe, repeat, or leave evidence of.",
-      "Take those away and it has nothing to grip.",
-      "That is why the origin of the first life sits outside it, as we saw in the last lesson.",
-      "But the limits go further than that, and it is worth being honest about them.",
-      "Science can tell you what a substance will do to a human body.",
-      "It cannot tell you whether you should give it to one.",
-      "Science can measure a thing precisely and still say nothing about whether it is beautiful, or right, or worth doing.",
-      "Those are real questions with real answers, and people answer them every day.",
-      "They are simply answered with different tools.",
-      "A scientist who says the method reaches everything has left the method behind and started making claims it cannot support."
+    { title: "Can Science Answer Everything?", s: [
+      "Science is an incredibly powerful tool, but every tool has a purpose.",
+      "",
+      "A microscope can help you examine a cell, but it cannot tell you whether stealing is wrong.",
+      "A thermometer can measure temperature, but it cannot measure love.",
+      "Science can study what happens inside the human brain, but scientific measurements alone cannot determine the purpose of human life.",
+      "",
+      "Questions about morality, meaning, purpose, and God are not answered simply by running another laboratory experiment.",
+      "",
+      "That does not make those questions unimportant.",
+      "It means we need to recognize what science was designed to investigate and what it was not."
+    ]},
+    { title: "Studying God's Creation", s: [
+      "For Christians, studying science can be one way of studying the incredible world God created.",
+      "",
+      "Psalm 19:1 says, “The heavens declare the glory of God; and the firmament sheweth his handywork.”",
+      "",
+      "Think about what that means.",
+      "When we study stars, cells, animals, plants, energy, or the human body, we are examining something Scripture says ultimately came from God.",
+      "Romans 1:20 also teaches that God's “eternal power and Godhead” can be understood through the things He has made.",
+      "",
+      "The order we discover in nature is what makes science possible in the first place.",
+      "Scientists expect experiments to produce meaningful results because nature behaves in consistent and understandable ways.",
+      "",
+      "For Christians, that order should not point us away from God.",
+      "It can point us back to the Creator.",
+      "",
+      "God gave us minds capable of asking questions, observing His creation, and discovering how parts of it work.",
+      "Science gives us tools to investigate that creation.",
+      "Scripture reveals truths about the Creator, our purpose, morality, and our relationship with Him.",
+      "",
+      "We do not have to be afraid of asking questions.",
+      "We should learn to ask good questions, examine evidence carefully, admit when we are wrong, and continue searching for truth.",
+      "",
+      "As Proverbs 25:2 says, “It is the glory of God to conceal a thing: but the honour of kings is to search out a matter.”",
+      "",
+      "Science is one way we can search out the amazing details of the world God made."
     ]}
   ],
+  /* ⚠️ The day order here MUST match lesson-template.html: Day One is The Questions,
+     Day Two is The Words. Lesson 2 shipped with them the wrong way round and Paul
+     caught it on the page, not in the data. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. Two things left, and both send you back into the text.",
-      "First the word cards. Four words, each one explained inside the reading you just heard.",
-      "Then four questions. The answer to each is in the text above, not in your memory.",
-      "If a question is hard, do not guess. Use the bar or the arrows to go back to that part and read it again.",
-      "The one people trip on is theory against law. Read Theory Does Not Mean Guess again and look for which one EXPLAINS and which one only DESCRIBES.",
-      "If you can say why a theory never becomes a law, you have got the hardest idea in this lesson."
+      "That is the reading done, and the rest of this lesson is split across two days.",
+      "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
+      "The one people trip on is the difference between a theory and a law. Read Theory Does Not Mean Guess again and look for what each one is FOR.",
+      "Day Two is the word cards. Five words this time, and every one of them is explained somewhere in the story you just heard.",
+      "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
+      "If you can say why a theory never turns into a law, you have understood the hardest idea in this lesson."
   ] },
+  /* Paul's definitions, 2026-09-03. FIVE words - Observation is new; this lesson had four
+     before. ⚠️ Only four have a check question on Day Two: Paul wrote none for Observation
+     and one was NOT invented for him. build-lessons.js warns about the gap every build. */
   words: [
-    ["Hypothesis", "A proposed answer to a question, worded so it predicts what you should find if it is right and what you should find if it is wrong."],
-    ["Control", "The part of an experiment you deliberately leave alone, so you have something honest to compare the changed one against."],
-    ["Theory", "In science, an explanation that has survived a great deal of testing and ties many separate observations together. Not a hunch."],
-    ["Law", "A description of what reliably happens, without an explanation of why. Describing a thing and explaining it are two different jobs."]
+    ["Observation", "Something noticed or measured about the natural world."],
+    ["Hypothesis", "A possible explanation or answer that can be tested using evidence."],
+    ["Control", "Something that provides a comparison in an experiment."],
+    ["Theory", "A broad explanation supported by a large amount of evidence and repeated testing."],
+    ["Law", "A description of a consistent pattern or relationship observed in nature."]
   ],
+  /* 🚨 findsAt = the story sentence count these `find` indexes were verified against.
+     Change the story and the build stops until they are re-checked. See checkFinds(). */
+  findsAt: 70,
   questions: [
-    { q: "Why is science described as a method rather than a collection of facts?", find: [1, 2, 4, 5],
-      hint: "Look at the opening, at what the method is built to cope with.",
+    { q: "Why is science more than just a collection of facts?", find: [2, 3, 4],
+      hint: "Look for what scientists DO, not for what they have collected.",
       choices: [
-        "Because it is a way of finding out what is true that is built to catch mistakes, so it works even when the person using it is wrong.",
-        "Because scientists have not finished collecting all the facts yet.",
-        "Because the facts of science change completely every few years.",
-        "Because memorising facts is the only part of science that matters."
+        "Because scientific facts are mostly guesses.",
+        "Because science is a method of observing, asking questions, testing ideas, and examining evidence.",
+        "Because scientists do not need facts.",
+        "Because science only uses experiments."
+      ], right: 1 },
+    { q: "What makes a hypothesis useful in science?", find: [20, 24, 26],
+      hint: "A hypothesis nobody can check is no use to anybody.",
+      choices: [
+        "It can be tested using evidence.",
+        "It must always be correct.",
+        "It must come from a famous scientist.",
+        "It cannot be changed once it is written."
       ], right: 0 },
-    { q: "What makes a hypothesis testable?", find: [19, 20, 21, 22],
-      hint: "Look for what a hypothesis commits you to.",
+    { q: "What is the difference between a scientific theory and a scientific law?", find: [40, 41, 42, 44],
+      hint: "One of them explains. The other one describes.",
       choices: [
-        "It predicts what you should find if it is right and what you should find if it is wrong, so something could count against it.",
-        "It is written down by a scientist rather than an ordinary person.",
-        "It is a guess that turns out to be correct.",
-        "It is about something small enough to fit in a jar."
+        "A theory is a guess and a law is a proven theory.",
+        "A theory explains while a law describes a consistent pattern or relationship.",
+        "Theories are used in biology and laws are used in physics.",
+        "Every theory eventually becomes a law."
+      ], right: 1 },
+    { q: "Why can science not answer every kind of question?", find: [47, 51, 53],
+      hint: "Think about the microscope and the thermometer, and what neither one could measure.",
+      choices: [
+        "Scientists have not performed enough experiments yet.",
+        "Science only works with living things.",
+        "Science investigates the natural world using evidence, but questions such as morality and purpose require other kinds of reasoning.",
+        "Science cannot answer difficult questions."
+      ], right: 2 }
+  ],
+  /* Paul's hand-written Day Two, 2026-09-03. Four checks for five cards - see `words`. */
+  vocabQuestions: [
+    { q: "What is a <i>hypothesis</i>?",
+      choices: [
+        "A possible explanation that can be tested.",
+        "The final answer to every experiment.",
+        "A scientific law.",
+        "Something a scientist already knows is true."
       ], right: 0 },
-    { q: "What is the difference between a scientific theory and a scientific law?", find: [34, 37, 38, 39],
-      hint: "One of them explains. The other only describes.",
+    { q: "What is a <i>control</i>?",
       choices: [
-        "A theory explains why something happens and a law describes what reliably happens, so a theory never becomes a law.",
-        "A law is a theory that has been proved, so every theory becomes a law eventually.",
-        "A theory is a hunch and a law is a fact.",
-        "A law applies to living things and a theory applies to everything else."
+        "Something used for comparison during an experiment.",
+        "The scientist performing the experiment.",
+        "The answer to a hypothesis.",
+        "Something that must be changed."
       ], right: 0 },
-    { q: "According to the reading, what kinds of question does the method fail to reach?", find: [41, 43, 46, 47],
-      hint: "Look at the last section, at what science can measure and what it cannot settle.",
+    { q: "What is a <i>scientific theory</i>?",
       choices: [
-        "Ones with no observable or repeatable event, and questions about whether something is right, beautiful or worth doing.",
-        "Any question about living things, because they are too complicated to test.",
-        "Questions that have already been answered by somebody else.",
-        "Questions about events that happened more than a hundred years ago."
-      ], right: 0 }
+        "An idea with no evidence.",
+        "A broad explanation supported by a large amount of evidence and testing.",
+        "A law that has not been proven yet.",
+        "A scientist's personal opinion."
+      ], right: 1 },
+    { q: "What is a <i>scientific law</i>?",
+      choices: [
+        "A rule made by scientists.",
+        "A theory that became completely proven.",
+        "A description of a consistent pattern or relationship observed in nature.",
+        "An explanation with no evidence."
+      ], right: 2 }
   ]
 }
 ,
@@ -756,116 +1071,235 @@ const LESSONS = [
     ref: "Micah 6:8",
     text: "He hath shewed thee, O man, what is good; and what doth the LORD require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?",
   },
+  /* 🚨 TEACHER NOTES, Paul's own text, 2026-09-03. Goal / Key Concepts / Teaching
+     Suggestion, the same headings as Lessons 1 and 3.
+     ⚠️ "Key Vocabulary" is MINE, not his; it renders from `words` so it duplicates
+     nothing. Same addition as the other three science lessons. */
+  ground: {
+    sections: [
+      { h: "Lesson Goal", p: [
+        "Students will discover how scientific discoveries affect everyday life and learn the difference between science and technology. They will also learn why evidence matters and why knowing what we can do is different from deciding what we should do."
+      ]},
+      { h: "Key Concepts", p: [
+        "Science helps us discover how the natural world works. Technology uses knowledge to solve problems or accomplish tasks. Evidence is information gathered through observation, measurement, and testing. Ethics deals with questions about what is right and wrong."
+      ]},
+      { h: "Teaching Suggestion", p: [
+        "Ask the student to name three things they used before starting school today. A refrigerator, phone, medicine, clean water, toothpaste, or even breakfast can lead to a scientific discovery.",
+        "Near the end, emphasize that knowledge gives us responsibility. Science can tell us what is possible, but Scripture helps guide Christians in how knowledge should be used wisely and for good."
+      ]},
+      { h: "Key Vocabulary", vocab: true }
+    ]
+  },
+  /* 🚨 REWRITTEN 2026-09-03 FROM PAUL'S OWN TEXT. The fourth and last science lesson
+     through item 29, after Lessons 1, 2 and 3 the same evening.
+     ⚠️ ONE EDIT TO HIS TEXT, flagged to him and agreed: the four evidence questions
+     arrived as a single run - "You can ask questions such as: Who tested it? What did
+     they actually find? ..." - which reads aloud as one highlighted block four
+     questions long. They are separate sentences here, the way Lesson 3 handles "Why
+     did that happen? What caused it?", so his lead-in became "such as these."
+     ⚠️ US spelling "pasteurization" throughout, matching his text. The old word card
+     said "Pasteurisation" and the story said the same; both are US now so the card and
+     the story agree, which is what matters.
+     ⚠️ Markdown emphasis stripped - sentences render through textContent as word spans.
+     🚨 SENTENCE NUMBERS ARE LOAD-BEARING - see `findsAt` below. */
   parts: [
-    { title: "Before You Left The Kitchen", s: [
-      "Think back through this morning before you did anything you would call science.",
-      "The milk was still good, because somebody worked out that heating it and sealing it keeps organisms from spoiling it.",
-      "That process is called pasteurisation, and it is named after the man with the curved flask from Lesson 2.",
-      "The same discovery that ended a two-hundred-year argument is also the reason your breakfast was safe.",
-      "The water from the tap was treated so it would not make you ill.",
-      "If you have ever taken an antibiotic, you have used the knowledge that specific organisms cause specific illnesses.",
-      "None of that felt like science while you were doing it.",
-      "That is what a finished discovery looks like: it stops being remarkable and turns into ordinary life."
+    { title: "You Used Science Before Breakfast", s: [
+      "You probably used science today without even thinking about it.",
+      "",
+      "Maybe you opened the refrigerator and poured a glass of milk.",
+      "You turned on a faucet and drank clean water.",
+      "You checked the weather on a phone or used toothpaste to brush your teeth.",
+      "",
+      "None of those things probably felt like a science experiment, but scientific discoveries helped make all of them possible.",
+      "",
+      "Take milk as an example.",
+      "In Lesson 2, you learned about Louis Pasteur and his experiments with microorganisms.",
+      "That knowledge helped lead to pasteurization, a process that uses heat to reduce harmful microorganisms in foods such as milk.",
+      "",
+      "A discovery made in a laboratory eventually became something you use at the breakfast table.",
+      "",
+      "That is science at work in everyday life."
     ]},
-    { title: "Technology Is The Method Applied", s: [
-      "There is a useful distinction here that people blur constantly.",
-      "Science is finding out how something works.",
-      "Technology is using what was found out to build something that does a job.",
-      "Pasteur was doing science when he showed that organisms in dust spoil broth.",
-      "The dairy that heats and seals your milk is doing technology.",
-      "One does not automatically follow from the other, and the gap between them is often decades long.",
-      "It also runs the other way more often than people expect.",
-      "Better instruments let scientists see what they could not see before, and the microscope reopened the whole spontaneous generation argument."
+    { title: "Science and Technology", s: [
+      "Science and technology are closely connected, but they are not exactly the same thing.",
+      "",
+      "Science investigates how the natural world works. Technology applies knowledge to solve problems or accomplish tasks.",
+      "",
+      "Pasteur was doing science when he studied microorganisms.",
+      "Using knowledge about microorganisms to make food safer is an example of technology.",
+      "",
+      "The same relationship appears everywhere.",
+      "Scientists study electricity, while engineers use knowledge about electricity to create useful devices.",
+      "Scientists study weather, while technology helps us track storms and predict dangerous conditions.",
+      "",
+      "Science helps us understand.",
+      "Technology helps us put knowledge to work."
     ]},
-    { title: "Every New Power Is A New Choice", s: [
-      "Here is the part that matters most in this lesson.",
-      "Every time science makes something possible, somebody has to decide whether to do it.",
-      "The method is very good at telling you what will happen if you do a thing.",
-      "It is completely silent on whether you ought to.",
-      "Knowing how to keep food from spoiling is not the same as deciding who gets fed.",
-      "Knowing how to build something powerful is not the same as deciding what to point it at.",
-      "Those are not scientific questions at all, and no experiment will ever answer one.",
-      "They are questions about right and wrong, which is what the word ethics means, and everybody answers them, including the people who say they are not.",
-      "Micah 6:8 gives the short version of the standard: do justly, love mercy, walk humbly.",
-      "A person who can do a thing and asks first whether they should is not being unscientific.",
-      "They are being an adult about it."
+    { title: "Look at the Evidence", s: [
+      "You will hear scientific sounding claims throughout your life.",
+      "A commercial might say a product is “scientifically tested.”",
+      "Someone online might claim that a certain food, medicine, or product has an amazing effect.",
+      "",
+      "Do not believe something simply because it sounds scientific.",
+      "Ask about the evidence.",
+      "",
+      "Evidence is information gathered through observation, measurement, testing, and other reliable methods.",
+      "",
+      "You can ask questions such as these.",
+      "",
+      "Who tested it?",
+      "What did they actually find?",
+      "Was there something to compare it with?",
+      "Have other researchers found similar results?",
+      "",
+      "Asking questions does not mean rejecting science.",
+      "Asking careful questions is part of thinking scientifically."
     ]},
-    { title: "Reading A Claim Without Being Fooled", s: [
-      "You are going to spend your life on the receiving end of claims that sound scientific.",
-      "Some are careful and some are advertising, and telling them apart is a skill you can practise.",
-      "Ask who ran the test, and whether anyone who wanted a different answer has checked it.",
-      "Ask what was actually compared, because a claim with no control is a story.",
-      "Ask how many, because something that worked for three people is not yet a result.",
-      "Ask whether the person telling you gains something if you believe it.",
-      "And notice the difference between studied and proved, which advertising works hard to blur.",
-      "None of this requires a laboratory.",
-      "It is the same instinct Spallanzani's critics had when they said the air in that flask had been ruined."
+    { title: "Just Because We Can, Should We?", s: [
+      "Scientific knowledge can give people incredible abilities, but knowledge also brings responsibility.",
+      "",
+      "Imagine that scientists discover how to build an extremely powerful machine.",
+      "Science can help explain how to build it and what it can do.",
+      "",
+      "But science alone cannot decide whether using it in a particular way is right or wrong.",
+      "",
+      "Questions about right and wrong are questions of ethics.",
+      "",
+      "This is an important difference.",
+      "Science can help us understand what we can do. Ethics asks what we should do.",
+      "",
+      "The more powerful our knowledge becomes, the more important wisdom becomes too."
     ]},
-    { title: "Your Part In It", s: [
-      "You do not have to become a scientist for any of this to be yours.",
-      "You will vote, you will make decisions about your own health, and you will raise people who ask you questions.",
-      "Every one of those is a place where knowing how a claim gets tested changes what you do.",
-      "The habit is small and it is the whole thing: ask what the evidence actually is, meaning what was measured and what it was compared against, and then ask what the right thing to do with it is.",
-      "Those are two different questions and they both need answering.",
-      "Proverbs called searching a matter out an honour, and this unit has been four lessons of exactly that.",
-      "You learned what makes something alive, how people found out that life comes only from life, how the method works, and now what it costs and what it gives.",
-      "The unit is done. The searching is not."
+    { title: "Knowledge With Wisdom", s: [
+      "The Bible has a great deal to say about knowledge and wisdom.",
+      "",
+      "Proverbs 2:6 says, “For the LORD giveth wisdom: out of his mouth cometh knowledge and understanding.”",
+      "",
+      "God gave human beings minds capable of learning about His creation.",
+      "We can discover microorganisms, study cells, understand electricity, build machines, develop medicines, and explore places people once could never reach.",
+      "",
+      "But being able to do something does not automatically mean we should do it.",
+      "",
+      "Micah 6:8 tells us “to do justly, and to love mercy, and to walk humbly with thy God.”",
+      "",
+      "That gives Christians an important way to think about scientific knowledge.",
+      "We should ask not only “Can we do this?” but also “Is this right? Is it wise? Does it help people? Does it honor God?”",
+      "",
+      "Science gives us knowledge about creation.",
+      "God gives us a standard for how that knowledge should be used."
+    ]},
+    { title: "Science Points Us Back to the Creator", s: [
+      "Think about everything you have studied in this unit.",
+      "",
+      "You learned what makes something alive.",
+      "You learned that living things come from other living things.",
+      "You learned how scientists use observations and experiments to investigate the world.",
+      "Now you have seen how those discoveries become part of everyday life.",
+      "",
+      "Behind all of it is an orderly world that can be studied and understood.",
+      "",
+      "Psalm 111:2 says, “The works of the LORD are great, sought out of all them that have pleasure therein.”",
+      "",
+      "When we study cells, organisms, water, energy, or anything else in creation, we are studying the works of the Creator.",
+      "",
+      "Science does not have to pull us away from God.",
+      "The more we discover about the complexity, order, and usefulness of His creation, the more reasons we have to stand amazed at what He has made.",
+      "",
+      "God has given us the ability to learn.",
+      "Our responsibility is to use what we learn with wisdom, humility, and purpose.",
+      "",
+      "The unit may be ending, but there is still an entire creation waiting to be explored."
     ]}
   ],
+  /* ⚠️ The day order here MUST match lesson-template.html: Day One is The Questions,
+     Day Two is The Words. This block used to say word cards first, like Lessons 1 and 2
+     did before Paul caught it on the page on 2026-09-03. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and it is the last lesson in the unit. Two things left.",
-      "First the word cards. Four words, each one explained inside the reading you just heard.",
-      "Then four questions. The answer to each is in the text above, not in your memory.",
-      "If a question is hard, do not guess. Use the bar or the arrows to go back to that part and read it again.",
-      "The one people trip on is science against technology. Read Technology Is The Method Applied again and look for which one FINDS OUT and which one BUILDS.",
-      /* 🚨 THIS LINE USED TO PROMISE A "Unit 1 Review" THAT DOES NOT EXIST.
-         Paul's standing rule: never assign an unbuilt lesson. A title is not a
-         lesson. Put the review back in this line ONLY once the page is live. */
-      "When the questions are done, that is the whole unit finished. Look back at the four covers and say out loud what each lesson was about, because being able to say it is how you find out whether you actually have it."
+      "That is the reading done, and the rest of this lesson is split across two days.",
+      "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
+      "The one people trip on is the difference between science and technology. Read Science and Technology again and look for which one investigates and which one applies.",
+      "Day Two is the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
+      "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
+      "This is the last lesson in the unit, so if you can say what ethics asks that science cannot, you have finished it properly."
   ] },
+  /* Paul's definitions, 2026-09-03. Four words and four checks - a clean pair, unlike
+     Lessons 1 and 3 where a card was left unchecked.
+     ⚠️ US spelling, matching his story. The card used to say "Pasteurisation". */
   words: [
-    ["Pasteurisation", "Heating and sealing food so organisms cannot spoil it. Named after Louis Pasteur, whose curved flask ended the spontaneous generation argument."],
-    ["Technology", "Using what science found out to build something that does a job. Science finds out how; technology puts it to work."],
-    /* ⚠️ "Control" was here and was ALREADY a card in Lesson 3. Four cards per
-       lesson is the whole vocabulary budget, so a repeat spends a quarter of it
-       teaching nothing. The idea still gets its callback in the reading; it
-       just does not take a card twice. */
-    ["Evidence", "What was actually measured, and what it was compared against. A claim with nothing to compare it to is a story, not a result."],
-    ["Ethics", "The question of whether you should do a thing, as opposed to whether you can. No experiment answers it."]
+    ["Pasteurization", "A process that uses heat to reduce harmful microorganisms in foods and drinks."],
+    ["Technology", "The application of knowledge to solve problems or accomplish tasks."],
+    ["Evidence", "Information gathered through observation, measurement, testing, or other reliable methods."],
+    ["Ethics", "Questions and principles concerning what is right and wrong."]
   ],
+  /* 🚨 findsAt = the story sentence count these `find` indexes were verified against.
+     Change the story and the build stops until they are re-checked. See checkFinds(). */
+  findsAt: 63,
   questions: [
-    { q: "What is the difference between science and technology?", find: [9, 10, 11, 12],
-      hint: "One of them finds out. The other builds.",
+    { q: "What is the difference between science and technology?", find: [10, 11, 17, 18],
+      hint: "One of them understands. The other one puts it to work.",
       choices: [
-        "Science finds out how something works, and technology uses what was found out to build something that does a job.",
-        "Science is done in schools and technology is done in factories.",
-        "Technology is science that has been proved correct.",
-        "Science deals with living things and technology deals with machines."
+        "Science investigates how the natural world works, while technology applies knowledge to solve problems.",
+        "Science happens in schools, while technology happens in factories.",
+        "Science studies living things, while technology studies machines.",
+        "There is no difference between them."
       ], right: 0 },
-    { q: "Why can the scientific method not tell you whether you should do something?", find: [18, 19, 22, 23],
-      hint: "Look at what the method is good at, and the sentence that says what it is silent on.",
+    { q: "Why is evidence important when someone makes a scientific claim?", find: [22, 23, 24],
+      hint: "Think about what you are allowed to ask when something sounds scientific.",
       choices: [
-        "Because it tells you what will happen if you do a thing but is silent on whether you ought to, which is a question of right and wrong.",
-        "Because scientists are not allowed to have opinions about their own work.",
-        "Because those questions will be answered by better experiments later on.",
-        "Because right and wrong are not real questions and have no answers."
-      ], right: 0 },
-    { q: "Which of these best tests whether a scientific-sounding claim is trustworthy?", find: [29, 30, 31, 32],
-      hint: "Look at the list of things to ask, and at what a claim with nothing to compare against is called.",
+        "Evidence makes a claim sound more impressive.",
+        "Evidence gives us information from observation, measurement, or testing that we can examine.",
+        "Evidence proves that a scientist can never be wrong.",
+        "Evidence is only needed in laboratories."
+      ], right: 1 },
+    { q: "What is the difference between a scientific question and an ethical question?", find: [35, 36, 38],
+      hint: "One asks what is possible. The other asks what is right.",
       choices: [
-        "Ask who ran it, what it was compared against, how many were tested, and whether the person telling you gains if you believe it.",
-        "Ask whether it appears in an advertisement, because advertisements are checked before they run.",
-        "Ask whether it sounds complicated, because complicated claims are more likely to be true.",
-        "Ask whether you already agree with it."
-      ], right: 0 },
-    { q: "How does pasteurisation connect this lesson to Lesson 2?", find: [1, 2, 3],
-      hint: "Look at the milk in the first section, and who the process is named after.",
+        "Scientific questions are important, but ethical questions are not.",
+        "Science can help determine what is possible, while ethics considers what is right or wrong.",
+        "Ethics is another name for an experiment.",
+        "Scientific questions can never affect ethical decisions."
+      ], right: 1 },
+    { q: "How is pasteurization an example of science being used in everyday life?", find: [6, 7, 8],
+      hint: "Go back to the milk, and to whose experiments it came from.",
       choices: [
-        "The same discovery that ended the spontaneous generation argument is what keeps milk from spoiling, so Pasteur's flask and your breakfast are the same finding.",
-        "Pasteurisation was discovered by Redi when he covered his jars with gauze.",
-        "It shows that spontaneous generation was correct after all, in food.",
-        "It has no connection; it just happens to have a similar name."
+        "It uses knowledge about microorganisms to help make foods such as milk safer.",
+        "It causes microorganisms to appear in milk.",
+        "It turns milk into medicine.",
+        "It prevents milk from ever spoiling."
       ], right: 0 }
+  ],
+  /* Paul's hand-written Day Two, 2026-09-03, replacing the generated check whose wrong
+     answers were the other three definitions from this same lesson. */
+  vocabQuestions: [
+    { q: "What is <i>pasteurization</i>?",
+      choices: [
+        "A process that uses heat to reduce harmful microorganisms in foods and drinks.",
+        "A way of creating microorganisms.",
+        "A method for freezing food.",
+        "An experiment performed only by Louis Pasteur."
+      ], right: 0 },
+    { q: "What is <i>technology</i>?",
+      choices: [
+        "Memorizing scientific facts.",
+        "Applying knowledge to solve problems or accomplish tasks.",
+        "Studying only computers and electronics.",
+        "Deciding whether something is right or wrong."
+      ], right: 1 },
+    { q: "What is <i>evidence</i>?",
+      choices: [
+        "Anything someone says is true.",
+        "A person's opinion about an experiment.",
+        "Information gathered through observation, measurement, testing, or other reliable methods.",
+        "A scientific guess."
+      ], right: 2 },
+    { q: "What is <i>ethics</i>?",
+      choices: [
+        "The study of microorganisms.",
+        "Questions and principles concerning what is right and wrong.",
+        "A type of scientific experiment.",
+        "Using science to create technology."
+      ], right: 1 }
   ]
 }
 ];

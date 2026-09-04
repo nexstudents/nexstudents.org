@@ -171,6 +171,33 @@ h1{
 }
 .dek{color:var(--ink-soft);font-size:17px;line-height:1.65;margin:0;max-width:52ch}
 
+/* ---------- teacher notes ----------
+   🚨 STYLED ON THIS TEMPLATE'S OWN TOKENS (--surface, --rule, --ink-soft,
+   --verdigris), NOT the ns.css names. ns.css is not loaded on a lesson page, so
+   a --a or --dim here resolves to nothing and the panel renders unstyled. That
+   is exactly what went wrong on the unit strip; it is written down twice now.
+   The disclosure arrow points RIGHT closed and DOWN open, matching the integers
+   and English panels - Paul, 2026-08-30. */
+.ground{border:1px solid var(--rule);border-radius:12px;margin:20px 0 4px;
+  background:var(--surface);overflow:hidden}
+.ground summary{cursor:pointer;padding:14px 17px;font-weight:700;list-style:none;
+  display:flex;align-items:center;gap:10px;color:var(--ink)}
+.ground summary::-webkit-details-marker{display:none}
+.ground summary::after{content:"\25B8";margin-left:auto;color:var(--ink-faint);
+  transition:transform .18s;display:inline-block}
+.ground[open] summary::after{transform:rotate(90deg)}
+.ground summary:hover{color:var(--verdigris)}
+.ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-faint);font-weight:600}
+.ground .gbody{padding:2px 17px 18px;border-top:1px solid var(--rule);
+  color:var(--ink-soft);font-size:15.5px}
+.ground h3{margin:17px 0 5px;font-size:.79rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--verdigris);font-weight:700}
+.ground p{margin:0 0 9px;line-height:1.62;max-width:68ch}
+.ground dl{margin:6px 0 0;max-width:68ch}
+.ground dt{font-weight:700;color:var(--ink);margin:9px 0 1px}
+.ground dd{margin:0;line-height:1.6}
+
 /* ---------- player ---------- */
 .player{
   /* Docked to the foot of the screen on every width. Paul, 2026-08-29:
@@ -902,6 +929,12 @@ body.player-hidden .scrub{margin:0}
     <p class="dek">Rome spent five hundred years refusing to have a king. Then it got one, and almost nobody noticed the day it happened.</p>
   </header>
 
+  <!-- Teacher notes. Collapsed, above the reading, filled by build-lessons.js from
+       the lesson's `ground` block; the whole slot is empty for a lesson without one.
+       🚨 NO ANSWER KEY IN HERE - a <details> is not a lock and this page is public.
+       See requireGround() in build-lessons.js and ROADMAP item 23. -->
+  __GROUND__
+
   <div class="player" id="player">
     <div class="pcontrols">
       <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
@@ -992,7 +1025,13 @@ body.player-hidden .scrub{margin:0}
       <span class="dayprog" id="prog2">0 of 0</span>
     </div>
     <div class="daybar"><i id="bar2"></i></div>
-    <p class="section-note">Four words the booklet lists but never explains. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
+    <!-- ⚠️ This note used to name the printed Leif the Lion workbook the Rome lessons were
+         built from. It is hardcoded and never replaced per lesson, so all four science
+         lessons pointed at a printed thing that does not exist. Found 2026-09-03 while
+         fixing the todo block's day order; the answer feedback further down said it too.
+         🚨 BOTH DAY NOTES ARE SHARED BY EVERY LESSON. Keep them true of any lesson:
+         no book, no subject, no lesson number. -->
+    <p class="section-note">Four words from the reading. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
     <div class="cards" id="cards"></div>
     <h3 class="sub-head">Vocabulary Check</h3>
     <div id="questions2"></div>
@@ -2014,6 +2053,22 @@ function chip(show){
      going away is not the page deciding to grab the screen back. */
   if (on) chipTimer = setTimeout(function(){ c.classList.remove("show"); }, 7000);
 }
+/* 🚨 PRESSING PLAY IS ASKING. Paul, 2026-09-03: "if i click anywhere on the story
+   ... it read the story if i press play but the text doesnt move down with the tts
+   player running anymore."
+   `following` was turned off by any scroll during playback and NOTHING ever turned
+   it back on except catching the chip inside its 7 second timeout. Miss that window
+   and the page never auto-scrolled again for the life of the page - play, a tapped
+   sentence, the step arrows, none of them reset it. It reads like the follow feature
+   simply broke, because from the reader's side it has.
+   The rule the comment above already states is "nothing moves under your hands again
+   until you ask", and a deliberate start IS asking: the play button, tapping a
+   sentence to read from there, or stepping with the arrows. A scroll still turns it
+   off for that run, and the chip still offers it straight back. */
+function resumeFollowing(){
+  following = true;
+  chip(false);
+}
 function stopFollowing(){
   following = false;
   /* every deliberate scroll re-offers the way back, and restarts its timer -
@@ -2284,16 +2339,22 @@ playBtn.addEventListener("click", function(){
     paint();
   } else {
     playing = true;
+    resumeFollowing();
     speak(idx);
   }
 });
 
+/* The arrows are a deliberate "take me to that sentence", so they resume following
+   too - see resumeFollowing(). They already scrolled when paused; the bug was that
+   while PLAYING they handed off to speak(), which respected the stuck flag. */
 document.getElementById("back").addEventListener("click", function(){
   var t = Math.max(0, idx - 1);
+  resumeFollowing();
   if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
 });
 document.getElementById("fwd").addEventListener("click", function(){
   var t = Math.min(SENT.length - 1, idx + 1);
+  resumeFollowing();
   if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
 });
 var rateSel = document.getElementById("rate");
@@ -2465,6 +2526,7 @@ scrub.addEventListener("keydown", function(e){
     var i = parseInt(t.getAttribute("data-i"), 10);
     if (isNaN(i)) return;
     playing = true;
+    resumeFollowing();
     speak(i);
   });
 })();
@@ -2616,8 +2678,11 @@ function answer(qi, ci){
   var v = card.querySelector(".verdict");
   v.className = "verdict show " + (ci === Q.right ? "good" : "bad");
   v.textContent = ci === Q.right
-    ? "Correct. Write that into the booklet in your own words."
-    : "Not quite. The correct answer is marked above — read it, then write it into the booklet in your own words.";
+    /* ⚠️ These two lines used to name a printed workbook that only the Rome lessons had.
+       Every lesson shows them, so they must be true of every lesson - a notebook is
+       something the student always has. See the Day Two note above, same leftover. */
+    ? "Correct. Write that into your notebook in your own words."
+    : "Not quite. The correct answer is marked above — read it, then write it into your notebook in your own words.";
 
   paintProgress();
 

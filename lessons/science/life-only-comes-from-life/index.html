@@ -74,10 +74,9 @@
   <button class="dl dl-open" type="button" data-sub="g">Games<small>Play in the browser</small><i aria-hidden="true">&#8250;</i></button>
   <button class="dl dl-open" type="button" data-sub="c">Comics<small>Read on the site</small><i aria-hidden="true">&#8250;</i></button>
   <button class="dl dl-open" type="button" data-sub="p">For Parents<small>Placement exams</small><i aria-hidden="true">&#8250;</i></button>
-  <a class="dl" href="/about/">About<small>Who makes this</small></a>
-  <a class="dl" href="/contact/">Contact<small>Get in touch</small></a>
+  <a class="dl" href="/extras/">Extras<small>Reading log and more</small></a>
   <a class="navbtn" href="https://www.paypal.com/donate/?hosted_button_id=PZ9D8N9KVURDA" target="_blank" rel="noopener">Support Us</a>
-  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night"><span data-mode-icon>&#9790;</span><span data-mode-label>Night Mode</span></button>
+  <button class="mswitch mswitch-drawer" type="button" data-mode-toggle aria-label="Switch between day and night"><span class="mswitch-track"><span class="mswitch-knob"></span></span><span data-mode-label>Night Mode</span></button>
 </aside>
 <div class="dsubs" id="dsubs"><aside class="dsub" data-subpanel="gr" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Grades</h3><div class="dsub-body"><div class="dst-grid"><a class="dst" href="/grade-k/" aria-label="Kindergarten"><b>K</b></a><a class="dst" href="/grade-1/" aria-label="Grade 1"><b>1</b></a><a class="dst" href="/grade-2/" aria-label="Grade 2"><b>2</b></a><a class="dst" href="/grade-3/" aria-label="Grade 3"><b>3</b></a><a class="dst" href="/grade-4/" aria-label="Grade 4"><b>4</b></a><a class="dst" href="/grade-5/" aria-label="Grade 5"><b>5</b></a><a class="dst" href="/grade-6/" aria-label="Grade 6"><b>6</b></a><a class="dst" href="/grade-7/" aria-label="Grade 7"><b>7</b></a><a class="dst" href="/grade-8/" aria-label="Grade 8"><b>8</b></a></div></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></aside>
 <aside class="dsub" data-subpanel="r" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Resources</h3><div class="dsub-body"><a class="dsr view" href="/resources/">View Resources</a><a class="dsr" href="/resources/">What We Use<small>Books, tools and supplies</small></a><a class="dsr" href="/resources/books-and-readers/">Books and Readers<small>What he actually reads</small></a><a class="dsr" href="/resources/tools-and-supplies/">Tools and Supplies<small>Paper, pencils, the desk</small></a><a class="dsr" href="/resources/science-experiments/">Science Experiments<small>Run them at home</small></a><a class="dsr" href="/resources/reading-lists/">Reading Lists<small>By grade</small></a><a class="dsr" href="/blog/">Blog<small>How we teach it</small></a><a class="dsr" href="/resources/placement-tests/">Placement Tests<small>Free, and not ours</small></a></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></aside>
@@ -87,12 +86,32 @@
 </div>
 
 <nav id="nav" class="ns-nav"><div class="nv">
-  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-    <i></i><i></i><i></i>
-  </button>
+  <!-- 🚨 BURGER AND HOME SHARE ONE GRID CELL.
+       On mobile .nv is a THREE column grid - 1fr auto 1fr - so the logo sits
+       dead centre. Adding the home icon as a fourth grid item pushed the
+       logo, account and cart onto a second row. Paul saw it immediately:
+       "well you moved all the logo cart and login".
+       Wrapping both controls in .navleft keeps the grid at three items, so
+       the logo stays centred and the icon still sits beside the burger. -->
+  <div class="navleft">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <i></i><i></i><i></i>
+    </button>
+    <!-- 🚨 HOME IS AN ICON IN THE HEADER, NOT A BREADCRUMB CRUTCH.
+         Paul, 2026-09-02: "i dont even like how that is even an option on that
+         home name being the home button. can we just add a home icon on the
+         header next to the hamburger?" and "we dont need Home> Terms of Use".
+         A breadcrumb whose only rung is Home is not navigation, it is a link
+         wearing a costume. The icon is always there, on every page, in the same
+         place - which is what a reader actually wants from a way home.
+         ⚠️ The wordmark also links home; that is deliberate redundancy, not a
+         duplicate to clean up. The icon is a target, the wordmark is a brand. -->
+    <a class="homeb" href="/" aria-label="Home" title="Home">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
+    </a>
+  </div>
   <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
-  <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a></div>
-  <button class="modetog" type="button" data-mode-toggle aria-label="Switch between day and night" title="Day or night"><span data-mode-icon>&#9790;</span></button>
+  <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a><a class="mg-top" href="/extras/">Extras</a></div>
   
   <div class="navicons"><a class="navicon" href="/account/" aria-label="Sign in" title="Sign in"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></a><a class="navicon" href="/cart/" aria-label="Cart" title="Cart"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg></a></div>
 </div>
@@ -205,6 +224,33 @@ h1{
   margin:14px 0 10px;
 }
 .dek{color:var(--ink-soft);font-size:17px;line-height:1.65;margin:0;max-width:52ch}
+
+/* ---------- teacher notes ----------
+   🚨 STYLED ON THIS TEMPLATE'S OWN TOKENS (--surface, --rule, --ink-soft,
+   --verdigris), NOT the ns.css names. ns.css is not loaded on a lesson page, so
+   a --a or --dim here resolves to nothing and the panel renders unstyled. That
+   is exactly what went wrong on the unit strip; it is written down twice now.
+   The disclosure arrow points RIGHT closed and DOWN open, matching the integers
+   and English panels - Paul, 2026-08-30. */
+.ground{border:1px solid var(--rule);border-radius:12px;margin:20px 0 4px;
+  background:var(--surface);overflow:hidden}
+.ground summary{cursor:pointer;padding:14px 17px;font-weight:700;list-style:none;
+  display:flex;align-items:center;gap:10px;color:var(--ink)}
+.ground summary::-webkit-details-marker{display:none}
+.ground summary::after{content:"\25B8";margin-left:auto;color:var(--ink-faint);
+  transition:transform .18s;display:inline-block}
+.ground[open] summary::after{transform:rotate(90deg)}
+.ground summary:hover{color:var(--verdigris)}
+.ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-faint);font-weight:600}
+.ground .gbody{padding:2px 17px 18px;border-top:1px solid var(--rule);
+  color:var(--ink-soft);font-size:15.5px}
+.ground h3{margin:17px 0 5px;font-size:.79rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--verdigris);font-weight:700}
+.ground p{margin:0 0 9px;line-height:1.62;max-width:68ch}
+.ground dl{margin:6px 0 0;max-width:68ch}
+.ground dt{font-weight:700;color:var(--ink);margin:9px 0 1px}
+.ground dd{margin:0;line-height:1.6}
 
 /* ---------- player ---------- */
 .player{
@@ -929,13 +975,34 @@ body.player-hidden .scrub{margin:0}
 
   <header class="mast">
     <div class="eyebrow">
-      <span id="eyebrow0">Subject</span><span class="dot"></span>
+      <span id="eyebrow0">Science</span><span class="dot"></span>
       <span>Unit 1 &middot; Lesson 2</span><span class="dot"></span>
-      <span>Ancient Rome</span>
+      <span>Life Science</span>
     </div>
     <h1>Life Only Comes From Life</h1>
-    <p class="dek">For two thousand years people thought meat made maggots. Finding out it did not took three scientists, two hundred years, and one very oddly shaped bottle.</p>
+    <p class="dek">For hundreds of years people thought meat made maggots. Finding out it did not took two scientists, two hundred years, and one very oddly shaped bottle.</p>
   </header>
+
+  <!-- Teacher notes. Collapsed, above the reading, filled by build-lessons.js from
+       the lesson's `ground` block; the whole slot is empty for a lesson without one.
+       🚨 NO ANSWER KEY IN HERE - a <details> is not a lock and this page is public.
+       See requireGround() in build-lessons.js and ROADMAP item 23. -->
+  <details class="ground">
+    <summary><span class="who">For the teacher</span> Teacher Notes</summary>
+    <div class="gbody">
+      <h3>Lesson Goal</h3>
+      <p>Students will learn how experiments by Francesco Redi and Louis Pasteur challenged spontaneous generation and helped establish the principle of biogenesis, which states that living things come from other living things.</p>
+      <h3>Teaching the Lesson</h3>
+      <p>Begin by asking: “If you leave food outside and maggots appear, where did the maggots come from?” Explain that people once believed they came directly from the meat. This idea was called spontaneous generation.</p>
+      <p>Redi tested this idea using meat in different jars. Later, Pasteur performed an even stronger experiment using his famous swan neck flask. His flask allowed air inside while keeping dust and microorganisms away from the broth. Life appeared only when microorganisms were able to reach it.</p>
+      <p>Explain that this evidence supported biogenesis.</p>
+      <h3>Key Vocabulary</h3>
+      <dl><dt>Spontaneous Generation</dt><dd>The old belief that living things could naturally appear from nonliving material. Rags making mice, meat making maggots. Every careful test of it failed.</dd><dt>Biogenesis</dt><dd>The principle that living things come from other living things. What replaced spontaneous generation after Pasteur.</dd><dt>Variable</dt><dd>Something that can change or be measured during an experiment. Redi changed only the covering on the jars.</dd><dt>Controlled Experiment</dt><dd>A test designed to determine how changing one factor affects the result.</dd></dl>
+      <h3>Biblical Connection</h3>
+      <p>Science can study how living things reproduce and where new organisms come from today. The Bible takes the question further by identifying God as the Creator and source of life.</p>
+      <p>Genesis 1 repeatedly describes living things reproducing according to their kinds. This provides a natural connection to the pattern students observe in biogenesis: life produces life.</p>
+    </div>
+  </details>
 
   <div class="player" id="player">
     <div class="pcontrols">
@@ -1027,7 +1094,13 @@ body.player-hidden .scrub{margin:0}
       <span class="dayprog" id="prog2">0 of 0</span>
     </div>
     <div class="daybar"><i id="bar2"></i></div>
-    <p class="section-note">Four words the booklet lists but never explains. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
+    <!-- ⚠️ This note used to name the printed Leif the Lion workbook the Rome lessons were
+         built from. It is hardcoded and never replaced per lesson, so all four science
+         lessons pointed at a printed thing that does not exist. Found 2026-09-03 while
+         fixing the todo block's day order; the answer feedback further down said it too.
+         🚨 BOTH DAY NOTES ARE SHARED BY EVERY LESSON. Keep them true of any lesson:
+         no book, no subject, no lesson number. -->
+    <p class="section-note">Four words from the reading. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
     <div class="cards" id="cards"></div>
     <h3 class="sub-head">Vocabulary Check</h3>
     <div id="questions2"></div>
@@ -1194,205 +1267,209 @@ if (window.matchMedia){
 new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
 
 var PARTS = [
-  { title: "What People Used To Believe", s: [
-    "For most of history, people believed that living things could simply appear out of non-living material.",
-    "Leave a pile of old rags in a dark corner and mice would turn up, so the rags must have made the mice.",
-    "Leave meat sitting out in the open and maggots would appear on it, so the meat must have made the maggots.",
-    "This idea had a name.",
-    "It was called spontaneous generation.",
-    "It was not a stupid idea, and that is worth saying plainly.",
-    "People were watching events that really happened and drawing the obvious conclusion from them.",
-    "What they were missing was not intelligence.",
-    "It was a careful test."
+  { title: "Did Meat Really Make Maggots?", s: [
+    "Hundreds of years ago, people noticed something strange.",
+    "If meat was left outside, maggots eventually appeared.",
+    "Since nobody could see where the maggots came from, many people believed the meat actually produced them.",
+    "",
+    "This idea became known as spontaneous generation, the belief that living things could naturally appear from nonliving material.",
+    "",
+    "It seemed reasonable at the time.",
+    "The problem was that nobody had carefully tested it."
   ] },
-  { title: "Redi and the Jars", s: [
-    "In 1668 an Italian doctor named Francesco Redi decided to stop arguing about the meat and actually test it.",
-    "He put meat into a set of jars.",
-    "Some jars he left wide open.",
-    "Some he sealed shut completely.",
-    "And some he covered with a fine gauze, which let air through but kept flies out.",
-    "The open jars grew maggots.",
-    "The sealed jars did not.",
-    "The gauze-covered jars did not either, but maggots appeared on top of the gauze.",
-    "Flies had landed there and laid their eggs.",
-    "The meat was never making anything at all.",
-    "Flies were.",
-    "Redi had done something more important than finding the answer.",
-    "He changed one thing from jar to jar and kept everything else the same, and the one thing you change on purpose like that is called the variable.",
-    "That is what makes a test a controlled experiment, and it is the only way to know what is really causing what."
+  { title: "Redi Puts It to the Test", s: [
+    "In 1668, Italian scientist Francesco Redi decided to experiment.",
+    "He placed meat into different jars.",
+    "Some were open, some were sealed, and others were covered with gauze that allowed air inside but prevented flies from reaching the meat.",
+    "",
+    "Maggots appeared on the meat in the open jars.",
+    "They did not appear on the meat protected from flies.",
+    "On the gauze covered jars, maggots appeared on the gauze where flies had laid their eggs.",
+    "",
+    "The answer became clear.",
+    "The meat was not producing maggots.",
+    "Flies were producing more flies.",
+    "",
+    "Redi had also demonstrated an important part of good science.",
+    "He changed one variable while keeping other conditions similar.",
+    "Experiments designed this way help scientists determine what is actually causing a result."
   ] },
-  { title: "The Argument Was Not Over", s: [
-    "Redi convinced most people about maggots, and then the microscope arrived and reopened everything.",
-    "Scientists looked at broth that had been left standing and found it swarming with organisms nobody had ever seen.",
-    "The old idea came straight back.",
-    "Large creatures may well need parents, people argued, but surely these tiny ones form on their own.",
-    "In the 1760s an Italian priest and scientist named Lazzaro Spallanzani boiled broth and sealed the flasks shut.",
-    "Nothing grew.",
-    "His critics had an answer ready before he finished.",
-    "Boiling and sealing, they said, had ruined the air inside, and air was exactly what a new living thing would need in order to form.",
-    "That was a fair objection, not a cheat.",
-    "It kept the question open for another hundred years."
+  { title: "Pasteur Solves the Mystery", s: [
+    "Scientists later discovered microorganisms, and some wondered whether these tiny living things might still appear spontaneously.",
+    "",
+    "In 1861, French scientist Louis Pasteur designed a clever experiment to find out.",
+    "",
+    "Pasteur boiled broth inside a special flask with a long curved neck.",
+    "Air could still enter the flask, but dust and microorganisms became trapped in the curve before they could reach the broth.",
+    "",
+    "The broth remained free of microbial growth.",
+    "When Pasteur allowed the broth to contact the trapped dust, microorganisms began growing.",
+    "",
+    "The microorganisms had not appeared from the broth.",
+    "They had come from other microorganisms in the environment."
   ] },
-  { title: "Pasteur Settles It", s: [
-    "In 1861 a French scientist named Louis Pasteur designed the experiment that ended the argument for good.",
-    "He used a flask with a long neck bent into an S-shaped curve, like a swan's neck.",
-    "The neck stayed open the entire time, so air passed in and out freely.",
-    "That removed the objection about ruined air completely, which was the whole point of the shape.",
-    "But dust, and anything riding on the dust, settled in the bend of the neck and never reached the broth.",
-    "He boiled the broth and waited.",
-    "Nothing grew, and nothing kept on growing for month after month.",
-    "Then he tilted a flask so the broth ran up into the curve of the neck and back down again.",
-    "Within a day it was swarming.",
-    "The living things had been sitting in the dust the whole time.",
-    "Spontaneous generation had been given every chance and had failed every test.",
-    "What replaced it is called biogenesis, which means that living things come only from other living things."
-  ] },
-  { title: "What The Experiments Showed, And What They Did Not", s: [
-    "Now be careful, because it is easy to claim too much for these experiments.",
-    "What they showed is that under the conditions tested, life did not arise from non-living material.",
-    "That is a real result and a useful one.",
-    "It is why your food goes in the refrigerator and why a surgeon's instruments are sterilised before an operation.",
-    "But notice the question none of them touched.",
-    "Every single one of those experiments began with life already existing somewhere in the room.",
-    "Redi had flies. Spallanzani and Pasteur had organisms riding in the dust.",
-    "Not one of them explains where the very first living thing came from.",
-    "Pasteur was not trying to answer that, and he never claimed to have.",
-    "A test can only measure what you put in front of it."
+  { title: "Life Comes From Life", s: [
+    "Experiments like these helped establish the principle of biogenesis.",
+    "Biogenesis means that living things come from other living things.",
+    "",
+    "Dogs come from dogs.",
+    "Trees grow from seeds produced by other plants.",
+    "Bacteria come from existing bacteria.",
+    "Scientists have repeatedly observed this pattern in living things.",
+    "",
+    "But that creates an even bigger question.",
+    "If life comes from life, where did the first life come from?"
   ] },
   { title: "The First Life", s: [
-    "So the harder question is still sitting there, exactly where it was.",
-    "If life comes only from life, where did the first life come from?",
-    "Nobody was watching, and it has never once been repeated in a laboratory, so it cannot be tested the way Pasteur tested his flasks.",
-    "Many scientists answer that the first living thing assembled itself from non-living chemicals across an enormous span of time, under conditions that no longer exist anywhere on Earth.",
-    "The Bible answers that God made living things on purpose, each one able to reproduce after its own kind.",
-    "Genesis 1 describes the earth bringing forth plants after their kind, with the seed already in them.",
-    "That is the same pattern biogenesis describes: life producing life like itself.",
-    "Notice carefully that the two answers are not arguing about the experiments.",
-    "Redi, Spallanzani and Pasteur are not in dispute, and nobody is asking you to pick a side on them.",
-    "The disagreement is about a single event that no experiment has ever reached.",
-    "Knowing the difference between those two kinds of question is worth more than either answer on its own."
+    "Redi and Pasteur did not answer where the first life came from.",
+    "Their experiments began in a world where life already existed.",
+    "Redi had flies around his jars, and Pasteur had microorganisms in the environment.",
+    "Their experiments showed where new organisms came from under the conditions they tested, but they did not recreate or observe the beginning of life itself.",
+    "",
+    "Scientists continue to investigate ideas about how the earliest life could have arisen from nonliving chemistry.",
+    "The Bible gives a different answer by identifying the source of life as God Himself.",
+    "",
+    "Genesis 1 describes God creating plants and animals and commanding them to reproduce according to their kinds.",
+    "Genesis 2:7 describes God forming man from the dust of the ground and giving him the breath of life.",
+    "This connects with something we still observe today: life comes from life.",
+    "Scripture takes that pattern back to its beginning and points to God as the ultimate giver of life.",
+    "",
+    "The incredible complexity of life gives us something else to consider.",
+    "Even a tiny cell contains organized structures and biological information that work together to keep it alive.",
+    "Christians can look at this complexity and recognize evidence of purposeful and intelligent design.",
+    "",
+    "If life shows evidence of intelligent design, it is reasonable to ask about an Intelligent Designer.",
+    "The Bible identifies that Designer as God, our Creator.",
+    "He is called the Creator for a reason.",
+    "Genesis begins, “In the beginning God created the heaven and the earth” (Genesis 1:1).",
+    "Acts 17:25 also tells us that God “giveth to all life, and breath, and all things.”",
+    "",
+    "Science gives us powerful tools for studying how living things work and reproduce.",
+    "Scripture takes us to the deeper question of who stands behind life and creation.",
+    "As we continue studying life science, we can examine the evidence carefully while recognizing the amazing order and design of the world God created."
   ] },
   { title: "What To Do Now", s: [
-    "That is the reading done. Two things left, and both of them send you back into the text.",
-    "First the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
-    "Then four questions. The answer to each one is in the reading above, not in your memory.",
+    "That is the reading done, and the rest of this lesson is split across two days.",
+    "Day One is the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
     "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
-    "The one people trip on is what Pasteur's curved neck was for. Read Pasteur Settles It again and look for what the shape let IN and what it kept OUT.",
+    "The one people trip on is what Pasteur's curved neck was for. Read Pasteur Solves the Mystery again and look for what the shape let IN and what it kept OUT.",
+    "Day Two is the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
+    "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
     "If you can explain why the neck had to stay open, you have understood the best experiment in this lesson."
   ] }
 ];
 
 var WORDS = [
-  ["Spontaneous Generation", "The old idea that living things could appear straight out of non-living material. Rags making mice, meat making maggots. Every careful test of it failed."],
-  ["Biogenesis", "The principle that living things come only from other living things. What replaced spontaneous generation after Pasteur."],
-  ["Variable", "The one thing you change on purpose in an experiment while keeping everything else the same. Redi changed only the covering on the jars."],
-  ["Controlled Experiment", "A test where one variable is changed and everything else is held steady, so you can tell what actually caused the result."]
+  ["Spontaneous Generation", "The old belief that living things could naturally appear from nonliving material. Rags making mice, meat making maggots. Every careful test of it failed."],
+  ["Biogenesis", "The principle that living things come from other living things. What replaced spontaneous generation after Pasteur."],
+  ["Variable", "Something that can change or be measured during an experiment. Redi changed only the covering on the jars."],
+  ["Controlled Experiment", "A test designed to determine how changing one factor affects the result."]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
-    q: "What did Redi's gauze-covered jars show that the sealed jars could not?",
-    find: [13, 16, 17, 18],
-    hint: "Look at what appeared ON TOP of the gauze, and what that ruled out.",
+    q: "What did Redi's experiment with meat show?",
+    find: [9, 10, 11, 13, 14],
+    hint: "Compare the open jars with the ones the flies could not reach.",
     choices: [
-    "Air could still reach the meat and no maggots grew in it, while maggots appeared on top of the gauze where flies had laid eggs.",
-    "Sealing a jar is the only way to keep meat fresh.",
-    "Maggots grew inside the gauze jars just as fast as in the open ones.",
-    "The meat rotted faster when it could not breathe."
+    "Meat needs air to stay alive.",
+    "Maggots came from flies, not from the meat itself.",
+    "Maggots only grow inside sealed jars.",
+    "Meat can produce living things."
   ],
-    right: 0
+    right: 1
   },
   {
     day: 1,
-    q: "Why was the S-shaped neck on Pasteur's flask so important?",
-    find: [34, 35, 36, 37],
-    hint: "His critics had complained about one thing. The shape answered that complaint.",
+    q: "Why was the curved neck on Pasteur's flask important?",
+    find: [20, 21, 22],
+    hint: "Think about what the shape let IN and what it kept OUT.",
     choices: [
-    "It kept all air out of the flask, which stopped anything from growing.",
-    "It made the broth boil faster and killed more organisms.",
-    "It let air pass in and out freely, answering the objection about ruined air, while trapping dust in the bend so nothing living reached the broth.",
-    "It let him pour the broth without spilling it."
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "What does biogenesis mean?",
-    find: [43, 44],
-    hint: "It is the principle that replaced spontaneous generation.",
-    choices: [
-    "That boiling a liquid always kills everything in it.",
-    "That all living things are made of cells.",
-    "That living things can form from non-living material given enough time.",
-    "That living things come only from other living things."
+    "It prevented all air from entering.",
+    "It made the broth boil faster.",
+    "It kept the broth colder.",
+    "It allowed air inside while trapping dust and microorganisms."
   ],
     right: 3
   },
   {
     day: 1,
-    q: "Why can these experiments not settle where the first life came from?",
-    find: [49, 50, 51, 52],
-    hint: "Look at what was already in the room before each experiment started.",
+    q: "What does biogenesis mean?",
+    find: [26, 27],
+    hint: "It is the principle that replaced spontaneous generation.",
     choices: [
-    "Because every one of them began with life already existing somewhere, so none of them reached the question of the very first living thing.",
-    "Because microscopes in the 1800s were not powerful enough to see anything.",
-    "Because Pasteur made a mistake that nobody noticed until later.",
-    "Because the experiments were never repeated by anyone else."
+    "Life can appear from nonliving material.",
+    "All living things are made of cells.",
+    "Living things come from other living things.",
+    "All organisms need sunlight."
   ],
-    right: 0
+    right: 2
+  },
+  {
+    day: 1,
+    q: "Why did Pasteur's experiment not answer where the first life came from?",
+    find: [35, 36, 37],
+    hint: "Look at what was already in the room before the experiment started.",
+    choices: [
+    "His experiment failed.",
+    "His experiment already took place in a world containing living organisms.",
+    "His microscope was not powerful enough.",
+    "He forgot to test the broth."
+  ],
+    right: 1
   },
   {
     day: 2,
-    q: "What does <i>spontaneous generation</i> mean?",
+    q: "What is <i>spontaneous generation</i>?",
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "The one thing you change on purpose in an experiment while keeping everything else the same. Redi changed only the covering on the jars.",
-    "The principle that living things come only from other living things. What replaced spontaneous generation after Pasteur.",
-    "The old idea that living things could appear straight out of non-living material. Rags making mice, meat making maggots. Every careful test of it failed.",
-    "A test where one variable is changed and everything else is held steady, so you can tell what actually caused the result."
+    "The principle that life comes from other life.",
+    "Something changed during an experiment.",
+    "An experiment using controlled conditions.",
+    "The old belief that living things could naturally appear from nonliving material."
+  ],
+    right: 3
+  },
+  {
+    day: 2,
+    q: "What is <i>biogenesis</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "A change made during an experiment.",
+    "The study of microscopes.",
+    "The principle that living things come from other living things.",
+    "Life appearing from nonliving material."
   ],
     right: 2
   },
   {
     day: 2,
-    q: "What does <i>biogenesis</i> mean?",
+    q: "What is a <i>variable</i>?",
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "The principle that living things come only from other living things. What replaced spontaneous generation after Pasteur.",
-    "The one thing you change on purpose in an experiment while keeping everything else the same. Redi changed only the covering on the jars.",
-    "The old idea that living things could appear straight out of non-living material. Rags making mice, meat making maggots. Every careful test of it failed.",
-    "A test where one variable is changed and everything else is held steady, so you can tell what actually caused the result."
+    "Something that can be changed or measured in an experiment.",
+    "Something that must always stay the same.",
+    "The final answer to an experiment.",
+    "A living organism used in an experiment."
   ],
     right: 0
   },
   {
     day: 2,
-    q: "What does <i>variable</i> mean?",
+    q: "What is a <i>controlled experiment</i>?",
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "The one thing you change on purpose in an experiment while keeping everything else the same. Redi changed only the covering on the jars.",
-    "A test where one variable is changed and everything else is held steady, so you can tell what actually caused the result.",
-    "The principle that living things come only from other living things. What replaced spontaneous generation after Pasteur.",
-    "The old idea that living things could appear straight out of non-living material. Rags making mice, meat making maggots. Every careful test of it failed."
+    "A test designed to determine how changing one factor affects the result.",
+    "An experiment without a question.",
+    "An experiment that always proves the scientist correct.",
+    "An experiment where everything is changed."
   ],
     right: 0
-  },
-  {
-    day: 2,
-    q: "What does <i>controlled experiment</i> mean?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "The principle that living things come only from other living things. What replaced spontaneous generation after Pasteur.",
-    "The old idea that living things could appear straight out of non-living material. Rags making mice, meat making maggots. Every careful test of it failed.",
-    "A test where one variable is changed and everything else is held steady, so you can tell what actually caused the result.",
-    "The one thing you change on purpose in an experiment while keeping everything else the same. Redi changed only the covering on the jars."
-  ],
-    right: 2
   }
 ];
 
@@ -2141,6 +2218,22 @@ function chip(show){
      going away is not the page deciding to grab the screen back. */
   if (on) chipTimer = setTimeout(function(){ c.classList.remove("show"); }, 7000);
 }
+/* 🚨 PRESSING PLAY IS ASKING. Paul, 2026-09-03: "if i click anywhere on the story
+   ... it read the story if i press play but the text doesnt move down with the tts
+   player running anymore."
+   `following` was turned off by any scroll during playback and NOTHING ever turned
+   it back on except catching the chip inside its 7 second timeout. Miss that window
+   and the page never auto-scrolled again for the life of the page - play, a tapped
+   sentence, the step arrows, none of them reset it. It reads like the follow feature
+   simply broke, because from the reader's side it has.
+   The rule the comment above already states is "nothing moves under your hands again
+   until you ask", and a deliberate start IS asking: the play button, tapping a
+   sentence to read from there, or stepping with the arrows. A scroll still turns it
+   off for that run, and the chip still offers it straight back. */
+function resumeFollowing(){
+  following = true;
+  chip(false);
+}
 function stopFollowing(){
   following = false;
   /* every deliberate scroll re-offers the way back, and restarts its timer -
@@ -2411,16 +2504,22 @@ playBtn.addEventListener("click", function(){
     paint();
   } else {
     playing = true;
+    resumeFollowing();
     speak(idx);
   }
 });
 
+/* The arrows are a deliberate "take me to that sentence", so they resume following
+   too - see resumeFollowing(). They already scrolled when paused; the bug was that
+   while PLAYING they handed off to speak(), which respected the stuck flag. */
 document.getElementById("back").addEventListener("click", function(){
   var t = Math.max(0, idx - 1);
+  resumeFollowing();
   if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
 });
 document.getElementById("fwd").addEventListener("click", function(){
   var t = Math.min(SENT.length - 1, idx + 1);
+  resumeFollowing();
   if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
 });
 var rateSel = document.getElementById("rate");
@@ -2592,6 +2691,7 @@ scrub.addEventListener("keydown", function(e){
     var i = parseInt(t.getAttribute("data-i"), 10);
     if (isNaN(i)) return;
     playing = true;
+    resumeFollowing();
     speak(i);
   });
 })();
@@ -2743,8 +2843,11 @@ function answer(qi, ci){
   var v = card.querySelector(".verdict");
   v.className = "verdict show " + (ci === Q.right ? "good" : "bad");
   v.textContent = ci === Q.right
-    ? "Correct. Write that into the booklet in your own words."
-    : "Not quite. The correct answer is marked above — read it, then write it into the booklet in your own words.";
+    /* ⚠️ These two lines used to name a printed workbook that only the Rome lessons had.
+       Every lesson shows them, so they must be true of every lesson - a notebook is
+       something the student always has. See the Day Two note above, same leftover. */
+    ? "Correct. Write that into your notebook in your own words."
+    : "Not quite. The correct answer is marked above — read it, then write it into your notebook in your own words.";
 
   paintProgress();
 

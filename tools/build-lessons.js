@@ -45,45 +45,269 @@ function seeded(str) {
   for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
   return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 100000) / 100000; };
 }
-function shuffle(choices, rightIdx, seed) {
+/* 🚨 THE ANSWER POSITIONS ARE DEALT, NOT ROLLED. Paul, 2026-09-03: "cold you make a
+   shuffler?" after Lesson 3 came out A:1 B:1 C:2 D:4 - D correct half the time, so a
+   student who always picks D scores 50% without reading. Lesson 1 was worse, A:4 B:0
+   C:4 D:0, and had been left alone because re-seeding moved the other lessons too.
+
+   Shuffling each question on its own seed is what causes it: four independent rolls
+   across eight questions clump exactly the way four coin flips do. Fixing the seed
+   only moves WHICH lesson is lopsided.
+
+   So the correct answer's SLOT is decided for the whole lesson at once: deal
+   0,1,2,3,0,1,2,3 across the questions, shuffle that deal, then break any two-in-a-row.
+   Every lesson is now balanced to within one, by construction rather than by luck.
+   This is `mixOrder()` from build-integers.js, which already solved the same problem
+   for the sign combinations.
+
+   ⚠️ STILL FULLY DETERMINISTIC. Seeded off the lesson id, so a rebuild never moves an
+   answer under a student - the reason the original was seeded at all.
+   ⚠️ The DISTRACTORS are shuffled too, on their own seed. Placing the correct answer
+   without moving the others would leave the wrong ones in registry order, which is its
+   own pattern to learn. */
+function dealPositions(counts, seed) {
   const rnd = seeded(seed);
-  const arr = choices.map((c, i) => ({ c, correct: i === rightIdx }));
-  for (let i = arr.length - 1; i > 0; i--) {
+  const out = new Array(counts.length);
+  const pools = {};
+  counts.forEach((c, i) => { (pools[c] = pools[c] || []).push(i); });
+  Object.keys(pools).forEach((key) => {
+    const k = Number(key), idxs = pools[key];
+    const seq = idxs.map((_, j) => j % k);          /* the round-robin deal */
+    for (let i = seq.length - 1; i > 0; i--) {      /* then a seeded shuffle of the deal */
+      const j = Math.floor(rnd() * (i + 1));
+      [seq[i], seq[j]] = [seq[j], seq[i]];
+    }
+    /* Break runs. Balanced still allows D,D back to back, and two in a row is the
+       pattern a bored student notices first. Swap forward with a slot that does not
+       create a new run where it lands. */
+    for (let i = 1; i < seq.length; i++) {
+      if (seq[i] !== seq[i - 1]) continue;
+      for (let j = i + 1; j < seq.length; j++) {
+        if (seq[j] === seq[i - 1]) continue;
+        if (j + 1 < seq.length && seq[j + 1] === seq[i]) continue;
+        if (seq[j - 1] === seq[i]) continue;
+        [seq[i], seq[j]] = [seq[j], seq[i]];
+        break;
+      }
+    }
+    idxs.forEach((qi, j) => { out[qi] = seq[j]; });
+  });
+  return out;
+}
+
+function placeAnswer(choices, rightIdx, target, seed) {
+  const rnd = seeded(seed);
+  const others = choices.filter((_, i) => i !== rightIdx);
+  for (let i = others.length - 1; i > 0; i--) {
     const j = Math.floor(rnd() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    [others[i], others[j]] = [others[j], others[i]];
   }
-  return { choices: arr.map((a) => a.c), right: arr.findIndex((a) => a.correct) };
+  others.splice(target, 0, choices[rightIdx]);
+  return { choices: others, right: target };
+}
+
+/* Proves the deal actually worked rather than trusting that it did. Fails the build on
+   a spread that could be guessed - the exact thing this replaced. */
+function checkSpread(L, qs) {
+  const n = {};
+  qs.forEach((q) => { n[q.right] = (n[q.right] || 0) + 1; });
+  const counts = Object.values(n);
+  const most = Math.max.apply(null, counts);
+  const slots = Math.max.apply(null, qs.map((q) => q.choices.length));
+  const fewest = counts.length < slots ? 0 : Math.min.apply(null, counts);
+  if (most - fewest > 1) {
+    console.error("FAIL: " + L.id + ": answers land " + JSON.stringify(n) + " across " +
+      qs.length + " questions. A dealt spread is even to within one; this is not,\n" +
+      "      so dealPositions() did not do its job.");
+    process.exit(1);
+  }
 }
 
 const esc = (s) => String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 const jsArr = (a) => "[\n    " + a.map((x) => '"' + esc(x) + '"').join(",\n    ") + "\n  ]";
 
+/* 🚨 EVERY QUESTION IS COLLECTED FIRST, THEN THE POSITIONS ARE DEALT ACROSS ALL OF
+   THEM AT ONCE. It used to shuffle each question the moment it was built, which is
+   precisely why the spread clumped - see dealPositions(). Day 1 and Day 2 are dealt
+   TOGETHER, because a student sits the whole lesson, not one half of it. */
 function buildQuestions(L) {
-  const out = [];
+  const raw = [];
 
   // Day 1 — findable in the text
-  L.questions.forEach((q, i) => {
-    const s = shuffle(q.choices, q.right, L.id + ":d1:" + i);
-    out.push({ day: 1, q: q.q, find: q.find, hint: q.hint, choices: s.choices, right: s.right });
+  L.questions.forEach((q) => {
+    raw.push({ day: 1, q: q.q, find: q.find, hint: q.hint, choices: q.choices, right: q.right });
   });
 
-  // Day 2 — vocabulary, wrong options are the other definitions
-  L.words.forEach((w, i) => {
-    const [term, def] = w;
-    const others = L.words.filter((_, k) => k !== i).map((x) => x[1]);
-    const s = shuffle([def, ...others], 0, L.id + ":d2:" + i);
-    out.push({
-      day: 2, q: "What does <i>" + term.toLowerCase() + "</i> mean?", find: null,
-      note: "Vocabulary. Use the word cards above, not the story.",
-      choices: s.choices, right: s.right
+  /* Day 2 — vocabulary.
+     🚨 HAND-WRITTEN WINS. If the lesson carries `vocabQuestions` those are used
+     verbatim; the generator below is the FALLBACK for lessons that have none.
+     Why it matters: the generated version uses the other three definitions from
+     the same lesson as the wrong answers, so every distractor reads like a
+     definition and the odd one out is guessable from shape alone. A hand-written
+     distractor ("the study of microscopes") is a real wrong idea and a fairer
+     test. First used on science/life-only-comes-from-life, Paul, 2026-09-03. */
+  if (L.vocabQuestions && L.vocabQuestions.length) {
+    /* 🚨 MORE QUESTIONS THAN CARDS IS AN ERROR; FEWER IS ONLY A WARNING.
+       This started as a strict one-per-card check and Lesson 3 broke it the same day:
+       Paul defined FIVE words and wrote FOUR checks, leaving Observation without one.
+       Failing there would have meant either dropping a word he teaches in the story or
+       writing his fifth question for him, and inventing content is the worse of the two
+       → [[feedback-never-auto-generate]]. So it warns, loudly, and builds.
+       A question with no card behind it is different - that is a check on something the
+       student was never given - so that still fails. */
+    if (L.vocabQuestions.length > L.words.length) {
+      console.error("FAIL: " + L.id + ": " + L.vocabQuestions.length + " vocabQuestions for only " +
+        L.words.length + " word cards. A check with no card behind it asks about a word the\n" +
+        "      student was never shown.");
+      process.exit(1);
+    }
+    if (L.vocabQuestions.length < L.words.length) {
+      console.warn("  note: " + L.id + " has " + L.words.length + " word cards but " +
+        L.vocabQuestions.length + " vocabulary questions - " +
+        (L.words.length - L.vocabQuestions.length) + " card(s) are not checked.");
+    }
+    L.vocabQuestions.forEach((q) => {
+      raw.push({
+        day: 2, q: q.q, find: null,
+        note: "Vocabulary. Use the word cards above, not the story.",
+        choices: q.choices, right: q.right
+      });
+    });
+  } else {
+    L.words.forEach((w, i) => {
+      const [term, def] = w;
+      const others = L.words.filter((_, k) => k !== i).map((x) => x[1]);
+      raw.push({
+        day: 2, q: "What does <i>" + term.toLowerCase() + "</i> mean?", find: null,
+        note: "Vocabulary. Use the word cards above, not the story.",
+        choices: [def, ...others], right: 0
+      });
+    });
+  }
+
+  const targets = dealPositions(raw.map((q) => q.choices.length), L.id + ":deal");
+  const out = raw.map((q, i) => {
+    const s = placeAnswer(q.choices, q.right, targets[i], L.id + ":opts:" + i);
+    const built = { day: q.day, q: q.q, find: q.find, choices: s.choices, right: s.right };
+    if (q.hint) built.hint = q.hint;
+    if (q.note) built.note = q.note;
+    return built;
+  });
+  checkSpread(L, out);
+  return out;
+}
+
+/* 🚨 `find` IS A POSITION IN THE FLAT SENTENCE LIST, and nothing used to check it.
+   Rewrite one sentence out of a story and every index after it points at the wrong
+   line; add enough and `SENT[k].el` is undefined and the answer hunt throws on the
+   student, in the browser, with no build error. That is exactly what happened when
+   Lesson 2 was rewritten on 2026-09-03 - all four questions went stale at once.
+   ⚠️ Count the same way the PAGE counts: partsFor(), and a blank string is a
+   PARAGRAPH BREAK that never enters SENT. Both rules live in three places now
+   (here, lesson-template.html, bake-voice.js) - change one, change all three. */
+function checkFinds(L) {
+  let n = 0;
+  partsFor(L).forEach((p) => (p.s || []).forEach((t) => { if (String(t).trim()) n++; }));
+
+  /* 🚨 THE RANGE CHECK BELOW IS NOT ENOUGH ON ITS OWN, and it took a real edit to
+     show it. Paul merged two sentences into one on 2026-09-03; the story got four
+     shorter, and question 4's find [35,36,37,38] kept 38 - still a VALID index, now
+     pointing at the first line of the next paragraph. In range, and wrong. The hunt
+     would have highlighted the wrong sentence with no error anywhere.
+     So `findsAt` records how many STORY sentences the indexes were verified against.
+     Edit the story at all and the count moves, the build stops, and the indexes get
+     re-checked against the numbered list rather than assumed to have survived.
+     ⚠️ STORY ONLY - the todo is appended after it, so a todo edit cannot renumber a
+     find and should not fail the build.
+     ⚠️ It is a tripwire, not a proof: an edit that swaps one sentence for another
+     keeps the count identical and slips through. Nothing cheap catches that, so
+     re-read the finds whenever you touch a section a question points into. */
+  let story = 0;
+  (L.parts || []).forEach((p) => (p.s || []).forEach((t) => { if (String(t).trim()) story++; }));
+  if (typeof L.findsAt === "number" && L.findsAt !== story) {
+    console.error("FAIL: " + L.id + ": the story now has " + story + " sentences, but the\n" +
+      "      question `find` indexes were last verified against " + L.findsAt + ".\n" +
+      "      Re-check every find against the numbered list, then set findsAt: " + story + ".");
+    process.exit(1);
+  }
+  (L.questions || []).forEach((q, i) => {
+    (q.find || []).forEach((k) => {
+      if (!Number.isInteger(k) || k < 0 || k >= n) {
+        console.error("FAIL: " + L.id + ": question " + (i + 1) + " has find index " + k +
+          ", but the lesson has " + n + " sentences (0-" + (n - 1) + ").\n" +
+          "      The story was almost certainly edited without renumbering `find`.");
+        process.exit(1);
+      }
     });
   });
+}
 
-  return out;
+/* ── teacher notes ────────────────────────────────────────────────────────
+   Ported 2026-09-03 from tools/integers/template.html and tools/english/template.html,
+   which already had "For the teacher" behind a native <details>. This pipeline - every
+   science and history lesson - had nowhere to put them at all.
+   🚨 THE ANSWER KEY DOES NOT GO IN HERE. A <details> a student can open is not a lock,
+   and these pages are public with no login. Teacher notes leaking costs nothing; the
+   answer key does. It stays in the printable until item 23's accounts give it a real
+   gate, at which point this same block is what gets role-gated - see ROADMAP item 23. */
+/* 🚨 `ground` IS A LIST OF SECTIONS, NOT A FIXED SET OF FIELDS. It started as
+   goal/teaching/vocab/biblical after Lesson 2, and Lesson 3 arrived the next hour with
+   Goal / Key Concepts / Teaching Suggestion and no biblical heading at all - the point
+   about creation was a closing paragraph instead. Fixed fields would have meant either
+   losing a heading Paul wrote or inventing one he did not.
+   So a section is { h, p } - a heading and its paragraphs - and the ORDER IS HIS.
+   ⚠️ Do not add "required" headings. A lesson's notes say what that lesson needs. */
+function requireGround(L) {
+  const g = L.ground;
+  if (!g) return;                       /* optional - most lessons have none yet */
+  if (!Array.isArray(g.sections) || !g.sections.length) {
+    console.error("FAIL: " + L.id + ": ground needs `sections`, a list of { h, p } blocks");
+    process.exit(1);
+  }
+  g.sections.forEach((s, i) => {
+    if (!s.h) { console.error("FAIL: " + L.id + ": ground section " + i + " has no heading"); process.exit(1); }
+    /* A vocabulary section renders itself from `words` and carries no prose of its own. */
+    if (s.vocab) {
+      if (s.p) {
+        console.error("FAIL: " + L.id + ': ground section "' + s.h + '" is vocab:true and also\n' +
+          "      carries paragraphs. It renders the word cards; it holds no text.");
+        process.exit(1);
+      }
+      return;
+    }
+    if (!Array.isArray(s.p) || !s.p.length) {
+      console.error("FAIL: " + L.id + ': ground section "' + s.h + '" has no paragraphs');
+      process.exit(1);
+    }
+  });
+  /* 🚨 The vocabulary in the teacher notes is RENDERED FROM `words`. Storing it twice
+     is how a definition gets fixed in one place and left wrong in the other. */
+  if (g.vocab || g.words || g.vocabulary) {
+    console.error("FAIL: " + L.id + ": ground carries its own vocabulary list. Delete it.\n" +
+      "      A vocabulary section is { h: \"Key Vocabulary\", vocab: true } and renders the\n" +
+      "      word cards, so there is one copy of each definition and it cannot drift out\n" +
+      "      of step with the student page.");
+    process.exit(1);
+  }
+}
+
+function groundMarkup(L) {
+  const g = L.ground;
+  if (!g) return "";
+  const body = g.sections.map((s) =>
+    "      <h3>" + s.h + "</h3>\n      " + (s.vocab
+      ? "<dl>" + L.words.map(([t, d]) => "<dt>" + t + "</dt><dd>" + d + "</dd>").join("") + "</dl>"
+      : s.p.map((t) => "<p>" + t + "</p>").join("\n      "))
+  ).join("\n");
+  return '<details class="ground">\n' +
+    '    <summary><span class="who">For the teacher</span> Teacher Notes</summary>\n' +
+    '    <div class="gbody">\n' + body + "\n    </div>\n  </details>";
 }
 
 function serialise(L) {
   requireTodo(L, L.id);
+  checkFinds(L);
+  requireGround(L);
   const parts = "var PARTS = [\n" + partsFor(L).map((p) =>
     '  { title: "' + esc(p.title) + '", s: ' + jsArr(p.s) + ' }').join(",\n") + "\n];";
 
@@ -132,7 +356,27 @@ for (const L of LESSONS) {
   h = h.replace(/<title>[^<]*<\/title>/, "<title>" + L.title + " — NexStudents</title>");
   h = h.replace(/<h1>[^<]*<\/h1>/, "<h1>" + L.title + "</h1>");
   h = h.replace(/<p class="dek">[\s\S]*?<\/p>/, '<p class="dek">' + L.dek + "</p>");
+  /* 🚨 ALL THREE eyebrow slots, not just the middle one. Only eyebrow[1] was ever
+     replaced, so <span id="eyebrow0"> shipped the template's literal word "Subject"
+     and the third span shipped "Ancient Rome" on EVERY lesson - all four science
+     pages were labelled Ancient Rome. Nothing wrote to eyebrow0 at build time or in
+     the browser; the id was a hook nobody ever connected. Found 2026-09-03 by looking
+     at the rendered page, which is the only way this kind of bug shows up.
+     ⚠️ The id is kept so the template still parses as the Rome page it was sliced
+     from, but the VALUE always comes from the lesson now. */
+  h = h.replace(/<span id="eyebrow0">[^<]*<\/span>/, '<span id="eyebrow0">' + L.eyebrow[0] + "</span>");
   h = h.replace(/<span>Unit 1 &middot; Lesson \d<\/span>/, "<span>" + L.eyebrow[1] + "</span>");
+  h = h.replace(/<span>Ancient Rome<\/span>/, "<span>" + L.eyebrow[2] + "</span>");
+  ["Subject", "Ancient Rome"].forEach((stale) => {
+    if (new RegExp("<span[^>]*>" + stale + "</span>").test(h) && L.eyebrow.indexOf(stale) === -1) {
+      console.error("FAIL: " + L.slug + ": the eyebrow still says \"" + stale + "\" from the template");
+      process.exit(1);
+    }
+  });
+  /* ⚠️ Function form, not a string. A `$&` or `$'` inside Paul's prose would be read
+     as a replacement pattern and silently eat text. Same reason __NAV__ uses one. */
+  h = h.replace("__GROUND__", () => groundMarkup(L));
+  if (h.includes("__GROUND__")) { console.error("FAIL: " + L.slug + ": __GROUND__ slot not filled"); process.exit(1); }
 
   /* Subject comes from the id prefix ("history/..." , "maths/...") so a new
      subject needs no change here, only an id. */
