@@ -23,7 +23,7 @@ const CSS_V = require("crypto")
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
 const { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot, faviconTags,
-        footerMarkup } = require("./nav.js");
+        footerMarkup, socialTags, breadcrumbLd, crumbTrail } = require("./nav.js");
 
 /* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
 const SITE = "https://nexstudents.org";
@@ -37,7 +37,7 @@ function shell(o) {
 <!-- DO NOT REMOVE: Google Search Console verification. Google re-checks
      periodically and the property silently drops if this disappears. -->
 <meta name="google-site-verification" content="bsZnURtv4LFARU3XuxGED8inYJB45arSOPHbTJSqgIQ">
-<link rel="canonical" href="${SITE}/${o.dir}/">${o.noindex ? `
+<link rel="canonical" href="${SITE}${o.canon || "/" + o.dir + "/"}">${o.noindex ? `
 <!-- An empty shelf for a year with nothing in it. Reachable, but not offered
      to search until it holds something worth ranking. Drops off by itself the
      moment the grade goes live. -->
@@ -45,6 +45,8 @@ function shell(o) {
 <title>${o.title}</title>
 <meta name="description" content="${o.desc}">
 <meta name="theme-color" content="#0a0b0d">
+${o.bare ? "" : socialTags({ path: o.canon || "/" + o.dir + "/", title: o.title, desc: o.desc }) + "\n" +
+            breadcrumbLd(crumbTrail(o.crumb).trail, crumbTrail(o.crumb).current || o.h1)}
 ${faviconTags()}
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 ${modeBoot()}${o.head || ""}
@@ -2817,6 +2819,8 @@ const REDIRECTS = [
     title: "Page not found — NexStudents",
     desc: "That page does not exist.",
     crumb: "Not found", h1: "That page is not here.",
+    /* No share card and no breadcrumb on a 404: both describe a real page. */
+    bare: true,
     lead: "The link may be old, or something moved. Everything on the site is reachable from the menu, or start with a grade.",
     body: empty('Try <a href="/#grades">picking a grade</a>, or <a href="/">go back to the home page</a>.'),
   };
@@ -2875,7 +2879,7 @@ const REDIRECTS = [
   }
 
   const page = {
-    dir: "", active: "p", pclass: "examhead",
+    dir: "", canon: "/placement-exam.html", active: "p", pclass: "examhead",
     title: "Reading Comprehension — Short Exam | NexStudents",
     desc: "A free short reading comprehension exam, written at a grade 6 reading level. Marked instantly, with a breakdown by skill.",
     crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; Reading Exam',

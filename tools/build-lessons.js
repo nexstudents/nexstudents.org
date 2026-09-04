@@ -23,7 +23,7 @@ const fs = require("fs");
 const path = require("path");
 const { LESSONS } = require("./lessons.js");
 /* The same nav every other page has. Paul, 2026-08-26. */
-const { navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
 /* 🚨 partsFor() prepends the shared "how to use this page" and appends the
    lesson's OWN closing instructions. bake-voice.js calls the same function, so
    the audio cannot read something the page does not show. */
@@ -345,7 +345,6 @@ for (const L of LESSONS) {
   h = swapBlock(h, "var WORDS = [", "\n];", S.words);
   h = swapBlock(h, "var QUESTIONS = [", "\n];", S.questions);
 
-  h = h.replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">');
   h = h.replace("__MODEBOOT__", modeBoot);
   h = h.replace("__FAVICON__", faviconTags);
   h = h.replace("__NAV__", () => navMarkup(null, "navbtn"));
@@ -410,6 +409,16 @@ for (const L of LESSONS) {
     }
   }
   h = h.replace("__BACKHREF__", backHref).replace("__BACKLABEL__", backLabel);
+
+  /* Canonical + share card + breadcrumb, all from nav.js so the four lesson
+     generators cannot drift. It is filled HERE rather than with the other
+     slots because the breadcrumb needs the back link, which is derived a
+     hundred lines further down than __CANONICAL__ used to be replaced. */
+  h = h.replace("__CANONICAL__", () => lessonHead({
+    id: L.id, title: L.title, desc: L.dek,
+    backLabel, backHref,
+    image: L.shelf && L.shelf.thumb ? "https://nexstudents.org/lessons/" + L.id + "/thumb.jpg" : null,
+  }));
 
   /* ══ THE UNIT STRIP ══
      Paul, 2026-08-31: "i would like to have a way inside to switch to the next

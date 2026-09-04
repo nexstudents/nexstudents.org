@@ -58,6 +58,30 @@ for (const file of pages) {
 
 console.log("pages scanned: " + pages.length + " · internal links checked: " + checked);
 
+/* 🚨 A REAL LESSON MUST NEVER SHIP noindex, and this guard exists because it
+   very nearly did. On 2026-09-04 a noindex meta was stamped onto
+   tools/lesson-template.html to keep the TEMPLATE out of search - correct
+   intent, wrong file: every lesson page is generated from that template, so
+   the next build would have quietly deindexed the entire lesson library.
+   Nothing would have looked broken. The pages would have kept working, kept
+   deploying, and simply stopped existing to Google.
+   ⚠️ Templates are excluded from search by robots.txt Disallow: /tools/
+   instead. If a lesson page ever needs to be held back, hold it back at the
+   SHELF, the way an unbuilt lesson gets a slot - not with a meta on a file
+   four generators read. */
+const deindexed = [];
+for (const file of pages) {
+  const rel = path.relative(ROOT, file).split(path.sep).join("/");
+  if (!rel.startsWith("lessons/")) continue;
+  if (/name=["']robots["'][^>]*noindex/i.test(fs.readFileSync(file, "utf8"))) deindexed.push(rel);
+}
+if (deindexed.length) {
+  console.error("FAIL: " + deindexed.length + " built lesson page(s) carry noindex:");
+  for (const r of deindexed.slice(0, 8)) console.error("  " + r);
+  console.error("  A lesson template must not contain a robots meta. See the note in this file.");
+  process.exit(1);
+}
+
 if (!bad.size) {
   console.log("OK — no broken internal links.");
   process.exit(0);

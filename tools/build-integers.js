@@ -54,7 +54,7 @@
 const fs = require("fs");
 const path = require("path");
 const { INTEGERS } = require("./integers-lessons.js");
-const { navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
 const { requireTodo } = require("./lesson-instructions.js");
 /* The walkthrough, shared with tools/bake-voice.js so the words on the page
    and the words in the audio come from one place. */
@@ -367,7 +367,14 @@ for (const L of INTEGERS) {
     .replace("__FIELD_CSS__", player.fieldCss)
     .replace("__PLAYER_MARKUP__", player.playerMarkup)
     .replace("__PLAYER_JS__", player.playerScript)
-    .replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">')
+    /* Canonical, share card and breadcrumb come from nav.js so all four
+       lesson generators emit the same head. backFor() is the SAME call the
+       back link uses, so the breadcrumb and the visible link agree. */
+    .replace("__CANONICAL__", () => lessonHead({
+      id: L.id, title: L.title, desc: L.dek,
+      backLabel: backFor(L, L.id.split("/")[0], ROOT, L.id).label,
+      backHref: backFor(L, L.id.split("/")[0], ROOT, L.id).href,
+    }))
     .replace("__MODEBOOT__", modeBoot)
     .replace("__FAVICON__", faviconTags)
     .replace("__NAV__", () => navMarkup(null, "navbtn"))

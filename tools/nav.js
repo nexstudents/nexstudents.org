@@ -430,6 +430,117 @@ const faviconTags = () =>
   '<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">\n' +
   '<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">';
 
+/* ── SHARE CARDS AND BREADCRUMBS ──────────────────────────────────────────
+   Both of these were on ONE page out of 184: the hand-written root index.html.
+   Every generated page - every lesson, worksheet, grade and subject shelf -
+   shipped with no Open Graph at all, so a link pasted into Messenger, X or a
+   Facebook group rendered as a bare URL with no title and no picture. Sharing
+   a lesson is how this site is meant to spread, so that was the whole channel.
+
+   They live in nav.js for the same reason faviconTags and modeBoot do: FOUR
+   generators build pages, and anything pasted into four files drifts. That is
+   not a hypothetical here - it is exactly how the nav, the footer and the
+   cache-buster each went stale, and it is why ROADMAP 34 exists. */
+
+const SITE_ORIGIN = "https://nexstudents.org";
+
+/* ⚠️ 512x512, because it is the only brand image that exists. og:image wants
+   1200x630 and a square gets centre-cropped by some readers, so the twitter
+   card is deliberately "summary" (small square thumb) rather than
+   "summary_large_image" - the root index.html declared the large card while
+   supplying NO image at all, which renders as a blank slab. When Paul makes a
+   real 1200x630 share image, change these two lines together. */
+const SHARE_IMAGE = SITE_ORIGIN + "/assets/brand/logo.png";
+const TWITTER_CARD = "summary";
+
+/* `path` is root-absolute and starts with "/". `type` is "website" for a shelf
+   or an index and "article" for a lesson or a worksheet. */
+const socialTags = (o) => {
+  const url = SITE_ORIGIN + (o.path || "/");
+  const esc = (s) => String(s == null ? "" : s).replace(/&(?!#?\w+;)/g, "&amp;").replace(/"/g, "&quot;");
+  return [
+    '<meta property="og:site_name" content="NexStudents">',
+    '<meta property="og:type" content="' + (o.type || "website") + '">',
+    '<meta property="og:url" content="' + url + '">',
+    '<meta property="og:title" content="' + esc(o.title) + '">',
+    '<meta property="og:description" content="' + esc(o.desc) + '">',
+    '<meta property="og:image" content="' + (o.image || SHARE_IMAGE) + '">',
+    '<meta name="twitter:card" content="' + TWITTER_CARD + '">',
+    '<meta name="twitter:title" content="' + esc(o.title) + '">',
+    '<meta name="twitter:description" content="' + esc(o.desc) + '">',
+    '<meta name="twitter:image" content="' + (o.image || SHARE_IMAGE) + '">',
+  ].join("\n");
+};
+
+/* BreadcrumbList, and it is the strongest thing available against the name
+   collision: a result with breadcrumbs prints "nexstudents.org > 7th Grade >
+   Science" under the title instead of a bare URL, so our own name is on screen
+   next to the singular-name company's.
+
+   `trail` is [{ name, path }] in order, WITHOUT the current page - the page
+   itself is appended as the last, link-free item, which is what the spec asks
+   for. Pass [] on a top-level page and nothing is emitted, because a one-item
+   breadcrumb is noise. */
+const breadcrumbLd = (trail, currentName) => {
+  if (!Array.isArray(trail) || !trail.length) return "";
+  /* 🚨 ONLY THE LAST ITEM MAY OMIT `item`. A middle entry with no URL is
+     invalid and Google reports the whole breadcrumb as an error, so an
+     unlinked middle segment is DROPPED here rather than emitted broken.
+     That is why the JSON can be one step shorter than the crumb on screen:
+     "7th Grade > Science > Lessons" has no /grade-7/science/ page - the real
+     shelf is /grade-7/science/lessons/ - so Science is a label, not a place.
+     The visible crumb keeps it because it tells the reader where they are. */
+  const linked = trail.filter((it, i) => i === 0 || it.path);
+  const items = linked.concat([{ name: currentName }]).map((it, i) => {
+    const e = { "@type": "ListItem", position: i + 1, name: it.name };
+    if (it.path) e.item = SITE_ORIGIN + it.path;
+    return e;
+  });
+  return '<script type="application/ld+json">\n' +
+    JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: items }, null, 2) +
+    "\n</script>";
+};
+
+/* What goes in a LESSON page's __CANONICAL__ slot. Four generators fill that
+   slot - build-lessons, build-math, build-english, build-integers - so the
+   canonical, the share card and the breadcrumb are built here once instead of
+   in four places. `back` is the shelf the lesson returns to, which is already
+   derived per lesson by lesson-back.js, so the breadcrumb cannot disagree with
+   the back link the student actually sees. */
+const lessonHead = (o) => {
+  const path = "/lessons/" + o.id + "/";
+  const desc = o.desc || ("A NexStudents lesson: " + o.title + ". Read along, then answer in your notebook.");
+  const trail = [{ name: "Home", path: "/" }];
+  if (o.backLabel && o.backHref) trail.push({ name: o.backLabel, path: o.backHref });
+  return '<link rel="canonical" href="' + SITE_ORIGIN + path + '">\n' +
+    socialTags({ path, title: o.title + " — NexStudents", desc, type: "article", image: o.image }) +
+    (trail.length > 1 ? "\n" + breadcrumbLd(trail, o.title) : "");
+};
+
+/* The crumb line a page already prints is the breadcrumb, so PARSE it rather
+   than asking every page to declare its trail twice. Two sources for one path
+   is how the nav and the drawer drifted, and a breadcrumb that disagrees with
+   the visible one is worse than none - Google treats that as a mismatch.
+
+   A crumb is anchors joined by &rsaquo; with the current page as plain text at
+   the end: '<a href="/grade-k/">Kindergarten</a> &rsaquo; Lessons'. */
+const crumbTrail = (crumbHtml) => {
+  if (!crumbHtml) return { trail: [], current: "" };
+  const parts = String(crumbHtml).split(/&rsaquo;|&rarr;|›/);
+  const clean = (s) => s.replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&rsquo;/g, "’").trim();
+  const trail = [{ name: "Home", path: "/" }];
+  let current = "";
+  parts.forEach((seg, i) => {
+    const a = seg.match(/<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i);
+    if (i === parts.length - 1 && !a) current = clean(seg);
+    else if (a) trail.push({ name: clean(a[2]), path: a[1] });
+    else trail.push({ name: clean(seg) });
+  });
+  /* An all-anchor crumb has no plain tail; the last link IS the current page. */
+  if (!current && trail.length > 1) current = trail.pop().name;
+  return { trail, current };
+};
+
 /* 🚨 SIGN IN AND CART, and they are LINKS. Paul, 2026-08-29: "remove pick a
    grade from the homepage and put in that spot the login and shopping cart."
 
@@ -759,4 +870,5 @@ ${/* 🚨 THE COLUMNS COLLAPSE ON A PHONE, and the open state is set HERE rather
 </footer>`;
 
 module.exports = { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
-                   megaPanel, navMarkup, navScript, modeSwitch, modeBoot, footerMarkup, FOOTER_COLS };
+                   megaPanel, navMarkup, navScript, modeSwitch, modeBoot, footerMarkup, FOOTER_COLS,
+                   socialTags, breadcrumbLd, crumbTrail, lessonHead, SITE_ORIGIN };

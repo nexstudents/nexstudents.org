@@ -29,7 +29,7 @@
 const fs = require("fs");
 const path = require("path");
 const { ENGLISH } = require("./english-lessons.js");
-const { navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
 /* The closing instructions, and the guard that a lesson has some. Shared with
    history and maths so all three say the task the same way. */
 const { partsFor, requireTodo } = require("./lesson-instructions.js");
@@ -259,7 +259,14 @@ for (const L of ENGLISH) {
     .replace("__PRACTICE__", JSON.stringify(practiceForPage))
     .replace("__SORT__", JSON.stringify(sortForPage))
     .replace("__THEMES__", themesBlock)
-    .replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">')
+    /* Canonical, share card and breadcrumb come from nav.js so all four
+       lesson generators emit the same head. backFor() is the SAME call the
+       back link uses, so the breadcrumb and the visible link agree. */
+    .replace("__CANONICAL__", () => lessonHead({
+      id: L.id, title: L.title, desc: L.dek,
+      backLabel: backFor(L, L.id.split("/")[0], ROOT, L.id).label,
+      backHref: backFor(L, L.id.split("/")[0], ROOT, L.id).href,
+    }))
     .replace("__MODEBOOT__", modeBoot)
     .replace("__FAVICON__", faviconTags)
     .replace("__NAV__", () => navMarkup(null, "navbtn"))

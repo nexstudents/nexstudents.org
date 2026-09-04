@@ -16,7 +16,7 @@ const path = require("path");
 const { MATH } = require("./math-lessons.js");
 /* Same nav as every other page. Paul, 2026-08-26: a lesson with no way back
    into the site is what stops it feeling like a website. */
-const { navMarkup, navScript, modeBoot, faviconTags } = require("./nav.js");
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
 /* The shared field, arrow and key-panel rules. Maths keeps its own stepping
    engine - a step here drives the division animation, not just narration - but
    the CHROME is identical to every other lesson. Paul, 2026-08-29. */
@@ -134,7 +134,14 @@ for (const L of MATH) {
     .replace("__FIELD_CSS__", player.fieldCss)
     .replace("__PLAYER_MARKUP__", player.playerMarkup)
     .replace("__PLAYER_JS__", player.playerScript)
-    .replace("__CANONICAL__", '<link rel="canonical" href="https://nexstudents.org/lessons/' + L.id + '/">')
+    /* Canonical, share card and breadcrumb come from nav.js so all four
+       lesson generators emit the same head. backFor() is the SAME call the
+       back link uses, so the breadcrumb and the visible link agree. */
+    .replace("__CANONICAL__", () => lessonHead({
+      id: L.id, title: L.title, desc: L.dek,
+      backLabel: backFor(L, L.id.split("/")[0], ROOT, L.id).label,
+      backHref: backFor(L, L.id.split("/")[0], ROOT, L.id).href,
+    }))
     .replace("__MODEBOOT__", modeBoot)
     .replace("__FAVICON__", faviconTags)
     .replace("__NAV__", () => navMarkup(null, "navbtn"))

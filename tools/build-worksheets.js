@@ -14,7 +14,7 @@ const path = require("path");
 const { SHEETS } = require("./worksheets.js");
 /* The same nav the site pages use. A worksheet lives under Worksheets, so it
    passes "w" and that tab shows as current. */
-const { navMarkup, navScript , modeBoot, faviconTags } = require("./nav.js");
+const { navMarkup, navScript , modeBoot, faviconTags, socialTags, breadcrumbLd } = require("./nav.js");
 const HW = require("./handwriting/build-handwriting.js");
 
 const ROOT = process.argv[2];
@@ -75,7 +75,20 @@ const gradeWord = (g) => (g === "K" || g === "k")
   ? "Kindergarten"
   : ({ 1: "1st", 2: "2nd", 3: "3rd" }[g] || g + "th") + " Grade";
 
-function backLink(s) {
+/* EIGHT worksheet shapes each wrote their own <head>, so the canonical was
+   pasted eight times and the share card would have been too. One helper. */
+function sheetHead(s) {
+  const url = "/worksheets/" + s.subject.toLowerCase() + "/" + s.slug + "/";
+  const back = backTarget(s);
+  return [
+    '<link rel="canonical" href="https://nexstudents.org' + url + '">',
+    socialTags({ path: url, title: s.title + " — NexStudents", desc: s.blurb, type: "article",
+                 image: s.thumb ? "https://nexstudents.org" + url + "thumb.jpg" : null }),
+    breadcrumbLd([{ name: "Home", path: "/" }, { name: back.label, path: back.href }], s.title),
+  ].join("\n");
+}
+
+function backTarget(s) {
   const subjectSlug = s.subject.toLowerCase();
   const grades = s.grades && s.grades.length ? s.grades : [s.grade];
   let href, label;
@@ -92,6 +105,11 @@ function backLink(s) {
       " but " + target + " does not exist.");
     process.exit(1);
   }
+  return { href, label };
+}
+
+function backLink(s) {
+  const { href, label } = backTarget(s);
   return `<a class="back" href="${href}">&larr; ${label}</a>`;
 }
 
@@ -114,7 +132,7 @@ function bundleHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://nexstudents.org/worksheets/${s.subject.toLowerCase()}/${s.slug}/">
+${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} — NexStudents</title>
@@ -209,7 +227,7 @@ function blankHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://nexstudents.org/worksheets/${s.subject.toLowerCase()}/${s.slug}/">
+${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} — NexStudents</title>
@@ -314,7 +332,7 @@ function flashHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://nexstudents.org/worksheets/${s.subject.toLowerCase()}/${s.slug}/">
+${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} — NexStudents</title>
@@ -425,7 +443,7 @@ function sheetHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://nexstudents.org/worksheets/${s.subject.toLowerCase()}/${s.slug}/">
+${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} — NexStudents</title>
@@ -524,7 +542,7 @@ function handwritingHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://nexstudents.org/worksheets/${subjectSlug}/${s.slug}/">
+${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} — NexStudents</title>
@@ -624,7 +642,7 @@ function imageHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://nexstudents.org/worksheets/${subjectSlug}/${s.slug}/">
+${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} — NexStudents</title>
@@ -741,7 +759,7 @@ function pdfHtml(s) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://nexstudents.org/worksheets/${subjectSlug}/${s.slug}/">
+${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} — NexStudents</title>
