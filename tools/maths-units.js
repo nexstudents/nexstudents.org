@@ -63,14 +63,20 @@ const STRANDS = [
   "Estimation Strategy", "Probability Connection", "Art Connection",
   "Statistics Connection", "Mental Math Strategy", "Application",
 ];
-const L = (label, title, page) => {
+/* 🚨 `slug` IS THE LAST ARGUMENT AND IS ALMOST ALWAYS ABSENT. A row without one is
+   a slot on the shelf; a row with one is a real link to a built page. Only add it
+   once the lesson exists AND teaches the row it is attached to - a shelf that
+   claims a lesson is built is worse than an empty one, and the pager cannot tell
+   the difference → [[feedback-never-assign-an-unbuilt-lesson]].
+   The value matches the built page's href: "maths/<folder>" for /lessons/maths/<folder>/. */
+const L = (label, title, page, slug) => {
   const at = title.indexOf(": ");
   const head = at === -1 ? null : title.slice(0, at);
   if (head && STRANDS.indexOf(head) !== -1) {
     return { label, title: title.slice(at + 2), strand: head, book: title,
-             page, kind: "lesson" };
+             page, kind: "lesson", slug: slug || null };
   }
-  return { label, title, page, kind: "lesson" };
+  return { label, title, page, kind: "lesson", slug: slug || null };
 };
 const LAB = (label, title, page) => ({ label, title, page, kind: "lab" });
 const REV = (title, page) => ({ label: "", title, page, kind: "review" });
@@ -86,7 +92,7 @@ const COURSE2 = {
   identifier: "mathematicscours0000unse",
   units: [
     { n: 1, title: "Tools for Problem Solving", project: "Skiing", page: 2, items: [
-      L("1-1", "A Plan for Problem Solving", 4),
+      L("1-1", "A Plan for Problem Solving", 4, "maths/a-plan-for-problem-solving"),
       L("1-2", "Estimation Strategy: Using Rounding", 8),
       L("1-3", "Estimation Strategy: Using Patterns", 11),
       L("1-4", "Problem-Solving Strategy: Determine Reasonable Answers", 14),

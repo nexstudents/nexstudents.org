@@ -1145,11 +1145,15 @@ const leifPager = (grade) => UNITS
    ⚠️ THE 39 MATHEMATICS LABS ARE THE OPEN QUESTION, not an oversight. They are
    hands-on paper activities and may belong on the WORKSHEET shelf rather than here.
    Paul's call → ROADMAP item 36. Change the filter, not the data, when he decides.
-   ⚠️ No slugs yet. Nothing is wired to a built lesson because the mappings are not
+   ⚠️ ALMOST EVERY CARD IS STILL A SLOT, on purpose. Lesson 1-1 is wired because the
+   page we built IS that Glencoe row; the rest are not, because the mappings are not
    decided - the two integers lessons sit on grade 6 and long division has no Course 2
-   row at all → BUILT_NOTES in maths-units.js. Every card is a slot on purpose;
-   claiming a lesson is built when it teaches something else is the worse error
-   → [[feedback-never-assign-an-unbuilt-lesson]]. */
+   row at all → BUILT_NOTES in maths-units.js. Claiming a lesson is built when it
+   teaches something else is the worse error → [[feedback-never-assign-an-unbuilt-lesson]].
+   🚨 A built lesson must be wired here as well as shipped. It was not, and 1-1 was
+   live and reachable by URL while /grade-7/maths/lessons/ - the shelf a student
+   actually opens - still showed it as Coming Soon. Paul: "I don't see it on
+   NexStudents as available." */
 const mathsPager = (course) => course.units
   .map((u) => ({
     n: u.n,
