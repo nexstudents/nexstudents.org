@@ -490,6 +490,54 @@ h2{
    The exclamation point simply shows urgency", with the three sentences before
    it hidden behind the header. */
 .para{margin:0;scroll-margin-top:180px}
+
+/* ---------- the compare box ----------
+   A silent, visual side-by-side for the place in a lesson where two things look
+   identical and are not. Paul asked for it on Kinds of Sentences: "it needs more
+   clarification why a certain sentence is imperative over exclamatory ... i
+   thought we were going to possibly add a visual box."
+   🚨 IT IS NOT PART OF THE STORY. Nothing here enters SENT, so it is never read
+   aloud, never highlighted, never counted by findsAt, and never re-baked. It is
+   something to LOOK BACK AT while answering, which is the one thing a spoken
+   paragraph cannot be. Adding it to the story instead would have renumbered
+   every find index in the lesson for no gain. */
+.cbox{
+  border:1px solid var(--rule, var(--line));border-radius:8px;
+  background:var(--surface-2, var(--boxfill));
+  padding:16px 18px;margin:18px 0 0;
+}
+.cbox-h{
+  font-family:Cinzel,Georgia,serif;font-weight:500;
+  font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint, var(--dim));margin:0;text-align:center;
+}
+.cbox-lead{
+  margin:6px 0 0;text-align:center;font-size:15px;line-height:1.5;
+  color:var(--ink-soft, var(--dim));
+}
+/* auto-fit so two columns become two stacked rows on a phone without a second
+   breakpoint to keep in step with the rest of the page */
+.cbox-cols{
+  display:grid;gap:12px;margin:14px 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+}
+.cbox-col{
+  border:1px solid var(--rule, var(--line));border-radius:6px;
+  background:var(--surface, var(--bg));padding:12px 14px;
+}
+.cbox-label{
+  font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+  color:var(--verdigris, var(--accent));margin:0 0 6px;
+}
+/* the quoted sentence is the thing being compared, so it carries the weight */
+.cbox-s{margin:0;font-size:17px;line-height:1.45;color:var(--ink)}
+.cbox-why{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--ink-soft, var(--dim))}
+/* the test is the takeaway and sits apart from the two columns it resolves */
+.cbox-test{
+  margin:14px 0 0;padding-top:12px;
+  border-top:1px solid var(--rule, var(--line));
+  font-size:15px;line-height:1.55;color:var(--ink);
+}
 .sent{
   border-radius:3px;padding:1px 0;
   transition:background .2s;
@@ -1581,6 +1629,57 @@ PARTS.forEach(function(part){
   });
   /* the last paragraph, unless a stray break at the end left it empty */
   if (p.childNodes.length) sec.appendChild(p);
+
+  /* 🚨 THE COMPARE BOX IS BUILT AFTER THE PARAGRAPHS AND OUTSIDE SENT.
+     Every sentence in it is quoted from the story above, so the student is
+     re-reading, not being told something new. build-lessons.js FAILS the build
+     if a quoted line is not in the lesson verbatim - see requireBoxes(). */
+  if (part.box) {
+    var bx = part.box;
+    var box = document.createElement("div");
+    box.className = "cbox";
+
+    var bh = document.createElement("p");
+    bh.className = "cbox-h";
+    bh.textContent = bx.title;
+    box.appendChild(bh);
+
+    if (bx.lead) {
+      var bl = document.createElement("p");
+      bl.className = "cbox-lead";
+      bl.textContent = bx.lead;
+      box.appendChild(bl);
+    }
+
+    var cols = document.createElement("div");
+    cols.className = "cbox-cols";
+    bx.cols.forEach(function(c){
+      var col = document.createElement("div");
+      col.className = "cbox-col";
+      var lb = document.createElement("p");
+      lb.className = "cbox-label";
+      lb.textContent = c.label;
+      col.appendChild(lb);
+      var cs = document.createElement("p");
+      cs.className = "cbox-s";
+      cs.textContent = c.s;
+      col.appendChild(cs);
+      var cw = document.createElement("p");
+      cw.className = "cbox-why";
+      cw.textContent = c.why;
+      col.appendChild(cw);
+      cols.appendChild(col);
+    });
+    box.appendChild(cols);
+
+    var bt = document.createElement("p");
+    bt.className = "cbox-test";
+    bt.textContent = bx.test;
+    box.appendChild(bt);
+
+    sec.appendChild(box);
+  }
+
   storyEl.appendChild(sec);
 });
 

@@ -149,6 +149,18 @@ function checkSpread(L, qs) {
 const esc = (s) => String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 const jsArr = (a) => "[\n    " + a.map((x) => '"' + esc(x) + '"').join(",\n    ") + "\n  ]";
 
+/* A compare box, written into the page's PARTS literal beside the sentences it
+   quotes. Hand-written rather than JSON.stringify'd so it escapes by the same
+   `esc` every other string on this page goes through - two escaping rules for one
+   literal is how a stray quote ends up closing the script tag. */
+const boxLiteral = (b) =>
+  '{ title: "' + esc(b.title) + '"' +
+  (b.lead ? ', lead: "' + esc(b.lead) + '"' : "") +
+  ", cols: [" + b.cols.map((c) =>
+    '{ label: "' + esc(c.label) + '", s: "' + esc(c.s) + '", why: "' + esc(c.why) + '" }'
+  ).join(", ") + "]" +
+  ', test: "' + esc(b.test) + '" }';
+
 /* 🚨 EVERY QUESTION IS COLLECTED FIRST, THEN THE POSITIONS ARE DEALT ACROSS ALL OF
    THEM AT ONCE. It used to shuffle each question the moment it was built, which is
    precisely why the spread clumped - see dealPositions(). Day 1 and Day 2 are dealt
@@ -320,6 +332,62 @@ function requireGround(L) {
   }
 }
 
+/* 🚨 A COMPARE BOX MAY ONLY QUOTE THE LESSON'S OWN STORY.
+   `box` on a part draws a silent side-by-side panel for the place where two things
+   look identical and are not. Paul asked for one on Kinds of Sentences, where an
+   imperative and an exclamatory sentence can both end with "!".
+   The whole reason it is safe to add is that it invents NOTHING: every quoted
+   sentence already exists in the lesson, word for word, so the student is
+   re-reading rather than being handed a new example nobody wrote. This function is
+   what makes that a fact instead of an intention - a box that quotes a line the
+   story does not contain FAILS THE BUILD.
+   It also catches the slow version of the same failure: reword a sentence in the
+   story six weeks from now and the box stops matching, so the build stops too
+   instead of quietly showing a comparison against text that is no longer there.
+   ⚠️ Only `s` is checked, and deliberately. `why` and `test` are the explanation
+   AROUND the quotes and are free prose; requiring those to be verbatim too would
+   mean a box could only ever restate whole sentences, which is not a box, it is a
+   paragraph. The QUOTES are the claim about the lesson; the gloss is not. */
+function requireBoxes(L) {
+  const story = [];
+  (L.parts || []).forEach((p) => (p.s || []).forEach((s) => {
+    if (String(s).trim()) story.push(String(s).trim());
+  }));
+
+  (L.parts || []).forEach((p, i) => {
+    const b = p.box;
+    if (!b) return;
+    const where = L.id + ": part " + i + " box";
+    if (!b.title) { console.error("FAIL: " + where + " has no title"); process.exit(1); }
+    if (!b.test) {
+      console.error("FAIL: " + where + " has no `test`.\n" +
+        "      The test is the line that resolves the comparison. Two columns with\n" +
+        "      nothing telling the student how to choose between them is the same\n" +
+        "      confusion, laid out more neatly.");
+      process.exit(1);
+    }
+    if (!Array.isArray(b.cols) || b.cols.length < 2) {
+      console.error("FAIL: " + where + " needs at least two `cols`. One column compares nothing.");
+      process.exit(1);
+    }
+    b.cols.forEach((c, k) => {
+      if (!c.label || !c.s || !c.why) {
+        console.error("FAIL: " + where + " column " + k + " needs label, s and why");
+        process.exit(1);
+      }
+      if (story.indexOf(String(c.s).trim()) === -1) {
+        console.error("FAIL: " + where + " column " + k + ' quotes a sentence that is\n' +
+          "      NOT in this lesson's story:\n" +
+          "        " + c.s + "\n" +
+          "      A box re-reads the lesson. It does not add examples to it. Either\n" +
+          "      quote a line the student has already read, or write that line into\n" +
+          "      the story first.");
+        process.exit(1);
+      }
+    });
+  });
+}
+
 function groundMarkup(L) {
   const g = L.ground;
   if (!g) return "";
@@ -360,8 +428,10 @@ function serialise(L) {
   requireTodo(L, L.id);
   checkFinds(L);
   requireGround(L);
+  requireBoxes(L);
   const parts = "var PARTS = [\n" + partsFor(L).map((p) =>
-    '  { title: "' + esc(p.title) + '", s: ' + jsArr(p.s) + ' }').join(",\n") + "\n];";
+    '  { title: "' + esc(p.title) + '", s: ' + jsArr(p.s) +
+    (p.box ? ", box: " + boxLiteral(p.box) : "") + ' }').join(",\n") + "\n];";
 
   const words = "var WORDS = [\n" + L.words.map(([t, d]) =>
     '  ["' + esc(t) + '", "' + esc(d) + '"]').join(",\n") + "\n];";

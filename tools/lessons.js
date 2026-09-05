@@ -1441,7 +1441,26 @@ const LESSONS = [
       "Think of an exclamation point like shouting.",
       "You would not want to shout everything you say!",
       "Use it when the sentence really needs extra emotion."
-    ]},
+    ],
+    /* 🚨 EVERY LINE IN `s` HERE IS QUOTED FROM THE STORY ABOVE, and requireBoxes()
+       in build-lessons.js fails the build if that ever stops being true. Paul:
+       "an imperative sentence sound confusing ... it needs more clarification why
+       a certain sentence is imperative over exclamatory." The answer was already
+       in his own writing, two sections apart - the box just puts the two next to
+       each other where the difference is visible instead of remembered.
+       It sits after the exclamatory section on purpose: both kinds have to be
+       taught before a comparison between them means anything. */
+    box: {
+      title: "Command or Feeling?",
+      lead: "Both of these end with the same mark. Only one of them is telling you to do something.",
+      cols: [
+        { label: "Imperative", s: "Watch out!",
+          why: "It gives a command." },
+        { label: "Exclamatory", s: "That goal was incredible!",
+          why: "It expresses strong emotion." }
+      ],
+      test: "Ask what the sentence is DOING. If it tells someone to do something, it is imperative, whatever mark is on the end."
+    }},
     { title: "Words Have a Purpose", s: [
       "God gave us the ability to communicate, and the words we choose matter.",
       "Proverbs 25:11 says, “A word fitly spoken is like apples of gold in pictures of silver.”",
