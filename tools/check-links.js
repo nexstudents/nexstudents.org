@@ -82,8 +82,53 @@ if (deindexed.length) {
   process.exit(1);
 }
 
+/* 🚨 A BUILT LESSON MUST BE ON ITS SHELF. Paul, 2026-09-05: "I don't see it on
+   NexStudents as available", then "you might to remember to put things on the
+   shelf ... you tend to forget that a lot."
+   Shipping a lesson is two steps: build the page, then wire its slug into the
+   course outline so the pager links it. Only the first was being done. Maths 1-1
+   was live, correct and reachable by URL while /grade-7/maths/lessons/ - the
+   shelf a student actually opens - still showed it as Coming Soon.
+   NOTHING FAILED. Every generator succeeded, every link resolved, the live URL
+   returned 200. The only symptom was Paul not finding it, which puts the cost of
+   my forgetting onto him. That is what makes it worth a build guard rather than
+   a note.
+   ⚠️ It checks the GRADE+SUBJECT shelf specifically, not the grade landing page
+   and not the subject page. Both of those linked 1-1 the whole time, which is
+   exactly how it stayed hidden - "it is linked somewhere" was true and useless.
+   ⚠️ This is the mirror of the unbuilt-lesson rule, not a conflict with it: never
+   wire a slug to a page that does not exist, and always wire one the moment it
+   does. Both failures leave the shelf lying about what is available. */
+const SHELF_SKIP = new Set(["_prev", "tools"]);
+const lessonPages = pages
+  .map((f) => path.relative(ROOT, f).split(path.sep).join("/"))
+  .filter((r) => r.startsWith("lessons/") && r.endsWith("/index.html"))
+  .filter((r) => !SHELF_SKIP.has(r.split("/")[1]))
+  .map((r) => "/" + r.slice(0, -"index.html".length));
+
+const shelfText = pages
+  .map((f) => path.relative(ROOT, f).split(path.sep).join("/"))
+  .filter((r) => /^grade-[^/]+\/[^/]+\/lessons\/index\.html$/.test(r))
+  .map((r) => fs.readFileSync(path.join(ROOT, r), "utf8"))
+  .join("\n");
+
+const unshelved = lessonPages.filter((h) => !shelfText.includes('href="' + h + '"'));
+if (unshelved.length) {
+  console.error("FAIL: " + unshelved.length +
+    " built lesson page(s) are not linked from any /grade-N/<subject>/lessons/ shelf:");
+  for (const h of unshelved) console.error("  " + h);
+  console.error("  The page is live but reads as Coming Soon on the shelf a student opens.");
+  console.error("  Wire its slug into the course outline for that subject:");
+  console.error("    maths   -> tools/maths-units.js    L(label, title, page, \"maths/<folder>\")");
+  console.error("    history -> tools/history-units.js  slug: \"history/<folder>\"");
+  console.error("    english -> tools/english-units.js  science -> tools/science-units.js");
+  console.error("  Then re-run build-pages.js. See the note in this file.");
+  process.exit(1);
+}
+
 if (!bad.size) {
   console.log("OK — no broken internal links.");
+  console.log("OK — all " + lessonPages.length + " built lessons are on a grade+subject shelf.");
   process.exit(0);
 }
 
