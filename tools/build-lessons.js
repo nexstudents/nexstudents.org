@@ -508,6 +508,20 @@ function requireVisuals(L) {
        frame would look merely plain rather than broken, which is the silent
        failure this repo keeps hitting. Read out of the template so the list
        cannot drift from the drawings actually shipped. */
+    /* 🚨 A NAMED PICTURE MUST EXIST ON DISK. A typo in a path renders a broken
+       image icon in the middle of a lesson: visible, ugly, and easy to miss in a
+       file of seventy frames. */
+    if (v.pic) {
+      /* leading slash stripped without a regex: every layer between here and
+         the file has eaten a backslash at least once tonight. */
+      const rel = v.pic.charAt(0) === "/" ? v.pic.slice(1) : v.pic;
+      if (!fs.existsSync(path.join(ROOT, rel))) {
+        console.error("FAIL: " + where + " names a picture that is not on disk:");
+        console.error("        " + v.pic);
+        console.error("      Convert it into the lesson pics/ folder, or fix the path.");
+        process.exit(1);
+      }
+    }
     if (v.art) {
       const lib = /var ART = \{([\s\S]*?)\n\};/.exec(template);
       const names = lib ? (lib[1].match(/^\s{2}([a-zA-Z0-9_]+):/gm) || [])
@@ -521,8 +535,8 @@ function requireVisuals(L) {
     }
     /* `seq` is a staged reveal that supplies its own words, so it stands in for
        `body`. Everything else still needs one. */
-    if (!v.kind || (!v.body && !(v.seq && v.seq.length))) {
-      console.error("FAIL: " + where + " needs `kind` plus `body` or `seq`, or `blank: true`");
+    if ((!v.kind && !v.pic) || (!v.body && !(v.seq && v.seq.length) && !v.pic && !v.art)) {
+      console.error("FAIL: " + where + " needs something to show - body, seq, pic or art - plus a `kind` unless it is a picture");
       process.exit(1);
     }
     /* 🚨 A VERSE CARRIES NO GRAMMAR FURNITURE. `mark` puts a highlighter on the
@@ -543,9 +557,11 @@ function visualsLiteral(V) {
   return "[\n" + V.map((v) =>
     "  { at: " + v.at +
     (v.blank ? ", blank: true" :
-      ', kind: "' + esc(v.kind) + '"' +
+      (v.kind ? ', kind: "' + esc(v.kind) + '"' : "") +
       (v.verse ? ", verse: true" : "") +
       (v.shout ? ", shout: true" : "") +
+      (v.pic ? ', pic: "' + esc(v.pic) + '"' : "") +
+      (v.picAlt ? ', picAlt: "' + esc(v.picAlt) + '"' : "") +
       (v.art ? ', art: "' + esc(v.art) + '"' : "") +
       (v.seq ? ", seq: [" + v.seq.map(function(w){return '"' + esc(w) + '"';}).join(", ") + "]" : "") +
       (v.ghost ? ', ghost: "' + esc(v.ghost) + '"' : "") +

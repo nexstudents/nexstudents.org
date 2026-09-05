@@ -563,7 +563,9 @@ h2{
   overflow:hidden;
 }
 .dbox.is-shut .dbox-sent{display:none}
+.dbox.is-wide .dbox-in{min-height:0}
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
+.dbox-kind:empty{display:none}
 .dbox-kind{
   margin:0 0 10px;text-align:center;
   font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
@@ -596,7 +598,18 @@ h2{
 }
 /* the drawing, above the line it belongs to. currentColor means it takes the
    lesson palette, so there is no second copy for the other theme. */
-.dbox-art{display:flex;justify-content:center;margin:0 0 8px;color:var(--verdigris, var(--accent))}
+.dbox-art{display:flex;justify-content:center;margin:0 0 10px;color:var(--verdigris, var(--accent))}
+/* a photo or illustration, as opposed to an inline icon */
+.dbox.is-wide{max-width:860px;width:calc(100vw - 44px);margin-left:50%;transform:translateX(-50%)}
+.dbox-art img{display:block;width:100%;height:auto;border-radius:8px;cursor:zoom-in}
+.dbox-art.pic{margin:0 0 10px}
+@media (max-height:820px){ .dbox.is-wide{max-width:660px} }
+@media (max-height:620px){ .dbox.is-wide{max-width:520px} }
+/* full screen on tap, because the detail in these does not survive a phone */
+.picfull{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);
+  display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.picfull img{max-width:100%;max-height:100%;border-radius:6px}
+.picfull[hidden]{display:none}
 .dbox-art svg{max-width:100%;height:auto}
 @media (max-width:560px){ .dbox-art svg{width:104px;height:auto} }
 
@@ -1368,14 +1381,14 @@ body.player-hidden .scrub{margin:0}
       <h3>Lesson Goal</h3>
       <p>Students will learn the four-step plan for solving a problem: Explore, Plan, Solve, Examine. The arithmetic in this lesson is easy on purpose. The skill being taught is deciding what to work out and knowing whether the answer makes sense.</p>
       <h3>Key Concepts</h3>
-      <p>Explore means working out what you already know and what you are being asked. Plan means deciding what to do with those numbers, and estimating roughly what the answer should be. Solve means doing it. Examine means checking the answer against the estimate, and working backwards to see if you land where you started.</p>
+      <p>Explore means working out what you already know and what you're being asked. Plan means deciding what to do with those numbers, and estimating roughly what the answer should be. Solve means doing it. Examine means checking the answer against the estimate, and working backwards to see if you land where you started.</p>
       <h3>Why The Estimate Comes First</h3>
       <p>This is the part of the lesson worth defending. A student can get the answer to almost any of these from a phone in about four seconds. What a phone will not do is tell him the answer should have been between ten and twenty hours, which is the only thing that catches a wrong answer.</p>
-      <p>So on this page the calculation stays locked until an estimate is entered. That is not a gimmick. It is the order the textbook itself teaches, and it is the habit that survives after the arithmetic is forgotten.</p>
+      <p>So on this page the calculation stays locked until an estimate is entered. That's not a gimmick. It's the order the textbook itself teaches, and it's the habit that survives after the arithmetic is forgotten.</p>
       <h3>Where Students Get Stuck</h3>
-      <p>Two places. The first is Explore, where a problem hands you a number you do not need. The second is Examine, which most students skip because they believe the answer as soon as the calculator shows it. If he does the check every time on the easy problems, he still has the habit on the hard ones.</p>
+      <p>Two places. The first is Explore, where a problem hands you a number you don't need. The second is Examine, which most students skip because they believe the answer as soon as the calculator shows it. If he does the check every time on the easy problems, he still has the habit on the hard ones.</p>
       <h3>Teaching Suggestion</h3>
-      <p>Ask him to make up a problem of his own before the end of the lesson: something he genuinely wants to know, like how long a drive takes or what a full shopping cart comes to. Proposing the question is half of what this lesson teaches, and it is the half no worksheet can ask for.</p>
+      <p>Ask him to make up a problem of his own before the end of the lesson: something he genuinely wants to know, like how long a drive takes or what a full shopping cart comes to. Proposing the question is half of what this lesson teaches, and it's the half no worksheet can ask for.</p>
       <h3>Key Vocabulary</h3>
       <dl><dt>Explore</dt><dd>Step one: what do I know, and what am I trying to find?</dd><dt>Plan</dt><dd>Step two: what math should I use, and about what should the answer be?</dd><dt>Estimate</dt><dd>A rough range worked out before the real answer, so you know where it should land.</dd><dt>Examine</dt><dd>Step four: does my answer make sense? Check it against your estimate and work backwards.</dd></dl>
     </div>
@@ -1482,6 +1495,8 @@ body.player-hidden .scrub{margin:0}
       <button class="dbox-x" type="button" id="dboxx" aria-expanded="true">Close Visual Panel</button>
     </div>
   </div>
+
+  <div class="picfull" id="picfull" hidden></div>
 
   <main id="story"></main>
 
@@ -1784,44 +1799,92 @@ var ART = {
 };
 
 var VISUALS = [
+  { at: 0, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i0.webp", picAlt: "Most math you have ever been handed came with the sum that someone has already written.", body: "" },
+  { at: 1, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i1.webp", picAlt: "Somebody else decided what to work out, and your job was the arithmetic.", body: "" },
+  { at: 2, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i2.webp", picAlt: "Real life problems don't arrive that way.", body: "" },
+  { at: 3, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i2.webp", picAlt: "Let's say you live in Saint Louis, Missouri, and you want to drive to Orlando, Florida for a vacation.", body: "" },
+  { at: 4, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i3.webp", picAlt: "How do you figure out the sum?", body: "" },
+  { at: 5, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i4.webp", picAlt: "You first ask the question: how long would the drive take?", body: "" },
+  { at: 6, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i5.webp", picAlt: "There's a routine for this type of question, and it's only four kinds of steps.", body: "" },
   { at: 7, kind: "Step 1 of 4", body: "Explore →" },
-  { at: 8, kind: "Explore →", body: "What do I know, and what am I trying to find?" },
+  { at: 8, kind: "Explore →", pic: "/lessons/maths/a-plan-for-problem-solving/pics/i6.webp", picAlt: "What do I know, and what am I trying to find?", body: "What do I know, and what am I trying to find?" },
   { at: 9, kind: "Step 2 of 4", body: "Explore → Plan →" },
-  { at: 10, kind: "Explore → Plan →", body: "What math should I use, and about what should the answer be?" },
+  { at: 10, kind: "Explore → Plan →", pic: "/lessons/maths/a-plan-for-problem-solving/pics/i8.webp", picAlt: "What math should I use, and about what should the answer be?", body: "What math should I use, and about what should the answer be?" },
   { at: 11, kind: "Step 3 of 4", body: "Explore → Plan → Solve →" },
-  { at: 12, kind: "Explore → Plan → Solve →", body: "Solve the Problem" },
+  { at: 12, kind: "Explore → Plan → Solve →", pic: "/lessons/maths/a-plan-for-problem-solving/pics/i9.webp", picAlt: "You do the math", body: "Solve the Problem" },
   { at: 13, kind: "Step 4 of 4", body: "Explore → Plan → Solve → Examine" },
   { at: 14, kind: "Explore → Plan → Solve → Examine", body: "Did my answer make sense?" },
-  { at: 15, kind: "All Four", shout: true, body: "That is the whole routine!" },
-  { at: 16, kind: "In That Order", seq: ["Explore", "Plan", "Solve", "Examine"], body: "undefined", note: "Every problem. Every time." },
+  { at: 15, kind: "All Four", shout: true, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i10.webp", picAlt: "That's the whole routine.", body: "That's the whole routine!" },
+  { at: 16, kind: "In That Order", pic: "/lessons/maths/a-plan-for-problem-solving/pics/i10.webp", picAlt: "Every problem in this lesson goes through those four questions in that order.", seq: ["Explore", "Plan", "Solve", "Examine"], body: "undefined", note: "Every problem. Every time." },
+  { at: 17, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i11.webp", picAlt: "Learn the routine and you can use it on a problem nobody has taught you.", body: "" },
   { at: 18, kind: "Step 1 · Explore", body: "What do I know?   What am I finding?", mark: "?", note: "Information only. No math yet." },
-  { at: 19, kind: "Explore · What You Know", art: "carSports", body: "1,000 miles", note: "The distance. One number so far." },
-  { at: 20, kind: "Explore · What You Know", art: "carSports", body: "1,000 miles   ·   65 mph", note: "The distance and the speed. Now there is something to divide." },
+  { at: 19, kind: "Explore · What You Know", pic: "/lessons/maths/a-plan-for-problem-solving/pics/i12.webp", picAlt: "For the drive, you know it's about a thousand miles.", art: "carSports", body: "1,000 miles", note: "The distance. One number so far." },
+  { at: 20, kind: "Explore · What You Know", art: "carSports", body: "1,000 miles   ·   65 mph", note: "The distance and the speed. Now there's something to divide." },
+  { at: 21, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i13.webp", picAlt: "You're trying to find hours.", body: "" },
   { at: 23, kind: "Explore", body: "1,000 miles   ·   65 mph", mark: "→ hours", note: "Two numbers you need, and one answer you want." },
   { at: 24, kind: "Explore · Not Needed", ghost: "(14 gallons)", body: "1,000 miles   ·   65 mph", note: "A real number that answers a different question. Leave it out." },
-  { at: 30, kind: "Step 2 · Plan", body: "Which math?   About what answer?", mark: "?", note: "Choose the operation, then fence the answer in." },
+  { at: 25, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i14.webp", picAlt: "That's a real number question too.", body: "" },
+  { at: 26, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i14.webp", picAlt: "It actually answers a different question, and it's about stopping for gas along the way.", body: "" },
+  { at: 29, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i15.webp", picAlt: "You explore the question before you do any math first", body: "" },
+  { at: 30, kind: "Step 2 · Plan", body: "Which math?   About what answer?", mark: "?", note: "Choose the operation, then guardrail the answer in." },
   { at: 32, kind: "Plan · The Operation", body: "Distance ÷ Speed", mark: "= Time", note: "Worth remembering. It comes back all year." },
-  { at: 37, kind: "Plan · Fence One", body: "1,000 ÷ 100", mark: "= 10", note: "Too fast to be real, so the time is too short to be real." },
-  { at: 38, kind: "Plan · Fence Two", body: "1,000 ÷ 50", mark: "= 20", note: "Too slow to be real, so the time is too long to be real." },
-  { at: 39, kind: "Plan · Between The Fences", body: "10  <  answer  <  20", mark: "hours", note: "Decided before you calculate anything." },
+  { at: 33, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i16.webp", picAlt: "Now the second half of the Plan, and it's the part most people tend to skip.", body: "" },
+  { at: 34, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i16.webp", picAlt: "Before you work anything out, decide roughly where the answer has to land.", body: "" },
+  { at: 36, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i17.webp", picAlt: "Pick a speed that's definitely too fast, and a speed that's definitely too slow.", body: "" },
+  { at: 37, kind: "Plan · Guardrail One", body: "1,000 ÷ 100", mark: "= 10", note: "Too fast to be real, so the time is too short to be real." },
+  { at: 38, kind: "Plan · Guardrail Two", body: "1,000 ÷ 50", mark: "= 20", note: "Too slow to be real, so the time is too long to be real." },
+  { at: 39, kind: "Plan · Between The Guardrails", body: "10  <  answer  <  20", mark: "hours", note: "Decided before you calculate anything." },
+  { at: 40, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i19.webp", picAlt: "Notice what just happened.", body: "" },
+  { at: 41, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i19.webp", picAlt: "We didn't just round sixty-five to a hundred, and we didn't round it to fifty.", body: "" },
+  { at: 42, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i19.webp", picAlt: "Nobody really rounds sixty-five to a hundred", body: "" },
+  { at: 43, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i19.webp", picAlt: "We built two guardrails, one on each side of the answer.", body: "" },
+  { at: 44, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i20.webp", picAlt: "Going faster will definitely get you there sooner than you think", body: "" },
+  { at: 45, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i20.webp", picAlt: "So ten hours is the limit the answer can't go under.", body: "" },
+  { at: 46, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i20.webp", picAlt: "While going slower will take longer than you think.", body: "" },
+  { at: 47, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i20.webp", picAlt: "So twenty hours is the limit you can't go over.", body: "" },
+  { at: 48, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i21.webp", picAlt: "Don't look at this as trying to be accurate here.", body: "" },
+  { at: 49, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i21.webp", picAlt: "You're just roughly estimating where the answer lands before you calculate it.", body: "" },
+  { at: 50, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i22.webp", picAlt: "Solving is the short step.", body: "" },
+  { at: 51, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i22.webp", picAlt: "You just solve the math to get the right answer.", body: "" },
   { at: 52, kind: "Step 3 · Solve", body: "1,000 ÷ 65", mark: "= 15.4", note: "Do the math. The short step." },
-  { at: 55, kind: "Step 4 · Examine", body: "10  <  15.4  <  20", note: "Inside the fences you built. So far so good." },
-  { at: 60, kind: "Examine · Backwards", body: "15.4 × 65", mark: "= 1,001", note: "Work it back and you land where you started." },
-  { at: 69, kind: "Why The Fences Matter", body: "65 ÷ 1,000", mark: "= 0.065", note: "Correct arithmetic, wrong question. Only the fences catch this." },
-  { at: 78, blank: true }
+  { at: 53, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i23.webp", picAlt: "That's it.", body: "" },
+  { at: 54, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i23.webp", picAlt: "The thinking part was just two steps before this one.", body: "" },
+  { at: 55, kind: "Step 4 · Examine", pic: "/lessons/maths/a-plan-for-problem-solving/pics/i24.webp", picAlt: "Examine asks one question: did my answer make sense?", body: "10  <  15.4  <  20", note: "Inside the guardrails you built. So far so good." },
+  { at: 57, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i24.webp", picAlt: "First, check it against your guardrails to see if they are correct.", body: "" },
+  { at: 58, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i24.webp", picAlt: "You said the answer had to be between ten and twenty hours right?", body: "" },
+  { at: 61, kind: "Examine · Backwards", body: "15.4 × 65", mark: "= 1,001", note: "Work it back and you land where you started." },
+  { at: 62, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i25.webp", picAlt: "Fifteen point four times sixty-five is about a thousand, which is the distance you started with.", body: "" },
+  { at: 63, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i26.webp", picAlt: "Subtraction is checked with addition the same way around.", body: "" },
+  { at: 64, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i26.webp", picAlt: "If your answer fails either check, that's not a disaster, just keep trying.", body: "" },
+  { at: 65, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i27.webp", picAlt: "It means the plan was wrong, and now you know, which is the whole reason why we check.", body: "" },
+  { at: 66, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i28.webp", picAlt: "You could simply ask your phone how long the ride is.", body: "" },
+  { at: 67, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i28.webp", picAlt: "A calculator can help with the arithmetic, and there's nothing wrong with using one.", body: "" },
+  { at: 68, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i29.webp", picAlt: "However, what it can't do is show you how to solve the problem yourself.", body: "" },
+  { at: 69, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i29.webp", picAlt: "That part you have to try to solve.", body: "" },
+  { at: 70, kind: "Why The Guardrails Matter", body: "65 ÷ 1,000", mark: "= 0.065", note: "Correct arithmetic, wrong question. Only the guardrails catch this." },
+  { at: 71, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i30.webp", picAlt: "A calculator will happily show you that answer, because it thinks the arithmetic is correct.", body: "" },
+  { at: 72, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i30.webp", picAlt: "Your guardrails are what tell you it's not correct.", body: "" },
+  { at: 73, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i30.webp", picAlt: "That's why the calculations on this page stay locked until you've made an estimate.", body: "" },
+  { at: 75, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i31.webp", picAlt: "Like what the shopping cart comes to before you reach the cashier checkout.", body: "" },
+  { at: 76, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i32.webp", picAlt: "Or whether a certain team can still win the league.", body: "" },
+  { at: 77, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i33.webp", picAlt: "Even how long you have to save before you can buy the thing.", body: "" },
+  { at: 78, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i33.webp", picAlt: "The subject and the math can change but the routine for problem solving does not.", body: "" },
+  { at: 79, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i34.webp", picAlt: "God did not give us a mind simply to memorize answers.", body: "" },
+  { at: 80, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i34.webp", picAlt: "He gave us the ability to reason, examine, solve problems, and grow in wisdom.", body: "" },
+  { at: 83, pic: "/lessons/maths/a-plan-for-problem-solving/pics/i35.webp", picAlt: "It means not simply believing the first answer that turns up, wherever it came from.", body: "undefined" }
 ];
 
 /* The worked problems, or []. build-lessons.js rewrites this ONE line. */
 var WORK = [
-  { title: "Travel", ask: "You live in Saint Louis and you are driving to Orlando for a vacation. About how many hours of driving is it?",
-    given: [["I know", "it is about 1,000 miles"], ["I know", "highway speed is about 65 miles an hour"], ["I know", "the tank holds 14 gallons — not needed here"], ["I am finding", "hours"]],
-    estimate: { lo: 10, hi: 20, unit: "hours", intro: "Plan. The math is Distance ÷ Speed. Now build two fences: divide by a speed that is clearly too fast, then by one that is clearly too slow.", hint: "Too fast: 1,000 ÷ 100. Too slow: 1,000 ÷ 50.", why: "Between 10 and 20 hours. The real answer has to land in there." },
-    solve: { expr: "1000 ÷ 65", answer: 15.4, tol: 0.1, unit: "hours", intro: "Solve. Do the math, to one decimal place.", why: "About 15.4 hours, and it landed between your fences." },
+  { title: "Travel", ask: "You live in Saint Louis and you're driving to Orlando for a vacation. About how many hours of driving is it?",
+    given: [["I know", "it's about 1,000 miles"], ["I know", "highway speed is about 65 miles an hour"], ["I know", "the tank holds 14 gallons — not needed here"], ["I am finding", "hours"]],
+    estimate: { lo: 10, hi: 20, unit: "hours", intro: "Plan. The math is Distance ÷ Speed. Now build two guardrails: divide by a speed that's clearly too fast, then by one that's clearly too slow.", hint: "Too fast: 1,000 ÷ 100. Too slow: 1,000 ÷ 50.", why: "Between 10 and 20 hours. The real answer has to land in there." },
+    solve: { expr: "1000 ÷ 65", answer: 15.4, tol: 0.1, unit: "hours", intro: "Solve. Do the math, to one decimal place.", why: "About 15.4 hours, and it landed between your guardrails." },
     examine: { expr: "15.4 × 65", answer: 1001, tol: 1, unit: "miles", intro: "Examine. Does it make sense? Work backwards — division is checked with multiplication.", why: "About 1,000 miles, the distance you started with. The answer holds." } },
   { title: "Saving Up", ask: "Over two months you saved $215 from mowing lawns. In the first month you saved $130. How much did you save in the second month?",
     given: [["I know", "$215 saved over two months"], ["I know", "$130 saved in month one"], ["I am finding", "dollars saved in month two"]],
-    estimate: { lo: 70, hi: 90, unit: "dollars", intro: "Plan. The math is a subtraction. Build the fences the same way: take $130 off a total that is a bit too small, then off one that is a bit too big.", hint: "$200 − $130 = $70.  $220 − $130 = $90.", why: "Between $70 and $90. A tighter pair of fences than the drive, because only one number needed changing." },
-    solve: { expr: "215 − 130", answer: 85, unit: "dollars", intro: "Solve. Now use the real numbers.", why: "$85, and it sits between your fences." },
+    estimate: { lo: 70, hi: 90, unit: "dollars", intro: "Plan. The math is a subtraction. Build the guardrails the same way: take $130 off a total that's a bit too small, then off one that's a bit too big.", hint: "$200 − $130 = $70.  $220 − $130 = $90.", why: "Between $70 and $90. A tighter pair of guardrails than the drive, because only one number needed changing." },
+    solve: { expr: "215 − 130", answer: 85, unit: "dollars", intro: "Solve. Now use the real numbers.", why: "$85, and it sits between your guardrails." },
     examine: { expr: "130 + 85", answer: 215, unit: "dollars", intro: "Examine. Work backwards — this time subtraction is checked with addition.", why: "$215, the total you started with. Different problem, different check, same four steps." } }
 ];
 
@@ -1829,13 +1892,13 @@ var PARTS = [
   { title: "The Question Comes First", s: [
     "Most math you have ever been handed came with the sum that someone has already written.",
     "Somebody else decided what to work out, and your job was the arithmetic.",
-    "Real problems do not arrive that way.",
+    "Real life problems don't arrive that way.",
     "",
     "Let's say you live in Saint Louis, Missouri, and you want to drive to Orlando, Florida for a vacation.",
     "How do you figure out the sum?",
     "You first ask the question: how long would the drive take?",
     "",
-    "There is a routine for this type of question, and it is only four kinds of steps."
+    "There's a routine for this type of question, and it's only four kinds of steps."
   ] },
   { title: "The Four Steps", s: [
     "First \"Explore\"",
@@ -1847,27 +1910,27 @@ var PARTS = [
     "Finally \"Examine\"",
     "Examine \"Did my answer make sense?\"",
     "",
-    "That is the whole routine.",
+    "That's the whole routine.",
     "Every problem in this lesson goes through those four questions in that order.",
     "Learn the routine and you can use it on a problem nobody has taught you."
   ] },
   { title: "Explore", s: [
     "Explore asks two things: what do I know, and what am I trying to find?",
     "",
-    "For the drive, you know it is about a thousand miles.",
+    "For the drive, you know it's about a thousand miles.",
     "You know the highway speed is about sixty-five miles an hour.",
-    "You are trying to find hours.",
+    "You're trying to find hours.",
     "",
-    "There is a third question hiding inside Explore.",
-    "Which of the things I know do I actually need?",
+    "There's a third question hiding inside Explore.",
+    "Which of these things I already know do I actually need?",
     "",
     "A problem might also tell you your car holds fourteen gallons of fuel.",
-    "That is a real number, and here it's no use to you.",
+    "That's a real number question too.",
     "It actually answers a different question, and it's about stopping for gas along the way.",
     "Noticing that is part of exploring.",
     "",
     "Explore is about identifying the information.",
-    "You do not do any math yet."
+    "You explore the question before you do any math first"
   ] },
   { title: "Plan", s: [
     "The plan asks the other two questions: what math should I use, and about what should the answer be?",
@@ -1875,72 +1938,73 @@ var PARTS = [
     "For the drive, the math is a division.",
     "The distance divided by speed gives time.",
     "",
-    "Now the second half of Plan, and it is the part most people tend to skip.",
+    "Now the second half of the Plan, and it's the part most people tend to skip.",
     "Before you work anything out, decide roughly where the answer has to land.",
     "",
-    "Here is exactly how.",
-    "Pick a speed that is definitely too fast, and a speed that is definitely too slow.",
+    "Here's exactly how.",
+    "Pick a speed that's definitely too fast, and a speed that's definitely too slow.",
     "A hundred miles an hour is too fast, and a thousand divided by a hundred is ten hours.",
     "Fifty miles an hour is too slow, and a thousand divided by fifty is twenty hours.",
     "So the real answer has to sit between ten and twenty hours.",
     "",
     "Notice what just happened.",
-    "We did not round sixty-five to a hundred, and we did not round it to fifty.",
-    "Nobody would round sixty-five to a hundred.",
-    "We built two fences, one on each side of the answer.",
+    "We didn't just round sixty-five to a hundred, and we didn't round it to fifty.",
+    "Nobody really rounds sixty-five to a hundred",
+    "We built two guardrails, one on each side of the answer.",
     "",
-    "Driving faster than you really will gets you there sooner than you really will.",
-    "So ten hours is a fence the answer cannot go under.",
-    "Driving slower than you really will takes longer than it really will.",
-    "So twenty hours is a fence it cannot go over.",
-    "You are not trying to be accurate here.",
-    "You are trying to know roughly where the answer belongs before you calculate it."
+    "Going faster will definitely get you there sooner than you think",
+    "So ten hours is the limit the answer can't go under.",
+    "While going slower will take longer than you think.",
+    "So twenty hours is the limit you can't go over.",
+    "Don't look at this as trying to be accurate here.",
+    "You're just roughly estimating where the answer lands before you calculate it."
   ] },
   { title: "Solve", s: [
-    "Solve is the short step.",
-    "You just do the math.",
+    "Solving is the short step.",
+    "You just solve the math to get the right answer.",
     "",
-    "A thousand divided by sixty-five is about fifteen point four hours.",
+    "one thousand divided by sixty-five is equal to fifteen point four hours.",
     "",
-    "That is it.",
-    "The thinking was in the two steps before this one."
+    "That's it.",
+    "The thinking part was just two steps before this one."
   ] },
   { title: "Examine", s: [
-    "Examine asks one question: does my answer make sense?",
+    "Examine asks one question: did my answer make sense?",
+    "If not, you might have done the math incorrectly.",
     "",
-    "First, check it against your fences.",
-    "You said the answer had to be between ten and twenty hours.",
+    "First, check it against your guardrails to see if they are correct.",
+    "You said the answer had to be between ten and twenty hours right?",
     "Fifteen point four is between ten and twenty.",
     "",
-    "Second, work backwards.",
+    "Second, work backwards to check.",
     "Division can be checked with multiplication.",
     "Fifteen point four times sixty-five is about a thousand, which is the distance you started with.",
-    "Subtraction is checked with addition the same way round.",
+    "Subtraction is checked with addition the same way around.",
     "",
-    "If an answer fails either check, that is not a disaster.",
-    "It means the plan was wrong, and now you know, which is the whole reason for checking."
+    "If your answer fails either check, that's not a disaster, just keep trying.",
+    "It means the plan was wrong, and now you know, which is the whole reason why we check."
   ] },
   { title: "A Calculator Is a Tool", s: [
-    "You could have asked a phone how long the drive takes.",
+    "You could simply ask your phone how long the ride is.",
     "",
-    "A calculator can help with the arithmetic, and there is nothing wrong with using one.",
-    "What it cannot do is understand the problem for you, or decide whether the answer makes sense.",
-    "That part stays yours.",
+    "A calculator can help with the arithmetic, and there's nothing wrong with using one.",
+    "However, what it can't do is show you how to solve the problem yourself.",
+    "That part you have to try to solve.",
     "",
-    "Suppose you divide the wrong way round and get zero point zero six five.",
-    "A calculator will show you that quite happily, because the arithmetic is correct.",
-    "Your fences are what tell you it is nonsense.",
+    "Suppose you try to divide it the wrong way around and get zero point zero six five for the answer.",
+    "A calculator will happily show you that answer, because it thinks the arithmetic is correct.",
+    "Your guardrails are what tell you it's not correct.",
     "",
-    "That is why the calculation on this page stays locked until you have made an estimate.",
+    "That's why the calculations on this page stay locked until you've made an estimate.",
     "",
-    "The four steps work on anything you actually want to know.",
-    "What the shopping comes to before you reach the till.",
-    "Whether a team can still win the league.",
-    "How long you have to save before you can buy the thing.",
-    "The subject changes and the routine does not."
+    "These four steps help you work on anything you actually want to know.",
+    "Like what the shopping cart comes to before you reach the cashier checkout.",
+    "Or whether a certain team can still win the league.",
+    "Even how long you have to save before you can buy the thing.",
+    "The subject and the math can change but the routine for problem solving does not."
   ] },
   { title: "A Mind Made to Reason", s: [
-    "God did not give us minds simply to memorize answers.",
+    "God did not give us a mind simply to memorize answers.",
     "He gave us the ability to reason, examine, solve problems, and grow in wisdom.",
     "",
     "Proverbs 14:15 says that the prudent man looketh well to his going.",
@@ -1949,15 +2013,15 @@ var PARTS = [
   ] },
   { title: "What To Do Now", s: [
     "Eight questions, then four word cards with four more questions under them. Twelve questions in all.",
-    "Before those, work the two problems above.",
-    "Both make you build your fences before the calculation will open, and that is on purpose.",
+    "Before those, work the two problems above to test yourself.",
+    "Both make you build your guardrails before the calculation will open, and that's on purpose.",
     "For every question, ask which of the four steps it belongs to: Explore, Plan, Solve, or Examine.",
-    "Last, and this is the part that matters most.",
-    "Write a problem of your own.",
+    "Lastly, and this is the part that matters most.",
+    "Write a personal problem of your own.",
     "Something you actually want to know, like how long a drive takes or what a full cart comes to.",
-    "Write what you know, what you are finding, and the two fences.",
-    "You do not have to solve it.",
-    "Proposing it is the skill."
+    "Write what you know, what you're finding, and the two guardrails.",
+    "You don't have to solve it, just understand how to propose it.",
+    "Proposing it's the skill itself."
   ] }
 ];
 
@@ -1985,7 +2049,7 @@ var QUESTIONS = [
     day: 1,
     q: "The drive problem tells you the car holds fourteen gallons. What should you do with that number?",
     find: [22, 23, 24, 25, 26],
-    why: "Deciding what you do not need is part of Explore. Real problems come with spare numbers attached.",
+    why: "Deciding what you don't need is part of Explore. Real problems come with spare numbers attached.",
     choices: [
     "Divide the miles by it, to get miles per gallon.",
     "Use it, because a problem would not give you a number you did not need.",
@@ -1996,7 +2060,7 @@ var QUESTIONS = [
   },
   {
     day: 1,
-    q: "A table gives a team's wins for five seasons and asks for the average. During which step do you pick out the five totals and work out what is being asked for?",
+    q: "A table gives a team's wins for five seasons and asks for the average. During which step do you pick out the five totals and work out what's being asked for?",
     find: [18, 27, 28],
     why: "Gathering what you have and naming what you want is Explore, every time, whatever the subject.",
     choices: [
@@ -2009,12 +2073,12 @@ var QUESTIONS = [
   },
   {
     day: 1,
-    q: "Why does the lesson build the fences before doing the calculation, rather than after?",
+    q: "Why does the lesson build the guardrails before doing the calculation, rather than after?",
     find: [32, 33, 45, 46],
-    why: "Fences built afterwards just agree with whatever you already got.",
+    why: "Guardrails built afterwards just agree with whatever you already got.",
     choices: [
-    "So there is something to check the real answer against, decided before you had it.",
-    "So you can skip the calculation if the fences look narrow.",
+    "So there's something to check the real answer against, decided before you had it.",
+    "So you can skip the calculation if the guardrails look narrow.",
     "Because estimating is quicker than dividing.",
     "Because the estimate is usually close enough to use as the answer."
   ],
@@ -2049,7 +2113,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "How do you check a division?",
-    find: [55, 56],
+    find: [60, 61, 62],
     choices: [
     "Add the two numbers together.",
     "Divide it a second time and see if you get the same thing.",
@@ -3243,6 +3307,31 @@ function fitSentence(el){
   }
 }
 
+
+function showFull(src, alt) {
+  var host = document.getElementById("picfull");
+  if (!host) return;
+  host.innerHTML = "";
+  var big = document.createElement("img");
+  big.src = src; big.alt = alt || "";
+  host.appendChild(big);
+  host.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function hideFull() {
+  var host = document.getElementById("picfull");
+  if (!host || host.hidden) return;
+  host.hidden = true; host.innerHTML = "";
+  document.body.style.overflow = "";
+}
+(function () {
+  var host = document.getElementById("picfull");
+  if (host) host.addEventListener("click", hideFull);
+  /* Escape closes it. A full-screen overlay with no visible way out is a trap
+     for anyone not on a touchscreen. */
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") hideFull(); });
+})();
+
 function paintDemo(i){
   if (!dbox) return;
 
@@ -3283,12 +3372,32 @@ function paintDemo(i){
      ⚠️ Drawn with currentColor, so a drawing takes the lesson's palette and
      works on both themes without a second copy. */
   var artBox = dbox.querySelector(".dbox-art");
-  if (v.art && ART[v.art]) {
-    artBox.innerHTML = ART[v.art];
+  /* 🚨 A PICTURE, NOT AN ICON. `pic` names an image file beside the lesson;
+     `art` names an inline drawing from ART. A frame carries one or the other,
+     never both - different sizes doing different jobs. The panel WIDENS for a
+     picture and does not for an icon, because a 16:9 illustration in the 584px
+     reading column is too small to read the detail in. */
+  if (v.pic) {
+    artBox.innerHTML = "";
+    var im = document.createElement("img");
+    im.src = v.pic;
+    im.alt = v.picAlt || "";
+    im.loading = "lazy";
+    im.decoding = "async";
+    im.addEventListener("click", function () { showFull(v.pic, im.alt); });
+    artBox.appendChild(im);
+    artBox.className = "dbox-art pic";
     artBox.hidden = false;
+    dbox.classList.add("is-wide");
+  } else if (v.art && ART[v.art]) {
+    artBox.innerHTML = ART[v.art];
+    artBox.className = "dbox-art";
+    artBox.hidden = false;
+    dbox.classList.remove("is-wide");
   } else {
     artBox.textContent = "";
     artBox.hidden = true;
+    dbox.classList.remove("is-wide");
   }
 
   var line = dbox.querySelector(".dbox-line");

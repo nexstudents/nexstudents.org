@@ -474,7 +474,9 @@ h2{
   overflow:hidden;
 }
 .dbox.is-shut .dbox-sent{display:none}
+.dbox.is-wide .dbox-in{min-height:0}
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
+.dbox-kind:empty{display:none}
 .dbox-kind{
   margin:0 0 10px;text-align:center;
   font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
@@ -507,7 +509,18 @@ h2{
 }
 /* the drawing, above the line it belongs to. currentColor means it takes the
    lesson palette, so there is no second copy for the other theme. */
-.dbox-art{display:flex;justify-content:center;margin:0 0 8px;color:var(--verdigris, var(--accent))}
+.dbox-art{display:flex;justify-content:center;margin:0 0 10px;color:var(--verdigris, var(--accent))}
+/* a photo or illustration, as opposed to an inline icon */
+.dbox.is-wide{max-width:860px;width:calc(100vw - 44px);margin-left:50%;transform:translateX(-50%)}
+.dbox-art img{display:block;width:100%;height:auto;border-radius:8px;cursor:zoom-in}
+.dbox-art.pic{margin:0 0 10px}
+@media (max-height:820px){ .dbox.is-wide{max-width:660px} }
+@media (max-height:620px){ .dbox.is-wide{max-width:520px} }
+/* full screen on tap, because the detail in these does not survive a phone */
+.picfull{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);
+  display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.picfull img{max-width:100%;max-height:100%;border-radius:6px}
+.picfull[hidden]{display:none}
 .dbox-art svg{max-width:100%;height:auto}
 @media (max-width:560px){ .dbox-art svg{width:104px;height:auto} }
 
@@ -1372,6 +1385,8 @@ body.player-hidden .scrub{margin:0}
       <button class="dbox-x" type="button" id="dboxx" aria-expanded="true">Close Visual Panel</button>
     </div>
   </div>
+
+  <div class="picfull" id="picfull" hidden></div>
 
   <main id="story"></main>
 
@@ -2914,6 +2929,31 @@ function fitSentence(el){
   }
 }
 
+
+function showFull(src, alt) {
+  var host = document.getElementById("picfull");
+  if (!host) return;
+  host.innerHTML = "";
+  var big = document.createElement("img");
+  big.src = src; big.alt = alt || "";
+  host.appendChild(big);
+  host.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function hideFull() {
+  var host = document.getElementById("picfull");
+  if (!host || host.hidden) return;
+  host.hidden = true; host.innerHTML = "";
+  document.body.style.overflow = "";
+}
+(function () {
+  var host = document.getElementById("picfull");
+  if (host) host.addEventListener("click", hideFull);
+  /* Escape closes it. A full-screen overlay with no visible way out is a trap
+     for anyone not on a touchscreen. */
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") hideFull(); });
+})();
+
 function paintDemo(i){
   if (!dbox) return;
 
@@ -2954,12 +2994,32 @@ function paintDemo(i){
      ⚠️ Drawn with currentColor, so a drawing takes the lesson's palette and
      works on both themes without a second copy. */
   var artBox = dbox.querySelector(".dbox-art");
-  if (v.art && ART[v.art]) {
-    artBox.innerHTML = ART[v.art];
+  /* 🚨 A PICTURE, NOT AN ICON. `pic` names an image file beside the lesson;
+     `art` names an inline drawing from ART. A frame carries one or the other,
+     never both - different sizes doing different jobs. The panel WIDENS for a
+     picture and does not for an icon, because a 16:9 illustration in the 584px
+     reading column is too small to read the detail in. */
+  if (v.pic) {
+    artBox.innerHTML = "";
+    var im = document.createElement("img");
+    im.src = v.pic;
+    im.alt = v.picAlt || "";
+    im.loading = "lazy";
+    im.decoding = "async";
+    im.addEventListener("click", function () { showFull(v.pic, im.alt); });
+    artBox.appendChild(im);
+    artBox.className = "dbox-art pic";
     artBox.hidden = false;
+    dbox.classList.add("is-wide");
+  } else if (v.art && ART[v.art]) {
+    artBox.innerHTML = ART[v.art];
+    artBox.className = "dbox-art";
+    artBox.hidden = false;
+    dbox.classList.remove("is-wide");
   } else {
     artBox.textContent = "";
     artBox.hidden = true;
+    dbox.classList.remove("is-wide");
   }
 
   var line = dbox.querySelector(".dbox-line");

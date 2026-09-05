@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<title>Mobile harness</title>
+<style>
+  body{margin:0;background:#16191c;color:#e4e5e9;font:14px/1.4 system-ui,sans-serif}
+  .bar{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #2c3037}
+  .bar input{flex:1;padding:6px 8px;background:#0f1114;color:inherit;border:1px solid #2c3037;border-radius:5px}
+  .row{display:flex;gap:14px;padding:14px;overflow-x:auto;align-items:flex-start}
+  figure{margin:0}
+  figcaption{font:12px/1.6 ui-monospace,monospace;color:#989ba4;text-align:center}
+  iframe{border:1px solid #2c3037;background:#fff;height:720px;display:block}
+</style></head><body>
+<div class="bar">
+  <label for="u">URL</label>
+  <input id="u" value="/lessons/maths/a-plan-for-problem-solving/">
+  <button id="go">Load</button>
+</div>
+<div class="row" id="row"></div>
+<script>
+  var WIDTHS = [320, 390, 768];
+  function load(){
+    var url = document.getElementById("u").value;
+    var row = document.getElementById("row");
+    row.textContent = "";
+    WIDTHS.forEach(function(w){
+      var f = document.createElement("figure");
+      var fr = document.createElement("iframe");
+      fr.width = w; fr.style.width = w + "px"; fr.src = url; fr.id = "f" + w;
+      var cap = document.createElement("figcaption");
+      cap.textContent = w + "px";
+      f.appendChild(fr); f.appendChild(cap); row.appendChild(f);
+    });
+  }
+  document.getElementById("go").addEventListener("click", load);
+  load();
+</script>
+</body></html>
