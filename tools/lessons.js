@@ -84,7 +84,7 @@ const LESSONS = [
   ],
   todo: { title: "What To Do Now", s: [
       "That is the reading done. There are two things left, and both of them send you back into the story.",
-      "First the word cards. {V} words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
+      "First the word cards. {C} words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
       "Then {q} questions. The answer to every one of them is somewhere in the text above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",
       "Finding the answer in the story is the skill this lesson is teaching. Getting it right from memory is not the same thing.",
@@ -196,7 +196,7 @@ const LESSONS = [
   ],
   todo: { title: "What To Do Now", s: [
       "That is the reading done. There are two things left, and both of them send you back into the story.",
-      "First the word cards. {V} words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
+      "First the word cards. {C} words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
       "Then {q} questions. The answer to every one of them is somewhere in the text above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",
       "Finding the answer in the story is the skill this lesson is teaching. Getting it right from memory is not the same thing.",
@@ -1715,7 +1715,7 @@ const LESSONS = [
          It used to say "ten" and "four" in two separate lines and never gave the
          total, so the student was told the job was ten. The count now comes from
          the lesson. See checkTodoCounts() in lesson-instructions.js. */
-      "There are {t} answers to give: {q} questions about the story, then {v} word cards.",
+      "{Q} questions about the story, then {c} word cards with {v} more questions under them. {T} questions in all.",
       "For each sentence, decide what it is doing: telling, asking, commanding, or shouting.",
       "The mark on the end is a clue, not the answer.",
       "Do the word cards last. Tap each card, then answer the question underneath it.",

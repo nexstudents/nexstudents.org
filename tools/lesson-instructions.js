@@ -65,8 +65,18 @@ function requireTodo(L, where) {
    number changes, and the student stops when the voice says to stop). This is
    the same rule for reading lessons.
 
-     {q}  questions about the story        {v}  word cards        {t}  both
-     {Q} {V} {T}  the same, capitalised, for the start of a sentence
+     {q}  questions about the story
+     {v}  questions under the word cards
+     {t}  QUESTIONS IN ALL - q + v, the number the student is really being asked
+     {c}  word CARDS - how many words are on the page
+     {Q} {V} {T} {C}  the same, capitalised, for the start of a sentence
+
+   🚨 {v} AND {c} ARE NOT THE SAME NUMBER and must not be used for each other.
+   {v} counts questions, {c} counts cards, and a lesson is allowed to have more
+   cards than checks: build-lessons.js warns rather than fails when it does,
+   because Paul wrote five words and four checks twice and inventing his fifth
+   question is the worse error. Using {v} where {c} belongs is right until the
+   day a lesson has an unchecked word, and then it is quietly wrong.
 
    🚨 SUBSTITUTED HERE, INSIDE partsFor(), so the page and bake-voice.js get the
    same filled text. Filling them in build-lessons.js instead would leave the
@@ -87,15 +97,18 @@ const cap1 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
    change exists to stop. */
 function todoCounts(L) {
   const q = (L.questions || []).length;
-  const v = (L.vocabQuestions || []).length || (L.words || []).length;
-  return { q: q, v: v, t: q + v };
+  const c = (L.words || []).length;
+  /* Hand-written checks win; otherwise one is generated per card. */
+  const v = (L.vocabQuestions || []).length || c;
+  return { q: q, v: v, t: q + v, c: c };
 }
 
 function fillCounts(text, c) {
   return String(text)
     .replace(/\{q\}/g, numWord(c.q)).replace(/\{Q\}/g, cap1(numWord(c.q)))
     .replace(/\{v\}/g, numWord(c.v)).replace(/\{V\}/g, cap1(numWord(c.v)))
-    .replace(/\{t\}/g, numWord(c.t)).replace(/\{T\}/g, cap1(numWord(c.t)));
+    .replace(/\{t\}/g, numWord(c.t)).replace(/\{T\}/g, cap1(numWord(c.t)))
+    .replace(/\{c\}/g, numWord(c.c)).replace(/\{C\}/g, cap1(numWord(c.c)));
 }
 
 /* 🚨 A NUMBER TYPED IN FRONT OF "questions" OR "cards" FAILS THE BUILD.
