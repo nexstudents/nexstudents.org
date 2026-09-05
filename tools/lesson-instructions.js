@@ -137,6 +137,55 @@ function checkTodoCounts(L, where) {
   });
 }
 
+/* 🚨 ONE SENTENCE PER LINE, AND THE BUILD MEASURES IT.
+   Paul, 2026-09-05: "thats way to long i would do sentences not full
+   paragraphs", then the rule itself: "no measure if it starts and stops with a
+   period ... show each sentence only."
+   Every `s` entry is one unit everywhere it is used - one highlight band, one
+   baked audio clip, one line in the Visual Panel, one `find` target. A line
+   holding three sentences therefore highlights all three at once, is read as a
+   single clip, and fills the panel with a paragraph. The worst offender in
+   maths 1-1 was 288 characters and five sentences in a single entry.
+   ⚠️ IT IS A BOUNDARY TEST, NOT A LENGTH TEST. A long single sentence is fine;
+   two short ones in one entry are not. Splitting on length would cut sentences
+   in half, which is worse than leaving them long.
+   ⚠️ Deliberately narrow: a terminator, then whitespace, then a CAPITAL. That
+   leaves quoted speech alone - "says, “Dinner is ready.”" ends the line rather
+   than continuing it, and an internal comma-quote is followed by lower case. */
+/* 🚨 THE TWO ROME LESSONS ARE EXEMPT, AND THIS IS NOT LAZINESS.
+   Their voice.json holds one baked clip per SENT entry - 35 clips for 35
+   sentences, and the todo is inside that count. Splitting their todo lines takes
+   them to 40 sentences against 35 clips, so every clip from the todo onwards
+   would play against the wrong line. Nothing would catch it: both files predate
+   the per-clip `hash` and the top-level `textHash`, so the page uses them
+   unconditionally.
+   ⚠️ REMOVE THIS THE DAY THEY ARE RE-BAKED. `node tools/bake-voice.js .` with
+   GOOGLE_TTS_KEY set, which also gives them the hashes they are missing. */
+const ONE_SENTENCE_EXEMPT = {
+  "history/republic-to-empire": "baked audio predates the hashes; splitting desyncs it",
+  "history/roman-government": "baked audio predates the hashes; splitting desyncs it",
+};
+
+function checkOneSentence(L, where) {
+  if (ONE_SENTENCE_EXEMPT[L.id]) return;
+  const split = /[.!?]["'”’]?\s+["'“‘]?[A-Z]/;
+  const look = (label, list) => (list || []).forEach((line, i) => {
+    const t = String(line);
+    if (!t.trim()) return;
+    const m = split.exec(t);
+    if (!m) return;
+    console.error("FAIL: " + where + ": " + label + " line " + i + " holds more than one sentence.\n" +
+      "      Split it. One entry is one highlight, one audio clip and one line in\n" +
+      "      the Visual Panel, so two sentences in one entry are read, lit and shown\n" +
+      "      as a single unit.\n" +
+      "        " + (t.length > 120 ? t.slice(0, 117) + "..." : t) + "\n" +
+      "      breaks after: ..." + t.slice(Math.max(0, m.index - 28), m.index + 1));
+    process.exit(1);
+  });
+  (L.parts || []).forEach((p, k) => look("part " + k, p.s));
+  if (L.todo) look("todo", L.todo.s);
+}
+
 /* The finished reading order: the lesson, then the job. Nothing before it. */
 function partsFor(L) {
   const t = L.todo;
@@ -149,4 +198,4 @@ function partsFor(L) {
   return (L.parts || []).concat([filled]);
 }
 
-module.exports = { requireTodo, partsFor, checkTodoCounts };
+module.exports = { requireTodo, partsFor, checkTodoCounts, checkOneSentence };

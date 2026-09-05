@@ -401,11 +401,16 @@ const LESSONS = [
      second, matching lesson-template.html's panel order. This block used to say word cards FIRST, the same way
      Lesson 2's did before Paul caught it on the page on 2026-09-03. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. Two things are left, and they both happen today.",
-      "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
-      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
-      "The one people trip on is the difference between a response and an adaptation. Read Adaptation again and look for which one is passed down and which one is decided in the moment.",
-      "Then the word cards. Five words, and every one of them is explained somewhere in the story you just heard.",
+      "That is the reading done.",
+      "Two things are left, and they both happen today.",
+      "First, the questions.",
+      "Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "If a question is hard, do not guess.",
+      "Use the bar or the arrows to go back to the part it came from and read it again.",
+      "The one people trip on is the difference between a response and an adaptation.",
+      "Read Adaptation again and look for which one is passed down and which one is decided in the moment.",
+      "Then the word cards.",
+      "Five words, and every one of them is explained somewhere in the story you just heard.",
       "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
       "If you can explain why a polar bear's fur is not a response, you have understood the hardest idea in this lesson."
   ] },
@@ -678,11 +683,16 @@ const LESSONS = [
      ⚠️ It is the LAST thing the student hears, so it is the instruction that actually
      gets followed. Check it against the template whenever the day split changes. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. Two things are left, and they both happen today.",
-      "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
-      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
-      "The one people trip on is what Pasteur's curved neck was for. Read Pasteur Solves the Mystery again and look for what the shape let IN and what it kept OUT.",
-      "Then the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
+      "That is the reading done.",
+      "Two things are left, and they both happen today.",
+      "First, the questions.",
+      "Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "If a question is hard, do not guess.",
+      "Use the bar or the arrows to go back to the part it came from and read it again.",
+      "The one people trip on is what Pasteur's curved neck was for.",
+      "Read Pasteur Solves the Mystery again and look for what the shape let IN and what it kept OUT.",
+      "Then the word cards.",
+      "Four words, and every one of them is explained somewhere in the story you just heard.",
       "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
       "If you can explain why the neck had to stay open, you have understood the best experiment in this lesson."
   ] },
@@ -907,7 +917,8 @@ const LESSONS = [
       "A law describes a consistent pattern or relationship observed in nature.",
       "",
       "A simple way to remember the difference is:",
-      "A theory helps explain. A law describes a pattern or relationship.",
+      "A theory helps explain.",
+      "A law describes a pattern or relationship.",
       "",
       "A theory does not become a law when scientists collect enough evidence.",
       "They have different purposes."
@@ -955,11 +966,16 @@ const LESSONS = [
      second, matching lesson-template.html's panel order. Lesson 2 shipped with them the wrong way round and Paul
      caught it on the page, not in the data. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. Two things are left, and they both happen today.",
-      "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
-      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
-      "The one people trip on is the difference between a theory and a law. Read Theory Does Not Mean Guess again and look for what each one is FOR.",
-      "Then the word cards. Five words this time, and every one of them is explained somewhere in the story you just heard.",
+      "That is the reading done.",
+      "Two things are left, and they both happen today.",
+      "First, the questions.",
+      "Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "If a question is hard, do not guess.",
+      "Use the bar or the arrows to go back to the part it came from and read it again.",
+      "The one people trip on is the difference between a theory and a law.",
+      "Read Theory Does Not Mean Guess again and look for what each one is FOR.",
+      "Then the word cards.",
+      "Five words this time, and every one of them is explained somewhere in the story you just heard.",
       "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
       "If you can say why a theory never turns into a law, you have understood the hardest idea in this lesson."
   ] },
@@ -975,7 +991,7 @@ const LESSONS = [
   ],
   /* 🚨 findsAt = the story sentence count these `find` indexes were verified against.
      Change the story and the build stops until they are re-checked. See checkFinds(). */
-  findsAt: 70,
+  findsAt: 71,
   questions: [
     { q: "Why is science more than just a collection of facts?", find: [2, 3, 4],
       hint: "Look for what scientists DO, not for what they have collected.",
@@ -1001,7 +1017,7 @@ const LESSONS = [
         "Theories are used in biology and laws are used in physics.",
         "Every theory eventually becomes a law."
       ], right: 1 },
-    { q: "Why can science not answer every kind of question?", find: [47, 51, 53],
+    { q: "Why can science not answer every kind of question?", find: [48, 52, 54],
       hint: "Think about the microscope and the thermometer, and what neither one could measure.",
       choices: [
         "Scientists have not performed enough experiments yet.",
@@ -1123,7 +1139,8 @@ const LESSONS = [
     { title: "Science and Technology", s: [
       "Science and technology are closely connected, but they are not exactly the same thing.",
       "",
-      "Science investigates how the natural world works. Technology applies knowledge to solve problems or accomplish tasks.",
+      "Science investigates how the natural world works.",
+      "Technology applies knowledge to solve problems or accomplish tasks.",
       "",
       "Pasteur was doing science when he studied microorganisms.",
       "Using knowledge about microorganisms to make food safer is an example of technology.",
@@ -1166,7 +1183,8 @@ const LESSONS = [
       "Questions about right and wrong are questions of ethics.",
       "",
       "This is an important difference.",
-      "Science can help us understand what we can do. Ethics asks what we should do.",
+      "Science can help us understand what we can do.",
+      "Ethics asks what we should do.",
       "",
       "The more powerful our knowledge becomes, the more important wisdom becomes too."
     ]},
@@ -1183,7 +1201,10 @@ const LESSONS = [
       "Micah 6:8 tells us “to do justly, and to love mercy, and to walk humbly with thy God.”",
       "",
       "That gives Christians an important way to think about scientific knowledge.",
-      "We should ask not only “Can we do this?” but also “Is this right? Is it wise? Does it help people? Does it honor God?”",
+      "We should ask not only “Can we do this?” but also “Is this right?",
+      "Is it wise?",
+      "Does it help people?",
+      "Does it honor God?”",
       "",
       "Science gives us knowledge about creation.",
       "God gives us a standard for how that knowledge should be used."
@@ -1215,11 +1236,16 @@ const LESSONS = [
      second, matching lesson-template.html's panel order. This block used to say word cards first, like Lessons 1 and 2
      did before Paul caught it on the page on 2026-09-03. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. Two things are left, and they both happen today.",
-      "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
-      "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
-      "The one people trip on is the difference between science and technology. Read Science and Technology again and look for which one investigates and which one applies.",
-      "Then the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
+      "That is the reading done.",
+      "Two things are left, and they both happen today.",
+      "First, the questions.",
+      "Four of them, and the answer to each one is in the reading above, not in your memory.",
+      "If a question is hard, do not guess.",
+      "Use the bar or the arrows to go back to the part it came from and read it again.",
+      "The one people trip on is the difference between science and technology.",
+      "Read Science and Technology again and look for which one investigates and which one applies.",
+      "Then the word cards.",
+      "Four words, and every one of them is explained somewhere in the story you just heard.",
       "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
       "This is the last lesson in the unit, so if you can say what ethics asks that science cannot, you have finished it properly."
   ] },
@@ -1234,9 +1260,9 @@ const LESSONS = [
   ],
   /* 🚨 findsAt = the story sentence count these `find` indexes were verified against.
      Change the story and the build stops until they are re-checked. See checkFinds(). */
-  findsAt: 63,
+  findsAt: 68,
   questions: [
-    { q: "What is the difference between science and technology?", find: [10, 11, 17, 18],
+    { q: "What is the difference between science and technology?", find: [10, 11, 18, 19],
       hint: "One of them understands. The other one puts it to work.",
       choices: [
         "Science investigates how the natural world works, while technology applies knowledge to solve problems.",
@@ -1244,7 +1270,7 @@ const LESSONS = [
         "Science studies living things, while technology studies machines.",
         "There is no difference between them."
       ], right: 0 },
-    { q: "Why is evidence important when someone makes a scientific claim?", find: [22, 23, 24],
+    { q: "Why is evidence important when someone makes a scientific claim?", find: [23, 24, 25],
       hint: "Think about what you are allowed to ask when something sounds scientific.",
       choices: [
         "Evidence makes a claim sound more impressive.",
@@ -1252,7 +1278,7 @@ const LESSONS = [
         "Evidence proves that a scientist can never be wrong.",
         "Evidence is only needed in laboratories."
       ], right: 1 },
-    { q: "What is the difference between a scientific question and an ethical question?", find: [35, 36, 38],
+    { q: "What is the difference between a scientific question and an ethical question?", find: [36, 37, 39],
       hint: "One asks what is possible. The other asks what is right.",
       choices: [
         "Scientific questions are important, but ethical questions are not.",
@@ -1408,10 +1434,14 @@ const LESSONS = [
     ]},
 
     { title: "The Four Steps", s: [
-      "Explore. What do I know, and what am I trying to find?",
-      "Plan. What math should I use, and about what should the answer be?",
-      "Solve. Do the math.",
-      "Examine. Does my answer make sense?",
+      "Explore.",
+      "What do I know, and what am I trying to find?",
+      "Plan.",
+      "What math should I use, and about what should the answer be?",
+      "Solve.",
+      "Do the math.",
+      "Examine.",
+      "Does my answer make sense?",
       "",
       "That is the whole routine.",
       "Every problem in this lesson goes through those four questions in that order.",
@@ -1421,7 +1451,8 @@ const LESSONS = [
     { title: "Explore", s: [
       "Explore asks two things: what do I know, and what am I trying to find?",
       "",
-      "For the drive, you know it is about a thousand miles, and you know highway speed is about sixty-five miles an hour.",
+      "For the drive, you know it is about a thousand miles.",
+      "You know highway speed is about sixty-five miles an hour.",
       "You are trying to find hours.",
       "",
       "There is a third question hiding inside Explore.",
@@ -1456,8 +1487,10 @@ const LESSONS = [
       "Nobody would round sixty-five to a hundred.",
       "We built two fences, one on each side of the answer.",
       "",
-      "Driving faster than you really will gets you there sooner than you really will, so ten hours is a fence the answer cannot go under.",
-      "Driving slower than you really will takes longer than it really will, so twenty hours is a fence it cannot go over.",
+      "Driving faster than you really will gets you there sooner than you really will.",
+      "So ten hours is a fence the answer cannot go under.",
+      "Driving slower than you really will takes longer than it really will.",
+      "So twenty hours is a fence it cannot go over.",
       "You are not trying to be accurate here.",
       "You are trying to know roughly where the answer belongs before you calculate it."
     ]},
@@ -1476,10 +1509,12 @@ const LESSONS = [
       "Examine asks one question: does my answer make sense?",
       "",
       "First, check it against your fences.",
-      "You said the answer had to be between ten and twenty hours, and fifteen point four is between ten and twenty.",
+      "You said the answer had to be between ten and twenty hours.",
+      "Fifteen point four is between ten and twenty.",
       "",
       "Second, work backwards.",
-      "Division can be checked with multiplication: fifteen point four times sixty-five is about a thousand, which is the distance you started with.",
+      "Division can be checked with multiplication.",
+      "Fifteen point four times sixty-five is about a thousand, which is the distance you started with.",
       "Subtraction is checked with addition the same way round.",
       "",
       "If an answer fails either check, that is not a disaster.",
@@ -1561,7 +1596,7 @@ const LESSONS = [
     { when: "Examine asks one question: does my answer make sense?",
       kind: "Step 4 · Examine", body: "10  <  15.4  <  20",
       note: "Inside the fences you built. So far so good." },
-    { when: "Division can be checked with multiplication: fifteen point four times sixty-five is about a thousand, which is the distance you started with.",
+    { when: "Division can be checked with multiplication.",
       kind: "Examine · Backwards", body: "15.4 × 65", mark: "= 1,001",
       note: "Work it back and you land where you started." },
 
@@ -1622,11 +1657,11 @@ const LESSONS = [
      feels too heavy for this lesson." Each one tests ONE step, and the tag says
      which world it comes from - the routine does not change when the subject does. */
   /* 74 story sentences; the finds below were verified against that count. */
-  findsAt: 74,
+  findsAt: 83,
   questions: [
     { tag: "Explore",
       q: "Explore asks two questions. Which pair?",
-      find: [7, 14, 16],
+      find: [7, 18, 20],
       choices: [
         "What do I know, and what am I trying to find?",
         "Which operation, and roughly what answer?",
@@ -1636,7 +1671,7 @@ const LESSONS = [
 
     { tag: "Explore",
       q: "The drive problem tells you the car holds fourteen gallons. What should you do with that number?",
-      find: [18, 19, 20, 21, 22],
+      find: [22, 23, 24, 25, 26],
       choices: [
         "Leave it out, because it answers a question you were not asked.",
         "Divide the miles by it, to get miles per gallon.",
@@ -1647,14 +1682,14 @@ const LESSONS = [
 
     { tag: "Data Search",
       q: "A table gives a team's wins for five seasons and asks for the average. During which step do you pick out the five totals and work out what is being asked for?",
-      find: [14, 23, 24],
+      find: [18, 27, 28],
       choices: ["Explore.", "Plan.", "Solve.", "Examine."],
       right: 0,
       why: "Gathering what you have and naming what you want is Explore, every time, whatever the subject." },
 
     { tag: "Plan",
       q: "Why does the lesson build the fences before doing the calculation, rather than after?",
-      find: [28, 29, 41, 42],
+      find: [32, 33, 45, 46],
       choices: [
         "So there is something to check the real answer against, decided before you had it.",
         "Because estimating is quicker than dividing.",
@@ -1681,7 +1716,7 @@ const LESSONS = [
 
     { tag: "Examine",
       q: "How do you check a division?",
-      find: [51, 52],
+      find: [55, 56],
       choices: [
         "Multiply the answer by what you divided by.",
         "Divide it a second time and see if you get the same thing.",
@@ -1716,9 +1751,15 @@ const LESSONS = [
 
   todo: { title: "What To Do Now", s: [
       "{Q} questions, then {c} word cards with {v} more questions under them. {T} questions in all.",
-      "Before those, work the two problems above. Both make you build your fences before the calculation will open, and that is on purpose.",
+      "Before those, work the two problems above.",
+      "Both make you build your fences before the calculation will open, and that is on purpose.",
       "For every question, ask which of the four steps it belongs to: Explore, Plan, Solve, or Examine.",
-      "Last, and this is the part that matters most: write a problem of your own. Something you actually want to know, like how long a drive takes or what a full cart comes to. Write what you know, what you are finding, and the two fences. You do not have to solve it. Proposing it is the skill."
+      "Last, and this is the part that matters most.",
+      "Write a problem of your own.",
+      "Something you actually want to know, like how long a drive takes or what a full cart comes to.",
+      "Write what you know, what you are finding, and the two fences.",
+      "You do not have to solve it.",
+      "Proposing it is the skill."
   ] }
 },
 
@@ -1823,7 +1864,8 @@ const LESSONS = [
          not teaching. Say the word and they go. */
       "So how do you tell them apart when both end the same way?",
       "Punctuation gives clues, but the purpose of the sentence tells us what kind it is.",
-      "Ask what the sentence is DOING. If it tells someone to do something, it is imperative, whatever mark is on the end."
+      "Ask what the sentence is DOING.",
+      "If it tells someone to do something, it is imperative, whatever mark is on the end."
     ]},
     { title: "Exclamatory Sentences", s: [
       "An exclamatory sentence expresses strong emotion or excitement.",
@@ -2052,7 +2094,7 @@ const LESSONS = [
       body: "Let your speech be alway with grace.",
       note: "Good communication is not only about correct punctuation. It is also about using our words wisely." }
   ],
-  findsAt: 55,
+  findsAt: 56,
   questions: [
     { q: "The game begins after dinner.", find: [6],
       hint: "Read the Declarative section again. What job is this sentence doing?",
@@ -2066,7 +2108,7 @@ const LESSONS = [
       hint: "Read the Imperative section again.",
       choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 2,
       why: "It gives a polite command or request." },
-    { q: "That was an incredible shot!", find: [35],
+    { q: "That was an incredible shot!", find: [36],
       hint: "Read the Exclamatory section again.",
       choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 3,
       why: "It expresses strong excitement." },
@@ -2082,7 +2124,7 @@ const LESSONS = [
       hint: "Who is this sentence speaking to?",
       choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 2,
       why: "It gives a command." },
-    { q: "I cannot believe we won!", find: [35],
+    { q: "I cannot believe we won!", find: [36],
       hint: "Is anyone being told to do something here?",
       choices: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], right: 3,
       why: "It expresses strong excitement." },
@@ -2115,7 +2157,8 @@ const LESSONS = [
       "{Q} questions about the story, then {c} word cards with {v} more questions under them. {T} questions in all.",
       "For each sentence, decide what it is doing: telling, asking, commanding, or shouting.",
       "The mark on the end is a clue, not the answer.",
-      "Do the word cards last. Tap each card, then answer the question underneath it.",
+      "Do the word cards last.",
+      "Tap each card, then answer the question underneath it.",
       "If you get stuck, go back to the section with that name and read its first line again."
   ] },
 }

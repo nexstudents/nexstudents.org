@@ -283,7 +283,7 @@ h1{
    is exactly what went wrong on the unit strip; it is written down twice now.
    The disclosure arrow points RIGHT closed and DOWN open, matching the integers
    and English panels - Paul, 2026-08-30. */
-.ground{border:1px solid var(--rule);border-radius:12px;margin:20px 0 4px;
+.ground{border:1px solid var(--rule);border-radius:10px;margin:14px 0 4px;
   background:var(--surface);overflow:hidden}
 /* 🚨 THE TITLE IS CENTRED, and the chevron must not push it off centre.
    Paul, 2026-09-04: "just call this box and center the title simply Teacher
@@ -293,7 +293,7 @@ h1{
    the true centre line whatever the arrow does.
    ⚠️ This is the same trap recorded in CLAUDE.md under the five ways to get
    centring wrong: centring a GROUP is not centring the middle item. */
-.ground summary{cursor:pointer;padding:14px 17px;font-weight:700;list-style:none;
+.ground summary{cursor:pointer;padding:10px 17px;font-weight:700;font-size:15px;list-style:none;
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   text-align:center;color:var(--ink)}
 .ground summary::before{content:""}
@@ -543,14 +543,25 @@ h2{
 /* The line being read, small and quiet above the drawing. It is a caption on the
    panel, not a second place to read the lesson from - the story below is still
    where the reading happens. */
+/* 🚨 A FIXED HEIGHT, BECAUSE THIS BAR MUST NOT RESIZE. Paul, 2026-09-05: "for the
+   visual panel it is resizing keep the top bar the same lenth o it doesnt expand
+   or contract. if the text is too long you could make it slightly smaller to
+   fit."
+   The sentence changes on every line of the lesson, and sentences are not the
+   same length, so a bar that grows to fit made the whole panel breathe in and
+   out several times a paragraph - the exact jitter this panel exists to stop.
+   Three lines at the base size, held open whatever is in it, and fitSentence()
+   below shrinks the type for the few sentences that need more. */
 .dbox-sent{
-  margin:0 0 10px;padding-bottom:10px;
+  height:41px;                       /* 2 lines at 13.5px / 1.5 */
+  margin:0 auto 10px;padding-bottom:10px;box-sizing:content-box;
   border-bottom:1px solid var(--rule, var(--line));
   font-size:13.5px;line-height:1.5;text-align:center;
   color:var(--ink-soft, var(--dim));
-  max-width:60ch;margin-inline:auto;
+  max-width:60ch;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
 }
-.dbox-sent:empty{display:none}
 .dbox.is-shut .dbox-sent{display:none}
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
 .dbox-kind{
@@ -1684,7 +1695,8 @@ var PARTS = [
   { title: "Science and Technology", s: [
     "Science and technology are closely connected, but they are not exactly the same thing.",
     "",
-    "Science investigates how the natural world works. Technology applies knowledge to solve problems or accomplish tasks.",
+    "Science investigates how the natural world works.",
+    "Technology applies knowledge to solve problems or accomplish tasks.",
     "",
     "Pasteur was doing science when he studied microorganisms.",
     "Using knowledge about microorganisms to make food safer is an example of technology.",
@@ -1727,7 +1739,8 @@ var PARTS = [
     "Questions about right and wrong are questions of ethics.",
     "",
     "This is an important difference.",
-    "Science can help us understand what we can do. Ethics asks what we should do.",
+    "Science can help us understand what we can do.",
+    "Ethics asks what we should do.",
     "",
     "The more powerful our knowledge becomes, the more important wisdom becomes too."
   ] },
@@ -1744,7 +1757,10 @@ var PARTS = [
     "Micah 6:8 tells us “to do justly, and to love mercy, and to walk humbly with thy God.”",
     "",
     "That gives Christians an important way to think about scientific knowledge.",
-    "We should ask not only “Can we do this?” but also “Is this right? Is it wise? Does it help people? Does it honor God?”",
+    "We should ask not only “Can we do this?” but also “Is this right?",
+    "Is it wise?",
+    "Does it help people?",
+    "Does it honor God?”",
     "",
     "Science gives us knowledge about creation.",
     "God gives us a standard for how that knowledge should be used."
@@ -1772,11 +1788,16 @@ var PARTS = [
     "The unit may be ending, but there is still an entire creation waiting to be explored."
   ] },
   { title: "What To Do Now", s: [
-    "That is the reading done. Two things are left, and they both happen today.",
-    "First, the questions. Four of them, and the answer to each one is in the reading above, not in your memory.",
-    "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read it again.",
-    "The one people trip on is the difference between science and technology. Read Science and Technology again and look for which one investigates and which one applies.",
-    "Then the word cards. Four words, and every one of them is explained somewhere in the story you just heard.",
+    "That is the reading done.",
+    "Two things are left, and they both happen today.",
+    "First, the questions.",
+    "Four of them, and the answer to each one is in the reading above, not in your memory.",
+    "If a question is hard, do not guess.",
+    "Use the bar or the arrows to go back to the part it came from and read it again.",
+    "The one people trip on is the difference between science and technology.",
+    "Read Science and Technology again and look for which one investigates and which one applies.",
+    "Then the word cards.",
+    "Four words, and every one of them is explained somewhere in the story you just heard.",
     "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
     "This is the last lesson in the unit, so if you can say what ethics asks that science cannot, you have finished it properly."
   ] }
@@ -1793,7 +1814,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "What is the difference between science and technology?",
-    find: [10, 11, 17, 18],
+    find: [10, 11, 18, 19],
     hint: "One of them understands. The other one puts it to work.",
     choices: [
     "Science investigates how the natural world works, while technology applies knowledge to solve problems.",
@@ -1806,7 +1827,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "Why is evidence important when someone makes a scientific claim?",
-    find: [22, 23, 24],
+    find: [23, 24, 25],
     hint: "Think about what you are allowed to ask when something sounds scientific.",
     choices: [
     "Evidence is only needed in laboratories.",
@@ -1819,7 +1840,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "What is the difference between a scientific question and an ethical question?",
-    find: [35, 36, 38],
+    find: [36, 37, 39],
     hint: "One asks what is possible. The other asks what is right.",
     choices: [
     "Scientific questions can never affect ethical decisions.",
@@ -3001,6 +3022,26 @@ function visualFor(i){
   return found;
 }
 
+/* 🚨 SHRINK THE TYPE, NEVER THE BAR. The bar's height is fixed in CSS so the
+   panel cannot breathe; this is what stops a long sentence being clipped by that
+   decision. Step down half a point at a time until it fits, with a floor - past
+   about 10px it would be doing the student no favours, and at that point letting
+   the tail clip is the lesser harm, because the sentence is also on the page
+   below in full size.
+   ⚠️ Reset to the base size FIRST. Without that the type only ever ratchets
+   downwards: one long sentence early on would leave every later one tiny. */
+var SENT_BASE = 13.5, SENT_MIN = 10;
+function fitSentence(el){
+  el.style.fontSize = SENT_BASE + "px";
+  if (!el.textContent) return;
+  var size = SENT_BASE;
+  /* scrollHeight beats clientHeight only once the text no longer fits */
+  while (el.scrollHeight > el.clientHeight && size > SENT_MIN) {
+    size -= 0.5;
+    el.style.fontSize = size + "px";
+  }
+}
+
 function paintDemo(i){
   if (!dbox) return;
 
@@ -3010,7 +3051,10 @@ function paintDemo(i){
      sentence line has to move on every single one, or it would freeze on
      whichever line last happened to carry a frame. */
   var sl = document.getElementById("dboxsent");
-  if (sl) sl.textContent = (SENT[i] && SENT[i].text) ? SENT[i].text : "";
+  if (sl) {
+    sl.textContent = (SENT[i] && SENT[i].text) ? SENT[i].text : "";
+    fitSentence(sl);
+  }
 
   var v = visualFor(i);
   var key = v ? v.at : -1;

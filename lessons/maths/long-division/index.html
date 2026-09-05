@@ -349,14 +349,25 @@ h2{
 /* The line being read, small and quiet above the drawing. It is a caption on the
    panel, not a second place to read the lesson from - the story below is still
    where the reading happens. */
+/* 🚨 A FIXED HEIGHT, BECAUSE THIS BAR MUST NOT RESIZE. Paul, 2026-09-05: "for the
+   visual panel it is resizing keep the top bar the same lenth o it doesnt expand
+   or contract. if the text is too long you could make it slightly smaller to
+   fit."
+   The sentence changes on every line of the lesson, and sentences are not the
+   same length, so a bar that grows to fit made the whole panel breathe in and
+   out several times a paragraph - the exact jitter this panel exists to stop.
+   Three lines at the base size, held open whatever is in it, and fitSentence()
+   below shrinks the type for the few sentences that need more. */
 .dbox-sent{
-  margin:0 0 10px;padding-bottom:10px;
+  height:41px;                       /* 2 lines at 13.5px / 1.5 */
+  margin:0 auto 10px;padding-bottom:10px;box-sizing:content-box;
   border-bottom:1px solid var(--rule, var(--line));
   font-size:13.5px;line-height:1.5;text-align:center;
   color:var(--ink-soft, var(--dim));
-  max-width:60ch;margin-inline:auto;
+  max-width:60ch;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
 }
-.dbox-sent:empty{display:none}
 .dbox.is-shut .dbox-sent{display:none}
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
 .dbox-kind{
@@ -2624,6 +2635,26 @@ function visualFor(i){
   return found;
 }
 
+/* 🚨 SHRINK THE TYPE, NEVER THE BAR. The bar's height is fixed in CSS so the
+   panel cannot breathe; this is what stops a long sentence being clipped by that
+   decision. Step down half a point at a time until it fits, with a floor - past
+   about 10px it would be doing the student no favours, and at that point letting
+   the tail clip is the lesser harm, because the sentence is also on the page
+   below in full size.
+   ⚠️ Reset to the base size FIRST. Without that the type only ever ratchets
+   downwards: one long sentence early on would leave every later one tiny. */
+var SENT_BASE = 13.5, SENT_MIN = 10;
+function fitSentence(el){
+  el.style.fontSize = SENT_BASE + "px";
+  if (!el.textContent) return;
+  var size = SENT_BASE;
+  /* scrollHeight beats clientHeight only once the text no longer fits */
+  while (el.scrollHeight > el.clientHeight && size > SENT_MIN) {
+    size -= 0.5;
+    el.style.fontSize = size + "px";
+  }
+}
+
 function paintDemo(i){
   if (!dbox) return;
 
@@ -2633,7 +2664,10 @@ function paintDemo(i){
      sentence line has to move on every single one, or it would freeze on
      whichever line last happened to carry a frame. */
   var sl = document.getElementById("dboxsent");
-  if (sl) sl.textContent = (SENT[i] && SENT[i].text) ? SENT[i].text : "";
+  if (sl) {
+    sl.textContent = (SENT[i] && SENT[i].text) ? SENT[i].text : "";
+    fitSentence(sl);
+  }
 
   var v = visualFor(i);
   var key = v ? v.at : -1;
