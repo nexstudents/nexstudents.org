@@ -540,6 +540,18 @@ h2{
    While open the frame keeps its height through a blank stretch - a box that
    grew and shrank every few sentences would jog the whole page under the reader,
    which is the exact wobble the word highlight was kept plain to avoid. */
+/* The line being read, small and quiet above the drawing. It is a caption on the
+   panel, not a second place to read the lesson from - the story below is still
+   where the reading happens. */
+.dbox-sent{
+  margin:0 0 10px;padding-bottom:10px;
+  border-bottom:1px solid var(--rule, var(--line));
+  font-size:13.5px;line-height:1.5;text-align:center;
+  color:var(--ink-soft, var(--dim));
+  max-width:60ch;margin-inline:auto;
+}
+.dbox-sent:empty{display:none}
+.dbox.is-shut .dbox-sent{display:none}
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
 .dbox-kind{
   margin:0 0 10px;text-align:center;
@@ -1331,9 +1343,9 @@ body.player-hidden .scrub{margin:0}
       <h3>Where Students Get Stuck</h3>
       <p>Two places. The first is Explore, where a problem hands you a number you do not need. The second is Examine, which most students skip because they believe the answer as soon as the calculator shows it. If he does the check every time on the easy problems, he still has the habit on the hard ones.</p>
       <h3>Teaching Suggestion</h3>
-      <p>Ask him to make up a problem of his own before the end of the lesson: something he genuinely wants to know, like how long a drive takes or what a full shopping trolley comes to. Proposing the question is half of what this lesson teaches, and it is the half no worksheet can ask for.</p>
+      <p>Ask him to make up a problem of his own before the end of the lesson: something he genuinely wants to know, like how long a drive takes or what a full shopping cart comes to. Proposing the question is half of what this lesson teaches, and it is the half no worksheet can ask for.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Explore</dt><dd>Step one: what do I know, and what am I trying to find?</dd><dt>Plan</dt><dd>Step two: what maths should I use, and about what should the answer be?</dd><dt>Estimate</dt><dd>A rough range worked out before the real answer, so you know where it should land.</dd><dt>Examine</dt><dd>Step four: does my answer make sense? Check it against your estimate and work backwards.</dd></dl>
+      <dl><dt>Explore</dt><dd>Step one: what do I know, and what am I trying to find?</dd><dt>Plan</dt><dd>Step two: what math should I use, and about what should the answer be?</dd><dt>Estimate</dt><dd>A rough range worked out before the real answer, so you know where it should land.</dd><dt>Examine</dt><dd>Step four: does my answer make sense? Check it against your estimate and work backwards.</dd></dl>
     </div>
   </details>
 
@@ -1411,6 +1423,16 @@ body.player-hidden .scrub{margin:0}
        story mode." Every question can send a student back into the story, and
        half the answers were in a section the pager had hidden. -->
   <div class="dbox is-blank" id="dbox" hidden>
+    <!-- 🚨 THE SENTENCE BEING READ, ALWAYS. Paul, 2026-09-05: "i wonder if we
+         could put the sentences in the visual panel along with the examples
+         maybe across the top it just shows the sentence as a small text to read
+         when there is an example it show the example. this would also give you a
+         starting point where the example lands and how long it appears."
+         It also fixes something the blank state got wrong: with only the example
+         in here, the panel sat empty between frames and there was no way to see
+         WHERE a frame began or how long it stood. The sentence line runs the
+         whole time, so an example arriving is visible against it. -->
+    <p class="dbox-sent" id="dboxsent" aria-live="polite"></p>
     <div class="dbox-in" aria-live="polite">
       <p class="dbox-kind"></p>
       <p class="dbox-line"></p>
@@ -1642,15 +1664,15 @@ new MutationObserver(applyTheme).observe(document.documentElement, { attributes:
    value can never reach a student. */
 var VISUALS = [
   { at: 6, kind: "The Routine", body: "Explore → Plan → Solve → Examine", note: "Four questions, always in this order." },
-  { at: 14, kind: "Step 1 · Explore", body: "What do I know?   What am I finding?", mark: "?", note: "Information only. No maths yet." },
+  { at: 14, kind: "Step 1 · Explore", body: "What do I know?   What am I finding?", mark: "?", note: "Information only. No math yet." },
   { at: 18, kind: "Explore", body: "1,000 miles   ·   65 mph", mark: "→ hours", note: "Two numbers you need, and one answer you want." },
   { at: 19, kind: "Explore · Not Needed", ghost: "(14 gallons)", body: "1,000 miles   ·   65 mph", note: "A real number that answers a different question. Leave it out." },
-  { at: 25, kind: "Step 2 · Plan", body: "Which maths?   About what answer?", mark: "?", note: "Choose the operation, then fence the answer in." },
+  { at: 25, kind: "Step 2 · Plan", body: "Which math?   About what answer?", mark: "?", note: "Choose the operation, then fence the answer in." },
   { at: 27, kind: "Plan · The Operation", body: "Distance ÷ Speed", mark: "= Time", note: "Worth remembering. It comes back all year." },
   { at: 32, kind: "Plan · Fence One", body: "1,000 ÷ 100", mark: "= 10", note: "Too fast to be real, so the time is too short to be real." },
   { at: 33, kind: "Plan · Fence Two", body: "1,000 ÷ 50", mark: "= 20", note: "Too slow to be real, so the time is too long to be real." },
   { at: 34, kind: "Plan · Between The Fences", body: "10  <  answer  <  20", mark: "hours", note: "Decided before you calculate anything." },
-  { at: 45, kind: "Step 3 · Solve", body: "1,000 ÷ 65", mark: "= 15.4", note: "Do the maths. The short step." },
+  { at: 45, kind: "Step 3 · Solve", body: "1,000 ÷ 65", mark: "= 15.4", note: "Do the math. The short step." },
   { at: 48, kind: "Step 4 · Examine", body: "10  <  15.4  <  20", note: "Inside the fences you built. So far so good." },
   { at: 52, kind: "Examine · Backwards", body: "15.4 × 65", mark: "= 1,001", note: "Work it back and you land where you started." },
   { at: 60, kind: "Why The Fences Matter", body: "65 ÷ 1,000", mark: "= 0.065", note: "Correct arithmetic, wrong question. Only the fences catch this." },
@@ -1661,19 +1683,19 @@ var VISUALS = [
 var WORK = [
   { title: "Travel", ask: "You live in Saint Louis and you are driving to Orlando for a vacation. About how many hours of driving is it?",
     given: [["I know", "it is about 1,000 miles"], ["I know", "highway speed is about 65 miles an hour"], ["I know", "the tank holds 14 gallons — not needed here"], ["I am finding", "hours"]],
-    estimate: { lo: 10, hi: 20, unit: "hours", intro: "Plan. The maths is Distance ÷ Speed. Now build two fences: divide by a speed that is clearly too fast, then by one that is clearly too slow.", hint: "Too fast: 1,000 ÷ 100. Too slow: 1,000 ÷ 50.", why: "Between 10 and 20 hours. The real answer has to land in there." },
-    solve: { expr: "1000 ÷ 65", answer: 15.4, tol: 0.1, unit: "hours", intro: "Solve. Do the maths, to one decimal place.", why: "About 15.4 hours, and it landed between your fences." },
+    estimate: { lo: 10, hi: 20, unit: "hours", intro: "Plan. The math is Distance ÷ Speed. Now build two fences: divide by a speed that is clearly too fast, then by one that is clearly too slow.", hint: "Too fast: 1,000 ÷ 100. Too slow: 1,000 ÷ 50.", why: "Between 10 and 20 hours. The real answer has to land in there." },
+    solve: { expr: "1000 ÷ 65", answer: 15.4, tol: 0.1, unit: "hours", intro: "Solve. Do the math, to one decimal place.", why: "About 15.4 hours, and it landed between your fences." },
     examine: { expr: "15.4 × 65", answer: 1001, tol: 1, unit: "miles", intro: "Examine. Does it make sense? Work backwards — division is checked with multiplication.", why: "About 1,000 miles, the distance you started with. The answer holds." } },
   { title: "Saving Up", ask: "Over two months you saved $215 from mowing lawns. In the first month you saved $130. How much did you save in the second month?",
     given: [["I know", "$215 saved over two months"], ["I know", "$130 saved in month one"], ["I am finding", "dollars saved in month two"]],
-    estimate: { lo: 70, hi: 90, unit: "dollars", intro: "Plan. The maths is a subtraction. Build the fences the same way: take $130 off a total that is a bit too small, then off one that is a bit too big.", hint: "$200 − $130 = $70.  $220 − $130 = $90.", why: "Between $70 and $90. A tighter pair of fences than the drive, because only one number needed changing." },
+    estimate: { lo: 70, hi: 90, unit: "dollars", intro: "Plan. The math is a subtraction. Build the fences the same way: take $130 off a total that is a bit too small, then off one that is a bit too big.", hint: "$200 − $130 = $70.  $220 − $130 = $90.", why: "Between $70 and $90. A tighter pair of fences than the drive, because only one number needed changing." },
     solve: { expr: "215 − 130", answer: 85, unit: "dollars", intro: "Solve. Now use the real numbers.", why: "$85, and it sits between your fences." },
     examine: { expr: "130 + 85", answer: 215, unit: "dollars", intro: "Examine. Work backwards — this time subtraction is checked with addition.", why: "$215, the total you started with. Different problem, different check, same four steps." } }
 ];
 
 var PARTS = [
   { title: "The Question Comes First", s: [
-    "Most maths you have ever been handed came with the sum already written.",
+    "Most math you have ever been handed came with the sum already written.",
     "Somebody else decided what to work out, and your job was the arithmetic.",
     "Real problems do not arrive like that.",
     "",
@@ -1685,8 +1707,8 @@ var PARTS = [
   ] },
   { title: "The Four Steps", s: [
     "Explore. What do I know, and what am I trying to find?",
-    "Plan. What maths should I use, and about what should the answer be?",
-    "Solve. Do the maths.",
+    "Plan. What math should I use, and about what should the answer be?",
+    "Solve. Do the math.",
     "Examine. Does my answer make sense?",
     "",
     "That is the whole routine.",
@@ -1704,16 +1726,16 @@ var PARTS = [
     "",
     "A problem might also tell you the car holds fourteen gallons of fuel.",
     "That is a real number, and here it is no use to you.",
-    "It answers a different question, one about stopping for petrol.",
+    "It answers a different question, one about stopping for gas.",
     "Noticing that is part of exploring.",
     "",
     "Explore is only about the information.",
-    "You do not do any maths yet."
+    "You do not do any math yet."
   ] },
   { title: "Plan", s: [
-    "Plan asks the other two questions: what maths should I use, and about what should the answer be?",
+    "Plan asks the other two questions: what math should I use, and about what should the answer be?",
     "",
-    "For the drive, the maths is a division.",
+    "For the drive, the math is a division.",
     "Distance divided by speed gives time.",
     "",
     "Now the second half of Plan, and it is the part most people skip.",
@@ -1737,7 +1759,7 @@ var PARTS = [
   ] },
   { title: "Solve", s: [
     "Solve is the short step.",
-    "Do the maths.",
+    "Do the math.",
     "",
     "A thousand divided by sixty-five is about fifteen point four hours.",
     "",
@@ -1777,7 +1799,7 @@ var PARTS = [
     "The subject changes and the routine does not."
   ] },
   { title: "A Mind Made to Reason", s: [
-    "God did not give us minds simply to memorise answers.",
+    "God did not give us minds simply to memorize answers.",
     "He gave us the ability to reason, examine, solve problems, and grow in wisdom.",
     "",
     "Proverbs 14:15 says that the prudent man looketh well to his going.",
@@ -1788,13 +1810,13 @@ var PARTS = [
     "Eight questions, then four word cards with four more questions under them. Twelve questions in all.",
     "Before those, work the two problems above. Both make you build your fences before the calculation will open, and that is on purpose.",
     "For every question, ask which of the four steps it belongs to: Explore, Plan, Solve, or Examine.",
-    "Last, and this is the part that matters most: write a problem of your own. Something you actually want to know, like how long a drive takes or what a full trolley comes to. Write what you know, what you are finding, and the two fences. You do not have to solve it. Proposing it is the skill."
+    "Last, and this is the part that matters most: write a problem of your own. Something you actually want to know, like how long a drive takes or what a full cart comes to. Write what you know, what you are finding, and the two fences. You do not have to solve it. Proposing it is the skill."
   ] }
 ];
 
 var WORDS = [
   ["Explore", "Step one: what do I know, and what am I trying to find?"],
-  ["Plan", "Step two: what maths should I use, and about what should the answer be?"],
+  ["Plan", "Step two: what math should I use, and about what should the answer be?"],
   ["Estimate", "A rough range worked out before the real answer, so you know where it should land."],
   ["Examine", "Step four: does my answer make sense? Check it against your estimate and work backwards."]
 ];
@@ -1909,7 +1931,7 @@ var QUESTIONS = [
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
     "What do I know, and what am I finding?",
-    "Which maths, and about what answer?"
+    "Which math, and about what answer?"
   ],
     right: 0
   },
@@ -1920,7 +1942,7 @@ var QUESTIONS = [
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
     "What do I know, and what am I finding?",
-    "Which maths, and about what answer?"
+    "Which math, and about what answer?"
   ],
     right: 1
   },
@@ -2651,7 +2673,16 @@ function paint(){
        Every other voice has no usable timing at all, so it marks the SENTENCE.
        Dragging always shows the band, because then you are looking for a line
        rather than following one. */
-    s.el.classList.toggle("reading", i === idx && ((playing && !wordMode()) || dragging));
+    /* 🚨 NO HIGHLIGHT WHILE THE VISUAL PANEL IS OPEN. Paul, 2026-09-05: "i
+       noticed the highlighted text still shows with the panel open and it should
+       not do that. the understanding is the highlighted text only shows and
+       moves down the page if the visual panel is closed."
+       Consistent with the panel already freezing the scroll: with it open the
+       student is watching the panel, and a band creeping down text he is not
+       looking at is the divided attention this whole feature exists to remove.
+       Closing it hands both the highlight and the scrolling back at once. */
+    s.el.classList.toggle("reading",
+      i === idx && !demoOpen() && ((playing && !wordMode()) || dragging));
     var want = "tick" + (i < idx ? " done" : (i === idx ? " now" : ""));
     if (ticks[i].className !== want) ticks[i].className = want;   /* only if changed */
   });
@@ -3047,6 +3078,15 @@ function visualFor(i){
 
 function paintDemo(i){
   if (!dbox) return;
+
+  /* 🚨 THE SENTENCE UPDATES EVERY TIME, BEFORE THE EARLY RETURN BELOW.
+     The example only repaints when it actually changes - that guard is what
+     stops the drawing flickering through a run of sentences it covers - but the
+     sentence line has to move on every single one, or it would freeze on
+     whichever line last happened to carry a frame. */
+  var sl = document.getElementById("dboxsent");
+  if (sl) sl.textContent = (SENT[i] && SENT[i].text) ? SENT[i].text : "";
+
   var v = visualFor(i);
   var key = v ? v.at : -1;
   if (key === curVis) return;                 /* repaint only on a real change */
@@ -3137,6 +3177,12 @@ function setDemoOpen(on, why){
   dboxX.textContent = on ? "Close Visual Panel" : "Open Visual Panel";
   dboxX.setAttribute("aria-expanded", on ? "true" : "false");
   store("demo", on ? "1" : "0");
+  /* 🚨 REPAINT IMMEDIATELY. The highlight rules read demoOpen(), so without this
+     the band or the lit word stays exactly as it was until the reader happens to
+     move to the next sentence - which on a slow line is several seconds of the
+     page contradicting the control that was just pressed. */
+  if (typeof clearWords === "function") clearWords();
+  if (typeof paint === "function") paint();
   if (why !== "init"){
     /* 🚨 CENTRED. Not the eye line, and no longer the top. nsEyeLine() aims 42%
        down, which is right for a sentence being read and wrong for a panel you
@@ -3370,7 +3416,12 @@ function playClipFrom(mine, clip){
     for (var j = 0; j < marks.length; j++){
       if (marks[j] <= t) k = j; else break;
     }
-    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === k); });
+    /* 🚨 THE WORD HIGHLIGHT OBEYS THE PANEL TOO. The sentence band is switched
+       off in paint() while the Visual Panel is open; NexVoice marks the WORD
+       instead of the band, so it needs the same rule here or the two engines
+       would behave differently on the one thing Paul actually asked for. */
+    var lit = demoOpen() ? -1 : k;
+    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === lit); });
     rafId = requestAnimationFrame(tick);
   }
 

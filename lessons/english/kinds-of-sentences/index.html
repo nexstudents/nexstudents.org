@@ -540,6 +540,18 @@ h2{
    While open the frame keeps its height through a blank stretch - a box that
    grew and shrank every few sentences would jog the whole page under the reader,
    which is the exact wobble the word highlight was kept plain to avoid. */
+/* The line being read, small and quiet above the drawing. It is a caption on the
+   panel, not a second place to read the lesson from - the story below is still
+   where the reading happens. */
+.dbox-sent{
+  margin:0 0 10px;padding-bottom:10px;
+  border-bottom:1px solid var(--rule, var(--line));
+  font-size:13.5px;line-height:1.5;text-align:center;
+  color:var(--ink-soft, var(--dim));
+  max-width:60ch;margin-inline:auto;
+}
+.dbox-sent:empty{display:none}
+.dbox.is-shut .dbox-sent{display:none}
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
 .dbox-kind{
   margin:0 0 10px;text-align:center;
@@ -1408,6 +1420,16 @@ body.player-hidden .scrub{margin:0}
        story mode." Every question can send a student back into the story, and
        half the answers were in a section the pager had hidden. -->
   <div class="dbox is-blank" id="dbox" hidden>
+    <!-- 🚨 THE SENTENCE BEING READ, ALWAYS. Paul, 2026-09-05: "i wonder if we
+         could put the sentences in the visual panel along with the examples
+         maybe across the top it just shows the sentence as a small text to read
+         when there is an example it show the example. this would also give you a
+         starting point where the example lands and how long it appears."
+         It also fixes something the blank state got wrong: with only the example
+         in here, the panel sat empty between frames and there was no way to see
+         WHERE a frame began or how long it stood. The sentence line runs the
+         whole time, so an example arriving is visible against it. -->
+    <p class="dbox-sent" id="dboxsent" aria-live="polite"></p>
     <div class="dbox-in" aria-live="polite">
       <p class="dbox-kind"></p>
       <p class="dbox-line"></p>
@@ -2658,7 +2680,16 @@ function paint(){
        Every other voice has no usable timing at all, so it marks the SENTENCE.
        Dragging always shows the band, because then you are looking for a line
        rather than following one. */
-    s.el.classList.toggle("reading", i === idx && ((playing && !wordMode()) || dragging));
+    /* 🚨 NO HIGHLIGHT WHILE THE VISUAL PANEL IS OPEN. Paul, 2026-09-05: "i
+       noticed the highlighted text still shows with the panel open and it should
+       not do that. the understanding is the highlighted text only shows and
+       moves down the page if the visual panel is closed."
+       Consistent with the panel already freezing the scroll: with it open the
+       student is watching the panel, and a band creeping down text he is not
+       looking at is the divided attention this whole feature exists to remove.
+       Closing it hands both the highlight and the scrolling back at once. */
+    s.el.classList.toggle("reading",
+      i === idx && !demoOpen() && ((playing && !wordMode()) || dragging));
     var want = "tick" + (i < idx ? " done" : (i === idx ? " now" : ""));
     if (ticks[i].className !== want) ticks[i].className = want;   /* only if changed */
   });
@@ -3054,6 +3085,15 @@ function visualFor(i){
 
 function paintDemo(i){
   if (!dbox) return;
+
+  /* 🚨 THE SENTENCE UPDATES EVERY TIME, BEFORE THE EARLY RETURN BELOW.
+     The example only repaints when it actually changes - that guard is what
+     stops the drawing flickering through a run of sentences it covers - but the
+     sentence line has to move on every single one, or it would freeze on
+     whichever line last happened to carry a frame. */
+  var sl = document.getElementById("dboxsent");
+  if (sl) sl.textContent = (SENT[i] && SENT[i].text) ? SENT[i].text : "";
+
   var v = visualFor(i);
   var key = v ? v.at : -1;
   if (key === curVis) return;                 /* repaint only on a real change */
@@ -3144,6 +3184,12 @@ function setDemoOpen(on, why){
   dboxX.textContent = on ? "Close Visual Panel" : "Open Visual Panel";
   dboxX.setAttribute("aria-expanded", on ? "true" : "false");
   store("demo", on ? "1" : "0");
+  /* 🚨 REPAINT IMMEDIATELY. The highlight rules read demoOpen(), so without this
+     the band or the lit word stays exactly as it was until the reader happens to
+     move to the next sentence - which on a slow line is several seconds of the
+     page contradicting the control that was just pressed. */
+  if (typeof clearWords === "function") clearWords();
+  if (typeof paint === "function") paint();
   if (why !== "init"){
     /* 🚨 CENTRED. Not the eye line, and no longer the top. nsEyeLine() aims 42%
        down, which is right for a sentence being read and wrong for a panel you
@@ -3377,7 +3423,12 @@ function playClipFrom(mine, clip){
     for (var j = 0; j < marks.length; j++){
       if (marks[j] <= t) k = j; else break;
     }
-    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === k); });
+    /* 🚨 THE WORD HIGHLIGHT OBEYS THE PANEL TOO. The sentence band is switched
+       off in paint() while the Visual Panel is open; NexVoice marks the WORD
+       instead of the band, so it needs the same rule here or the two engines
+       would behave differently on the one thing Paul actually asked for. */
+    var lit = demoOpen() ? -1 : k;
+    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === lit); });
     rafId = requestAnimationFrame(tick);
   }
 

@@ -1388,7 +1388,7 @@ const LESSONS = [
         "Two places. The first is Explore, where a problem hands you a number you do not need. The second is Examine, which most students skip because they believe the answer as soon as the calculator shows it. If he does the check every time on the easy problems, he still has the habit on the hard ones."
       ]},
       { h: "Teaching Suggestion", p: [
-        "Ask him to make up a problem of his own before the end of the lesson: something he genuinely wants to know, like how long a drive takes or what a full shopping trolley comes to. Proposing the question is half of what this lesson teaches, and it is the half no worksheet can ask for."
+        "Ask him to make up a problem of his own before the end of the lesson: something he genuinely wants to know, like how long a drive takes or what a full shopping cart comes to. Proposing the question is half of what this lesson teaches, and it is the half no worksheet can ask for."
       ]},
       { h: "Key Vocabulary", vocab: true }
     ]
@@ -1396,7 +1396,7 @@ const LESSONS = [
 
   parts: [
     { title: "The Question Comes First", s: [
-      "Most maths you have ever been handed came with the sum already written.",
+      "Most math you have ever been handed came with the sum already written.",
       "Somebody else decided what to work out, and your job was the arithmetic.",
       "Real problems do not arrive like that.",
       "",
@@ -1409,8 +1409,8 @@ const LESSONS = [
 
     { title: "The Four Steps", s: [
       "Explore. What do I know, and what am I trying to find?",
-      "Plan. What maths should I use, and about what should the answer be?",
-      "Solve. Do the maths.",
+      "Plan. What math should I use, and about what should the answer be?",
+      "Solve. Do the math.",
       "Examine. Does my answer make sense?",
       "",
       "That is the whole routine.",
@@ -1429,17 +1429,17 @@ const LESSONS = [
       "",
       "A problem might also tell you the car holds fourteen gallons of fuel.",
       "That is a real number, and here it is no use to you.",
-      "It answers a different question, one about stopping for petrol.",
+      "It answers a different question, one about stopping for gas.",
       "Noticing that is part of exploring.",
       "",
       "Explore is only about the information.",
-      "You do not do any maths yet."
+      "You do not do any math yet."
     ]},
 
     { title: "Plan", s: [
-      "Plan asks the other two questions: what maths should I use, and about what should the answer be?",
+      "Plan asks the other two questions: what math should I use, and about what should the answer be?",
       "",
-      "For the drive, the maths is a division.",
+      "For the drive, the math is a division.",
       "Distance divided by speed gives time.",
       "",
       "Now the second half of Plan, and it is the part most people skip.",
@@ -1464,7 +1464,7 @@ const LESSONS = [
 
     { title: "Solve", s: [
       "Solve is the short step.",
-      "Do the maths.",
+      "Do the math.",
       "",
       "A thousand divided by sixty-five is about fifteen point four hours.",
       "",
@@ -1511,7 +1511,7 @@ const LESSONS = [
        ability to reason, examine, solve problems, and grow in wisdom." Tied to
        the Examine step rather than sitting beside the lesson as decoration. */
     { title: "A Mind Made to Reason", s: [
-      "God did not give us minds simply to memorise answers.",
+      "God did not give us minds simply to memorize answers.",
       "He gave us the ability to reason, examine, solve problems, and grow in wisdom.",
       "",
       "Proverbs 14:15 says that the prudent man looketh well to his going.",
@@ -1530,7 +1530,7 @@ const LESSONS = [
 
     { when: "Explore asks two things: what do I know, and what am I trying to find?",
       kind: "Step 1 · Explore", body: "What do I know?   What am I finding?", mark: "?",
-      note: "Information only. No maths yet." },
+      note: "Information only. No math yet." },
     { when: "Which of the things I know do I actually need?",
       kind: "Explore", body: "1,000 miles   ·   65 mph", mark: "→ hours",
       note: "Two numbers you need, and one answer you want." },
@@ -1538,8 +1538,8 @@ const LESSONS = [
       kind: "Explore · Not Needed", ghost: "(14 gallons)", body: "1,000 miles   ·   65 mph",
       note: "A real number that answers a different question. Leave it out." },
 
-    { when: "Plan asks the other two questions: what maths should I use, and about what should the answer be?",
-      kind: "Step 2 · Plan", body: "Which maths?   About what answer?", mark: "?",
+    { when: "Plan asks the other two questions: what math should I use, and about what should the answer be?",
+      kind: "Step 2 · Plan", body: "Which math?   About what answer?", mark: "?",
       note: "Choose the operation, then fence the answer in." },
     { when: "Distance divided by speed gives time.",
       kind: "Plan · The Operation", body: "Distance ÷ Speed", mark: "= Time",
@@ -1556,7 +1556,7 @@ const LESSONS = [
 
     { when: "A thousand divided by sixty-five is about fifteen point four hours.",
       kind: "Step 3 · Solve", body: "1,000 ÷ 65", mark: "= 15.4",
-      note: "Do the maths. The short step." },
+      note: "Do the math. The short step." },
 
     { when: "Examine asks one question: does my answer make sense?",
       kind: "Step 4 · Examine", body: "10  <  15.4  <  20",
@@ -1569,7 +1569,7 @@ const LESSONS = [
       kind: "Why The Fences Matter", body: "65 ÷ 1,000", mark: "= 0.065",
       note: "Correct arithmetic, wrong question. Only the fences catch this." },
 
-    { when: "God did not give us minds simply to memorise answers.",
+    { when: "God did not give us minds simply to memorize answers.",
       blank: true }
   ],
 
@@ -1581,11 +1581,11 @@ const LESSONS = [
               ["I know", "the tank holds 14 gallons — not needed here"],
               ["I am finding", "hours"]],
       estimate: { lo: 10, hi: 20, unit: "hours",
-        intro: "Plan. The maths is Distance ÷ Speed. Now build two fences: divide by a speed that is clearly too fast, then by one that is clearly too slow.",
+        intro: "Plan. The math is Distance ÷ Speed. Now build two fences: divide by a speed that is clearly too fast, then by one that is clearly too slow.",
         hint: "Too fast: 1,000 ÷ 100. Too slow: 1,000 ÷ 50.",
         why: "Between 10 and 20 hours. The real answer has to land in there." },
       solve: { expr: "1000 ÷ 65", answer: 15.4, tol: 0.1, unit: "hours",
-        intro: "Solve. Do the maths, to one decimal place.",
+        intro: "Solve. Do the math, to one decimal place.",
         why: "About 15.4 hours, and it landed between your fences." },
       examine: { expr: "15.4 × 65", answer: 1001, tol: 1, unit: "miles",
         intro: "Examine. Does it make sense? Work backwards — division is checked with multiplication.",
@@ -1600,7 +1600,7 @@ const LESSONS = [
               ["I know", "$130 saved in month one"],
               ["I am finding", "dollars saved in month two"]],
       estimate: { lo: 70, hi: 90, unit: "dollars",
-        intro: "Plan. The maths is a subtraction. Build the fences the same way: take $130 off a total that is a bit too small, then off one that is a bit too big.",
+        intro: "Plan. The math is a subtraction. Build the fences the same way: take $130 off a total that is a bit too small, then off one that is a bit too big.",
         hint: "$200 − $130 = $70.  $220 − $130 = $90.",
         why: "Between $70 and $90. A tighter pair of fences than the drive, because only one number needed changing." },
       solve: { expr: "215 − 130", answer: 85, unit: "dollars",
@@ -1613,7 +1613,7 @@ const LESSONS = [
 
   words: [
     ["Explore", "Step one: what do I know, and what am I trying to find?"],
-    ["Plan", "Step two: what maths should I use, and about what should the answer be?"],
+    ["Plan", "Step two: what math should I use, and about what should the answer be?"],
     ["Estimate", "A rough range worked out before the real answer, so you know where it should land."],
     ["Examine", "Step four: does my answer make sense? Check it against your estimate and work backwards."]
   ],
@@ -1703,9 +1703,9 @@ const LESSONS = [
   vocabQuestions: [
     { q: "Which two questions is <i>Explore</i>?",
       choices: ["What do I know, and what am I finding?",
-                "Which maths, and about what answer?"], right: 0 },
+                "Which math, and about what answer?"], right: 0 },
     { q: "Which two questions is <i>Plan</i>?",
-      choices: ["Which maths, and about what answer?",
+      choices: ["Which math, and about what answer?",
                 "What do I know, and what am I finding?"], right: 0 },
     { q: "An <i>estimate</i> is made when?",
       choices: ["Before you calculate.", "After you calculate."], right: 0 },
@@ -1718,7 +1718,7 @@ const LESSONS = [
       "{Q} questions, then {c} word cards with {v} more questions under them. {T} questions in all.",
       "Before those, work the two problems above. Both make you build your fences before the calculation will open, and that is on purpose.",
       "For every question, ask which of the four steps it belongs to: Explore, Plan, Solve, or Examine.",
-      "Last, and this is the part that matters most: write a problem of your own. Something you actually want to know, like how long a drive takes or what a full trolley comes to. Write what you know, what you are finding, and the two fences. You do not have to solve it. Proposing it is the skill."
+      "Last, and this is the part that matters most: write a problem of your own. Something you actually want to know, like how long a drive takes or what a full cart comes to. Write what you know, what you are finding, and the two fences. You do not have to solve it. Proposing it is the skill."
   ] }
 },
 

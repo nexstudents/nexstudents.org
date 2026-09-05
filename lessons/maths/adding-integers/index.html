@@ -428,7 +428,19 @@ h2{
    While open the frame keeps its height through a blank stretch - a box that
    grew and shrank every few sentences would jog the whole page under the reader,
    which is the exact wobble the word highlight was kept plain to avoid. */
-.dbox-in{min-height:104px;display:flex;flex-direction:column;justify-content:center}
+/* The line being read, small and quiet above the drawing. It is a caption on the
+   panel, not a second place to read the lesson from - the story below is still
+   where the reading happens. */
+.dbox-sent{
+  margin:0 0 10px;padding-bottom:10px;
+  border-bottom:1px solid var(--rule, var(--line));
+  font-size:13.5px;line-height:1.5;text-align:center;
+  color:var(--ink-soft, var(--dim));
+  max-width:60ch;margin-inline:auto;
+}
+.dbox-sent:empty{display:none}
+.dbox.is-shut .dbox-sent{display:none}
+.dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
 .dbox-kind{
   margin:0 0 10px;text-align:center;
   font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
@@ -2120,7 +2132,16 @@ function paint(){
        Every other voice has no usable timing at all, so it marks the SENTENCE.
        Dragging always shows the band, because then you are looking for a line
        rather than following one. */
-    s.el.classList.toggle("reading", i === idx && ((playing && !wordMode()) || dragging));
+    /* 🚨 NO HIGHLIGHT WHILE THE VISUAL PANEL IS OPEN. Paul, 2026-09-05: "i
+       noticed the highlighted text still shows with the panel open and it should
+       not do that. the understanding is the highlighted text only shows and
+       moves down the page if the visual panel is closed."
+       Consistent with the panel already freezing the scroll: with it open the
+       student is watching the panel, and a band creeping down text he is not
+       looking at is the divided attention this whole feature exists to remove.
+       Closing it hands both the highlight and the scrolling back at once. */
+    s.el.classList.toggle("reading",
+      i === idx && !demoOpen() && ((playing && !wordMode()) || dragging));
     var want = "tick" + (i < idx ? " done" : (i === idx ? " now" : ""));
     if (ticks[i].className !== want) ticks[i].className = want;   /* only if changed */
   });
@@ -2516,6 +2537,15 @@ function visualFor(i){
 
 function paintDemo(i){
   if (!dbox) return;
+
+  /* 🚨 THE SENTENCE UPDATES EVERY TIME, BEFORE THE EARLY RETURN BELOW.
+     The example only repaints when it actually changes - that guard is what
+     stops the drawing flickering through a run of sentences it covers - but the
+     sentence line has to move on every single one, or it would freeze on
+     whichever line last happened to carry a frame. */
+  var sl = document.getElementById("dboxsent");
+  if (sl) sl.textContent = (SENT[i] && SENT[i].text) ? SENT[i].text : "";
+
   var v = visualFor(i);
   var key = v ? v.at : -1;
   if (key === curVis) return;                 /* repaint only on a real change */
@@ -2573,13 +2603,17 @@ function measureSticky(){
   document.documentElement.style.setProperty("--stickytop", (nh + 24) + "px");
 }
 
-/* Put an element just below the pinned nav. Used when expanding the explainer:
-   the reader asked to look at it, so it goes where it can actually be looked at
-   with the story still visible underneath. */
-function nsToTop(el){
-  var nav = document.querySelector(".ns-nav");
-  var pad = (nav ? nav.getBoundingClientRect().height : 56) + 12;
-  var y = window.scrollY + el.getBoundingClientRect().top - pad;
+/* 🚨 CENTRED IN THE READABLE BAND, NOT IN THE VIEWPORT. Paul, 2026-09-05: "when
+   you click to open the panel it needs to be center on the screen."
+   Centring on window.innerHeight would put it visibly low, because the player is
+   docked over the bottom ~120px and the nav is pinned over the top. nsReadArea()
+   already knows what both of those cover - it is the same measurement the reader
+   uses to decide where a sentence should sit - so the panel lands in the middle
+   of the screen a person can actually see. */
+function nsCentre(el){
+  var a = nsReadArea();
+  var r = el.getBoundingClientRect();
+  var y = window.scrollY + r.top + r.height / 2 - (a.top + a.height / 2);
   try { window.scrollTo({ top: Math.max(0, y), behavior: "smooth" }); }
   catch(e){ window.scrollTo(0, Math.max(0, y)); }
 }
@@ -2602,13 +2636,24 @@ function setDemoOpen(on, why){
   dboxX.textContent = on ? "Close Visual Panel" : "Open Visual Panel";
   dboxX.setAttribute("aria-expanded", on ? "true" : "false");
   store("demo", on ? "1" : "0");
+  /* 🚨 REPAINT IMMEDIATELY. The highlight rules read demoOpen(), so without this
+     the band or the lit word stays exactly as it was until the reader happens to
+     move to the next sentence - which on a slow line is several seconds of the
+     page contradicting the control that was just pressed. */
+  if (typeof clearWords === "function") clearWords();
+  if (typeof paint === "function") paint();
   if (why !== "init"){
-    /* 🚨 THE TOP, not the eye line. nsEyeLine() aims 42% down the readable band,
-       which is right for a sentence you are reading and wrong here: Paul asked
-       to "watch it at the top of the page with the story going down to the
-       section it is reading at", and 42% would put the panel in the middle with
-       the story pushed off the bottom. */
-    if (on) nsToTop(dbox);
+    /* 🚨 CENTRED. Not the eye line, and no longer the top. nsEyeLine() aims 42%
+       down, which is right for a sentence being read and wrong for a panel you
+       deliberately opened to look at. It went just under the nav while the panel
+       was pinned there; now that it scrolls with the page, Paul asked for the
+       middle: "when you click to open the panel it needs to be center on the
+       screen."
+       ⚠️ ONE SCROLL, NOT A LOCK. "the user can still scroll away but
+       automatically it centered." Nothing holds it there afterwards - a panel
+       that fought the reader's own scrolling would be the unasked-for movement
+       nsInView() exists to prevent. */
+    if (on) nsCentre(dbox);
     /* Closing hands the page back and catches the reader up to the sentence
        being read, which is very likely to be off screen after sitting still. */
     else if (playing && SENT[idx]) { resumeFollowing(); followScroll(SENT[idx].el); }
@@ -2830,7 +2875,12 @@ function playClipFrom(mine, clip){
     for (var j = 0; j < marks.length; j++){
       if (marks[j] <= t) k = j; else break;
     }
-    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === k); });
+    /* 🚨 THE WORD HIGHLIGHT OBEYS THE PANEL TOO. The sentence band is switched
+       off in paint() while the Visual Panel is open; NexVoice marks the WORD
+       instead of the band, so it needs the same rule here or the two engines
+       would behave differently on the one thing Paul actually asked for. */
+    var lit = demoOpen() ? -1 : k;
+    s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === lit); });
     rafId = requestAnimationFrame(tick);
   }
 
