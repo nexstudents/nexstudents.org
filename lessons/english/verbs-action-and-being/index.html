@@ -417,8 +417,19 @@ h2{
   margin:10px 0 0;text-align:center;font-size:14px;line-height:1.5;
   color:var(--ink-soft, var(--dim));
 }
+/* 🚨 THE CONTROL NAMES THE PANEL. Paul, 2026-09-05: "when collapsed it says open
+   visual panel put a line seperator and it says close visual panel."
+   A separate label beside the button was the first attempt and it was redundant
+   the moment the button carried the name itself. One item, so it is genuinely
+   centred rather than a centred GROUP - two things in a centred row is the trap
+   where neither of them lands on the middle. */
+.dbox-foot{
+  display:flex;justify-content:center;
+  margin:10px 0 0;padding-top:8px;
+  border-top:1px solid var(--rule, var(--line));
+}
 .dbox-x{
-  display:block;margin:8px auto 0;font:inherit;font-size:12px;
+  font:inherit;font-size:12px;
   letter-spacing:.08em;text-transform:uppercase;
   background:none;border:0;cursor:pointer;padding:4px 10px;border-radius:5px;
   color:var(--ink-faint, var(--dim));
@@ -429,6 +440,8 @@ h2{
 .dbox.is-blank .dbox-in{visibility:hidden}
 .dbox.is-shut{padding:4px 16px}
 .dbox.is-shut .dbox-in{display:none}
+/* collapsed, the footer IS the panel, so drop the gap it had above the content */
+.dbox.is-shut .dbox-foot{margin:0;padding-top:0;border-top:0}
 
 
 /* ---------- the worked problems ----------
@@ -2432,7 +2445,7 @@ function nsToTop(el){
 function setDemoOpen(on, why){
   if (!dbox) return;
   dbox.classList.toggle("is-shut", !on);
-  dboxX.textContent = on ? "Hide" : "Show me how";
+  dboxX.textContent = on ? "Close Visual Panel" : "Open Visual Panel";
   dboxX.setAttribute("aria-expanded", on ? "true" : "false");
   store("demo", on ? "1" : "0");
   if (why !== "init"){
