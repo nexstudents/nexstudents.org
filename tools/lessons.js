@@ -1587,7 +1587,25 @@ const LESSONS = [
        not about one sentence, and leaving the last drawing standing there would
        read as a claim about what is on screen now. */
     { when: "God gave us the ability to communicate, and the words we choose matter.",
-      blank: true }
+      blank: true },
+
+    /* 🚨 THE VERSES GET FRAMES TOO. Paul, 2026-09-04: "bible verses should be
+       included in the panel."
+       `verse: true` drops the grammar furniture - no punctuation chip, no
+       understood subject - because a verse is being quoted, not diagrammed.
+       ⚠️ The `note` under each is PAUL'S OWN next sentence, not a gloss I wrote.
+       Explaining scripture in my words when he has already explained it in his
+       is the one place on this page where inventing prose would actually
+       matter. */
+    { when: "Proverbs 25:11 says, “A word fitly spoken is like apples of gold in pictures of silver.”",
+      kind: "Proverbs 25:11", verse: true,
+      body: "A word fitly spoken is like apples of gold in pictures of silver.",
+      note: "In other words, the right words used at the right time have value." },
+
+    { when: "As Colossians 4:6 says, “Let your speech be alway with grace.”",
+      kind: "Colossians 4:6", verse: true,
+      body: "Let your speech be alway with grace.",
+      note: "Good communication is not only about correct punctuation. It is also about using our words wisely." }
   ],
   findsAt: 55,
   questions: [

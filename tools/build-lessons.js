@@ -472,6 +472,16 @@ function requireVisuals(L) {
       console.error("FAIL: " + where + " needs `kind` and `body`, or `blank: true`");
       process.exit(1);
     }
+    /* 🚨 A VERSE CARRIES NO GRAMMAR FURNITURE. `mark` puts a highlighter on the
+       end punctuation and `ghost` draws an understood subject - both are claims
+       about the sentence being a worked grammar example. On Proverbs 25:11 they
+       would be pointing at the wrong thing entirely. */
+    if (v.verse && (v.mark || v.ghost)) {
+      console.error("FAIL: " + where + " is a verse and also carries " +
+        (v.mark ? "`mark`" : "`ghost`") + ".\n" +
+        "      A verse is quoted, not diagrammed. Drop it, or drop `verse`.");
+      process.exit(1);
+    }
   });
 }
 
@@ -481,6 +491,7 @@ function visualsLiteral(V) {
     "  { at: " + v.at +
     (v.blank ? ", blank: true" :
       ', kind: "' + esc(v.kind) + '"' +
+      (v.verse ? ", verse: true" : "") +
       (v.ghost ? ', ghost: "' + esc(v.ghost) + '"' : "") +
       ', body: "' + esc(v.body) + '"' +
       (v.mark ? ', mark: "' + esc(v.mark) + '"' : "") +

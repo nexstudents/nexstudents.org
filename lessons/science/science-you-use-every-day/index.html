@@ -546,6 +546,15 @@ h2{
   color:var(--on-accent, #fff);background:var(--verdigris, var(--accent));
   border-radius:5px;padding:0 8px;font-weight:700;display:inline-block;
 }
+/* 🚨 A VERSE IS NOT A DIAGRAM. Paul, 2026-09-04: "bible verses should be
+   included in the panel." It gets the same frame and the same timing, but none
+   of the grammar furniture: no punctuation chip, no dashed understood subject.
+   Setting a verse in the diagram treatment would put a highlighter on the full
+   stop of Proverbs 25:11, which is not what anyone is being asked to look at. */
+.dbox-line.is-verse{
+  font-style:italic;font-size:19px;line-height:1.5;
+  max-width:46ch;margin-inline:auto;
+}
 .dbox-note{
   margin:10px 0 0;text-align:center;font-size:14px;line-height:1.5;
   color:var(--ink-soft, var(--dim));
@@ -2666,6 +2675,8 @@ function paintDemo(i){
 
   var line = dbox.querySelector(".dbox-line");
   line.textContent = "";
+  /* A verse keeps the frame and the timing and drops the grammar furniture. */
+  line.classList.toggle("is-verse", !!v.verse);
   if (v.ghost){
     var g = document.createElement("span");
     g.className = "dbox-ghost";
