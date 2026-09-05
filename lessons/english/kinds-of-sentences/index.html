@@ -1527,6 +1527,10 @@ new MutationObserver(applyTheme).observe(document.documentElement, { attributes:
    fails the build if it does not find exactly one of it, so the template's own
    value can never reach a student. */
 var VISUALS = [
+  { at: 0, kind: "Someone Says", body: "Dinner is ready", mark: ".", note: "This one tells you something." },
+  { at: 1, kind: "You Ask", body: "Can I finish this round", mark: "?", note: "This one wants an answer back." },
+  { at: 2, kind: "You Hear", body: "Put the controller down", mark: ".", note: "This one tells you to do something." },
+  { at: 3, kind: "Someone Yells", body: "The dog has your sandwich", mark: "!", note: "This one is all feeling." },
   { at: 6, kind: "Declarative", body: "The game starts at seven", mark: ".", note: "It declares something. A statement ends with a period." },
   { at: 10, kind: "Declarative", body: "My brother finished the dishes", mark: ".", note: "Telling you what happened. Still a statement." },
   { at: 11, kind: "Declarative", body: "We studied Proverbs at church", mark: ".", note: "Sharing a fact. Nothing is being asked." },
@@ -1536,6 +1540,7 @@ var VISUALS = [
   { at: 20, kind: "Imperative", ghost: "(You)", body: "Clean your room", mark: ".", note: "It gives a command. The subject is you, even though it is not written." },
   { at: 23, kind: "Imperative", ghost: "(You)", body: "Pass me the basketball", mark: ".", note: "A request is a command too. The subject is still you." },
   { at: 24, kind: "Imperative", ghost: "(You)", body: "Please open your Bible", mark: ".", note: "Please makes it polite. It does not stop it being a command." },
+  { at: 25, kind: "The Understood Subject", ghost: "(You)", body: "Take out the trash", mark: ".", note: "Nobody writes the word you. Everybody hears it." },
   { at: 29, kind: "Still Imperative", ghost: "(You)", body: "Watch out", mark: "!", note: "Same command, stronger feeling. The mark changed. The job did not." },
   { at: 35, kind: "Exclamatory", body: "That goal was incredible", mark: "!", note: "Nothing is being asked or ordered. It only shows how you feel." },
   { at: 38, kind: "Exclamatory", body: "I cannot believe we won", mark: "!", note: "Strong feeling. Nobody is being told to do anything." },

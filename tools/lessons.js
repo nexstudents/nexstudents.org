@@ -1538,6 +1538,26 @@ const LESSONS = [
      ⚠️ Paul wants generated art in here later. That is a new FIELD on a visual,
      not a new panel - the frame, the timing and the blanking already work. */
   visuals: [
+    /* 🚨 THE OPENING FOUR. Paul: "if you are going to use \"\" then use as an
+       example also." The hook quotes one of each kind before naming any of
+       them, so the panel does the same: the label is his own framing verb from
+       the sentence around it, not the grammar term. Calling the first one
+       Declarative here would give away the answer to a lesson that has not
+       asked the question yet, four sentences before "Let's find out what they
+       are." */
+    { when: "Imagine you are playing a game when someone walks into the room and says, “Dinner is ready.”",
+      kind: "Someone Says", body: "Dinner is ready", mark: ".",
+      note: "This one tells you something." },
+    { when: "You ask, “Can I finish this round?”",
+      kind: "You Ask", body: "Can I finish this round", mark: "?",
+      note: "This one wants an answer back." },
+    { when: "Then you hear, “Put the controller down.”",
+      kind: "You Hear", body: "Put the controller down", mark: ".",
+      note: "This one tells you to do something." },
+    { when: "Suddenly someone yells, “The dog has your sandwich!”",
+      kind: "Someone Yells", body: "The dog has your sandwich", mark: "!",
+      note: "This one is all feeling." },
+
     { when: "A declarative sentence makes a statement.",
       kind: "Declarative", body: "The game starts at seven", mark: ".",
       note: "It declares something. A statement ends with a period." },
@@ -1567,6 +1587,16 @@ const LESSONS = [
     { when: "Please open your Bible.",
       kind: "Imperative", ghost: "(You)", body: "Please open your Bible", mark: ".",
       note: "Please makes it polite. It does not stop it being a command." },
+
+    /* 🚨 THE BEST DEMONSTRATION OF THE GHOST IN THE WHOLE LESSON, and it was
+       missing. Paul: "you are missing the take out the trash part."
+       ⚠️ Triggered on the sentence BEFORE the example, not on the example
+       itself, so the drawing is already on screen when he hears "the understood
+       meaning is You take out the trash". Arriving with the punchline is worse
+       than arriving with the setup. */
+    { when: "Imperative sentences often leave out the subject because the sentence is speaking directly to you.",
+      kind: "The Understood Subject", ghost: "(You)", body: "Take out the trash", mark: ".",
+      note: "Nobody writes the word you. Everybody hears it." },
 
     /* The confusable pair, drawn at the exact sentence where Paul raises it. */
     { when: "Watch out!",
