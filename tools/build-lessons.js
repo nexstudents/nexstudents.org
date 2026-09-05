@@ -503,8 +503,10 @@ function requireVisuals(L) {
     last = at;
     v.at = at;
     if (v.blank) return;                /* a deliberate empty frame */
-    if (!v.kind || !v.body) {
-      console.error("FAIL: " + where + " needs `kind` and `body`, or `blank: true`");
+    /* `seq` is a staged reveal that supplies its own words, so it stands in for
+       `body`. Everything else still needs one. */
+    if (!v.kind || (!v.body && !(v.seq && v.seq.length))) {
+      console.error("FAIL: " + where + " needs `kind` plus `body` or `seq`, or `blank: true`");
       process.exit(1);
     }
     /* 🚨 A VERSE CARRIES NO GRAMMAR FURNITURE. `mark` puts a highlighter on the
@@ -527,6 +529,8 @@ function visualsLiteral(V) {
     (v.blank ? ", blank: true" :
       ', kind: "' + esc(v.kind) + '"' +
       (v.verse ? ", verse: true" : "") +
+      (v.shout ? ", shout: true" : "") +
+      (v.seq ? ", seq: [" + v.seq.map(function(w){return '"' + esc(w) + '"';}).join(", ") + "]" : "") +
       (v.ghost ? ', ghost: "' + esc(v.ghost) + '"' : "") +
       ', body: "' + esc(v.body) + '"' +
       (v.mark ? ', mark: "' + esc(v.mark) + '"' : "") +

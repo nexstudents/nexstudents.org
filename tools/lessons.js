@@ -1422,7 +1422,7 @@ const LESSONS = [
 
   parts: [
     { title: "The Question Comes First", s: [
-      "Most math you have ever been handed came with the sum already written.",
+      "Most math you have ever been handed came with the sum that someone has already written.",
       "Somebody else decided what to work out, and your job was the arithmetic.",
       "Real problems do not arrive like that.",
       "",
@@ -1452,31 +1452,31 @@ const LESSONS = [
       "Explore asks two things: what do I know, and what am I trying to find?",
       "",
       "For the drive, you know it is about a thousand miles.",
-      "You know highway speed is about sixty-five miles an hour.",
+      "You know the highway speed is about sixty-five miles an hour.",
       "You are trying to find hours.",
       "",
       "There is a third question hiding inside Explore.",
       "Which of the things I know do I actually need?",
       "",
-      "A problem might also tell you the car holds fourteen gallons of fuel.",
-      "That is a real number, and here it is no use to you.",
-      "It answers a different question, one about stopping for gas.",
+      "A problem might also tell you your car holds fourteen gallons of fuel.",
+      "That is a real number, and here it's no use to you.",
+      "It actually answers a different question, and it's about stopping for gas along the way.",
       "Noticing that is part of exploring.",
       "",
-      "Explore is only about the information.",
+      "Explore is about identifying the information.",
       "You do not do any math yet."
     ]},
 
     { title: "Plan", s: [
-      "Plan asks the other two questions: what math should I use, and about what should the answer be?",
+      "The plan asks the other two questions: what math should I use, and about what should the answer be?",
       "",
       "For the drive, the math is a division.",
-      "Distance divided by speed gives time.",
+      "The distance divided by speed gives time.",
       "",
-      "Now the second half of Plan, and it is the part most people skip.",
+      "Now the second half of Plan, and it is the part most people tend to skip.",
       "Before you work anything out, decide roughly where the answer has to land.",
       "",
-      "Here is how.",
+      "Here is exactly how.",
       "Pick a speed that is definitely too fast, and a speed that is definitely too slow.",
       "A hundred miles an hour is too fast, and a thousand divided by a hundred is ten hours.",
       "Fifty miles an hour is too slow, and a thousand divided by fifty is twenty hours.",
@@ -1497,7 +1497,7 @@ const LESSONS = [
 
     { title: "Solve", s: [
       "Solve is the short step.",
-      "Do the math.",
+      "You just do the math.",
       "",
       "A thousand divided by sixty-five is about fifteen point four hours.",
       "",
@@ -1559,9 +1559,42 @@ const LESSONS = [
      visible. The routine frame comes back at the top of each step, so the same
      four questions are on screen every time one of them is being taught. */
   visuals: [
-    { when: "There is a routine for answering a question like that, and it is only four steps long.",
-      kind: "The Routine", body: "Explore → Plan → Solve → Examine",
-      note: "Four questions, always in this order." },
+    /* 🚨 THE ROUTINE IS BUILT UP, NOT SHOWN. Paul, 2026-09-05: "why not on each
+       just show the words like Explore → with sentence 8 under it centered ...
+       then in the series show Explore → Plan → with the sentence 10 under it and
+       number 8 text gone."
+       The chain grows a step at a time as each step is named, so the panel is
+       assembling the routine while the student hears it rather than presenting a
+       finished diagram he has to take in at once. The chain sits in the LABEL and
+       that step's own question sits in the body, which is where the eye goes.
+       ⚠️ There is deliberately no frame on "There is a routine ... four steps
+       long". Showing all four there and then building them up immediately
+       afterwards gives the answer away and makes the build-up pointless. */
+    { when: "What do I know, and what am I trying to find?",
+      kind: "Explore \u2192",
+      body: "What do I know, and what am I trying to find?" },
+    { when: "What math should I use, and about what should the answer be?",
+      kind: "Explore \u2192 Plan \u2192",
+      body: "What math should I use, and about what should the answer be?" },
+    { when: "Do the math.",
+      kind: "Explore \u2192 Plan \u2192 Solve \u2192",
+      body: "Do the math." },
+    { when: "Does my answer make sense?",
+      kind: "Explore \u2192 Plan \u2192 Solve \u2192 Examine",
+      body: "Does my answer make sense?" },
+
+    /* Paul: "then in big bold text say in the panel That is the whole routine!"
+       `shout` is a frame that is a statement rather than a diagram. */
+    { when: "That is the whole routine.",
+      kind: "All Four", shout: true,
+      body: "That is the whole routine!" },
+
+    /* Paul: "you can show each one popping them up one at a time Explore → Plan
+       → Solve → Examine from left to right as that sentence speaks." */
+    { when: "Every problem in this lesson goes through those four questions in that order.",
+      kind: "In That Order",
+      seq: ["Explore", "Plan", "Solve", "Examine"],
+      note: "Every problem. Every time." },
 
     { when: "Explore asks two things: what do I know, and what am I trying to find?",
       kind: "Step 1 · Explore", body: "What do I know?   What am I finding?", mark: "?",
@@ -1569,14 +1602,14 @@ const LESSONS = [
     { when: "Which of the things I know do I actually need?",
       kind: "Explore", body: "1,000 miles   ·   65 mph", mark: "→ hours",
       note: "Two numbers you need, and one answer you want." },
-    { when: "A problem might also tell you the car holds fourteen gallons of fuel.",
+    { when: "A problem might also tell you your car holds fourteen gallons of fuel.",
       kind: "Explore · Not Needed", ghost: "(14 gallons)", body: "1,000 miles   ·   65 mph",
       note: "A real number that answers a different question. Leave it out." },
 
-    { when: "Plan asks the other two questions: what math should I use, and about what should the answer be?",
+    { when: "The plan asks the other two questions: what math should I use, and about what should the answer be?",
       kind: "Step 2 · Plan", body: "Which math?   About what answer?", mark: "?",
       note: "Choose the operation, then fence the answer in." },
-    { when: "Distance divided by speed gives time.",
+    { when: "The distance divided by speed gives time.",
       kind: "Plan · The Operation", body: "Distance ÷ Speed", mark: "= Time",
       note: "Worth remembering. It comes back all year." },
     { when: "A hundred miles an hour is too fast, and a thousand divided by a hundred is ten hours.",

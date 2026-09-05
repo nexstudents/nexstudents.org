@@ -594,6 +594,21 @@ h2{
   font-style:italic;font-size:19px;line-height:1.5;
   max-width:46ch;margin-inline:auto;
 }
+/* the staged reveal - one word at a time, left to right */
+.dbox-pop{
+  display:inline-block;opacity:0;
+  animation:dboxpop .34s ease-out forwards;
+}
+.dbox-arrow{color:var(--ink-faint, var(--dim));margin:0 2px}
+@keyframes dboxpop{
+  from{opacity:0;transform:translateY(4px)}
+  to{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .dbox-pop{animation:none;opacity:1}
+}
+/* the one-line shout, for a frame that is a statement rather than a diagram */
+.dbox-line.is-shout{font-size:26px;font-weight:600;letter-spacing:.01em}
 .dbox-note{
   margin:10px 0 0;text-align:center;font-size:14px;line-height:1.5;
   color:var(--ink-soft, var(--dim));
@@ -1674,7 +1689,12 @@ new MutationObserver(applyTheme).observe(document.documentElement, { attributes:
    fails the build if it does not find exactly one of it, so the template's own
    value can never reach a student. */
 var VISUALS = [
-  { at: 6, kind: "The Routine", body: "Explore → Plan → Solve → Examine", note: "Four questions, always in this order." },
+  { at: 8, kind: "Explore →", body: "What do I know, and what am I trying to find?" },
+  { at: 10, kind: "Explore → Plan →", body: "What math should I use, and about what should the answer be?" },
+  { at: 12, kind: "Explore → Plan → Solve →", body: "Do the math." },
+  { at: 14, kind: "Explore → Plan → Solve → Examine", body: "Does my answer make sense?" },
+  { at: 15, kind: "All Four", shout: true, body: "That is the whole routine!" },
+  { at: 16, kind: "In That Order", seq: ["Explore", "Plan", "Solve", "Examine"], body: "undefined", note: "Every problem. Every time." },
   { at: 18, kind: "Step 1 · Explore", body: "What do I know?   What am I finding?", mark: "?", note: "Information only. No math yet." },
   { at: 23, kind: "Explore", body: "1,000 miles   ·   65 mph", mark: "→ hours", note: "Two numbers you need, and one answer you want." },
   { at: 24, kind: "Explore · Not Needed", ghost: "(14 gallons)", body: "1,000 miles   ·   65 mph", note: "A real number that answers a different question. Leave it out." },
@@ -1706,7 +1726,7 @@ var WORK = [
 
 var PARTS = [
   { title: "The Question Comes First", s: [
-    "Most math you have ever been handed came with the sum already written.",
+    "Most math you have ever been handed came with the sum that someone has already written.",
     "Somebody else decided what to work out, and your job was the arithmetic.",
     "Real problems do not arrive like that.",
     "",
@@ -1734,30 +1754,30 @@ var PARTS = [
     "Explore asks two things: what do I know, and what am I trying to find?",
     "",
     "For the drive, you know it is about a thousand miles.",
-    "You know highway speed is about sixty-five miles an hour.",
+    "You know the highway speed is about sixty-five miles an hour.",
     "You are trying to find hours.",
     "",
     "There is a third question hiding inside Explore.",
     "Which of the things I know do I actually need?",
     "",
-    "A problem might also tell you the car holds fourteen gallons of fuel.",
-    "That is a real number, and here it is no use to you.",
-    "It answers a different question, one about stopping for gas.",
+    "A problem might also tell you your car holds fourteen gallons of fuel.",
+    "That is a real number, and here it's no use to you.",
+    "It actually answers a different question, and it's about stopping for gas along the way.",
     "Noticing that is part of exploring.",
     "",
-    "Explore is only about the information.",
+    "Explore is about identifying the information.",
     "You do not do any math yet."
   ] },
   { title: "Plan", s: [
-    "Plan asks the other two questions: what math should I use, and about what should the answer be?",
+    "The plan asks the other two questions: what math should I use, and about what should the answer be?",
     "",
     "For the drive, the math is a division.",
-    "Distance divided by speed gives time.",
+    "The distance divided by speed gives time.",
     "",
-    "Now the second half of Plan, and it is the part most people skip.",
+    "Now the second half of Plan, and it is the part most people tend to skip.",
     "Before you work anything out, decide roughly where the answer has to land.",
     "",
-    "Here is how.",
+    "Here is exactly how.",
     "Pick a speed that is definitely too fast, and a speed that is definitely too slow.",
     "A hundred miles an hour is too fast, and a thousand divided by a hundred is ten hours.",
     "Fifty miles an hour is too slow, and a thousand divided by fifty is twenty hours.",
@@ -1777,7 +1797,7 @@ var PARTS = [
   ] },
   { title: "Solve", s: [
     "Solve is the short step.",
-    "Do the math.",
+    "You just do the math.",
     "",
     "A thousand divided by sixty-five is about fifteen point four hours.",
     "",
@@ -3158,6 +3178,7 @@ function paintDemo(i){
   line.textContent = "";
   /* A verse keeps the frame and the timing and drops the grammar furniture. */
   line.classList.toggle("is-verse", !!v.verse);
+  line.classList.toggle("is-shout", !!v.shout);
   if (v.ghost){
     var g = document.createElement("span");
     g.className = "dbox-ghost";
@@ -3176,6 +3197,36 @@ function paintDemo(i){
     line.appendChild(m);
   }
   dbox.querySelector(".dbox-note").textContent = v.note || "";
+
+  /* 🚨 A STAGED REVEAL. Paul, 2026-09-05, on the line that names all four steps:
+     "you can show each one popping them up one at a time Explore → Plan → Solve
+     → Examine from left to right as that sentence speaks."
+     `seq` is a list of words that arrive in turn rather than all at once, which
+     is the difference between a diagram of the routine and watching it being
+     counted out. Timed to land across roughly the length of the sentence.
+     ⚠️ prefers-reduced-motion gets the whole thing at once. The point is the
+     order, and the order is still readable without the animation. */
+  if (v.seq && v.seq.length) {
+    line.textContent = "";
+    var slow = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var gap = slow ? 0 : 620;
+    v.seq.forEach(function(word, k){
+      var w = document.createElement("span");
+      w.className = "dbox-pop";
+      w.textContent = word;
+      if (!slow) { w.style.animationDelay = (k * gap) + "ms"; }
+      else { w.style.animation = "none"; w.style.opacity = "1"; }
+      line.appendChild(w);
+      if (k < v.seq.length - 1) {
+        var ar = document.createElement("span");
+        ar.className = "dbox-pop dbox-arrow";
+        ar.textContent = "→";
+        if (!slow) ar.style.animationDelay = (k * gap + gap / 2) + "ms";
+        else { ar.style.animation = "none"; ar.style.opacity = "1"; }
+        line.appendChild(ar);
+      }
+    });
+  }
 }
 
 /* 🚨 MEASURED, NOT GUESSED. --navh positions the panel under the nav and

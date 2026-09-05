@@ -594,6 +594,21 @@ h2{
   font-style:italic;font-size:19px;line-height:1.5;
   max-width:46ch;margin-inline:auto;
 }
+/* the staged reveal - one word at a time, left to right */
+.dbox-pop{
+  display:inline-block;opacity:0;
+  animation:dboxpop .34s ease-out forwards;
+}
+.dbox-arrow{color:var(--ink-faint, var(--dim));margin:0 2px}
+@keyframes dboxpop{
+  from{opacity:0;transform:translateY(4px)}
+  to{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .dbox-pop{animation:none;opacity:1}
+}
+/* the one-line shout, for a frame that is a statement rather than a diagram */
+.dbox-line.is-shout{font-size:26px;font-weight:600;letter-spacing:.01em}
 .dbox-note{
   margin:10px 0 0;text-align:center;font-size:14px;line-height:1.5;
   color:var(--ink-soft, var(--dim));
@@ -3152,6 +3167,7 @@ function paintDemo(i){
   line.textContent = "";
   /* A verse keeps the frame and the timing and drops the grammar furniture. */
   line.classList.toggle("is-verse", !!v.verse);
+  line.classList.toggle("is-shout", !!v.shout);
   if (v.ghost){
     var g = document.createElement("span");
     g.className = "dbox-ghost";
@@ -3170,6 +3186,36 @@ function paintDemo(i){
     line.appendChild(m);
   }
   dbox.querySelector(".dbox-note").textContent = v.note || "";
+
+  /* 🚨 A STAGED REVEAL. Paul, 2026-09-05, on the line that names all four steps:
+     "you can show each one popping them up one at a time Explore → Plan → Solve
+     → Examine from left to right as that sentence speaks."
+     `seq` is a list of words that arrive in turn rather than all at once, which
+     is the difference between a diagram of the routine and watching it being
+     counted out. Timed to land across roughly the length of the sentence.
+     ⚠️ prefers-reduced-motion gets the whole thing at once. The point is the
+     order, and the order is still readable without the animation. */
+  if (v.seq && v.seq.length) {
+    line.textContent = "";
+    var slow = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var gap = slow ? 0 : 620;
+    v.seq.forEach(function(word, k){
+      var w = document.createElement("span");
+      w.className = "dbox-pop";
+      w.textContent = word;
+      if (!slow) { w.style.animationDelay = (k * gap) + "ms"; }
+      else { w.style.animation = "none"; w.style.opacity = "1"; }
+      line.appendChild(w);
+      if (k < v.seq.length - 1) {
+        var ar = document.createElement("span");
+        ar.className = "dbox-pop dbox-arrow";
+        ar.textContent = "→";
+        if (!slow) ar.style.animationDelay = (k * gap + gap / 2) + "ms";
+        else { ar.style.animation = "none"; ar.style.opacity = "1"; }
+        line.appendChild(ar);
+      }
+    });
+  }
 }
 
 /* 🚨 MEASURED, NOT GUESSED. --navh positions the panel under the nav and
