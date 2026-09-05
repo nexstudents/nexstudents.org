@@ -503,6 +503,22 @@ function requireVisuals(L) {
     last = at;
     v.at = at;
     if (v.blank) return;                /* a deliberate empty frame */
+    /* 🚨 A NAMED DRAWING MUST EXIST. `art` points at a key in ART in
+       lesson-template.html. A typo would otherwise render nothing at all - the
+       frame would look merely plain rather than broken, which is the silent
+       failure this repo keeps hitting. Read out of the template so the list
+       cannot drift from the drawings actually shipped. */
+    if (v.art) {
+      const lib = /var ART = \{([\s\S]*?)\n\};/.exec(template);
+      const names = lib ? (lib[1].match(/^\s{2}([a-zA-Z0-9_]+):/gm) || [])
+        .map((x) => x.trim().replace(":", "")) : [];
+      if (names.indexOf(v.art) === -1) {
+        console.error("FAIL: " + where + ' names a drawing that is not in ART: "' + v.art + '"\n' +
+          "      Drawings available: " + (names.length ? names.join(", ") : "(none found)") + "\n" +
+          "      Add it to ART in lesson-template.html, or fix the name.");
+        process.exit(1);
+      }
+    }
     /* `seq` is a staged reveal that supplies its own words, so it stands in for
        `body`. Everything else still needs one. */
     if (!v.kind || (!v.body && !(v.seq && v.seq.length))) {
@@ -530,6 +546,7 @@ function visualsLiteral(V) {
       ', kind: "' + esc(v.kind) + '"' +
       (v.verse ? ", verse: true" : "") +
       (v.shout ? ", shout: true" : "") +
+      (v.art ? ', art: "' + esc(v.art) + '"' : "") +
       (v.seq ? ", seq: [" + v.seq.map(function(w){return '"' + esc(w) + '"';}).join(", ") + "]" : "") +
       (v.ghost ? ', ghost: "' + esc(v.ghost) + '"' : "") +
       ', body: "' + esc(v.body) + '"' +

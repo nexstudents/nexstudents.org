@@ -1424,24 +1424,24 @@ const LESSONS = [
     { title: "The Question Comes First", s: [
       "Most math you have ever been handed came with the sum that someone has already written.",
       "Somebody else decided what to work out, and your job was the arithmetic.",
-      "Real problems do not arrive like that.",
+      "Real problems do not arrive that way.",
       "",
-      "Say you live in Saint Louis, Missouri, and you want to drive to Orlando, Florida for a vacation.",
-      "Nobody hands you a sum.",
-      "You have a question: how long is this going to take?",
+      "Let's say you live in Saint Louis, Missouri, and you want to drive to Orlando, Florida for a vacation.",
+      "How do you figure out the sum?",
+      "You first ask the question: how long would the drive take?",
       "",
-      "There is a routine for answering a question like that, and it is only four steps long."
+      "There is a routine for this type of question, and it is only four kinds of steps."
     ]},
 
     { title: "The Four Steps", s: [
-      "Explore.",
+      "First \"Explore\"",
       "What do I know, and what am I trying to find?",
-      "Plan.",
+      "Next \"Plan\"",
       "What math should I use, and about what should the answer be?",
-      "Solve.",
-      "Do the math.",
-      "Examine.",
-      "Does my answer make sense?",
+      "Next \"Solve\"",
+      "You do the math",
+      "Finally \"Examine\"",
+      "Examine \"Did my answer make sense?\"",
       "",
       "That is the whole routine.",
       "Every problem in this lesson goes through those four questions in that order.",
@@ -1559,38 +1559,50 @@ const LESSONS = [
      visible. The routine frame comes back at the top of each step, so the same
      four questions are on screen every time one of them is being taught. */
   visuals: [
-    /* 🚨 THE ROUTINE IS BUILT UP, NOT SHOWN. Paul, 2026-09-05: "why not on each
-       just show the words like Explore → with sentence 8 under it centered ...
-       then in the series show Explore → Plan → with the sentence 10 under it and
-       number 8 text gone."
-       The chain grows a step at a time as each step is named, so the panel is
-       assembling the routine while the student hears it rather than presenting a
-       finished diagram he has to take in at once. The chain sits in the LABEL and
-       that step's own question sits in the body, which is where the eye goes.
-       ⚠️ There is deliberately no frame on "There is a routine ... four steps
-       long". Showing all four there and then building them up immediately
-       afterwards gives the answer away and makes the build-up pointless. */
+    /* 🚨 A FRAME ON EVERY LINE OF THE ROUTINE, chain then question, chain then
+       question. Paul's notes on the script, 2026-09-05:
+         7  "Explore with an Arrow pointing to the right"
+         8  "put this under the explore with the arrow in text form explaining
+             and center it in the middle"
+         9  "Show Explore [arrow] Plan"
+        10  "put the text under and center it explain what comes next."
+        12  "Solve the Problem centered in the text"
+        14  "put all four"
+       So the chain arrives on the line that NAMES a step, and that step's own
+       question arrives on the line after it, with the chain moving up into the
+       label. Eight frames across eight lines: the panel changes on every single
+       sentence of this section, which is the whole reason the section exists. */
+    { when: "First \"Explore\"",
+      kind: "Step 1 of 4", body: "Explore \u2192" },
     { when: "What do I know, and what am I trying to find?",
       kind: "Explore \u2192",
       body: "What do I know, and what am I trying to find?" },
+
+    { when: "Next \"Plan\"",
+      kind: "Step 2 of 4", body: "Explore \u2192 Plan \u2192" },
     { when: "What math should I use, and about what should the answer be?",
       kind: "Explore \u2192 Plan \u2192",
       body: "What math should I use, and about what should the answer be?" },
-    { when: "Do the math.",
-      kind: "Explore \u2192 Plan \u2192 Solve \u2192",
-      body: "Do the math." },
-    { when: "Does my answer make sense?",
-      kind: "Explore \u2192 Plan \u2192 Solve \u2192 Examine",
-      body: "Does my answer make sense?" },
 
-    /* Paul: "then in big bold text say in the panel That is the whole routine!"
-       `shout` is a frame that is a statement rather than a diagram. */
+    { when: "Next \"Solve\"",
+      kind: "Step 3 of 4", body: "Explore \u2192 Plan \u2192 Solve \u2192" },
+    { when: "You do the math",
+      kind: "Explore \u2192 Plan \u2192 Solve \u2192",
+      body: "Solve the Problem" },
+
+    { when: "Finally \"Examine\"",
+      kind: "Step 4 of 4", body: "Explore \u2192 Plan \u2192 Solve \u2192 Examine" },
+    { when: "Examine \"Did my answer make sense?\"",
+      kind: "Explore \u2192 Plan \u2192 Solve \u2192 Examine",
+      body: "Did my answer make sense?" },
+
+    /* Paul: "then in big bold text say in the panel That is the whole routine!" */
     { when: "That is the whole routine.",
       kind: "All Four", shout: true,
       body: "That is the whole routine!" },
 
-    /* Paul: "you can show each one popping them up one at a time Explore → Plan
-       → Solve → Examine from left to right as that sentence speaks." */
+    /* Paul: "you can show each one popping them up one at a time ... from left
+       to right as that sentence speaks." */
     { when: "Every problem in this lesson goes through those four questions in that order.",
       kind: "In That Order",
       seq: ["Explore", "Plan", "Solve", "Examine"],
@@ -1599,6 +1611,21 @@ const LESSONS = [
     { when: "Explore asks two things: what do I know, and what am I trying to find?",
       kind: "Step 1 · Explore", body: "What do I know?   What am I finding?", mark: "?",
       note: "Information only. No math yet." },
+
+    /* 🚨 THE CAR. Paul, 2026-09-05: "For a drive show a car in the panel and
+       show the 1000mi", then "you know the highway speed is about 65mph show
+       under the car." Two frames, so the distance is on screen alone first and
+       the speed joins it - the same build-up the four steps get, and it matches
+       the order the sentences arrive in. */
+    { when: "For the drive, you know it is about a thousand miles.",
+      kind: "Explore · What You Know", art: "carSports",
+      body: "1,000 miles",
+      note: "The distance. One number so far." },
+    { when: "You know the highway speed is about sixty-five miles an hour.",
+      kind: "Explore · What You Know", art: "carSports",
+      body: "1,000 miles   ·   65 mph",
+      note: "The distance and the speed. Now there is something to divide." },
+
     { when: "Which of the things I know do I actually need?",
       kind: "Explore", body: "1,000 miles   ·   65 mph", mark: "→ hours",
       note: "Two numbers you need, and one answer you want." },
