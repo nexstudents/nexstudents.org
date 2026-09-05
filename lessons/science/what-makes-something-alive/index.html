@@ -1577,20 +1577,26 @@ body.player-hidden .scrub{margin:0}
       <span class="mark" id="statusMark"></span>
       <span id="statusText"></span>
     </div>
-    <button class="btn" type="button" id="printKey">Print answer sheet</button>
+    <button class="btn" type="button" id="printKey">Print Answer Sheet</button>
     <button class="btn" type="button" id="retake">Retake lesson</button>
   </div>
 
-  <!-- Built when he prints. Screen-hidden; the print stylesheet shows only this. -->
-  <div id="sheet" aria-hidden="true"></div>
-
   <div class="done-note">
-    <b>When you finish:</b> write the answers out in your own words &mdash; not copied word for word from the choices. Saying it your own way is the part that proves you understood it. Then use <b>Print answer sheet</b> for a one-page record of what was answered and scored.
+    <b>When you finish:</b> write the answers out in your own words &mdash; not copied word for word from the choices. Saying it your own way is the part that proves you understood it. Then use <b>Print Answer Sheet</b> for a one-page record of what was answered and scored.
   </div>
 
 <nav class="unitnav" aria-label="Unit navigation"><a class="fwd" href="/lessons/science/life-only-comes-from-life/"><em>Lesson 2 &rarr;</em><b>Life Only Comes From Life</b></a></nav>
 
 </div>
+
+<!-- Built when he prints. Screen-hidden; the print stylesheet shows only this.
+     🚨 THIS MUST BE A DIRECT CHILD OF <body>. The print rule is
+     `body>*{display:none!important}` then `#sheet{display:block!important}`, and
+     display:block on a DESCENDANT of a hidden element does nothing. It lived
+     inside .wrap until 2026-09-05, so every Print answer sheet on all 12 lessons
+     produced a blank page - correctly styled, correctly paginated, empty. No
+     error anywhere. Moving it back inside any container breaks it again. -->
+<div id="sheet" aria-hidden="true"></div>
 
 <div class="hunt-bar" id="huntbar">
   <span class="label" id="huntlabel"></span>
@@ -4222,7 +4228,7 @@ function showScore(){
     '</div>' +
     '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
     ' &middot; answered without hunting: ' + missed + '.<br>' +
-    'Use Print answer sheet for a record of this attempt.</div>';
+    'Use Print Answer Sheet for a record of this attempt.</div>';
   el.classList.add("show");
 
   // A lesson counts as complete only when BOTH days are answered. Finishing

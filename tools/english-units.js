@@ -501,7 +501,8 @@ const GRADE7 = {
          ⚠️ Adding a lesson to lessons.js is only half the job. The outline has
          to point at it too. */
       { n: 1, title: "Kinds of Sentences", page: 32, slug: "english/kinds-of-sentences" },
-      { title: "Writing Good Sentences", book: "Revising Strategies: Writing Good Sentences", page: 35, craft: true },
+      { title: "Writing Good Sentences", book: "Revising Strategies: Writing Good Sentences", page: 35, craft: true,
+        slug: "english/writing-good-sentences" },
       { n: 2, title: "Complete Subjects and Complete Predicates", page: 37 },
       { n: 3, title: "Simple Subjects and Simple Predicates", page: 40 },
       { title: "Forming Compound Subjects and Predicates", book: "Revising Strategies: Forming Compound Subjects and Predicates", page: 43, craft: true },

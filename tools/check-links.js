@@ -126,8 +126,51 @@ if (unshelved.length) {
   process.exit(1);
 }
 
+/* 🚨 THE PRINTABLE ANSWER SHEET MUST BE A DIRECT CHILD OF <body>. Paul,
+   2026-09-05: "when i press print answere sheet it is basically blank."
+   The print stylesheet is `body>*{display:none!important}` followed by
+   `#sheet{display:block!important}`. That works only while #sheet IS a body
+   child: display:block on a DESCENDANT of a display:none element does nothing,
+   so with #sheet inside .wrap the browser hid the wrapper and printed a
+   correctly styled, correctly paginated, completely empty page.
+   It had been inside .wrap since the feature was written, so Print answer sheet
+   had NEVER worked on any of the 12 lesson pages - and nothing failed, nothing
+   logged, and the button responded normally. The only way to see it is to
+   print, which is the one thing a build never does.
+   Proven before fixing: the same markup and the same print CSS, nested vs
+   direct, printed to PDF headless - 853 bytes against 31,537.
+   ⚠️ Depth is counted in DIVs because every container between <body> and the
+   sheet is one. If a lesson page ever gains a non-div wrapper, count that too
+   rather than deleting this. */
+const buriedSheet = [];
+for (const file of pages) {
+  const rel = path.relative(ROOT, file).split(path.sep).join("/");
+  if (!rel.startsWith("lessons/")) continue;
+  const html = fs.readFileSync(file, "utf8");
+  const idAt = html.indexOf('id="sheet"');
+  if (idAt < 0) continue;                          // page has no answer sheet
+  /* ⚠️ Measure to the START OF ITS OWN TAG, not to the id attribute, or the
+     sheet's own <div counts as one level of nesting and a correct page fails. */
+  const sheetAt = html.lastIndexOf("<div", idAt);
+  const bodyAt = html.search(/<body[\s>]/i);
+  if (bodyAt < 0 || sheetAt < 0) continue;
+  const before = html.slice(bodyAt, sheetAt);
+  const opened = (before.match(/<div\b/gi) || []).length;
+  const closed = (before.match(/<\/div>/gi) || []).length;
+  if (opened - closed !== 0) buriedSheet.push(rel + "  (nested " + (opened - closed) + " div(s) deep)");
+}
+if (buriedSheet.length) {
+  console.error("FAIL: " + buriedSheet.length +
+    " lesson page(s) have the answer sheet nested inside another element:");
+  for (const r of buriedSheet.slice(0, 8)) console.error("  " + r);
+  console.error("  body>*{display:none} hides the wrapper, so Print answer sheet prints a BLANK page.");
+  console.error("  Move <div id=\"sheet\"> out to a direct child of <body> in tools/lesson-template.html.");
+  process.exit(1);
+}
+
 if (!bad.size) {
   console.log("OK — no broken internal links.");
+  console.log("OK — the answer sheet prints on every lesson that has one.");
   console.log("OK — all " + lessonPages.length + " built lessons are on a grade+subject shelf.");
   process.exit(0);
 }
