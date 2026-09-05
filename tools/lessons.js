@@ -1520,6 +1520,15 @@ const LESSONS = [
      it to you ... just like how you explained with the math problem", and the
      reason it exists: "basically make this a way for attention issue students
      to still stay engaged."
+     🚨 EVERY EXAMPLE SENTENCE GETS ITS OWN FRAME. Paul: "like where you said did
+     you finish your homework, and about the basket ball, can we play one more
+     round should all show in the panel." He is right - the examples are the
+     lesson. One picture per KIND meant the panel sat still through the three
+     sentences that were doing the teaching, which is exactly when a student who
+     is drifting needs something to change on screen.
+     ⚠️ The first example of each kind is NOT listed separately: the definition's
+     own frame already shows it, so a second entry would repaint the identical
+     picture and read as the panel having frozen.
      `when` is the sentence that triggers it, written out in full - the build
      resolves it to an index and FAILS if it is missing, duplicated, or out of
      reading order. Never a hand-counted number.
@@ -1532,14 +1541,32 @@ const LESSONS = [
     { when: "A declarative sentence makes a statement.",
       kind: "Declarative", body: "The game starts at seven", mark: ".",
       note: "It declares something. A statement ends with a period." },
+    { when: "My brother finished the dishes.",
+      kind: "Declarative", body: "My brother finished the dishes", mark: ".",
+      note: "Telling you what happened. Still a statement." },
+    { when: "We studied Proverbs at church.",
+      kind: "Declarative", body: "We studied Proverbs at church", mark: ".",
+      note: "Sharing a fact. Nothing is being asked." },
 
     { when: "An interrogative sentence asks a question.",
       kind: "Interrogative", body: "Did you finish your homework", mark: "?",
       note: "It asks for an answer, so it ends with a question mark." },
+    { when: "Where is the basketball?",
+      kind: "Interrogative", body: "Where is the basketball", mark: "?",
+      note: "It asks where. It is waiting on an answer." },
+    { when: "Can we play one more round?",
+      kind: "Interrogative", body: "Can we play one more round", mark: "?",
+      note: "Asking permission is still asking." },
 
     { when: "An imperative sentence gives a command, direction, instruction, or request.",
       kind: "Imperative", ghost: "(You)", body: "Clean your room", mark: ".",
       note: "It gives a command. The subject is you, even though it is not written." },
+    { when: "Pass me the basketball.",
+      kind: "Imperative", ghost: "(You)", body: "Pass me the basketball", mark: ".",
+      note: "A request is a command too. The subject is still you." },
+    { when: "Please open your Bible.",
+      kind: "Imperative", ghost: "(You)", body: "Please open your Bible", mark: ".",
+      note: "Please makes it polite. It does not stop it being a command." },
 
     /* The confusable pair, drawn at the exact sentence where Paul raises it. */
     { when: "Watch out!",
@@ -1549,6 +1576,12 @@ const LESSONS = [
     { when: "An exclamatory sentence expresses strong emotion or excitement.",
       kind: "Exclamatory", body: "That goal was incredible", mark: "!",
       note: "Nothing is being asked or ordered. It only shows how you feel." },
+    { when: "I cannot believe we won!",
+      kind: "Exclamatory", body: "I cannot believe we won", mark: "!",
+      note: "Strong feeling. Nobody is being told to do anything." },
+    { when: "This is the best pizza ever!",
+      kind: "Exclamatory", body: "This is the best pizza ever", mark: "!",
+      note: "Excitement about a thing, not a command about it." },
 
     /* 🚨 A deliberate blank. The closing section is about words and Proverbs,
        not about one sentence, and leaving the last drawing standing there would

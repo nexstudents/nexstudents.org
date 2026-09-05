@@ -504,12 +504,21 @@ h2{
    the nav and this, so anything scrolled to has to clear both. It used to be a
    hardcoded 180px for the nav alone. */
 :root{--stickytop:180px}
+/* 🚨 IT DOES NOT PIN. Paul, 2026-09-04: "i like how you snapped it to the top
+   but it doesnt need to snap because it gets in the way later when answering
+   question even when you hide it the tab is still there."
+   A pinned bar is permanent furniture, and this panel is only wanted while the
+   reading is happening. Sticky meant the collapsed tab still sat over the
+   questions for the whole second half of the lesson, taking height off every
+   screen for a control nobody was going to press again. In normal flow it
+   scrolls away with the story it belongs to, which is the correct behaviour and
+   also less code: no z-index, no measured offset, nothing to keep in step. */
 .dbox{
-  position:sticky;top:var(--navh,56px);z-index:40;
-  max-width:760px;margin:0 auto;
+  max-width:760px;margin:0 auto 18px;
   background:var(--surface-2, var(--boxfill));
-  border:1px solid var(--rule, var(--line));border-radius:0 0 10px 10px;border-top:0;
+  border:1px solid var(--rule, var(--line));border-radius:10px;
   padding:14px 16px 10px;
+  scroll-margin-top:var(--stickytop,180px);
 }
 /* 🚨 min-height on the CONTENT, not the box, so collapsing actually collapses.
    While open the frame keeps its height through a blank stretch - a box that
@@ -2462,11 +2471,6 @@ function nsReadArea(){
     var nr = nav.getBoundingClientRect();
     if (nr.top <= 4 && nr.bottom > top) top = nr.bottom;
   }
-  var db = document.getElementById("dbox");
-  if (db && !db.hidden){
-    var dr = db.getBoundingClientRect();
-    if (dr.top <= top + 4 && dr.bottom > top) top = dr.bottom;
-  }
   var p = document.getElementById("player");
   if (p && !document.body.classList.contains("player-hidden")){
     var pr = p.getBoundingClientRect();
@@ -2662,24 +2666,57 @@ function paintDemo(i){
    --stickytop is what .para and .sent use for scroll-margin. Both change with
    the viewport and with whether the panel is open, so they are read off the
    elements every time rather than written down once. */
+/* 🚨 ONLY THE NAV IS PINNED NOW. The explainer sits in normal flow, so its
+   height is no longer part of the offset - but the nav's is, and always was.
+   --stickytop is what .para and .sent use for scroll-margin, and it was a
+   hardcoded 180px against a nav that changes height with the viewport. */
 function measureSticky(){
   var nav = document.querySelector(".ns-nav");
   var nh = nav ? Math.round(nav.getBoundingClientRect().height) : 56;
-  var dh = (dbox && !dbox.hidden) ? Math.round(dbox.getBoundingClientRect().height) : 0;
   document.documentElement.style.setProperty("--navh", nh + "px");
-  document.documentElement.style.setProperty("--stickytop", (nh + dh + 24) + "px");
+  document.documentElement.style.setProperty("--stickytop", (nh + 24) + "px");
 }
 
-function setDemoOpen(on){
+/* Put an element just below the pinned nav. Used when expanding the explainer:
+   the reader asked to look at it, so it goes where it can actually be looked at
+   with the story still visible underneath. */
+function nsToTop(el){
+  var nav = document.querySelector(".ns-nav");
+  var pad = (nav ? nav.getBoundingClientRect().height : 56) + 12;
+  var y = window.scrollY + el.getBoundingClientRect().top - pad;
+  try { window.scrollTo({ top: Math.max(0, y), behavior: "smooth" }); }
+  catch(e){ window.scrollTo(0, Math.max(0, y)); }
+}
+
+/* 🚨 EXPANDED AND COLLAPSED ARE TWO READING MODES, not just two sizes.
+   Paul, 2026-09-04: "the show and hide is just to expand a collapse it. when it
+   is closed the reader works normally. when it is expanded the auto reader stops
+   moving so you can watch it at the top of the page with the story going down to
+   the section it is reading at."
+     collapsed - the reader follows the text down the page, as it always has
+     expanded  - the page STOPS moving. One deliberate scroll puts the panel at
+                 the top with the story beneath it, and it stays there while the
+                 voice reads on and the drawing keeps up.
+   The single scroll on expand is what makes the freeze usable: without it the
+   panel could be freezing the page while sitting off screen above, which reads
+   as the reader having simply stopped. */
+function setDemoOpen(on, why){
   if (!dbox) return;
   dbox.classList.toggle("is-shut", !on);
   dboxX.textContent = on ? "Hide" : "Show me how";
   dboxX.setAttribute("aria-expanded", on ? "true" : "false");
   store("demo", on ? "1" : "0");
-  measureSticky();
-  /* Closing hands the page back. Catch the reader up to the sentence being read,
-     which is very likely to be off screen after sitting still through it. */
-  if (!on && playing && SENT[idx]) { resumeFollowing(); followScroll(SENT[idx].el); }
+  if (why !== "init"){
+    /* 🚨 THE TOP, not the eye line. nsEyeLine() aims 42% down the readable band,
+       which is right for a sentence you are reading and wrong here: Paul asked
+       to "watch it at the top of the page with the story going down to the
+       section it is reading at", and 42% would put the panel in the middle with
+       the story pushed off the bottom. */
+    if (on) nsToTop(dbox);
+    /* Closing hands the page back and catches the reader up to the sentence
+       being read, which is very likely to be off screen after sitting still. */
+    else if (playing && SENT[idx]) { resumeFollowing(); followScroll(SENT[idx].el); }
+  }
 }
 
 if (VISUALS.length && dbox){
@@ -2687,7 +2724,8 @@ if (VISUALS.length && dbox){
   /* 🚨 Remembered per reader, and OPEN by default. It is the reason the lesson
      looks the way it does, so a student meeting the page for the first time has
      to see it working before he can decide he does not want it. */
-  setDemoOpen(load("demo", "1") !== "0");
+  setDemoOpen(load("demo", "1") !== "0", "init");
+  measureSticky();
   paintDemo(0);
   dboxX.addEventListener("click", function(){ setDemoOpen(!demoOpen()); });
   window.addEventListener("resize", measureSticky);
