@@ -1403,276 +1403,291 @@ const LESSONS = [
       "Say you live in Saint Louis, Missouri, and you want to drive to Orlando, Florida for a vacation.",
       "Nobody hands you a sum.",
       "You have a question: how long is this going to take?",
-      "Working out which numbers answer that question is the actual skill.",
       "",
-      "This lesson is a plan for doing that, and it has four steps."
+      "There is a routine for answering a question like that, and it is only four steps long."
+    ]},
+
+    { title: "The Four Steps", s: [
+      "Explore. What do I know, and what am I trying to find?",
+      "Plan. What maths should I use, and about what should the answer be?",
+      "Solve. Do the maths.",
+      "Examine. Does my answer make sense?",
+      "",
+      "That is the whole routine.",
+      "Every problem in this lesson goes through those four questions in that order.",
+      "Learn the routine and you can use it on a problem nobody has taught you."
     ]},
 
     { title: "Explore", s: [
-      "Explore means finding out what you already know and what you are being asked.",
+      "Explore asks two things: what do I know, and what am I trying to find?",
       "",
-      "For the drive, you know it is about a thousand miles, and you know highway speed is around sixty-five miles an hour.",
-      "You are being asked for hours.",
+      "For the drive, you know it is about a thousand miles, and you know highway speed is about sixty-five miles an hour.",
+      "You are trying to find hours.",
       "",
-      "Watch for numbers you do not need.",
-      "A problem might tell you the car holds fourteen gallons of fuel.",
-      "That is a real number and it is no use to you here, because you were asked how long the drive takes, not how often you stop.",
-      "Deciding what to ignore is part of exploring."
+      "There is a third question hiding inside Explore.",
+      "Which of the things I know do I actually need?",
+      "",
+      "A problem might also tell you the car holds fourteen gallons of fuel.",
+      "That is a real number, and here it is no use to you.",
+      "It answers a different question, one about stopping for petrol.",
+      "Noticing that is part of exploring.",
+      "",
+      "Explore is only about the information.",
+      "You do not do any maths yet."
     ]},
 
     { title: "Plan", s: [
-      "Plan means deciding what to do with those numbers, and roughly what the answer should be.",
+      "Plan asks the other two questions: what maths should I use, and about what should the answer be?",
       "",
-      "A thousand miles at sixty-five miles an hour is a division: miles divided by miles an hour gives hours.",
+      "For the drive, the maths is a division.",
+      "Distance divided by speed gives time.",
       "",
-      "Now estimate, before you work it out.",
-      "Round sixty-five up to a hundred and the answer is ten hours.",
-      "Round it down to fifty and the answer is twenty hours.",
-      "So whatever the real answer is, it sits between ten and twenty hours.",
+      "Now the second half of Plan, and it is the part most people skip.",
+      "Before you work anything out, decide roughly where the answer has to land.",
       "",
-      "That estimate takes about five seconds and it is the most useful thing on this page."
+      "Here is how.",
+      "Pick a speed that is definitely too fast, and a speed that is definitely too slow.",
+      "A hundred miles an hour is too fast, and a thousand divided by a hundred is ten hours.",
+      "Fifty miles an hour is too slow, and a thousand divided by fifty is twenty hours.",
+      "So the real answer has to sit between ten and twenty hours.",
+      "",
+      "Notice what just happened.",
+      "We did not round sixty-five to a hundred, and we did not round it to fifty.",
+      "Nobody would round sixty-five to a hundred.",
+      "We built two fences, one on each side of the answer.",
+      "",
+      "Driving faster than you really will gets you there sooner than you really will, so ten hours is a fence the answer cannot go under.",
+      "Driving slower than you really will takes longer than it really will, so twenty hours is a fence it cannot go over.",
+      "You are not trying to be accurate here.",
+      "You are trying to know roughly where the answer belongs before you calculate it."
     ]},
 
     { title: "Solve", s: [
-      "Solve means carry out your plan.",
+      "Solve is the short step.",
+      "Do the maths.",
       "",
       "A thousand divided by sixty-five is about fifteen point four hours.",
-      "That is roughly fifteen hours and twenty-four minutes of driving, without stopping for anything.",
       "",
-      "It landed between ten and twenty, which is where you said it would land.",
-      "",
-      "If the plan does not work, that is not a failure, it is information.",
-      "Try another one."
+      "That is it.",
+      "The thinking was in the two steps before this one."
     ]},
 
     { title: "Examine", s: [
-      "Examine means checking whether the answer is actually reasonable.",
+      "Examine asks one question: does my answer make sense?",
       "",
-      "The quickest check is to work backwards.",
+      "First, check it against your fences.",
+      "You said the answer had to be between ten and twenty hours, and fifteen point four is between ten and twenty.",
+      "",
+      "Second, work backwards.",
       "Division can be checked with multiplication: fifteen point four times sixty-five is about a thousand, which is the distance you started with.",
-      "Subtraction can be checked with addition, the same way round.",
+      "Subtraction is checked with addition the same way round.",
       "",
-      "You can also check it in your head.",
-      "Ten hours of driving would be six hundred and fifty miles, and that is not far enough.",
-      "Twenty hours would be thirteen hundred, and that is too far.",
-      "Fifteen and a bit sits between them, so the answer makes sense."
+      "If an answer fails either check, that is not a disaster.",
+      "It means the plan was wrong, and now you know, which is the whole reason for checking."
     ]},
 
-    { title: "The Part A Phone Will Not Do", s: [
-      "You could have asked a phone how long the drive takes and had the answer before you finished reading this.",
+    { title: "A Calculator Is a Tool", s: [
+      "You could have asked a phone how long the drive takes.",
       "",
-      "But a phone hands you a number with nothing attached to it.",
-      "It does not tell you the answer had to be between ten and twenty hours, so it cannot tell you when the number is wrong.",
-      "If you type the sum in back to front and get zero point zero six five, a phone will show you that quite happily.",
-      "The estimate is what catches it.",
+      "A calculator can help with the arithmetic, and there is nothing wrong with using one.",
+      "What it cannot do is understand the problem for you, or decide whether the answer makes sense.",
+      "That part stays yours.",
       "",
-      "That is why the estimate comes first on this page, and why the calculation below stays locked until you have made one.",
+      "Suppose you divide the wrong way round and get zero point zero six five.",
+      "A calculator will show you that quite happily, because the arithmetic is correct.",
+      "Your fences are what tell you it is nonsense.",
       "",
-      "These four steps work on anything you actually want to know.",
-      "How much the shopping comes to before you reach the till.",
+      "That is why the calculation on this page stays locked until you have made an estimate.",
+      "",
+      "The four steps work on anything you actually want to know.",
+      "What the shopping comes to before you reach the till.",
       "Whether a team can still win the league.",
       "How long you have to save before you can buy the thing.",
-      "The arithmetic changes and the four steps do not."
+      "The subject changes and the routine does not."
     ]},
 
-    /* 🚨 PAUL'S CLOSING POINT, 2026-09-05: "i would say God gives us a problem
-       sovling mind because critcal thinking is our best self a solving problems
-       we have." It ties the scripture to the Examine step rather than sitting
-       beside the lesson as decoration. */
-    { title: "A Mind Made For This", s: [
-      "God gave us a mind that can solve problems, and thinking carefully is that mind working the way it was meant to.",
-      "Being able to look at something you do not understand yet, break it into parts, and work out an answer is not a small gift.",
+    /* 🚨 PAUL'S CLOSING POINT, and he asked for it kept SHORT and natural:
+       "God did not give us minds simply to memorize answers. He gave us the
+       ability to reason, examine, solve problems, and grow in wisdom." Tied to
+       the Examine step rather than sitting beside the lesson as decoration. */
+    { title: "A Mind Made to Reason", s: [
+      "God did not give us minds simply to memorise answers.",
+      "He gave us the ability to reason, examine, solve problems, and grow in wisdom.",
       "",
       "Proverbs 14:15 says that the prudent man looketh well to his going.",
-      "Looking well to your going is exactly what the Examine step is.",
-      "It means not simply believing the first answer that turns up, whether it came from your own arithmetic or off a screen.",
-      "",
-      "Handing the thinking to a phone is easy, and it costs you the very thing being trained here.",
-      "Use the four steps on the small problems while they are still easy, and you will have them when the problems are not."
+      "Looking well to your going is what the Examine step is.",
+      "It means not simply believing the first answer that turns up, wherever it came from."
     ]}
   ],
 
-  /* 🚨 THE FOUR STEPS AS FRAMES, one per section, drawn as the reading reaches
-     them. Same mechanic as the English lesson: `when` is the trigger sentence
-     written out, and the build resolves it. `body` and `mark` are DRAWN, so a
-     maths frame puts the operation in the highlighted chip where the English one
-     put a full stop. */
+  /* 🚨 THE FOUR STEPS ARE THE SPINE, and the explainer is where that becomes
+     visible. The routine frame comes back at the top of each step, so the same
+     four questions are on screen every time one of them is being taught. */
   visuals: [
-    { when: "This lesson is a plan for doing that, and it has four steps.",
-      kind: "The Four Steps", body: "Explore \u2192 Plan \u2192 Solve \u2192 Examine",
-      note: "Work them in order. Skipping one is where answers go wrong." },
+    { when: "There is a routine for answering a question like that, and it is only four steps long.",
+      kind: "The Routine", body: "Explore → Plan → Solve → Examine",
+      note: "Four questions, always in this order." },
 
-    { when: "Explore means finding out what you already know and what you are being asked.",
-      kind: "Step 1 \u00b7 Explore", body: "1,000 miles   ·   65 miles an hour", mark: "?",
-      note: "Two numbers you have, and one you want. Hours." },
-    { when: "A problem might tell you the car holds fourteen gallons of fuel.",
-      kind: "Explore \u00b7 What To Ignore", ghost: "(14 gallons)", body: "1,000 miles   ·   65 mph",
-      note: "A real number that answers a different question. Leave it." },
+    { when: "Explore asks two things: what do I know, and what am I trying to find?",
+      kind: "Step 1 · Explore", body: "What do I know?   What am I finding?", mark: "?",
+      note: "Information only. No maths yet." },
+    { when: "Which of the things I know do I actually need?",
+      kind: "Explore", body: "1,000 miles   ·   65 mph", mark: "→ hours",
+      note: "Two numbers you need, and one answer you want." },
+    { when: "A problem might also tell you the car holds fourteen gallons of fuel.",
+      kind: "Explore · Not Needed", ghost: "(14 gallons)", body: "1,000 miles   ·   65 mph",
+      note: "A real number that answers a different question. Leave it out." },
 
-    { when: "A thousand miles at sixty-five miles an hour is a division: miles divided by miles an hour gives hours.",
-      kind: "Step 2 \u00b7 Plan", body: "1,000 \u00f7 65", mark: "= ?",
-      note: "Miles divided by miles an hour leaves hours." },
-    { when: "Round sixty-five up to a hundred and the answer is ten hours.",
-      kind: "Plan \u00b7 Estimate", body: "1,000 \u00f7 100", mark: "= 10",
-      note: "Round the speed UP and the time comes out too low." },
-    { when: "Round it down to fifty and the answer is twenty hours.",
-      kind: "Plan \u00b7 Estimate", body: "1,000 \u00f7 50", mark: "= 20",
-      note: "Round it DOWN and the time comes out too high." },
-    { when: "So whatever the real answer is, it sits between ten and twenty hours.",
-      kind: "Plan \u00b7 The Bracket", body: "between 10 and 20", mark: "hours",
-      note: "Decided before you calculate. This is the part that catches mistakes." },
+    { when: "Plan asks the other two questions: what maths should I use, and about what should the answer be?",
+      kind: "Step 2 · Plan", body: "Which maths?   About what answer?", mark: "?",
+      note: "Choose the operation, then fence the answer in." },
+    { when: "Distance divided by speed gives time.",
+      kind: "Plan · The Operation", body: "Distance ÷ Speed", mark: "= Time",
+      note: "Worth remembering. It comes back all year." },
+    { when: "A hundred miles an hour is too fast, and a thousand divided by a hundred is ten hours.",
+      kind: "Plan · Fence One", body: "1,000 ÷ 100", mark: "= 10",
+      note: "Too fast to be real, so the time is too short to be real." },
+    { when: "Fifty miles an hour is too slow, and a thousand divided by fifty is twenty hours.",
+      kind: "Plan · Fence Two", body: "1,000 ÷ 50", mark: "= 20",
+      note: "Too slow to be real, so the time is too long to be real." },
+    { when: "So the real answer has to sit between ten and twenty hours.",
+      kind: "Plan · Between The Fences", body: "10  <  answer  <  20", mark: "hours",
+      note: "Decided before you calculate anything." },
 
     { when: "A thousand divided by sixty-five is about fifteen point four hours.",
-      kind: "Step 3 \u00b7 Solve", body: "1,000 \u00f7 65", mark: "= 15.4",
-      note: "About fifteen hours and twenty-four minutes." },
-    { when: "It landed between ten and twenty, which is where you said it would land.",
-      kind: "Solve \u00b7 Inside The Bracket", body: "10  <  15.4  <  20",
-      note: "You said it would. It did. Now you can trust it." },
+      kind: "Step 3 · Solve", body: "1,000 ÷ 65", mark: "= 15.4",
+      note: "Do the maths. The short step." },
 
+    { when: "Examine asks one question: does my answer make sense?",
+      kind: "Step 4 · Examine", body: "10  <  15.4  <  20",
+      note: "Inside the fences you built. So far so good." },
     { when: "Division can be checked with multiplication: fifteen point four times sixty-five is about a thousand, which is the distance you started with.",
-      kind: "Step 4 \u00b7 Examine", body: "15.4 \u00d7 65", mark: "= 1,001",
-      note: "Work it backwards and you land where you started." },
+      kind: "Examine · Backwards", body: "15.4 × 65", mark: "= 1,001",
+      note: "Work it back and you land where you started." },
 
-    { when: "You could have asked a phone how long the drive takes and had the answer before you finished reading this.",
-      blank: true },
-    { when: "If you type the sum in back to front and get zero point zero six five, a phone will show you that quite happily.",
-      kind: "Why The Bracket Matters", body: "65 \u00f7 1,000", mark: "= 0.065",
-      note: "The wrong way round. A phone says nothing. Your estimate does." }
+    { when: "Suppose you divide the wrong way round and get zero point zero six five.",
+      kind: "Why The Fences Matter", body: "65 ÷ 1,000", mark: "= 0.065",
+      note: "Correct arithmetic, wrong question. Only the fences catch this." },
+
+    { when: "God did not give us minds simply to memorise answers.",
+      blank: true }
   ],
 
-  /* 🚨 TWO DIFFERENT KINDS, and every number is typed by the student. The build
-     evaluates each expression and refuses an estimate that does not contain the
-     answer - see requireWork(). */
   work: [
     { title: "Travel",
       ask: "You live in Saint Louis and you are driving to Orlando for a vacation. About how many hours of driving is it?",
-      given: [["Distance", "about 1,000 miles"],
-              ["Highway speed", "about 65 miles an hour"],
-              ["Fuel tank", "14 gallons \u2014 you do not need this one"]],
+      given: [["I know", "it is about 1,000 miles"],
+              ["I know", "highway speed is about 65 miles an hour"],
+              ["I know", "the tank holds 14 gallons — not needed here"],
+              ["I am finding", "hours"]],
       estimate: { lo: 10, hi: 20, unit: "hours",
-        intro: "Before you divide anything: round the speed to something easy, both ways, and say where the answer has to land.",
-        hint: "Try dividing 1,000 by 100, then by 50.",
-        why: "Between 10 and 20 hours. Now the calculation has something to be checked against." },
-      solve: { expr: "1000 \u00f7 65", answer: 15.4, tol: 0.1, unit: "hours",
-        intro: "Now carry out the plan. Round your answer to one decimal place.",
-        why: "15.4 hours, which is about fifteen hours and twenty-four minutes. It landed inside your bracket." },
-      examine: { expr: "15.4 \u00d7 65", answer: 1001, tol: 1, unit: "miles",
-        intro: "Check it by working backwards. Division is checked with multiplication.",
-        why: "1,001 miles, which is the distance you started with. The answer holds." } },
+        intro: "Plan. The maths is Distance ÷ Speed. Now build two fences: divide by a speed that is clearly too fast, then by one that is clearly too slow.",
+        hint: "Too fast: 1,000 ÷ 100. Too slow: 1,000 ÷ 50.",
+        why: "Between 10 and 20 hours. The real answer has to land in there." },
+      solve: { expr: "1000 ÷ 65", answer: 15.4, tol: 0.1, unit: "hours",
+        intro: "Solve. Do the maths, to one decimal place.",
+        why: "About 15.4 hours, and it landed between your fences." },
+      examine: { expr: "15.4 × 65", answer: 1001, tol: 1, unit: "miles",
+        intro: "Examine. Does it make sense? Work backwards — division is checked with multiplication.",
+        why: "About 1,000 miles, the distance you started with. The answer holds." } },
 
+    /* 🚨 THE ESTIMATE IS MODELLED, not just asked for. "the saving problem says
+       to round the total both ways, but it is not obvious what numbers the
+       student should choose." So the intro and the hint name them. */
     { title: "Saving Up",
       ask: "Over two months you saved $215 from mowing lawns. In the first month you saved $130. How much did you save in the second month?",
-      given: [["Saved in total", "$215 over two months"],
-              ["Saved in month one", "$130"]],
+      given: [["I know", "$215 saved over two months"],
+              ["I know", "$130 saved in month one"],
+              ["I am finding", "dollars saved in month two"]],
       estimate: { lo: 70, hi: 90, unit: "dollars",
-        intro: "Round the total both ways, keep the $130, and say where the answer has to land.",
-        hint: "215 sits between 200 and 220. Take 130 off each of those.",
-        why: "Between $70 and $90. A much tighter bracket than the last one, because only one number needed rounding." },
-      solve: { expr: "215 \u2212 130", answer: 85, unit: "dollars",
-        intro: "Now carry out the plan.",
-        why: "$85 in the second month, and it sits inside your bracket." },
+        intro: "Plan. The maths is a subtraction. Build the fences the same way: take $130 off a total that is a bit too small, then off one that is a bit too big.",
+        hint: "$200 − $130 = $70.  $220 − $130 = $90.",
+        why: "Between $70 and $90. A tighter pair of fences than the drive, because only one number needed changing." },
+      solve: { expr: "215 − 130", answer: 85, unit: "dollars",
+        intro: "Solve. Now use the real numbers.",
+        why: "$85, and it sits between your fences." },
       examine: { expr: "130 + 85", answer: 215, unit: "dollars",
-        intro: "Check it by working backwards. This time subtraction is checked with addition.",
+        intro: "Examine. Work backwards — this time subtraction is checked with addition.",
         why: "$215, the total you started with. Different problem, different check, same four steps." } }
   ],
 
   words: [
-    ["Explore", "The first step: work out what you already know and what you are being asked to find."],
-    ["Estimate", "A rough answer worked out before the real one, so you know roughly where it should land."],
-    ["Reasonable", "Sensible for the question asked. An answer can be neatly calculated and still be unreasonable."],
-    ["Examine", "The last step: check the answer against your estimate, and work backwards to see if you land where you started."]
+    ["Explore", "Step one: what do I know, and what am I trying to find?"],
+    ["Plan", "Step two: what maths should I use, and about what should the answer be?"],
+    ["Estimate", "A rough range worked out before the real answer, so you know where it should land."],
+    ["Examine", "Step four: does my answer make sense? Check it against your estimate and work backwards."]
   ],
 
-  /* 🚨 `tag` CARRIES THE BOOK'S OWN CATEGORY LABELS. Paul, 2026-09-05: "if you
-     can add example like it shows sports analigies, critcal thinking skills,
-     shopping, data research, travel, etc", and "i mean say this is the ways we
-     solve these kinds of problems." Glencoe prints exactly these down the margin
-     of page 7 - Sports, Critical Thinking, Smart Shopping, Data Search,
-     Transportation - and the point of them is that the four steps do not change
-     when the subject does. Naming the subject on each question is what makes
-     that visible rather than implied.
-     ⚠️ A Critical Thinking question is one that cannot be answered by recall or
-     by copying the worked example. Paul spotted the label in the 1998 margin and
-     it is the answer to his own point: "we can ask Google how to do these things
-     instead of us solving them on our own which is the point of this lesson." */
-  /* 🚨 54 story sentences, and the finds below were verified against that count.
-     The book says "read and study the lesson to answer each question", which IS
-     the answer hunt - so the Method questions point at the sentences that hold
-     their answers. The applied ones do not: their answers are worked out, not
-     looked up. */
-  findsAt: 54,
+  /* 🚨 EIGHT QUESTIONS, not sixteen. "Sixteen questions after two worked problems
+     feels too heavy for this lesson." Each one tests ONE step, and the tag says
+     which world it comes from - the routine does not change when the subject does. */
+  /* 74 story sentences; the finds below were verified against that count. */
+  findsAt: 74,
   questions: [
-    { tag: "Method",
-      q: "Why does the lesson say to estimate before you solve, rather than after?",
-      find: [17, 20, 38, 40],
+    { tag: "Explore",
+      q: "Explore asks two questions. Which pair?",
+      find: [7, 14, 16],
       choices: [
-        "So you have something to check the real answer against, decided before you had it.",
-        "Because estimating is faster than dividing.",
-        "Because the estimate is usually the answer the teacher wants.",
-        "So you can skip the calculation if the estimate looks close enough."
-      ], right: 0,
-      why: "An estimate made afterwards just agrees with whatever you already got." },
-
-    { tag: "Method",
-      q: "What does the Explore step actually ask you to do?",
-      find: [8, 9, 10],
-      choices: [
-        "Work out what you already know and what you are being asked for.",
-        "Try a few sums and see which one gives a tidy answer.",
-        "Look up a similar problem that has already been solved.",
-        "Write the answer down and then justify it."
+        "What do I know, and what am I trying to find?",
+        "Which operation, and roughly what answer?",
+        "Is it right, and can I check it?",
+        "How long will it take, and is it worth doing?"
       ], right: 0 },
 
-    { tag: "Method",
+    { tag: "Explore",
       q: "The drive problem tells you the car holds fourteen gallons. What should you do with that number?",
-      find: [11, 12, 13, 14],
+      find: [18, 19, 20, 21, 22],
       choices: [
-        "Ignore it, because it answers a question you were not asked.",
+        "Leave it out, because it answers a question you were not asked.",
         "Divide the miles by it, to get miles per gallon.",
         "Add it to the speed, since both describe the car.",
-        "Use it, because a problem would not include a number you did not need."
+        "Use it, because a problem would not give you a number you did not need."
       ], right: 0,
-      why: "Deciding what to leave out is part of exploring. Real problems arrive with spare numbers attached." },
+      why: "Deciding what you do not need is part of Explore. Real problems come with spare numbers attached." },
 
-    { tag: "Method",
-      q: "Your first plan gives an answer well outside your estimate. What does the lesson say to do?",
-      find: [26, 27],
+    { tag: "Data Search",
+      q: "A table gives a team's wins for five seasons and asks for the average. During which step do you pick out the five totals and work out what is being asked for?",
+      find: [14, 23, 24],
+      choices: ["Explore.", "Plan.", "Solve.", "Examine."],
+      right: 0,
+      why: "Gathering what you have and naming what you want is Explore, every time, whatever the subject." },
+
+    { tag: "Plan",
+      q: "Why does the lesson build the fences before doing the calculation, rather than after?",
+      find: [28, 29, 41, 42],
       choices: [
-        "Treat it as information, and try a different plan.",
-        "Keep the answer, since the calculation itself was done correctly.",
-        "Widen the estimate until the answer fits inside it.",
-        "Start the whole problem again from the beginning."
+        "So there is something to check the real answer against, decided before you had it.",
+        "Because estimating is quicker than dividing.",
+        "Because the estimate is usually close enough to use as the answer.",
+        "So you can skip the calculation if the fences look narrow."
       ], right: 0,
-      why: "Noticing that a plan failed is the useful part. Widening the estimate to fit throws away the only warning you had." },
+      why: "Fences built afterwards just agree with whatever you already got." },
 
-    { tag: "Method",
+    { tag: "Travel",
+      q: "A drive is about 340 miles and you average about 65 miles an hour. Roughly where should the answer land?",
+      choices: ["Around 5 hours.", "Less than 1 hour.", "Around 15 hours.", "Around 30 hours."],
+      right: 0,
+      why: "340 ÷ 100 is about 3 and 340 ÷ 50 is about 7, so the answer sits between 3 and 7 hours. Around 5." },
+
+    { tag: "Smart Shopping",
+      q: "You have $48 and you want four games at about $15 each. Before working out the exact total, what can you already tell?",
+      choices: [
+        "Four at about $15 is about $60, so $48 is probably not enough.",
+        "Four at about $15 is about $45, so $48 is probably enough.",
+        "Nothing, until every price is added up exactly.",
+        "Nothing, because the prices are only approximate."
+      ], right: 0,
+      why: "This is Plan doing its job on its own. You have your answer standing at the shelf, without adding anything up." },
+
+    { tag: "Examine",
       q: "How do you check a division?",
-      find: [29, 30],
+      find: [51, 52],
       choices: [
         "Multiply the answer by what you divided by.",
         "Divide it a second time and see if you get the same thing.",
         "Add the two numbers together.",
         "Round both numbers and divide again."
       ], right: 0 },
-
-    { tag: "Travel",
-      q: "A drive is 300 miles and you average 60 miles an hour. Before calculating, roughly where should the answer land?",
-      choices: [
-        "Around five hours, because 300 divided by 60 is close to 300 divided by 50.",
-        "Around fifty hours, because 300 is much bigger than 60.",
-        "Around two hours, because most drives are short.",
-        "There is no way to tell before calculating."
-      ], right: 0 },
-
-    { tag: "Smart Shopping",
-      q: "A trolley holds eight items at about four dollars each. You have twenty-five dollars. What does the estimate tell you?",
-      choices: [
-        "About thirty-two dollars, so you are short and should put something back.",
-        "About thirty-two dollars, so you have enough.",
-        "You cannot know until every price is added up exactly.",
-        "About twelve dollars, so you have plenty left over."
-      ], right: 0,
-      why: "Eight lots of four is thirty-two, which is more than twenty-five. The estimate answers the question you actually had, standing at the shelf, without adding anything up exactly." },
 
     { tag: "Sports",
       q: "A player scored 96 points across two games and 51 in the first. Which check proves the second-game answer is right?",
@@ -1682,63 +1697,28 @@ const LESSONS = [
         "Multiply the answer by 51.",
         "Subtract the answer from 51."
       ], right: 0,
-      why: "Same shape as the savings problem. A missing part inside a known total is checked by adding back." },
-
-    { tag: "Data Search",
-      q: "A table gives a team wins for each of five seasons and you are asked for the average. Which step decides what you do first?",
-      choices: [
-        "Explore, because you have to notice you need all five numbers and a count of them.",
-        "Solve, because working out an average is a single calculation.",
-        "Examine, because the answer has to be reasonable.",
-        "None of them, because a table means the work is already done."
-      ], right: 0 },
-
-    { tag: "Critical Thinking",
-      q: "What is the least four-digit number that can be divided by 2, 5 and 9 with nothing left over?",
-      choices: ["1080", "1000", "1035", "1170"],
-      right: 0,
-      why: "It has to divide by 2 and by 5, so it ends in 0. It has to divide by 9, so its digits add to 9. 1080 is the first four-digit number that does both: 1 + 0 + 8 + 0 = 9." },
-
-    { tag: "Critical Thinking",
-      q: "You divide the wrong way round and get 0.065 hours for the drive. Which thing catches the mistake?",
-      find: [39, 40],
-      choices: [
-        "The estimate, because 0.065 is nowhere near ten to twenty hours.",
-        "The calculator, which would refuse the sum.",
-        "Nothing, because the arithmetic was done correctly.",
-        "The units, because hours cannot be a decimal."
-      ], right: 0,
-      why: "The arithmetic was correct and the answer was still wrong. That is exactly the gap an estimate closes and a phone does not." },
-
-    { tag: "Critical Thinking",
-      q: "Why is an unreasonable answer a different problem from a wrong calculation?",
-      choices: [
-        "Because a calculation can be done perfectly and still answer the wrong question.",
-        "Because unreasonable answers are always caused by typing errors.",
-        "Because reasonable answers never need checking.",
-        "Because the two mean the same thing in maths."
-      ], right: 0 }
+      why: "Same shape as the savings problem. A missing part inside a known total is checked by adding back." }
   ],
 
   vocabQuestions: [
-    { q: "Which step is <i>Explore</i>?",
-      choices: ["Working out what you know and what you are asked for.",
-                "Checking the answer at the end."], right: 0 },
+    { q: "Which two questions is <i>Explore</i>?",
+      choices: ["What do I know, and what am I finding?",
+                "Which maths, and about what answer?"], right: 0 },
+    { q: "Which two questions is <i>Plan</i>?",
+      choices: ["Which maths, and about what answer?",
+                "What do I know, and what am I finding?"], right: 0 },
     { q: "An <i>estimate</i> is made when?",
       choices: ["Before you calculate.", "After you calculate."], right: 0 },
-    { q: "An answer can be calculated correctly and still not be <i>reasonable</i>.",
-      choices: ["True.", "False."], right: 0,
-      why: "0.065 hours for a thousand-mile drive is arithmetically fine and completely unreasonable." },
-    { q: "What does <i>Examine</i> mean?",
-      choices: ["Check it against your estimate and work backwards.",
-                "Write the answer out neatly."], right: 0 }
+    { q: "What does <i>Examine</i> ask?",
+      choices: ["Does my answer make sense?", "Did I write it out neatly?"], right: 0,
+      why: "0.065 hours for a thousand-mile drive is arithmetically correct and makes no sense at all." }
   ],
 
   todo: { title: "What To Do Now", s: [
       "{Q} questions, then {c} word cards with {v} more questions under them. {T} questions in all.",
-      "Before those, work through the two problems above. Both of them make you estimate before the calculation opens, and that is on purpose.",
-      "For each question, ask yourself which of the four steps it is really about: Explore, Plan, Solve, or Examine.",
-      "Last, and this is the part that matters most: think of a question of your own. Something you actually want to know, like how long a drive takes or what a full trolley comes to. Write down what you know, what you are asking, and roughly where the answer should land. You do not have to solve it. Proposing it is the skill."
+      "Before those, work the two problems above. Both make you build your fences before the calculation will open, and that is on purpose.",
+      "For every question, ask which of the four steps it belongs to: Explore, Plan, Solve, or Examine.",
+      "Last, and this is the part that matters most: write a problem of your own. Something you actually want to know, like how long a drive takes or what a full trolley comes to. Write what you know, what you are finding, and the two fences. You do not have to solve it. Proposing it is the skill."
   ] }
 },
 
