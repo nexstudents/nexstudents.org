@@ -1737,10 +1737,24 @@ var QUESTIONS = [
 ];
 
 /* ---------- build the story ---------- */
+/* 🚨 WHICH PARAGRAPH EACH SENTENCE IS IN. The explainer blanks the moment the
+   reading leaves the paragraph its picture belongs to. Paul, 2026-09-04: "i
+   would suggest if you are not showing an example at that point it is blank."
+   The paragraph is the right unit because it is already the lesson's own: an
+   empty string inside a part closes one and opens the next, so "the three
+   examples" and "the explanation after them" are separate by construction
+   rather than by a sentence range someone has to keep in step. */
+var SENTPARA = [];
+var paraNo = 0;
+
 var SENT = [];
 var storyEl = document.getElementById("story");
 
 PARTS.forEach(function(part){
+  /* A new section always starts a new paragraph, even though no empty string
+     separates them - without this the last paragraph of one part and the first
+     of the next share a number, and a picture bleeds across the heading. */
+  paraNo++;
   var sec = document.createElement("section");
   sec.className = "part";
   /* A part may have no title - maths uses one untitled block, because its
@@ -1764,6 +1778,7 @@ PARTS.forEach(function(part){
        change the rule, change it in BOTH or the whole lesson goes off by one. */
     if (!String(text).trim()) {
       if (p.childNodes.length) sec.appendChild(p);
+      paraNo++;
       p = document.createElement("p");
       p.className = "para";
       return;
@@ -1788,6 +1803,7 @@ PARTS.forEach(function(part){
     p.appendChild(span);
     p.appendChild(document.createTextNode(" "));
     SENT.push({ text: text, el: span, words: offsets });
+    SENTPARA.push(paraNo);
   });
   /* the last paragraph, unless a stray break at the end left it empty */
   if (p.childNodes.length) sec.appendChild(p);
@@ -2619,13 +2635,22 @@ var curVis = -2;
 
 function demoOpen(){ return !!(dbox && !dbox.hidden && !dbox.classList.contains("is-shut")); }
 
+/* 🚨 A PICTURE BELONGS TO ITS PARAGRAPH AND BLANKS OUTSIDE IT. Paul: "i would
+   suggest if you are not showing an example at that point it is blank."
+   It used to be the last visual at or before the sentence, full stop, so a
+   drawing stood until the next one replaced it - which meant the imperative
+   diagram was still up during "Think of declarative as declare", claiming to
+   illustrate a line it had nothing to do with. Holding the last picture is the
+   lazy default and it quietly turns the panel into decoration.
+   ⚠️ It is the PARAGRAPH, not the sentence. Blanking between every sentence
+   would flicker the panel through the three examples it is there to show. */
 function visualFor(i){
-  /* The LAST visual at or before this sentence: a drawing stands until the next
-     one replaces it, or an explicit blank clears it. */
   var found = null;
   for (var k = 0; k < VISUALS.length; k++){
     if (VISUALS[k].at <= i) found = VISUALS[k]; else break;
   }
+  if (!found) return null;
+  if (SENTPARA[found.at] !== SENTPARA[i]) return null;
   return found;
 }
 

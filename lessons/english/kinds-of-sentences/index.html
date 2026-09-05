@@ -1531,18 +1531,23 @@ var VISUALS = [
   { at: 1, kind: "You Ask", body: "Can I finish this round", mark: "?", note: "This one wants an answer back." },
   { at: 2, kind: "You Hear", body: "Put the controller down", mark: ".", note: "This one tells you to do something." },
   { at: 3, kind: "Someone Yells", body: "The dog has your sandwich", mark: "!", note: "This one is all feeling." },
+  { at: 4, blank: true },
   { at: 6, kind: "Declarative", body: "The game starts at seven", mark: ".", note: "It declares something. A statement ends with a period." },
+  { at: 9, kind: "Declarative", body: "The game starts at seven", mark: ".", note: "It declares something. A statement ends with a period." },
   { at: 10, kind: "Declarative", body: "My brother finished the dishes", mark: ".", note: "Telling you what happened. Still a statement." },
   { at: 11, kind: "Declarative", body: "We studied Proverbs at church", mark: ".", note: "Sharing a fact. Nothing is being asked." },
   { at: 14, kind: "Interrogative", body: "Did you finish your homework", mark: "?", note: "It asks for an answer, so it ends with a question mark." },
+  { at: 16, kind: "Interrogative", body: "Did you finish your homework", mark: "?", note: "It asks for an answer, so it ends with a question mark." },
   { at: 17, kind: "Interrogative", body: "Where is the basketball", mark: "?", note: "It asks where. It is waiting on an answer." },
   { at: 18, kind: "Interrogative", body: "Can we play one more round", mark: "?", note: "Asking permission is still asking." },
   { at: 20, kind: "Imperative", ghost: "(You)", body: "Clean your room", mark: ".", note: "It gives a command. The subject is you, even though it is not written." },
+  { at: 22, kind: "Imperative", ghost: "(You)", body: "Clean your room", mark: ".", note: "It gives a command. The subject is you, even though it is not written." },
   { at: 23, kind: "Imperative", ghost: "(You)", body: "Pass me the basketball", mark: ".", note: "A request is a command too. The subject is still you." },
   { at: 24, kind: "Imperative", ghost: "(You)", body: "Please open your Bible", mark: ".", note: "Please makes it polite. It does not stop it being a command." },
   { at: 25, kind: "The Understood Subject", ghost: "(You)", body: "Take out the trash", mark: ".", note: "Nobody writes the word you. Everybody hears it." },
   { at: 29, kind: "Still Imperative", ghost: "(You)", body: "Watch out", mark: "!", note: "Same command, stronger feeling. The mark changed. The job did not." },
   { at: 35, kind: "Exclamatory", body: "That goal was incredible", mark: "!", note: "Nothing is being asked or ordered. It only shows how you feel." },
+  { at: 37, kind: "Exclamatory", body: "That goal was incredible", mark: "!", note: "Nothing is being asked or ordered. It only shows how you feel." },
   { at: 38, kind: "Exclamatory", body: "I cannot believe we won", mark: "!", note: "Strong feeling. Nobody is being told to do anything." },
   { at: 39, kind: "Exclamatory", body: "This is the best pizza ever", mark: "!", note: "Excitement about a thing, not a command about it." },
   { at: 45, blank: true },
@@ -1838,10 +1843,24 @@ var QUESTIONS = [
 ];
 
 /* ---------- build the story ---------- */
+/* 🚨 WHICH PARAGRAPH EACH SENTENCE IS IN. The explainer blanks the moment the
+   reading leaves the paragraph its picture belongs to. Paul, 2026-09-04: "i
+   would suggest if you are not showing an example at that point it is blank."
+   The paragraph is the right unit because it is already the lesson's own: an
+   empty string inside a part closes one and opens the next, so "the three
+   examples" and "the explanation after them" are separate by construction
+   rather than by a sentence range someone has to keep in step. */
+var SENTPARA = [];
+var paraNo = 0;
+
 var SENT = [];
 var storyEl = document.getElementById("story");
 
 PARTS.forEach(function(part){
+  /* A new section always starts a new paragraph, even though no empty string
+     separates them - without this the last paragraph of one part and the first
+     of the next share a number, and a picture bleeds across the heading. */
+  paraNo++;
   var sec = document.createElement("section");
   sec.className = "part";
   /* A part may have no title - maths uses one untitled block, because its
@@ -1865,6 +1884,7 @@ PARTS.forEach(function(part){
        change the rule, change it in BOTH or the whole lesson goes off by one. */
     if (!String(text).trim()) {
       if (p.childNodes.length) sec.appendChild(p);
+      paraNo++;
       p = document.createElement("p");
       p.className = "para";
       return;
@@ -1889,6 +1909,7 @@ PARTS.forEach(function(part){
     p.appendChild(span);
     p.appendChild(document.createTextNode(" "));
     SENT.push({ text: text, el: span, words: offsets });
+    SENTPARA.push(paraNo);
   });
   /* the last paragraph, unless a stray break at the end left it empty */
   if (p.childNodes.length) sec.appendChild(p);
@@ -2720,13 +2741,22 @@ var curVis = -2;
 
 function demoOpen(){ return !!(dbox && !dbox.hidden && !dbox.classList.contains("is-shut")); }
 
+/* 🚨 A PICTURE BELONGS TO ITS PARAGRAPH AND BLANKS OUTSIDE IT. Paul: "i would
+   suggest if you are not showing an example at that point it is blank."
+   It used to be the last visual at or before the sentence, full stop, so a
+   drawing stood until the next one replaced it - which meant the imperative
+   diagram was still up during "Think of declarative as declare", claiming to
+   illustrate a line it had nothing to do with. Holding the last picture is the
+   lazy default and it quietly turns the panel into decoration.
+   ⚠️ It is the PARAGRAPH, not the sentence. Blanking between every sentence
+   would flicker the panel through the three examples it is there to show. */
 function visualFor(i){
-  /* The LAST visual at or before this sentence: a drawing stands until the next
-     one replaces it, or an explicit blank clears it. */
   var found = null;
   for (var k = 0; k < VISUALS.length; k++){
     if (VISUALS[k].at <= i) found = VISUALS[k]; else break;
   }
+  if (!found) return null;
+  if (SENTPARA[found.at] !== SENTPARA[i]) return null;
   return found;
 }
 

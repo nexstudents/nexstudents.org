@@ -1557,8 +1557,17 @@ const LESSONS = [
     { when: "Suddenly someone yells, “The dog has your sandwich!”",
       kind: "Someone Yells", body: "The dog has your sandwich", mark: "!",
       note: "This one is all feeling." },
+    /* 🚨 The paragraph rule cannot clear these two: the hook has no blank line
+       in it, so "Those sentences are doing four different jobs" shares a
+       paragraph with the four quotes and would keep the last one on screen.
+       This is exactly what `blank` is for - the paragraph is the default unit,
+       and an explicit blank is how a lesson overrides it mid-paragraph. */
+    { when: "Those sentences are doing four different jobs.", blank: true },
 
     { when: "A declarative sentence makes a statement.",
+      kind: "Declarative", body: "The game starts at seven", mark: ".",
+      note: "It declares something. A statement ends with a period." },
+    { when: "The game starts at seven.",
       kind: "Declarative", body: "The game starts at seven", mark: ".",
       note: "It declares something. A statement ends with a period." },
     { when: "My brother finished the dishes.",
@@ -1571,6 +1580,9 @@ const LESSONS = [
     { when: "An interrogative sentence asks a question.",
       kind: "Interrogative", body: "Did you finish your homework", mark: "?",
       note: "It asks for an answer, so it ends with a question mark." },
+    { when: "Did you finish your homework?",
+      kind: "Interrogative", body: "Did you finish your homework", mark: "?",
+      note: "It asks for an answer, so it ends with a question mark." },
     { when: "Where is the basketball?",
       kind: "Interrogative", body: "Where is the basketball", mark: "?",
       note: "It asks where. It is waiting on an answer." },
@@ -1579,6 +1591,9 @@ const LESSONS = [
       note: "Asking permission is still asking." },
 
     { when: "An imperative sentence gives a command, direction, instruction, or request.",
+      kind: "Imperative", ghost: "(You)", body: "Clean your room", mark: ".",
+      note: "It gives a command. The subject is you, even though it is not written." },
+    { when: "Clean your room.",
       kind: "Imperative", ghost: "(You)", body: "Clean your room", mark: ".",
       note: "It gives a command. The subject is you, even though it is not written." },
     { when: "Pass me the basketball.",
@@ -1604,6 +1619,9 @@ const LESSONS = [
       note: "Same command, stronger feeling. The mark changed. The job did not." },
 
     { when: "An exclamatory sentence expresses strong emotion or excitement.",
+      kind: "Exclamatory", body: "That goal was incredible", mark: "!",
+      note: "Nothing is being asked or ordered. It only shows how you feel." },
+    { when: "That goal was incredible!",
       kind: "Exclamatory", body: "That goal was incredible", mark: "!",
       note: "Nothing is being asked or ordered. It only shows how you feel." },
     { when: "I cannot believe we won!",
