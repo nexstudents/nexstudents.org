@@ -603,6 +603,24 @@ h2{
 .dbox.is-wide{max-width:860px;width:calc(100vw - 44px);margin-left:50%;transform:translateX(-50%)}
 .dbox-art img{display:block;width:100%;height:auto;border-radius:8px;cursor:zoom-in}
 .dbox-art.pic{margin:0 0 10px}
+/* 🚨 THE SLOT IS 16:9 AND IS ALWAYS THERE. Paul, 2026-09-05: "it should just stay
+   consistant." On a picture lesson the art area keeps its shape whether this
+   frame has an image, a drawing or nothing at all, so the panel is one height
+   from the first sentence to the last. `contain` is what makes the reservation
+   safe: an image that is not exactly 16:9 letterboxes inside the slot instead of
+   being stretched to fill it, which is the distortion Paul caught earlier today. */
+.dbox.is-wide .dbox-art{width:100%;aspect-ratio:16/9;align-items:center;margin:0 0 10px}
+.dbox.is-wide .dbox-art img{height:100%;object-fit:contain}
+/* The two reserved text rows. `kind` is one line whether or not this frame names
+   one; the example and its note share a fixed block below it. Together with the
+   16:9 slot above, that is every part of the panel pinned to a height, which is
+   what makes it the same size from the first sentence to the last. */
+.dbox.is-wide .dbox-kind{display:block;height:21px;overflow:hidden}
+.dbox.is-wide .dbox-words{
+  height:74px;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.dbox.is-wide .dbox-words .dbox-note{margin:6px 0 0}
 @media (max-height:820px){ .dbox.is-wide{max-width:660px} }
 @media (max-height:620px){ .dbox.is-wide{max-width:520px} }
 /* full screen on tap, because the detail in these does not survive a phone */
@@ -1477,8 +1495,15 @@ body.player-hidden .scrub{margin:0}
     <div class="dbox-in" aria-live="polite">
       <p class="dbox-kind"></p>
       <div class="dbox-art" hidden></div>
-      <p class="dbox-line"></p>
-      <p class="dbox-note"></p>
+      <!-- 🚨 ONE REGION, SO IT CAN BE RESERVED. The example and its note are the
+           only two things left that change height frame to frame, and they are
+           wrapped together for the same reason the sentence bar has a fixed
+           height: the panel holds one size and the type shrinks to fit, rather
+           than the box growing and pushing the story down mid-paragraph. -->
+      <div class="dbox-words">
+        <p class="dbox-line"></p>
+        <p class="dbox-note"></p>
+      </div>
     </div>
     <!-- 🚨 THE PANEL SAYS ITS OWN NAME. Paul, 2026-09-05: "we should just call it
          the visual panel if i can remember what it is is called. remind me that
@@ -3126,6 +3151,12 @@ var dbox  = document.getElementById("dbox");
 var dboxX = document.getElementById("dboxx");
 var curVis = -2;
 
+/* Decided ONCE, from the lesson's own frames. A lesson with pictures is wide for
+   all of it; a lesson with only drawings is never wide. Neither ever changes
+   mid-read - see the note in paintDemo(). */
+var HAS_PICS = VISUALS.some(function(v){ return !!v.pic; });
+if (dbox && HAS_PICS) dbox.classList.add("is-wide");
+
 function demoOpen(){ return !!(dbox && !dbox.hidden && !dbox.classList.contains("is-shut")); }
 
 /* 🚨 A PICTURE BELONGS TO ITS PARAGRAPH AND BLANKS OUTSIDE IT. Paul: "i would
@@ -3147,6 +3178,35 @@ function visualFor(i){
   return found;
 }
 
+/* 🚨 A PICTURE CARRIES FORWARD; THE WORDS DO NOT. Paul, 2026-09-05: "i wonder if
+   we can fill the blank spaces that have no images by prolonging the elements to
+   other sentences."
+   Not every frame carries an image, and in this lesson the gaps run one to three
+   frames - so the panel was dropping to text, then back to a picture, then to
+   text again, several times a paragraph. The picture is the thing the paragraph
+   is ABOUT; the kind, the line and the note are the thing THIS frame is about.
+   So the picture holds while the explanation underneath it changes.
+   ⚠️ THE PICTURE CROSSES PARAGRAPHS; THE FRAME STILL DOES NOT. visualFor() keeps
+   its paragraph boundary, so a frame with nothing to say still blanks the panel
+   entirely - the picture only holds while a frame is up. That is a deliberate
+   softening of the "stale picture" rule written up above, and it is a trade: a
+   held picture over a related paragraph, against an empty 16:9 hole on the
+   frames between pictures, which is what reserving the slot leaves behind. */
+function picFor(v, i){
+  if (!v) return null;
+  if (v.pic) return { pic: v.pic, alt: v.picAlt || "" };
+  /* The nearest picture BEFORE this frame. Paragraphs are contiguous, so if that
+     one is not in this paragraph then nothing in this paragraph has a picture at
+     all, and the choice is a held picture or an empty 16:9 hole under the text.
+     Paul asked for the held picture. */
+  for (var k = VISUALS.length - 1; k >= 0; k--){
+    var c = VISUALS[k];
+    if (c.at > v.at) continue;                 /* not reached yet */
+    if (c.pic) return { pic: c.pic, alt: c.picAlt || "" };
+  }
+  return null;
+}
+
 /* 🚨 SHRINK THE TYPE, NEVER THE BAR. The bar's height is fixed in CSS so the
    panel cannot breathe; this is what stops a long sentence being clipped by that
    decision. Step down half a point at a time until it fits, with a floor - past
@@ -3164,6 +3224,29 @@ function fitSentence(el){
   while (el.scrollHeight > el.clientHeight && size > SENT_MIN) {
     size -= 0.5;
     el.style.fontSize = size + "px";
+  }
+}
+
+/* 🚨 SHRINK THE EXAMPLE, NEVER THE PANEL. The same rule as fitSentence(), applied
+   to the example and its note together, because their block is reserved at a
+   fixed height in CSS. Both scale off ONE factor so the example stays visibly
+   larger than the note it is annotated with; scaling them independently let a
+   long note creep up to the size of the sentence it was explaining.
+   ⚠️ is-shout sets its own size and is left alone - it is a whole frame about a
+   sentence being shouted, and quietly shrinking it would undo the point. */
+var LINE_BASE = 21, NOTE_BASE = 14, WORDS_MIN = 0.62;
+function fitWords(box){
+  if (!box) return;
+  var line = box.querySelector(".dbox-line");
+  var note = box.querySelector(".dbox-note");
+  var shout = line && line.classList.contains("is-shout");
+  var f = 1;
+  if (line && !shout) line.style.fontSize = LINE_BASE + "px";
+  if (note) note.style.fontSize = NOTE_BASE + "px";
+  while (box.scrollHeight > box.clientHeight && f > WORDS_MIN) {
+    f -= 0.04;
+    if (line && !shout) line.style.fontSize = (LINE_BASE * f).toFixed(1) + "px";
+    if (note) note.style.fontSize = (NOTE_BASE * f).toFixed(1) + "px";
   }
 }
 
@@ -3237,27 +3320,38 @@ function paintDemo(i){
      never both - different sizes doing different jobs. The panel WIDENS for a
      picture and does not for an icon, because a 16:9 illustration in the 584px
      reading column is too small to read the detail in. */
-  if (v.pic) {
+  /* 🚨 THE PANEL IS ONE SIZE FOR THE WHOLE LESSON. Paul, 2026-09-05: "when you
+     switch to your explaination over the images the panel shrinks to fit that
+     size. it should just stay consistant."
+     `is-wide` used to be added and removed per frame, so the panel jumped
+     between 860px and 760px - and its height jumped with it - every time the
+     reading moved off a picture. That is the same breathing the fixed-height
+     sentence bar exists to stop, only worse, because it moved the whole page
+     under the reader. HAS_PICS is decided once at init from the lesson's own
+     data and never changes after. */
+  var shown = picFor(v, i);
+  if (shown) {
     artBox.innerHTML = "";
     var im = document.createElement("img");
-    im.src = v.pic;
-    im.alt = v.picAlt || "";
+    im.src = shown.pic;
+    im.alt = shown.alt;
     im.loading = "lazy";
     im.decoding = "async";
-    im.addEventListener("click", function () { showFull(v.pic, im.alt); });
+    im.addEventListener("click", function () { showFull(shown.pic, shown.alt); });
     artBox.appendChild(im);
     artBox.className = "dbox-art pic";
     artBox.hidden = false;
-    dbox.classList.add("is-wide");
   } else if (v.art && ART[v.art]) {
     artBox.innerHTML = ART[v.art];
     artBox.className = "dbox-art";
     artBox.hidden = false;
-    dbox.classList.remove("is-wide");
   } else {
     artBox.textContent = "";
-    artBox.hidden = true;
-    dbox.classList.remove("is-wide");
+    /* On a picture lesson the slot stays in the layout even when it is empty,
+       so the frames that genuinely have nothing to show do not collapse the
+       panel around themselves. */
+    artBox.className = "dbox-art";
+    artBox.hidden = !HAS_PICS;
   }
 
   var line = dbox.querySelector(".dbox-line");
@@ -3313,6 +3407,11 @@ function paintDemo(i){
       }
     });
   }
+
+  /* LAST, because `seq` above rewrites the example line after it is set. Fitting
+     before that measured the wrong content and let the staged reveal overflow
+     its reserved block. */
+  fitWords(dbox.querySelector(".dbox-words"));
 }
 
 /* 🚨 MEASURED, NOT GUESSED. --navh positions the panel under the nav and
