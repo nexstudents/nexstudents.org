@@ -149,6 +149,21 @@ function checkSpread(L, qs) {
 const esc = (s) => String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 const jsArr = (a) => "[\n    " + a.map((x) => '"' + esc(x) + '"').join(",\n    ") + "\n  ]";
 
+/* Replace the ONE line that starts with `marker`. Fails loudly on none or on
+   several: a swap that silently matched nothing ships the template's own
+   placeholder data to a student, which is the failure __NEXTNAV__ and __GROUND__
+   each already have their own guard against. */
+function replaceLine(html, marker, line, slug) {
+  const rx = new RegExp("^[ \\t]*" + marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ".*$", "gm");
+  const hits = html.match(rx);
+  if (!hits || hits.length !== 1) {
+    console.error("FAIL: " + slug + ": expected exactly one `" + marker + "` line, found " +
+      (hits ? hits.length : 0));
+    process.exit(1);
+  }
+  return html.replace(rx, () => line);
+}
+
 /* A compare box, written into the page's PARTS literal beside the sentences it
    quotes. Hand-written rather than JSON.stringify'd so it escapes by the same
    `esc` every other string on this page goes through - two escaping rules for one
@@ -388,6 +403,92 @@ function requireBoxes(L) {
   });
 }
 
+/* 🚨 THE EXPLAINER. A visual walkthrough driven by the sentence being READ.
+   Paul, 2026-09-04: "i wanted you to make like explaining how these sentences
+   worked as it was reading it to you ... use a visual way of explaining along
+   with the text so the youth can see how these sentences are changing and what
+   they mean. just like how you explained with the math problem."
+   It is the maths demo applied to grammar, and it hangs off the very same
+   window.nsOnSentence(idx) hook the division bracket uses, so the player needed
+   no change at all.
+
+   A visual is { when, kind, body, ghost?, mark?, note? } or { when, blank:true }.
+   🚨 `when` IS THE TRIGGER SENTENCE, WRITTEN OUT IN FULL, and the build resolves
+   it to an index. It is deliberately NOT a number like `find` uses. A hand
+   counted index is the one thing in this file that has gone stale twice, and
+   findsAt exists only because an index can stay in range while being wrong. A
+   sentence cannot drift: either it is still in the lesson or the build stops.
+   ⚠️ `body` and `ghost` are DRAWN, so they may be shaped for the diagram - the
+   understood "(You)" of an imperative is not in Paul's prose because the whole
+   point is that the writer left it out. `when` is the part that must be his. */
+function requireVisuals(L) {
+  const V = L.visuals;
+  if (!V) return;                       /* optional - most lessons have none */
+  const story = [];
+  (L.parts || []).forEach((p) => (p.s || []).forEach((s) => {
+    if (String(s).trim()) story.push(String(s).trim());
+  }));
+
+  if (!Array.isArray(V) || !V.length) {
+    console.error("FAIL: " + L.id + ": `visuals` is present but empty. Remove it or fill it.");
+    process.exit(1);
+  }
+
+  let last = -1;
+  V.forEach((v, i) => {
+    const where = L.id + ": visual " + i;
+    if (!v.when) { console.error("FAIL: " + where + " has no `when`"); process.exit(1); }
+    const at = story.indexOf(String(v.when).trim());
+    if (at === -1) {
+      console.error("FAIL: " + where + " is triggered by a sentence that is NOT in\n" +
+        "      this lesson's story:\n        " + v.when + "\n" +
+        "      The explainer follows the reading, so it can only be hung off a\n" +
+        "      sentence the student is actually going to hear.");
+      process.exit(1);
+    }
+    /* 🚨 An ambiguous trigger silently picks the FIRST match, which puts the
+       picture in the wrong paragraph with nothing on screen saying so. */
+    if (story.indexOf(String(v.when).trim(), at + 1) !== -1) {
+      console.error("FAIL: " + where + " is triggered by a sentence that appears more\n" +
+        "      than once in this lesson:\n        " + v.when + "\n" +
+        "      Pick a line that occurs only once, or the explainer fires on whichever\n" +
+        "      copy comes first.");
+      process.exit(1);
+    }
+    /* 🚨 IN ORDER. paintDemo() walks the list and stops at the first entry past
+       the current sentence, which is only correct on a sorted list. Sorting them
+       here instead would hide a genuine mistake: visuals written out of order
+       usually means two of them were meant for different paragraphs. */
+    if (at <= last) {
+      console.error("FAIL: " + where + " is triggered at sentence " + at +
+        ", which is not after the previous visual at " + last + ".\n" +
+        "      Visuals must be listed in reading order.");
+      process.exit(1);
+    }
+    last = at;
+    v.at = at;
+    if (v.blank) return;                /* a deliberate empty frame */
+    if (!v.kind || !v.body) {
+      console.error("FAIL: " + where + " needs `kind` and `body`, or `blank: true`");
+      process.exit(1);
+    }
+  });
+}
+
+function visualsLiteral(V) {
+  if (!V || !V.length) return "[]";
+  return "[\n" + V.map((v) =>
+    "  { at: " + v.at +
+    (v.blank ? ", blank: true" :
+      ', kind: "' + esc(v.kind) + '"' +
+      (v.ghost ? ', ghost: "' + esc(v.ghost) + '"' : "") +
+      ', body: "' + esc(v.body) + '"' +
+      (v.mark ? ', mark: "' + esc(v.mark) + '"' : "") +
+      (v.note ? ', note: "' + esc(v.note) + '"' : "")
+    ) + " }"
+  ).join(",\n") + "\n]";
+}
+
 function groundMarkup(L) {
   const g = L.ground;
   if (!g) return "";
@@ -429,6 +530,8 @@ function serialise(L) {
   checkFinds(L);
   requireGround(L);
   requireBoxes(L);
+  requireVisuals(L);
+  const visuals = "var VISUALS = " + visualsLiteral(L.visuals) + ";";
   const parts = "var PARTS = [\n" + partsFor(L).map((p) =>
     '  { title: "' + esc(p.title) + '", s: ' + jsArr(p.s) +
     (p.box ? ", box: " + boxLiteral(p.box) : "") + ' }').join(",\n") + "\n];";
@@ -452,7 +555,7 @@ function serialise(L) {
     "    choices: " + jsArr(q.choices) + ",\n" +
     "    right: " + q.right + "\n  }").join(",\n") + "\n];";
 
-  return { parts, words, questions, qs };
+  return { parts, words, questions, qs, visuals };
 }
 
 function swapBlock(html, startMarker, endLine, replacement) {
@@ -469,6 +572,10 @@ for (const L of LESSONS) {
   const S = serialise(L);
 
   h = swapBlock(h, "var PARTS = [", "\n];", S.parts);
+  /* 🚨 VISUALS is swapped by its own single-line marker, not by swapBlock: the
+     literal it writes contains newlines and a "]" of its own, so a block swap
+     hunting for the next "\n];" would stop in the wrong place. */
+  h = replaceLine(h, "var VISUALS = ", S.visuals, L.slug);
   h = swapBlock(h, "var WORDS = [", "\n];", S.words);
   h = swapBlock(h, "var QUESTIONS = [", "\n];", S.questions);
 

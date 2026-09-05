@@ -400,7 +400,70 @@ h2{
    the live page 2026-09-04, testing Question 10: the view opened on "command.
    The exclamation point simply shows urgency", with the three sentences before
    it hidden behind the header. */
-.para{margin:0;scroll-margin-top:180px}
+.para{margin:0;scroll-margin-top:var(--stickytop,180px)}
+
+/* ---------- the explainer ----------
+   Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
+   to you ... use a visual way of explaining along with the text so the youth can
+   see how these sentences are changing and what they mean. just like how you
+   explained with the math problem." And what it is FOR: "basically make this a
+   way for attention issue students to still stay engaged."
+   That purpose decides the design. One thing on screen at a time, the page holds
+   still while it is open, and the meaning is carried by the drawing rather than
+   by another paragraph of text to read.
+   🚨 --stickytop IS MEASURED, NOT GUESSED. Two things are pinned at the top now,
+   the nav and this, so anything scrolled to has to clear both. It used to be a
+   hardcoded 180px for the nav alone. */
+:root{--stickytop:180px}
+.dbox{
+  position:sticky;top:var(--navh,56px);z-index:40;
+  max-width:760px;margin:0 auto;
+  background:var(--surface-2, var(--boxfill));
+  border:1px solid var(--rule, var(--line));border-radius:0 0 10px 10px;border-top:0;
+  padding:14px 16px 10px;
+}
+/* 🚨 min-height on the CONTENT, not the box, so collapsing actually collapses.
+   While open the frame keeps its height through a blank stretch - a box that
+   grew and shrank every few sentences would jog the whole page under the reader,
+   which is the exact wobble the word highlight was kept plain to avoid. */
+.dbox-in{min-height:104px;display:flex;flex-direction:column;justify-content:center}
+.dbox-kind{
+  margin:0 0 10px;text-align:center;
+  font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--verdigris, var(--accent));
+}
+/* the sentence, pulled apart into its pieces */
+.dbox-line{
+  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;
+  gap:0 8px;margin:0;font-size:21px;line-height:1.4;color:var(--ink);
+}
+/* 🚨 The understood subject. An imperative sentence "leaves out the subject",
+   and that absence IS the lesson - so it is drawn, dimmed and bracketed. There
+   is no other way to point at a word that is not there. */
+.dbox-ghost{
+  color:var(--ink-faint, var(--dim));font-style:italic;
+  border:1px dashed var(--ink-faint, var(--dim));border-radius:5px;padding:0 7px;
+}
+.dbox-mark{
+  color:var(--on-accent, #fff);background:var(--verdigris, var(--accent));
+  border-radius:5px;padding:0 8px;font-weight:700;display:inline-block;
+}
+.dbox-note{
+  margin:10px 0 0;text-align:center;font-size:14px;line-height:1.5;
+  color:var(--ink-soft, var(--dim));
+}
+.dbox-x{
+  display:block;margin:8px auto 0;font:inherit;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;
+  background:none;border:0;cursor:pointer;padding:4px 10px;border-radius:5px;
+  color:var(--ink-faint, var(--dim));
+}
+.dbox-x:hover{color:var(--ink)}
+.dbox-x:focus-visible{outline:2px solid var(--verdigris, var(--accent));outline-offset:2px}
+/* blank keeps the frame and drops the contents; shut drops the frame too */
+.dbox.is-blank .dbox-in{visibility:hidden}
+.dbox.is-shut{padding:4px 16px}
+.dbox.is-shut .dbox-in{display:none}
 
 /* ---------- the compare box ----------
    A silent, visual side-by-side for the place in a lesson where two things look
@@ -452,7 +515,7 @@ h2{
 .sent{
   border-radius:3px;padding:1px 0;
   transition:background .2s;
-  scroll-margin-top:180px;
+  scroll-margin-top:var(--stickytop,180px);
 }
 .sent.reading{background:var(--band)}
 /* ⚠️ NO BOLD, NO RING, NO SIZE CHANGE. Paul, 2026-08-29: "you are bolding or
@@ -1116,6 +1179,22 @@ body.player-hidden .scrub{margin:0}
 
 
 
+  <!-- 🚨 THE EXPLAINER. Hidden until script turns it on, and it stays hidden for
+       the whole life of a lesson with no VISUALS - an empty pinned frame takes
+       reading height and gives nothing back.
+       ⚠️ THE STORY UNDERNEATH IS ALWAYS WHOLE. An earlier attempt paged it into
+       one section at a time and Paul killed it: "this does conflict with find in
+       story mode." Every question can send a student back into the story, and
+       half the answers were in a section the pager had hidden. -->
+  <div class="dbox is-blank" id="dbox" hidden>
+    <div class="dbox-in" aria-live="polite">
+      <p class="dbox-kind"></p>
+      <p class="dbox-line"></p>
+      <p class="dbox-note"></p>
+    </div>
+    <button class="dbox-x" type="button" id="dboxx" aria-expanded="true">Hide</button>
+  </div>
+
   <main id="story"></main>
 
   <div class="daysec" id="day1">
@@ -1318,6 +1397,11 @@ if (window.matchMedia){
   (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
 }
 new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+
+/* 🚨 The explainer's script, or []. build-lessons.js rewrites this ONE line and
+   fails the build if it does not find exactly one of it, so the template's own
+   value can never reach a student. */
+var VISUALS = [];
 
 var PARTS = [
   { title:"Rome Without a King", s:[
@@ -2160,6 +2244,25 @@ function paint(){
 function nsReadArea(){
   var vh = window.innerHeight || document.documentElement.clientHeight;
   var top = 0, bottom = vh;
+  /* 🚨 THE PINNED BARS AT THE TOP COVER SCREEN TOO. This only ever subtracted
+     the player at the bottom, so the nav - sticky since 2026-08-26 - was counted
+     as readable the whole time, and the explainer pinned beneath it makes the
+     same error about 130px worse. Everything that decides where the page should
+     sit runs through here: nsInView() would call a sentence visible while it sat
+     behind the bars, so nsReveal() declined to scroll to it, and nsEyeTargetY()
+     aimed 42% down a band that started underneath them.
+     MEASURED from the elements, never a constant: both heights change with the
+     viewport, and either can be absent. */
+  var nav = document.querySelector(".ns-nav");
+  if (nav){
+    var nr = nav.getBoundingClientRect();
+    if (nr.top <= 4 && nr.bottom > top) top = nr.bottom;
+  }
+  var db = document.getElementById("dbox");
+  if (db && !db.hidden){
+    var dr = db.getBoundingClientRect();
+    if (dr.top <= top + 4 && dr.bottom > top) top = dr.bottom;
+  }
   var p = document.getElementById("player");
   if (p && !document.body.classList.contains("player-hidden")){
     var pr = p.getBoundingClientRect();
@@ -2230,6 +2333,15 @@ function nsEyeLine(el, smooth){
 
 function followScroll(el){
   if (!following) return;
+  /* 🚨 THE EXPLAINER STOPS THE PAGE, NOT THE VOICE. Paul, 2026-09-04: "with the
+     panel open it will stop the scroll but still read it", and "panel open it
+     doesnt follow down the page."
+     It is the whole point of the panel for a student who loses his place: while
+     it is open there is ONE thing to look at and it does not move. The reading
+     carries on underneath, the drawing keeps step with it, and the text stops
+     sliding past. Closing the panel hands the page back and following resumes
+     from the next sentence with nothing to reset. */
+  if (demoOpen()) return;
   selfScrollAt = Date.now();
   nsEyeLine(el);
 }
@@ -2271,6 +2383,121 @@ function stopFollowing(){
      the offer is cheap and only appears while a voice is actually reading */
   chip(true);
 }
+/* ── THE EXPLAINER ────────────────────────────────────────────────────────
+   Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
+   to you ... just like how you explained with the math problem", and what it is
+   for: "basically make this a way for attention issue students to still stay
+   engaged."
+   🚨 DRIVEN BY THE SENTENCE BEING READ, through window.nsOnSentence(idx) - the
+   same hook the maths bracket uses, which is why this needed no change to the
+   player at all. paint() calls it on every index move, so the drawing keeps step
+   with playback, the step arrows, a tapped sentence AND a dragged scrub without
+   any of them knowing it exists.
+   Each visual's `at` is resolved AT BUILD TIME from the sentence it belongs to -
+   see requireVisuals(). There is no hand-counted index here to go stale, which
+   is the failure `find` needs findsAt to guard against. */
+var dbox  = document.getElementById("dbox");
+var dboxX = document.getElementById("dboxx");
+var curVis = -2;
+
+function demoOpen(){ return !!(dbox && !dbox.hidden && !dbox.classList.contains("is-shut")); }
+
+function visualFor(i){
+  /* The LAST visual at or before this sentence: a drawing stands until the next
+     one replaces it, or an explicit blank clears it. */
+  var found = null;
+  for (var k = 0; k < VISUALS.length; k++){
+    if (VISUALS[k].at <= i) found = VISUALS[k]; else break;
+  }
+  return found;
+}
+
+function paintDemo(i){
+  if (!dbox) return;
+  var v = visualFor(i);
+  var key = v ? v.at : -1;
+  if (key === curVis) return;                 /* repaint only on a real change */
+  curVis = key;
+
+  /* 🚨 `blank: true` is a visual that deliberately shows NOTHING, and it is not
+     the same as having no visual at all. Paul: "you could leave the box blank if
+     you have nothing to show." It is how a lesson says "this stretch is not
+     about a single sentence any more" - the opening story, the closing Proverbs
+     - so the last drawing stops standing over text it does not describe. A stale
+     picture is read as a claim about what is on screen now. */
+  if (!v || v.blank){
+    dbox.classList.add("is-blank");
+    return;
+  }
+  dbox.classList.remove("is-blank");
+  dbox.querySelector(".dbox-kind").textContent = v.kind || "";
+
+  var line = dbox.querySelector(".dbox-line");
+  line.textContent = "";
+  if (v.ghost){
+    var g = document.createElement("span");
+    g.className = "dbox-ghost";
+    g.textContent = v.ghost;
+    line.appendChild(g);
+  }
+  /* 🚨 Text nodes, never innerHTML. This is lesson prose and must not be able to
+     carry markup into the page. */
+  var body = document.createElement("span");
+  body.textContent = v.body;
+  line.appendChild(body);
+  if (v.mark){
+    var m = document.createElement("span");
+    m.className = "dbox-mark";
+    m.textContent = v.mark;
+    line.appendChild(m);
+  }
+  dbox.querySelector(".dbox-note").textContent = v.note || "";
+}
+
+/* 🚨 MEASURED, NOT GUESSED. --navh positions the panel under the nav and
+   --stickytop is what .para and .sent use for scroll-margin. Both change with
+   the viewport and with whether the panel is open, so they are read off the
+   elements every time rather than written down once. */
+function measureSticky(){
+  var nav = document.querySelector(".ns-nav");
+  var nh = nav ? Math.round(nav.getBoundingClientRect().height) : 56;
+  var dh = (dbox && !dbox.hidden) ? Math.round(dbox.getBoundingClientRect().height) : 0;
+  document.documentElement.style.setProperty("--navh", nh + "px");
+  document.documentElement.style.setProperty("--stickytop", (nh + dh + 24) + "px");
+}
+
+function setDemoOpen(on){
+  if (!dbox) return;
+  dbox.classList.toggle("is-shut", !on);
+  dboxX.textContent = on ? "Hide" : "Show me how";
+  dboxX.setAttribute("aria-expanded", on ? "true" : "false");
+  store("demo", on ? "1" : "0");
+  measureSticky();
+  /* Closing hands the page back. Catch the reader up to the sentence being read,
+     which is very likely to be off screen after sitting still through it. */
+  if (!on && playing && SENT[idx]) { resumeFollowing(); followScroll(SENT[idx].el); }
+}
+
+if (VISUALS.length && dbox){
+  dbox.hidden = false;
+  /* 🚨 Remembered per reader, and OPEN by default. It is the reason the lesson
+     looks the way it does, so a student meeting the page for the first time has
+     to see it working before he can decide he does not want it. */
+  setDemoOpen(load("demo", "1") !== "0");
+  paintDemo(0);
+  dboxX.addEventListener("click", function(){ setDemoOpen(!demoOpen()); });
+  window.addEventListener("resize", measureSticky);
+
+  /* 🚨 CHAIN, DO NOT CLOBBER. nsOnSentence is a single global and maths already
+     hangs its bracket off it. Assigning over the top would silently switch the
+     other one off on any page that used both. */
+  var prevOnSentence = window.nsOnSentence;
+  window.nsOnSentence = function(i){
+    if (typeof prevOnSentence === "function") { try { prevOnSentence(i); } catch(e){} }
+    paintDemo(i);
+  };
+}
+
 /* A wheel or a finger is unambiguous intent. A plain scroll event is not - our
    own smooth scrolling fires it too - so that path is time-guarded against the
    scroll we just started ourselves. */

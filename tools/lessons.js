@@ -1515,6 +1515,47 @@ const LESSONS = [
   /* 🚨 findsAt = the number of STORY sentences these indexes were verified
      against. Change the reading and checkFinds() stops the build. Computed by
      walking the flattened list, never counted by hand. */
+  /* 🚨 THE EXPLAINER. Drawn beside the reading, changing as the voice moves.
+     Paul, 2026-09-04: "explaining how these sentences worked as it was reading
+     it to you ... just like how you explained with the math problem", and the
+     reason it exists: "basically make this a way for attention issue students
+     to still stay engaged."
+     `when` is the sentence that triggers it, written out in full - the build
+     resolves it to an index and FAILS if it is missing, duplicated, or out of
+     reading order. Never a hand-counted number.
+     `body`/`ghost`/`mark` are DRAWN, so they are shaped for the diagram rather
+     than quoted: "(You)" appears nowhere in the prose precisely because the
+     whole point is that an imperative leaves the subject out.
+     ⚠️ Paul wants generated art in here later. That is a new FIELD on a visual,
+     not a new panel - the frame, the timing and the blanking already work. */
+  visuals: [
+    { when: "A declarative sentence makes a statement.",
+      kind: "Declarative", body: "The game starts at seven", mark: ".",
+      note: "It declares something. A statement ends with a period." },
+
+    { when: "An interrogative sentence asks a question.",
+      kind: "Interrogative", body: "Did you finish your homework", mark: "?",
+      note: "It asks for an answer, so it ends with a question mark." },
+
+    { when: "An imperative sentence gives a command, direction, instruction, or request.",
+      kind: "Imperative", ghost: "(You)", body: "Clean your room", mark: ".",
+      note: "It gives a command. The subject is you, even though it is not written." },
+
+    /* The confusable pair, drawn at the exact sentence where Paul raises it. */
+    { when: "Watch out!",
+      kind: "Still Imperative", ghost: "(You)", body: "Watch out", mark: "!",
+      note: "Same command, stronger feeling. The mark changed. The job did not." },
+
+    { when: "An exclamatory sentence expresses strong emotion or excitement.",
+      kind: "Exclamatory", body: "That goal was incredible", mark: "!",
+      note: "Nothing is being asked or ordered. It only shows how you feel." },
+
+    /* 🚨 A deliberate blank. The closing section is about words and Proverbs,
+       not about one sentence, and leaving the last drawing standing there would
+       read as a claim about what is on screen now. */
+    { when: "God gave us the ability to communicate, and the words we choose matter.",
+      blank: true }
+  ],
   findsAt: 55,
   questions: [
     { q: "The game begins after dinner.", find: [6],
