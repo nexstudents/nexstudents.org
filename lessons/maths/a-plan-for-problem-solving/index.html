@@ -1590,7 +1590,7 @@ body.player-hidden .scrub{margin:0}
     <b>When you finish:</b> write the answers out in your own words &mdash; not copied word for word from the choices. Saying it your own way is the part that proves you understood it. Then use <b>Print answer sheet</b> for a one-page record of what was answered and scored.
   </div>
 
-<nav class="unitnav" aria-label="Unit navigation"><p class="unitdone">That is the last lesson in Tools for Problem Solving.</p></nav>
+<nav class="unitnav" aria-label="Unit navigation"><a class="fwd" href="/lessons/maths/estimation-using-rounding/"><em>Lesson 2 &rarr;</em><b>Estimation Strategy: Using Rounding</b></a></nav>
 
 </div>
 
@@ -4390,8 +4390,8 @@ function showScore(){
     '<div class="big">' + right + ' / ' + total + '</div>' +
     '<div class="pct">' + pct + '%</div>' +
     '<div class="split">' +
-      '<span><b>Day 1</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>' +
-      '<span><b>Day 2</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>' +
+      '<span><b>Part One</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>' +
+      '<span><b>Part Two</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>' +
     '</div>' +
     '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
     ' &middot; answered without hunting: ' + missed + '.<br>' +
@@ -4414,7 +4414,17 @@ function showScore(){
     }));
   }
   paintStatus();
-  nsReveal(el);
+  /* 🚨 ONLY JUMP TO THE SCORE WHEN THE LESSON IS ACTUALLY OVER. Paul, 2026-09-05:
+     "after i answer the first section of questions down to the vocab ... it jumps
+     to the bottom for the results but im not finished and i dont like how it
+     jumps to the bottom like that."
+     showScore() is called when EITHER day finishes (see the || at its call site),
+     because finishing Day 1 should record progress and update the box. But the
+     scroll treated that as the end of the lesson and threw the reader past the
+     vocabulary cards and the last four questions - the exact work still in front
+     of them. The box still updates either way; it just no longer drags the page
+     down to itself until both days are done. */
+  if (complete) nsReveal(el);
 }
 
 /* ---------- completed / retake ---------- */
@@ -4436,8 +4446,8 @@ function paintStatus(){
   document.getElementById("statusText").innerHTML =
     (done
       ? "<b>Lesson completed</b> &middot; best score " + d.score + " / " + d.total + " (" + d.pct + "%)"
-      : "<b>" + (d.d1done ? "Day 1 finished" : "Day 2 finished") + "</b> &middot; " +
-        d.score + " / " + d.total + " so far &mdash; the other day is still to do") +
+      : "<b>" + (d.d1done ? "Part One finished" : "Part Two finished") + "</b> &middot; " +
+        d.score + " / " + d.total + " so far, the other part is still to do") +
     "<small>" + (when ? "Last worked " + when + ". " : "") +
     "Retaking keeps your best score.</small>";
   box.classList.add("show");

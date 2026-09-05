@@ -2098,6 +2098,562 @@ const LESSONS = [
       "Proposing it's the skill itself."
   ] }
 },
+{
+  id: "maths/estimation-using-rounding",
+  slug: "estimation-using-rounding",
+  title: "Estimation Strategy: Using Rounding",
+  unit: "Maths &middot; Chapter 1 &middot; Lesson 1-2",
+  seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 2 },
+  shelf: { grades: [7], subject: "Maths",
+    blurb: "Rounding turns a messy sum into a fast, close-enough answer you can trust.",
+    contains: [
+      "Mark's computer fund-raiser, rounded to the nearest hundred dollars",
+      "The one rule that decides which way any digit rounds",
+      "A grocery receipt checked for a cashier's mistake",
+      "Twelve questions, including one straight off the book's own exercises",
+    ] },
+  eyebrow: ["Maths", "Chapter 1 &middot; Lesson 1-2", "Tools for Problem Solving"],
+  dek: "You don't always need the exact answer. You need one close enough to plan with, and you need it fast.",
+
+  ground: {
+    sections: [
+      { h: "Lesson Goal", p: [
+        "Students will estimate sums and differences by rounding each number to a chosen place value, then working with the rounded numbers instead of the real ones. The skill is deciding which place value to round to and trusting the estimate as a check."
+      ]},
+      { h: "Key Concepts", p: [
+        "Rounding looks at one digit only, the one immediately to the right of the place value being rounded. Under 5 rounds down, 5 or more rounds up. The same rule works on tens, hundreds, thousands or dollars."
+      ]},
+      { h: "Why This Comes Before The Real Answer", p: [
+        "A rounded total tells you whether a real total is even in the right neighborhood. The fund-raising committee needed about $1,400 before Mark added a single real price, and the grocery total was checked the same way after the fact."
+      ]},
+      { h: "Where Students Get Stuck", p: [
+        "Rounding several numbers to different place values in the same sum, rather than all to the same one, throws the estimate off. Watch for a student who rounds one price to the nearest ten and another to the nearest hundred in the same problem."
+      ]},
+      { h: "Teaching Suggestion", p: [
+        "Hand him a real register receipt or a phone bill and ask him to round every line to the nearest dollar before checking the total. It's the same skill as the grocery example, on paper he can hold."
+      ]},
+      { h: "Key Vocabulary", vocab: true }
+    ]
+  },
+
+  parts: [
+    { title: "A Fund-Raiser That Needs A Fast Answer", s: [
+      "The Media Arts Department at Northwest Middle School is saving up to buy a computer for the school newspaper.",
+      "Mark is the chairperson of the fund-raising committee.",
+      "The computer store gave Mark a price list for the computer the department needs.",
+      "The computer itself is $687.00.",
+      "A monitor is $197.90, a CD-ROM drive is $217.90, a printer with a printer card is $222.99, and the software is $82.59.",
+      "About how much money does the committee need to raise?",
+      "You don't need the exact total to answer that question.",
+      "You need a number close enough to plan with, and you need it fast."
+    ]},
+
+    { title: "Round Each Price", s: [
+      "Round each price to its nearest hundred dollars.",
+      "$687.00 rounds to $700.",
+      "$197.90 rounds to $200.",
+      "$217.90 also rounds to $200.",
+      "$222.99 rounds to $200 too.",
+      "$82.59 rounds to $100.",
+      "Now add the rounded numbers instead of the real ones.",
+      "$700 plus $200 plus $200 plus $200 plus $100 equals $1,400.",
+      "The committee needs to raise about $1,400."
+    ]},
+
+    { title: "The One Rule For Rounding", s: [
+      "Rounding always comes down to one question: what's the digit right next door to the place you're rounding to?",
+      "Look at 83, rounded to the nearest ten.",
+      "The digit next to the tens place is 3.",
+      "Since 3 is less than 5, the tens digit stays the same, so 83 rounds down to 80.",
+      "Now look at 362, rounded to the nearest hundred.",
+      "The digit next to the hundreds place is 6.",
+      "Since 6 is 5 or more, the hundreds digit rounds up, so 362 rounds up to 400.",
+      "Under 5 stays down, and 5 or over rounds up.",
+      "That's the whole rule, on any place value."
+    ]},
+
+    { title: "Rounding Checks A Total, Too", s: [
+      "Estimation isn't only for finding a quick answer, it's also for checking a real one.",
+      "Say you stopped at the market to buy oil, chicken, bacon, and a green pepper for tonight's dinner.",
+      "The register tape says $2.55, $5.47, $2.15, and $1.09, for a total of $11.26.",
+      "Is that total reasonable?",
+      "Round every item to the nearest dollar.",
+      "$2.55 rounds to $3, $5.47 rounds to $5, $2.15 rounds to $2, and $1.09 rounds to $1.",
+      "$3 plus $5 plus $2 plus $1 is $11.",
+      "$11.26 is close to $11, so the total on the register is reasonable."
+    ]},
+
+    { title: "Round Every Number The Same Way", s: [
+      "Sometimes it makes more sense to round every number in a sum to the same kind of place value before you add.",
+      "Take 1,836 plus 429 plus 213 plus 1,208.",
+      "Round each one to its own greatest place: 2,000, 400, 200, and 1,000.",
+      "Add those and you get 3,600, a solid estimate for the real sum."
+    ]}
+  ],
+
+  words: [
+    ["Round", "To change a number to the nearest ten, hundred, or other place value, using the digit next door as the tiebreaker."],
+    ["Estimate", "A fast answer close enough to plan with, found by rounding before adding, subtracting, or checking."],
+    ["Reasonable", "Close enough to your estimate that the real answer probably isn't a mistake."],
+    ["Greatest Place Value", "The leftmost digit's place, such as the hundreds or thousands, which most numbers round to first."]
+  ],
+
+  /* 38 story sentences; the finds below were verified against that count. */
+  findsAt: 38,
+  questions: [
+    { tag: "Fund-Raising",
+      q: "Mark needs to know about how much the committee has to raise. Why doesn't he need the exact total?",
+      find: [5, 6, 7],
+      choices: [
+        "A fast, close-enough number is all a decision like this needs.",
+        "Exact totals are against the rules.",
+        "The store doesn't give exact prices.",
+        "Estimates are always more accurate than totals."
+      ], right: 0 },
+
+    { tag: "Rounding A Price",
+      q: "$217.90 rounds to which hundred?",
+      find: [10, 11],
+      choices: ["$200.", "$300.", "$100.", "$220."], right: 0 },
+
+    { tag: "The Rule",
+      q: "83 rounds to the nearest ten. What decides whether it rounds up or down?",
+      find: [19, 20],
+      choices: [
+        "The digit right next to the tens place.",
+        "The digit in the hundreds place.",
+        "Whether the number is even or odd.",
+        "How big the number is overall."
+      ], right: 0 },
+
+    { tag: "The Rule",
+      q: "362 rounded to the nearest hundred is which number?",
+      find: [22, 23],
+      choices: ["400.", "300.", "360.", "370."], right: 0 },
+
+    { tag: "Consumer Math",
+      q: "The register said $11.26 for four grocery items. How do you check whether that's reasonable?",
+      find: [30, 31, 32],
+      choices: [
+        "Round each price and add the rounded amounts.",
+        "Multiply the highest price by four.",
+        "Guess based on how full the cart looks.",
+        "Add the exact prices twice to double check."
+      ], right: 0 },
+
+    { tag: "Consumer Math",
+      q: "The four rounded grocery prices add up to about $11. What does that tell you about the $11.26 total?",
+      find: [33],
+      choices: [
+        "It's reasonable, since it's close to the estimate.",
+        "It's wrong, since it doesn't match exactly.",
+        "It's too high to be believed.",
+        "Nothing, rounding can't check a real total."
+      ], right: 0 },
+
+    { tag: "Estimating A Sum",
+      q: "To estimate 1,836 + 429 + 213 + 1,208, what does the lesson suggest doing to each number first?",
+      find: [34, 36],
+      choices: [
+        "Round each one to its own greatest place value.",
+        "Round every number to the nearest ten only.",
+        "Add the exact numbers, then round the total.",
+        "Drop the smallest number from the sum."
+      ], right: 0,
+      why: "1,836 rounds to 2,000, 429 to 400, 213 to 200, and 1,208 to 1,000. That gives an estimate of 3,600." },
+
+    { tag: "Clubs",
+      q: "The Band Boosters sold 5,720 boxes of cookies the first week and 6,147 the second week. Rounding each to the nearest thousand, about how many boxes did they sell in the first two weeks?",
+      choices: ["About 12,000.", "About 11,000.", "About 6,000.", "About 10,000."], right: 0,
+      why: "5,720 rounds to 6,000 and 6,147 rounds to 6,000, and 6,000 plus 6,000 is 12,000." }
+  ],
+
+  vocabQuestions: [
+    { q: "To <i>round</i> a number is to do what?",
+      choices: ["Change it to the nearest ten, hundred, or other place value.", "Multiply it by ten."], right: 0 },
+    { q: "An <i>estimate</i> is...",
+      choices: ["A fast answer close enough to plan or check with.", "Always the exact answer."], right: 0 },
+    { q: "An answer is <i>reasonable</i> when it's...",
+      choices: ["Close to your estimate.", "Written neatly."], right: 0 },
+    { q: "The <i>greatest place value</i> in 362 is the...",
+      choices: ["Hundreds place.", "Ones place."], right: 0 }
+  ],
+
+  todo: { title: "What To Do Now", s: [
+      "{Q} questions about the lesson, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "For each question, round first and check your rounding against the rule before picking an answer.",
+      "If a question about money trips you up, round every price to the nearest dollar before you add or compare.",
+      "When you're stuck on which way a number rounds, look at the digit right next to the place you're rounding to.",
+      "That's the only digit that matters."
+  ] }
+},
+
+{
+  id: "maths/estimation-using-patterns",
+  slug: "estimation-using-patterns",
+  title: "Estimation Strategy: Using Patterns",
+  unit: "Maths &middot; Chapter 1 &middot; Lesson 1-3",
+  seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 3 },
+  shelf: { grades: [7], subject: "Maths",
+    blurb: "One easy multiplication or division fact, stretched into an estimate for a much bigger one.",
+    contains: [
+      "29,000 truckloads of rock, estimated with a pattern instead of long multiplication",
+      "The different first move for estimating a quotient instead of a product",
+      "Ub Iwerks and the 14,400 pictures he drew for Steamboat Willie",
+      "Twelve questions, from small facts to genuinely large numbers",
+    ] },
+  eyebrow: ["Maths", "Chapter 1 &middot; Lesson 1-3", "Tools for Problem Solving"],
+  dek: "Once you know one small multiplication fact, patterns let you estimate huge ones in your head.",
+
+  ground: {
+    sections: [
+      { h: "Lesson Goal", p: [
+        "Students will estimate products and quotients using patterns: round one factor, or the divisor, to its greatest place value, then multiply or divide a short string of easy facts to reach the estimate."
+      ]},
+      { h: "Key Concepts", p: [
+        "For multiplication, round the larger factor and leave a one-digit factor alone, then build a pattern by multiplying the small fact by ten each step. For division, round the divisor first and swap the dividend for a nearby number that divides evenly."
+      ]},
+      { h: "Where Students Get Stuck", p: [
+        "Rounding the dividend before the divisor in a division problem gets the steps backwards. It also helps to say the pattern's easy fact out loud before multiplying zeros onto it, rather than jumping straight to the big number."
+      ]},
+      { h: "Teaching Suggestion", p: [
+        "Give him a two- or three-digit multiplication problem from a grocery receipt or a sports stat and have him build the pattern by hand before checking it on a calculator."
+      ]},
+      { h: "Key Vocabulary", vocab: true }
+    ]
+  },
+
+  parts: [
+    { title: "An Arena Carved From A Mountain", s: [
+      "During the Winter Olympics, the host country builds facilities that fit the games and the land both.",
+      "The Gjøvik Olympic Cavern Hall was built for the hockey competition, carved right out of a mountain called Hovdetoppen.",
+      "Building it took 29,000 truckloads of rock removed from inside the mountain.",
+      "If a single truck holds about 5 cubic yards of rock, about how many cubic yards were removed in all?"
+    ]},
+
+    { title: "Multiply By Patterns", s: [
+      "We need to estimate 29,000 times 5.",
+      "Patterns can estimate a product like that.",
+      "Round the bigger factor to its greatest place value, but leave a one-digit factor alone.",
+      "Round 29,000 to 30,000.",
+      "Now look for a pattern, and solve it mentally.",
+      "3 times 5 is 15.",
+      "30 times 5 is 150.",
+      "300 times 5 is 1,500.",
+      "3,000 times 5 is 15,000.",
+      "30,000 times 5 is 150,000.",
+      "About 150,000 cubic yards of rock were removed to build the Gjøvik Olympic Cavern Hall."
+    ]},
+
+    { title: "Two More Patterns", s: [
+      "Estimate 2,268 times 6 the same way.",
+      "Round 2,268 to 2,000.",
+      "2 times 6 is 12, 20 times 6 is 120, 200 times 6 is 1,200, and 2,000 times 6 is 12,000.",
+      "2,268 times 6 is about 12,000.",
+      "Now estimate 21 times 404.",
+      "This time, round both factors: 21 rounds to 20, and 404 rounds to 400.",
+      "20 times 4 is 80, 20 times 40 is 800, and 20 times 400 is 8,000.",
+      "21 times 404 is about 8,000."
+    ]},
+
+    { title: "Patterns Work For Division Too", s: [
+      "You can use patterns to estimate quotients as well, but the first move is different.",
+      "Round the divisor to its greatest place-value position instead of the dividend.",
+      "Then replace the dividend with a nearby number you already know divides easily.",
+      "The first Mickey Mouse animated film, Steamboat Willie, came out in 1928.",
+      "Ub Iwerks drew all 14,400 pictures in the film in just 24 days.",
+      "About how many pictures did he draw per day?",
+      "We need to estimate 14,400 divided by 24.",
+      "Round 24 to 20, rounding the divisor to its greatest place value.",
+      "Round 14,400 to 14,000, since you already know 14 is divisible by 2.",
+      "Use the pattern to divide mentally.",
+      "14 divided by 2 is 7.",
+      "140 divided by 20 is 7.",
+      "1,400 divided by 20 is 70.",
+      "14,000 divided by 20 is 700.",
+      "Ub Iwerks drew about 700 pictures a day, which is a lot of pictures."
+    ]}
+  ],
+
+  words: [
+    ["Pattern", "A string of simple facts, like 3 times 5, 30 times 5, 300 times 5, that lets you multiply big rounded numbers in your head."],
+    ["Divisor", "The number you're dividing by. Round this one first when you estimate a quotient."],
+    ["Dividend", "The number being divided. Swap it for a nearby number that divides evenly once the divisor is rounded."],
+    ["Quotient", "The answer to a division problem, the thing a pattern helps you estimate quickly."]
+  ],
+
+  /* 38 story sentences; the finds below were verified against that count. */
+  findsAt: 38,
+  questions: [
+    { tag: "Multiplication",
+      q: "To estimate 29,000 times 5, what's the first move?",
+      find: [4, 7],
+      choices: [
+        "Round 29,000 to its greatest place value, 30,000.",
+        "Round 5 to the nearest ten.",
+        "Multiply the exact numbers first.",
+        "Round both numbers to the nearest hundred."
+      ], right: 0 },
+
+    { tag: "Multiplication",
+      q: "Once 29,000 is rounded to 30,000, how do you find 30,000 times 5?",
+      find: [9, 10, 11, 12, 13],
+      choices: [
+        "Start from 3 times 5 is 15, then add a zero each time the factor grows by ten.",
+        "Multiply 29,000 by 5 directly.",
+        "Guess based on how big the numbers look.",
+        "Round 5 up to 10 first."
+      ], right: 0 },
+
+    { tag: "One-Digit Factors",
+      q: "When you estimate 2,268 times 6, why does the 6 stay a 6 instead of getting rounded?",
+      find: [6],
+      choices: [
+        "A one-digit factor is left alone; only the bigger factor gets rounded.",
+        "Six can't be rounded to anything.",
+        "Rounding only works on numbers over 1,000.",
+        "The book rounds every factor except the first one."
+      ], right: 0 },
+
+    { tag: "Two Big Factors",
+      q: "21 times 404 is estimated by rounding both factors. What do they round to?",
+      find: [20],
+      choices: ["20 and 400.", "20 and 410.", "25 and 400.", "21 and 400."], right: 0 },
+
+    { tag: "Division",
+      q: "When you estimate a quotient, which number do you round first?",
+      find: [24],
+      choices: [
+        "The divisor, the number you're dividing by.",
+        "The dividend, the number being divided.",
+        "Whichever number is bigger.",
+        "Neither; you round only the answer."
+      ], right: 0 },
+
+    { tag: "Division",
+      q: "To estimate 14,400 divided by 24, the divisor 24 is rounded to 20. What happens to 14,400?",
+      find: [31],
+      choices: [
+        "It's swapped for 14,000, since 14 is easy to divide by 2.",
+        "It stays exactly 14,400.",
+        "It's rounded to 14,500.",
+        "It's divided by 20 with no change."
+      ], right: 0 },
+
+    { tag: "Steamboat Willie",
+      q: "Ub Iwerks drew 14,400 pictures in 24 days. About how many pictures a day is that?",
+      find: [36, 37],
+      choices: ["About 700.", "About 70.", "About 7,000.", "About 600."], right: 0 },
+
+    { tag: "Apply It",
+      q: "Estimate the quotient of 6,152 and 58.",
+      choices: ["About 100.", "About 10.", "About 1,000.", "About 60."], right: 0,
+      why: "58 rounds to 60, and 6,000 divides evenly by 60 to give 100." }
+  ],
+
+  vocabQuestions: [
+    { q: "A <i>pattern</i> like 3 &times; 5, 30 &times; 5, 300 &times; 5 is useful because...",
+      choices: ["It lets you multiply big rounded numbers in your head.", "It only works with even numbers."], right: 0 },
+    { q: "In a division problem, the <i>divisor</i> is...",
+      choices: ["The number you're dividing by.", "The answer to the division."], right: 0 },
+    { q: "The <i>dividend</i> is...",
+      choices: ["The number being divided.", "The number you divide by."], right: 0 },
+    { q: "The <i>quotient</i> is...",
+      choices: ["The answer to a division problem.", "The remainder left over."], right: 0 }
+  ],
+
+  todo: { title: "What To Do Now", s: [
+      "{Q} questions about the lesson, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "Before you answer, say the pattern out loud: the small fact first, then one more zero at a time.",
+      "On a division question, check which number you rounded first.",
+      "It should always be the divisor, not the dividend.",
+      "If a pattern question stumps you, write out the string of easy facts, like 3 times 5, 30 times 5, 300 times 5, until the rounded numbers show up."
+  ] }
+},
+
+{
+  id: "maths/determine-reasonable-answers",
+  slug: "determine-reasonable-answers",
+  title: "Problem-Solving Strategy: Determine Reasonable Answers",
+  unit: "Maths &middot; Chapter 1 &middot; Lesson 1-4",
+  seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 4 },
+  shelf: { grades: [7], subject: "Maths",
+    blurb: "A calculator can be wrong. Estimating first is how you catch it.",
+    contains: [
+      "Jordan's raise, checked against an estimate before trusting the calculator",
+      "Two calculator answers that turn out to check out, and one that doesn't",
+      "A grocery trip where rounding decides how much cash to bring",
+      "Twelve questions built to catch the same kind of mistake a calculator can't",
+    ] },
+  eyebrow: ["Maths", "Chapter 1 &middot; Lesson 1-4", "Tools for Problem Solving"],
+  dek: "A calculator gives you an answer instantly. It won't tell you if that answer is wrong.",
+
+  ground: {
+    sections: [
+      { h: "Lesson Goal", p: [
+        "Students will use estimation to decide whether a calculated answer is reasonable, catching the kind of mistake a calculator itself cannot catch."
+      ]},
+      { h: "Key Concepts", p: [
+        "Build a rough estimate the same way earlier lessons did, by rounding and using patterns, then compare it to the real answer. Close means reasonable; far off means something in the real calculation went wrong."
+      ]},
+      { h: "Where Students Get Stuck", p: [
+        "Jordan's problem is the trap: the calculation itself was set up wrong, since 12 times $0.35 does not equal $42.00, and only the estimate catches it, because the calculator will confidently repeat any mistake it's given."
+      ]},
+      { h: "Teaching Suggestion", p: [
+        "Type a wrong calculation into a calculator on purpose, in front of him, and have him estimate first to catch it before you reveal the calculator's answer."
+      ]},
+      { h: "Key Vocabulary", vocab: true }
+    ]
+  },
+
+  parts: [
+    { title: "A Raise That Doesn't Add Up", s: [
+      "Jordan earns $4.25 an hour working weekends as a waiter at The Sundae Shop.",
+      "After six months on the job, his manager gave him a $0.35 an hour raise.",
+      "Jordan used a calculator to figure out that if he works 12 hours a week, his weekly pay will increase by $42.00.",
+      "Is that answer reasonable?"
+    ]},
+
+    { title: "Why A Calculator Can Be Wrong", s: [
+      "A calculator is a fast, simple way to do the arithmetic.",
+      "But hitting the wrong key, entering a number wrong, or doing the steps in the wrong order can all cause an error.",
+      "The calculator has no way of knowing any of that happened.",
+      "Being able to tell whether an answer is reasonable is its own skill, separate from doing the math.",
+      "You can use estimation to check it.",
+      "If your estimate is close to the calculator's answer, the calculator's answer is probably right."
+    ]},
+
+    { title: "Checking Jordan's Raise", s: [
+      "Estimate the amount Jordan's raise should add to his pay each week.",
+      "Since you're finding a product, a pattern is the right way to estimate it.",
+      "Round 12 hours to 10.",
+      "Round $0.35 to $0.40.",
+      "10 times 4 is 40, so 10 times 0.4 is 4.",
+      "Jordan's raise should increase his pay by about $4 a week.",
+      "His calculator's answer of $42.00 is not reasonable."
+    ]},
+
+    { title: "A Division That Checks Out", s: [
+      "Simone divided 4,182 by 680 on her calculator and got 6.15.",
+      "Is that answer reasonable?",
+      "Round 680 to 700.",
+      "Round 4,182 to 4,200.",
+      "Look for a pattern: 42 divided by 7 is 6, 420 divided by 70 is 6, and 4,200 divided by 700 is 6.",
+      "Yes, 6.15 is a reasonable answer."
+    ]},
+
+    { title: "A Shopping Trip That Checks Out Too", s: [
+      "Maya bought a pair of sunglasses, two rolls of film, and a bottle of sunscreen for her vacation.",
+      "The sunglasses were $15.79, the film was $2.29 a roll, and the sunscreen was $3.69.",
+      "The cashier asked her for $24.06.",
+      "Is that total reasonable?",
+      "Round each price to the nearest dollar: $15.79 to $16, both rolls of film to $2 each, and $3.69 to $4.",
+      "$16 plus $2 plus $2 plus $4 is $24.",
+      "$24.06 is close to $24, so yes, the cashier's total is reasonable."
+    ]}
+  ],
+
+  words: [
+    ["Reasonable", "Close enough to your estimate that the answer is probably right, not a mistake."],
+    ["Estimate", "A quick, rounded answer used to test whether a real answer makes sense."],
+    ["Calculator Error", "A wrong answer caused by hitting the wrong key, entering a number wrong, or doing steps out of order, not by the calculator itself being wrong."],
+    ["Check", "Comparing a real answer against your estimate to catch a mistake before it goes any further."]
+  ],
+
+  /* 30 story sentences; the finds below were verified against that count. */
+  findsAt: 30,
+  questions: [
+    { tag: "The Raise",
+      q: "Jordan's calculator said his raise would add $42.00 a week. What does the estimate say?",
+      find: [14, 15],
+      choices: ["About $4 a week.", "About $40 a week.", "About $42 a week.", "About $400 a week."], right: 0 },
+
+    { tag: "The Raise",
+      q: "The estimate is about $4 and the calculator said $42.00. What should Jordan conclude?",
+      find: [16],
+      choices: [
+        "His calculator's answer is not reasonable.",
+        "His calculator's answer is reasonable.",
+        "The estimate must be wrong.",
+        "Both numbers are correct."
+      ], right: 0 },
+
+    { tag: "Why It Happens",
+      q: "The lesson gives three ways a calculator answer can go wrong. Which one is NOT one of them?",
+      find: [5],
+      choices: [
+        "The calculator's battery being low.",
+        "Hitting the wrong key.",
+        "Entering a number incorrectly.",
+        "Doing the steps in the wrong order."
+      ], right: 0 },
+
+    { tag: "The Rule",
+      q: "If your estimate and your calculator's answer are close, what does that tell you?",
+      find: [9],
+      choices: [
+        "The calculator's answer is probably right.",
+        "The calculator's answer is definitely exact.",
+        "You should redo the estimate.",
+        "Nothing, they're unrelated numbers."
+      ], right: 0 },
+
+    { tag: "Simone's Division",
+      q: "Simone's calculator gave 6.15 for 4,182 divided by 680. What estimate confirms it's reasonable?",
+      find: [19, 20, 21],
+      choices: [
+        "4,200 divided by 700 is about 6.",
+        "4,182 divided by 6 is about 700.",
+        "680 divided by 4,182 is about 6.",
+        "4,200 times 700 is about 6."
+      ], right: 0 },
+
+    { tag: "Maya's Shopping",
+      q: "Maya's total came to $24.06 for sunglasses, two rolls of film, and sunscreen. What's the rounded estimate?",
+      find: [27, 28],
+      choices: ["$24.", "$20.", "$28.", "$16."], right: 0 },
+
+    { tag: "Maya's Shopping",
+      q: "Since $24.06 is close to the $24 estimate, what can Maya conclude about the cashier's total?",
+      find: [29],
+      choices: [
+        "It's reasonable.",
+        "It's a mistake.",
+        "It needs to be recounted.",
+        "It's impossible to tell."
+      ], right: 0 },
+
+    { tag: "Apply It",
+      q: "You need to buy 3 cans of tuna fish at 69 cents each, a box of crackers at $1.99, and a gallon of milk at $2.19 for dinner tonight. Should you take $5.00 or $10.00 to the store?",
+      choices: [
+        "$10.00, since three cans alone are about $2, plus crackers and milk push it over $5.",
+        "$5.00, since the total rounds to about $4.",
+        "$5.00, since tuna is nearly free.",
+        "Neither, the total is under $1."
+      ], right: 0,
+      why: "3 cans at about 70 cents is about $2, plus about $2 for crackers and milk, comes to around $6, which is over $5." }
+  ],
+
+  vocabQuestions: [
+    { q: "An answer is <i>reasonable</i> when it's...",
+      choices: ["Close to your estimate.", "Written in pencil."], right: 0 },
+    { q: "An <i>estimate</i> is used to...",
+      choices: ["Test whether a real answer makes sense.", "Replace the real answer entirely."], right: 0 },
+    { q: "A <i>calculator error</i> is caused by...",
+      choices: ["A wrong key, a bad entry, or steps done out of order.", "The calculator's internal math being wrong."], right: 0 },
+    { q: "To <i>check</i> an answer means to...",
+      choices: ["Compare it against your estimate.", "Write it down twice."], right: 0 }
+  ],
+
+  todo: { title: "What To Do Now", s: [
+      "{Q} questions about the lesson, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "For each question, build the estimate first, the same way Jordan's raise and Simone's division were checked above.",
+      "If a calculator answer and your estimate don't agree, trust the estimate and look for where the calculation went wrong.",
+      "The tuna and crackers question at the end isn't a trick.",
+      "Round every price first, then decide which amount of money is actually enough."
+  ] }
+},
+
 
 {
   id: "english/kinds-of-sentences",
