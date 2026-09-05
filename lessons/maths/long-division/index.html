@@ -394,6 +394,73 @@ h2{
 .dbox.is-shut{padding:4px 16px}
 .dbox.is-shut .dbox-in{display:none}
 
+
+/* ---------- the worked problems ----------
+   🚨 THE ESTIMATE COMES FIRST AND THE PAGE ENFORCES IT.
+   Paul, 2026-09-05: "another problem we have today is the fact we can ask Google
+   how to do these things instead of us solving them on our own which is the
+   point of this lesson."
+   The book's own answer to that is on page 6: before it divides 810 by 5 it
+   rounds and brackets the answer between 100 and 200. Google hands you 162; it
+   does not hand you "I decided beforehand this had to land between 100 and 200",
+   and that bracket is the only thing that tells a student when an answer is
+   wrong. So Solve stays SHUT until an estimate is in, and the order of the four
+   steps is the lesson rather than a suggestion.
+   ⚠️ Nothing here prints a number the student is supposed to work out. Every
+   value he is asked for is an input. A printed answer turns the whole thing back
+   into a worked example he watches. */
+.work{border:1px solid var(--rule);border-radius:10px;margin:22px 0 0;overflow:hidden}
+.work-h{
+  margin:0;padding:12px 16px;background:var(--surface-2);
+  border-bottom:1px solid var(--rule);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--verdigris);
+}
+.work-ask{margin:0;padding:14px 16px 0;font-size:17px;line-height:1.55;color:var(--ink)}
+.work-given{margin:10px 16px 0;padding:0;list-style:none;display:grid;gap:4px}
+.work-given li{
+  font-size:14.5px;color:var(--ink-soft);
+  display:flex;gap:8px;flex-wrap:wrap;
+}
+.work-given b{color:var(--ink);font-weight:600}
+/* one row per step, dimmed and inert until the step before it is done */
+.wstep{padding:14px 16px;border-top:1px solid var(--rule)}
+.wstep.is-locked{opacity:.42}
+.wstep-h{
+  margin:0 0 6px;font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+  color:var(--ink-faint);
+}
+.wstep.is-open .wstep-h{color:var(--verdigris)}
+.wstep p{margin:0 0 8px;font-size:15px;line-height:1.55;color:var(--ink-soft)}
+.wrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:17px;color:var(--ink)}
+.wbox{
+  font:inherit;font-size:17px;width:7.5ch;text-align:center;
+  padding:7px 6px;border-radius:6px;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink);
+  /* the spinner reserves space on the right and pushes the digits off centre */
+  appearance:textfield;-moz-appearance:textfield;
+}
+.wbox::-webkit-outer-spin-button,.wbox::-webkit-inner-spin-button{appearance:none;margin:0}
+.wbox:focus-visible{outline:2px solid var(--verdigris);outline-offset:1px}
+.wbox.is-right{border-color:#1c7a4a;background:rgba(28,122,74,.12)}
+.wbox.is-wrong{border-color:#a3312b;background:rgba(163,49,43,.12)}
+.wbox:disabled{cursor:not-allowed}
+.wnote{margin:8px 0 0;font-size:14px;line-height:1.5;color:var(--ink-soft);display:none}
+.wnote.show{display:block}
+.wnote.good{color:#1c7a4a}
+.wunit{color:var(--ink-soft);font-size:15px}
+:root:not([data-theme="light"]) .wbox.is-right{border-color:#3f9d6d}
+:root:not([data-theme="light"]) .wnote.good{color:#7fc9a1}
+:root[data-theme="dark"] .wbox.is-right{border-color:#3f9d6d}
+:root[data-theme="dark"] .wnote.good{color:#7fc9a1}
+@media (max-width:560px){
+  .work-ask{font-size:16px}
+  .wrow{font-size:16px}
+  .wbox{font-size:16px;width:6.5ch}
+}
+
 /* ---------- the compare box ----------
    A silent, visual side-by-side for the place in a lesson where two things look
    identical and are not. Paul asked for it on Kinds of Sentences: "it needs more
@@ -1423,6 +1490,9 @@ new MutationObserver(applyTheme).observe(document.documentElement, { attributes:
    value can never reach a student. */
 var VISUALS = [];
 
+/* The worked problems, or []. build-lessons.js rewrites this ONE line. */
+var WORK = [];
+
 
 /* ---------- build the story ---------- */
 /* 🚨 WHICH PARAGRAPH EACH SENTENCE IS IN. The explainer blanks the moment the
@@ -2304,6 +2374,184 @@ function stopFollowing(){
      the offer is cheap and only appears while a voice is actually reading */
   chip(true);
 }
+/* ── THE WORKED PROBLEMS ───────────────────────────────────────────────────
+   Glencoe's four steps, with the student typing every number.
+   🚨 EXPLORE -> ESTIMATE -> SOLVE -> EXAMINE, AND THE ORDER IS ENFORCED. Solve
+   is disabled until the estimate is in, and Examine until Solve is right. The
+   book brackets 810 ÷ 5 between 100 and 200 BEFORE it divides, and that bracket
+   is the whole defence against an answer you cannot sanity-check - see the CSS
+   note above for why that matters more now than it did in 1998.
+   ⚠️ A wrong answer is never replaced with the right one. It says so and lets
+   him go again: this lesson is about trying a plan, noticing it failed, and
+   picking another, which is question 3 on the book's own page. */
+var WORKED = document.getElementById("worked");
+
+function wnum(v){
+  /* commas are how a 12-year-old writes 1,000 and it is not a mistake */
+  var n = parseFloat(String(v).replace(/[, ]/g, ""));
+  return isNaN(n) ? null : n;
+}
+
+function wstep(host, key, label, intro){
+  var d = document.createElement("div");
+  d.className = "wstep is-locked";
+  d.setAttribute("data-step", key);
+  var h = document.createElement("p");
+  h.className = "wstep-h";
+  h.textContent = label;
+  d.appendChild(h);
+  if (intro){ var p = document.createElement("p"); p.textContent = intro; d.appendChild(p); }
+  host.appendChild(d);
+  return d;
+}
+
+function wbox(row, width){
+  var i = document.createElement("input");
+  i.className = "wbox";
+  i.type = "text";
+  i.inputMode = "decimal";
+  i.autocomplete = "off";
+  i.disabled = true;
+  if (width) i.style.width = width;
+  row.appendChild(i);
+  return i;
+}
+function wtext(row, t){
+  var s = document.createElement("span");
+  s.textContent = t;
+  row.appendChild(s);
+  return s;
+}
+function wnote(host){
+  var p = document.createElement("p");
+  p.className = "wnote";
+  host.appendChild(p);
+  return p;
+}
+function say(note, msg, good){
+  note.textContent = msg;
+  note.className = "wnote show" + (good ? " good" : "");
+}
+
+/* close enough: the book's own answer to 1,000 ÷ 65 is not a round number, so a
+   tolerance is the honest way to mark it rather than demanding 15.384615 */
+function near(a, b, tol){ return Math.abs(a - b) <= (tol == null ? 0.01 : tol); }
+
+function openStep(d){ d.classList.remove("is-locked"); d.classList.add("is-open");
+  d.querySelectorAll(".wbox").forEach(function(b){ b.disabled = false; }); }
+
+function buildWork(){
+  if (!WORK || !WORK.length || !WORKED) return;
+  WORKED.hidden = false;
+
+  WORK.forEach(function(W, wi){
+    var box = document.createElement("div");
+    box.className = "work";
+
+    var h = document.createElement("p");
+    h.className = "work-h";
+    h.textContent = "Problem " + (wi + 1) + " \u00b7 " + W.title;
+    box.appendChild(h);
+
+    var ask = document.createElement("p");
+    ask.className = "work-ask";
+    ask.textContent = W.ask;
+    box.appendChild(ask);
+
+    /* EXPLORE - what you were given. Printed, because the book prints it too:
+       explore is about noticing which of these you actually need. */
+    var ul = document.createElement("ul");
+    ul.className = "work-given";
+    (W.given || []).forEach(function(g){
+      var li = document.createElement("li");
+      var b = document.createElement("b"); b.textContent = g[0] + ":";
+      li.appendChild(b);
+      li.appendChild(document.createTextNode(" " + g[1]));
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+
+    /* PLAN + ESTIMATE */
+    var est = wstep(box, "estimate", "Plan \u00b7 Estimate first", W.estimate.intro);
+    var erow = document.createElement("div"); erow.className = "wrow";
+    wtext(erow, "Between");
+    var lo = wbox(erow);
+    wtext(erow, "and");
+    var hi = wbox(erow);
+    if (W.estimate.unit) { var u = wtext(erow, W.estimate.unit); u.className = "wunit"; }
+    est.appendChild(erow);
+    var enote = wnote(est);
+
+    /* SOLVE */
+    var sol = wstep(box, "solve", "Solve", W.solve.intro);
+    var srow = document.createElement("div"); srow.className = "wrow";
+    wtext(srow, W.solve.expr + "  =");
+    var sBox = wbox(srow);
+    if (W.solve.unit) { var u2 = wtext(srow, W.solve.unit); u2.className = "wunit"; }
+    sol.appendChild(srow);
+    var snote = wnote(sol);
+
+    /* EXAMINE */
+    var exa = wstep(box, "examine", "Examine \u00b7 Check it", W.examine.intro);
+    var xrow = document.createElement("div"); xrow.className = "wrow";
+    wtext(xrow, W.examine.expr + "  =");
+    var xBox = wbox(xrow);
+    if (W.examine.unit) { var u3 = wtext(xrow, W.examine.unit); u3.className = "wunit"; }
+    exa.appendChild(xrow);
+    var xnote = wnote(exa);
+
+    openStep(est);
+
+    function checkEstimate(){
+      var a = wnum(lo.value), b = wnum(hi.value);
+      if (a === null || b === null) return;
+      var okLo = near(a, W.estimate.lo, W.estimate.tol);
+      var okHi = near(b, W.estimate.hi, W.estimate.tol);
+      lo.classList.toggle("is-right", okLo); lo.classList.toggle("is-wrong", !okLo);
+      hi.classList.toggle("is-right", okHi); hi.classList.toggle("is-wrong", !okHi);
+      if (okLo && okHi){
+        say(enote, W.estimate.why, true);
+        openStep(sol);
+      } else {
+        say(enote, W.estimate.hint || "Round the numbers to something easy and divide those instead.");
+      }
+    }
+    function checkSolve(){
+      var v = wnum(sBox.value);
+      if (v === null) return;
+      var ok = near(v, W.solve.answer, W.solve.tol);
+      sBox.classList.toggle("is-right", ok); sBox.classList.toggle("is-wrong", !ok);
+      if (ok){
+        /* 🚨 The point of the estimate is only made HERE, by saying the answer
+           landed inside the bracket he chose before he had it. */
+        say(snote, W.solve.why, true);
+        openStep(exa);
+      } else {
+        say(snote, W.solve.hint || "Not yet. Try the plan again, and check it against your estimate.");
+      }
+    }
+    function checkExamine(){
+      var v = wnum(xBox.value);
+      if (v === null) return;
+      var ok = near(v, W.examine.answer, W.examine.tol);
+      xBox.classList.toggle("is-right", ok); xBox.classList.toggle("is-wrong", !ok);
+      say(xnote, ok ? W.examine.why : (W.examine.hint || "Work it back the other way and see if you land where you started."), ok);
+    }
+
+    [[lo, checkEstimate], [hi, checkEstimate], [sBox, checkSolve], [xBox, checkExamine]]
+      .forEach(function(pair){
+        /* `change` alone is not enough - Android number fields often do not fire
+           it until the box loses focus, the same trap the reading log hit. */
+        pair[0].addEventListener("change", pair[1]);
+        pair[0].addEventListener("blur", pair[1]);
+        pair[0].addEventListener("keydown", function(e){ if (e.key === "Enter") pair[1](); });
+      });
+
+    WORKED.appendChild(box);
+  });
+}
+buildWork();
+
 /* ── THE EXPLAINER ────────────────────────────────────────────────────────
    Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
    to you ... just like how you explained with the math problem", and what it is

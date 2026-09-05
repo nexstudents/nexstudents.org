@@ -34,6 +34,41 @@ const TPL = process.argv[3];
 if (!ROOT || !TPL) { console.error("usage: build-lessons.js <site root> <template html>"); process.exit(1); }
 const template = fs.readFileSync(TPL, "utf8");
 
+/* 🚨 NO TWO GENERATORS MAY CLAIM THE SAME LESSON FOLDER.
+   Every generator writes to lessons/<subject>/<slug>/, and the subject comes from
+   the id prefix - so a `maths/...` id in lessons.js lands in exactly the folder
+   build-math.js or build-integers.js writes. Whichever runs LAST wins, silently,
+   and the loser's page is simply gone with no error anywhere.
+   CLAUDE.md carried a blanket "keep maths OUT of lessons.js" because of this. That
+   rule was really protecting against the collision, not against the subject: a
+   maths lesson that is genuinely a reading-and-reasoning lesson (Glencoe 1-1 is
+   the four-step problem-solving method) belongs on this generator, and the ones
+   that are a division bracket belong on build-math.js. So the collision is
+   checked directly instead, and the two shapes can live side by side. */
+(function noSlugCollisions() {
+  const claimed = {};
+  const add = (file, list) => (list || []).forEach((x) => {
+    const id = x && (x.id || x.slug);
+    if (!id) return;
+    (claimed[id] = claimed[id] || []).push(file);
+  });
+  const load = (mod) => { try { return require(mod); } catch (e) { return null; } };
+  const pick = (m) => (m ? (m.LESSONS || Object.values(m).find(Array.isArray)) : null);
+
+  add("lessons.js", LESSONS);
+  add("math-lessons.js", pick(load("./math-lessons.js")));
+  add("integers-lessons.js", pick(load("./integers-lessons.js")));
+
+  const clash = Object.keys(claimed).filter((id) => claimed[id].length > 1);
+  if (clash.length) {
+    console.error("FAIL: two generators claim the same lesson folder, and the second one\n" +
+      "      to run would overwrite the first with no error:\n");
+    clash.forEach((id) => console.error("  lessons/" + id + "/   claimed by " + claimed[id].join(" and ")));
+    console.error("\n      Rename one, or move the lesson so a single generator owns it.");
+    process.exit(1);
+  }
+})();
+
 /* Labels for the back link. K has no ordinal, so it gets its own word. */
 const ORDINAL = { 0: "Kindergarten", 1: "1st", 2: "2nd", 3: "3rd", 4: "4th",
                   5: "5th", 6: "6th", 7: "7th", 8: "8th" };
@@ -500,6 +535,104 @@ function visualsLiteral(V) {
   ).join(",\n") + "\n]";
 }
 
+/* 🚨 A WORKED PROBLEM MUST BE ARITHMETICALLY TRUE, AND THE BUILD CHECKS IT.
+   `work` carries the four Glencoe steps with every number typed by the student.
+   The answers are written in the lesson, so they can be wrong - and a maths
+   lesson that marks a correct answer wrong is worse than no lesson. So the build
+   evaluates each expression and compares it to the answer beside it.
+   🚨 IT ALSO CHECKS THE ESTIMATE ACTUALLY BRACKETS THE ANSWER. That is the whole
+   mechanic: the student commits to a range before he computes. A range that does
+   not contain the answer teaches him to distrust his own estimate, which is the
+   exact opposite of the lesson. */
+function requireWork(L) {
+  const W = L.work;
+  if (!W) return;
+  if (!Array.isArray(W) || !W.length) {
+    console.error("FAIL: " + L.id + ": `work` is present but empty"); process.exit(1);
+  }
+  /* Only the four operators the book uses here, and only on plain numbers -
+     this is a checker, not an expression language. */
+  const evalExpr = (raw) => {
+    const t = String(raw).replace(/[,\s]/g, "")
+      .replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
+    if (!/^-?\d+(\.\d+)?[+\-*/]-?\d+(\.\d+)?$/.test(t)) return null;
+    const m = /^(-?\d+(?:\.\d+)?)([+\-*/])(-?\d+(?:\.\d+)?)$/.exec(t);
+    const a = parseFloat(m[1]), b = parseFloat(m[3]);
+    return m[2] === "+" ? a + b : m[2] === "-" ? a - b : m[2] === "*" ? a * b : a / b;
+  };
+
+  W.forEach((w, i) => {
+    const at = L.id + ": work[" + i + "]";
+    ["title", "ask", "estimate", "solve", "examine"].forEach((k) => {
+      if (!w[k]) { console.error("FAIL: " + at + " has no `" + k + "`"); process.exit(1); }
+    });
+    if (!Array.isArray(w.given) || !w.given.length) {
+      console.error("FAIL: " + at + " has no `given`. Explore is the step where a student\n" +
+        "      decides which numbers matter; with nothing listed there is nothing to decide.");
+      process.exit(1);
+    }
+    ["solve", "examine"].forEach((k) => {
+      const s = w[k];
+      if (!s.expr || typeof s.answer !== "number" || !s.why) {
+        console.error("FAIL: " + at + "." + k + " needs `expr`, a numeric `answer` and a `why`");
+        process.exit(1);
+      }
+      const got = evalExpr(s.expr);
+      if (got === null) {
+        console.error("FAIL: " + at + "." + k + ': cannot check "' + s.expr + '".\n' +
+          "      Write it as one operation on two plain numbers, e.g. 1000 ÷ 65.");
+        process.exit(1);
+      }
+      const tol = s.tol == null ? 0.01 : s.tol;
+      if (Math.abs(got - s.answer) > tol) {
+        console.error("FAIL: " + at + "." + k + " does not add up.\n" +
+          "        " + s.expr + " = " + got + "\n" +
+          "        but the lesson says " + s.answer + " (tolerance " + tol + ")");
+        process.exit(1);
+      }
+    });
+    const e = w.estimate;
+    if (typeof e.lo !== "number" || typeof e.hi !== "number" || !e.why) {
+      console.error("FAIL: " + at + ".estimate needs numeric `lo` and `hi` and a `why`");
+      process.exit(1);
+    }
+    if (e.lo >= e.hi) {
+      console.error("FAIL: " + at + ".estimate: lo (" + e.lo + ") is not below hi (" + e.hi + ")");
+      process.exit(1);
+    }
+    if (w.solve.answer < e.lo || w.solve.answer > e.hi) {
+      console.error("FAIL: " + at + ": the estimate does not contain the answer.\n" +
+        "        estimate " + e.lo + " to " + e.hi + ", answer " + w.solve.answer + "\n" +
+        "      The whole mechanic is committing to a range BEFORE computing. A range\n" +
+        "      that misses teaches the student to distrust his own estimate.");
+      process.exit(1);
+    }
+  });
+}
+
+function workLiteral(W) {
+  if (!W || !W.length) return "[]";
+  const step = (s) =>
+    '{ expr: "' + esc(s.expr) + '", answer: ' + s.answer +
+    (s.tol != null ? ", tol: " + s.tol : "") +
+    (s.unit ? ', unit: "' + esc(s.unit) + '"' : "") +
+    (s.intro ? ', intro: "' + esc(s.intro) + '"' : "") +
+    (s.hint ? ', hint: "' + esc(s.hint) + '"' : "") +
+    ', why: "' + esc(s.why) + '" }';
+  return "[\n" + W.map((w) =>
+    '  { title: "' + esc(w.title) + '", ask: "' + esc(w.ask) + '",\n' +
+    "    given: [" + w.given.map((g) => '["' + esc(g[0]) + '", "' + esc(g[1]) + '"]').join(", ") + "],\n" +
+    "    estimate: { lo: " + w.estimate.lo + ", hi: " + w.estimate.hi +
+      (w.estimate.tol != null ? ", tol: " + w.estimate.tol : "") +
+      (w.estimate.unit ? ', unit: "' + esc(w.estimate.unit) + '"' : "") +
+      (w.estimate.intro ? ', intro: "' + esc(w.estimate.intro) + '"' : "") +
+      (w.estimate.hint ? ', hint: "' + esc(w.estimate.hint) + '"' : "") +
+      ', why: "' + esc(w.estimate.why) + '" },\n' +
+    "    solve: " + step(w.solve) + ",\n" +
+    "    examine: " + step(w.examine) + " }"
+  ).join(",\n") + "\n]";
+}
+
 function groundMarkup(L) {
   const g = L.ground;
   if (!g) return "";
@@ -543,6 +676,8 @@ function serialise(L) {
   requireGround(L);
   requireBoxes(L);
   requireVisuals(L);
+  requireWork(L);
+  const work = "var WORK = " + workLiteral(L.work) + ";";
   const visuals = "var VISUALS = " + visualsLiteral(L.visuals) + ";";
   const parts = "var PARTS = [\n" + partsFor(L).map((p) =>
     '  { title: "' + esc(p.title) + '", s: ' + jsArr(p.s) +
@@ -567,7 +702,7 @@ function serialise(L) {
     "    choices: " + jsArr(q.choices) + ",\n" +
     "    right: " + q.right + "\n  }").join(",\n") + "\n];";
 
-  return { parts, words, questions, qs, visuals };
+  return { parts, words, questions, qs, visuals, work };
 }
 
 function swapBlock(html, startMarker, endLine, replacement) {
@@ -588,6 +723,7 @@ for (const L of LESSONS) {
      literal it writes contains newlines and a "]" of its own, so a block swap
      hunting for the next "\n];" would stop in the wrong place. */
   h = replaceLine(h, "var VISUALS = ", S.visuals, L.slug);
+  h = replaceLine(h, "var WORK = ", S.work, L.slug);
   h = swapBlock(h, "var WORDS = [", "\n];", S.words);
   h = swapBlock(h, "var QUESTIONS = [", "\n];", S.questions);
 
