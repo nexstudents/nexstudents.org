@@ -23,8 +23,22 @@
   border-bottom:1px solid transparent;transition:border-color .3s}
 .ns-nav.stuck{border-bottom-color:var(--nv-line)}
 .ns-nav a{text-decoration:none}
-.nv{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:22px}
-.nv .word{font-weight:800;font-size:19px;letter-spacing:-.03em;color:var(--nv-dim)}
+/* 🚨 THESE THREE NUMBERS MUST EQUAL ns.css. Paul, 2026-09-04: "the entire header
+   icons look shifted too the left too far including the home button."
+   They were 20px/22px here and 28px/26px there, so the home button on a lesson
+   started 8px left of the home button on every other page and the row was 16px
+   wider. Nothing looked broken on either page alone; it only showed up moving
+   between them. */
+.nv{max-width:1180px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:26px}
+/* 🚨 THE WHOLE WORDMARK IS ONE COLOUR. Paul, 2026-09-04: "the NexStudents name
+   is the wrong text color. you have the NEX part Greay and the Students part
+   White."
+   Exactly right, and it was this rule: --nv-dim on .word with --nv-fg only on
+   the <b>, so "Nex" came out grey and "Students" white. ns.css never dimmed it -
+   there .word inherits --fg and .word b repeats --fg, so both halves match. The
+   <b> stays in the markup because it is the brand's own capitalisation, not a
+   styling hook. */
+.nv .word{font-weight:800;font-size:19px;letter-spacing:-.03em;color:var(--nv-fg)}
 .nv .word b{color:var(--nv-fg)}
 .nv .tabs{display:flex;gap:20px}
 .nv .tabs a{font-size:14px;font-weight:500;color:var(--nv-dim);transition:color .18s}
@@ -412,7 +426,15 @@ html{-webkit-tap-highlight-color:transparent}
 .nv .word{overflow:visible;white-space:nowrap}
 .nv .word img{height:40px;width:40px;flex:none}
 
-.navicons{display:flex;align-items:center;gap:2px;flex:none}
+/* 🚨 THE ICONS SIT AT THE FAR RIGHT. Paul, 2026-09-04: "the login and cart icon
+   are not on the far right".
+   .nv is a flex row and every item packed left, so account and cart ended 277px
+   short of the nav's own right edge while the page content below them ran the
+   full width - which reads as the whole header being shoved left.
+   ⚠️ margin-left:auto had only ever been on .nv .btn, and Support Us is not
+   rendered in the top nav, so nothing was pushing anything. On the phone the
+   grid takes over and justify-self:end does this job instead. */
+.navicons{display:flex;align-items:center;gap:2px;flex:none;margin-left:auto}
 .navicon{background:none;border:0;padding:8px;cursor:pointer;line-height:0;
   color:var(--nv-dim);border-radius:var(--pill,999px);
   display:inline-grid;place-items:center;transition:color .18s,background .18s}

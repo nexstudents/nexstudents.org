@@ -156,7 +156,13 @@ nav{position:sticky;top:0;z-index:60;background:var(--nav-bg);backdrop-filter:bl
   border-bottom:1px solid transparent;transition:border-color .3s}
 nav.stuck{border-bottom-color:var(--line)}
 .nv{max-width:1180px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:26px}
-.word{font-weight:800;font-size:19px;letter-spacing:-.03em}
+/* 🚨 BOTH HALVES, EXPLICITLY. The container used to inherit while the <b> was
+   painted --fg. They resolve to the same colour in the nav and in the footer
+   today, so nothing looked wrong - but "one half painted, one half inherited"
+   is precisely the state lesson-nav.css was in when it rendered "Nex" grey and
+   "Students" white. Saying it once here means the wordmark cannot come apart
+   the next time something above it changes colour. */
+.word{font-weight:800;font-size:19px;letter-spacing:-.03em;color:var(--fg)}
 .word b{color:var(--fg)}
 .tabs{display:flex;gap:20px}
 .tabs a{font-size:14px;font-weight:500;color:var(--dim);transition:color .18s}
@@ -1214,7 +1220,15 @@ html{-webkit-tap-highlight-color:transparent}
 .nv .word{overflow:visible;white-space:nowrap}
 .nv .word img{height:40px;width:40px;flex:none}
 
-.navicons{display:flex;align-items:center;gap:2px;flex:none}
+/* 🚨 THE ICONS SIT AT THE FAR RIGHT. Paul, 2026-09-04: "the login and cart icon
+   are not on the far right".
+   .nv is a flex row and every item packed left, so account and cart ended 277px
+   short of the nav's own right edge while the page content below them ran the
+   full width - which reads as the whole header being shoved left.
+   ⚠️ margin-left:auto had only ever been on .nv .btn, and Support Us is not
+   rendered in the top nav, so nothing was pushing anything. On the phone the
+   grid takes over and justify-self:end does this job instead. */
+.navicons{display:flex;align-items:center;gap:2px;flex:none;margin-left:auto}
 .navicon{background:none;border:0;padding:8px;cursor:pointer;line-height:0;
   color:var(--dim);border-radius:var(--pill,999px);
   display:inline-grid;place-items:center;transition:color .18s,background .18s}
