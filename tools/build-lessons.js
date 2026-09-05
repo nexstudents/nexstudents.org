@@ -27,7 +27,7 @@ const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./n
 /* 🚨 partsFor() prepends the shared "how to use this page" and appends the
    lesson's OWN closing instructions. bake-voice.js calls the same function, so
    the audio cannot read something the page does not show. */
-const { partsFor, requireTodo } = require("./lesson-instructions.js");
+const { partsFor, requireTodo, checkTodoCounts } = require("./lesson-instructions.js");
 
 const ROOT = process.argv[2];
 const TPL = process.argv[3];
@@ -538,6 +538,7 @@ function groundMarkup(L) {
 
 function serialise(L) {
   requireTodo(L, L.id);
+  checkTodoCounts(L, L.id);
   checkFinds(L);
   requireGround(L);
   requireBoxes(L);

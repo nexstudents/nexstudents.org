@@ -53,9 +53,87 @@ function requireTodo(L, where) {
   });
 }
 
-/* The finished reading order: the lesson, then the job. Nothing before it. */
-function partsFor(L) {
-  return (L.parts || []).concat([L.todo]);
+/* 🚨 THE COUNTS IN A TODO ARE DERIVED, NEVER TYPED.
+   Paul, 2026-09-04: "in the story you said to answer the 10 questions below but
+   its more than that its actually 14 questions and four vocab."
+   Every count the PAGE renders was already derived - the progress label, the
+   day-one note, the teacher score - and the todo was the last place a number was
+   still written out by hand. So it was the only one that could be wrong, and it
+   was: it named the ten story questions and the four word cards separately and
+   never said the fourteen the student actually has to answer.
+   build-math.js already had this rule ("do all five" becomes a lie the day that
+   number changes, and the student stops when the voice says to stop). This is
+   the same rule for reading lessons.
+
+     {q}  questions about the story        {v}  word cards        {t}  both
+     {Q} {V} {T}  the same, capitalised, for the start of a sentence
+
+   🚨 SUBSTITUTED HERE, INSIDE partsFor(), so the page and bake-voice.js get the
+   same filled text. Filling them in build-lessons.js instead would leave the
+   audio reading the literal "{q}". */
+const NUMWORD = ["zero", "one", "two", "three", "four", "five", "six", "seven",
+                 "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
+                 "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"];
+const numWord = (n) => (n <= 20 ? NUMWORD[n] : String(n));
+const cap1 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* 🚨 IT COUNTS WHAT THE PAGE WILL SHOW, NOT WHAT THE SOURCE LISTS.
+   `L.questions` is Day One only. The Day Two word-card checks come from
+   `vocabQuestions` when the lesson writes them by hand, and are GENERATED one
+   per word card when it does not - see buildQuestions() in build-lessons.js.
+   Reading L.questions alone reported 4 for the two Rome lessons, which have
+   four story questions and four generated card checks: it would have told a
+   student the job was half its real size, which is the exact failure this whole
+   change exists to stop. */
+function todoCounts(L) {
+  const q = (L.questions || []).length;
+  const v = (L.vocabQuestions || []).length || (L.words || []).length;
+  return { q: q, v: v, t: q + v };
 }
 
-module.exports = { requireTodo, partsFor };
+function fillCounts(text, c) {
+  return String(text)
+    .replace(/\{q\}/g, numWord(c.q)).replace(/\{Q\}/g, cap1(numWord(c.q)))
+    .replace(/\{v\}/g, numWord(c.v)).replace(/\{V\}/g, cap1(numWord(c.v)))
+    .replace(/\{t\}/g, numWord(c.t)).replace(/\{T\}/g, cap1(numWord(c.t)));
+}
+
+/* 🚨 A NUMBER TYPED IN FRONT OF "questions" OR "cards" FAILS THE BUILD.
+   Deliberately narrow. A todo may well say "read it two times" and that is not
+   a count of anything the builder knows about, so a blanket ban on numbers
+   would be wrong. What cannot be typed is the one thing that goes stale: how
+   many questions or cards there are. Use the token. */
+function checkTodoCounts(L, where) {
+  const N = "(?:\\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|" +
+            "thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)";
+  /* "N words from ..." is the third shape the two Rome todos used for the same
+     count. Kept specific rather than banning "N words" outright: a lesson may
+     fairly say "two words mean the same thing", which counts nothing. */
+  const bad = new RegExp(
+    "\\b" + N + "\\s+(?:more\\s+)?(?:questions?|word cards?|cards?)\\b" +
+    "|\\b" + N + "\\s+words\\s+from\\b", "i");
+  (L.todo && L.todo.s ? L.todo.s : []).forEach((line, i) => {
+    const m = bad.exec(String(line));
+    if (m) {
+      console.error("FAIL: " + where + ": todo line " + i + ' types the count "' + m[0] + '".\n' +
+        "      Counts are derived. Use {q} questions, {v} word cards, or {t} for both,\n" +
+        "      so the instruction cannot disagree with the lesson it is attached to.\n" +
+        "        " + line);
+      process.exit(1);
+    }
+  });
+}
+
+/* The finished reading order: the lesson, then the job. Nothing before it. */
+function partsFor(L) {
+  const t = L.todo;
+  if (!t) return (L.parts || []).slice();
+  const c = todoCounts(L);
+  /* A COPY. The lesson object is shared across generators and bake-voice, and
+     filling the tokens in place would leave the second caller with nothing left
+     to substitute - which still works, but only by accident. */
+  const filled = { title: t.title, s: (t.s || []).map((line) => fillCounts(line, c)) };
+  return (L.parts || []).concat([filled]);
+}
+
+module.exports = { requireTodo, partsFor, checkTodoCounts };

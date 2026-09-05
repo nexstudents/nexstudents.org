@@ -84,8 +84,8 @@ const LESSONS = [
   ],
   todo: { title: "What To Do Now", s: [
       "That is the reading done. There are two things left, and both of them send you back into the story.",
-      "First the word cards. Four words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
-      "Then four questions. The answer to every one of them is somewhere in the text above, not in your memory.",
+      "First the word cards. {V} words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
+      "Then {q} questions. The answer to every one of them is somewhere in the text above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",
       "Finding the answer in the story is the skill this lesson is teaching. Getting it right from memory is not the same thing.",
       "The hardest question in this one is why nobody stopped it. Rome kept its Senate, its elections and its offices, so from the outside almost nothing looked different. Read The Quiet Takeover again before you answer it."
@@ -196,8 +196,8 @@ const LESSONS = [
   ],
   todo: { title: "What To Do Now", s: [
       "That is the reading done. There are two things left, and both of them send you back into the story.",
-      "First the word cards. Four words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
-      "Then four questions. The answer to every one of them is somewhere in the text above, not in your memory.",
+      "First the word cards. {V} words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
+      "Then {q} questions. The answer to every one of them is somewhere in the text above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",
       "Finding the answer in the story is the skill this lesson is teaching. Getting it right from memory is not the same thing.",
       "The one to slow down on is who counted as Roman. The answer changes across the lesson, because Rome kept widening it. Go back to Who Counted as Roman and read it from the start."
@@ -1710,10 +1710,15 @@ const LESSONS = [
      "that is the reading done... really?" He was right - it read like a manual
      narrating itself. This is mine, not his, so it was free to change. */
   todo: { title: "What To Do Now", s: [
-      "Answer the ten questions below.",
+      /* 🚨 {t} {q} {v} are DERIVED. Paul: "you said to answer the 10 questions
+         below but its more than that its actually 14 questions and four vocab."
+         It used to say "ten" and "four" in two separate lines and never gave the
+         total, so the student was told the job was ten. The count now comes from
+         the lesson. See checkTodoCounts() in lesson-instructions.js. */
+      "There are {t} answers to give: {q} questions about the story, then {v} word cards.",
       "For each sentence, decide what it is doing: telling, asking, commanding, or shouting.",
       "The mark on the end is a clue, not the answer.",
-      "Then work through the four word cards. Tap each card, then answer the question underneath it.",
+      "Do the word cards last. Tap each card, then answer the question underneath it.",
       "If you get stuck, go back to the section with that name and read its first line again."
   ] },
 }
