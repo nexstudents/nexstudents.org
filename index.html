@@ -44,7 +44,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=d732a925">
+<link rel="stylesheet" href="/assets/ns.css?v=c0585bbd">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -150,24 +150,28 @@
       <p class="kick">Free &middot; every grade &middot; no sign-up</p>
       <h2>Free worksheets and courses. Take as many as you like.</h2>
     </div>
-    <div class="arrows">
-      <button id="prev" aria-label="Previous">&#8249;</button>
-      <button id="next" aria-label="Next">&#8250;</button>
-    </div>
   </div>
 
-  <div class="filters rv" id="filters">
+  <!-- 🚨 THE ARROWS LIVE ON THE FILTER ROW, NOT UP IN `.shead`.
+       Paul, 2026-09-06: "how do we scroll where is the arrows to scroll around",
+       then "oh i see them they are really high". Measured: they sat 134px above the
+       first card, top-right beside a three-line heading, with two rows of filters
+       in between -- so the only scroll control on the shelf was nowhere near the
+       thing it scrolls. The GAMES rail keeps its arrows in `.shead` and is fine,
+       because its heading is short and it has no filter block underneath.
+       ⚠️ Do not "tidy" this back into `.shead` to match Games. -->
+  <div class="ctrls rv">
+  <div class="filters" id="filters">
   <!-- ns:filters -->
-    <button aria-pressed="true" data-f="all">Everything</button>
-    <button aria-pressed="false" data-f="free">Free</button>
-    <button aria-pressed="false" data-f="paid">Packets</button>
-    <button aria-pressed="false" data-f="english">English</button>
-    <button aria-pressed="false" data-f="history">History</button>
-    <button aria-pressed="false" data-f="maths">Maths</button>
-    <button aria-pressed="false" data-f="science">Science</button>
+    <div class="fgrp" role="group" aria-label="Show"><span class="flab">Show</span><button data-g="kind" data-f="all" aria-pressed="true">All</button><button data-g="kind" data-f="free" aria-pressed="false">Free</button><button data-g="kind" data-f="paid" aria-pressed="false">Packets</button></div>
+    <div class="fgrp" role="group" aria-label="Subject"><span class="flab">Subject</span><button data-g="subject" data-f="all" aria-pressed="true">All</button><button data-g="subject" data-f="english" aria-pressed="false">English</button><button data-g="subject" data-f="maths" aria-pressed="false">Maths</button><button data-g="subject" data-f="history" aria-pressed="false">History</button><button data-g="subject" data-f="science" aria-pressed="false">Science</button></div>
   <!-- /ns:filters -->
   </div>
+  </div>
 
+  <!-- Holds the rail AND the empty state at ONE fixed height, so switching filters
+       never moves the page. measureRail() sets its min-height. -->
+  <div class="railbox" id="railbox">
   <div class="rail rv d1" id="rail">
   <!-- ns:rail -->
     <a class="res" href="/worksheets/english/manuscript-alphabet/" data-kind="free" data-subject="english"><div class="thumb"><span class="badge free">Free</span><img src="/worksheets/english/manuscript-alphabet/thumb.jpg" alt="" loading="lazy" decoding="async"></div><div class="body"><h4>Manuscript Alphabet: Stroke Order and Direction</h4><p>All 52 letterforms with stroke-order arrows, then a faded copy of each to trace.</p><div class="meta"><span>Print or Download</span><b>Free</b></div></div></a>
@@ -183,40 +187,62 @@
     <a class="res" href="/worksheets/history/us-history-semester-1/" data-kind="paid" data-subject="history"><div class="thumb"><span class="badge paid">Packet</span><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="" loading="lazy" decoding="async"></div><div class="body"><h4>Complete Units 1-5: 8th Grade US History Bundle</h4><p>Semester 1 in one download. Five units, fifteen worksheets, every answer key.</p><div class="meta"><span>Print or Download</span><b>$14</b></div></div></a>
   <!-- /ns:rail -->
   </div>
+  <!-- Filled and shown by applyFilters(). OUTSIDE the ns:rail markers on purpose:
+       build-pages.js replaces everything between them on every build. -->
+  <p class="railempty" id="railempty" hidden></p>
+  </div>
+
+  <!-- 🚨 THE LTTSTORE SHELF FOOTER: a long thin track on the left, the two round
+       arrows on the right, BELOW the rail. Read off their product carousel on
+       2026-09-06 at Paul's request. The technique, not their code -- same rule the
+       mega menu was built under.
+       The arrows were in `.shead` (134px above the cards), then briefly on the
+       filter row; below the rail is both closer to the cards AND what LTT does.
+       ⚠️ The track's filled part is OURS. Theirs read as a plain rule. It costs
+       nothing, and on a rail of 11 cards showing 4 it answers "how much is left",
+       which an arrow alone does not. Say so before "matching" it back. -->
+  <div class="railfoot" id="railfoot">
+    <div class="railtrack" id="railtrack" aria-hidden="true"><span></span></div>
+    <div class="arrows">
+      <button id="prev" aria-label="Scroll worksheets left">&#8249;</button>
+      <button id="next" aria-label="Scroll worksheets right">&#8250;</button>
+    </div>
+  </div>
 </div></div>
 
-<!-- ═══ 4. SUBJECTS ═══ -->
-<div class="subs">
-  <a class="sub-t is-live" href="/english/"><n>01 <i>Live</i></n><div><h3>English</h3>
-    <p>Spelling, book reports, comprehension and reading lists worth actually reading.</p></div></a>
-  <a class="sub-t is-live" href="/history/"><n>02 <i>Live</i></n><div><h3>History</h3>
-    <p>Rome to the Reformation on screen, with American history on the worksheet shelf.</p></div></a>
-  <a class="sub-t is-live" href="/maths/"><n>03 <i>Live</i></n><div><h3>Maths</h3>
-    <p>Practice that teaches, without punishing a student for getting things wrong.</p></div></a>
-  <a class="sub-t is-live" href="/science/"><n>04 <i>Live</i></n><div><h3>Science</h3>
-    <p>Life science read on screen, with the origin question handled side by side rather than skipped.</p></div></a>
-</div>
+<!-- ═══ 4. SUBJECTS — REMOVED 2026-09-06 ═══
+     Was four portrait tiles: 01 English, 02 History, 03 Maths, 04 Science.
+     Paul: "since we have the worksheets we dont need that section" — the shelf
+     above now has a Subject selector doing the same job with real cards.
+     🚨 Its generator in build-pages.js went WITH it. That splice had a hard
+     `FAIL: home subject tiles not found` guard, so deleting this markup alone
+     would have broken every build. If you re-add the block, re-add the splice. -->
 
 <!-- ═══ 5. GAMES ═══ -->
 <div class="band" id="games"><div class="wrap">
   <div class="shead rv">
     <div><p class="kick">Play in the browser</p>
       <h2>Practice that does not feel like a worksheet.</h2></div>
-    <div class="arrows">
-      <button id="gprev" aria-label="Previous games">&#8249;</button>
-      <button id="gnext" aria-label="Next games">&#8250;</button>
-    </div>
   </div>
   <div class="rail rv d1" id="grail">
     <!-- ns:games -->
-    <a class="game" href="/games/show-me-the-states/"><div class="gart"><u>Play</u></div><div class="gbody"><em>History</em><h4>Show Me The States</h4><p>Drag all fifty states onto the map against the clock, then place the capitals. Warm and cold guides you, and the map colours in by region as you go.</p></div></a>
-    <a class="game" href="/games/speed-run-math/"><div class="gart"><u>Play</u></div><div class="gbody"><em>Maths</em><h4>Speed Run Math</h4><p>A timed multiplication drill. Pick the tables you want to work on, answer against the clock, and earn a rank from Recruit to Pilot.</p></div></a>
+    <a class="game" href="/games/show-me-the-states/"><div class="gart"><img src="/assets/games/show-me-the-states.jpg" alt="" loading="lazy" decoding="async"></div><div class="gbody"><em>History</em><h4>Show Me The States</h4><p>Drag all fifty states onto the map against the clock, then place the capitals. Warm and cold guides you, and the map colours in by region as you go.</p></div></a>
+    <a class="game" href="/games/speed-run-math/"><div class="gart"><img src="/assets/games/speed-run-math.jpg" alt="" loading="lazy" decoding="async"></div><div class="gbody"><em>Maths</em><h4>Speed Run Math</h4><p>A timed multiplication drill. Pick the tables you want to work on, answer against the clock, and earn a rank from Recruit to Pilot.</p></div></a>
     <a class="game" href="/games/remainder-race/"><div class="gart"><u>Soon</u></div><div class="gbody"><em>Maths</em><h4>Remainder Race</h4><p>Division where the leftover is the answer, not a mistake. Follows the Long Division lesson.</p></div></a>
     <a class="game" href="/games/fraction-match/"><div class="gart"><u>Soon</u></div><div class="gbody"><em>Maths</em><h4>Fraction Match</h4><p>Spot that 2/4, 3/6 and 1/2 are the same number wearing different clothes.</p></div></a>
     <a class="game" href="/games/spelling-ladder/"><div class="gart"><u>Soon</u></div><div class="gbody"><em>English</em><h4>Spelling Ladder</h4><p>Climb a word one letter at a time, drawn from the week's own spelling list.</p></div></a>
     <a class="game" href="/games/comma-catcher/"><div class="gart"><u>Soon</u></div><div class="gbody"><em>English</em><h4>Comma Catcher</h4><p>Fix the sentence that says the wrong thing, using one comma.</p></div></a>
     <a class="game" href="/games/sort-the-mixture/"><div class="gart"><u>Soon</u></div><div class="gbody"><em>Science</em><h4>Sort the Mixture</h4><p>Filter, evaporate or magnet. Pick wrong and watch nothing separate.</p></div></a>
     <!-- /ns:games -->
+  </div>
+  <!-- Same shelf footer as the worksheets rail, wired by the SAME wireRail() call.
+       These arrows had no script at all before 2026-09-06. -->
+  <div class="railfoot" id="gamefoot">
+    <div class="railtrack" id="gametrack" aria-hidden="true"><span></span></div>
+    <div class="arrows">
+      <button id="gprev" aria-label="Scroll games left">&#8249;</button>
+      <button id="gnext" aria-label="Scroll games right">&#8250;</button>
+    </div>
   </div>
 </div></div>
 
@@ -233,9 +259,22 @@
         <a class="btn ghost" href="/comics/">Read the first one</a>
       </div>
     </div>
-    <div class="strip3 rv d2">
-      <div class="pane">Donut Boy</div><div class="pane">The Hole Wonder</div><div class="pane">Episode 1</div>
-    </div>
+    <!-- 🚨 THE REAL COVER, NOT THREE EMPTY BOXES. `donut-boy-cover` has existed since
+         2026-08-01 and was already being used by the drawer and the mega menu promo
+         (nav.js:215), while the home page still drew three grey `.pane` squares
+         reading "Donut Boy / The Hole Wonder / Episode 1". Paul, 2026-09-06:
+         "show the cover phot of Donut Boy since you did that for the comics".
+         ⚠️ webp first with a jpg fallback, the same pair the comic reader uses --
+         see the SERIES notes in build-pages.js. Both files are on disk; do not point
+         this at an extension-less path, that convention is the READER's, not img's. -->
+    <a class="ccover rv d2" href="/comics/">
+      <picture>
+        <source srcset="/assets/comics/donut-boy-cover.webp" type="image/webp">
+        <img src="/assets/comics/donut-boy-cover.jpg"
+             alt="The Adventures of Donut Boy: The Hole Wonder, cover"
+             loading="lazy" decoding="async">
+      </picture>
+    </a>
   </div>
 </div></div>
 
@@ -258,17 +297,25 @@
       </ul>
       <a class="btn ghost" href="/placement-exam.html">Take the short exam</a>
     </div>
+    <!-- 🚨 $50 IS PAUL'S PRICE, SET 2026-09-06, UP FROM $9. Do not "correct" it.
+         🚨 BUT THERE IS NO CHECKOUT ON THIS SITE YET, AND NO FULL EXAM EITHER.
+         `/cart/` says "there is no cart yet", and the $14 US History packet carries
+         `buy: null` in worksheets.js so its page prints "Not on sale yet". This card
+         used to send people to /placement-exam.html — the FREE short reading exam —
+         under a paid price, which is the one combination that reads as a bait.
+         So the button states the truth instead, in the site's own words from
+         build-worksheets.js. Wire it to a real checkout and this becomes a link. -->
     <div class="plan pro pick rv d2">
       <span class="tag">Extensive</span>
-      <h3>Full placement</h3>
-      <div class="price">$9 <s>one student</s></div>
+      <h3>Full placement exam</h3>
+      <div class="price">$50 <s>one student</s></div>
       <ul>
         <li>All four subjects</li>
         <li>Skill-by-skill breakdown for each</li>
         <li>A recommended grade and starting packet</li>
         <li>Printable report to keep on file</li>
       </ul>
-      <a class="btn" href="/placement-exam.html">See the exams</a>
+      <p class="buynote">Not on sale yet. Checkout is wired once the exam is finished.</p>
     </div>
   </div>
 </div></div>
@@ -375,27 +422,129 @@ scrim.onclick=dClose.onclick=()=>setNav(false);
 drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setNav(false)));
 addEventListener('keydown',e=>{if(e.key==='Escape')setNav(false)});
 
-/* rail arrows */
-const rail=document.getElementById('rail'),prev=document.getElementById('prev'),next=document.getElementById('next');
-const step=()=>{const c=rail.querySelector('.res:not([hidden])');return c?c.getBoundingClientRect().width+20:300;};
-prev.onclick=()=>rail.scrollBy({left:-step(),behavior:R?'auto':'smooth'});
-next.onclick=()=>rail.scrollBy({left:step(),behavior:R?'auto':'smooth'});
-function ends(){prev.disabled=rail.scrollLeft<=2;
-  next.disabled=rail.scrollLeft>=rail.scrollWidth-rail.clientWidth-2;}
-rail.addEventListener('scroll',ends,{passive:true});addEventListener('resize',ends);ends();
+/* ── ONE RAIL CONTROLLER, USED BY BOTH SHELVES ──────────────────────────────
+   🚨 THE GAMES ARROWS HAD NO SCRIPT AT ALL. `#gprev` and `#gnext` existed in the
+   markup and were referenced NOWHERE -- no listener, no disabled state. They were
+   decoration: clicking them did nothing, and they never dimmed at either end, so
+   the games shelf could only ever be scrolled by swiping. Found 2026-09-06 when
+   Paul asked to give that rail the same treatment.
+   This is written once and called twice rather than pasted, which is the same
+   reason nav.js exists: the worksheets rail and the games rail drifted precisely
+   because one had behaviour the other did not.
+   ⚠️ `cardSel` differs per rail -- `.res` on worksheets, `.game` on games.
+   ⚠️ `max` can be 0 (nothing to scroll). Dividing by it gives NaN, which silently
+   produces `transform:translateX(NaNpx)` and the whole bar disappears. */
+function wireRail(o){
+  const rail=document.getElementById(o.rail);
+  if(!rail) return null;
+  const prev=document.getElementById(o.prev), next=document.getElementById(o.next),
+        foot=document.getElementById(o.foot), track=document.getElementById(o.track),
+        fill=track?track.firstElementChild:null;
+  const step=()=>{const c=rail.querySelector(o.cardSel+':not([hidden])');
+    return c?c.getBoundingClientRect().width+20:300;};
+  function paintTrack(){
+    if(!track||!fill) return;
+    const max=rail.scrollWidth-rail.clientWidth, canScroll=max>2;
+    if(foot) foot.classList.toggle('is-static',!canScroll);
+    if(!canScroll){fill.style.transform='scaleX(1)';return;}
+    const frac=Math.min(1,rail.clientWidth/rail.scrollWidth);
+    const pos=Math.min(1,Math.max(0,rail.scrollLeft/max));
+    fill.style.transform='translateX('+(pos*track.clientWidth*(1-frac)).toFixed(1)+
+      'px) scaleX('+frac.toFixed(4)+')';
+  }
+  function update(){
+    prev.disabled=rail.scrollLeft<=2;
+    next.disabled=rail.scrollLeft>=rail.scrollWidth-rail.clientWidth-2;
+    paintTrack();
+  }
+  prev.onclick=()=>rail.scrollBy({left:-step(),behavior:R?'auto':'smooth'});
+  next.onclick=()=>rail.scrollBy({left:step(),behavior:R?'auto':'smooth'});
+  rail.addEventListener('scroll',update,{passive:true});
+  addEventListener('resize',update);
+  update();
+  return {rail:rail,update:update};
+}
 
-/* filters */
-const fbar=document.getElementById('filters');
+const wRail=wireRail({rail:'rail',prev:'prev',next:'next',
+  foot:'railfoot',track:'railtrack',cardSel:'.res'});
+const gRail=wireRail({rail:'grail',prev:'gprev',next:'gnext',
+  foot:'gamefoot',track:'gametrack',cardSel:'.game'});
+const rail=wRail.rail, ends=wRail.update;
+
+/* filters - TWO groups, combined with AND.
+   The old version was single-select across all seven buttons, so picking "Free"
+   cleared "English" and free English could not be asked for. `sel` holds one choice
+   per group and a card must satisfy BOTH.
+   🚨 Only clear aria-pressed WITHIN the clicked button's own group. Clearing every
+   button in the bar is what made the two groups fight each other.
+   🚨 An empty result is reachable now: Packets + English is zero cards, because the
+   US History bundle is the only paid item. Say so, or the rail just looks broken. */
+const fbar=document.getElementById('filters'), rempty=document.getElementById('railempty'),
+      railbox=document.getElementById('railbox');
+const sel={kind:'all',subject:'all'};
+
+/* 🚨 RESERVE THE FULL-SET HEIGHT SO SWITCHING A FILTER NEVER MOVES THE PAGE.
+   Paul, 2026-09-06: "the worksheets move up on the page ... lets fix that where is
+   doesnt move even when you switch to differnt buttons." Measured before the fix,
+   the section below the rail sat at THREE different offsets:
+     all / english / free      rail 543px   subjects at 1752
+     maths / history / science rail 524px   subjects at 1733
+     packets + english (empty) rail   0px   subjects at 1302
+   TWO causes, and fixing only one leaves the jump:
+   1. `.rail` is a flex row at default `align-items:stretch`, so the TALLEST VISIBLE
+      card sets the height. Filter to a set whose blurbs run one line shorter and the
+      whole rail loses 19px -- one line at .83rem/1.45.
+   2. The empty state is ~78px where the rail is ~543px.
+   🚨 MEASURE WITH EVERY CARD DRAWN, NOT THE CURRENT FILTER. Measuring the filtered
+   rail reserves whatever height happens to be showing, which is the bug itself.
+   ⚠️ Re-measured on resize because the card width, and therefore how many lines a
+   blurb wraps to, changes with the viewport. A height measured at 1440 is wrong at 700. */
+function measureRail(){
+  const cards=[...rail.querySelectorAll('.res')];
+  const wasHidden=cards.map(c=>c.hidden), railWas=rail.hidden, emptyWas=rempty.hidden;
+  cards.forEach(c=>{c.hidden=false;}); rail.hidden=false; rempty.hidden=true;
+  railbox.style.minHeight='0px';
+  const h=Math.ceil(rail.getBoundingClientRect().height);
+  cards.forEach((c,i)=>{c.hidden=wasHidden[i];});
+  rail.hidden=railWas; rempty.hidden=emptyWas;
+  railbox.style.minHeight=h+'px';
+}
+const LABEL={all:'',free:'free',paid:'packet',english:'English',maths:'Maths',
+  history:'History',science:'Science'};
+function applyFilters(){
+  let shown=0;
+  rail.querySelectorAll('.res').forEach(c=>{
+    const ok=(sel.kind==='all'||c.dataset.kind===sel.kind)
+          && (sel.subject==='all'||c.dataset.subject===sel.subject);
+    c.hidden=!ok; if(ok) shown++;
+  });
+  if(rempty){
+    rempty.hidden=shown>0;
+    if(!shown){
+      const k=sel.kind==='all'?'':LABEL[sel.kind]+' ';
+      const s=sel.subject==='all'?'':LABEL[sel.subject]+' ';
+      rempty.innerHTML='No '+k+s+'worksheets yet. '+
+        '<b>Everything on this rail is free except the packets</b>, so try Show All.';
+    }
+  }
+  rail.hidden=shown===0;
+  rail.scrollTo({left:0,behavior:'auto'}); ends();
+}
 fbar.addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
-  [...fbar.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
-  const f=b.dataset.f;
-  rail.querySelectorAll('.res').forEach(c=>{
-    const show = f==='all' || c.dataset.kind===f || c.dataset.subject===f;
-    c.hidden=!show;
-  });
-  rail.scrollTo({left:0,behavior:'auto'}); ends();
+  const g=b.dataset.g; if(!g) return;
+  sel[g]=b.dataset.f;
+  b.parentElement.querySelectorAll('button')
+    .forEach(x=>x.setAttribute('aria-pressed',x===b));
+  applyFilters();
 });
+measureRail(); applyFilters();
+/* The blurbs wrap differently at every card width, so the reservation is only valid
+   for the width it was taken at. Debounced: a resize fires continuously. */
+let rmt; addEventListener('resize',()=>{clearTimeout(rmt);rmt=setTimeout(()=>{measureRail();ends();},150);});
+/* Fonts land after first paint and change how many lines a blurb takes, so a height
+   measured before Archivo loads is measured against the fallback face. */
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measureRail);
 
 </script>
 
@@ -418,6 +567,28 @@ fbar.addEventListener('click',e=>{
 
 
 <script>(function(){var a=document.getElementById('ann');if(!a)return;try{if(localStorage.getItem('ns:ann')==='off'){a.remove();return;}}catch(e){}var b=a.querySelector('[data-ann-close]');if(b)b.addEventListener('click',function(){try{localStorage.setItem('ns:ann','off');}catch(e){}a.remove();});})();</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

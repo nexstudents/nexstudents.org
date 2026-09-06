@@ -727,14 +727,55 @@ const railCards = () => {
   return items.map(railCard).join("\n    ");
 };
 
+/* 🚨 THE RAIL'S SUBJECT ORDER IS PAUL'S AND IS DELIBERATELY NOT `SUBJECTS`.
+   Everywhere else the site runs English, History, Maths, Science -- nav.js SUBJECTS,
+   and CLAUDE.md calls that order fixed. Paul asked for English, Maths, History,
+   Science on THIS row, 2026-09-06. Do not "correct" it back to match the nav, and do
+   not change the nav to match this. The label stays "Maths": he typed "math", but the
+   nav, the mega menu and every /maths/ URL say Maths, and one row disagreeing with
+   the site's own vocabulary is worse than a spelling he did not mean literally. */
+const RAIL_SUBJECT_ORDER = ["English", "Maths", "History", "Science"];
+
+/* 🚨 TWO INDEPENDENT SELECTORS, COMBINED WITH AND. NOT ONE ROW OF SEVEN.
+   Paul, 2026-09-06: "instead of everything and free its more like a selector so show
+   all or show free then they can also select the type of course ... so basically its
+   like they can select all english or all science", then "or all free of each too".
+   The old row was SINGLE select across all seven buttons, so "Free" and "English"
+   were mutually exclusive and free English was literally unreachable -- the one
+   combination a parent is most likely to want. Each group now holds its own choice
+   and a card must satisfy both. `data-g` is the group; the script keys off it. */
 const railFilters = () => {
   const live = [...new Set(WORKSHEETS.map(w => w.subject))];
-  return ['<button aria-pressed="true" data-f="all">Everything</button>',
-    '<button aria-pressed="false" data-f="free">Free</button>',
-    '<button aria-pressed="false" data-f="paid">Packets</button>']
-    .concat(SUBJECTS.filter(s => live.includes(s.name))
-      .map(s => '<button aria-pressed="false" data-f="' + SUBJ_TOKEN[s.name] + '">' + s.name + "</button>"))
-    .join("\n    ");
+
+  /* Two guards, because both failures are SILENT. A renamed subject would drop out
+     of the row with the rail still working, and a NEW subject added to worksheets.js
+     would never get a button -- its sheets would only ever be reachable under All. */
+  const unknown = RAIL_SUBJECT_ORDER.filter(n => !SUBJECTS.some(s => s.name === n));
+  if (unknown.length) {
+    console.error("FAIL: RAIL_SUBJECT_ORDER names not in SUBJECTS: " + unknown.join(", "));
+    process.exit(1);
+  }
+  const unordered = live.filter(n => !RAIL_SUBJECT_ORDER.includes(n));
+  if (unordered.length) {
+    console.error("FAIL: worksheet subjects with no filter button: " + unordered.join(", ") +
+      " - add them to RAIL_SUBJECT_ORDER in build-pages.js");
+    process.exit(1);
+  }
+
+  const btn = (g, f, text, on) =>
+    '<button data-g="' + g + '" data-f="' + f + '" aria-pressed="' + (on ? "true" : "false") +
+    '">' + text + "</button>";
+  const grp = (label, btns) =>
+    '<div class="fgrp" role="group" aria-label="' + label + '">' +
+    '<span class="flab">' + label + "</span>" + btns.join("") + "</div>";
+
+  return [
+    grp("Show", [btn("kind", "all", "All", true), btn("kind", "free", "Free"),
+      btn("kind", "paid", "Packets")]),
+    grp("Subject", [btn("subject", "all", "All", true)].concat(
+      RAIL_SUBJECT_ORDER.filter(n => live.includes(n))
+        .map(n => btn("subject", SUBJ_TOKEN[n], n))))
+  ].join("\n    ");
 };
 
 /* The grade picker, as its own page. Each grade needs a real URL eventually -
@@ -2860,20 +2901,17 @@ if (b < 0) { console.error("FAIL: home grade picker not closed"); process.exit(1
 const picker = OPEN + "\n    " + gradeCells(liveGrades()) + "\n  ";
 let newHome = home.slice(0, a) + picker + home.slice(b);
 
-/* The home subject tiles were hand-kept too, and had gone stale the same way:
-   English and Maths both said "Soon" long after they went live, and it still
-   said ELA. Generated from SUBJECTS now, in the same fixed order. */
-const S_OPEN = '<div class="subs">', S_CLOSE = "\n</div>";
-const sa = newHome.indexOf(S_OPEN);
-if (sa < 0) { console.error("FAIL: home subject tiles not found"); process.exit(1); }
-const sb = newHome.indexOf(S_CLOSE, sa + S_OPEN.length);
-if (sb < 0) { console.error("FAIL: home subject tiles not closed"); process.exit(1); }
-const tiles = SUBJECTS.map((s, i) =>
-  `  <a class="sub-t is-${s.live ? "live" : "soon"}" href="${s.live ? "/" + s.slug + "/" : "/subjects/"}">` +
-  `<n>${String(i + 1).padStart(2, "0")} <i>${s.live ? "Live" : "Soon"}</i></n><div><h3>${s.name}</h3>\n` +
-  `    <p>${s.blurb}</p></div></a>`
-).join("\n");
-newHome = newHome.slice(0, sa) + S_OPEN + "\n" + tiles + newHome.slice(sb);
+/* ⚠️ THE HOME SUBJECT-TILE SPLICE WAS DELETED HERE, 2026-09-06, WITH ITS MARKUP.
+   It generated `<div class="subs">` — four tiles, 01 English / 02 History /
+   03 Maths / 04 Science — from SUBJECTS. Paul removed the section: "since we have
+   the worksheets we dont need that section", the worksheets shelf now carrying a
+   Subject selector that does the same job with real cards.
+   🚨 IT HAD TO GO IN THE SAME CHANGE. The splice began with a hard
+   `FAIL: home subject tiles not found` + process.exit(1), so leaving it behind
+   would have failed EVERY build the moment the markup went. Guard and markup are
+   one unit; that is what makes the guard worth having.
+   SUBJECTS is still imported and still used — the mega menu, the footer and the
+   /subjects/ page all read it. Do not remove that import. */
 
 /* The home page kept its OWN copy of the nav, hand-written, so it still had
    Worksheets in the tab bar and no Home, About or Contact. Paul, 2026-08-26:
@@ -2953,11 +2991,32 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
   const G_OPEN = "<!-- ns:games -->", G_END = "<!-- /ns:games -->";
   /* Playable first, so the two real games are what a visitor meets. Every card
      links at its own game, never at the shelf. */
+  /* 🚨 THE ART PATH IS DERIVED FROM THE GAME'S OWN SLUG, NOT HAND-LISTED.
+     Paul, 2026-09-06, on the two playable games: "maybe you can get a thumbnail
+     of them". They are made by `node tools/make-game-thumb.js . <slug>`, which
+     screenshots the real page — so a game's card art cannot drift from the game.
+     Derived because every hand-kept block on this page has gone stale at least
+     once (grade picker, subject tiles, nav, cache-buster, the games list itself).
+     Drop the file in assets/games/<slug>.jpg and it appears; no second edit.
+     ⚠️ `soon` games are skipped even if a file exists. A picture of a game that
+     cannot be played is a promise the site does not keep
+     -> the same rule as a lesson slot never being a link. */
+  const gameArt = (g) => {
+    if (g.soon) return null;
+    const slug = g.href.replace(/\/+$/, "").split("/").pop();
+    const rel = "/assets/games/" + slug + ".jpg";
+    return fs.existsSync(path.join(ROOT, rel.slice(1))) ? rel : null;
+  };
   const gameCards = [...GAMES].sort((a, b) => (a.soon ? 1 : 0) - (b.soon ? 1 : 0))
-    .map(g => '<a class="game" href="' + g.href + '">' +
-      '<div class="gart"><u>' + (g.soon ? "Soon" : "Play") + "</u></div>" +
-      '<div class="gbody"><em>' + g.subject + "</em><h4>" + g.title + "</h4>" +
-      "<p>" + (g.blurb || "") + "</p></div></a>")
+    .map(g => {
+      const art = gameArt(g);
+      return '<a class="game" href="' + g.href + '">' +
+        '<div class="gart">' + (art
+          ? '<img src="' + art + '" alt="" loading="lazy" decoding="async">'
+          : "<u>" + (g.soon ? "Soon" : "Play") + "</u>") + "</div>" +
+        '<div class="gbody"><em>' + g.subject + "</em><h4>" + g.title + "</h4>" +
+        "<p>" + (g.blurb || "") + "</p></div></a>";
+    })
     .join("\n    ");
   if (newHome.includes(G_OPEN)) {
     newHome = newHome.replace(new RegExp(G_OPEN + "[\\s\\S]*?" + G_END),
