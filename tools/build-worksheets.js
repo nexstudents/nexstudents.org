@@ -129,6 +129,42 @@ function backLink(s) {
   return `<a class="back" href="${href}">&larr; ${label}</a>`;
 }
 
+const ICON_CART = '<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" ' +
+  'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="M2.5 3h1.8l1.7 9.2h8.3l1.7-6.7H5.3"/><circle cx="8" cy="16" r="1.2"/>' +
+  '<circle cx="14.2" cy="16" r="1.2"/></svg>';
+
+/* ── ADD TO CART, ON THE FREE SHEETS ───────────────────────────────────────
+   Paul, 2026-09-06: "even if a free item is purchased it goes to the cart and
+   they have to check it out either as guest or logged in." A free download
+   stops being anonymous and becomes a known customer with an email.
+
+   🚨 NOTHING ON THIS SITE COULD ADD TO THE CART BEFORE THIS. `cartAdd` existed
+   in ns-account.js and was called by no page at all, so the cart shipped with
+   no way for a reader to put anything in it.
+
+   ⚠️ IT DOES NOT REPLACE PRINT OR DOWNLOAD. Those still work, unchanged, and
+   removing them to force people through a checkout is not what was asked for.
+   This is a third door, for someone who wants the sheet kept on their account.
+
+   🚨 PAID ITEMS GET NOTHING HERE. checkout_free() re-reads the price and
+   refuses anything non-zero, so an Add to Cart on the bundle would walk a
+   customer into a dead end. The bundle keeps its honest "Coming Soon" until
+   Stripe is wired -- see buyBlock below. */
+function cartBtn(s) {
+  if (isPaid(s)) return "";
+  /* The thumbnail is a display hint only; the title and the price always come
+     back from the products table. A sheet with no thumb passes nothing and the
+     drawer draws a plain tile. */
+  const thumb = s.thumb ? `/worksheets/${subjSlug(s.subject)}/${s.slug}/thumb.jpg` : "";
+  const meta = thumb ? `,{thumb:'${thumb}'}` : "";
+  return `<button class="btn ghost" type="button" data-cart="${s.slug}"
+      title="Save this sheet to your cart" aria-label="Add this sheet to your cart"
+      onclick="window.NSAccount&&NSAccount.cartAdd('${s.slug}'${meta})">
+      ${ICON_CART}<span class="lbl">Add to Cart</span>
+    </button>`;
+}
+
 function buyBlock(s) {
   if (s.buy) {
     return `<a class="btn buy" href="${s.buy}">Buy &mdash; ${s.price}</a>
@@ -264,6 +300,7 @@ ${navMarkup("w")}
     <a class="btn ghost" href="${s.slug}.pdf" download title="Save the PDF so you can print it again without coming back" aria-label="Download the PDF">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
+    ${cartBtn(s)}
   </div>
 </div>
 
@@ -369,6 +406,7 @@ ${navMarkup("w")}
     <a class="btn ghost" id="dl" href="week-01.pdf" download title="Save the week you picked as a PDF" aria-label="Download this week">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
+    ${cartBtn(s)}
   </div>
 </div>
 
@@ -480,6 +518,7 @@ ${navMarkup("w")}
     <a class="btn ghost" href="${s.slug}.pdf" download title="Save the PDF so you can print it again without coming back" aria-label="Download the PDF">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
+    ${cartBtn(s)}
   </div>
 </div>
 
@@ -580,6 +619,7 @@ ${navMarkup("w")}
     <a class="btn ghost" href="${s.slug}.pdf" download title="Save the PDF so you can print it again without coming back" aria-label="Download the PDF">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
+    ${cartBtn(s)}
   </div>
 </div>
 
@@ -718,6 +758,7 @@ ${navMarkup("w")}
     <a class="btn ghost" href="${s.file}" download title="Save the sheet so you can print it again without coming back" aria-label="Download the sheet">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
+    ${cartBtn(s)}
   </div>
 </div>
 
@@ -815,6 +856,7 @@ ${navMarkup("w")}
     <a class="btn ghost" href="${s.file}" download title="Save the sheet so you can print it again without coming back" aria-label="Download the sheet">
       ${ICON_DL}<span class="lbl">Download</span>
     </a>
+    ${cartBtn(s)}
   </div>
 </div>
 

@@ -563,3 +563,73 @@ html{-webkit-tap-highlight-color:transparent}
    match, because a filled block of colour is what the eye compares. */
 .drawer .navbtn{background:#ffffff;color:#0a0b0d}
 :root[data-theme="light"] .drawer .navbtn{background:#27313f;color:#ffffff}
+
+/* ── THE CART COUNT BADGE ──────────────────────────────────────────────────
+   Lives in the nav BAR, so it takes the lesson's palette like the rest of the
+   bar does. That is the opposite of the drawer rules below, and deliberate:
+   the bar is part of the lesson, the drawer is site chrome. */
+.navicon{position:relative}
+.cartn{position:absolute;top:2px;right:2px;min-width:17px;height:17px;padding:0 4px;
+  border-radius:999px;background:var(--nv-accent);color:var(--nv-on);
+  font-size:.66rem;font-weight:800;line-height:17px;text-align:center;
+  pointer-events:none}
+
+/* ── THE CART DRAWER ───────────────────────────────────────────────────────
+   🚨 THE TWIN OF THE BLOCK IN ns.css. Lesson pages do not load ns.css, so a
+   rule added there reaches the home page and silently does nothing here --
+   the drift machine documented in CLAUDE.md. check-nav-css.js fails the build
+   if these two ever fall out of step on a class the nav emits.
+   ⚠️ Change one, change the other, same session. */
+.cscrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:80;opacity:0;
+  visibility:hidden;transition:opacity .3s ease,visibility .3s}
+body.cart-open .cscrim{opacity:1;visibility:visible}
+.cdrawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);z-index:81;
+  background:var(--nv-bg);border-left:1px solid var(--nv-line);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .34s cubic-bezier(.22,.61,.36,1)}
+body.cart-open .cdrawer{transform:none}
+.cd-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:18px 20px;border-bottom:1px solid var(--nv-line);flex:none}
+.cd-h{margin:0;font-size:1.15rem;letter-spacing:-.02em;color:var(--nv-fg);
+  display:flex;align-items:center;gap:9px}
+/* The header count. --nv-* like the rest of the drawer: CLAUDE.md records that
+   only the solid BUTTON is literal, because a filled block of colour is what
+   the eye compares against the page. A 21px pill is not that. */
+.cd-n{min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:var(--nv-accent);
+  color:var(--nv-on);font-size:.72rem;font-weight:800;line-height:21px;text-align:center}
+.cd-x{background:none;border:0;color:var(--nv-dim);font-size:26px;line-height:1;
+  cursor:pointer;padding:2px 6px}
+.cd-x:hover{color:var(--nv-fg)}
+.cd-body{flex:1;overflow-y:auto;padding:6px 20px}
+.cd-empty{color:var(--nv-dim);font-size:.92rem;padding:22px 0}
+.cd-row{display:flex;align-items:center;gap:13px;padding:15px 0;
+  border-bottom:1px solid var(--nv-line)}
+.cd-th{width:56px;height:56px;flex:none;border-radius:9px;object-fit:contain;
+  background:#fff;border:1px solid var(--nv-line)}
+.cd-noth{background:var(--nv-line)}
+.cd-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;color:var(--nv-fg)}
+.cd-info b{font-size:.9rem;line-height:1.3;letter-spacing:-.01em}
+.cd-price{font-size:.85rem;color:var(--nv-dim);font-weight:700}
+.cd-rm{flex:none;background:none;border:0;color:var(--nv-dim);cursor:pointer;
+  font:inherit;font-size:.78rem;text-decoration:underline;padding:4px}
+.cd-rm:hover{color:var(--nv-fg)}
+.cd-foot{flex:none;padding:16px 20px 20px;border-top:1px solid var(--nv-line)}
+.cd-tot{display:flex;justify-content:space-between;align-items:baseline;color:var(--nv-fg);
+  font-weight:800;font-size:1.05rem;margin-bottom:14px}
+.cd-acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+/* 🚨 THE TWIN OF THE .cd-acts .btn RULE IN ns.css. Keep the numbers identical
+   or the same drawer is two different sizes depending which page opened it. */
+.cd-acts .navbtn{display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:10px 12px;font-size:.82rem;letter-spacing:-.01em;border-radius:8px}
+/* 🚨 LITERAL, like .drawer .navbtn above and for the same reason: a filled
+   block of colour is what the eye compares, and site chrome must not take a
+   lesson's palette. Keep these two pairs identical. */
+.cdrawer .navbtn{background:#ffffff;color:#0a0b0d}
+:root[data-theme="light"] .cdrawer .navbtn{background:#27313f;color:#ffffff}
+.cdrawer .navbtn.cd-alt{background:transparent;color:var(--nv-fg);border:1px solid var(--nv-line)}
+.cdrawer .navbtn.cd-alt:hover{border-color:var(--nv-fg)}
+
+@media(max-width:420px){
+  .cdrawer{width:100%;border-left:0}
+  .cd-acts{grid-template-columns:1fr}
+}

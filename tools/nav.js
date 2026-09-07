@@ -419,7 +419,8 @@ ${drawerSubs()}
   ${navIcons()}
 </div>
 ${megaPanel()}
-</nav>`;
+</nav>
+${cartDrawer(b)}`;
 };
 
 /* Favicon set. One source image, three sizes, so a browser tab, an Android
@@ -562,8 +563,46 @@ const navIcons = () =>
   '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" ' +
   'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
   '<path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/>' +
-  '<circle cx="17" cy="19" r="1.4"/></svg></a>' +
+  '<circle cx="17" cy="19" r="1.4"/></svg>' +
+  /* 🚨 SHIPS EMPTY AND HIDDEN. The count is written by JavaScript from
+     localStorage, so it CANNOT be rendered at build time — every page is a
+     static file served to everyone. A number baked in here would be one
+     visitor's cart shown to all of them. */
+  '<span class="cartn" id="cartn" hidden aria-hidden="true"></span></a>' +
   "</div>";
+
+/* ── THE CART DRAWER ───────────────────────────────────────────────────────
+   Paul, 2026-09-07, pointing at two lttstore product pages: "add it to the cart
+   also to see what it looks like so we can get the structure." Technique
+   theirs, markup ours — the same borrowing as the mega menu.
+
+   🚨 IT EXISTS BECAUSE ADDING TO THE CART GAVE NO FEEDBACK AT ALL. Before this,
+   pressing a button that silently wrote to localStorage was indistinguishable
+   from a dead button, which is the exact fault the "no dead buttons" rule in
+   navIcons above was written for.
+
+   ⚠️ IT IS NOT THE CART PAGE IN A NARROWER BOX. /cart/ is the table with the
+   summary card; this is a confirmation that also happens to be editable. Keep
+   the two different on purpose.
+
+   ⚠️ Rendered on EVERY page including lesson pages, so its rules live in BOTH
+   ns.css and lesson-nav.css — see the drift machine in CLAUDE.md. A lesson page
+   has no Add to Cart control, but it does carry the nav, so it must not show an
+   unstyled drawer if one is ever opened from it. */
+/* ⚠️ TAKES THE BUTTON CLASS, exactly as navMarkup does. A lesson page styles
+   .navbtn and a site page styles .btn; hardcoding either ships an unstyled
+   button on half the site. That is the drift this file exists to prevent. */
+const cartDrawer = (btn) =>
+  '<div class="cscrim" id="cscrim"></div>' +
+  '<aside class="cdrawer" id="cdrawer" aria-hidden="true" aria-label="Cart">' +
+  '<div class="cd-top"><h2 class="cd-h">Cart <span class="cd-n" id="cdN">0</span></h2>' +
+  '<button class="cd-x" id="cdClose" type="button" aria-label="Close cart">&times;</button></div>' +
+  '<div class="cd-body" id="cdBody"></div>' +
+  '<div class="cd-foot">' +
+  '<div class="cd-tot"><span>Total</span><span id="cdTotal">&mdash;</span></div>' +
+  '<div class="cd-acts"><a class="' + (btn || "btn") + ' cd-alt" href="/cart/">View Cart</a>' +
+  '<a class="' + (btn || "btn") + '" href="/cart/">Check Out</a></div>' +
+  "</div></aside>";
 
 /* ── THE DAY/NIGHT SWITCH, ONE DEFINITION, TWO PLACES ──────────────────────
    The slim slider modelled on lttstore's. It lives at the BOTTOM OF THE DRAWER
@@ -599,7 +638,19 @@ const modeBoot = () => "<scr" + "ipt>" +
    silently never ran there: the markup was present, every chevron was dead,
    and nothing showed in the console until it was looked for. Paul,
    2026-08-26: "the sub nav are not opening when i press the right arrows." */
-const navScript = () => "<scr" + "ipt>\n" + "(function(){\n" + `
+/* 🚨 THE ACCOUNT SCRIPTS LOAD ON EVERY PAGE, and they must load HERE, before
+   the inline script below. Classic in-body scripts run in document order, so a
+   plain src tag is enough — no defer, which would postpone them past the inline
+   block that needs NSAccount.
+
+   ⚠️ THEY USED TO LOAD ON /account/ AND /cart/ ONLY, which is why the cart
+   count could not be shown anywhere else. Both files are local and small; no
+   third-party script is added to any page by this. See ns-account.js for why
+   supabase-js itself is deliberately not used. */
+const navScript = () =>
+  '<scr' + 'ipt src="/assets/supabase-config.js"></scr' + 'ipt>\n' +
+  '<scr' + 'ipt src="/assets/ns-account.js"></scr' + 'ipt>\n' +
+  "<scr" + "ipt>\n" + "(function(){\n" + `
 var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
     scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
 function setNav(o){document.body.classList.toggle("nav-open",o);
@@ -747,6 +798,91 @@ if(panel){
     });
     addEventListener("load",function(){ panelH=0; nsMeasure(); });
   }
+}
+
+/* ── THE CART DRAWER ──────────────────────────────────────────────────────
+   NSAccount comes from ns-account.js, loaded just above this by navScript.
+   ⚠️ EVERY ENTRY POINT IS GUARDED. A page can be opened before that script
+   parses, or with it blocked outright, and a throw here would take the nav
+   and the mega menu down with it. */
+var cdrawer=document.getElementById("cdrawer"),cscrim=document.getElementById("cscrim"),
+    cdBody=document.getElementById("cdBody"),cdTotal=document.getElementById("cdTotal"),
+    cdN=document.getElementById("cdN"),cartn=document.getElementById("cartn"),
+    cdClose=document.getElementById("cdClose");
+
+function nsMoney(c){ return c ? "$" + (c/100).toFixed(2) : "Free"; }
+
+function nsCartOpen(o){
+  if(!cdrawer) return;
+  document.body.classList.toggle("cart-open",o);
+  cdrawer.setAttribute("aria-hidden",!o);
+  document.body.style.overflow=o?"hidden":"";
+}
+
+/* The badge is the only part that paints on EVERY page. It reads localStorage
+   and nothing else, so it is instant and needs no network. */
+function nsCartBadge(){
+  if(!cartn||!window.NSAccount) return;
+  var n=NSAccount.cart().length;
+  cartn.textContent=n;
+  cartn.hidden = n===0;
+  if(cdN) cdN.textContent=n;
+}
+
+/* 🚨 TITLES AND PRICES COME FROM THE DATABASE, NEVER FROM THE CART. The cart
+   holds slugs. Only the thumbnail is taken from the local hint, because a
+   wrong picture is a cosmetic bug and a wrong price is a refund. */
+function nsCartPaint(){
+  if(!cdBody||!window.NSAccount) return;
+  nsCartBadge();
+  var items=NSAccount.cart();
+  if(!items.length){
+    cdBody.innerHTML="<p class='cd-empty'>Nothing in your cart yet.</p>";
+    if(cdTotal) cdTotal.textContent=nsMoney(0);
+    return;
+  }
+  cdBody.innerHTML="<p class='cd-empty'>Loading&hellip;</p>";
+  NSAccount.priceList(items).then(function(rows){
+    if(!rows.length){
+      /* Offline, or a slug that is no longer for sale. Say so rather than
+         showing an empty drawer that looks like the add failed. */
+      cdBody.innerHTML="<p class='cd-empty'>Could not load your cart just now. "+
+        "It is still saved &mdash; try again in a moment.</p>";
+      return;
+    }
+    var total=0,html="";
+    rows.forEach(function(r){
+      total+=r.price_cents;
+      var img=NSAccount.cartThumb(r.slug);
+      html+="<div class='cd-row'>"+
+        (img?"<img class='cd-th' src='"+img+"' alt='' width='56' height='56' loading='lazy'>"
+            :"<span class='cd-th cd-noth' aria-hidden='true'></span>")+
+        "<div class='cd-info'><b>"+r.title+"</b>"+
+        "<span class='cd-price'>"+nsMoney(r.price_cents)+"</span></div>"+
+        "<button class='cd-rm' type='button' data-rm='"+r.slug+"'>Remove</button></div>";
+    });
+    cdBody.innerHTML=html;
+    if(cdTotal) cdTotal.textContent=nsMoney(total);
+    cdBody.querySelectorAll("[data-rm]").forEach(function(b){
+      b.onclick=function(){ NSAccount.cartRemove(b.getAttribute("data-rm")); };
+    });
+  });
+}
+
+if(cdrawer){
+  cscrim.onclick=cdClose.onclick=function(){ nsCartOpen(false); };
+  /* Escape closes it. A fixed overlay with no keyboard exit is a trap. */
+  addEventListener("keydown",function(e){
+    if(e.key==="Escape"&&document.body.classList.contains("cart-open")) nsCartOpen(false);
+  });
+  /* ns-account.js fires this on every add, remove and clear. The drawer OPENS
+     only on an add - a remove repaints it where it already is, and clearing it
+     at checkout must not pop it back up on the confirmation page. */
+  document.addEventListener("ns:cart",function(e){
+    nsCartPaint();
+    if(e.detail&&e.detail.added) nsCartOpen(true);
+  });
+  nsCartBadge();
 }
 ` + "\n})();\n" + "</scr" + "ipt>";
 

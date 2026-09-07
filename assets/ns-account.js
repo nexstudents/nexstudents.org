@@ -27,6 +27,7 @@
   var REST = CFG.url + "/rest/v1";
   var SESSION_KEY = "ns:session";
   var CART_KEY = "ns:cart";
+  var THUMB_KEY = "ns:cartthumbs";
 
   /* ── storage helpers ──────────────────────────────────────────────────────
      ⚠️ Every localStorage call is wrapped. Private mode and "block site data"
@@ -131,21 +132,46 @@
      ⚠️ Slugs only. Never keep a price in the cart -- the price is read from the
      `products` table at checkout, or a console edit becomes a discount. */
   function cart() { return read(CART_KEY, []); }
-  function cartAdd(slug) {
+
+  /* ⚠️ DISPLAY HINTS, AND ONLY THE PICTURE. A thumbnail path is cosmetic: the
+     worst a tampered one does is show the wrong image. Titles and prices are
+     NEVER read from here — they come back from the `products` table on every
+     paint, because a price the browser can edit is a discount code. Kept in a
+     separate key so the cart itself stays a clean list of slugs. */
+  function cartThumb(slug) { return read(THUMB_KEY, {})[slug] || ""; }
+  function rememberThumb(slug, url) {
+    if (!url) return;
+    var m = read(THUMB_KEY, {});
+    m[slug] = url;
+    write(THUMB_KEY, m);
+  }
+
+  /* `added` tells the drawer whether to OPEN. A removal repaints it where it
+     already is, and cartClear() at checkout must not pop it back up over the
+     confirmation. Adding is the only event a reader needs confirmed. */
+  function fire(items, added) {
+    document.dispatchEvent(new CustomEvent("ns:cart", {
+      detail: { items: items, added: !!added }
+    }));
+  }
+
+  function cartAdd(slug, meta) {
     var c = cart();
     if (c.indexOf(slug) < 0) { c.push(slug); write(CART_KEY, c); }
-    document.dispatchEvent(new CustomEvent("ns:cart", { detail: { items: c } }));
+    if (meta && meta.thumb) rememberThumb(slug, meta.thumb);
+    fire(c, true);
     return c;
   }
   function cartRemove(slug) {
     var c = cart().filter(function (s) { return s !== slug; });
     write(CART_KEY, c);
-    document.dispatchEvent(new CustomEvent("ns:cart", { detail: { items: c } }));
+    fire(c, false);
     return c;
   }
   function cartClear() {
     drop(CART_KEY);
-    document.dispatchEvent(new CustomEvent("ns:cart", { detail: { items: [] } }));
+    drop(THUMB_KEY);
+    fire([], false);
   }
 
   /* Reads the real prices so the cart can be totalled honestly. */
@@ -206,6 +232,7 @@
     signIn: signIn, signOut: signOut, getUser: getUser,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
+    cartThumb: cartThumb,
     priceList: priceList, checkoutFree: checkoutFree, myPurchases: myPurchases
   };
 })();
