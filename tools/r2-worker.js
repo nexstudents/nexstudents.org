@@ -40,6 +40,33 @@
    anything that ever finds a bug in this file.
    ───────────────────────────────────────────────────────────────────────── */
 
+/* ── DEPLOYED 2026-09-07, version 393e2800 ────────────────────────────────
+   Worker: nexstudents-media · https://nexstudents-media.nexedgetech.workers.dev
+   Binding MEDIA -> R2 bucket nexstudents-media (was already correct).
+   SUPABASE_URL and SUPABASE_KEY added as Text vars, publishable key.
+
+   Verified live straight after deploying:
+     /                                    200  "nexstudents media"
+     /paid/us-history-semester-1.pdf      404  <- the guard that matters
+     /download?t=garbage                  404  deny text
+     /download?t=<well-formed unknown>    404  deny text
+
+   🚨 THE BUCKET IS SERVING NOTHING TODAY, AND THAT IS WORTH KNOWING BEFORE
+   ANYONE DEBUGS IT. All 268 lesson mp3s are committed to the repo and served
+   by GitHub Pages - live check returns 200 audio/mp3 - and NO built page
+   references this workers.dev host at all. bake-voice.js was run without
+   MEDIA_BASE, so the audio never moved to R2.
+   ⚠️ So this deploy could not break playback: nothing was pointed here. It also
+   means the media half of this Worker has never actually been exercised in
+   production. Do not assume it works because it deployed.
+
+   ⚠️ THE EDITOR MANGLES A CLIPBOARD PASTE FROM clip.exe. The emoji in these
+   comments came through as mojibake ("=fU") because clip.exe converts to the
+   Windows codepage. PowerShell Set-Clipboard round-trips UTF-8 intact - use
+   that. And Ctrl+A in the dashboard editor selects the PAGE, not the code:
+   click into the code, then ctrl+End followed by ctrl+shift+Home.
+   ───────────────────────────────────────────────────────────────────────── */
+
 /* 🚨 EVERYTHING UNDER THIS PREFIX IS PAID AND IS NOT PUBLIC.
    The plain media route below refuses it outright. It is reachable only through
    /download?t=<token>, and only after Postgres has confirmed the purchase. */
