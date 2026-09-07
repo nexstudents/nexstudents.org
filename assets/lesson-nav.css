@@ -624,10 +624,12 @@ body.cart-open .cdrawer{transform:none}
 /* 🚨 LITERAL, like .drawer .navbtn above and for the same reason: a filled
    block of colour is what the eye compares, and site chrome must not take a
    lesson's palette. Keep these two pairs identical. */
+/* 🚨 BOTH SOLID, SAME COLOUR. A .cd-alt ghost rule for View Cart lived here and
+   was deleted, not disabled: the reference had two identical buttons and the
+   split was invented. Dead CSS that once ran is how a reverted design creeps
+   back. Keep this in step with the ns.css twin. */
 .cdrawer .navbtn{background:#ffffff;color:#0a0b0d}
 :root[data-theme="light"] .cdrawer .navbtn{background:#27313f;color:#ffffff}
-.cdrawer .navbtn.cd-alt{background:transparent;color:var(--nv-fg);border:1px solid var(--nv-line)}
-.cdrawer .navbtn.cd-alt:hover{border-color:var(--nv-fg)}
 
 @media(max-width:420px){
   .cdrawer{width:100%;border-left:0}

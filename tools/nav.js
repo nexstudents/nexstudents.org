@@ -600,7 +600,13 @@ const cartDrawer = (btn) =>
   '<div class="cd-body" id="cdBody"></div>' +
   '<div class="cd-foot">' +
   '<div class="cd-tot"><span>Total</span><span id="cdTotal">&mdash;</span></div>' +
-  '<div class="cd-acts"><a class="' + (btn || "btn") + ' cd-alt" href="/cart/">View Cart</a>' +
+  /* 🚨 BOTH BUTTONS ARE SOLID, THE SAME COLOUR. Paul, 2026-09-07: "did you see
+     how you made one icon black and one white for the view cart and checkout
+     ... both of theirs is orange so both of ours should be white."
+     The reference had no primary/secondary split and I invented one anyway.
+     ⚠️ Do not "improve" this back into a ghost button for View Cart. Both are
+     ways out of the drawer and neither is the lesser one. */
+  '<div class="cd-acts"><a class="' + (btn || "btn") + '" href="/cart/">View Cart</a>' +
   '<a class="' + (btn || "btn") + '" href="/cart/">Check Out</a></div>' +
   "</div></aside>";
 

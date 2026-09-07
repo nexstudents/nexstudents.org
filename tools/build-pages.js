@@ -3088,12 +3088,45 @@ let newHome = home.slice(0, a) + picker + home.slice(b);
    Worksheets in the tab bar and no Home, About or Contact. Paul, 2026-08-26:
    "so the homepage still is set up for the old layout not the new one."
    Spliced from nav.js now, like the grade picker and the subject tiles. */
-const N_OPEN = '<div class="scrim" id="scrim"></div>', N_CLOSE = "</nav>";
+/* 🚨 THE NAV BLOCK NO LONGER ENDS AT </nav>, AND THAT BROKE THIS SPLICE.
+   navMarkup() gained the cart drawer on 2026-09-07, which it emits AFTER the
+   closing nav tag. The end marker was still "</nav>", so every build replaced
+   the nav and left the previous build's drawer sitting after it: the home page
+   reached THREE #cdrawer and three #cscrim elements, one per build, growing
+   without limit. Duplicate ids are invalid, and getElementById silently wires
+   only the first, so nothing looked wrong on screen.
+
+   Same species as the footer splice below: a partial replacement that appends
+   instead of overwriting. The end boundary must cover everything navMarkup
+   emits, not just the part it used to emit.
+
+   ⚠️ The sweep loop is deliberate rather than a single match - it swallows
+   EVERY stacked drawer, so a page that already accumulated several repairs
+   itself on the next build instead of shedding one per run. */
+const N_OPEN = '<div class="scrim" id="scrim"></div>';
 const na = newHome.indexOf(N_OPEN);
 if (na < 0) { console.error("FAIL: home nav not found"); process.exit(1); }
-const nb = newHome.indexOf(N_CLOSE, na);
-if (nb < 0) { console.error("FAIL: home nav not closed"); process.exit(1); }
-newHome = newHome.slice(0, na) + navMarkup("h") + newHome.slice(nb + N_CLOSE.length);
+const navEnd = newHome.indexOf("</nav>", na);
+if (navEnd < 0) { console.error("FAIL: home nav not closed"); process.exit(1); }
+let nb = navEnd + "</nav>".length;
+for (;;) {
+  const m = newHome.slice(nb).match(/^\s*<div class="cscrim"[\s\S]*?<\/aside>/);
+  if (!m) break;
+  nb += m[0].length;
+}
+newHome = newHome.slice(0, na) + navMarkup("h") + newHome.slice(nb);
+
+/* The guard that makes the fix above stick. One nav, one drawer, one scrim -
+   counted on the real output rather than trusted. */
+for (const [id, want] of [["cdrawer", 1], ["cscrim", 1], ["cartn", 1], ["nav", 1]]) {
+  const n = (newHome.match(new RegExp('id="' + id + '"', "g")) || []).length;
+  if (n !== want) {
+    console.error("FAIL: home page has " + n + ' element(s) with id="' + id +
+      '", expected ' + want + ".");
+    console.error("      The nav splice is appending instead of replacing.");
+    process.exit(1);
+  }
+}
 
 /* ⚠️ THE OLD PARTIAL FOOTER SPLICE WAS DELETED HERE, 2026-09-02. It rewrote
    only the Resources and Subjects columns of the home footer and left the rest

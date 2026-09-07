@@ -1506,10 +1506,12 @@ body.cart-open .cdrawer{transform:none}
    is sized to be the main action on a wide page; in a 400px panel that same
    size reads as a wall. Overriding padding and font here rather than shrinking
    .btn itself, which would move every button on the site. */
+/* 🚨 BOTH SOLID, SAME COLOUR. There was a .cd-alt ghost rule here for View Cart
+   and it was deleted, not disabled: the reference had two identical buttons and
+   the split was invented. Dead CSS that once ran is how a reverted design
+   creeps back. */
 .cd-acts .btn{display:flex;align-items:center;justify-content:center;text-align:center;
   padding:10px 12px;font-size:.82rem;letter-spacing:-.01em;border-radius:8px}
-.cd-alt{background:transparent;color:var(--fg);border:1px solid var(--line)}
-.cd-alt:hover{border-color:var(--fg)}
 
 /* Phone: full width, and the actions stack. Two buttons side by side under
    360px puts "View Cart" onto two lines. */
