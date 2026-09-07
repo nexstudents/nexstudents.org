@@ -2895,7 +2895,7 @@ const SOON_PAGES = [
     desc: "Your cart. Free sheets go through it too, so you have a record.",
     crumb: "Cart", h1: "Cart.",
     lead: "Everything goes through here, including the free sheets.",
-    body: `<div class="band"><div class="wrap" style="max-width:640px">
+    body: `<div class="band"><div class="wrap">
 
   <div id="cartEmpty">
     <p class="dim">Your cart is empty. Everything on this site goes through the cart,
@@ -2903,29 +2903,41 @@ const SOON_PAGES = [
   </div>
 
   <div id="cartFull" class="hidden">
-    <div id="cartItems"></div>
-    <p style="font-size:1.15rem;font-weight:800;margin:18px 0 24px">
-      Total <span id="cartTotal"></span></p>
+    <div class="ck-grid">
 
-    <!-- 🚨 GUEST OR SIGNED IN, NEVER A WALL. Forcing an account before checkout
-         is where free downloads are lost. The email is what ties a guest to
-         their purchase, and to an account if they make one later. -->
-    <div class="card">
-      <h3 style="margin:0 0 4px;font-size:1.05rem">Where should we send it?</h3>
-      <p class="dim" style="font-size:.9rem;margin:0 0 14px">
-        We email the download here. Make an account later with the same address
-        and everything you have taken will be waiting in it.</p>
-      <form id="coForm">
-        <input type="email" id="coEmail" required autocomplete="email"
-               placeholder="you@example.com" aria-label="Your email"
-               style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
-                      background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
-        <div style="text-align:center"><button class="btn" type="submit" style="margin-top:12px">Check out</button></div>
-      </form>
-      <p class="dim" id="coMsg" style="font-size:.9rem;margin:14px 0 0"></p>
-      <p class="dim" style="font-size:.85rem;margin:14px 0 0">
-        Already have an account? <a href="/account/">Sign in first</a> and this
-        is filled in for you.</p>
+      <div class="ck-table">
+        <div class="ck-head"><span>Product</span><span>Quantity</span><span>Total</span></div>
+        <div id="cartItems"></div>
+      </div>
+
+      <!-- 🚨 GUEST OR SIGNED IN, NEVER A WALL. Forcing an account before
+           checkout is where free downloads are lost. The email is what ties a
+           guest to their purchase, and to an account if they make one later.
+           It lives INSIDE the summary because our checkout finishes here -
+           the reference hands off to a separate checkout page and we do not. -->
+      <aside class="ck-sum">
+        <div class="ck-sum-row"><span>Subtotal</span><span id="cartTotal">&mdash;</span></div>
+        <p class="ck-note">No tax and nothing to ship. Every sheet is a download.</p>
+        <hr>
+        <form id="coForm">
+          <label class="ck-note" for="coEmail" style="margin:0">
+            Where should we send it?</label>
+          <input class="ck-mail" type="email" id="coEmail" required autocomplete="email"
+                 placeholder="you@example.com" aria-label="Your email">
+          <button class="btn" type="submit">
+            <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none"
+                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                 stroke-linejoin="round"><rect x="4" y="9" width="12" height="8" rx="1.6"/>
+            <path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg><span>Check Out</span></button>
+        </form>
+        <p class="ck-note" id="coMsg"></p>
+        <!-- Paul, 2026-09-07: the old line explained the mechanism ("Sign in
+             first and this is filled in for you") instead of just offering the
+             door. A link does not need its own instructions. -->
+        <p class="ck-note">Already have an account?
+          <a href="/account/">Sign in here</a></p>
+      </aside>
+
     </div>
   </div>
 
@@ -2935,7 +2947,13 @@ const SOON_PAGES = [
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
-  var money = function(c){ return c ? "$" + (c/100).toFixed(2) : "Free"; };
+  /* 🚨 A REAL PRICE, NEVER THE WORD "Free". Paul, 2026-09-07: "subtotal should
+     not say free but $0 having an actual price." A cart is a receipt, and $0.00
+     in the money column reads as a figure that was calculated. "Free" reads as
+     a label that skipped the calculation, which is the wrong impression when
+     the next thing the reader does is hand over an email address.
+     ⚠️ The FREE badge on shelf cards is a different thing and stays. */
+  var money = function(c){ return "$" + ((c || 0)/100).toFixed(2); };
 
   function paint(){
     var items = NSAccount.cart();
@@ -2946,20 +2964,34 @@ const SOON_PAGES = [
     /* 🚨 PRICES COME FROM THE DATABASE, NOT FROM THE CART. The cart holds slugs
        only. If it held prices, editing localStorage would be a discount code. */
     NSAccount.priceList(items).then(function(rows){
+      if(!rows.length){
+        /* Offline, or every slug has been withdrawn. Never an empty table that
+           reads as "your cart lost everything". */
+        $("cartItems").innerHTML = "<p class='dim' style='padding:20px 0'>" +
+          "Could not load your cart just now. It is still saved &mdash; " +
+          "try again in a moment.</p>";
+        $("cartTotal").textContent = "&mdash;";
+        return;
+      }
       var total = 0;
       $("cartItems").innerHTML = rows.map(function(r){
         total += r.price_cents;
-        return "<div style='display:flex;justify-content:space-between;align-items:center;" +
-               "gap:14px;padding:14px 0;border-bottom:1px solid var(--line)'>" +
-               "<div><b>" + r.title + "</b></div>" +
-               "<div style='display:flex;gap:14px;align-items:center'>" +
-               "<span class='dim'>" + money(r.price_cents) + "</span>" +
-               "<button class='btn ghost' style='padding:6px 12px;font-size:.8rem' " +
-               "data-rm='" + r.slug + "'>Remove</button></div></div>";
+        var img = NSAccount.cartThumb(r.slug);
+        return "<div class='ck-row'>" +
+          "<div class='ck-prod'>" +
+          (img ? "<img class='ck-thumb' src='" + img + "' alt='' width='74' height='74' loading='lazy'>"
+               : "<span class='ck-thumb ck-nothumb' aria-hidden='true'></span>") +
+          "<span class='ck-meta'><b>" + r.title + "</b>" +
+          "<span class='dim'>" + money(r.price_cents) + "</span></span></div>" +
+          /* 🚨 A BOX, NOT AN INPUT. A download is bought once; a stepper here
+             would be a way to pay twice for the same PDF. */
+          "<div class='ck-qty'><span class='ck-qbox'>1</span>" +
+          "<button class='ck-rm' type='button' data-rm='" + r.slug + "'>Remove</button></div>" +
+          "<div class='ck-line'>" + money(r.price_cents) + "</div></div>";
       }).join("");
       $("cartTotal").textContent = money(total);
       $("cartItems").querySelectorAll("[data-rm]").forEach(function(b){
-        b.onclick = function(){ NSAccount.cartRemove(b.dataset.rm); paint(); };
+        b.onclick = function(){ NSAccount.cartRemove(b.getAttribute("data-rm")); paint(); };
       });
     });
   }

@@ -4646,7 +4646,11 @@ var cdrawer=document.getElementById("cdrawer"),cscrim=document.getElementById("c
     cdN=document.getElementById("cdN"),cartn=document.getElementById("cartn"),
     cdClose=document.getElementById("cdClose");
 
-function nsMoney(c){ return c ? "$" + (c/100).toFixed(2) : "Free"; }
+/* 🚨 A REAL PRICE, NEVER THE WORD "Free". Paul, 2026-09-07: "subtotal should
+   not say free but $0 having an actual price." Kept identical to the cart
+   page's money() - one cart must not show two money formats depending on
+   whether you are looking at the drawer or the page. */
+function nsMoney(c){ return "$" + ((c||0)/100).toFixed(2); }
 
 function nsCartOpen(o){
   if(!cdrawer) return;

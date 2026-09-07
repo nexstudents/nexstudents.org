@@ -48,7 +48,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=608b5821">
+<link rel="stylesheet" href="/assets/ns.css?v=7c5fd4ed">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -1383,7 +1383,11 @@ var cdrawer=document.getElementById("cdrawer"),cscrim=document.getElementById("c
     cdN=document.getElementById("cdN"),cartn=document.getElementById("cartn"),
     cdClose=document.getElementById("cdClose");
 
-function nsMoney(c){ return c ? "$" + (c/100).toFixed(2) : "Free"; }
+/* 🚨 A REAL PRICE, NEVER THE WORD "Free". Paul, 2026-09-07: "subtotal should
+   not say free but $0 having an actual price." Kept identical to the cart
+   page's money() - one cart must not show two money formats depending on
+   whether you are looking at the drawer or the page. */
+function nsMoney(c){ return "$" + ((c||0)/100).toFixed(2); }
 
 function nsCartOpen(o){
   if(!cdrawer) return;
