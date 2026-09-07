@@ -893,8 +893,20 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    it. Left-aligned too, because a utility page reads as a document, not a
    poster. The h1 STAYS: it is small, not removed, so the page keeps its
    heading for a screen reader and for search. */
-.phead.ptight{padding-block:22px 26px;text-align:left}
-.phead.ptight h1{font-size:clamp(1.45rem,2.4vw,1.9rem);margin-top:10px;margin-bottom:0}
+.phead.ptight{padding-block:20px 20px;text-align:left;border-bottom:0}
+/* 🚨 THE H1 IS HIDDEN FROM THE EYE, NOT DELETED. Paul, 2026-09-07: "your
+   shopping cart text at the top is much smaller on their site verses ours. tell
+   me do we really want our costomer to scroll down at checkout" - no, and the
+   reference answers it outright: their h1 reads "Cart", is 40px/700, and
+   measures height 0 with visibility false. It exists only for a screen reader
+   and for search. The BREADCRUMB is the visible heading.
+   ⚠️ CLIP, NOT display:none. display:none drops it out of the accessibility
+   tree as well, so the page would have no heading at all for a screen reader -
+   which is the thing this markup is here to provide.
+   ⚠️ A cart is the last step before money. Every pixel above the table is a
+   pixel of scrolling between a customer and checking out. */
+.phead.ptight h1{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
 .phead.ptight .crumb{margin:0}
 .phead h1{font-size:clamp(2rem,4.6vw,3.3rem);margin-top:72px;margin-bottom:14px}
 .phead p{color:var(--dim);max-width:56ch;margin-inline:auto;margin-block:0;font-size:1.04rem}
