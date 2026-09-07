@@ -559,7 +559,12 @@ const navIcons = () =>
   '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" ' +
   'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
   '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></a>' +
-  '<a class="navicon" href="/cart/" aria-label="Cart" title="Cart">' +
+  /* 🚨 STILL A REAL LINK TO /cart/, AND THAT IS THE POINT. The script below
+     intercepts the click to open the drawer instead, but with JavaScript off,
+     or before it parses, this is an ordinary anchor that lands on the cart
+     page. A cart icon that only works once a script has run is a dead control
+     for the reader who arrives early. */
+  '<a class="navicon" id="cartLink" href="/cart/" aria-label="Cart" title="Cart">' +
   '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" ' +
   'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
   '<path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/>' +
@@ -880,6 +885,21 @@ function nsCartPaint(){
 }
 
 if(cdrawer){
+  /* 🚨 THE CART ICON OPENS THE DRAWER. Paul, 2026-09-07: "our right drawer
+     doesnt popout when you press the cart." It was a plain link to /cart/,
+     which worked but made the drawer reachable only by adding something.
+     ⚠️ MODIFIED CLICKS ARE LEFT ALONE. Ctrl-click, middle-click and shift-click
+     must still open the cart page in a tab or window - swallowing those breaks
+     an ordinary browser habit, and the href is right there for them to use.
+     It opens even on an empty cart: "Nothing in your cart yet" is an answer,
+     and a control that does nothing reads as broken. */
+  var cartLink=document.getElementById("cartLink");
+  if(cartLink) cartLink.addEventListener("click",function(e){
+    if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return;
+    e.preventDefault();
+    nsCartPaint();
+    nsCartOpen(true);
+  });
   cscrim.onclick=cdClose.onclick=function(){ nsCartOpen(false); };
   /* Escape closes it. A fixed overlay with no keyboard exit is a trap. */
   addEventListener("keydown",function(e){
