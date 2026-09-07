@@ -2808,25 +2808,36 @@ const SOON_PAGES = [
      (ROADMAP 7) exists, so these say where things stand instead of being
      buttons that ignore you. */
   { dir: "account", active: "p",
-    title: "Sign In | NexStudents",
-    desc: "Sign in to keep your progress and everything you have taken.",
-    crumb: "Sign In", h1: "Sign In.",
-    lead: "One email, one link, no password. Your purchases and progress follow you.",
+    title: "Sign In or Create an Account | NexStudents",
+    desc: "One email, one link. New here or coming back, it is the same box.",
+    crumb: "Account", h1: "Sign In or Create an Account.",
+    lead: "One email, one link, no password. New here? The same box makes your account.",
     body: `<div class="band"><div class="wrap" style="max-width:560px">
 
   <!-- 🚨 MAGIC LINK, NO PASSWORD FIELD. There is nothing to forget, nothing to
        reset, and no password for this site to store or leak. Signing in and
        signing up are the SAME action -- create_user is true -- so there is no
-       separate register form to get out of step with this one. -->
+       separate register form to get out of step with this one.
+
+       🚨 BUT THE PAGE HAS TO SAY SO. Paul, 2026-09-07: "this sign in also needs
+       a signup." He was right about the page even though the mechanism was
+       already there: a first-time visitor reads "Sign in" and assumes an
+       account has to exist first, so the one box that would have made them one
+       looks like a door they cannot open.
+       ⚠️ THE FIX IS WORDING, NOT A SECOND FORM. Adding a separate register form
+       would recreate exactly the drift this design avoids - two forms, one
+       backend, guaranteed to disagree eventually. -->
   <div class="card" id="signedOut" style="text-align:center">
-    <h2 style="margin-top:0">Sign in</h2>
-    <p class="dim">Type your email and we send you a link. No password to remember.</p>
+    <h2 style="margin-top:0">Sign in or create an account</h2>
+    <p class="dim">Type your email and we send you a link. If you have never been
+      here before, that link makes your account. No password either way.</p>
     <form id="siForm" autocomplete="on">
       <input type="email" id="siEmail" required autocomplete="email"
              placeholder="you@example.com" aria-label="Your email"
              style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
                     background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
-      <div style="text-align:center"><button class="btn" type="submit" style="margin-top:12px">Email me a link</button></div>
+      <!-- Title Case on the control, sentence case in the prose above it. -->
+      <div style="text-align:center"><button class="btn" type="submit" style="margin-top:12px">Email Me a Link</button></div>
     </form>
     <p class="dim" id="siMsg" style="font-size:.9rem;margin:14px 0 0"></p>
     <p class="dim" style="font-size:.85rem;margin:18px 0 0">
