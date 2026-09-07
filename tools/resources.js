@@ -205,12 +205,12 @@ const RESOURCES = [
   url: "https://www.thinkwellhomeschool.com/pages/placement-tests",
   cost: "Free",
   affiliate: false,
-  what: "Maths placement, from arithmetic up through the high school sequence.",
+  what: "Math placement, from arithmetic up through the high school sequence.",
   why:
-    "Maths is the subject where placing wrong hurts most, because every topic sits on the one before it. " +
+    "Math is the subject where placing wrong hurts most, because every topic sits on the one before it. " +
     "A student put a year too high spends that year quietly failing to follow, and the gap that caused " +
     "it never gets filled. This is the cheapest way to find the real floor.",
-  note: "Maths only. Pair it with one of the ELA tests above.",
+  note: "Math only. Pair it with one of the ELA tests above.",
 },
 {
   slug: "aop-placement",

@@ -1381,9 +1381,9 @@ const LESSONS = [
   id: "maths/a-plan-for-problem-solving",
   slug: "a-plan-for-problem-solving",
   title: "A Plan for Problem Solving",
-  unit: "Maths &middot; Chapter 1 &middot; Lesson 1-1",
+  unit: "Math &middot; Chapter 1 &middot; Lesson 1-1",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 1 },
-  shelf: { grades: [7], subject: "Maths",
+  shelf: { grades: [7], subject: "Math",
     blurb: "Four steps that work on any problem, including the ones nobody sets you.",
     contains: [
       "The four steps, explained one at a time as the lesson reads",
@@ -1391,7 +1391,7 @@ const LESSONS = [
       "An estimate you have to commit to before the page will let you calculate",
       "Fourteen questions, including one that can't be looked up",
     ] },
-  eyebrow: ["Maths", "Chapter 1 &middot; Lesson 1-1", "Tools for Problem Solving"],
+  eyebrow: ["Math", "Chapter 1 &middot; Lesson 1-1", "Tools for Problem Solving"],
   dek: "Anyone can do the arithmetic once someone hands them the sum. The hard part is working out what the sum is.",
   scripture: {
     ref: "Proverbs 14:15",
@@ -2102,9 +2102,9 @@ const LESSONS = [
   id: "maths/estimation-using-rounding",
   slug: "estimation-using-rounding",
   title: "Estimation Strategy: Using Rounding",
-  unit: "Maths &middot; Chapter 1 &middot; Lesson 1-2",
+  unit: "Math &middot; Chapter 1 &middot; Lesson 1-2",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 2 },
-  shelf: { grades: [7], subject: "Maths",
+  shelf: { grades: [7], subject: "Math",
     blurb: "Rounding turns a messy sum into a fast, close-enough answer you can trust.",
     contains: [
       "Mark's computer fund-raiser, rounded to the nearest hundred dollars",
@@ -2112,7 +2112,7 @@ const LESSONS = [
       "A grocery receipt checked for a cashier's mistake",
       "Twelve questions, including one straight off the book's own exercises",
     ] },
-  eyebrow: ["Maths", "Chapter 1 &middot; Lesson 1-2", "Tools for Problem Solving"],
+  eyebrow: ["Math", "Chapter 1 &middot; Lesson 1-2", "Tools for Problem Solving"],
   dek: "You don't always need the exact answer. You need one close enough to plan with, and you need it fast.",
 
   ground: {
@@ -2292,9 +2292,9 @@ const LESSONS = [
   id: "maths/estimation-using-patterns",
   slug: "estimation-using-patterns",
   title: "Estimation Strategy: Using Patterns",
-  unit: "Maths &middot; Chapter 1 &middot; Lesson 1-3",
+  unit: "Math &middot; Chapter 1 &middot; Lesson 1-3",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 3 },
-  shelf: { grades: [7], subject: "Maths",
+  shelf: { grades: [7], subject: "Math",
     blurb: "One easy multiplication or division fact, stretched into an estimate for a much bigger one.",
     contains: [
       "29,000 truckloads of rock, estimated with a pattern instead of long multiplication",
@@ -2302,7 +2302,7 @@ const LESSONS = [
       "Ub Iwerks and the 14,400 pictures he drew for Steamboat Willie",
       "Twelve questions, from small facts to genuinely large numbers",
     ] },
-  eyebrow: ["Maths", "Chapter 1 &middot; Lesson 1-3", "Tools for Problem Solving"],
+  eyebrow: ["Math", "Chapter 1 &middot; Lesson 1-3", "Tools for Problem Solving"],
   dek: "Once you know one small multiplication fact, patterns let you estimate huge ones in your head.",
 
   ground: {
@@ -2475,9 +2475,9 @@ const LESSONS = [
   id: "maths/determine-reasonable-answers",
   slug: "determine-reasonable-answers",
   title: "Problem-Solving Strategy: Determine Reasonable Answers",
-  unit: "Maths &middot; Chapter 1 &middot; Lesson 1-4",
+  unit: "Math &middot; Chapter 1 &middot; Lesson 1-4",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 4 },
-  shelf: { grades: [7], subject: "Maths",
+  shelf: { grades: [7], subject: "Math",
     blurb: "A calculator can be wrong. Estimating first is how you catch it.",
     contains: [
       "Jordan's raise, checked against an estimate before trusting the calculator",
@@ -2485,7 +2485,7 @@ const LESSONS = [
       "A grocery trip where rounding decides how much cash to bring",
       "Twelve questions built to catch the same kind of mistake a calculator can't",
     ] },
-  eyebrow: ["Maths", "Chapter 1 &middot; Lesson 1-4", "Tools for Problem Solving"],
+  eyebrow: ["Math", "Chapter 1 &middot; Lesson 1-4", "Tools for Problem Solving"],
   dek: "A calculator gives you an answer instantly. It won't tell you if that answer is wrong.",
 
   ground: {

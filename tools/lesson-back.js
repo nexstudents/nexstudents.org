@@ -20,8 +20,8 @@
    target does not exist.
 
    The rule:
-     one grade   ->  /grade-<n>/<subject>/lessons/   "4th Grade Maths"
-     many grades ->  /<subject>/lessons/             "Maths"
+     one grade   ->  /grade-<n>/<subject>/lessons/   "4th Grade Math"
+     many grades ->  /<subject>/lessons/             "Math"
      L.back      ->  overrides both, for the rare lesson that needs it
 
    ⚠️ Multi-grade genuinely has no single shelf to return to. The subject

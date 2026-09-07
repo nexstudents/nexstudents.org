@@ -17,7 +17,7 @@ const { MATH } = require("./math-lessons.js");
 /* Same nav as every other page. Paul, 2026-08-26: a lesson with no way back
    into the site is what stops it feeling like a website. */
 const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
-/* The shared field, arrow and key-panel rules. Maths keeps its own stepping
+/* The shared field, arrow and key-panel rules. Math keeps its own stepping
    engine - a step here drives the division animation, not just narration - but
    the CHROME is identical to every other lesson. Paul, 2026-08-29. */
 const player = require("./voice-player.js");

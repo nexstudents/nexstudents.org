@@ -86,7 +86,7 @@ if (deindexed.length) {
    NexStudents as available", then "you might to remember to put things on the
    shelf ... you tend to forget that a lot."
    Shipping a lesson is two steps: build the page, then wire its slug into the
-   course outline so the pager links it. Only the first was being done. Maths 1-1
+   course outline so the pager links it. Only the first was being done. Math 1-1
    was live, correct and reachable by URL while /grade-7/maths/lessons/ - the
    shelf a student actually opens - still showed it as Coming Soon.
    NOTHING FAILED. Every generator succeeded, every link resolved, the live URL

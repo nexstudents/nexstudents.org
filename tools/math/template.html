@@ -22,7 +22,7 @@ h1{margin:0 0 6px}
 .section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
 
 /* The reading player CSS comes from lesson-template.html via voice-player.js.
-   Maths does not style the player - one player, one stylesheet. */
+   Math does not style the player - one player, one stylesheet. */
 /* ---- the division grid ---- */
 .gridwrap{overflow-x:auto;padding:6px 0}
 .dgrid{display:grid;gap:0;justify-content:start;
@@ -399,7 +399,7 @@ function paintDemo(upto){
       if (k === upto) cell.classList.add("drop");
     }
   }
-  /* ⚠️ The position line belongs to the PLAYER now. Maths used to own a
+  /* ⚠️ The position line belongs to the PLAYER now. Math used to own a
      #stepPos of its own and write "Step 3 of 13" into it; with the shared
      markup that element is gone and the variable resolved to the players own
      #pos instead, so maths quietly overwrote "Sentence 3 of 13" on every
@@ -411,7 +411,7 @@ function paintDemo(upto){
    system from history into math. i like those markers you can select and jump
    around we can use them for math too."
 
-   Maths used to run its own narrator. It is gone. The captions are handed to
+   Math used to run its own narrator. It is gone. The captions are handed to
    the shared engine as sentences, so maths gets the identical thing history
    has: back and forward, the scrub bar you can click to jump to any step, the
    same voices, the same key panel, the resume position and the keyboard.

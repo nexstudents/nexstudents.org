@@ -1594,7 +1594,7 @@ function applyTheme(){
   [].forEach.call(document.querySelectorAll(".sw"), function(b){
     b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
   });
-  /* Maths and English map the same palette onto ns.css names (--bg, --panel,
+  /* Math and English map the same palette onto ns.css names (--bg, --panel,
      --fg) rather than the history names. They hang their own mapper here, so
      one set of swatches drives every page instead of each template building a
      second row of its own. */
@@ -2561,7 +2561,7 @@ function paint(){
   playBtn.innerHTML = playing ? "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.5h3.1v11H4zM8.9 2.5H12v11H8.9z\"/></svg>" : "<svg width=\"17\" height=\"17\" viewBox=\"0 0 16 16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2.2l9 5.8-9 5.8z\"/></svg>";
   playBtn.setAttribute("aria-label", playing ? "Pause" : "Read to me");
   playBtn.setAttribute("title", playing ? "Pause" : "Read to me");
-  /* A lesson can hang something off the current sentence. Maths uses it to
+  /* A lesson can hang something off the current sentence. Math uses it to
      draw its division grid up to this step, so the worked example and the
      narration move together instead of being two separate players. Generic,
      so science gets it free. */

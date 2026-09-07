@@ -24,7 +24,7 @@
    🚨 `partsFor()` is called by build-lessons.js, build-english.js AND
    bake-voice.js. That is the whole point: the sentences on the page and the
    sentences in the audio come out of ONE function, so the voice can never read
-   instructions the page does not show. Maths does the same thing through
+   instructions the page does not show. Math does the same thing through
    captions() in math-captions.js.
    ───────────────────────────────────────────────────────────────────────── */
 "use strict";

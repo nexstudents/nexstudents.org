@@ -139,7 +139,7 @@ function lessons() {
       list.push({ id: L.id, sentences: sentencesFor(L) });
     });
   } catch (e) { fail("integers-lessons.js: " + e.message); }
-  /* Maths used to be impossible to bake: its sentences were computed in the
+  /* Math used to be impossible to bake: its sentences were computed in the
      browser and existed nowhere on disk. tools/math-captions.js moved that
      arithmetic into the build, so the narration can be read here and spoken in
      the same order the page will say it. */

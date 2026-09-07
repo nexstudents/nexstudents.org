@@ -114,7 +114,7 @@ const SHEETS = [
    Beat Your Best Time footer. So the page steps tell the student how to RUN a
    drill; they do not repeat what is printed on the sheet. */
 {
-  slug: "multiplication-drill-100", subject: "Maths", grade: 4,
+  slug: "multiplication-drill-100", subject: "Math", grade: 4,
   kind: "pdf", file: "multiplication-drill-100.pdf", tagline: "Speed Drill",
   title: "100 Multiplication Facts: Speed Drill",
   dek: "One hundred multiplication facts on a single page, timed. Five minutes is the target, not the rule.",
@@ -137,7 +137,7 @@ const SHEETS = [
 },
 
 {
-  slug: "division-drill-100", subject: "Maths", grade: 4,
+  slug: "division-drill-100", subject: "Math", grade: 4,
   kind: "pdf", file: "division-drill-100.pdf", tagline: "Speed Drill",
   title: "100 Division Facts: Speed Drill",
   dek: "One hundred division facts on a single page, timed. The same five minute target as the multiplication drill.",

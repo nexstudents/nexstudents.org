@@ -2,7 +2,7 @@
    THE READING PLAYER, IN ONE PLACE.
 
    🚨 THIS FILE EXISTS BECAUSE I BUILT THE PLAYER THREE TIMES AND GOT IT WRONG
-   THREE TIMES. Maths got its own stepped narrator, the states game got a bad
+   THREE TIMES. Math got its own stepped narrator, the states game got a bad
    device voice, and the first English lesson got a bare speechSynthesis loop.
    Paul, 2026-08-29: "i also dont understand why you dont use the same ai voice
    model that we have been using for the history lesson in our english lessons?

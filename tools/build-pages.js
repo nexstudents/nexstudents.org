@@ -702,7 +702,7 @@ const empty = (line) => `<div class="band"><div class="wrap">
 /* ── THE HOME RAIL ────────────────────────────────────────────────────────
    Free first, then paid, so the strongest thing the site has leads. Only ever
    what exists - see tools/add-home-rail.js for what this replaced. */
-const SUBJ_TOKEN = { English: "english", History: "history", Maths: "maths", Science: "science" };
+const SUBJ_TOKEN = { English: "english", History: "history", Math: "maths", Science: "science" };
 
 const railCard = (x) => {
   const free = (x.price || "$0") === "$0";
@@ -728,13 +728,13 @@ const railCards = () => {
 };
 
 /* 🚨 THE RAIL'S SUBJECT ORDER IS PAUL'S AND IS DELIBERATELY NOT `SUBJECTS`.
-   Everywhere else the site runs English, History, Maths, Science -- nav.js SUBJECTS,
-   and CLAUDE.md calls that order fixed. Paul asked for English, Maths, History,
+   Everywhere else the site runs English, History, Math, Science -- nav.js SUBJECTS,
+   and CLAUDE.md calls that order fixed. Paul asked for English, Math, History,
    Science on THIS row, 2026-09-06. Do not "correct" it back to match the nav, and do
-   not change the nav to match this. The label stays "Maths": he typed "math", but the
-   nav, the mega menu and every /maths/ URL say Maths, and one row disagreeing with
+   not change the nav to match this. The label stays "Math": he typed "math", but the
+   nav, the mega menu and every /maths/ URL say Math, and one row disagreeing with
    the site's own vocabulary is worse than a spelling he did not mean literally. */
-const RAIL_SUBJECT_ORDER = ["English", "Maths", "History", "Science"];
+const RAIL_SUBJECT_ORDER = ["English", "Math", "History", "Science"];
 
 /* 🚨 TWO INDEPENDENT SELECTORS, COMBINED WITH AND. NOT ONE ROW OF SEVEN.
    Paul, 2026-09-06: "instead of everything and free its more like a selector so show
@@ -1002,8 +1002,8 @@ LESSONS.forEach(l => {
 /* Derived from worksheets.js, the same file build-worksheets.js renders the
    sheets from, so a sheet and its shelf card can never disagree. */
 const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
-  href: "/worksheets/" + w.subject.toLowerCase() + "/" + w.slug + "/",
-  id: w.subject.toLowerCase() + "/" + w.slug,
+  href: "/worksheets/" + SUBJ_TOKEN[w.subject] + "/" + w.slug + "/",
+  id: SUBJ_TOKEN[w.subject] + "/" + w.slug,
   subject: w.subject, grade: w.grade,
   /* A blank sheet serves more than one year. grades is every shelf it belongs
      on; grade stays the primary one, so nothing that reads it has to change. */
@@ -1011,14 +1011,14 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
   /* A blank sheet has no answer key, so it says so rather than claiming one. */
   unit: w.unit || "Printable &middot; answer key included",
   title: w.title, blurb: w.blurb, contains: w.contains,
-  thumb: w.thumb ? "/worksheets/" + w.subject.toLowerCase() + "/" + w.slug + "/thumb.jpg" : null,
+  thumb: w.thumb ? "/worksheets/" + SUBJ_TOKEN[w.subject] + "/" + w.slug + "/thumb.jpg" : null,
   meta: "Print or Download", price: w.price,
 }));
 
 /* The core subjects, in the order they appear everywhere on the site.
    `live` gates whether the subject gets its own pages: a subject with nothing
    in it gets a Soon badge and no link, rather than three empty pages. */
-/* Fixed order, alphabetical: English, History, Maths, Science. Paul,
+/* Fixed order, alphabetical: English, History, Math, Science. Paul,
    2026-08-26. It used to sort live subjects to the top, which meant the list
    reshuffled itself every time something went live.
 
@@ -1665,7 +1665,7 @@ const yearOutline = (g) => {
       u.count++;
     }
   }
-  const ORDER = ["English", "History", "Maths", "Science"];
+  const ORDER = ["English", "History", "Math", "Science"];
   const cols = ORDER.map((subject) => {
     const list = Object.values(seen)
       .filter((u) => u.subject === subject)
@@ -1786,7 +1786,7 @@ const COURSE_SHELVES = [
   { grade: 7, subject: "English", units: () => englishPager(GRADE7) },
   /* Grade 7 maths, Glencoe Course 2 - 14 chapters, structure only for now. Paul,
      2026-09-03: "for now i just want the strcuture". */
-  { grade: 7, subject: "Maths",   units: () => mathsPager(COURSE2) },
+  { grade: 7, subject: "Math",   units: () => mathsPager(COURSE2) },
   /* Grade 7 science, Merrill Life Science 1994 — 28 chapters, 106 sections.
      Chapter 1 is the only complete one: all four of its sections are built, in
      Paul's own words. Added 2026-09-04, the day science stopped being the one
@@ -1931,14 +1931,14 @@ const GAMES = [
   { title: "Show Me The States", href: "/games/show-me-the-states/", subject: "History",
     blurb: "Drag all fifty states onto the map against the clock, then place the capitals. Warm and cold guides you, and the map colours in by region as you go.",
     note: "Three levels &middot; 50 states &middot; 50 capitals" },
-  { title: "Speed Run Math", href: "/games/speed-run-math/", subject: "Maths",
+  { title: "Speed Run Math", href: "/games/speed-run-math/", subject: "Math",
     blurb: "A timed multiplication drill. Pick the tables you want to work on, answer against the clock, and earn a rank from Recruit to Pilot.",
     note: "Choose your tables &middot; 2 to 10 minutes" },
   /* Names are Title Case, matching their own pages and the nav. Every one has
      a page explaining what the game is for — none of them is a dead label. */
-  { title: "Remainder Race", href: "/games/remainder-race/", subject: "Maths", soon: true,
+  { title: "Remainder Race", href: "/games/remainder-race/", subject: "Math", soon: true,
     blurb: "Division where the leftover is the answer, not a mistake. Follows the Long Division lesson." },
-  { title: "Fraction Match", href: "/games/fraction-match/", subject: "Maths", soon: true,
+  { title: "Fraction Match", href: "/games/fraction-match/", subject: "Math", soon: true,
     blurb: "Spot that 2/4, 3/6 and 1/2 are the same number wearing different clothes." },
   { title: "Spelling Ladder", href: "/games/spelling-ladder/", subject: "English", soon: true,
     blurb: "Climb a word one letter at a time, drawn from the week's own spelling list." },
@@ -2048,7 +2048,7 @@ const EXTRAS = [
    page exists: built, printable from Leif, or not written yet. A parent
    reading this must never be sent to a lesson that does not exist
    -> [[feedback-never-assign-an-unbuilt-lesson]]. */
-const SUBJ_ABBR = { Maths: "M", Science: "S", English: "E", History: "H" };
+const SUBJ_ABBR = { Math: "M", Science: "S", English: "E", History: "H" };
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const prettyDate = (iso) => {
   const p = iso.split("-");
@@ -2115,7 +2115,7 @@ const yearPlanBody = () => {
     }
   }
 
-  const SUBJECT_ORDER = ["English", "History", "Maths", "Science"];
+  const SUBJECT_ORDER = ["English", "History", "Math", "Science"];
   const units = SUBJECT_ORDER.filter((s) => bySubject[s]).map((subject) => {
     const list = Object.values(bySubject[subject]).sort((a, b) => a.first - b.first);
     const blocks = list.map((u) => {
@@ -2210,7 +2210,7 @@ const pages = [
     title: "Worksheets | NexStudents",
     desc: "Every free worksheet and term packet, all grades and subjects, in one place.",
     crumb: "Worksheets", h1: "Every Sheet, in One Place.",
-    lead: "Free printables and term packets across English, History, Maths and Science. Filter by grade, by subject, or by whether it costs anything. Answer keys are always included free.",
+    lead: "Free printables and term packets across English, History, Math and Science. Filter by grade, by subject, or by whether it costs anything. Answer keys are always included free.",
     body: empty("The shelf is being built. 7th grade goes up first, then the grades either side of it.") },
 
   /* ⭐ EXTRAS — Paul, 2026-09-03. The home for anything outside the four
@@ -2226,7 +2226,7 @@ const pages = [
   /* The year plan. Linked from the grade 7 page; see yearPlanBody above. */
   { dir: "grade-7/plan", active: null, pclass: "termshead",
     title: "7th Grade Year Plan | NexStudents",
-    desc: "The whole 7th grade year on real dates: 36 weeks, Monday to Thursday, every lesson in order across English, History, Maths and Science.",
+    desc: "The whole 7th grade year on real dates: 36 weeks, Monday to Thursday, every lesson in order across English, History, Math and Science.",
     crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Year Plan',
     h1: "The 7th Grade Year, Week by Week.",
     lead: "Four subjects, 36 weeks, Monday to Thursday. Every lesson in the order it should be taught, with the holidays and breaks already taken out.",
@@ -2480,25 +2480,25 @@ const pages = [
     count: countLabel(sheetsBySubject("History").length, "sheet", "sheets") + " available", body: subjectSheets("History") },
 
   { dir: "maths", active: "w",
-    title: "Maths | NexStudents",
-    desc: "Maths lessons and worksheets, worked through on screen.",
-    crumb: "Maths", h1: "Maths.",
+    title: "Math | NexStudents",
+    desc: "Math lessons and worksheets, worked through on screen.",
+    crumb: "Math", h1: "Math.",
     lead: "Practice that teaches, without punishing a student for getting things wrong. Lessons are worked through on screen with the explanation read aloud; worksheets get printed.",
-    body: subjectLanding("Maths") },
+    body: subjectLanding("Math", SUBJ_TOKEN["Math"]) },
 
   { dir: "maths/lessons", active: "w",
-    title: "Maths Lessons | NexStudents",
+    title: "Math Lessons | NexStudents",
     desc: "Every maths lesson on NexStudents, worked through on screen.",
-    crumb: '<a href="/maths/">Maths</a> &rsaquo; Lessons', h1: "Maths Lessons.",
+    crumb: '<a href="/maths/">Math</a> &rsaquo; Lessons', h1: "Math Lessons.",
     lead: "Each one opens straight away. The method is read aloud one step at a time, with a full worked example, and the questions send your student back into the steps rather than leaving them to guess.",
-    count: countLabel(bySubject("Maths").length, "lesson", "lessons") + " available", body: subjectLessons("Maths") },
+    count: countLabel(bySubject("Math").length, "lesson", "lessons") + " available", body: subjectLessons("Math") },
 
   { dir: "maths/worksheets", active: "w",
-    title: "Maths Worksheets | NexStudents",
+    title: "Math Worksheets | NexStudents",
     desc: "Printable maths worksheets and practice sets.",
-    crumb: '<a href="/maths/">Maths</a> &rsaquo; Worksheets', h1: "Maths Worksheets.",
+    crumb: '<a href="/maths/">Math</a> &rsaquo; Worksheets', h1: "Math Worksheets.",
     lead: "Printables and practice sets for working on paper. Answer keys are always included free.",
-    count: countLabel(sheetsBySubject("Maths").length, "sheet", "sheets") + " available", body: subjectSheets("Maths") },
+    count: countLabel(sheetsBySubject("Math").length, "sheet", "sheets") + " available", body: subjectSheets("Math") },
 
   /* Three new top-level pages, 2026-08-26. Real pages from the start, even
      while two of them are empty, because a nav link to nowhere is worse than
@@ -2903,7 +2903,7 @@ let newHome = home.slice(0, a) + picker + home.slice(b);
 
 /* ⚠️ THE HOME SUBJECT-TILE SPLICE WAS DELETED HERE, 2026-09-06, WITH ITS MARKUP.
    It generated `<div class="subs">` — four tiles, 01 English / 02 History /
-   03 Maths / 04 Science — from SUBJECTS. Paul removed the section: "since we have
+   03 Math / 04 Science — from SUBJECTS. Paul removed the section: "since we have
    the worksheets we dont need that section", the worksheets shelf now carrying a
    Subject selector that does the same job with real cards.
    🚨 IT HAD TO GO IN THE SAME CHANGE. The splice began with a hard
@@ -3155,7 +3155,7 @@ newHome = newHome
   .split('data-f="ela">ELA<').join('data-f="ela">English<')
   .split("<em>ELA</em>").join("<em>English</em>")
   .split('<li><a href="/worksheets/">ELA</a></li>').join('<li><a href="/english/">English</a></li>')
-  .split("across ELA, History, Science and Maths").join("across English, History, Maths and Science");
+  .split("across ELA, History, Science and Math").join("across English, History, Math and Science");
 if (newHome !== home) fs.writeFileSync(homeFile, newHome, "utf8");
 
 /* ELA became English on 2026-08-26. Anything already pointing at /ela/ - a

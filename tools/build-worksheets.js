@@ -36,6 +36,22 @@ const CSS_V = require("crypto")
   .update(fs.readFileSync(path.join(ROOT, "assets/worksheet.css")))
   .digest("hex").slice(0, 8);
 
+/* 🚨 THE URL IS NOT THE LABEL. Every worksheet path used to be built with
+   `subjSlug(s.subject)`, in nine places, so the DISPLAY NAME was also the
+   FOLDER NAME. Renaming the subject label therefore moved
+   /worksheets/maths/... to /worksheets/math/... and broke every link to it.
+   Found the hard way on 2026-09-06 while renaming Math to Math.
+   The slug is now looked up, so a label can be changed without moving a single
+   file. ⚠️ Math stays mapped to "maths" until the directories are actually
+   migrated with redirects -- the ELA to English recipe in build-pages.js. */
+const SUBJ_SLUG = { English: "english", History: "history",
+                    Math: "maths", Science: "science" };
+const subjSlug = (name) => {
+  const v = SUBJ_SLUG[name];
+  if (!v) { console.error("FAIL: no URL slug for subject " + name); process.exit(1); }
+  return v;
+};
+
 /* Print is the solid button and Download is the outlined one, in that order of
    weight: these are sheets whose whole purpose is to come out of a printer.
    Download is the second door, for saving the PDF once and printing it again
@@ -78,7 +94,7 @@ const gradeWord = (g) => (g === "K" || g === "k")
 /* EIGHT worksheet shapes each wrote their own <head>, so the canonical was
    pasted eight times and the share card would have been too. One helper. */
 function sheetHead(s) {
-  const url = "/worksheets/" + s.subject.toLowerCase() + "/" + s.slug + "/";
+  const url = "/worksheets/" + subjSlug(s.subject) + "/" + s.slug + "/";
   const back = backTarget(s);
   return [
     '<link rel="canonical" href="https://nexstudents.org' + url + '">',
@@ -89,7 +105,7 @@ function sheetHead(s) {
 }
 
 function backTarget(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);
   const grades = s.grades && s.grades.length ? s.grades : [s.grade];
   let href, label;
   if (grades.length === 1 && grades[0] != null) {
@@ -126,7 +142,7 @@ function buyBlock(s) {
    every question and every answer key are simply not in this file. Hiding
    them with CSS would ship them to anyone who opens the page source. */
 function bundleHtml(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -215,7 +231,7 @@ ${navScript()}
    student reads 1-2-3-4-5 down the left before crossing to 6. The CSS grid
    fills across, so the markup is interleaved 1,6,2,7 to come out right. */
 function blankHtml(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);
   const half = Math.ceil(s.count / 2);
   const cells = [];
   for (let i = 0; i < half; i++) {
@@ -302,7 +318,7 @@ ${navScript()}
    press Print, get that sheet. The PDF is built with ?print=all so the
    download is the whole year while the button stays one page. */
 function flashHtml(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);
   const { WEEKS } = require("./" + s.source);
 
   const picker = WEEKS.map((w) =>
@@ -437,7 +453,7 @@ ${navScript()}
 }
 
 function sheetHtml(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -447,7 +463,7 @@ ${sheetHead(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} | NexStudents</title>
-<meta name="description" content="A printable grade ${s.grade} ${s.subject.toLowerCase()} worksheet. ${s.blurb}">
+<meta name="description" content="A printable grade ${s.grade} ${subjSlug(s.subject)} worksheet. ${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
 </head>
@@ -536,7 +552,7 @@ ${navScript()}
    the sheet gets the same nav, the same canonical and the same print behaviour
    as every other printable. */
 function handwritingHtml(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -635,7 +651,7 @@ ${navScript()}
 
    `file` is the image beside index.html. `steps` is the instruction list. */
 function imageHtml(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);
   const gradeLabel = s.grade === "K" ? "Kindergarten" : "Grade " + s.grade;
   return `<!doctype html>
 <html lang="en">
@@ -752,7 +768,7 @@ ${navScript()}
    phones that refuse to render PDFs inline - which is most of them. The
    fallback is the thumbnail plus the same two buttons, never a blank box. */
 function pdfHtml(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);
   const gradeLabel = s.grade === "K" ? "Kindergarten" : "Grade " + s.grade;
   return `<!doctype html>
 <html lang="en">
@@ -838,7 +854,7 @@ ${navScript()}
 
 const written = [];
 for (const s of SHEETS) {
-  const dir = path.join(ROOT, "worksheets", s.subject.toLowerCase(), s.slug);
+  const dir = path.join(ROOT, "worksheets", subjSlug(s.subject), s.slug);
   fs.mkdirSync(dir, { recursive: true });
 
   /* GUARD: a paid item must never have its PDF sitting in the repo. GitHub

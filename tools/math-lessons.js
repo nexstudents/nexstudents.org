@@ -32,9 +32,9 @@ const MATH = [
   slug: "long-division",
   title: "Long Division",
   unit: "Foundations &middot; Unit 0 &middot; Lesson 1",
-  /* Maths starts in grade 6 on purpose: the foundations unit is the catch-up
+  /* Math starts in grade 6 on purpose: the foundations unit is the catch-up
      set that grade 7 leans on. See tools/curriculum/. */
-  shelf: { grades: [4], subject: "Maths",
+  shelf: { grades: [4], subject: "Math",
     blurb: "Divide, multiply, subtract, bring down. Worked through one digit at a time.",
     contains: [
       "A worked example that fills the bracket in step by step, read aloud",
@@ -71,7 +71,7 @@ const MATH = [
      grades - a 5th grade version needs its own 2-digit-divisor content, not
      this same problem set relisted. See the note in build-math.js's check()
      comment for why that is a bigger lift than swapping the divisors list. */
-  shelf: { grades: [4], subject: "Maths",
+  shelf: { grades: [4], subject: "Math",
     blurb: "Divide, multiply, subtract, bring down. This time something's left over at the end.",
     contains: [
       "A worked example that doesn't come out even, read aloud",

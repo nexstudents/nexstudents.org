@@ -45,7 +45,7 @@ const INTEGERS = [
   slug: "adding-integers",
   title: "Adding Integers",
   unit: "Integers &middot; Unit 1 &middot; Lesson 1",
-  eyebrow: ["Maths", "Unit 1 &middot; Lesson 1", "Integers"],
+  eyebrow: ["Math", "Unit 1 &middot; Lesson 1", "Integers"],
   dek: "Two rules cover every addition. Which one you use depends on whether the signs match.",
   /* ⚠️ GRADE 6, not 7, and the reasoning is worth keeping because the
      standard disagrees.
@@ -64,7 +64,7 @@ const INTEGERS = [
      🚨 7th grade maths is pre-algebra: 7.EE two-step equations, 7.RP
      proportions and percent, 7.G circles and scale. That is what belongs on
      the grade 7 shelf, and it is currently empty of it. */
-  shelf: { grades: [6], subject: "Maths",
+  shelf: { grades: [6], subject: "Math",
     blurb: "Two rules cover every case. Which one you use depends on whether the signs match.",
     contains: [
       "Teacher Notes: the exact mistake to watch for, and what to say",
@@ -166,7 +166,7 @@ const INTEGERS = [
   slug: "subtracting-integers",
   title: "Subtracting Integers",
   unit: "Integers &middot; Unit 1 &middot; Lesson 2",
-  eyebrow: ["Maths", "Unit 1 &middot; Lesson 2", "Integers"],
+  eyebrow: ["Math", "Unit 1 &middot; Lesson 2", "Integers"],
   dek: "No new arithmetic. Turn every subtraction into an addition, then use the rules you already have.",
   /* ⚠️ GRADE 6, not 7, and the reasoning is worth keeping because the
      standard disagrees.
@@ -185,7 +185,7 @@ const INTEGERS = [
      🚨 7th grade maths is pre-algebra: 7.EE two-step equations, 7.RP
      proportions and percent, 7.G circles and scale. That is what belongs on
      the grade 7 shelf, and it is currently empty of it. */
-  shelf: { grades: [6], subject: "Maths",
+  shelf: { grades: [6], subject: "Math",
     blurb: "No new arithmetic. Turn it into an addition, then use the rules you already have.",
     contains: [
       "Teacher Notes: why this is one step and not two",

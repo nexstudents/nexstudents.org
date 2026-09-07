@@ -87,7 +87,7 @@ const SUBJECTS = [
      is worksheets, and no Biblical history strand is built. Same wording was on /history/. */
   { name: "History", slug: "history", live: true,
     blurb: "Rome to the Reformation on screen, with American history on the worksheet shelf." },
-  { name: "Maths", slug: "maths", live: true,
+  { name: "Math", slug: "maths", live: true,
     blurb: "Practice that teaches, without punishing a student for getting things wrong." },
   /* Live from 2026-08-30, when the first science worksheet shipped (Newton's
      Three Laws of Motion, grade 8). Every grade had a science worksheets page
@@ -195,7 +195,7 @@ const MENUS = {
        says what the game will be and what it is for, rather than a dead label.
        Paul, 2026-08-29: "i want this the entire site." */
     body: '<div class="mg-cols">' +
-      col("Maths", [{ label: "Speed Run Math", href: "/games/speed-run-math/" },
+      col("Math", [{ label: "Speed Run Math", href: "/games/speed-run-math/" },
                { label: "Remainder Race", href: "/games/remainder-race/" },
                { label: "Fraction Match", href: "/games/fraction-match/" }]) +
       col("English", [{ label: "Spelling Ladder", href: "/games/spelling-ladder/" },

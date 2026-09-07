@@ -53,7 +53,7 @@ patch("build-worksheets.js", "const written = [];\nfor (const s of SHEETS) {", `
    the sheet gets the same nav, the same canonical and the same print behaviour
    as every other printable. */
 function handwritingHtml(s) {
-  const subjectSlug = s.subject.toLowerCase();
+  const subjectSlug = subjSlug(s.subject);   /* not toLowerCase: the label is not the URL */
   return \`<!doctype html>
 <html lang="en">
 <head>

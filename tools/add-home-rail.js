@@ -3,7 +3,7 @@
    Found on 2026-08-27 while adding the free section Paul asked for: all eight
    cards on the home page were mockup copy left over from the original design.
    "Long division with remainders", "Book report template", "Kitchen density
-   experiment", "The Constitution, one page", "7th Grade Maths Quarter 1 - $9" -
+   experiment", "The Constitution, one page", "7th Grade Math Quarter 1 - $9" -
    none of it exists, and not one card carried an href. The shelf a visitor
    lands on first advertised five products the site does not have and led
    nowhere.
@@ -33,7 +33,7 @@ const sub = (a, b) => {
 sub("/* The grade picker, as its own page.", `/* ── THE HOME RAIL ────────────────────────────────────────────────────────
    Free first, then paid, so the strongest thing the site has leads. Only ever
    what exists - see tools/add-home-rail.js for what this replaced. */
-const SUBJ_TOKEN = { English: "english", History: "history", Maths: "maths", Science: "science" };
+const SUBJ_TOKEN = { English: "english", History: "history", Math: "maths", Science: "science" };
 
 const railCard = (x) => {
   const free = (x.price || "$0") === "$0";

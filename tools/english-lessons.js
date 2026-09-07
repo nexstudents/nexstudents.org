@@ -4,7 +4,7 @@
    An English lesson is NOT the history shape and NOT the maths shape.
 
    History teaches by story, then asks questions whose answers sit in the text.
-   Maths teaches by worked example, then makes you show your work.
+   Math teaches by worked example, then makes you show your work.
    English teaches a RULE, and a rule is useless until you can apply it to a
    sentence you have never seen. So the shape here is:
 

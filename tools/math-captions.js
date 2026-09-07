@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────────────────────────────────────────
    THE MATHS NARRATION, AS DATA.
 
-   🚨 WHY THIS FILE EXISTS. Maths was the one lesson type whose voice could not
+   🚨 WHY THIS FILE EXISTS. Math was the one lesson type whose voice could not
    be baked, because its sentences did not exist anywhere to read: solve() and
    captions() lived inside math/template.html and ran in the browser, so the
    narration only came into being once a student had already opened the page.

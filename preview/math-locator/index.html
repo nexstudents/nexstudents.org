@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ⚠️ BETA, NOT LINKED FROM ANYWHERE YET, NOT IN THE SITEMAP. noindex is deliberate.
+     This is the prototype Paul asked for on 2026-09-06: "we can try to do a math
+     locator and build on it", then: "how about we call this a beta tester not a
+     demo ... because this would be in beta."
+     Self-contained on purpose. It does NOT load ns.css, so iterating on it cannot
+     break the live site and a live CSS change cannot break this. When this
+     graduates it moves into the generator and picks up the real shell. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Math Locator (beta) | NexStudents</title>
+<style>
+:root{
+  --bg:#0a0b0d; --panel:#14171a; --panel-2:#1f242a; --line:#2b3138;
+  --fg:#f1f3f5; --dim:#9aa3ad; --a:#ffffff; --a-ink:#0a0b0d;
+  --free:#22c55e; --on-free:#04210f; --warn:#f59e0b; --bad:#ef4444;
+  --r:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:40px 22px 80px}
+h1{font-size:1.9rem;letter-spacing:-.03em;margin:0 0 10px}
+h2{font-size:1.15rem;letter-spacing:-.02em;margin:26px 0 10px}
+.kick{font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 12px}
+p{margin:0 0 14px}
+.dim{color:var(--dim)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.btn{display:inline-block;font:inherit;font-weight:700;padding:13px 24px;border-radius:10px;
+  background:var(--a);color:var(--a-ink);border:0;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+
+/* progress: blocks, not a percentage. A locator does not know its own length
+   until it has routed, so a percentage bar would be a lie. */
+.pips{display:flex;gap:6px;margin-bottom:20px}
+.pip{height:4px;flex:1;border-radius:2px;background:var(--panel-2)}
+.pip.on{background:var(--a)}
+
+.qmeta{display:flex;justify-content:space-between;font-size:.75rem;color:var(--dim);
+  letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-bottom:18px}
+.q{font-size:2rem;font-weight:800;letter-spacing:-.02em;margin:0 0 22px;line-height:1.25}
+.q small{display:block;font-size:.85rem;font-weight:600;color:var(--dim);
+  letter-spacing:0;text-transform:none;margin-top:10px;line-height:1.5}
+input[type=text]{font:inherit;font-size:1.4rem;font-weight:700;width:100%;padding:14px 16px;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:10px;color:var(--fg);
+  text-align:center}
+input[type=text]:focus{outline:0;border-color:var(--a)}
+.row{display:flex;gap:10px;margin-top:16px;align-items:center}
+.row .btn{flex:none}
+.hint{font-size:.8rem;color:var(--dim);margin:12px 0 0}
+
+/* report */
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:0 0 8px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.big{font-size:3rem;font-weight:800;letter-spacing:-.04em;margin:6px 0 2px}
+.tag{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--panel-2);color:var(--dim)}
+.tag.ok{background:var(--free);color:var(--on-free)}
+.tag.mid{background:var(--warn);color:#2a1a00}
+.tag.no{background:var(--bad);color:#2a0000}
+.note{border-left:2px solid var(--line);padding:2px 0 2px 14px;margin:14px 0;color:var(--dim);font-size:.9rem}
+.bar{height:6px;border-radius:3px;background:var(--panel-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--free)}
+
+/* ═══ THE WORK BLOCK ═══════════════════════════════════════════════════
+   🚨 THE WORKING **IS** THE TEST. Paul, 2026-09-06: "this kind of problem 28x7
+   should actually be 28 over the 7 and the 7 under the 28 with a line under it
+   and a space to do the work ... this means so much more and its a real
+   placement showing the student can do the work."
+   A single answer box is one bit of information and it cannot tell a student who
+   does not know multiplication from one who knows it and dropped a carry. Those
+   are different students needing different teaching, and the old box placed them
+   identically.
+   Deliberately reuses the visual language of tools/math/template.html --
+   .cell, .brk, .bar, faded-until-typed boxes, green/red marking -- so the
+   placement looks like the lessons it places into. */
+.wb{display:inline-grid;gap:3px;font-size:1.9rem;font-weight:700;
+  font-variant-numeric:tabular-nums;margin:0 auto 4px;justify-content:center}
+.wbwrap{display:flex;justify-content:center;padding:14px 0 2px}
+.cell{width:1.85em;height:1.85em;display:flex;align-items:center;justify-content:center;
+  position:relative;color:var(--fg)}
+.cell.op{color:var(--dim);font-weight:600}
+.cell.bar{border-bottom:2px solid var(--fg)}
+.cell.carrycell{height:1.15em;font-size:.62em}
+.cell input{width:100%;height:100%;background:transparent;
+  border:1px solid var(--line);border-radius:7px;color:var(--fg);
+  font:inherit;text-align:center;padding:0;
+  transition:background .12s,border-color .12s,box-shadow .12s}
+/* ⚠️ NOT the lesson's `opacity:.4` fade. In tools/math/template.html a page is
+   full of boxes and fading the untouched ones is what stops it reading as noise.
+   Here there are three boxes and they ARE the task -- faded, they looked like
+   empty decoration and there was nothing telling you where to type. */
+.cell input{background:var(--panel-2);border-color:var(--dim)}
+.cell input:placeholder-shown{opacity:.85}
+.cell input:focus{outline:none;opacity:1;background:var(--bg);
+  border:2px solid var(--a)}
+.cell input:disabled{background:transparent;border-color:var(--line);
+  border-style:dashed;opacity:.45;color:var(--dim)}
+.cell input.ok{border-color:transparent;color:var(--free);font-weight:800;opacity:1}
+.cell input.wrong{border-color:var(--bad);color:var(--bad);font-weight:800;opacity:1}
+.cell.carrycell input{border-radius:5px;border-style:dashed}
+.wbnote{text-align:center;font-size:.8rem;color:var(--dim);margin:8px 0 0}
+.wbnote b{color:var(--fg)}
+/* Scratch space stays available but never marked. */
+.pad{margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pad summary{cursor:pointer;padding:10px 14px;font-size:.82rem;font-weight:700;color:var(--dim)}
+.pad textarea{width:100%;border:0;border-top:1px solid var(--line);background:var(--panel-2);
+  color:var(--fg);font:inherit;font-size:.95rem;padding:12px 14px;resize:vertical;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.pad textarea:focus{outline:none}
+
+
+/* The long division bracket. Same shapes as tools/math/template.html: the
+   corner piece is a top plus left border, the dividend sits under the bar. */
+.cell.brk{border-top:2px solid var(--fg);border-left:2px solid var(--fg);
+  border-top-left-radius:9px}
+.cell.topbar{border-top:2px solid var(--fg)}
+.cell.uline{border-bottom:2px solid var(--fg)}
+.cell.dsr{justify-content:flex-end;padding-right:.3em;color:var(--fg)}
+.cell.minus{color:var(--dim);font-weight:600}
+
+/* the worked solution under each question */
+.work{background:var(--panel-2);border-radius:10px;padding:12px 14px}
+.work b{display:block;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:6px}
+.work ol{margin:0;padding-left:20px}
+.work li{font-size:.88rem;margin-bottom:5px;line-height:1.5}
+.work li:last-child{margin-bottom:0;font-weight:700}
+.gpick{display:flex;flex-wrap:wrap;gap:8px}
+.gpick button{font:inherit;font-size:.85rem;font-weight:700;padding:9px 14px;border-radius:10px;
+  background:transparent;color:var(--dim);border:1px solid var(--line);cursor:pointer;
+  transition:all .2s}
+.gpick button[aria-pressed="true"]{background:var(--a);color:var(--a-ink);border-color:var(--a)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ── LOCKED ──────────────────────────────────────────────────────────
+     🚨 SHELVED 2026-09-06 AT PAUL'S INSTRUCTION, AND IT IS NOT READY.
+     Paul: "i want this exam locked and mark it as being built ... we need to
+     work through how this is all built because you think just simply giving
+     equations is the right way to grade a student and its not."
+     He is right and the numbers say so: 2 of 27 question types have a real work
+     block. The other 25 are a bare equation and a single answer box, which is
+     the exact thing he rejected. A student cannot show their work on 25 of them.
+     ⚠️ DO NOT UNLOCK BY DELETING THIS SECTION. Flip LOCKED to false, and only
+     once every type has somewhere to show the working. Half of it working is
+     worse than none, because the two good ones make the rest look finished. -->
+<section id="locked">
+  <p class="kick">Beta &middot; Math locator</p>
+  <h1>Being built.</h1>
+  <p class="dim">This is a placement test that watches <b>how</b> a student works a
+    problem, not just whether the final number is right. Getting 28&nbsp;&times;&nbsp;7
+    wrong because you dropped a carry is a different student from one who cannot
+    multiply, and they need different teaching.</p>
+  <p class="dim">The working has to come first, for every kind of question. It is not
+    ready and it is not open yet.</p>
+  <div class="card" style="margin:26px 0">
+    <p style="margin:0 0 6px"><b>Where it has got to</b></p>
+    <p class="dim" style="margin:0;font-size:.9rem">Multiplication and long division
+      have a real work block &mdash; a box for every digit you would actually write.
+      The routing works: it climbs when you do well, drops back when you do not, and
+      lands on the right level. The rest of the question types still need their own
+      way of showing the work before any of it is worth trusting.</p>
+  </div>
+  <a class="btn ghost" href="/">Back to NexStudents</a>
+</section>
+
+<!-- ── INTRO ───────────────────────────────────────────────────────── -->
+<section id="intro">
+  <p class="kick">Beta &middot; Math locator</p>
+  <h1>Where should this student start in maths?</h1>
+  <p class="dim">Fifteen to twenty questions. It gets harder when you do well and easier
+    when you do not, so nobody sits through a page of sums they already know or a page
+    they cannot read. There is no time limit and no pass mark.</p>
+  <!-- 🚨 PAPER, SAID OUT LOUD. Paul, 2026-09-06: "i picked i dont know and it
+       started me with 21 x 3 and the problem here is i would need to do this on
+       paper because this would take me too long to do in my head right off the
+       bat." A single input box silently implies MENTAL maths, and 21 x 3 is not a
+       mental maths question for most people. The site's own maths lessons are
+       built on showing your work; the test was quietly asking for the opposite. -->
+  <div class="card" style="margin:26px 0;border-color:var(--free)">
+    <p style="margin:0 0 4px"><b>Get paper and a pencil first.</b></p>
+    <p class="dim" style="margin:0;font-size:.9rem">This is not a mental maths test.
+      Work it out on paper exactly as you would on a worksheet, then type the answer.
+      Taking your time is expected and costs you nothing.</p>
+  </div>
+  <div class="card" style="margin:26px 0">
+    <p style="margin:0 0 4px"><b>No multiple choice.</b></p>
+    <p class="dim" style="margin:0;font-size:.9rem">Every answer is typed. With four
+      options a student who knows nothing still scores 25%, and with no national norming
+      data behind this test that guessing floor is the difference between a real placement
+      and a coin toss.</p>
+  </div>
+  <!-- 🚨 ASK WHERE TO START. Paul, 2026-09-06: "this is too difficult for me even and
+       i had to ask google." It used to start EVERYONE at grade 5, so anyone below
+       that met five questions they could not do before it ever routed down. People
+       quit at a wall; they do not stay to be rescued by question six.
+       Saxon's paper tests say to start at the level you think you are at, for
+       exactly this reason. This starts ONE BELOW the stated grade so the first
+       block is winnable, then climbs. It costs nothing in accuracy: the router
+       still walks to the right answer, it just starts from a kinder place. -->
+  <div class="card" style="margin:0 0 22px">
+    <p style="margin:0 0 4px"><b>What grade is the student in?</b></p>
+    <p class="dim" style="margin:0 0 14px;font-size:.9rem">Only used to pick a
+      starting point. Guessing low is fine, and it is not held against anyone.</p>
+    <div class="gpick" id="gpick">
+      <button type="button" data-g="3">3rd or below</button>
+      <button type="button" data-g="4">4th</button>
+      <button type="button" data-g="5">5th</button>
+      <button type="button" data-g="6">6th</button>
+      <button type="button" data-g="7">7th</button>
+      <button type="button" data-g="8">8th</button>
+      <button type="button" data-g="0">Not sure</button>
+    </div>
+  </div>
+  <button class="btn" id="start" disabled>Start the locator</button>
+</section>
+
+<!-- ── TEST ────────────────────────────────────────────────────────── -->
+<section id="test" class="hidden">
+  <div class="pips" id="pips"></div>
+  <div class="qmeta"><span id="qcount"></span><span id="qtopic"></span></div>
+  <div class="card">
+    <p class="q" id="qtext"></p>
+    <form id="qform" autocomplete="off">
+      <!-- Either the work block OR the single box is shown, never both. -->
+      <div id="workblock" class="hidden"></div>
+      <input type="text" id="qinput" inputmode="text" autocomplete="off"
+             aria-label="Your answer" placeholder="Answer">
+      <div class="row">
+        <button class="btn" type="submit">Enter</button>
+        <button class="btn ghost" type="button" id="showme">Show me how</button>
+        <button class="btn ghost" type="button" id="skip">Skip</button>
+      </div>
+      <!-- ⚠️ Was "work it on paper, then type the answer". Paul, once the blocks
+           existed: "you have work on paper if we have a place to do the the work."
+           He is right -- telling someone to go and find paper while showing them
+           a grid to work in is the page arguing with itself. -->
+      <p class="hint">Fractions like <b>3/4</b>. Decimals like <b>1.25</b>.</p>
+    </form>
+    <!-- 🚨 THE WALKTHROUGH, IN THE TEST. Paul, 2026-09-06: "i kind of want it to
+         walk through with you because i dont really remember how to do this and my
+         7th grader could not do any of these test either."
+         A placement test nobody can finish measures nothing, and a wall teaches
+         nothing. This shows the method on the spot.
+         ⚠️ IT DOES NOT COUNT AS CORRECT. `helped` marks the item, the block still
+         scores it as missed, and the router still walks down. That is the whole
+         trick: the student learns AND the placement stays true. Letting help count
+         would place them into work they cannot actually do alone. -->
+    <!-- 🚨 SOMEWHERE TO DO THE WORK. Paul said it twice: "i would need to do this on
+         paper" and then "even this second question 115/5 unless i can do the work i
+         cant do it off the top of my head." Telling people paper is fine was not
+         enough -- the screen still offered one box for an answer and nowhere to
+         think, which reads as "this should be instant".
+         ⚠️ NEVER MARKED, NEVER SCORED, NEVER STORED. It is scratch paper. The moment
+         it is graded it becomes another thing to get wrong.
+         ⚠️ It also must not steal Enter: newline inside the pad, submit only from
+         the answer box. -->
+    <details class="pad" id="padwrap">
+      <summary>Scratch space &middot; work it out here</summary>
+      <textarea id="pad" rows="5" spellcheck="false"
+        aria-label="Scratch space, not marked"
+        placeholder=""></textarea>
+    </details>
+    <div class="work hidden" id="howto" style="margin-top:16px"></div>
+  </div>
+  <p class="hint">A block of five, then it decides where to go next.
+    <b>Show me how</b> gives you a worked example of a different question. It is free
+    and it does not count against you.</p>
+</section>
+
+<!-- ── REPORT ──────────────────────────────────────────────────────── -->
+<section id="report" class="hidden"></section>
+
+</div>
+<script>
+"use strict";
+
+/* 🚨 THE LOCK. Everything below still works; it is simply not reachable.
+   Flip to false to reopen, once every question type can show its working. */
+var LOCKED = true;
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. THE LADDER
+   Every level is a grade, and every item is GENERATED, so the pool is
+   effectively unlimited and no two runs are identical. That matters more than
+   it sounds: a fixed 40-item test is memorisable and gets shared, and the
+   moment it is shared the placement is worthless.
+   🚨 Answers are typed, never chosen. No distractors means no guessing floor,
+   which is the only reason this can claim anything without norming data.
+   ⚠️ Topics are the STRAND labels the report groups by. Keep them stable, they
+   are what turns one number into "strong here, weak there".
+   ═══════════════════════════════════════════════════════════════════ */
+const R = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const pick = a => a[R(0, a.length - 1)];
+const gcd = (a, b) => b ? gcd(b, a % b) : a;
+
+const LADDER = {
+  /* 🚨 EVERY ITEM CARRIES ITS OWN WORKING (`w`). Paul, 2026-09-06: "im 41 and i
+     barely remember how to do these things ... it might be good to show an example
+     how to do it". He is right that people forget, and he could not judge whether
+     this test was any good without seeing the method.
+     ⚠️ THE WORKING IS SHOWN AFTER, NEVER BEFORE. Demonstrating the method and then
+     testing it measures "can copy what I just saw", places the student too high,
+     and drops them into work they cannot do. Same split build-math.js already
+     uses: Practice checks as you type, Test marks the paper at the end.
+     Steps are built from the SAME numbers as the question, so they cannot drift
+     from it the way a hand-written explanation would. */
+  2: [
+    /* 🚨 THE STANDARD ALGORITHM, NOT "SPLIT IT UP". Paul, 2026-09-06: "this
+       split shit you are doing for show your work is terrible ... it adds extra
+       work just to do the same problem."
+       He is right, and the deeper fault was that the working CONTRADICTED THE
+       GRID: the block gives carry boxes, then the walkthrough explained a method
+       with no carries in it. Column by column, right to left, carrying -- the
+       same thing the boxes ask for. */
+    { t: "Addition", g: () => { const a = R(23, 78), b = R(13, 21);
+        const o1 = a % 10, o2 = b % 10, ones = o1 + o2, carry = ones >= 10 ? 1 : 0;
+        const t1 = Math.floor(a / 10), t2 = Math.floor(b / 10);
+        return { q: a + " + " + b, a: a + b, w: [
+          "Ones column: " + o1 + " + " + o2 + " = " + ones + "." +
+            (carry ? " Write the " + (ones % 10) + ", carry the 1." : ""),
+          "Tens column: " + t1 + " + " + t2 + (carry ? " + 1 carried" : "") +
+            " = " + (t1 + t2 + carry) + ".",
+          "= " + (a + b) + "." ] }; } },
+    /* Same rule: borrow from the tens, do not decompose the number. */
+    { t: "Subtraction", g: () => { const a = R(45, 98), b = R(13, 39);
+        const o1 = a % 10, o2 = b % 10, borrow = o1 < o2;
+        const t1 = Math.floor(a / 10), t2 = Math.floor(b / 10);
+        return { q: a + " &minus; " + b, a: a - b, w: borrow
+          ? [ "Ones column: " + o1 + " &minus; " + o2 + " will not go, so borrow ten from the tens.",
+              (o1 + 10) + " &minus; " + o2 + " = " + (o1 + 10 - o2) + ".",
+              "Tens column is now " + (t1 - 1) + ": " + (t1 - 1) + " &minus; " + t2 +
+                " = " + (t1 - 1 - t2) + ".",
+              "= " + (a - b) + "." ]
+          : [ "Ones column: " + o1 + " &minus; " + o2 + " = " + (o1 - o2) + ".",
+              "Tens column: " + t1 + " &minus; " + t2 + " = " + (t1 - t2) + ".",
+              "= " + (a - b) + "." ] }; } },
+    { t: "Place value", g: () => { const d = R(2, 9), n = R(1, 9) * 100 + d * 10 + R(1, 9);
+        return { q: "In " + n + ", what is the <i>value</i> of the " + d + "?", a: d * 10, w: [
+          "Columns from the right are ones, tens, hundreds.",
+          "The " + d + " is in the TENS column.",
+          "So it is worth " + d + " &times; 10 = " + (d * 10) + ", not just " + d + "." ] }; } },
+  ],
+  3: [
+    { t: "Times tables", g: () => { const a = R(3, 9), b = R(4, 9);
+        return { q: a + " &times; " + b, a: a * b, w: [
+          a + " &times; " + b + " means " + b + " lots of " + a + ".",
+          "= " + (a * b) + "." ] }; } },
+    { t: "Division", g: () => { const b = R(3, 9), q = R(4, 9);
+        return { q: (b * q) + " &divide; " + b, a: q, w: [
+          "Ask: how many " + b + "s make " + (b * q) + "?",
+          b + " &times; " + q + " = " + (b * q) + ".",
+          "So the answer is " + q + "." ] }; } },
+    { t: "Fractions", g: () => { const d = pick([3, 4, 5]), m = R(3, 8), n = d * m;
+        return { q: "What is 1/" + d + " of " + n + "?", a: m, w: [
+          "1/" + d + " of something means split it into " + d + " equal parts.",
+          n + " &divide; " + d + " = " + m + "." ] }; } },
+  ],
+  4: [
+    /* 🚨 `alg` TURNS THIS INTO A WORK BLOCK instead of an answer box. Only the
+       multi-digit one gets it: 7 &times; 8 at level 3 is a FACT you either know or
+       do not, and drawing a bracket round it would be pantomime. 28 &times; 7 is a
+       PROCEDURE, and the procedure is the thing worth measuring. */
+    { t: "Times tables", g: () => { const a = R(13, 48), b = R(3, 9);
+        const o = a % 10, t = Math.floor(a / 10);
+        const low = o * b, carry = Math.floor(low / 10);
+        const high = t * b + carry;
+        return { q: a + " &times; " + b, a: a * b, alg: "mul", m1: a, m2: b, w: [
+          b + " &times; " + o + " = " + low + "." +
+            (carry ? " Write the " + (low % 10) + ", carry the " + carry + "." : " Write the " + low + "."),
+          b + " &times; " + t + " = " + (t * b) +
+            (carry ? ", plus the " + carry + " carried = " + high + "." : "."),
+          "Read it off: " + (a * b) + "." ] }; } },
+    /* The long division bracket, for the same reason multiplication gets one:
+       72 / 4 is a PROCEDURE. Level 3's 56 / 7 stays a plain box, it is a fact. */
+    { t: "Division", g: () => {
+        /* 🚨 THE QUOTIENT MUST FILL THE TOP ROW. build-math.js has exactly this
+           guard and fails the build without it, and ignoring it here produced a
+           bracket with THREE quotient boxes for 117 / 9 = 13. */
+        let b, q;
+        do { b = R(3, 9); q = R(13, 48); }
+        while (String(b * q).length !== String(q).length);
+        const D = b * q, d1 = Math.floor(D / 10), d2 = D % 10;
+        const q1 = Math.floor(d1 / b), rem1 = d1 - q1 * b;
+        const cur2 = rem1 * 10 + d2, q2 = Math.floor(cur2 / b);
+        return { q: D + " &divide; " + b, a: q, alg: "div", d1: D, d2: b, w: [
+          b + " into " + d1 + " goes " + q1 + ". Write the " + q1 + " above the " + d1 + ".",
+          q1 + " &times; " + b + " = " + (q1 * b) + ". " + d1 + " &minus; " + (q1 * b) +
+            " = " + rem1 + ".",
+          "Bring down the " + d2 + ", which makes " + cur2 + ".",
+          b + " into " + cur2 + " goes " + q2 + ". " + q2 + " &times; " + b + " = " +
+            (q2 * b) + ", nothing left over.",
+          "Read the top row: " + q + "." ] }; } },
+    { t: "Fractions", g: () => { const n = R(1, 4), d = n + R(1, 4), k = R(3, 6);
+        return { q: n + "/" + d + " = ?/" + (d * k), a: n * k, w: [
+          "What was the bottom multiplied by? " + d + " &times; " + k + " = " + (d * k) + ".",
+          "Whatever you do to the bottom, do to the top.",
+          n + " &times; " + k + " = " + (n * k) + "." ] }; } },
+  ],
+  5: [
+    { t: "Decimals", g: () => { const a = R(15, 89) / 10, b = R(105, 899) / 100;
+        return { q: a + " + " + b, a: +(a + b).toFixed(2), w: [
+          "Line up the decimal points.",
+          "Write " + a + " as " + a.toFixed(2) + " so both have two places.",
+          a.toFixed(2) + " + " + b.toFixed(2) + " = " + (a + b).toFixed(2) + "." ] }; } },
+    { t: "Decimals", g: () => { const a = R(12, 49) / 10, b = R(3, 9), whole = Math.round(a * 10);
+        return { q: a + " &times; " + b, a: +(a * b).toFixed(1), w: [
+          "Ignore the point for a moment: " + whole + " &times; " + b + " = " + (whole * b) + ".",
+          "There was ONE digit after the point, so put one back.",
+          "= " + (a * b).toFixed(1) + "." ] }; } },
+    { t: "Fractions", g: () => { const d1 = pick([2, 3, 4]), d2 = pick([3, 5, 6].filter(x => x !== d1));
+        const num = d2 + d1, den = d1 * d2, f = gcd(num, den);
+        return { q: "1/" + d1 + " + 1/" + d2 + "<small>Give it as a fraction, like 5/6.</small>",
+                 a: (num / f) + "/" + (den / f), w: [
+          "You cannot add halves and thirds until the bottoms match.",
+          "A common bottom for " + d1 + " and " + d2 + " is " + den + ".",
+          "1/" + d1 + " = " + d2 + "/" + den + " and 1/" + d2 + " = " + d1 + "/" + den + ".",
+          "Add the tops: " + d2 + " + " + d1 + " = " + num + ", giving " + num + "/" + den +
+            (f > 1 ? ", which simplifies to " + (num / f) + "/" + (den / f) : "") + "." ] }; } },
+    { t: "Area", g: () => { const l = R(6, 15), wd = R(4, 12);
+        return { q: "A rectangle is " + l + " by " + wd + ". What is its area?", a: l * wd, w: [
+          "Area of a rectangle = length &times; width.",
+          l + " &times; " + wd + " = " + (l * wd) + "." ] }; } },
+  ],
+  6: [
+    { t: "Percent", g: () => { const pc = pick([10, 15, 20, 25, 40]), n = pick([60, 80, 120, 200, 240]);
+        return { q: "What is " + pc + "% of " + n + "?", a: n * pc / 100, w: [
+          "1% of " + n + " is " + n + " &divide; 100 = " + (n / 100) + ".",
+          "So " + pc + "% is " + (n / 100) + " &times; " + pc + ".",
+          "= " + (n * pc / 100) + "." ] }; } },
+    /* ⚠️ The ratio must be in LOWEST TERMS. Unreduced, it generated "4:8", which
+       is really 1:2 and is the kind of sloppiness that tells a maths teacher the
+       test was not written by one. Reject and redraw until gcd is 1. */
+    { t: "Ratio", g: () => { let a, b; do { a = R(2, 5); b = a + R(1, 4); } while (gcd(a, b) !== 1);
+        const k = R(3, 8);
+        return { q: "Two shares are in the ratio " + a + ":" + b + ". There are " + ((a + b) * k) +
+                    " in total.<small>How many are in the SMALLER share?</small>", a: a * k, w: [
+          "The ratio " + a + ":" + b + " means " + a + " + " + b + " = " + (a + b) + " parts in total.",
+          ((a + b) * k) + " &divide; " + (a + b) + " = " + k + " in each part.",
+          "The smaller share is " + a + " parts: " + a + " &times; " + k + " = " + (a * k) + "." ] }; } },
+    { t: "Integers", g: () => { const a = -R(3, 15), b = R(6, 25);
+        return { q: "(" + a + ") + " + b, a: a + b, w: [
+          "Start at " + a + " on the number line and count UP " + b + ".",
+          "= " + (a + b) + "." ] }; } },
+    { t: "Expressions", g: () => { const m = R(3, 9), c = R(2, 12), n = R(3, 9);
+        return { q: "Evaluate " + m + "n + " + c + " when n = " + n, a: m * n + c, w: [
+          m + "n means " + m + " &times; n.",
+          "Put " + n + " in place of n: " + m + " &times; " + n + " = " + (m * n) + ".",
+          "Then add " + c + ": " + (m * n) + " + " + c + " = " + (m * n + c) + "." ] }; } },
+  ],
+  7: [
+    { t: "Proportion", g: () => { const n = R(3, 8), d = n + R(1, 5), k = R(4, 9);
+        return { q: n + "/" + d + " = x/" + (d * k) + "<small>What is x?</small>", a: n * k, w: [
+          "The bottom went from " + d + " to " + (d * k) + ".",
+          d + " &times; " + k + " = " + (d * k) + ", so it was multiplied by " + k + ".",
+          "Do the same to the top: " + n + " &times; " + k + " = " + (n * k) + "." ] }; } },
+    { t: "Integers", g: () => { const a = -R(4, 12), b = R(4, 9);
+        return { q: "(" + a + ") &times; " + b, a: a * b, w: [
+          "Multiply the numbers first: " + Math.abs(a) + " &times; " + b + " = " + Math.abs(a * b) + ".",
+          "A negative times a positive is negative.",
+          "= " + (a * b) + "." ] }; } },
+    { t: "Equations", g: () => { const x = R(-9, 12), b = R(4, 15);
+        return { q: "x + " + b + " = " + (x + b) + "<small>What is x?</small>", a: x, w: [
+          "Whatever you do to one side, do to the other.",
+          "Take " + b + " off both sides.",
+          "x = " + (x + b) + " &minus; " + b + " = " + x + "." ] }; } },
+    { t: "Circles", g: () => { const r = pick([3, 5, 7, 10]);
+        return { q: "A circle has radius " + r + ". What is its circumference?" +
+                    "<small>Use 3.14. Round to the nearest whole number.</small>",
+                 a: Math.round(2 * 3.14 * r), w: [
+          "Circumference = 2 &times; &pi; &times; radius.",
+          "2 &times; 3.14 &times; " + r + " = " + (2 * 3.14 * r).toFixed(2) + ".",
+          "Rounded: " + Math.round(2 * 3.14 * r) + "." ] }; } },
+  ],
+  8: [
+    { t: "Equations", g: () => { const x = R(-8, 12), m = R(2, 7), c = R(3, 19);
+        return { q: m + "x + " + c + " = " + (m * x + c) + "<small>What is x?</small>", a: x, w: [
+          "Undo the + " + c + " first: take " + c + " off both sides.",
+          m + "x = " + (m * x + c) + " &minus; " + c + " = " + (m * x) + ".",
+          "Now undo the &times; " + m + ": divide both sides by " + m + ".",
+          "x = " + (m * x) + " &divide; " + m + " = " + x + "." ] }; } },
+    { t: "Exponents", g: () => { const b = pick([2, 3, 4, 5]), e = b === 2 ? R(4, 7) : R(2, 4);
+        return { q: b + "<sup>" + e + "</sup>", a: Math.pow(b, e), w: [
+          b + "<sup>" + e + "</sup> means " + Array(e).fill(b).join(" &times; ") + ".",
+          "= " + Math.pow(b, e) + "." ] }; } },
+    { t: "Pythagoras", g: () => { const tri = pick([[3,4,5],[6,8,10],[5,12,13],[9,12,15],[8,15,17]]);
+        const a = tri[0], b = tri[1], c = tri[2];
+        return { q: "A right triangle has legs " + a + " and " + b +
+                    ".<small>How long is the hypotenuse?</small>", a: c, w: [
+          "Pythagoras: a&sup2; + b&sup2; = c&sup2;.",
+          a + "&sup2; = " + (a * a) + " and " + b + "&sup2; = " + (b * b) + ".",
+          (a * a) + " + " + (b * b) + " = " + (c * c) + ".",
+          "c = &radic;" + (c * c) + " = " + c + "." ] }; } },
+    { t: "Slope", g: () => { const m = pick([2, 3, -2, 4, -3]), x1 = R(0, 4), y1 = R(0, 6), dx = R(2, 5);
+        const x2 = x1 + dx, y2 = y1 + m * dx;
+        return { q: "What is the slope of the line through (" + x1 + ", " + y1 + ") and (" +
+                    x2 + ", " + y2 + ")?", a: m, w: [
+          "Slope = rise &divide; run.",
+          "Rise: " + y2 + " &minus; " + y1 + " = " + (y2 - y1) + ".",
+          "Run: " + x2 + " &minus; " + x1 + " = " + dx + ".",
+          (y2 - y1) + " &divide; " + dx + " = " + m + "." ] }; } },
+  ],
+};
+const LO = 2, HI = 8, BLOCK = 5, MAX_BLOCKS = 4;
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   THE MULTIPLICATION WORK BLOCK
+   Lays out the real vertical algorithm and gives a box for every digit the
+   student would actually write: the carries along the top, the product along
+   the bottom.
+
+       [ ] [ ]        <- carries
+         2   8
+     x       7
+     ───────────
+     [ ] [ ] [ ]      <- the product
+
+   🚨 IT SCORES PER DIGIT, NOT PER PROBLEM. That is the entire point: 28 x 7
+   yields up to five observations instead of one, so "knows the times tables but
+   loses the carry" is finally visible. It also fixes the thin-strand problem the
+   old report had to apologise for -- one question now carries real weight.
+   ⚠️ CARRIES ARE OPTIONAL. Plenty of people carry in their head, and marking a
+   blank carry box wrong would fail a correct method. Only a WRONG carry counts
+   against; an empty one is ignored.
+   ⚠️ The credit that routes the test is the PRODUCT row. Carries inform the
+   report, they do not move the placement on their own.
+   ═══════════════════════════════════════════════════════════════════ */
+function mulWork(a, b) {
+  const prod = String(a * b), digits = String(a);
+  const cols = prod.length;
+  /* carries, right to left, as the standard algorithm produces them */
+  const carries = new Array(cols).fill("");
+  let carry = 0;
+  for (let i = digits.length - 1, c = cols - 1; i >= 0; i--, c--) {
+    const t = (+digits[i]) * b + carry;
+    carry = Math.floor(t / 10);
+    if (carry && c - 1 >= 0) carries[c - 1] = String(carry);
+  }
+  return { cols: cols, prod: prod, carries: carries, top: String(a), mult: String(b) };
+}
+
+/* Renders the grid and returns the inputs so the marker can find them. */
+function renderMul(host, a, b) {
+  const m = mulWork(a, b);
+  const pad = n => String(n).padStart(m.cols, " ");
+  const cell = (txt, cls) => '<div class="cell ' + (cls || "") + '">' +
+    (txt === " " ? "" : txt) + "</div>";
+  let html = '<div class="wbwrap"><div class="wb" style="grid-template-columns:repeat(' +
+    m.cols + ',auto)">';
+  /* row 1: carry boxes */
+  for (let c = 0; c < m.cols; c++)
+    html += '<div class="cell carrycell">' + (c === m.cols - 1 ? "" :
+      '<input inputmode="numeric" maxlength="1" placeholder=" " data-k="c" data-i="' + c + '">') + "</div>";
+  /* row 2: the number */
+  pad(m.top).split("").forEach(ch => { html += cell(ch); });
+  /* row 3: the multiplier, with the sign in the leftmost column */
+  pad(m.mult).split("").forEach((ch, idx) => {
+    html += cell(idx === 0 ? "&times;" : ch, idx === 0 ? "op bar" : "bar");
+  });
+  /* row 4: the product boxes */
+  for (let c = 0; c < m.cols; c++)
+    html += '<div class="cell"><input inputmode="numeric" maxlength="1" placeholder=" " data-k="p" data-i="' + c + '"></div>';
+  html += "</div></div>";
+  html += '<p class="wbnote">Fill in the answer along the bottom. ' +
+          '<b>Carries are optional</b> &mdash; use them if you use them.</p>';
+  host.innerHTML = html;
+  return m;
+}
+
+/* Marks the block. Returns { ok, digitsRight, digitsTotal, carryWrong }. */
+function markMul(host, m) {
+  let right = 0, carryWrong = 0;
+  host.querySelectorAll('input[data-k="p"]').forEach(inp => {
+    const want = m.prod[+inp.dataset.i];
+    const got = inp.value.trim();
+    const good = got === want;
+    inp.classList.add(good ? "ok" : "wrong");
+    inp.disabled = true;
+    if (good) right++;
+  });
+  host.querySelectorAll('input[data-k="c"]').forEach(inp => {
+    const want = m.carries[+inp.dataset.i] || "";
+    const got = inp.value.trim();
+    if (got === "") { inp.disabled = true; return; }   /* blank carry is fine */
+    const good = got === want;
+    inp.classList.add(good ? "ok" : "wrong");
+    inp.disabled = true;
+    if (!good) carryWrong++;
+  });
+  return { ok: right === m.prod.length, digitsRight: right,
+           digitsTotal: m.prod.length, carryWrong: carryWrong };
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   THE LONG DIVISION BRACKET
+   Paul, 2026-09-06: "quation 2 is still wrong because i cant build out like i
+   could with multiplication. you dont give me a way to show my work on the test
+   for divide." And earlier, walking it himself: "4 goes into 7 how many times?
+   1 time so 7 - 4 is 3, 4 goes into 32 8 times so the answer at the top is 18."
+
+   So the student gets a box for every number they would actually write:
+
+          [1][8]        <- quotient, over the digit it belongs to
+      ┌─────────
+    4 │ 7  2
+      [4]               <- what 1 x 4 takes away
+      ────
+      [3][2]            <- what is left, with the 2 brought down
+         [3][2]         <- what 8 x 4 takes away
+         ────
+         [0]            <- remainder
+
+   🚨 solveDiv() IS LIFTED FROM tools/math-captions.js, deliberately unchanged.
+   That function already drives the maths lessons and the baked narration, so
+   using the same one means the placement can never disagree with the lesson it
+   places into. If it changes there, change it here.
+   ⚠️ Only the QUOTIENT decides the placement. The subtraction rows are recorded
+   and shown back, because they are where you SEE the method break, but a student
+   who reaches the right quotient by a slightly different route has still done
+   the division.
+   ═══════════════════════════════════════════════════════════════════ */
+function solveDiv(dividend, divisor) {
+  const d = String(dividend).split("").map(Number);
+  let r = 0; const steps = [];
+  for (let i = 0; i < d.length; i++) {
+    const cur = r * 10 + d[i];
+    const q = Math.floor(cur / divisor);
+    const prod = q * divisor;
+    const diff = cur - prod;
+    steps.push({ i: i, cur: cur, q: q, prod: prod, diff: diff });
+    r = diff;
+  }
+  return { digits: d, divisor: divisor, dividend: dividend, steps: steps,
+           quotient: steps.map(s => s.q).join(""), remainder: r };
+}
+
+function renderDiv(host, dividend, divisor) {
+  const S = solveDiv(dividend, divisor);
+  const n = S.digits.length;
+  const COLS = n + 1;                 /* column 0 holds the divisor */
+  const box = (k, i) => '<div class="cell"><input inputmode="numeric" maxlength="1" ' +
+        'placeholder=" " data-k="' + k + '" data-i="' + i + '"></div>';
+  const blank = (cls) => '<div class="cell ' + (cls || "") + '"></div>';
+  const lit = (t, cls) => '<div class="cell ' + (cls || "") + '">' + t + "</div>";
+
+  let h = '<div class="wbwrap"><div class="wb" style="grid-template-columns:repeat(' +
+          COLS + ',auto)">';
+
+  /* row: quotient, one box per dividend digit */
+  h += blank();
+  for (let c = 0; c < n; c++) h += box("q", c);
+
+  /* row: divisor, bracket, dividend */
+  h += lit(String(divisor), "dsr");
+  for (let c = 0; c < n; c++) h += lit(String(S.digits[c]), c === 0 ? "brk" : "topbar");
+
+  /* one pair of rows per step: what is taken away, then what is left */
+  S.steps.forEach((st, k) => {
+    const end = k + 1;                       /* this step works up to column k */
+    /* subtraction row, right-aligned at column k, underlined */
+    h += lit("&minus;", "minus");
+    for (let c = 0; c < n; c++) {
+      const w = String(st.prod).length;
+      h += (c >= end - w && c < end) ? '<div class="cell uline"><input inputmode="numeric" ' +
+            'maxlength="1" placeholder=" " data-k="s' + k + '" data-i="' + c + '"></div>'
+        : blank(c < end ? "uline" : "");
+    }
+    /* remainder row: what is left, plus the digit brought down */
+    h += blank();
+    for (let c = 0; c < n; c++) {
+      const lastCol = (k + 1 < n) ? end : end - 1;
+      h += (c <= lastCol && c >= end - String(st.diff).length)
+        ? box("r" + k, c) : blank();
+    }
+  });
+
+  h += "</div></div>";
+  h += '<p class="wbnote">Quotient along the <b>top</b>. Show the takeaways underneath ' +
+       'if you use them &mdash; only the top row decides your level.</p>';
+  host.innerHTML = h;
+  return S;
+}
+
+function markDiv(host, S) {
+  let right = 0;
+  const qs = [...host.querySelectorAll('input[data-k="q"]')];
+  qs.forEach(inp => {
+    const want = S.quotient[+inp.dataset.i];
+    const good = inp.value.trim() === want;
+    inp.classList.add(good ? "ok" : "wrong");
+    inp.disabled = true;
+    if (good) right++;
+  });
+  /* Working rows are shown back but never scored against the student. */
+  let workShown = 0;
+  host.querySelectorAll('input[data-k^="s"],input[data-k^="r"]').forEach(inp => {
+    if (inp.value.trim() !== "") workShown++;
+    inp.disabled = true;
+  });
+  return { ok: right === S.quotient.length, digitsRight: right,
+           digitsTotal: S.quotient.length, workShown: workShown };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. MARKING
+   ⚠️ Accept every honest spelling of the same number. A child who types .5
+   instead of 0.5, or 6/8 where 3/4 was expected, KNOWS IT. Marking that wrong
+   does not measure maths, it measures typing, and it would push the placement
+   down a level for no reason.
+   ═══════════════════════════════════════════════════════════════════ */
+function toNum(s) {
+  s = String(s).trim().replace(/\s+/g, "").replace(/,/g, "");
+  if (!s) return null;
+  const f = s.match(/^(-?\d+)\/(\d+)$/);
+  if (f) return +f[1] / +f[2];
+  if (/^-?(\d+\.?\d*|\.\d+)$/.test(s)) return parseFloat(s);
+  return null;
+}
+function correct(given, expected) {
+  const g = toNum(given), e = toNum(expected);
+  if (g === null || e === null) return false;
+  return Math.abs(g - e) < 1e-6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. THE ROUTER — multistage, block by block
+   🚨 ROUTE ON THE BLOCK, NEVER ON ONE ITEM. A single question is far too noisy:
+   one careless slip or one lucky recall moves a student a whole grade. Five
+   items at a level is the smallest block that separates "knows this" from "had
+   a good moment", and it is what the paper placement tests have always done.
+   This needs NO item calibration, which is the whole reason it is buildable
+   without a norming sample. Real adaptive testing (IRT) needs hundreds of
+   responses per item before it can say anything at all.
+   ⚠️ It also stops on a REVERSAL. Once a student has passed level 5 and failed
+   level 6, the answer is 5 and more questions only add fatigue.
+   ═══════════════════════════════════════════════════════════════════ */
+const state = { level: 5, asked: [], blocks: [], seen: {}, queue: [], blockNo: 0, t0: 0 };
+
+function buildBlock(level) {
+  const gens = LADDER[level], out = [];
+  for (let i = 0; i < BLOCK; i++) {
+    let item, guard = 0;
+    do { const g = gens[i % gens.length]; item = g.g(); item.topic = g.t; item.level = level; guard++; }
+    while (state.seen[level + "|" + item.q] && guard < 25);   /* no repeats within a run */
+    state.seen[level + "|" + item.q] = 1;
+    out.push(item);
+  }
+  return out;
+}
+
+function nextLevel(score, level) {
+  if (score >= 4) return Math.min(HI, level + 1);
+  if (score <= 2) return Math.max(LO, level - 1);
+  return null;                       /* 3/5 is the ceiling. Stop here. */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. RUNNING IT
+   ═══════════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+function startBlock() {
+  state.queue = buildBlock(state.level);
+  state.blockNo++;
+  paintPips();
+  askNext();
+}
+
+function paintPips() {
+  const p = $("pips"); p.innerHTML = "";
+  for (let i = 0; i < MAX_BLOCKS; i++) {
+    const d = document.createElement("div");
+    d.className = "pip" + (i < state.blockNo ? " on" : "");
+    p.appendChild(d);
+  }
+}
+
+function askNext() {
+  if (!state.queue.length) return endBlock();
+  const it = state.queue[0];
+  $("qtext").innerHTML = it.q;
+  $("qtopic").textContent = it.topic;
+  $("qcount").textContent = "Question " + (state.asked.length + 1);
+  $("qinput").value = "";
+  $("howto").classList.add("hidden");        /* fresh question, hide the last walkthrough */
+  $("howto").innerHTML = "";
+  $("showme").textContent = "Show me how";
+  state.sawExample = false;
+  if ($("pad")) $("pad").value = "";
+
+  /* An item with `alg` is worked in a block, so the single answer box would be a
+     second, contradictory place to put the answer. Show one or the other. */
+  const wb = $("workblock");
+  if (it.alg === "mul") {
+    state.wb = renderMul(wb, it.m1, it.m2);
+    state.wbKind = "mul";
+    wb.classList.remove("hidden");
+    $("qinput").classList.add("hidden");
+    /* 🚨 START IN THE RIGHTMOST BOX. Paul, 2026-09-06: "most math problems work
+       right to left especially like multiplication."
+       `querySelector` returns the FIRST box in DOM order, which is the LEFTMOST --
+       the ONES column is on the right and is written first. So the cursor landed
+       in the last box you should fill, and because the tab order is reversed,
+       typing there advanced off the end of the sequence and went nowhere.
+       ⚠️ Division is the opposite: the quotient is written LEFT to right, so it
+       keeps the first box. Do not "make these consistent". */
+    const boxes = wb.querySelectorAll('input[data-k="p"]');
+    if (boxes.length) boxes[boxes.length - 1].focus();
+    wireWorkNav(wb, 'input[data-k="p"]', true);
+  } else if (it.alg === "div") {
+    state.wb = renderDiv(wb, it.d1, it.d2);
+    state.wbKind = "div";
+    wb.classList.remove("hidden");
+    $("qinput").classList.add("hidden");
+    const first = wb.querySelector('input[data-k="q"]');
+    if (first) first.focus();
+    /* ⚠️ The quotient is written LEFT TO RIGHT, unlike the multiplication
+       product. Same nav helper, opposite direction. */
+    wireWorkNav(wb, 'input[data-k="q"]', false);
+  } else {
+    state.wb = null;
+    wb.classList.add("hidden");
+    wb.innerHTML = "";
+    $("qinput").classList.remove("hidden");
+    $("qinput").focus();
+  }
+  state.t0 = performance.now();
+}
+
+/* Typing a digit jumps to the next box, and Backspace on an empty box steps back.
+   ⚠️ The product row is filled RIGHT TO LEFT, the way it is actually written, so
+   "next" means the box to the LEFT. Getting this backwards makes the block feel
+   broken even though every value is correct. */
+function wireWorkNav(wb, sel, rightToLeft) {
+  const seq = [...wb.querySelectorAll(sel)];
+  if (rightToLeft) seq.reverse();
+  seq.forEach((inp, n) => {
+    inp.oninput = () => { if (inp.value && seq[n + 1]) seq[n + 1].focus(); };
+    inp.onkeydown = e => {
+      if (e.key === "Backspace" && !inp.value && seq[n - 1]) seq[n - 1].focus();
+      if (e.key === "Enter") { e.preventDefault(); $("qform").requestSubmit(); }
+    };
+  });
+  /* Every other box in the block still submits on Enter, so the student never
+     has to hunt for the right field to press it in. */
+  wb.querySelectorAll("input").forEach(inp => {
+    if (inp.onkeydown) return;
+    inp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("qform").requestSubmit(); } };
+  });
+}
+
+/* Reveals the steps for the CURRENT question and flags it as helped. Pressing it
+   twice does nothing extra -- one flag, not a counter. */
+/* 🚨 A DIFFERENT PROBLEM, WORKED IN FULL. Paul, 2026-09-06: "the show me how would
+   be a different problem all together with real work and a completely different
+   answer", and when I built it as the same problem instead: "i already told you to
+   make this a completely different question for the show button but you refused."
+   Showing the method on the SAME numbers hands over the answer, so it had to be
+   punished to stay honest, and punishing help is backwards.
+   A worked example on DIFFERENT numbers is not a giveaway -- carrying it across to
+   the problem on screen is the skill. So this costs nothing and is not counted
+   against the student.
+   ⚠️ It draws from the SAME generator, so the example is always the same shape and
+   the same level as the question it is helping with. Redraw if it happens to
+   produce the identical problem. */
+function showMe() {
+  const it = state.queue[0]; if (!it) return;
+  const gens = LADDER[it.level].filter(g => g.t === it.topic);
+  const gen = gens.length ? gens[0] : LADDER[it.level][0];
+  let eg, guard = 0;
+  do { eg = gen.g(); guard++; } while (eg.q === it.q && guard < 20);
+
+  $("howto").innerHTML =
+    "<b>Worked example &middot; a different question</b>" +
+    "<p style='margin:0 0 8px;font-weight:800;font-size:1.15rem'>" +
+      eg.q.replace(/<small>[\s\S]*?<\/small>/, "") + "</p>" +
+    "<ol>" + (eg.w || []).map(x => "<li>" + x + "</li>").join("") + "</ol>" +
+    "<p class='hint' style='margin:10px 0 0'>That is the method. Now do <b>" +
+      it.q.replace(/<small>[\s\S]*?<\/small>/, "") + "</b> the same way. " +
+      "Looking at this does not count against you.</p>";
+  $("howto").classList.remove("hidden");
+  $("showme").textContent = "Shown";
+  state.sawExample = true;
+}
+
+function answer(raw, skipped) {
+  const it = state.queue.shift();
+  /* 🚨 The clock is per QUESTION and it is evidence, not decoration. Correct and
+     slow is a different student from correct and instant: the first is working
+     it out, the second has it memorised, and they need different starting
+     points even though they score the same. This is the part a paper test
+     cannot do and is most of what a paid version would be sold on. */
+  it.ms = Math.round(performance.now() - state.t0);
+  it.given = skipped ? "" : raw;
+  it.skipped = !!skipped;
+  /* ⚠️ Seeing a worked example on OTHER numbers is not help with THIS question,
+     so it no longer counts against the answer. `sawExample` is kept only so the
+     report can say which topics needed a reminder. */
+  it.sawExample = !!state.sawExample;
+  /* 🚨 HELP MEANS IT DOES NOT COUNT, even when the typed answer is right -- they
+     just read it off the walkthrough. Scoring it correct would route the student
+     UP on the strength of a hint and place them above what they can do alone. */
+  /* A work-block item is marked on its digits, not on a typed string. It also
+     records digitsRight/digitsTotal, which is the per-digit detail the old
+     one-box version could never produce. */
+  if (it.alg && state.wb && !skipped) {
+    const isDiv = state.wbKind === "div";
+    const r = isDiv ? markDiv($("workblock"), state.wb)
+                    : markMul($("workblock"), state.wb);
+    it.typedRight = r.ok;
+    it.digitsRight = r.digitsRight;
+    it.digitsTotal = r.digitsTotal;
+    it.carryWrong = r.carryWrong || 0;
+    it.workShown = r.workShown || 0;
+    it.given = [...$("workblock").querySelectorAll(isDiv ? 'input[data-k="q"]' : 'input[data-k="p"]')]
+                 .map(x => x.value.trim() || "?").join("");
+  } else {
+    it.typedRight = skipped ? false : correct(raw, it.a);
+  }
+  it.ok = it.typedRight;
+  state.asked.push(it);
+  askNext();
+}
+
+function endBlock() {
+  const items = state.asked.filter(i => i.level === state.level &&
+                                        !state.blocks.some(b => b.items.includes(i)));
+  const score = items.filter(i => i.ok).length;
+  state.blocks.push({ level: state.level, score: score, items: items });
+
+  const dirs = state.blocks.map(b => b.score >= 4 ? 1 : b.score <= 2 ? -1 : 0);
+  const reversed = dirs.length > 1 && dirs.some((d, i) => i && d && dirs[i - 1] && d !== dirs[i - 1]);
+  const nxt = nextLevel(score, state.level);
+
+  if (nxt === null || reversed || state.blockNo >= MAX_BLOCKS ||
+      (nxt === state.level)) return finish();
+  state.level = nxt;
+  startBlock();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. THE REPORT
+   ⚠️ It reports a PLACEMENT and a skill picture, and it says out loud what it
+   is not. Calling an unnormed result a national grade level would be a claim
+   there is no evidence for -> see the note the report prints at the bottom.
+   ═══════════════════════════════════════════════════════════════════ */
+function finish() {
+  const passed = state.blocks.filter(b => b.score >= 4).map(b => b.level);
+  const failed = state.blocks.filter(b => b.score <= 2).map(b => b.level);
+  const grade = passed.length ? Math.max.apply(null, passed)
+                              : Math.max(LO - 1, Math.min.apply(null, state.blocks.map(b => b.level)) - 1);
+  const brokeAt = failed.length ? Math.min.apply(null, failed) : null;
+
+  /* strand table */
+  const byTopic = {};
+  state.asked.forEach(i => {
+    const t = byTopic[i.topic] || (byTopic[i.topic] = { n: 0, ok: 0, ms: [], lv: [] });
+    t.n++; if (i.ok) t.ok++; t.ms.push(i.ms); t.lv.push(i.level);
+  });
+  const med = a => { const s = a.slice().sort((x, y) => x - y);
+                     return s.length ? s[Math.floor(s.length / 2)] : 0; };
+  /* ⚠️ Sub-second times rounded to "0s" and made the clock column look broken.
+     Real students take seconds, but a fast recall of 7x8 genuinely is under one. */
+  const fmtSec = ms => ms < 950 ? (ms / 1000).toFixed(1) + "s" : Math.round(ms / 1000) + "s";
+  /* ⚠️ The student's own typed text goes back on the page. Escape it. */
+  const esc = s => String(s).replace(/[&<>"]/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const okMs = state.asked.filter(i => i.ok).map(i => i.ms);
+  const base = med(okMs) || 1;
+
+  /* 🚨 NEVER CALL ONE QUESTION A GAP. A 15 question locator spreads 5 items across
+     3 or 4 topics per level, so a strand can easily end up with a single item
+     behind it. Reading "0/1" as a skill gap is exactly the overclaiming a test
+     with no norming data cannot afford: it is one careless slip away from telling
+     a parent their child cannot do circles.
+     Under 3 items the strand is reported as "Too few" and stays neutral. Fixing
+     this properly means MORE ITEMS PER STRAND, which is the single clearest thing
+     a longer paid version actually buys. */
+  const MIN_STRAND = 3;
+  let thin = 0;
+  const rows = Object.keys(byTopic).sort().map(k => {
+    const t = byTopic[k], pct = Math.round(t.ok / t.n * 100), m = med(t.ms);
+    let tag;
+    if (t.n < MIN_STRAND) { tag = '<span class="tag">Too few</span>'; thin++; }
+    else tag = pct >= 80 ? '<span class="tag ok">Solid</span>'
+             : pct >= 40 ? '<span class="tag mid">Shaky</span>'
+                         : '<span class="tag no">Gap</span>';
+    return "<tr><td>" + k + "</td><td class='n'>" + t.ok + "/" + t.n + "</td>" +
+           "<td class='n'>" + fmtSec(m) + "</td><td>" + tag + "</td></tr>";
+  }).join("");
+
+  const slow = state.asked.filter(i => i.ok && i.ms > base * 2.2);
+  const fastWrong = state.asked.filter(i => !i.ok && !i.skipped && i.ms < base * 0.45);
+  const totalRight = state.asked.filter(i => i.ok).length;
+  const totalPct = Math.round(totalRight / state.asked.length * 100);
+  const helpedRight = state.asked.filter(i => i.sawExample && i.typedRight);
+
+  /* The reading exam ends with a "Questions missed" list showing what was chosen
+     against what was correct, and it is the most actionable part of that report.
+     Same here, except a typed answer needs the student's own text echoed back --
+     there is no letter to name. Skips are called skips, not wrong answers. */
+  /* One renderer for both lists, so the missed questions and the full review can
+     never show the working differently. */
+  const qBlock = i =>
+    '<div style="border-bottom:1px solid var(--line);padding:14px 0">' +
+    '<span class="tag' + (i.ok ? ' ok' : '') + '">' + i.topic + ' &middot; G' + i.level + '</span>' +
+    /* 🚨 DO NOT STRIP THE <small>. It looks like a hint and is often the actual
+       QUESTION -- the ratio item's "how many are in the SMALLER share?" lives in
+       there, so stripping it left a review that read "ratio 4:8, there are 60 in
+       total" and asked nothing at all. Keep it, just style it down. */
+    '<div style="margin:9px 0 6px;font-weight:700">' + i.q + '</div>' +
+    /* Three outcomes, not two. "Needed help" is a different fact from "got it
+       wrong" -- it says the method was gone but came back on sight, which is
+       revision rather than reteaching. */
+    '<p class="dim" style="font-size:.85rem;margin:0 0 8px">' +
+      (i.skipped ? "Skipped"
+        : i.sawExample ? "Saw a worked example first" + (i.typedRight ? ", then got it" : "")
+        : "You answered <b>" + esc(i.given) + "</b>") +
+      (i.ok ? " &middot; correct" : " &middot; answer <b>" + i.a + "</b>") + '</p>' +
+    '<div class="work"><b>How to do it</b><ol>' +
+      (i.w || []).map(step => "<li>" + step + "</li>").join("") +
+    '</ol></div></div>';
+
+  const missed = state.asked.filter(i => !i.ok);
+  const missHtml = missed.length ? missed.map(qBlock).join("")
+                                 : '<p class="dim">None. Every question correct.</p>';
+  /* 🚨 THE FULL REVIEW IS THE POINT, NOT AN EXTRA. Paul cannot judge whether this
+     test is any good without reading every question and its method -- and neither
+     can a parent. Collapsed so it does not bury the result. */
+  const allHtml = state.asked.map(qBlock).join("");
+
+  const path = state.blocks.map(b => "G" + b.level + " " + b.score + "/5").join("  →  ");
+
+  $("test").classList.add("hidden");
+  const r = $("report");
+  r.classList.remove("hidden");
+  r.innerHTML =
+    /* 🚨 THE LADDER STOPS AT GRADE 2, SO IT MUST NOT PRINT "Grade 1". Anyone who
+       does not pass the bottom block fell off the end of what this test measures,
+       and the honest report is "below grade 2", not a number the test never asked
+       a question about. Found by running a student who used the walkthrough on
+       every question: it printed Grade 1, which does not exist here. */
+    '<p class="kick">Result</p>' +
+    (grade < LO
+      ? '<h1 style="margin-bottom:2px">Start below grade ' + LO + '.</h1>' +
+        '<div class="big">Below grade ' + LO + '</div>' +
+        '<p class="dim">This test starts at grade ' + LO + ' and that block did not ' +
+          'come together, so the right starting point is under where it can see. ' +
+          'That is a real answer, not a failure.</p>'
+      : '<h1 style="margin-bottom:2px">Start at grade ' + grade + ' maths.</h1>' +
+        '<div class="big">Grade ' + grade + '</div>') +
+    /* 🚨 SCORE **AND** PERCENTAGE. Standing rule, and the reading exam at
+       placement-exam.html already follows it: `${right} / ${Q.length} · ${pct}%`.
+       The first version of this page showed a grade and nothing else, which is
+       the one number a parent cannot sanity-check.
+       ⚠️ On an adaptive test the raw total is NOT a measure of ability -- a
+       strong student is deliberately pushed until they fail, so everyone lands
+       near the middle. It is here for transparency, and it says so. */
+    '<p class="score" style="font-size:1.15rem;font-weight:800;margin:0 0 2px">' +
+      totalRight + ' / ' + state.asked.length +
+      ' <span class="dim" style="font-weight:600">&middot; ' + totalPct + '%</span></p>' +
+    '<p class="dim" style="font-size:.85rem">' +
+      fmtSec(state.asked.reduce((s, i) => s + i.ms, 0)) + ' of thinking time. ' +
+      'The total is for your reference, not the placement: this test keeps going ' +
+      'until it finds the edge, so almost everybody misses some.</p>' +
+
+    '<div class="card" style="margin:22px 0">' +
+      '<h2 style="margin-top:0">How it got there</h2>' +
+      '<p class="dim" style="font-variant-numeric:tabular-nums;margin:0">' + path + '</p>' +
+      (brokeAt !== null
+        ? '<p class="note" style="margin-bottom:0">It held up through grade ' + grade +
+          ' and came apart at grade ' + brokeAt + '. That is the boundary worth teaching to.</p>'
+        : '<p class="note" style="margin-bottom:0">Nothing came apart inside the range this ' +
+          'beta covers, so grade ' + grade + ' is a floor, not a ceiling.</p>') +
+    '</div>' +
+
+    '<h2>Where the strength and the gaps are</h2>' +
+    '<p class="dim" style="font-size:.9rem">This is the part a single grade number hides. ' +
+      'Most students are not one grade level across the board.</p>' +
+    '<table><thead><tr><th>Strand</th><th class="n">Right</th><th class="n">Typical</th><th>Read</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody></table>' +
+    (thin ? '<p class="note">' + thin + ' of these strands were only asked once or twice, ' +
+      'so they are marked <b>Too few</b> rather than judged. A short locator has to spend ' +
+      'its questions finding the level first. Reading every strand confidently is what a ' +
+      'longer test is for.</p>' : '') +
+
+    (helpedRight.length
+      ? '<div class="card" style="margin:22px 0"><h2 style="margin-top:0">Nearly there</h2>' +
+        '<p class="dim" style="font-size:.9rem;margin:0"><b>' + helpedRight.length +
+        ' needed the method shown first</b> (' +
+        helpedRight.map(i => i.topic).filter((v, i2, a2) => a2.indexOf(v) === i2).join(", ") +
+        '). These count as correct -- the example was a different question, so ' +
+        'carrying the method across is the skill. But they are the quickest wins ' +
+        'on the report: the method had gone and came straight back on sight. ' +
+        'That is revision, not reteaching.</p></div>'
+      : '') +
+
+    (fastWrong.length ? '<h2>What the clock adds</h2>' : '') +
+    /* 🚨 THE "CORRECT BUT SLOW = NOT FLUENT" CLAIM IS GONE. It was only true if the
+       student answered in their head. Once the test tells them to use paper -- and
+       it now does, because 21 x 3 is not a mental maths question -- a long time
+       means they wrote it out properly, which is what was asked of them. Reporting
+       that as weak fluency would punish the student for following the instruction.
+       A very fast WRONG answer still means something, because no amount of paper
+       explains answering in under half a second. Keep that one, drop the other. */
+    (fastWrong.length ? '<p class="dim" style="font-size:.9rem"><b>' + fastWrong.length +
+      ' answered wrong very fast</b> (' + fastWrong.map(i => i.topic).filter((v, i, a) => a.indexOf(v) === i).join(", ") +
+      '). Rushing or a misread, not necessarily a gap. Worth a second look before reteaching.</p>' : '') +
+
+    '<div class="card" style="margin:22px 0">' +
+      '<h2 style="margin-top:0">What this is, and what it is not</h2>' +
+      '<p class="dim" style="font-size:.9rem;margin-bottom:8px">This places a student in the ' +
+        '<b>NexStudents</b> maths sequence. It is not a nationally normed test and does not ' +
+        'produce a percentile. Nothing here has been calibrated against a sample of students.</p>' +
+      '<p class="dim" style="font-size:.9rem;margin:0">For a normed score, the Iowa Assessments ' +
+        'cost about $50 through a homeschool testing service.</p>' +
+    '</div>' +
+
+    '<h2>Questions missed</h2>' +
+    '<p class="dim" style="font-size:.9rem">Each one shows the method, so a missed ' +
+      'question is worth something even if you never sit the test again.</p>' + missHtml +
+
+    '<details style="margin-top:24px"><summary style="cursor:pointer;font-weight:700;' +
+      'padding:12px 0">Show all ' + state.asked.length + ' questions with the working</summary>' +
+      allHtml + '</details>' +
+
+    '<div class="row" style="margin-top:26px">' +
+    '<button class="btn" onclick="location.reload()">Run it again</button>' +
+    '<a class="btn ghost" href="/">Back to NexStudents</a></div>';
+
+  /* Parallel to the reading exam's `nexstudents.placement.readingB`, so a future
+     combined report can read both strands from one place. Wrapped, because
+     private mode throws rather than returning null. */
+  try {
+    localStorage.setItem("nexstudents.placement.mathsBeta", JSON.stringify({
+      date: new Date().toISOString(), grade: grade, brokeAt: brokeAt,
+      right: totalRight, total: state.asked.length, pct: totalPct,
+      blocks: state.blocks.map(b => ({ level: b.level, score: b.score })),
+      strands: byTopic
+    }));
+  } catch (e) {}
+
+  window.scrollTo(0, 0);
+}
+
+/* wiring */
+/* The lock hides the test outright rather than disabling a button, so there is
+   no half-open state to get stuck in and nothing to click past. */
+if (LOCKED) {
+  $("intro").classList.add("hidden");
+  $("test").classList.add("hidden");
+  $("report").classList.add("hidden");
+} else {
+  $("locked").classList.add("hidden");
+}
+
+/* 🚨 START ONE BELOW THE STATED GRADE, floored at the bottom of the ladder.
+   "Not sure" starts at 4, not 5: an unknown student is more likely to be placed
+   too high than too low, and being handed five questions you cannot do is how a
+   test loses someone in the first minute. Climbing is cheap, quitting is not. */
+$("gpick").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const g = +b.dataset.g;
+  state.level = g ? Math.max(LO, Math.min(HI, g - 1)) : 4;
+  [...$("gpick").children].forEach(x => x.setAttribute("aria-pressed", x === b));
+  $("start").disabled = false;
+};
+$("start").onclick = () => {
+  $("intro").classList.add("hidden");
+  $("test").classList.remove("hidden");
+  startBlock();
+};
+$("qform").onsubmit = e => { e.preventDefault();
+  /* On a work block the answer lives in the digit boxes, so the empty-input
+     guard has to look at those instead or Enter would never submit. */
+  if (state.wb) {
+    const boxes = [...$("workblock").querySelectorAll('input[data-k="p"]')];
+    if (boxes.every(b => b.value.trim() === "")) return;
+    return answer("", false);
+  }
+  const v = $("qinput").value.trim();
+  if (v === "") return;            /* Enter on an empty box is a slip, not a skip */
+  answer(v, false); };
+$("skip").onclick = () => answer("", true);
+$("showme").onclick = showMe;
+</script>
+</body>
+</html>

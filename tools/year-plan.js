@@ -16,10 +16,10 @@
    holidays that turn a 4-day week into 3.
 
    Lessons are dealt on a TWO-WEEK CYCLE rather than a weekly one, because the
-   per-week numbers are fractions: English 2.4, History 2.3, Maths 3.4, Science
+   per-week numbers are fractions: English 2.4, History 2.3, Math 3.4, Science
    3.7. Over 8 school days those become whole numbers with no awkward remainder:
 
-     Maths 7 · Science 8 · English 5 · History 5  =  25 per 8 days  =  3.1 a day
+     Math 7 · Science 8 · English 5 · History 5  =  25 per 8 days  =  3.1 a day
 
    ⚠️ Science gets the most because Merrill has the most sections (134 with
    reviews). It is also the subject most able to double up - a reading lesson and
@@ -61,7 +61,7 @@ const HOLIDAYS = [
 ];
 
 /* Per two-week cycle. Change these four numbers to re-balance the year. */
-const CYCLE = { Maths: 7, Science: 8, English: 5, History: 5 };
+const CYCLE = { Math: 7, Science: 8, English: 5, History: 5 };
 
 /* ── THE FOUR COURSES, FLATTENED INTO ORDERED LESSON LISTS ────────────────
    Each entry: { subject, unit, unitTitle, label, title, state }
@@ -110,11 +110,11 @@ const flatten = {
      ⚠️ Adding the 14 reviews takes the year from 429 to 443, 3.04 -> 3.14 a day.
      That was a deliberate call, not a tidy-up. Do not quietly add the 14 halfway
      checks as well without re-running the deal and re-checking the fit. */
-  Maths: () => COURSE2.units.flatMap((u) => u.items
+  Math: () => COURSE2.units.flatMap((u) => u.items
     .filter((i) => i.kind === "lesson" ||
                    (i.kind === "review" && !/^Halfway Check/.test(i.title)))
     .map((i) => ({
-      subject: "Maths", unit: u.n, unitTitle: u.title,
+      subject: "Math", unit: u.n, unitTitle: u.title,
       label: i.label, title: i.title,
       state: i.slug ? "built" : "todo",
     }))),
@@ -153,25 +153,25 @@ function calendar() {
 /* ── DEALING THE LESSONS ──────────────────────────────────────────────────
    Two-week cycle, subjects laid down in a fixed daily pattern so a parent sees
    the same rhythm every week rather than a shuffled list.
-   ⚠️ Maths is on EVERY teaching day on purpose: it is the subject that decays
+   ⚠️ Math is on EVERY teaching day on purpose: it is the subject that decays
    fastest without daily contact. */
 /* 🚨 A TWO-WEEK PATTERN, not a one-week one, and this is why: the per-week need
-   is fractional - English 2.4, History 2.3, Maths 3.4, Science 3.7. A fixed weekly
-   grid cannot hit those, and the first attempt proved it: Maths and Science ran out
+   is fractional - English 2.4, History 2.3, Math 3.4, Science 3.7. A fixed weekly
+   grid cannot hit those, and the first attempt proved it: Math and Science ran out
    with 27 empty days left while English still had 20 lessons and History 16.
-   Over EIGHT days the numbers land whole: Maths 7 · Science 8 · English 5 · History 5.
+   Over EIGHT days the numbers land whole: Math 7 · Science 8 · English 5 · History 5.
    ⚠️ Week B Thursday carries four slots. That is the one uneven day in the fortnight
    and it is deliberate - 25 does not divide by 8. */
 const WEEK_A = [
-  ["Maths", "Science", "English"],   /* Mon */
-  ["Maths", "Science", "History"],   /* Tue */
-  ["Maths", "Science", "English"],   /* Wed */
-  ["Maths", "Science", "History"],   /* Thu */
+  ["Math", "Science", "English"],   /* Mon */
+  ["Math", "Science", "History"],   /* Tue */
+  ["Math", "Science", "English"],   /* Wed */
+  ["Math", "Science", "History"],   /* Thu */
 ];
 const WEEK_B = [
-  ["Maths", "Science", "English"],                 /* Mon */
-  ["Maths", "Science", "History"],                 /* Tue */
-  ["Maths", "Science", "English"],                 /* Wed */
+  ["Math", "Science", "English"],                 /* Mon */
+  ["Math", "Science", "History"],                 /* Tue */
+  ["Math", "Science", "English"],                 /* Wed */
   ["Science", "History", "History", "English"],    /* Thu - the four-slot day */
 ];
 const patternFor = (weekNumber) => (weekNumber % 2 === 1 ? WEEK_A : WEEK_B);
@@ -184,7 +184,7 @@ function build() {
   const totals = {};
   for (const s of Object.keys(queue)) totals[s] = queue[s].length;
 
-  const placed = { Maths: 0, Science: 0, English: 0, History: 0 };
+  const placed = { Math: 0, Science: 0, English: 0, History: 0 };
   let unplaced = 0;
 
   for (const w of weeks) {

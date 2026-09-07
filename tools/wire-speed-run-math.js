@@ -11,16 +11,16 @@ const edit = (f, pairs) => {
 };
 
 edit("build-pages.js", [[
-  '  { title: "Remainder race", subject: "Maths" },',
-  '  { title: "Speed Run Math", href: "/games/speed-run-math/", subject: "Maths",\n' +
+  '  { title: "Remainder race", subject: "Math" },',
+  '  { title: "Speed Run Math", href: "/games/speed-run-math/", subject: "Math",\n' +
   '    blurb: "A timed multiplication drill. Pick the tables you want to work on, answer against the clock, and earn a rank from Recruit to Pilot.",\n' +
   '    note: "Choose your tables &middot; 2 to 10 minutes" },\n' +
-  '  { title: "Remainder race", subject: "Maths" },'
+  '  { title: "Remainder race", subject: "Math" },'
 ]]);
 
 edit("nav.js", [[
-  'col("Maths", [{ label: "Remainder race" }, { label: "Fraction match" }]) +',
-  'col("Maths", [{ label: "Speed Run Math", href: "/games/speed-run-math/" },\n' +
+  'col("Math", [{ label: "Remainder race" }, { label: "Fraction match" }]) +',
+  'col("Math", [{ label: "Speed Run Math", href: "/games/speed-run-math/" },\n' +
   '               { label: "Remainder race" }, { label: "Fraction match" }]) +'
 ], [
   '  { label: "Remainder race", soon: true }, { label: "Fraction match", soon: true },',
