@@ -903,6 +903,16 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
   .phead h1{margin-top:52px}
 }
 .crumb{font-size:.8rem;color:var(--dim);margin:0 0 16px}
+/* 🚨 THE UTILITY CLASS BEHIND class="dim", AND IT HAD NEVER EXISTED.
+   The --dim TOKEN was defined and used by other selectors as var(--dim), but
+   nothing mapped the CLASS to it, so every <p class="dim"> in the markup
+   rendered at full --fg - grey text that was never grey. Found on the cart,
+   2026-09-07: "the title is bold text and the price is a more grey text."
+   ⚠️ Same species as .thumb img, the [hidden] override and .hidden: the markup
+   and the script were right and the RULE WAS SIMPLY ABSENT. That is four now.
+   When something looks unstyled, grep the stylesheet for the class before
+   assuming the value is wrong. */
+.dim{color:var(--dim)}
 .crumb a{color:var(--dim)}
 @media(hover:hover){ .crumb a:hover{color:var(--fg)} }
 
@@ -1496,22 +1506,44 @@ html{-webkit-tap-highlight-color:transparent}
    price 13.76, heads 13.12, subtotal 17.92). The bulk was NOT the text: it was
    a 74px SQUARE thumbnail against their 64px-tall one, plus 20px row padding
    against 16px. Measure before resizing, or the wrong thing shrinks. */
-.ck-head{display:grid;grid-template-columns:minmax(0,1fr) 92px 108px;gap:14px;
+/* Columns 60 / 11 / 29 of the table, their proportions, so the price sits far
+   right with real air around it instead of crowding the quantity. */
+.ck-head{display:grid;grid-template-columns:minmax(0,1fr) 99px 251px;gap:16px;
   padding-bottom:14px;border-bottom:1px solid var(--line);
   font-size:1rem;font-weight:700;letter-spacing:-.01em}
 .ck-head span:nth-child(2){text-align:center}
 .ck-head span:nth-child(3){text-align:right}
-.ck-row{display:grid;grid-template-columns:minmax(0,1fr) 92px 108px;gap:14px;
-  align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
-.ck-prod{display:flex;align-items:center;gap:15px;min-width:0}
-.ck-thumb{width:64px;height:64px;flex:none;border-radius:9px;object-fit:contain;
-  background:#fff;border:1px solid var(--line)}
+/* 🚨 32px OF PADDING AND TOP ALIGNMENT, not 16px and centred. Their table row
+   is 144px tall: 32 above, 80 of content, 32 below, with the cell set to
+   vertical-align:top so the title starts level with the top of the tile.
+   ⚠️ My first pass read 111px and 16px padding off the DRAWER row by mistake
+   and copied the wrong component's numbers onto the page. Measure the thing
+   you are actually matching. */
+.ck-row{display:grid;grid-template-columns:minmax(0,1fr) 99px 251px;gap:16px;
+  align-items:start;padding:32px 0;border-bottom:1px solid var(--line)}
+.ck-prod{display:flex;align-items:flex-start;gap:20px;min-width:0}
+/* 🚨 A WIDE FLAT TILE, NO BORDER, NO RADIUS. 96x64 on a light ground. Ours was
+   a 64px bordered rounded square, which is what made the rows read as chunky
+   next to theirs.
+   ⚠️ object-fit:contain, NOT fill. Their photos are already 3:2 so fill costs
+   them nothing; our worksheet art is square (1200x1200) and fill would stretch
+   every cover. Contain letterboxes it inside the tile, which is why the tile
+   carries its own light background rather than being transparent. */
+.ck-thumb{width:96px;height:64px;flex:none;border:0;border-radius:0;
+  object-fit:contain;background:#f1f3f5}
 .ck-nothumb{background:var(--panel-2)}
 /* align-items:flex-start is written EXPLICITLY rather than left to the default,
    because the default is what the collision above overrode. */
 .ck-meta{min-width:0;display:flex;flex-direction:column;align-items:flex-start;
   justify-content:center;gap:4px;text-align:left}
 .ck-meta b{font-size:1rem;font-weight:700;line-height:1.6;letter-spacing:-.01em}
+/* 🚨 .dim HAD NO RULE IN THIS STYLESHEET AT ALL. The --dim TOKEN existed and
+   was used by other selectors as var(--dim), but nothing ever mapped the CLASS
+   to it - so every <p class="dim"> rendered at full --fg. Paul spotted it on
+   the cart: "the title is bold text and the price is a more grey text."
+   ⚠️ FOURTH TIME THIS EXACT SPECIES HAS BITTEN: .thumb img, the [hidden]
+   override, .hidden, now .dim. Markup right, JS right, the rule simply absent.
+   The class is defined properly below; this rule only sets size and weight. */
 .ck-meta .dim{font-size:1rem;font-weight:400;line-height:1.6}
 .ck-qty{display:flex;flex-direction:column;align-items:center;gap:7px}
 /* 🚨 A BOX, NOT AN INPUT, AND THAT IS DELIBERATE. The reference sells physical
