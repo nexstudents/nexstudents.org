@@ -42,7 +42,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=21a4305e">
+<link rel="stylesheet" href="/assets/ns.css?v=ecf84c5c">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -141,34 +141,36 @@
        the word Sign Up and does not find a way in without it. -->
   <div class="card" id="signedOut" style="text-align:center">
 
-    <div class="authtabs" role="tablist" aria-label="Sign in or sign up">
-      <button class="authtab is-on" id="tabIn"  type="button" role="tab"
-              aria-selected="true"  aria-controls="paneIn">Sign In</button>
-      <button class="authtab"       id="tabUp"  type="button" role="tab"
-              aria-selected="false" aria-controls="paneUp">Sign Up</button>
-    </div>
+    <h2 id="siHead" style="margin-top:0">Log In</h2>
+    <p class="dim" id="siLede">Welcome back. Type your email and we send you a
+      link. No password to remember.</p>
 
-    <div id="paneIn" role="tabpanel" aria-labelledby="tabIn">
-      <p class="dim">Welcome back. Type your email and we send you a link.
-        No password to remember.</p>
-    </div>
-    <div id="paneUp" role="tabpanel" aria-labelledby="tabUp" class="hidden">
-      <p class="dim">New here? Type your email and we send you a link that
-        creates your account. No password to pick, and nothing to forget.</p>
-    </div>
-
-    <!-- ONE form serving both tabs. Only the button label changes. -->
+    <!-- ONE form for both routes. Only the words change; both submit to the
+         same handler and the same NSAccount.signIn(). -->
     <form id="siForm" autocomplete="on">
       <input type="email" id="siEmail" required autocomplete="email"
              placeholder="you@example.com" aria-label="Your email"
              style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
                     background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
-      <!-- Title Case on the control, sentence case in the prose above it. -->
-      <div style="text-align:center"><button class="btn" type="submit" id="siBtn"
-           style="margin-top:12px">Email Me a Link</button></div>
+      <!-- Title Case on the control, sentence case in the prose around it. -->
+      <button class="btn authgo" type="submit" id="siBtn">Email Me a Link</button>
     </form>
 
     <p class="dim" id="siMsg" style="font-size:.9rem;margin:14px 0 0"></p>
+
+    <!-- 🚨 THE SECOND ROUTE IS A LINK UNDER THE PRIMARY BUTTON, which is how
+         Paul's own HG login page does it: one solid action, then "New here?
+         Sign up free" beneath. Not tabs - he rejected those explicitly. -->
+    <!-- ⚠️ A BUTTON, NOT A DEAD ANCHOR. This switches the form in place and
+         does not navigate, so an anchor would misdescribe it - and build-pages
+         fails the build on empty-fragment links anyway.
+         🚨 DO NOT WRITE THAT PATTERN LITERALLY IN THIS COMMENT. The guard tests
+         the RENDERED HTML, comments included, so naming the forbidden string
+         here trips the check on itself. It did exactly that on 2026-09-07.
+         Same species as check-nav-css.js, which strips comments first. -->
+    <p class="authswap" id="siSwap">New here?
+      <button type="button" id="siSwapLink">Sign up free</button></p>
+
     <p class="dim" style="font-size:.85rem;margin:18px 0 0">
       Bought something as a guest? Sign in with the same email you used at
       checkout and it will be waiting here.</p>
@@ -239,17 +241,25 @@
   function setMode(m){
     mode = m;
     var up = m === "up";
-    $("tabIn").classList.toggle("is-on", !up);
-    $("tabUp").classList.toggle("is-on", up);
-    $("tabIn").setAttribute("aria-selected", String(!up));
-    $("tabUp").setAttribute("aria-selected", String(up));
-    $("paneIn").classList.toggle("hidden", up);
-    $("paneUp").classList.toggle("hidden", !up);
+    $("siHead").textContent = up ? "Create Your Account" : "Log In";
+    $("siLede").textContent = up
+      ? "Type your email and we send you a link that makes your account. No password to pick, and nothing to forget."
+      : "Welcome back. Type your email and we send you a link. No password to remember.";
     $("siBtn").textContent = up ? "Create My Account" : "Email Me a Link";
+    $("siSwap").innerHTML = up
+      ? 'Already have an account? <button type="button" id="siSwapLink">Log in</button>'
+      : 'New here? <button type="button" id="siSwapLink">Sign up free</button>';
+    /* innerHTML replaced the anchor, so the handler has to be re-attached. */
+    wireSwap();
     $("siMsg").textContent = "";
+    $("siEmail").focus();
   }
-  $("tabIn").onclick = function(){ setMode("in"); };
-  $("tabUp").onclick = function(){ setMode("up"); };
+  function wireSwap(){
+    var a = $("siSwapLink");
+    if (!a) return;
+    a.onclick = function(e){ e.preventDefault(); setMode(mode === "up" ? "in" : "up"); };
+  }
+  wireSwap();
 
   document.addEventListener("ns:auth", paint);
   paint();

@@ -926,21 +926,27 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    assuming the value is wrong. */
 .dim{color:var(--dim)}
 
-/* ── SIGN IN / SIGN UP TABS ────────────────────────────────────────────────
-   Paul, 2026-09-07: "new accounts need a sign up to sign in. this is normal on
-   every website." Two tabs over ONE form and one endpoint - the words change,
-   the code path does not.
-   ⚠️ They only ever render to a signed-out visitor; the signed-in card replaces
-   the whole thing, so there is no state where both are on screen. */
-.authtabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:0 0 18px;
-  padding:4px;background:var(--panel-2);border:1px solid var(--line);border-radius:11px}
-.authtab{appearance:none;background:none;border:0;cursor:pointer;font:inherit;
-  font-size:.92rem;font-weight:700;letter-spacing:-.01em;color:var(--dim);
-  padding:10px 8px;border-radius:8px;transition:background .18s,color .18s}
-.authtab:hover{color:var(--fg)}
-/* The selected tab is a filled block, so which one you are on is readable at a
-   glance rather than a colour difference someone has to hunt for. */
-.authtab.is-on{background:var(--a);color:var(--a-ink)}
+/* ── LOG IN / SIGN UP ──────────────────────────────────────────────────────
+   🚨 ONE SOLID PRIMARY, THEN A LINK UNDERNEATH. Modelled on Paul's OWN login
+   page at homeschoolgrades.com/login.php, which is the reference that settled
+   this: a big "Log in to <thing>" button with "New here? Sign up free" as small
+   text beneath it.
+
+   ⚠️ A TABBED VERSION WAS BUILT FIRST AND REJECTED - "i dont like it as a tab
+   but two differnt buttons". `.authtabs` / `.authtab` were DELETED rather than
+   left unused; dead CSS that once ran is how a reverted design creeps back.
+   ⚠️ Still ONE form and ONE endpoint underneath: both routes call
+   NSAccount.signIn() with create_user:true. Only the words change. */
+.authgo{width:100%;display:flex;align-items:center;justify-content:center;
+  margin-top:12px;min-height:52px;font-size:1rem}
+.authswap{margin:16px 0 0;font-size:.9rem;color:var(--dim)}
+/* ⚠️ A BUTTON WEARING A LINK'S CLOTHES. It switches the form in place rather
+   than navigating, and build-pages.js fails the build on href="#" anyway. The
+   appearance reset is what stops it arriving as a grey OS button. */
+.authswap button{appearance:none;background:none;border:0;padding:0;cursor:pointer;
+  font:inherit;font-size:inherit;color:var(--fg);font-weight:700;
+  text-decoration:underline;text-underline-offset:3px}
+.authswap button:hover{color:var(--a)}
 .crumb a{color:var(--dim)}
 @media(hover:hover){ .crumb a:hover{color:var(--fg)} }
 
