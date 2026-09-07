@@ -925,6 +925,22 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    When something looks unstyled, grep the stylesheet for the class before
    assuming the value is wrong. */
 .dim{color:var(--dim)}
+
+/* ── SIGN IN / SIGN UP TABS ────────────────────────────────────────────────
+   Paul, 2026-09-07: "new accounts need a sign up to sign in. this is normal on
+   every website." Two tabs over ONE form and one endpoint - the words change,
+   the code path does not.
+   ⚠️ They only ever render to a signed-out visitor; the signed-in card replaces
+   the whole thing, so there is no state where both are on screen. */
+.authtabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:0 0 18px;
+  padding:4px;background:var(--panel-2);border:1px solid var(--line);border-radius:11px}
+.authtab{appearance:none;background:none;border:0;cursor:pointer;font:inherit;
+  font-size:.92rem;font-weight:700;letter-spacing:-.01em;color:var(--dim);
+  padding:10px 8px;border-radius:8px;transition:background .18s,color .18s}
+.authtab:hover{color:var(--fg)}
+/* The selected tab is a filled block, so which one you are on is readable at a
+   glance rather than a colour difference someone has to hunt for. */
+.authtab.is-on{background:var(--a);color:var(--a-ink)}
 .crumb a{color:var(--dim)}
 @media(hover:hover){ .crumb a:hover{color:var(--fg)} }
 

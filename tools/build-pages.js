@@ -2827,18 +2827,49 @@ const SOON_PAGES = [
        ⚠️ THE FIX IS WORDING, NOT A SECOND FORM. Adding a separate register form
        would recreate exactly the drift this design avoids - two forms, one
        backend, guaranteed to disagree eventually. -->
+  <!-- 🚨 TWO TABS, ONE CODE PATH. Paul, 2026-09-07, twice: "this sign in also
+       needs a signup", then "new accounts need a sign up to sign in. this is
+       normal on every website. also the way we have ours looks wrong."
+
+       He is right and my first answer was wrong in an important way. I argued
+       against a second form because two forms drift apart - but the drift that
+       actually bites is two forms hitting two CODE PATHS. These two tabs call
+       the SAME NSAccount.signIn(), which is create_user:true, so there is one
+       backend, one endpoint, and nothing that can get out of step. What was
+       missing was the affordance a reader expects, and that costs nothing.
+
+       ⚠️ SO DO NOT "SIMPLIFY" THIS BACK TO ONE BOX. The mechanism was already
+       identical; the page was the problem. A visitor with no account looks for
+       the word Sign Up and does not find a way in without it. -->
   <div class="card" id="signedOut" style="text-align:center">
-    <h2 style="margin-top:0">Sign in or create an account</h2>
-    <p class="dim">Type your email and we send you a link. If you have never been
-      here before, that link makes your account. No password either way.</p>
+
+    <div class="authtabs" role="tablist" aria-label="Sign in or sign up">
+      <button class="authtab is-on" id="tabIn"  type="button" role="tab"
+              aria-selected="true"  aria-controls="paneIn">Sign In</button>
+      <button class="authtab"       id="tabUp"  type="button" role="tab"
+              aria-selected="false" aria-controls="paneUp">Sign Up</button>
+    </div>
+
+    <div id="paneIn" role="tabpanel" aria-labelledby="tabIn">
+      <p class="dim">Welcome back. Type your email and we send you a link.
+        No password to remember.</p>
+    </div>
+    <div id="paneUp" role="tabpanel" aria-labelledby="tabUp" class="hidden">
+      <p class="dim">New here? Type your email and we send you a link that
+        creates your account. No password to pick, and nothing to forget.</p>
+    </div>
+
+    <!-- ONE form serving both tabs. Only the button label changes. -->
     <form id="siForm" autocomplete="on">
       <input type="email" id="siEmail" required autocomplete="email"
              placeholder="you@example.com" aria-label="Your email"
              style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
                     background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
       <!-- Title Case on the control, sentence case in the prose above it. -->
-      <div style="text-align:center"><button class="btn" type="submit" style="margin-top:12px">Email Me a Link</button></div>
+      <div style="text-align:center"><button class="btn" type="submit" id="siBtn"
+           style="margin-top:12px">Email Me a Link</button></div>
     </form>
+
     <p class="dim" id="siMsg" style="font-size:.9rem;margin:14px 0 0"></p>
     <p class="dim" style="font-size:.85rem;margin:18px 0 0">
       Bought something as a guest? Sign in with the same email you used at
@@ -2898,6 +2929,30 @@ const SOON_PAGES = [
     });
   };
   $("signOut").onclick = function(){ NSAccount.signOut(); location.reload(); };
+
+  /* 🚨 THE BUTTON SAYS WHAT THE TAB IS FOR. Paul, 2026-09-07: "usually you have
+     two differnt buttons and we need a create account button." A reader on the
+     Sign Up tab looking at a button reading "Email Me a Link" cannot tell it
+     will make them an account.
+     ⚠️ ONE FORM, ONE ENDPOINT UNDERNEATH. Both tabs submit the same handler and
+     call the same NSAccount.signIn(), which is create_user:true. The tabs
+     change the words and nothing else, so there is no second path to drift. */
+  var mode = "in";
+  function setMode(m){
+    mode = m;
+    var up = m === "up";
+    $("tabIn").classList.toggle("is-on", !up);
+    $("tabUp").classList.toggle("is-on", up);
+    $("tabIn").setAttribute("aria-selected", String(!up));
+    $("tabUp").setAttribute("aria-selected", String(up));
+    $("paneIn").classList.toggle("hidden", up);
+    $("paneUp").classList.toggle("hidden", !up);
+    $("siBtn").textContent = up ? "Create My Account" : "Email Me a Link";
+    $("siMsg").textContent = "";
+  }
+  $("tabIn").onclick = function(){ setMode("in"); };
+  $("tabUp").onclick = function(){ setMode("up"); };
+
   document.addEventListener("ns:auth", paint);
   paint();
 })();
