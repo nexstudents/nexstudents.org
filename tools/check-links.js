@@ -168,8 +168,51 @@ if (buriedSheet.length) {
   process.exit(1);
 }
 
+/* ── 🚨 A PAID FILE MUST NOT BE IN THIS REPO ────────────────────────────────
+   Added 2026-09-06. GitHub Pages publishes the repo root, so ANY file committed
+   here is a public URL — no link to it needed, and no login in front of it. A
+   paid download sitting beside its own sales page is not protected by the price
+   on that page; it is simply free to anyone who reads the HTML.
+
+   Paid files live in the private R2 bucket under `paid/`, and are served only
+   by tools/r2-worker.js after Postgres confirms the purchase. This check is
+   what stops that rule from being a note somebody remembers.
+
+   ⚠️ It reads the PRICE from the registry, so a sheet that becomes paid later
+   is covered automatically — the day `price` stops being "$0", this starts
+   guarding it. That is the whole reason it keys off price and not a list.  */
+const { SHEETS } = require(path.resolve(__dirname, "worksheets.js"));
+const SUBJ_DIR = { English: "english", History: "history", Math: "maths", Science: "science" };
+const leaked = [];
+for (const s of SHEETS) {
+  const cents = Math.round(parseFloat(String(s.price || "$0").replace(/[^0-9.]/g, "")) * 100);
+  if (!cents) continue;                            // free sheets belong in the repo
+  const dir = path.join(ROOT, "worksheets", SUBJ_DIR[s.subject] || "", s.slug);
+  if (!fs.existsSync(dir)) continue;
+  for (const name of fs.readdirSync(dir)) {
+    /* index.html is the SALES page and must stay. thumb.jpg and art.jpg are the
+       shop window. Anything downloadable is the product itself. */
+    if (/\.(pdf|zip|docx?|pptx?|epub)$/i.test(name)) {
+      leaked.push("worksheets/" + SUBJ_DIR[s.subject] + "/" + s.slug + "/" + name +
+                  "   (" + s.price + " — " + s.title + ")");
+    }
+  }
+}
+if (leaked.length) {
+  console.error("FAIL: " + leaked.length + " PAID file(s) are committed to the public repo:");
+  for (const r of leaked) console.error("  " + r);
+  console.error("");
+  console.error("  GitHub Pages serves the repo root, so each of these is already a free");
+  console.error("  public download. Move them to the R2 bucket under paid/<slug>.pdf and");
+  console.error("  git rm them here. tools/r2-worker.js serves them after checkout.");
+  console.error("  ⚠️ git rm alone does NOT remove it from the repo HISTORY. If one of these");
+  console.error("     was ever pushed, treat that file as published and regenerate it.");
+  process.exit(1);
+}
+
 if (!bad.size) {
   console.log("OK — no broken internal links.");
+  console.log("OK — no paid file is committed to the public repo.");
   console.log("OK — the answer sheet prints on every lesson that has one.");
   console.log("OK — all " + lessonPages.length + " built lessons are on a grade+subject shelf.");
   process.exit(0);

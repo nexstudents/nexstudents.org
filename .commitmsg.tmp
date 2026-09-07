@@ -1,0 +1,36 @@
+Paid files move behind the Worker, and a guard that keeps them there
+
+Paul asked whether the files could be stored somewhere private until they are
+paid for. Google Drive cannot do it: a share link is either public to anyone
+holding it, or a per-person invite needing a Google account. Neither can ask
+"did this person pay?"
+
+R2 already can, and it is already deployed for the lesson audio.
+
+- redeem_download(token) installed in Supabase. Security definer, granted to
+  anon, because a guest has no session to check RLS against. It is the only
+  way to turn an access_token into a product.
+- r2-worker.js gains /download?t=<token>. It decides nothing itself; it asks
+  Postgres and streams paid/<slug>.pdf from the private bucket on a yes.
+- The plain media route now REFUSES any key under paid/. Without that line the
+  bucket serves the paid file at a guessable URL on this same Worker and every
+  other gate is decoration.
+- Fails closed on a missing SUPABASE_URL/KEY, 503 rather than 404 on an outage,
+  and one identical denial for every failure mode so a scanner learns nothing.
+- private, no-store on the response. Copying the immutable cache-control from
+  the audio route would put a paid file in a shared edge cache.
+
+check-links.js now FAILS the build if any file with a price has a downloadable
+file committed here. GitHub Pages publishes the repo root, so a paid PDF beside
+its own sales page is already free to anyone reading the HTML. It keys off the
+price in the registry, so a sheet that becomes paid later is covered the day it
+changes. Positive control run: planted a PDF, it failed; removed it, it passed.
+
+Nothing is leaking today. The $14 bundle has buy: null and no file at all, so
+this lands before a paid file ever touches the repo rather than after.
+
+NOT YET DEPLOYED. The Worker needs pasting into Cloudflare and two variables
+adding, SUPABASE_URL and SUPABASE_KEY (the publishable key, not the secret).
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01AE5tiKVXT1mYDoEKwLdx1T
