@@ -1,0 +1,4 @@
+
+# scratch commit-message file (git -F cannot read an absolute path here:
+# the apostrophe in "Paul's PC2" breaks git.exe, so it is written locally)
+.commitmsg.tmp
