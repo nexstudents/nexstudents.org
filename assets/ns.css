@@ -1708,9 +1708,16 @@ body.cart-open .cdrawer{transform:none}
    different number because the font and line box move with it. One value to
    turn now. 56px against the reference's 60, with our smaller 14.4px label. */
 .cd-acts .btn{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
-  text-align:center;min-height:56px;padding:8px 14px;font-size:.9rem;font-weight:700;
+  text-align:center;min-height:56px;padding:8px 14px;font-size:1.05rem;font-weight:700;
   letter-spacing:-.01em}
-.cd-acts .btn svg{justify-self:end;margin-right:8px}
+/* 🚨 display:block ON THE ICON, AND THAT IS THE ALIGNMENT FIX. Paul, 2026-09-07:
+   "the lock doesnt look at the same level as the text on checkout." An inline
+   SVG sits on the TEXT BASELINE, so it hangs low against a centred label no
+   matter what align-items says - the grid was centring a box whose contents
+   were already offset inside it. As a block it has no baseline to sit on and
+   the grid centres it properly. Sized up with the label, 15 -> 17. */
+.cd-acts .btn svg{display:block;width:17px;height:17px;justify-self:end;
+  align-self:center;margin-right:8px}
 /* Both labels are wrapped, so both sit in the centre column. */
 .cd-acts .btn span{grid-column:2}
 
@@ -1727,7 +1734,7 @@ body.cart-open .cdrawer{transform:none}
   .cd-body{padding-left:14px;padding-right:14px}
   .cd-foot{padding-left:14px;padding-right:14px}
   .cd-acts{gap:7px}
-  .cd-acts .btn{padding-inline:6px;font-size:.82rem}
+  .cd-acts .btn{padding-inline:6px;font-size:.9rem}
   .cd-acts .btn svg{margin-right:5px}
 }
 

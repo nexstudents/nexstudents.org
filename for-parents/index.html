@@ -42,7 +42,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=e8944d79">
+<link rel="stylesheet" href="/assets/ns.css?v=993ac609">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -201,9 +201,49 @@
 
 var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
     scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
-function setNav(o){document.body.classList.toggle("nav-open",o);
+
+/* 🚨 THE SCROLL LOCK GOES ON <html>, NOT <body>, AND THAT IS THE WHOLE BUG.
+   Paul, 2026-09-07, of the cart drawer: "they have a x that prevents the user
+   from scrolling when the draw is open" - ours did not.
+   Measured with the drawer open: document.scrollingElement is HTML, body's
+   computed overflow-y was already "hidden" (the old line worked), html's was
+   "visible", and the page still scrolled 0 -> 576.
+   ⚠️ Setting overflow on BODY does nothing here because html carries
+   overflow-x clip and is therefore the scroll container - the same reason
+   already written up in CLAUDE.md for why window scroll events died when
+   overflow-x sat on body.
+   ⚠️ KNOWN SIDE EFFECT, MEASURED AND ACCEPTED: while locked, html's overflow-x
+   computes from clip to hidden. That is the CSS rule, not a bug - clip paired
+   with a non-clip value computes to hidden - and it lasts only while a drawer
+   is open. The sticky nav was checked in that state and still computes sticky.
+   If it ever does bite, the alternative is a position:fixed body lock, which
+   costs a saved scroll offset to restore.
+
+   ⚠️ NO BACKTICKS IN THIS COMMENT. It lives inside a template literal and one
+   backtick closes the string - the trap already documented for pagerScript and
+   progressScript, hit again here on 2026-09-07.
+
+   ⚠️ AND DO NOT VERIFY THIS WITH window.scrollBy. A programmatic scroll moves a
+   container with overflow:hidden anyway; only wheel, touch and the scrollbar
+   are blocked. Read the computed overflow-y instead. The first test here said
+   the lock had failed when it had not.
+   ⚠️ overflow-Y ONLY. The shorthand would reset html's overflow-x to hidden and
+   quietly undo that fix.
+   ⚠️ Both drawers share this. The menu drawer carried the identical dead line,
+   so it never locked scrolling either. */
+var nsLocks=0;
+function nsLockScroll(on){
+  nsLocks=Math.max(0,nsLocks+(on?1:-1));
+  document.documentElement.style.overflowY=nsLocks?"hidden":"";
+}
+
+function setNav(o){
+  /* Same no-op guard as nsCartOpen: the lock counts, so a repeated call in the
+     state it is already in would leak one. */
+  if(document.body.classList.contains("nav-open")===o) return;
+  document.body.classList.toggle("nav-open",o);
   burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
-  document.body.style.overflow=o?"hidden":"";
+  nsLockScroll(o);
   if(!o) nsCloseSubs();}
 burger.onclick=function(){setNav(!document.body.classList.contains("nav-open"));};
 scrim.onclick=dClose.onclick=function(){setNav(false);};
@@ -366,9 +406,12 @@ function nsMoney(c){ return "$" + ((c||0)/100).toFixed(2); }
 
 function nsCartOpen(o){
   if(!cdrawer) return;
+  /* ⚠️ NO-OP IF ALREADY IN THAT STATE. nsLockScroll counts, and opening an
+     already-open drawer would take a second lock that nothing releases. */
+  if(document.body.classList.contains("cart-open")===o) return;
   document.body.classList.toggle("cart-open",o);
   cdrawer.setAttribute("aria-hidden",!o);
-  document.body.style.overflow=o?"hidden":"";
+  nsLockScroll(o);
 }
 
 /* The badge is the only part that paints on EVERY page. It reads localStorage

@@ -635,9 +635,13 @@ body.cart-open .cdrawer{transform:none}
    rule; keep the number identical or the drawer is two heights depending on
    which page opened it. */
 .cd-acts .navbtn{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
-  text-align:center;min-height:56px;padding:8px 14px;font-size:.9rem;font-weight:700;
+  text-align:center;min-height:56px;padding:8px 14px;font-size:1.05rem;font-weight:700;
   letter-spacing:-.01em}
-.cd-acts .navbtn svg{justify-self:end;margin-right:8px}
+/* 🚨 display:block ON THE ICON - the twin of the ns.css rule. An inline SVG
+   sits on the text baseline and hangs low against a centred label whatever
+   align-items says. As a block it has no baseline and the grid centres it. */
+.cd-acts .navbtn svg{display:block;width:17px;height:17px;justify-self:end;
+  align-self:center;margin-right:8px}
 /* Both labels are wrapped in a span, so both land in the centre column. A bare
    text node becomes an anonymous item in column 1 and sits left of centre. */
 .cd-acts .navbtn span{grid-column:2}
@@ -659,6 +663,6 @@ body.cart-open .cdrawer{transform:none}
   .cd-body{padding-left:14px;padding-right:14px}
   .cd-foot{padding-left:14px;padding-right:14px}
   .cd-acts{gap:7px}
-  .cd-acts .navbtn{padding-inline:6px;font-size:.82rem}
+  .cd-acts .navbtn{padding-inline:6px;font-size:.9rem}
   .cd-acts .navbtn svg{margin-right:5px}
 }
