@@ -1562,8 +1562,12 @@ html{-webkit-tap-highlight-color:transparent}
    goods where quantity is real. A download is bought once: a stepper here is a
    way to charge somebody twice for the same PDF, and an input that refuses to
    change is a dead control. Same shape, honest behaviour. */
-.ck-qbox{min-width:44px;padding:7px 10px;border:1px solid var(--line);border-radius:7px;
-  background:var(--panel-2);text-align:center;font-size:.9rem;font-weight:700}
+/* 🚨 SQUARE, like the drawer's. min-width plus padding let the text set the
+   height and produced a lozenge; an explicit equal width and height with the
+   digit centred keeps it square whatever it holds. */
+.ck-qbox{width:40px;height:40px;display:grid;place-items:center;
+  border:1px solid var(--line);border-radius:7px;
+  background:var(--panel-2);font-size:.9rem;font-weight:700}
 .ck-rm{background:none;border:0;color:var(--dim);cursor:pointer;font:inherit;
   font-size:.75rem;font-weight:400;text-decoration:underline;padding:2px}
 .ck-rm:hover{color:var(--fg)}
@@ -1619,7 +1623,13 @@ html{-webkit-tap-highlight-color:transparent}
 .cscrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:80;opacity:0;
   visibility:hidden;transition:opacity .3s ease,visibility .3s}
 body.cart-open .cscrim{opacity:1;visibility:visible}
-.cdrawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);z-index:81;
+/* 🚨 680px, NOT 400. Paul, 2026-09-07: "our view cart buttons and checkout
+   button is larger." Measured against the reference, our buttons were actually
+   SMALLER in absolute terms - 41px tall against their 60px - but their drawer
+   is 680px wide against our 400, so their two 280px buttons sit in a panel with
+   room to breathe while ours nearly filled theirs. The buttons were never the
+   problem; the panel was too narrow for them. */
+.cdrawer{position:fixed;top:0;right:0;bottom:0;width:min(680px,100%);z-index:81;
   background:var(--panel);border-left:1px solid var(--line);
   display:flex;flex-direction:column;
   transform:translateX(100%);transition:transform .34s cubic-bezier(.22,.61,.36,1)}
@@ -1641,6 +1651,15 @@ body.cart-open .cdrawer{transform:none}
 .cd-empty{color:var(--dim);font-size:.92rem;padding:22px 0}
 .cd-row{display:flex;align-items:center;gap:13px;padding:15px 0;
   border-bottom:1px solid var(--line)}
+/* Quantity box stacked over Remove, matching the reference's drawer. */
+.cd-qty{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+/* 🚨 SQUARE. Paul, 2026-09-07: "the box for the quanity doesnt look square."
+   Sizing it with min-width plus padding let the text decide the height, so it
+   came out 48 wide and 29 tall - a lozenge. An explicit equal width and height
+   with the digit centred is the only way it stays square whatever is in it. */
+.cd-qbox{width:40px;height:40px;display:grid;place-items:center;
+  border:1px solid var(--line);border-radius:7px;
+  background:var(--panel-2);font-size:.85rem;font-weight:700}
 .cd-th{width:56px;height:56px;flex:none;border-radius:9px;object-fit:contain;
   background:#fff;border:1px solid var(--line)}
 .cd-noth{background:var(--panel-2)}
@@ -1650,30 +1669,66 @@ body.cart-open .cdrawer{transform:none}
 .cd-rm{flex:none;background:none;border:0;color:var(--dim);cursor:pointer;
   font:inherit;font-size:.78rem;text-decoration:underline;padding:4px}
 .cd-rm:hover{color:var(--fg)}
-.cd-foot{flex:none;padding:16px 20px 20px;border-top:1px solid var(--line)}
+/* 🚨 56px SIDE PADDING IS WHAT MAKES THE BUTTONS 280 WIDE. Their drawer is 680
+   with a 568 button row - two 280s and an 8px gap - so the footer insets 56 a
+   side. Ours was 20, which gave 316px buttons in the same panel and read as
+   oversized. The button rule was right; the container was wrong. */
+.cd-foot{flex:none;padding:16px 56px 20px;border-top:1px solid var(--line)}
 .cd-tot{display:flex;justify-content:space-between;align-items:baseline;
   font-weight:800;font-size:1.05rem;margin-bottom:14px}
 /* 🚨 TWO EQUAL COLUMNS, not a flex row. minmax(0,1fr) because a long label in
    a 1fr track refuses to shrink below its content and pushes the second button
    off the panel - the same trap already recorded for the subject tiles. */
-.cd-acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
-/* 🚨 SMALLER THAN A PAGE BUTTON, ON PURPOSE. Paul, 2026-09-07, against
-   lttstore's: "make that checkout and view cart button smaller." The site .btn
-   is sized to be the main action on a wide page; in a 400px panel that same
-   size reads as a wall. Overriding padding and font here rather than shrinking
-   .btn itself, which would move every button on the site. */
+/* Two equal columns with their 8px gap. */
+.cd-acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
 /* 🚨 BOTH SOLID, SAME COLOUR. There was a .cd-alt ghost rule here for View Cart
    and it was deleted, not disabled: the reference had two identical buttons and
    the split was invented. Dead CSS that once ran is how a reverted design
-   creeps back. */
-.cd-acts .btn{display:flex;align-items:center;justify-content:center;text-align:center;
-  padding:10px 12px;font-size:.82rem;letter-spacing:-.01em;border-radius:8px}
+   creeps back.
 
-/* Phone: full width, and the actions stack. Two buttons side by side under
-   360px puts "View Cart" onto two lines. */
-@media(max-width:420px){
-  .cdrawer{width:100%;border-left:0}
-  .cd-acts{grid-template-columns:1fr}
+   🚨 60px TALL, 16px, WEIGHT 700 - THE REFERENCE'S NUMBERS. These were first
+   shrunk to 41px/13px on 2026-09-07 when Paul said they looked too large, and
+   that was treating the symptom: measured, ours were already SMALLER than
+   theirs. Their drawer is 680px wide against our 400, so their buttons sat in a
+   panel with room while ours nearly filled it. Widening the drawer is the real
+   fix, so the sizing goes back to matching.
+   ⚠️ THE RADIUS STAYS OURS. Their buttons are square; every button on this site
+   is rounded, and squaring off only these two would read as a mistake rather
+   than a match. Size, weight and layout follow the reference; the corner does
+   not.
+   ⚠️ 1fr auto 1fr, not flex+gap: the padlock must not push the label off
+   centre. Same trap already fixed on the cart page. */
+/* ⚠️ SHORTER THAN THE REFERENCE'S 60px, ON PAUL'S CALL. Their metrics were
+   matched first (60px/16px) and he asked for smaller after seeing it: "and
+   smaller i think". The WIDTH still matches theirs at 280 - that came from the
+   footer padding above - so this is the height and type only. His eye on his
+   own site beats the measurement. */
+/* ⚠️ HEIGHT IS min-height, NOT A PADDING SUM. Paul asked for these smaller,
+   then taller, and each round of padding arithmetic landed on a slightly
+   different number because the font and line box move with it. One value to
+   turn now. 56px against the reference's 60, with our smaller 14.4px label. */
+.cd-acts .btn{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  text-align:center;min-height:56px;padding:8px 14px;font-size:.9rem;font-weight:700;
+  letter-spacing:-.01em}
+.cd-acts .btn svg{justify-self:end;margin-right:8px}
+/* Both labels are wrapped, so both sit in the centre column. */
+.cd-acts .btn span{grid-column:2}
+
+/* 🚨 SIDE BY SIDE ON EVERY PHONE SIZE. Paul, 2026-09-07: "the bottons sould be
+   side by side on all mobile." They used to stack under 420px, which is a
+   different layout on a phone from the one on a desktop for no reason the
+   reader can see.
+   ⚠️ The GRID never collapses; the PADDING gives way instead. The 56px footer
+   inset that makes 280px buttons on a 680px panel would leave nothing for the
+   labels at 320px, so it drops to 14px and the buttons shrink with the screen
+   rather than rearranging. */
+@media(max-width:560px){
+  .cdrawer{border-left:0}
+  .cd-body{padding-left:14px;padding-right:14px}
+  .cd-foot{padding-left:14px;padding-right:14px}
+  .cd-acts{gap:7px}
+  .cd-acts .btn{padding-inline:6px;font-size:.82rem}
+  .cd-acts .btn svg{margin-right:5px}
 }
 
 @media(max-width:940px){

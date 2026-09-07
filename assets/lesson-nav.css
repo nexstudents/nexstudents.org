@@ -583,7 +583,9 @@ html{-webkit-tap-highlight-color:transparent}
 .cscrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:80;opacity:0;
   visibility:hidden;transition:opacity .3s ease,visibility .3s}
 body.cart-open .cscrim{opacity:1;visibility:visible}
-.cdrawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);z-index:81;
+/* 🚨 680px, matching ns.css. The buttons were never oversized - the panel was
+   too narrow for them. See the ns.css twin for the measurement. */
+.cdrawer{position:fixed;top:0;right:0;bottom:0;width:min(680px,100%);z-index:81;
   background:var(--nv-bg);border-left:1px solid var(--nv-line);
   display:flex;flex-direction:column;
   transform:translateX(100%);transition:transform .34s cubic-bezier(.22,.61,.36,1)}
@@ -604,6 +606,13 @@ body.cart-open .cdrawer{transform:none}
 .cd-empty{color:var(--nv-dim);font-size:.92rem;padding:22px 0}
 .cd-row{display:flex;align-items:center;gap:13px;padding:15px 0;
   border-bottom:1px solid var(--nv-line)}
+/* Quantity box stacked over Remove, the twin of the ns.css rule. */
+.cd-qty{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+/* 🚨 SQUARE - the twin of the ns.css rule. min-width plus padding let the text
+   set the height and gave a lozenge; explicit equal width and height instead. */
+.cd-qbox{width:40px;height:40px;display:grid;place-items:center;
+  border:1px solid var(--nv-line);border-radius:7px;
+  background:var(--nv-bg);color:var(--nv-fg);font-size:.85rem;font-weight:700}
 .cd-th{width:56px;height:56px;flex:none;border-radius:9px;object-fit:contain;
   background:#fff;border:1px solid var(--nv-line)}
 .cd-noth{background:var(--nv-line)}
@@ -613,14 +622,25 @@ body.cart-open .cdrawer{transform:none}
 .cd-rm{flex:none;background:none;border:0;color:var(--nv-dim);cursor:pointer;
   font:inherit;font-size:.78rem;text-decoration:underline;padding:4px}
 .cd-rm:hover{color:var(--nv-fg)}
-.cd-foot{flex:none;padding:16px 20px 20px;border-top:1px solid var(--nv-line)}
+/* 🚨 56px A SIDE is what makes the buttons 280 wide in a 680 panel. Twin of the
+   ns.css rule - the button rule was right, the container was too narrow. */
+.cd-foot{flex:none;padding:16px 56px 20px;border-top:1px solid var(--nv-line)}
 .cd-tot{display:flex;justify-content:space-between;align-items:baseline;color:var(--nv-fg);
   font-weight:800;font-size:1.05rem;margin-bottom:14px}
-.cd-acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+.cd-acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
 /* 🚨 THE TWIN OF THE .cd-acts .btn RULE IN ns.css. Keep the numbers identical
-   or the same drawer is two different sizes depending which page opened it. */
-.cd-acts .navbtn{display:flex;align-items:center;justify-content:center;text-align:center;
-  padding:10px 12px;font-size:.82rem;letter-spacing:-.01em;border-radius:8px}
+   or the same drawer is two different sizes depending which page opened it.
+   ⚠️ 1fr auto 1fr so the padlock cannot push "Check Out" off centre. */
+/* ⚠️ min-height, not a padding sum - one value to turn. Twin of the ns.css
+   rule; keep the number identical or the drawer is two heights depending on
+   which page opened it. */
+.cd-acts .navbtn{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  text-align:center;min-height:56px;padding:8px 14px;font-size:.9rem;font-weight:700;
+  letter-spacing:-.01em}
+.cd-acts .navbtn svg{justify-self:end;margin-right:8px}
+/* Both labels are wrapped in a span, so both land in the centre column. A bare
+   text node becomes an anonymous item in column 1 and sits left of centre. */
+.cd-acts .navbtn span{grid-column:2}
 /* 🚨 LITERAL, like .drawer .navbtn above and for the same reason: a filled
    block of colour is what the eye compares, and site chrome must not take a
    lesson's palette. Keep these two pairs identical. */
@@ -631,7 +651,14 @@ body.cart-open .cdrawer{transform:none}
 .cdrawer .navbtn{background:#ffffff;color:#0a0b0d}
 :root[data-theme="light"] .cdrawer .navbtn{background:#27313f;color:#ffffff}
 
-@media(max-width:420px){
-  .cdrawer{width:100%;border-left:0}
-  .cd-acts{grid-template-columns:1fr}
+/* 🚨 SIDE BY SIDE ON EVERY PHONE SIZE - twin of the ns.css rule. They stacked
+   under 420px, which gave a phone a different layout from a desktop for no
+   reason a reader can see. The GRID never collapses; the PADDING gives way. */
+@media(max-width:560px){
+  .cdrawer{border-left:0}
+  .cd-body{padding-left:14px;padding-right:14px}
+  .cd-foot{padding-left:14px;padding-right:14px}
+  .cd-acts{gap:7px}
+  .cd-acts .navbtn{padding-inline:6px;font-size:.82rem}
+  .cd-acts .navbtn svg{margin-right:5px}
 }

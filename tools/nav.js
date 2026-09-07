@@ -611,8 +611,23 @@ const cartDrawer = (btn) =>
      The reference had no primary/secondary split and I invented one anyway.
      ⚠️ Do not "improve" this back into a ghost button for View Cart. Both are
      ways out of the drawer and neither is the lesser one. */
-  '<div class="cd-acts"><a class="' + (btn || "btn") + '" href="/cart/">View Cart</a>' +
-  '<a class="' + (btn || "btn") + '" href="/cart/">Check Out</a></div>' +
+  /* 🚨 THE PADLOCK IS ON CHECK OUT ONLY, AND IT MEANS SECURE CHECKOUT. Paul,
+     2026-09-07: "the icon is suppose to mean secure checkout" and "they also
+     have the icon on the checkout on both mobile and on the side menu."
+     View Cart does not get one - it is navigation, not a payment step, and a
+     padlock on it would be decoration that waters the real signal down. */
+  /* ⚠️ THE LABEL IS WRAPPED EVEN THOUGH THIS BUTTON HAS NO ICON. The rule puts
+     the label in grid column 2 of a 1fr auto 1fr grid; a BARE TEXT NODE becomes
+     an anonymous item in column 1 instead and sits left of centre. That shipped
+     once - Check Out was wrapped, View Cart was not, and only Check Out came
+     out centred. Both get a span. */
+  '<div class="cd-acts"><a class="' + (btn || "btn") + '" href="/cart/">' +
+  '<span>View Cart</span></a>' +
+  '<a class="' + (btn || "btn") + '" href="/cart/">' +
+  '<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" ' +
+  'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+  '<rect x="4" y="9" width="12" height="8" rx="1.6"/>' +
+  '<path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg><span>Check Out</span></a></div>' +
   "</div></aside>";
 
 /* ── THE DAY/NIGHT SWITCH, ONE DEFINITION, TWO PLACES ──────────────────────
@@ -874,7 +889,12 @@ function nsCartPaint(){
             :"<span class='cd-th cd-noth' aria-hidden='true'></span>")+
         "<div class='cd-info'><b>"+r.title+"</b>"+
         "<span class='cd-price'>"+nsMoney(r.price_cents)+"</span></div>"+
-        "<button class='cd-rm' type='button' data-rm='"+r.slug+"'>Remove</button></div>";
+        /* 🚨 QUANTITY BOX OVER REMOVE, the way the reference stacks them.
+           A BOX, NOT AN INPUT: a download is bought once, so a stepper here
+           would be a way to pay twice for the same PDF. Same reasoning as the
+           cart page - see .ck-qbox in ns.css. */
+        "<div class='cd-qty'><span class='cd-qbox'>1</span>"+
+        "<button class='cd-rm' type='button' data-rm='"+r.slug+"'>Remove</button></div></div>";
     });
     cdBody.innerHTML=html;
     if(cdTotal) cdTotal.textContent=nsMoney(total);
