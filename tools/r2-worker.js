@@ -73,6 +73,40 @@
 const PAID = "paid/";
 
 export default {
+  /* ── KEEPING SUPABASE AWAKE ────────────────────────────────────────────────
+     🚨 A FREE SUPABASE PROJECT PAUSES AFTER ABOUT A WEEK OF INACTIVITY, and a
+     paused database means a stranger's login just fails. Pausing is triggered
+     by inactivity, not by the tier, so one cheap request resets the clock.
+
+     ⚠️ IT MUST NOT DEPEND ON PAUL BEING HERE. The obvious idea was to ping on a
+     Claude session start, but the week that would actually pause the project is
+     the week nobody opens a session - a holiday, a busy stretch at work, a new
+     baby. A cron trigger runs whether either of us shows up or not.
+
+     ⚠️ RUN IT MORE THAN ONCE A WEEK. On an exactly-seven-day schedule a single
+     failed run costs the project. Twice weekly gives a free retry.
+     Schedule set in the dashboard: Settings -> Triggers -> Cron. Suggested
+     "0 12 * * 1,4" (Mondays and Thursdays, midday UTC).
+
+     ⚠️ It reads the CATALOGUE, not a person's data - `products` has a public
+     read policy, so this needs no privileged key and touches nothing private.
+     A failure is logged and swallowed: a keep-alive must never throw. */
+  async scheduled(event, env, ctx) {
+    if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
+      console.error("[keepalive] SUPABASE_URL / SUPABASE_KEY not bound");
+      return;
+    }
+    try {
+      const r = await fetch(
+        env.SUPABASE_URL + "/rest/v1/products?select=slug&limit=1",
+        { headers: { apikey: env.SUPABASE_KEY,
+                     Authorization: "Bearer " + env.SUPABASE_KEY } });
+      console.log("[keepalive] " + r.status);
+    } catch (e) {
+      console.error("[keepalive] " + e.message);
+    }
+  },
+
   async fetch(request, env) {
     const url = new URL(request.url);
 
