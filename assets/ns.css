@@ -307,6 +307,15 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .railempty{margin:6px 0 26px;padding:22px 24px;border:1px dashed var(--line);
   border-radius:var(--r);color:var(--dim);font-size:.9rem;line-height:1.5}
 .railempty b{color:var(--fg)}
+/* 🚨 `.hidden` HAD NEVER EXISTED IN THIS STYLESHEET. The cart and account pages
+   were written using it, the JavaScript added and removed it correctly, and it
+   did NOTHING -- so "Your cart is empty" sat above a cart holding two items.
+   Exactly the same shape as the `[hidden]` bug below: markup and script right,
+   the rule simply absent. A missing class fails silently and looks deliberate.
+   ⚠️ `!important` because these pages toggle it on cards and bands that carry
+   their own `display`, which would otherwise win the same way `.res` did. */
+.hidden{display:none!important}
+
 /* 🚨 `display` IN A CLASS RULE BEATS THE UA's `[hidden]{display:none}`, AND THAT IS
    WHY THE FILTERS NEVER FILTERED. `.res` and `.rail` both declare `display:flex`,
    so the script's `c.hidden = true` set the property, passed every check that reads

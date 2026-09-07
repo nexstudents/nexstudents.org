@@ -8,17 +8,17 @@
 <meta name="google-site-verification" content="bsZnURtv4LFARU3XuxGED8inYJB45arSOPHbTJSqgIQ">
 <link rel="canonical" href="https://nexstudents.org/account/">
 <title>Sign In | NexStudents</title>
-<meta name="description" content="Accounts are being built. Here is what one will do.">
+<meta name="description" content="Sign in to keep your progress and everything you have taken.">
 <meta name="theme-color" content="#0a0b0d">
 <meta property="og:site_name" content="NexStudents">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nexstudents.org/account/">
 <meta property="og:title" content="Sign In | NexStudents">
-<meta property="og:description" content="Accounts are being built. Here is what one will do.">
+<meta property="og:description" content="Sign in to keep your progress and everything you have taken.">
 <meta property="og:image" content="https://nexstudents.org/assets/brand/share.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sign In | NexStudents">
-<meta name="twitter:description" content="Accounts are being built. Here is what one will do.">
+<meta name="twitter:description" content="Sign in to keep your progress and everything you have taken.">
 <meta name="twitter:image" content="https://nexstudents.org/assets/brand/share.png">
 <script type="application/ld+json">
 {
@@ -42,7 +42,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=c0585bbd">
+<link rel="stylesheet" href="/assets/ns.css?v=f47b7abe">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -104,18 +104,89 @@
 <div class="wrap phead ">
   <p class="crumb">Sign In</p>
   <h1>Sign In.</h1>
-  <p>There are no accounts yet. Here is what one will be for, and why it is taking a while.</p>
+  <p>One email, one link, no password. Your purchases and progress follow you.</p>
   
 </div>
 
-<div class="band"><div class="wrap">
-  <h2 class="h2s" style="margin:0 0 4px">What an Account Will Do</h2>
-  <p style="margin:0 0 20px;color:var(--dim);font-size:.9rem;max-width:56ch">Carry progress between devices, and remember what you already bought.</p>
-  <div class="tile" style="display:block;padding:26px">
-    <p style="margin:0 0 14px;line-height:1.7;max-width:62ch">Right now progress is saved in the browser you are using, which means it does not follow a student from the PC to the tablet, and there is no record of what a family has already paid for. An account fixes both. It is the first part of this site that needs a real server, which is why it is not a weekend job.</p>
-    <p style="margin:0;color:var(--dim);font-size:.92rem;max-width:62ch">Accounts will be parent-owned, with students added underneath. A children's site holding children's own email addresses is a legal problem we are not going to create.</p>
+<div class="band"><div class="wrap" style="max-width:560px">
+
+  <!-- 🚨 MAGIC LINK, NO PASSWORD FIELD. There is nothing to forget, nothing to
+       reset, and no password for this site to store or leak. Signing in and
+       signing up are the SAME action -- create_user is true -- so there is no
+       separate register form to get out of step with this one. -->
+  <div class="card" id="signedOut" style="text-align:center">
+    <h2 style="margin-top:0">Sign in</h2>
+    <p class="dim">Type your email and we send you a link. No password to remember.</p>
+    <form id="siForm" autocomplete="on">
+      <input type="email" id="siEmail" required autocomplete="email"
+             placeholder="you@example.com" aria-label="Your email"
+             style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
+                    background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
+      <div style="text-align:center"><button class="btn" type="submit" style="margin-top:12px">Email me a link</button></div>
+    </form>
+    <p class="dim" id="siMsg" style="font-size:.9rem;margin:14px 0 0"></p>
+    <p class="dim" style="font-size:.85rem;margin:18px 0 0">
+      Bought something as a guest? Sign in with the same email you used at
+      checkout and it will be waiting here.</p>
   </div>
+
+  <div class="card hidden" id="signedIn" style="text-align:center">
+    <h2 style="margin-top:0">Your account</h2>
+    <p class="dim" id="whoami"></p>
+    <h3 style="font-size:1rem;margin:22px 0 8px">What you own</h3>
+    <div id="owned"><p class="dim">Loading&hellip;</p></div>
+    <button class="btn ghost" id="signOut" style="margin-top:20px">Sign out</button>
+  </div>
+
 </div></div>
+<script src="/assets/supabase-config.js"></script>
+<script src="/assets/ns-account.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function show(inCard){
+    $("signedOut").classList.toggle("hidden", inCard);
+    $("signedIn").classList.toggle("hidden", !inCard);
+  }
+  /* ⚠️ The magic link lands back here with the session in the URL fragment.
+     ns-account.js captures it and strips it from the address bar before this
+     runs, so by now isSignedIn() is already true. */
+  function paint(){
+    if(!window.NSAccount || !NSAccount.isSignedIn()){ show(false); return; }
+    show(true);
+    NSAccount.getUser().then(function(u){
+      $("whoami").textContent = u && u.email ? "Signed in as " + u.email : "Signed in.";
+    });
+    NSAccount.myPurchases().then(function(rows){
+      if(!rows.length){
+        $("owned").innerHTML = "<p class='dim'>Nothing yet. Everything free on this site " +
+          "still goes through the cart, so it shows up here once you check out.</p>";
+        return;
+      }
+      $("owned").innerHTML = "<ul style='margin:0;padding-left:18px'>" + rows.map(function(r){
+        return "<li style='margin-bottom:6px'>" + r.product +
+               (r.amount_cents ? " <span class='dim'>&middot; $" + (r.amount_cents/100).toFixed(2) + "</span>"
+                               : " <span class='dim'>&middot; free</span>") + "</li>";
+      }).join("") + "</ul>";
+    });
+  }
+  $("siForm").onsubmit = function(e){
+    e.preventDefault();
+    var btn = e.target.querySelector("button");
+    btn.disabled = true; $("siMsg").textContent = "Sending…";
+    NSAccount.signIn($("siEmail").value).then(function(){
+      $("siMsg").innerHTML = "<b>Check your email.</b> The link signs you straight in. " +
+                             "It can take a minute, and it may land in spam the first time.";
+    }).catch(function(err){
+      $("siMsg").textContent = err.message || "That did not send. Try again in a moment.";
+      btn.disabled = false;
+    });
+  };
+  $("signOut").onclick = function(){ NSAccount.signOut(); location.reload(); };
+  document.addEventListener("ns:auth", paint);
+  paint();
+})();
+</script>
 
 <footer><div class="wrap">
   <div class="fgrid">

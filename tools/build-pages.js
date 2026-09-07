@@ -2806,23 +2806,194 @@ const SOON_PAGES = [
      buttons that ignore you. */
   { dir: "account", active: "p",
     title: "Sign In | NexStudents",
-    desc: "Accounts are being built. Here is what one will do.",
+    desc: "Sign in to keep your progress and everything you have taken.",
     crumb: "Sign In", h1: "Sign In.",
-    lead: "There are no accounts yet. Here is what one will be for, and why it is taking a while.",
-    body: soonPage("What an Account Will Do",
-      "Carry progress between devices, and remember what you already bought.",
-      "Right now progress is saved in the browser you are using, which means it does not follow a student from the PC to the tablet, and there is no record of what a family has already paid for. An account fixes both. It is the first part of this site that needs a real server, which is why it is not a weekend job.",
-      "Accounts will be parent-owned, with students added underneath. A children's site holding children's own email addresses is a legal problem we are not going to create.") },
+    lead: "One email, one link, no password. Your purchases and progress follow you.",
+    body: `<div class="band"><div class="wrap" style="max-width:560px">
+
+  <!-- 🚨 MAGIC LINK, NO PASSWORD FIELD. There is nothing to forget, nothing to
+       reset, and no password for this site to store or leak. Signing in and
+       signing up are the SAME action -- create_user is true -- so there is no
+       separate register form to get out of step with this one. -->
+  <div class="card" id="signedOut" style="text-align:center">
+    <h2 style="margin-top:0">Sign in</h2>
+    <p class="dim">Type your email and we send you a link. No password to remember.</p>
+    <form id="siForm" autocomplete="on">
+      <input type="email" id="siEmail" required autocomplete="email"
+             placeholder="you@example.com" aria-label="Your email"
+             style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
+                    background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
+      <div style="text-align:center"><button class="btn" type="submit" style="margin-top:12px">Email me a link</button></div>
+    </form>
+    <p class="dim" id="siMsg" style="font-size:.9rem;margin:14px 0 0"></p>
+    <p class="dim" style="font-size:.85rem;margin:18px 0 0">
+      Bought something as a guest? Sign in with the same email you used at
+      checkout and it will be waiting here.</p>
+  </div>
+
+  <div class="card hidden" id="signedIn" style="text-align:center">
+    <h2 style="margin-top:0">Your account</h2>
+    <p class="dim" id="whoami"></p>
+    <h3 style="font-size:1rem;margin:22px 0 8px">What you own</h3>
+    <div id="owned"><p class="dim">Loading&hellip;</p></div>
+    <button class="btn ghost" id="signOut" style="margin-top:20px">Sign out</button>
+  </div>
+
+</div></div>
+<script src="/assets/supabase-config.js"></script>
+<script src="/assets/ns-account.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function show(inCard){
+    $("signedOut").classList.toggle("hidden", inCard);
+    $("signedIn").classList.toggle("hidden", !inCard);
+  }
+  /* ⚠️ The magic link lands back here with the session in the URL fragment.
+     ns-account.js captures it and strips it from the address bar before this
+     runs, so by now isSignedIn() is already true. */
+  function paint(){
+    if(!window.NSAccount || !NSAccount.isSignedIn()){ show(false); return; }
+    show(true);
+    NSAccount.getUser().then(function(u){
+      $("whoami").textContent = u && u.email ? "Signed in as " + u.email : "Signed in.";
+    });
+    NSAccount.myPurchases().then(function(rows){
+      if(!rows.length){
+        $("owned").innerHTML = "<p class='dim'>Nothing yet. Everything free on this site " +
+          "still goes through the cart, so it shows up here once you check out.</p>";
+        return;
+      }
+      $("owned").innerHTML = "<ul style='margin:0;padding-left:18px'>" + rows.map(function(r){
+        return "<li style='margin-bottom:6px'>" + r.product +
+               (r.amount_cents ? " <span class='dim'>&middot; $" + (r.amount_cents/100).toFixed(2) + "</span>"
+                               : " <span class='dim'>&middot; free</span>") + "</li>";
+      }).join("") + "</ul>";
+    });
+  }
+  $("siForm").onsubmit = function(e){
+    e.preventDefault();
+    var btn = e.target.querySelector("button");
+    btn.disabled = true; $("siMsg").textContent = "Sending\u2026";
+    NSAccount.signIn($("siEmail").value).then(function(){
+      $("siMsg").innerHTML = "<b>Check your email.</b> The link signs you straight in. " +
+                             "It can take a minute, and it may land in spam the first time.";
+    }).catch(function(err){
+      $("siMsg").textContent = err.message || "That did not send. Try again in a moment.";
+      btn.disabled = false;
+    });
+  };
+  $("signOut").onclick = function(){ NSAccount.signOut(); location.reload(); };
+  document.addEventListener("ns:auth", paint);
+  paint();
+})();
+<\/script>` },
+
 
   { dir: "cart", active: "p",
     title: "Cart | NexStudents",
-    desc: "The cart is being built. Most of the site is free in the meantime.",
+    desc: "Your cart. Free sheets go through it too, so you have a record.",
     crumb: "Cart", h1: "Cart.",
-    lead: "Nothing in it, because there is no cart yet.",
-    body: soonPage("What the Shop Will Be",
-      "One payment, lifetime access. No subscription.",
-      "Most of this site is free and stays free. What gets paid for is the planning: a subject and a quarter, sequenced, with the pacing worked out. When the shop opens it will be a single payment that unlocks what you bought for good. There will be no subscription — that is a decision, not a placeholder.",
-      "Answer keys are always included free with the sheet, and are never sold separately.") },
+    lead: "Everything goes through here, including the free sheets.",
+    body: `<div class="band"><div class="wrap" style="max-width:640px">
+
+  <div id="cartEmpty">
+    <p class="dim">Your cart is empty. Everything on this site goes through the cart,
+      including the free sheets, so you have a record of what you took.</p>
+  </div>
+
+  <div id="cartFull" class="hidden">
+    <div id="cartItems"></div>
+    <p style="font-size:1.15rem;font-weight:800;margin:18px 0 24px">
+      Total <span id="cartTotal"></span></p>
+
+    <!-- 🚨 GUEST OR SIGNED IN, NEVER A WALL. Forcing an account before checkout
+         is where free downloads are lost. The email is what ties a guest to
+         their purchase, and to an account if they make one later. -->
+    <div class="card">
+      <h3 style="margin:0 0 4px;font-size:1.05rem">Where should we send it?</h3>
+      <p class="dim" style="font-size:.9rem;margin:0 0 14px">
+        We email the download here. Make an account later with the same address
+        and everything you have taken will be waiting in it.</p>
+      <form id="coForm">
+        <input type="email" id="coEmail" required autocomplete="email"
+               placeholder="you@example.com" aria-label="Your email"
+               style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
+                      background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
+        <div style="text-align:center"><button class="btn" type="submit" style="margin-top:12px">Check out</button></div>
+      </form>
+      <p class="dim" id="coMsg" style="font-size:.9rem;margin:14px 0 0"></p>
+      <p class="dim" style="font-size:.85rem;margin:14px 0 0">
+        Already have an account? <a href="/account/">Sign in first</a> and this
+        is filled in for you.</p>
+    </div>
+  </div>
+
+</div></div>
+<script src="/assets/supabase-config.js"></script>
+<script src="/assets/ns-account.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var money = function(c){ return c ? "$" + (c/100).toFixed(2) : "Free"; };
+
+  function paint(){
+    var items = NSAccount.cart();
+    $("cartEmpty").classList.toggle("hidden", items.length > 0);
+    $("cartFull").classList.toggle("hidden", items.length === 0);
+    if(!items.length) return;
+
+    /* 🚨 PRICES COME FROM THE DATABASE, NOT FROM THE CART. The cart holds slugs
+       only. If it held prices, editing localStorage would be a discount code. */
+    NSAccount.priceList(items).then(function(rows){
+      var total = 0;
+      $("cartItems").innerHTML = rows.map(function(r){
+        total += r.price_cents;
+        return "<div style='display:flex;justify-content:space-between;align-items:center;" +
+               "gap:14px;padding:14px 0;border-bottom:1px solid var(--line)'>" +
+               "<div><b>" + r.title + "</b></div>" +
+               "<div style='display:flex;gap:14px;align-items:center'>" +
+               "<span class='dim'>" + money(r.price_cents) + "</span>" +
+               "<button class='btn ghost' style='padding:6px 12px;font-size:.8rem' " +
+               "data-rm='" + r.slug + "'>Remove</button></div></div>";
+      }).join("");
+      $("cartTotal").textContent = money(total);
+      $("cartItems").querySelectorAll("[data-rm]").forEach(function(b){
+        b.onclick = function(){ NSAccount.cartRemove(b.dataset.rm); paint(); };
+      });
+    });
+  }
+
+  /* If they are already signed in, do not make them type the address again. */
+  function prefill(){
+    if(!NSAccount.isSignedIn()) return;
+    NSAccount.getUser().then(function(u){ if(u && u.email) $("coEmail").value = u.email; });
+  }
+
+  $("coForm").onsubmit = function(e){
+    e.preventDefault();
+    var btn = e.target.querySelector("button");
+    btn.disabled = true; $("coMsg").textContent = "Checking out\u2026";
+    NSAccount.checkoutFree($("coEmail").value).then(function(){
+      $("cartFull").innerHTML =
+        "<div class='card'><h2 style='margin-top:0'>Done.</h2>" +
+        "<p class='dim'>Sent to <b>" + $("coEmail").value + "</b>. " +
+        "Make an account with that address any time and it will all be there.</p>" +
+        "<a class='btn' href='/account/'>Make an account</a> " +
+        "<a class='btn ghost' href='/worksheets/'>Keep browsing</a></div>";
+    }).catch(function(err){
+      /* ⚠️ A paid item lands here until Stripe is wired. Say so plainly rather
+         than failing silently -- the database refuses it, and it should. */
+      $("coMsg").textContent = err.message || "That did not go through.";
+      btn.disabled = false;
+    });
+  };
+
+  document.addEventListener("ns:cart", paint);
+  paint(); prefill();
+})();
+<\/script>` },
+
 
   { dir: "blog", active: "r",
     title: "Blog | NexStudents",

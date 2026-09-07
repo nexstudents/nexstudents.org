@@ -8,17 +8,17 @@
 <meta name="google-site-verification" content="bsZnURtv4LFARU3XuxGED8inYJB45arSOPHbTJSqgIQ">
 <link rel="canonical" href="https://nexstudents.org/cart/">
 <title>Cart | NexStudents</title>
-<meta name="description" content="The cart is being built. Most of the site is free in the meantime.">
+<meta name="description" content="Your cart. Free sheets go through it too, so you have a record.">
 <meta name="theme-color" content="#0a0b0d">
 <meta property="og:site_name" content="NexStudents">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nexstudents.org/cart/">
 <meta property="og:title" content="Cart | NexStudents">
-<meta property="og:description" content="The cart is being built. Most of the site is free in the meantime.">
+<meta property="og:description" content="Your cart. Free sheets go through it too, so you have a record.">
 <meta property="og:image" content="https://nexstudents.org/assets/brand/share.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Cart | NexStudents">
-<meta name="twitter:description" content="The cart is being built. Most of the site is free in the meantime.">
+<meta name="twitter:description" content="Your cart. Free sheets go through it too, so you have a record.">
 <meta name="twitter:image" content="https://nexstudents.org/assets/brand/share.png">
 <script type="application/ld+json">
 {
@@ -42,7 +42,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=c0585bbd">
+<link rel="stylesheet" href="/assets/ns.css?v=f47b7abe">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -104,18 +104,108 @@
 <div class="wrap phead ">
   <p class="crumb">Cart</p>
   <h1>Cart.</h1>
-  <p>Nothing in it, because there is no cart yet.</p>
+  <p>Everything goes through here, including the free sheets.</p>
   
 </div>
 
-<div class="band"><div class="wrap">
-  <h2 class="h2s" style="margin:0 0 4px">What the Shop Will Be</h2>
-  <p style="margin:0 0 20px;color:var(--dim);font-size:.9rem;max-width:56ch">One payment, lifetime access. No subscription.</p>
-  <div class="tile" style="display:block;padding:26px">
-    <p style="margin:0 0 14px;line-height:1.7;max-width:62ch">Most of this site is free and stays free. What gets paid for is the planning: a subject and a quarter, sequenced, with the pacing worked out. When the shop opens it will be a single payment that unlocks what you bought for good. There will be no subscription — that is a decision, not a placeholder.</p>
-    <p style="margin:0;color:var(--dim);font-size:.92rem;max-width:62ch">Answer keys are always included free with the sheet, and are never sold separately.</p>
+<div class="band"><div class="wrap" style="max-width:640px">
+
+  <div id="cartEmpty">
+    <p class="dim">Your cart is empty. Everything on this site goes through the cart,
+      including the free sheets, so you have a record of what you took.</p>
   </div>
+
+  <div id="cartFull" class="hidden">
+    <div id="cartItems"></div>
+    <p style="font-size:1.15rem;font-weight:800;margin:18px 0 24px">
+      Total <span id="cartTotal"></span></p>
+
+    <!-- 🚨 GUEST OR SIGNED IN, NEVER A WALL. Forcing an account before checkout
+         is where free downloads are lost. The email is what ties a guest to
+         their purchase, and to an account if they make one later. -->
+    <div class="card">
+      <h3 style="margin:0 0 4px;font-size:1.05rem">Where should we send it?</h3>
+      <p class="dim" style="font-size:.9rem;margin:0 0 14px">
+        We email the download here. Make an account later with the same address
+        and everything you have taken will be waiting in it.</p>
+      <form id="coForm">
+        <input type="email" id="coEmail" required autocomplete="email"
+               placeholder="you@example.com" aria-label="Your email"
+               style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
+                      background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
+        <div style="text-align:center"><button class="btn" type="submit" style="margin-top:12px">Check out</button></div>
+      </form>
+      <p class="dim" id="coMsg" style="font-size:.9rem;margin:14px 0 0"></p>
+      <p class="dim" style="font-size:.85rem;margin:14px 0 0">
+        Already have an account? <a href="/account/">Sign in first</a> and this
+        is filled in for you.</p>
+    </div>
+  </div>
+
 </div></div>
+<script src="/assets/supabase-config.js"></script>
+<script src="/assets/ns-account.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var money = function(c){ return c ? "$" + (c/100).toFixed(2) : "Free"; };
+
+  function paint(){
+    var items = NSAccount.cart();
+    $("cartEmpty").classList.toggle("hidden", items.length > 0);
+    $("cartFull").classList.toggle("hidden", items.length === 0);
+    if(!items.length) return;
+
+    /* 🚨 PRICES COME FROM THE DATABASE, NOT FROM THE CART. The cart holds slugs
+       only. If it held prices, editing localStorage would be a discount code. */
+    NSAccount.priceList(items).then(function(rows){
+      var total = 0;
+      $("cartItems").innerHTML = rows.map(function(r){
+        total += r.price_cents;
+        return "<div style='display:flex;justify-content:space-between;align-items:center;" +
+               "gap:14px;padding:14px 0;border-bottom:1px solid var(--line)'>" +
+               "<div><b>" + r.title + "</b></div>" +
+               "<div style='display:flex;gap:14px;align-items:center'>" +
+               "<span class='dim'>" + money(r.price_cents) + "</span>" +
+               "<button class='btn ghost' style='padding:6px 12px;font-size:.8rem' " +
+               "data-rm='" + r.slug + "'>Remove</button></div></div>";
+      }).join("");
+      $("cartTotal").textContent = money(total);
+      $("cartItems").querySelectorAll("[data-rm]").forEach(function(b){
+        b.onclick = function(){ NSAccount.cartRemove(b.dataset.rm); paint(); };
+      });
+    });
+  }
+
+  /* If they are already signed in, do not make them type the address again. */
+  function prefill(){
+    if(!NSAccount.isSignedIn()) return;
+    NSAccount.getUser().then(function(u){ if(u && u.email) $("coEmail").value = u.email; });
+  }
+
+  $("coForm").onsubmit = function(e){
+    e.preventDefault();
+    var btn = e.target.querySelector("button");
+    btn.disabled = true; $("coMsg").textContent = "Checking out…";
+    NSAccount.checkoutFree($("coEmail").value).then(function(){
+      $("cartFull").innerHTML =
+        "<div class='card'><h2 style='margin-top:0'>Done.</h2>" +
+        "<p class='dim'>Sent to <b>" + $("coEmail").value + "</b>. " +
+        "Make an account with that address any time and it will all be there.</p>" +
+        "<a class='btn' href='/account/'>Make an account</a> " +
+        "<a class='btn ghost' href='/worksheets/'>Keep browsing</a></div>";
+    }).catch(function(err){
+      /* ⚠️ A paid item lands here until Stripe is wired. Say so plainly rather
+         than failing silently -- the database refuses it, and it should. */
+      $("coMsg").textContent = err.message || "That did not go through.";
+      btn.disabled = false;
+    });
+  };
+
+  document.addEventListener("ns:cart", paint);
+  paint(); prefill();
+})();
+</script>
 
 <footer><div class="wrap">
   <div class="fgrid">
