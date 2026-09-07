@@ -885,6 +885,17 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    ⚠️ Do not answer a "move the title down" with padding on the container again.
    The container holds four things and only one of them was meant to move. */
 .phead{padding-block:40px 72px;border-bottom:1px solid var(--line);text-align:center}
+/* 🚨 THE COMPACT HEADER, FOR WORKING PAGES. Paul, 2026-09-07, on the cart:
+   "that top on ours like that big wording for Cart is causing us to scroll down
+   just to see the cart. lttstore doesnt have this."
+   The full .phead spends about 400px before any content - correct on a shelf
+   that needs introducing, wrong on a page whose whole job is the table under
+   it. Left-aligned too, because a utility page reads as a document, not a
+   poster. The h1 STAYS: it is small, not removed, so the page keeps its
+   heading for a screen reader and for search. */
+.phead.ptight{padding-block:22px 26px;text-align:left}
+.phead.ptight h1{font-size:clamp(1.45rem,2.4vw,1.9rem);margin-top:10px;margin-bottom:0}
+.phead.ptight .crumb{margin:0}
 .phead h1{font-size:clamp(2rem,4.6vw,3.3rem);margin-top:72px;margin-bottom:14px}
 .phead p{color:var(--dim);max-width:56ch;margin-inline:auto;margin-block:0;font-size:1.04rem}
 @media(max-width:620px){
@@ -1475,23 +1486,33 @@ html{-webkit-tap-highlight-color:transparent}
 .ck-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:34px;align-items:start}
 .ck-table{width:100%}
 /* Column headings over a rule, exactly as the reference has them. */
+/* 🚨 THE TYPE SCALE AND ROW METRICS ARE MEASURED OFF THE REFERENCE, NOT GUESSED.
+   Paul, 2026-09-07: "ours is much bigger for the products compared to theirs.
+   i want you to get the exact sizing." Read off their live cart row:
+     title 16px/700 lh 1.6 · price 16px/400 · column head 16px/700
+     Remove 12px/400 · line total 16px/400 · subtotal 20px/700
+     thumbnail 64 tall · row padding 16px · row height 111px
+   ⚠️ OUR TYPE WAS ALREADY SMALLER THAN THEIRS on every line (title 15.36,
+   price 13.76, heads 13.12, subtotal 17.92). The bulk was NOT the text: it was
+   a 74px SQUARE thumbnail against their 64px-tall one, plus 20px row padding
+   against 16px. Measure before resizing, or the wrong thing shrinks. */
 .ck-head{display:grid;grid-template-columns:minmax(0,1fr) 92px 108px;gap:14px;
   padding-bottom:14px;border-bottom:1px solid var(--line);
-  font-size:.82rem;font-weight:800;letter-spacing:-.01em}
+  font-size:1rem;font-weight:700;letter-spacing:-.01em}
 .ck-head span:nth-child(2){text-align:center}
 .ck-head span:nth-child(3){text-align:right}
 .ck-row{display:grid;grid-template-columns:minmax(0,1fr) 92px 108px;gap:14px;
-  align-items:center;padding:20px 0;border-bottom:1px solid var(--line)}
+  align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
 .ck-prod{display:flex;align-items:center;gap:15px;min-width:0}
-.ck-thumb{width:74px;height:74px;flex:none;border-radius:9px;object-fit:contain;
+.ck-thumb{width:64px;height:64px;flex:none;border-radius:9px;object-fit:contain;
   background:#fff;border:1px solid var(--line)}
 .ck-nothumb{background:var(--panel-2)}
 /* align-items:flex-start is written EXPLICITLY rather than left to the default,
    because the default is what the collision above overrode. */
 .ck-meta{min-width:0;display:flex;flex-direction:column;align-items:flex-start;
   justify-content:center;gap:4px;text-align:left}
-.ck-meta b{font-size:.96rem;line-height:1.3;letter-spacing:-.01em}
-.ck-meta .dim{font-size:.86rem}
+.ck-meta b{font-size:1rem;font-weight:700;line-height:1.6;letter-spacing:-.01em}
+.ck-meta .dim{font-size:1rem;font-weight:400;line-height:1.6}
 .ck-qty{display:flex;flex-direction:column;align-items:center;gap:7px}
 /* 🚨 A BOX, NOT AN INPUT, AND THAT IS DELIBERATE. The reference sells physical
    goods where quantity is real. A download is bought once: a stepper here is a
@@ -1500,9 +1521,9 @@ html{-webkit-tap-highlight-color:transparent}
 .ck-qbox{min-width:44px;padding:7px 10px;border:1px solid var(--line);border-radius:7px;
   background:var(--panel-2);text-align:center;font-size:.9rem;font-weight:700}
 .ck-rm{background:none;border:0;color:var(--dim);cursor:pointer;font:inherit;
-  font-size:.78rem;text-decoration:underline;padding:2px}
+  font-size:.75rem;font-weight:400;text-decoration:underline;padding:2px}
 .ck-rm:hover{color:var(--fg)}
-.ck-line{text-align:right;font-weight:700;font-size:.92rem}
+.ck-line{text-align:right;font-weight:400;font-size:1rem}
 
 /* The summary. A bordered box holding the subtotal, the caveat and the button.
    ⚠️ Its TOP ALIGNS WITH THE TABLE HEAD, not with the first row. align-items
@@ -1511,7 +1532,7 @@ html{-webkit-tap-highlight-color:transparent}
 .ck-sum{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:24px;
   position:sticky;top:96px}
 .ck-sum-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-  font-size:1.12rem;font-weight:800;letter-spacing:-.02em}
+  font-size:1.25rem;font-weight:700;letter-spacing:-.02em}
 .ck-note{color:var(--dim);font-size:.82rem;margin:8px 0 0;line-height:1.45}
 /* 🚨 THE LABEL IS CENTRED, NOT THE ICON-AND-LABEL GROUP. Paul, 2026-09-07:
    "that wording in the checkout is not centered and its because of the lock

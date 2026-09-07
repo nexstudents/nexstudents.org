@@ -58,7 +58,10 @@ ${navMarkup(o.active)}
 <div class="wrap phead ${o.pclass || ""}">
   ${o.crumb ? '<p class="crumb">' + o.crumb + '</p>' : ""}
   <h1>${o.h1}</h1>
-  <p>${o.lead}</p>
+  ${/* ⚠️ OPTIONAL NOW. A working page like the cart has nothing to introduce -
+       the table below it says what it is. Every content page still passes one,
+       so this changes nothing anywhere else. */""}
+  ${o.lead ? "<p>" + o.lead + "</p>" : ""}
   ${o.count ? '<p class="shelfcount">' + o.count + "</p>" : ""}
 </div>
 
@@ -2893,8 +2896,10 @@ const SOON_PAGES = [
   { dir: "cart", active: "p",
     title: "Cart | NexStudents",
     desc: "Your cart. Free sheets go through it too, so you have a record.",
-    crumb: "Cart", h1: "Cart.",
-    lead: "Everything goes through here, including the free sheets.",
+    /* Compact header and NO lead: the table below says what this page is.
+       See .phead.ptight in ns.css for why. */
+    pclass: "ptight",
+    crumb: '<a href="/">Home</a> &rsaquo; Your Cart', h1: "Your Cart",
     body: `<div class="band"><div class="wrap">
 
   <div id="cartEmpty">
