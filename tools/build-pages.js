@@ -1136,10 +1136,16 @@ const gradeLessons = (g) => {
      under it as ordinary cards — without this, an English or Science lesson
      builds, links from its subject page, and is invisible from its own grade.
      Found 2026-08-29, when the first grade-7 English lesson went up. */
-  /* ⚠️ leifPager(g), not the whole course. Grade 6 gets Rome, grade 7 gets
-     medieval onward. Passing no grade here put all five units on grade 7,
-     including the Rome one whose two built lessons are shelved at grade 6. */
-  if (g === 7 || g === 6) {
+  /* ⚠️ leifPager(g), not the whole course.
+     🚨 GRADE 6 WAS REMOVED FROM THIS BRANCH 2026-09-08. It used to read
+     `g === 7 || g === 6`, from when Rome was a grade 6 course. Rome moved to
+     grade 7 on 2026-09-04 and this line did not move with it, so `/grade-6/
+     lessons/` kept calling leifPager(6) and rendered the two Rome lessons a
+     second time — they were live on the grade 6 AND grade 7 shelves, against
+     the one-grade rule (Paul, 2026-08-30: "it only needs to be in one place").
+     ⚠️ This is the SECOND call site the docs warn about: COURSE_SHELVES had its
+     own stale grade 6 History entry too. Fixing one did nothing on its own. */
+  if (g === 7) {
     const others = list.filter((l) => l.subject !== "History");
     const mine = leifPager(g);
     return `<div class="band"><div class="wrap">${
@@ -1197,7 +1203,12 @@ const COURSE_SHELVES = [
      week - with Leif as the printable spine and McDougal filling the four regions
      Leif never reaches. ⚠️ `leif-units.js` is STILL REQUIRED, by `LESSONS` and
      `BUILT`; only the shelving moved. Do not delete it. */
-  { grade: 6, subject: "History", units: () => historyPager(WORLD, 6) },  /* Rome */
+  /* ⚠️ There was a { grade: 6, subject: "History" } shelf here, marked "Rome".
+     Rome moved to grade 7 on 2026-09-04 and this line was not removed with it, so
+     the two Rome lessons sat on BOTH the grade 6 and grade 7 shelves for four days
+     — against the one-grade rule (Paul, 2026-08-30: "it only needs to be in one
+     place"). Removed 2026-09-08. Every history unit is grade 7; if a grade 6 shelf
+     is ever wanted again, give its units grade 6 rather than re-adding a mapping. */
   { grade: 7, subject: "History", units: () => historyPager(WORLD, 7) },  /* medieval onward */
   { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
   { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
