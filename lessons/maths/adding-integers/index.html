@@ -47,7 +47,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <link rel="stylesheet" href="/assets/ns.css">
 <link rel="stylesheet" href="/assets/lesson-nav.css">
-<link rel="stylesheet" href="/assets/lesson-shared.d9e97a85.css">
+<link rel="stylesheet" href="/assets/lesson-shared.ee0eda9e.css">
 </head>
 <body>
 
@@ -112,13 +112,24 @@
   <p class="dek">Two rules cover every addition. Which one you use depends on whether the signs match.</p>
 
   <details class="ground">
-    <summary><span class="who">For the teacher</span> Teacher Notes</summary>
-    <div class="gbody"><h4>The rule</h4><p class="grule">Same signs, add them and the answer keeps that sign. Different signs, subtract, and the answer follows whichever number is further from zero.</p>
+    <summary>Teacher Notes</summary>
+    <div class="gbody">
+      <!-- 🚨 THE GRADE AND THE RESET LIVE HERE, BEHIND THE TEACHER DISCLOSURE.
+           A reset a student can reach is a lesson that records nothing: he can
+           un-finish work he has already done and the shelf card then shows it as
+           never started. Same markup and ids as the history and English templates
+           so one script shape serves every lesson type. Added 2026-09-08. -->
+      <div class="gscore" id="gscore">
+        <p class="gscore-line" id="gscoreline">Not started yet.</p>
+        <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
+      </div>
+      <h4>The rule</h4><p class="grule">Same signs, add them and the answer keeps that sign. Different signs, subtract, and the answer follows whichever number is further from zero.</p>
 <h4>What it is</h4><p>Just adding, except either number can be negative. The thing to get across early: the minus sign belongs to the number, it is not telling you to subtract. The sign says which way from zero, the digits say how far.</p>
 <h4>Why it matters</h4><p>This is the gate to algebra, so it is worth going slowly. Every equation they ever solve means moving terms across an equals sign, each one carrying a sign. And if they are shaky here they will not tell you - they will just quietly get equations wrong for a year, and it will look like they cannot do algebra.</p>
 <h4>What they will get wrong</h4><p>Watch for "two negatives make a positive." It is probably what you were taught, and it is wrong for adding: -3 + (-5) is -8. It IS true for multiplying, and for subtracting a negative, which is why it sticks around. So if they answer positive, they are not being careless - they are following a rule somebody gave them. Fix the rule.</p>
 <h4>How to check an answer</h4><p>You can work out the sign before you do any arithmetic. Ask which number is further from zero, and that tells you whether the answer is above or below zero. So if you add two negatives and get a positive, you already know it is wrong without checking the digits.</p>
-<h4>What to say when they are stuck</h4><ul><li>Start with: "Are the signs the same or different?" That one question picks the rule, and it is honestly the whole lesson.</li><li>If they match: "Add them and keep the sign you already had." Two negatives stay negative.</li><li>If they differ: "Which one is further from zero? Subtract, and that one decides the sign."</li><li>If -3 + (-5) keeps coming out positive, drop the maths and talk money. "You owe 3, then you owe 5 more. Do you owe more or less?" Nobody gets that wrong.</li><li>When they are right, ask which rule they used. If they cannot say, they guessed.</li></ul></div>
+<h4>What to say when they are stuck</h4><ul><li>Start with: "Are the signs the same or different?" That one question picks the rule, and it is honestly the whole lesson.</li><li>If they match: "Add them and keep the sign you already had." Two negatives stay negative.</li><li>If they differ: "Which one is further from zero? Subtract, and that one decides the sign."</li><li>If -3 + (-5) keeps coming out positive, drop the maths and talk money. "You owe 3, then you owe 5 more. Do you owe more or less?" Nobody gets that wrong.</li><li>When they are right, ask which rule they used. If they cannot say, they guessed.</li></ul>
+    </div>
   </details>
 
   <!-- ⚠️ NO RULE BOX HERE. It used to sit between the Teacher Notes and the
@@ -234,7 +245,7 @@ var CAPS      = [{"text":"Today we are adding integers."},{"ex":0,"show":2,"hi":
 var DEMO      = [{"kind":"add","a":-4,"b":-9,"ans":-13,"same":true,"big":9,"small":4,"rows":["<span class=\"sgn\">-</span>4 <span class=\"op\">+</span> (<span class=\"sgn\">-</span>9)","Both signs the same","4 + 9 = 13","= <span class=\"sgn\">-</span>13"],"start":-4,"move":-9},{"kind":"add","a":-9,"b":4,"ans":-5,"same":false,"big":9,"small":4,"rows":["<span class=\"sgn\">-</span>9 <span class=\"op\">+</span> 4","One of each, so different","9 - 4 = 5","= <span class=\"sgn\">-</span>5"],"start":-9,"move":4}];       /* the solved worked examples, one per caption.ex */
 var SPEC      = {"count":15,"kind":"add","mix":["pp","nn","pn","np"],"tiers":[{"n":9,"aMax":9,"bMax":9},{"n":6,"aRound":[10,12,15,18,20,25,30],"bMax":9}]};
 </script>
-<script src="/assets/lesson-engine-maths-2.f7a16d3c.js"></script>
+<script src="/assets/lesson-engine-maths-2.6cfbe987.js"></script>
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/ns-account.js"></script>
 <script src="/assets/lesson-shared.c34d45ea.js"></script>

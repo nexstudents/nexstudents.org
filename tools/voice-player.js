@@ -148,6 +148,25 @@ function playerScript() {
     "player engine");
   checkNoLessonData(js);
 
+  /* 🚨 THE HOST TEMPLATE MAY NOT DEFINE EVERY DATA VAR THIS SLICE TOUCHES, and a
+     "use strict" engine throws ReferenceError on the first one it cannot see —
+     killing the whole script, so the page renders and then does nothing.
+     That shipped on 2026-09-08: moving the per-lesson block to the top of
+     lesson-template.html took `var WORK` out of this slice, and long-division
+     died on `if (!WORK ...)` with a blank Teacher Notes and no reading player.
+     `var` hoists, so declaring here is safe: a template that defines its own
+     value still wins, and one that does not gets an empty default instead of a
+     crash. ⚠️ Add to this list, never remove from it. */
+  const defaults =
+    "/* Defaults for hosts that do not define these. See voice-player.js. */\n" +
+    "if (typeof ART === 'undefined')      { var ART = {}; }\n" +
+    "if (typeof VISUALS === 'undefined')  { var VISUALS = []; }\n" +
+    "if (typeof WORK === 'undefined')     { var WORK = []; }\n" +
+    "if (typeof WORDS === 'undefined')    { var WORDS = []; }\n" +
+    "if (typeof QUESTIONS === 'undefined'){ var QUESTIONS = []; }\n\n";
+  /* ⚠️ Do NOT return here. The leak guards below are what make this cut
+     trustworthy, and an early return would silently skip every one of them. */
+
   /* The guard that makes the cut trustworthy: the engine must arrive with no
      lesson content in it at all. */
   for (const leak of ["var PARTS = [", "var WORDS = [", "var QUESTIONS = [", "Rome"]) {
@@ -161,7 +180,7 @@ function playerScript() {
   /* The standard, asserted rather than assumed. */
   if (!js.includes('load("theme", "graphite")'))
     fail("graphite is no longer the default theme — that is the site standard, set 2026-08-29");
-  return js;
+  return defaults + js;   /* the guarded defaults must ship WITH the engine */
 }
 
 module.exports = { playerCss, fieldCss, playerMarkup, playerScript };

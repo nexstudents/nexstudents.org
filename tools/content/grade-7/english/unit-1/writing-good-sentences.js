@@ -14,7 +14,7 @@ module.exports = {
   shelf: { grades: [7], subject: "English",
     blurb: "Two ways to make an already-correct sentence better: mixing up the types you use, and breaking apart the ones that ramble on too long.",
     contains: [
-      "A Ground Control panel for the teacher, in Paul's own words",
+      "Teacher Notes written for whoever is teaching it",
       "The lesson read aloud, one line at a time, highlighted as it goes",
       "Three vocabulary cards, each with a check question",
       "Ten questions on revising sentences, not just naming them",

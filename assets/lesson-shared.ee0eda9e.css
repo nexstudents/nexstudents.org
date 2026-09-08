@@ -22,13 +22,19 @@ h1{margin:0 0 6px}
    Identical treatment to the English lessons on purpose. */
 .ground{border:1px solid var(--boxline);border-radius:var(--r);margin:0 0 26px;
   background:var(--boxfill);overflow:hidden}
+/* 🚨 CENTRED, THE WAY THE HISTORY TEMPLATE DOES IT: 1fr auto 1fr with an empty
+   ::before as the left spacer, so the chevron on the right cannot pull the label
+   off centre. Flex with margin-left:auto centres nothing — the same trap listed in
+   CLAUDE.md under the five ways to get centring wrong.
+   ⚠️ The "For the teacher" eyebrow was removed 2026-09-08 at Paul's request. */
 .ground summary{cursor:pointer;padding:15px 18px;font-weight:700;list-style:none;
-  display:flex;align-items:center;gap:10px}
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center}
+.ground summary::before{content:""}
 .ground summary::-webkit-details-marker{display:none}
 /* Closed points RIGHT, open points DOWN - the way every disclosure works.
    Paul, 2026-08-30. It was a down arrow that flipped to up, which reads as
    "collapse" in both states. */
-.ground summary::after{content:"▸";margin-left:auto;color:var(--dim);
+.ground summary::after{content:"▸";justify-self:end;color:var(--dim);
   transition:transform .18s;display:inline-block}
 .ground[open] summary::after{transform:rotate(90deg)}
 .ground summary:hover{color:var(--a)}

@@ -205,17 +205,52 @@
   var cards = [].slice.call(document.querySelectorAll("[data-lesson]"));
 
   function read(k, id){ try { return JSON.parse(localStorage.getItem(k + id)); } catch(e){ return null; } }
-  function isDone(id){ var d = read("ns:done:", id); return !!(d && d.complete !== false); }
+
+  /* 🚨 A LESSON IS FINISHED IN FOUR DIFFERENT SHAPES, AND THE CARD MUST KNOW ALL
+     OF THEM. This only read "ns:done:", which ONLY the history/science template
+     writes — so every finished maths, integers and English lesson showed as
+     unfinished, forever. Worse, the "is-part" branch below returns early, so
+     maths/long-division sat at "5 of 5 answered" with a half progress bar while
+     its own record said complete:true. Found 2026-09-08 on Kolten's real progress.
+       ns:done:<id>  {complete:true, score, total}   history, science
+       ns:prog:<id>  {done, total, complete}          maths, integers, English
+       ns:prog:<id>  {done, total, d1, d1t, ...}      history/science part-progress
+     ⚠️ Never decide this from done > 0 alone — that is "started", not "finished".
+     ⚠️ NO BACKTICKS IN THIS COMMENT. progressScript is a template literal and a
+     backtick here closes it; the build then dies on the next word. It has now cost
+     three builds: 2026-08-31, and again writing this very comment. */
+  function finished(d, pr){
+    if (d && d.complete !== false) return true;
+    if (!pr) return false;
+    if (pr.complete === true) return true;
+    return typeof pr.done === "number" && typeof pr.total === "number" &&
+           pr.total > 0 && pr.done >= pr.total;
+  }
+  function isDone(id){ return finished(read("ns:done:", id), read("ns:prog:", id)); }
 
   /* PASS 1 - what each card is on its own. */
   cards.forEach(function(c){
     var id = c.dataset.lesson;
     var d = read("ns:done:", id), pr = read("ns:prog:", id);
 
-    if (d && d.complete !== false){
+    if (finished(d, pr)){
       c.classList.add("is-done");
       var s = c.querySelector(".tick-score");
-      if (s) s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+      /* 🚨 THE TWO LESSON TYPES MEAN DIFFERENT THINGS BY A PERCENTAGE, and Paul
+         copies this straight into HomeschoolGrades, so it must not flatter.
+         History and science ask each question ONCE, so d.pct is a real mark.
+         Maths, integers and English are retry-until-right by design (Paul's rule:
+         no punishment for wrong), so there is no partial score to report —
+         finishing them IS full marks, and saying "100%" without saying it was
+         mastery would read as a test result it never was. */
+      if (s){
+        if (d && typeof d.pct === "number")
+          s.textContent = "Completed \u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
+        else if (pr && pr.total > 0)
+          s.textContent = "Completed \u00b7 " + pr.total + "/" + pr.total + " (100%) \u00b7 practised to mastery";
+        else
+          s.textContent = "Completed";
+      }
       var t = c.querySelector(".tick-done");
       if (t) t.setAttribute("title", "Completed");
       return;

@@ -72,10 +72,16 @@ h1{margin:0 0 6px}
    it before the lesson, the student never needs to. */
 .ground{border:1px solid var(--boxline);border-radius:var(--r);margin:0 0 26px;
   background:var(--boxfill);overflow:hidden}
+/* 🚨 CENTRED, THE WAY THE HISTORY TEMPLATE DOES IT: 1fr auto 1fr with an empty
+   ::before as the left spacer, so the chevron on the right cannot pull the label
+   off centre. Flex with margin-left:auto centres nothing — the same trap listed in
+   CLAUDE.md under the five ways to get centring wrong.
+   ⚠️ The "For the teacher" eyebrow was removed 2026-09-08 at Paul's request. */
 .ground summary{cursor:pointer;padding:15px 18px;font-weight:700;list-style:none;
-  display:flex;align-items:center;gap:10px}
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center}
+.ground summary::before{content:""}
 .ground summary::-webkit-details-marker{display:none}
-.ground summary::after{content:"▾";margin-left:auto;color:var(--dim);
+.ground summary::after{content:"▸";justify-self:end;color:var(--dim);
   transition:transform .18s}
 .ground[open] summary::after{transform:rotate(180deg)}
 .ground summary:hover{color:var(--a)}
@@ -1062,11 +1068,26 @@ body.player-hidden .scrub{margin:0}
   <p class="dek">Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.</p>
 
   <details class="ground" id="ground">
-    <summary><span class="who">For the teacher</span> Ground Control</summary>
-    <div class="gbody"><h4>What it is</h4><p>By the end of this lesson a student should be able to find the verb in a sentence and say whether it is an action verb or a being verb. An action verb tells what someone or something does, and that action can be physical, like <i>run, jump</i> or <i>open</i>, or it can happen in the mind, like <i>think, remember</i> or <i>understand</i>. A being verb tells what someone or something is or was instead of showing an action, and there are only eight of them: <b>am, is, are, was, were, be, been, being</b>. Compare "The dog chased the ball" with "The dog is tired". In the first, <i>chased</i> tells what the dog did. In the second, <i>is</i> tells us something about the dog.</p>
+    <summary>Teacher Notes</summary>
+    <div class="gbody">
+      <!-- 🚨 THE GRADE AND THE RESET LIVE HERE, BEHIND THE TEACHER DISCLOSURE, and
+           that placement is the whole point. "Start Over" used to sit in the open
+           above the questions, so a student could wipe a finished lesson with one
+           click and no confirmation — and the shelf card then read as though he had
+           never done it. A lesson he can re-roll at will records nothing.
+           Same markup and same ids as the history template, so one script shape
+           serves every lesson type.
+           ⚠️ The summary said "Ground Control" until 2026-09-08. That framing is
+           retired from everything published — see BEHAVIOR.md. -->
+      <div class="gscore" id="gscore">
+        <p class="gscore-line" id="gscoreline">Not started yet.</p>
+        <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
+      </div>
+      <h4>What it is</h4><p>By the end of this lesson a student should be able to find the verb in a sentence and say whether it is an action verb or a being verb. An action verb tells what someone or something does, and that action can be physical, like <i>run, jump</i> or <i>open</i>, or it can happen in the mind, like <i>think, remember</i> or <i>understand</i>. A being verb tells what someone or something is or was instead of showing an action, and there are only eight of them: <b>am, is, are, was, were, be, been, being</b>. Compare "The dog chased the ball" with "The dog is tired". In the first, <i>chased</i> tells what the dog did. In the second, <i>is</i> tells us something about the dog.</p>
 <h4>Why it matters</h4><p>Verbs are the hinge everything later swings on. Tense is a verb changing to show time. Subject-verb agreement is a verb changing to match who is doing it. Sentence types, clauses, and eventually essay writing all assume a student can find the verb without thinking about it. A student who is shaky here is shaky in every grammar lesson after it, and usually nobody notices, because the later lessons look like they are about something else.</p>
 <h4>What he will get wrong</h4><p>A word's job can change depending on the sentence, and this is where students lose the thread. In "We walk to school", <i>walk</i> is an action verb. In "The walk was long", <i>walk</i> is a noun and the verb is <i>was</i>. Most students hunt for a word that sounds like doing something, which works until the verb is <i>is, was</i> or <i>are</i> and then they freeze or grab a noun. It comes from teaching "a verb is an action word", which is not true, and it is why so many students stall on this exact page.</p>
-<h4>What to say when he is stuck</h4><ul><li>There are TWO tests here and they answer different questions. If he cannot FIND the verb, say: "Read it again, but start with Yesterday. Which word had to change?" That word is the verb, every time.</li><li>Once he has found it, the quick check names its kind. Use these exact words: "Is the subject doing something, or is the sentence telling what the subject is?" Doing means action. Is or was means being.</li><li>If they pick a noun, ask: "Is anybody doing that right now, or is it just a thing?" A walk sitting on the page is a thing. Walking is not.</li><li>If they meet a sentence like "The dog is running", tell them plainly that <i>is</i> is helping the action verb <i>running</i>. Helping verbs are their own lesson and nothing here depends on them.</li><li>The shortcut worth repeating out loud until it sticks: action tells what something DOES, being tells what something IS.</li><li>When they get it right, do not stop at "correct". Ask HOW they knew. If the answer is "it looked like one", they got lucky and the test has not stuck yet.</li></ul></div>
+<h4>What to say when he is stuck</h4><ul><li>There are TWO tests here and they answer different questions. If he cannot FIND the verb, say: "Read it again, but start with Yesterday. Which word had to change?" That word is the verb, every time.</li><li>Once he has found it, the quick check names its kind. Use these exact words: "Is the subject doing something, or is the sentence telling what the subject is?" Doing means action. Is or was means being.</li><li>If they pick a noun, ask: "Is anybody doing that right now, or is it just a thing?" A walk sitting on the page is a thing. Walking is not.</li><li>If they meet a sentence like "The dog is running", tell them plainly that <i>is</i> is helping the action verb <i>running</i>. Helping verbs are their own lesson and nothing here depends on them.</li><li>The shortcut worth repeating out loud until it sticks: action tells what something DOES, being tells what something IS.</li><li>When they get it right, do not stop at "correct". Ask HOW they knew. If the answer is "it looked like one", they got lucky and the test has not stuck yet.</li></ul>
+    </div>
   </details>
 
   <div class="rulebox">
@@ -1168,8 +1189,11 @@ body.player-hidden .scrub{margin:0}
 
   <h2 class="section-head">Your Turn</h2>
   <p class="section-note">Two parts, like a worksheet. Part A asks which word is the verb. Part B asks what kind of verb it is. A wrong answer tells you why and lets you try again, so nothing here counts against you.</p>
+  <!-- ⚠️ "Start Over" MOVED into Teacher Notes 2026-09-08. Out here it wiped every
+       answer on one click with no confirmation, so a student could un-finish a
+       lesson he had already completed and the shelf card would show it as never
+       done. Do not put a reset back on the student's side of the page. -->
   <div class="actions">
-    <button class="tab act" type="button" id="reset">Start Over</button>
     <button class="tab act" type="button" id="reveal">Show Me The Answers</button>
   </div>
 
@@ -1201,6 +1225,13 @@ var LESSON_ID = "english/verbs-action-and-being";
 var PARTS     = [{"title":"Every Sentence Needs a Verb","s":["Imagine a sentence is like a car. It might have a driver, seats, wheels and a radio, but none of those make the car go. The engine does.","","The verb is the engine. It is the one word that makes a sentence work, and every sentence in English has one.","","The driver stopped the bus.","","What happened? The driver stopped. The word stopped is the verb, because it tells us what the driver did.","","Cross out stopped and the sentence stops working. You are left with a driver and a bus and nothing happening between them.","","In this lesson we are going to learn about two important kinds of verbs. Action verbs and being verbs."]},{"title":"Action Verbs","s":["An action verb tells what someone or something does.","","The dog chased the ball.","","The word chased is the action verb, because it tells what the dog did.","","The same thing happens here.","","The engine stalled.","","The engine did something. It stalled.","","Not every action is something you can see. Look at this one.","","The student remembered the answer.","","You cannot actually watch someone remember something. There is no giant light bulb that suddenly appears over his head. Remembering happens inside the mind, but it is still something he did. That makes remembered an action verb.","","Words like think, remember, wonder and understand can all be action verbs, even though the action happens inside your head."]},{"title":"Being Verbs","s":["Now look at a different sentence.","","The road is wet.","","What action did the road perform? Nothing. The sentence is simply telling us something about the road. The word is connects road with wet, and that makes is a being verb.","","A being verb tells what someone or something is or was, instead of telling what it does.","","There are eight forms of the verb be. These are important words to recognise, because you will see them again and again in English.","","Am. Is. Are. Was. Were. Be. Been. Being."]},{"title":"Action or Being?","s":["Compare these two sentences.","","The kettle boiled.","","The kettle is empty.","","They are both about the same kettle, but the verbs are doing different jobs.","","In the first sentence something happened. The kettle boiled, so boiled is an action verb.","","In the second sentence the kettle is not doing anything. The word is tells us about the condition of the kettle, so is is a being verb.","","Here is an easy way to remember the difference. An action verb tells what someone or something does. A being verb tells what someone or something is or was."]},{"title":"The Word That Tries to Trick You","s":["Sometimes a word that looks like a verb is not actually the verb in the sentence.","","We walk through the park.","","Here, walk tells what we are doing, so it is an action verb.","","Now look at this one.","","The walk was long.","","This time nobody is actually walking. The walk is the name of a thing, so it is being used as a noun. The actual verb is was.","","This teaches an important rule about language. A word's job in the sentence decides what kind of word it is. Do not choose a verb just because a word looks like one. Look at what the word is actually doing."]},{"title":"Two Tests, Two Jobs","s":["There are two things to work out about a sentence, and each one has its own test. Do not mix them up.","","The first job is finding the verb. Put the word Yesterday in front of the sentence and read it again. The one word that has to change shape is the verb. Nothing else in a sentence changes when the time changes.","","The bell rings loudly. Yesterday the bell rang loudly.","","Only one word moved. Rings became rang. That is your verb.","","The second job is naming what kind of verb it is, and that is a different question."]},{"title":"Try the Verb Test","s":["Once you have found the verb, ask yourself a simple question.","","Is someone or something doing something, or is the sentence telling me what someone or something is?","","If the subject is doing something, you have probably found an action verb. If the verb tells what the subject is or was, you have probably found a being verb.","","The boy kicked the ball.","","The boy did something. He kicked, so kicked is an action verb.","","The boy is tired.","","The boy is not performing an action. The word is connects the boy with the word tired, so is is a being verb."]},{"title":"Your Turn","s":["Now it is your turn to become the verb detective.","Part A has ten sentences. Find the verb in each one and click it.","Part B marks the verb for you. Your job there is to decide what that verb is doing. Is it telling you what someone or something does, or what someone or something is?","Remember the shortcut. Action means DO. Being means IS.","If you click the wrong word nothing bad happens. The page tells you why, so read that before you try again."]}];
 var PRACTICE  = [{"sentence":"The bell rang loudly.","answer":2,"why":"The bell did something. Rang is the verb, and it is an action verb."},{"sentence":"The puppy is hungry.","answer":2,"why":"The puppy is not doing anything. The sentence tells you what the puppy is, so is is the verb."},{"sentence":"Rain fell all afternoon.","answer":1,"why":"Something happened, and you could have watched it. Fell is the verb."},{"sentence":"The old wooden gate is heavy.","answer":4,"why":"Nobody does anything here. Is tells you what the gate is, and four words go by before you reach it."},{"sentence":"She repaired the broken shelf.","answer":1,"why":"She is doing something you could point a camera at. Repaired is the verb."},{"sentence":"We are ready.","answer":1,"why":"Nothing is happening. Are tells you what we are, and the whole sentence is only three words."},{"sentence":"The long walk tired everyone.","answer":3,"why":"The trap. Nobody is walking here, so walk is a thing, not something anyone does. Tired is what that walk DID to everyone, so tired is the verb. Watch for it again two sentences from now, doing a completely different job."},{"sentence":"Her first attempt was perfect.","answer":3,"why":"The trap again. Attempt is the name of a thing, not something anyone is doing. Was is the verb."},{"sentence":"The tired driver from the next town remembered every turn.","answer":7,"why":"The word tired is here again, but this time it is NOT the verb. It is just describing the driver. Nobody is doing tired to anybody. Seven words go by before you reach remembered, and you cannot watch someone remember, but it is still what he did."},{"sentence":"Both engines started without trouble.","answer":2,"why":"The engines did something. Started is the verb."}];   /* Part A - which word is the verb */
 var SORT      = [{"sentence":"The kettle boiled quickly.","at":2,"kind":"action","why":"Something happened, and you could have filmed it. Boiled is an action verb."},{"sentence":"The classroom is quiet.","at":2,"kind":"being","why":"Nothing happens. Is joins the classroom to quiet, so it is a being verb."},{"sentence":"He built a small shelf.","at":1,"kind":"action","why":"He did something you could point a camera at. Built is an action verb."},{"sentence":"Those books were expensive.","at":2,"kind":"being","why":"Nobody does anything. Were joins the books to expensive, so it is a being verb."},{"sentence":"She remembered the answer.","at":1,"kind":"action","why":"You cannot watch someone remember, but it is still something she did. Remembered is an action verb."},{"sentence":"I am ready now.","at":1,"kind":"being","why":"Nothing is happening. Am joins I to ready, so it is a being verb."}];       /* Part B - which KIND of verb it is */
+
+/* Defaults for hosts that do not define these. See voice-player.js. */
+if (typeof ART === 'undefined')      { var ART = {}; }
+if (typeof VISUALS === 'undefined')  { var VISUALS = []; }
+if (typeof WORK === 'undefined')     { var WORK = []; }
+if (typeof WORDS === 'undefined')    { var WORDS = []; }
+if (typeof QUESTIONS === 'undefined'){ var QUESTIONS = []; }
 
 /* ---------- saved settings and progress ----------
    Keys are shared site-wide on purpose:
@@ -3307,7 +3338,21 @@ var wrap  = document.getElementById("problems");
 var kwrap = document.getElementById("kinds");
 var bar   = document.getElementById("scorebar");
 
-function save(){ store(KEY, JSON.stringify(state)); }
+/* 🚨 THE SHELF CARD CANNOT COUNT THIS LESSON'S PARTS, so the lesson has to say so
+   itself. `state` is keyed a0..aN and b0..bN, which means nothing to a card that
+   does not know how many of each there are — so a FINISHED English lesson sat at
+   "part done" forever and never got its green tick. Writing `complete` here, the
+   same shape maths and integers already write, lets one rule on the card cover
+   every lesson type. Found 2026-09-08, on lessons Kolten had actually finished. */
+function save(){
+  var a = 0, b = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
+  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
+  state.done     = a + b;
+  state.total    = PRACTICE.length + SORT.length;
+  state.complete = state.total > 0 && state.done === state.total;
+  store(KEY, JSON.stringify(state));
+}
 
 /* ⚠️ Part A and Part B are stored under PREFIXED keys, "a3" and "b3", not bare
    numbers. Two parts sharing one number would mark a Part B answer as a solved
@@ -3446,6 +3491,7 @@ function wrongWhy(word, p){
    whether he can find verbs and cannot name them, or the other way round.
    Paul's rule from the quizzes: show the score AND the percentage. */
 function score(){
+  paintTeacherScore();          /* the teacher line moves with the student's */
   var a = 0, b = 0, i;
   for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
   for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
@@ -3457,8 +3503,32 @@ function score(){
     (got === all ? " — all of them. Write the score in your notes." : "");
 }
 
-document.getElementById("reset").onclick = function(){
-  state = {}; save(); render(); score();
+/* The teacher's line and reset, in Teacher Notes. Mirrors the history template so
+   both read the same on the page and in a screenshot for HomeschoolGrades.
+   🚨 THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE — 8 right out of 8
+   answered is not 100% when the lesson has 16. It is a lesson still in progress
+   and the line says so rather than flattering the number.
+   ⚠️ This lesson is retry-until-right, so a finished one IS full marks. Say
+   "practised to mastery" rather than printing a bare 100% that reads like a test
+   result it never was. */
+function paintTeacherScore(){
+  var line = document.getElementById("gscoreline");
+  var btn  = document.getElementById("greset");
+  if (!line) return;
+  var total = PRACTICE.length + SORT.length, done = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) done++;
+  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) done++;
+  line.className = "gscore-line" + (done === 0 ? "" : done === total ? " good" : " part");
+  line.textContent = done === 0
+    ? "Not started yet."
+    : done === total
+      ? "Completed · " + total + "/" + total + " (100%) · practised to mastery"
+      : done + " of " + total + " answered · still in progress";
+  if (btn) btn.hidden = done === 0;
+}
+
+document.getElementById("greset").onclick = function(){
+  state = {}; save(); render(); score(); paintTeacherScore();
 };
 document.getElementById("reveal").onclick = function(){
   var i, j;

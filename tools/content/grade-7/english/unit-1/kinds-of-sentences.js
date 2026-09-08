@@ -13,7 +13,7 @@ module.exports = {
   shelf: { grades: [7], subject: "English",
     blurb: "Four kinds of sentences, four different jobs, and the one case where the punctuation lies to you.",
     contains: [
-      "A Ground Control panel for the teacher, in Paul's own words",
+      "Teacher Notes written for whoever is teaching it",
       "The lesson read aloud, one line at a time, highlighted as it goes",
       "Four vocabulary cards, each with a check question",
       "Ten questions, including the command that ends in an exclamation point",

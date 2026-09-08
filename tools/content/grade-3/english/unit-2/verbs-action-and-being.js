@@ -22,7 +22,7 @@ module.exports = {
   shelf: { grades: [3], subject: "English", thumb: true,
     blurb: "Every sentence has an engine. Find it with a test that works even when nothing happens.",
     contains: [
-      "A Ground Control panel for the teacher: what to say when a student is stuck",
+      "Teacher Notes: what to say when a student is stuck",
       "The lesson read aloud, one line at a time, highlighted as it goes",
       "A test the student can run alone, not a definition to memorise",
       "Five worked examples, then a two-part worksheet: find the verb, then name its kind",

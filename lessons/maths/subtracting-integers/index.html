@@ -47,7 +47,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <link rel="stylesheet" href="/assets/ns.css">
 <link rel="stylesheet" href="/assets/lesson-nav.css">
-<link rel="stylesheet" href="/assets/lesson-shared.d9e97a85.css">
+<link rel="stylesheet" href="/assets/lesson-shared.ee0eda9e.css">
 </head>
 <body>
 
@@ -112,13 +112,24 @@
   <p class="dek">No new arithmetic. Turn every subtraction into an addition, then use the rules you already have.</p>
 
   <details class="ground">
-    <summary><span class="who">For the teacher</span> Teacher Notes</summary>
-    <div class="gbody"><h4>The rule</h4><p class="grule">Keep, Change, Change. Keep the first number, change the minus to a plus, change the sign of the second number. Then add.</p>
+    <summary>Teacher Notes</summary>
+    <div class="gbody">
+      <!-- 🚨 THE GRADE AND THE RESET LIVE HERE, BEHIND THE TEACHER DISCLOSURE.
+           A reset a student can reach is a lesson that records nothing: he can
+           un-finish work he has already done and the shelf card then shows it as
+           never started. Same markup and ids as the history and English templates
+           so one script shape serves every lesson type. Added 2026-09-08. -->
+      <div class="gscore" id="gscore">
+        <p class="gscore-line" id="gscoreline">Not started yet.</p>
+        <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
+      </div>
+      <h4>The rule</h4><p class="grule">Keep, Change, Change. Keep the first number, change the minus to a plus, change the sign of the second number. Then add.</p>
 <h4>What it is</h4><p>Good news: nothing new to learn. Subtracting a number is the same as adding its opposite, so 8 - 3 and 8 + (-3) are the same question written two ways. Once they can do that swap, every subtraction becomes an addition they already know.</p>
 <h4>Why it matters</h4><p>It makes this one skill instead of two. If they have the adding rules they already have every subtraction here - the rewrite is the only new part. It comes back in algebra, where treating the minus as part of the term is the only way to collect like terms without dropping a sign.</p>
 <h4>What they will get wrong</h4><p>Changing only half of it. Keep, Change, Change means the operation changes AND the second number flips, and they very often do the first and forget the second: 5 - 3 becomes 5 + 3, giving 8 instead of 2. Watch that first box rather than only the final answer - you can see it happen there.</p>
 <h4>How to check an answer</h4><p>Check your rewrite before you add. If a minus is still sitting between the two numbers, you have not finished - a done rewrite always has a plus in the middle.</p>
-<h4>What to say when they are stuck</h4><ul><li>Say it plainly: "Two things change, not one. The sign in the middle, and the sign of the number after it."</li><li>Point at their rewrite: "Did that second number change sign? If it looks the same, you only did half of it."</li><li>For 5 - (-3): "Taking away something you owe leaves you better off." Cancelling a debt of 3 is gaining 3.</li><li>If they can rewrite but stall on the adding, that is the last lesson talking. Go back and drill those two rules alone.</li><li>When they get one right, have them say the three words out loud. Once they can chant it while working, it has stuck.</li></ul></div>
+<h4>What to say when they are stuck</h4><ul><li>Say it plainly: "Two things change, not one. The sign in the middle, and the sign of the number after it."</li><li>Point at their rewrite: "Did that second number change sign? If it looks the same, you only did half of it."</li><li>For 5 - (-3): "Taking away something you owe leaves you better off." Cancelling a debt of 3 is gaining 3.</li><li>If they can rewrite but stall on the adding, that is the last lesson talking. Go back and drill those two rules alone.</li><li>When they get one right, have them say the three words out loud. Once they can chant it while working, it has stuck.</li></ul>
+    </div>
   </details>
 
   <!-- ⚠️ NO RULE BOX HERE. It used to sit between the Teacher Notes and the
@@ -235,7 +246,7 @@ var CAPS      = [{"text":"Today we are subtracting integers."},{"ex":0,"show":1,
 var DEMO      = [{"kind":"subtract","a":8,"b":3,"flipped":-3,"ans":5,"same":false,"rows":["8 <span class=\"op\">-</span> 3","8 <span class=\"op\">+</span>","8 <span class=\"op\">+</span> (<span class=\"sgn\">-</span>3)","= 5"],"start":8,"move":-3},{"kind":"subtract","a":5,"b":-3,"flipped":3,"ans":8,"same":true,"rows":["5 <span class=\"op\">-</span> (<span class=\"sgn\">-</span>3)","5 <span class=\"op\">+</span>","5 <span class=\"op\">+</span> 3","= 8"],"start":5,"move":3}];       /* the solved worked examples, one per caption.ex */
 var SPEC      = {"count":15,"kind":"subtract","mix":["pp","nn","pn","np"],"tiers":[{"n":9,"aMax":9,"bMax":9},{"n":6,"aRound":[10,12,15,18,20,25,30],"bMax":9}]};
 </script>
-<script src="/assets/lesson-engine-maths-2.f7a16d3c.js"></script>
+<script src="/assets/lesson-engine-maths-2.6cfbe987.js"></script>
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/ns-account.js"></script>
 <script src="/assets/lesson-shared.c34d45ea.js"></script>
