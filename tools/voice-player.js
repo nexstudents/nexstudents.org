@@ -107,28 +107,46 @@ function playerMarkup() {
   return markup;
 }
 
+/* The engine slice must contain NO lesson content. This is the control for the
+   bug that shipped on 2026-08-29, when a maths lesson read out Roman history:
+   if any per-lesson literal has drifted back below the settings marker, the
+   slice picks it up and every other subject inherits it. Fail loudly instead. */
+function checkNoLessonData(js) {
+  for (const name of ["PARTS", "WORDS", "QUESTIONS", "ART", "VISUALS", "WORK",
+                      "LESSON_ID", "LESSON_TITLE", "LESSON_UNIT"]) {
+    const rx = new RegExp("^\\s*var\\s+" + name + "\\s*=", "m");
+    if (rx.test(js)) {
+      fail("the player engine slice contains `var " + name + "` — a per-lesson\n" +
+           "  literal has moved BELOW the settings marker in lesson-template.html.\n" +
+           "  Move it back into the data block at the top of that script, or every\n" +
+           "  subject inherits this lesson's content (that is the 2026-08-29 bug).");
+    }
+  }
+}
+
 /* Saved settings, the palettes, the story builder and the whole read-aloud
    engine. Stops before the word cards, which are history-only. */
 function playerScript() {
   const src = read();
-  /* 🚨 THE SLICE MUST NOT SWALLOW THE LESSON DATA. In lesson-template.html the
-     PARTS / WORDS / QUESTIONS literals sit BETWEEN the settings block and the
-     story builder, so a single slice from "saved settings" to "word cards"
-     carries the Roman history content with it. That shipped: the maths lesson
-     rendered "For almost five hundred years, Rome had no king." Caught
+  /* 🚨 THE SLICE MUST NOT SWALLOW THE LESSON DATA. This used to be TWO slices
+     with the data cut out of the middle, because PARTS / WORDS / QUESTIONS sat
+     BETWEEN the settings block and the story builder. A single slice carried the
+     Roman history content into every subject, and it shipped: a maths lesson
+     narrated "For almost five hundred years, Rome had no king." Caught
      2026-08-29 by the sentence count disagreeing with the caption count.
 
-     So it is two slices with the data cut out of the middle: the settings and
-     palettes, then the story builder and the engine. */
-  const head = between(src,
+     ⚠️ 2026-09-08: every per-lesson `var` moved into ONE block at the TOP of the
+     template's script, above the settings marker, so the engine below it is now
+     contiguous AND identical for every lesson. That is what lets the build lift
+     the engine into a shared /assets/ file instead of inlining ~200 KB per page.
+     One slice is correct again — but only while the data stays above. If a `var`
+     ever drifts back down here, this slice starts carrying it and the old bug
+     returns, so `checkNoLessonData` below refuses that outright. */
+  const js = between(src,
     "/* ---------- saved settings and progress ----------",
-    "var PARTS = [",
-    "player settings");
-  const body = between(src,
-    "/* ---------- build the story ---------- */",
     "/* ---------- word cards ---------- */",
     "player engine");
-  const js = head + String.fromCharCode(10) + body;
+  checkNoLessonData(js);
 
   /* The guard that makes the cut trustworthy: the engine must arrive with no
      lesson content in it at all. */

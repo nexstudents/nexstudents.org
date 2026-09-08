@@ -28,6 +28,7 @@ const ROOT = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const DRY = args.includes('--dry');
 const ONLY = (i => (i < 0 ? null : args[i + 1]))(args.indexOf('--subject'));
+const MIN_ENGINE_LINES = 1200;   /* below this a shared file is not worth the request */
 
 const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e => {
     const p = path.join(d, e.name);
@@ -66,8 +67,22 @@ function edges(L) {
     }
     return { pre, suf };
 }
-const isData = m => m.every(l => !l.trim() || /^var\s+[A-Za-z_$][\w$]*\s*=/.test(l)) &&
-                    m.some(l => l.trim());
+/* The middle is whatever DIFFERS between the pages of a cluster, so by
+   construction it is this lesson's own content and the shared engine cannot
+   contain any of it — that is the structural guarantee, not this check.
+   (An earlier version demanded every middle line start with `var`, which was
+   both over-strict — multi-line literals and `function solidIcon` are data too —
+   and beside the point.) What is left to verify is only that the middle looks
+   like declarations rather than engine code that happens to vary. */
+const isData = m => {
+    if (!m.some(l => l.trim())) return false;                 // nothing varies: not a data block
+    if (m.some(l => /<\/script>/i.test(l))) return false;     // sanity
+    const starts = m.filter(l => /^\S/.test(l) && l.trim());  // statements at column 0
+    if (!starts.length) return false;
+    return starts.every(l => /^(var|let|const|function)\s/.test(l) ||
+                             /^(\/\*|\*|\/\/)/.test(l) ||
+                             /^[)\]}]/.test(l));
+};
 
 /* A subject is not one engine: maths alone runs several different players.
  * So cluster by ENGINE SHAPE — a page joins a cluster only if the shared top
@@ -87,7 +102,13 @@ for (const page of all) {
     for (const c of clusters) {
         const L = [...c.map(x => x.lines), page.lines];
         const { pre, suf } = edges(L);
-        if (pre + suf >= page.lines.length * 0.9 &&
+        /* The test is "is the SHARED ENGINE still big enough to be worth a file",
+           not "is this lesson's data small". An earlier version required the
+           shared part to be 90% of the page, which quietly excluded the five
+           richest lessons — the ones with the most content, and so the fattest
+           pages, exactly the ones worth fixing. A lesson may have as much data as
+           it likes; what matters is that the engine underneath is still shared. */
+        if (pre + suf >= MIN_ENGINE_LINES &&
             L.every(x => isData(x.slice(pre, x.length - suf)))) { c.push(page); joined = true; break; }
     }
     if (!joined) clusters.push([page]);
@@ -121,6 +142,34 @@ for (const [sub, pages] of bySubject) {
     }
     engineBytes += engine.length;
 
+    /* 🚨 THE DATA BLOCK MUST NOT CALL THE ENGINE. It runs FIRST; the engine file
+       loads after it. So a helper the data needs — `icon`, `solidIcon` — has to
+       be inside the varying middle, not filed with the shared engine above it.
+       This shipped once: `var ART = { ...icon(...) }` threw "icon is not defined"
+       and every history, science and English lesson rendered with NO STORY. The
+       build was clean, all four other guards passed, and only opening the page
+       in a browser showed it. Hence this check. */
+    const BUILTIN = new Set(['if', 'for', 'while', 'switch', 'catch', 'return', 'function',
+        'typeof', 'map', 'join', 'filter', 'forEach', 'concat', 'slice', 'split', 'replace',
+        'push', 'indexOf', 'test', 'match', 'trim', 'toString', 'parseInt', 'parseFloat',
+        'scaleX', 'encodeURIComponent', 'decodeURIComponent']);
+    for (let i = 0; i < pages.length; i++) {
+        const d = middles[i].join('\n');
+        const has = new Set();
+        for (const m of d.matchAll(/^\s*(?:function\s+([A-Za-z_$][\w$]*)|var\s+([A-Za-z_$][\w$]*))/gm))
+            has.add(m[1] || m[2]);
+        const missing = [...new Set([...d.matchAll(/\b([a-z][A-Za-z0-9_$]*)\s*\(/g)].map(m => m[1]))]
+            .filter(n => !has.has(n) && !BUILTIN.has(n));
+        if (missing.length) {
+            console.error(`\nsplit-lesson-engine FAILED on ${path.relative(ROOT, pages[i].f)}`);
+            console.error(`  its data block calls ${missing.join(', ')} but does not define them,`);
+            console.error(`  and the engine that would define them loads AFTER it.`);
+            console.error(`  Move those helpers into the per-lesson block in lesson-template.html,`);
+            console.error(`  between LESSON_ID and the data that uses them.\n`);
+            process.exit(1);
+        }
+    }
+
     for (let i = 0; i < pages.length; i++) {
         const { f, html, p } = pages[i];
         const data = middles[i].join('\n').trim();
@@ -131,6 +180,24 @@ for (const [sub, pages] of bySubject) {
         if (!DRY) fs.writeFileSync(f, out, 'utf8');
     }
     console.log(`  ${sub.padEnd(9)} ${String(pages.length).padStart(2)} pages  engine ${(engine.length / 1024).toFixed(0).padStart(3)} KB  data ${(middles[0].join('\n').length / 1024).toFixed(1)} KB/page`);
+}
+
+/* Engine files are named by content hash, so every edit to the player writes a
+   NEW one and leaves the old behind. Four had already piled up before anyone
+   looked. Sweep any lesson-engine-*.js that no built page references. */
+if (!DRY) {
+    const A = path.join(ROOT, 'assets');
+    const wanted = new Set();
+    for (const f of walk(LESSONS))
+        for (const m of fs.readFileSync(f, 'utf8').matchAll(/\/assets\/(lesson-engine-[^"']+)/g))
+            wanted.add(m[1]);
+    let swept = 0;
+    for (const f of fs.readdirSync(A)) {
+        if (!/^lesson-engine-.*\.js$/.test(f) || wanted.has(f)) continue;
+        fs.unlinkSync(path.join(A, f)); swept++;
+        console.log(`  swept stale engine: ${f}`);
+    }
+    if (swept) console.log(`  ${swept} orphaned engine file(s) removed`);
 }
 
 const pct = totalBefore ? Math.round((1 - totalAfter / totalBefore) * 100) : 0;

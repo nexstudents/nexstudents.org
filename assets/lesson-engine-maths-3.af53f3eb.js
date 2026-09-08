@@ -1,1206 +1,322 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Verbs: Action and Being | NexStudents</title>
-<meta name="description" content="Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.">
-<link rel="canonical" href="https://nexstudents.org/lessons/english/verbs-action-and-being/">
-<meta property="og:site_name" content="NexStudents">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://nexstudents.org/lessons/english/verbs-action-and-being/">
-<meta property="og:title" content="Verbs: Action and Being | NexStudents">
-<meta property="og:description" content="Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.">
-<meta property="og:image" content="https://nexstudents.org/assets/brand/share.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Verbs: Action and Being | NexStudents">
-<meta name="twitter:description" content="Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.">
-<meta name="twitter:image" content="https://nexstudents.org/assets/brand/share.png">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://nexstudents.org/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "3rd Grade English",
-      "item": "https://nexstudents.org/grade-3/english/lessons/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Verbs: Action and Being"
-    }
-  ]
-}
-</script>
-<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
-<link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
-<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css">
-<link rel="stylesheet" href="/assets/lesson-nav.css">
-<style>
-.wrapx{max-width:900px;margin:0 auto;padding:0 20px}
-.ns-back{padding:18px 0}
-.ns-back a{color:var(--dim);text-decoration:none;font-size:.9rem}
-.ns-back a:hover{color:var(--fg)}
-h1{margin:0 0 6px}
-.dek{color:var(--dim);max-width:60ch;margin:0 0 22px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 22px}
-.section-head{margin:34px 0 4px;font-size:1.35rem}
-.section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
 
-/* Fallbacks. applyTheme() overwrites these the moment it runs. */
-:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38);--accent-soft:rgba(255,255,255,.14)}
-/* The site nav reads six variables of its own (assets/lesson-nav.css), mapped
-   onto this page's palette so the nav re-themes with the lesson.
-   NOTE: --pill belongs to ns.css and is a RADIUS. Never map a colour onto it. */
-:root{--nv-bg:var(--panel);--nv-fg:var(--fg);--nv-dim:var(--dim);
-  --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
-
-/* ── Ground Control ────────────────────────────────────────────────────────
-   The teacher panel, and the reason this page exists. It is deliberately the
-   FIRST thing on the page and deliberately shut by default: the parent opens
-   it before the lesson, the student never needs to. */
-.ground{border:1px solid var(--boxline);border-radius:var(--r);margin:0 0 26px;
-  background:var(--boxfill);overflow:hidden}
-.ground summary{cursor:pointer;padding:15px 18px;font-weight:700;list-style:none;
-  display:flex;align-items:center;gap:10px}
-.ground summary::-webkit-details-marker{display:none}
-.ground summary::after{content:"▾";margin-left:auto;color:var(--dim);
-  transition:transform .18s}
-.ground[open] summary::after{transform:rotate(180deg)}
-.ground summary:hover{color:var(--a)}
-.ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--dim);font-weight:600}
-.ground .gbody{padding:0 18px 18px;border-top:1px solid var(--line)}
-.ground h4{margin:18px 0 5px;font-size:.79rem;letter-spacing:.09em;
-  text-transform:uppercase;color:var(--a)}
-.ground p{margin:0;line-height:1.6;max-width:68ch}
-.ground ul{margin:6px 0 0;padding-left:20px;line-height:1.65;max-width:68ch}
-.ground li{margin:0 0 7px}
-
-/* ── the rule ─────────────────────────────────────────────────────────────
-   A rule the student can point at. `.ruletest` is set apart on purpose: the
-   definition is what he is told, the test is what he can actually DO. */
-.rulebox{border:1px solid var(--a);border-radius:var(--r);padding:20px;margin:0 0 26px;
-  background:var(--accent-soft)}
-.rulebox .short{font-size:1.16rem;font-weight:700;margin:0 0 12px;line-height:1.45}
-.rulebox .long{margin:0;color:var(--fg);line-height:1.65;max-width:66ch}
-.ruletest{margin:16px 0 0;padding:14px 16px;border-radius:10px;
-  background:var(--panel);border:1px solid var(--boxline);line-height:1.6;max-width:66ch}
-.ruletest b:first-child{color:var(--a)}
-
-/* The reading player CSS is injected from lesson-template.html via
-   tools/voice-player.js. Do not restyle it here - one player, every lesson. */
-
-/* ── taught prose ── */
-.part{margin:0 0 26px}
-.part h3{margin:0 0 8px;font-size:1.08rem}
-.part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
-
-/* ── worked examples ── */
-.ex{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:16px 18px;margin:0 0 12px}
-.ex .sent{font-size:1.1rem;line-height:1.6;margin:0 0 8px}
-.ex .sent u{text-decoration:none;color:var(--a);font-weight:700;
-  border-bottom:2px solid var(--a);padding-bottom:1px}
-.ex .why{margin:0;color:var(--dim);font-size:.93rem;line-height:1.6;max-width:66ch}
-
-/* ── practice: click the word ── */
-.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
-  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
-.tab:hover{color:var(--fg)}
-.actions{display:flex;flex-wrap:nowrap;gap:8px;margin:0 0 18px}
-.tab.act{flex:1 1 0;min-width:0;color:var(--fg);border-color:var(--boxline);
-  background:var(--boxfill);font-weight:600;white-space:nowrap;padding:11px 10px;font-size:.88rem}
-.tab.act:hover{border-color:var(--a)}
-.tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
-/* ── the two worksheet parts ──────────────────────────────────────────────
-   A printed worksheet says "Part A" with its own directions underneath, and a
-   rule across the page so you can see where one job stops and the next starts.
-   That rule is the whole reason this reads as two tasks rather than a list. */
-.wspart{margin:22px 0 0;padding-top:18px;border-top:2px solid var(--line)}
-.wspart:first-of-type{border-top:0;padding-top:0}
-.ws-head{margin:0 0 4px;font-size:1.06rem;letter-spacing:.01em}
-.ws-note{color:var(--dim);font-size:.9rem;margin:0 0 14px;max-width:62ch}
-
-/* Part B: the sentence, then two buttons. The verb is already underlined,
-   because the question is not which word it is - that was Part A. */
-.kverb{text-decoration:underline;text-underline-offset:3px;font-weight:700}
-.kpick{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
-.kbtn{font:inherit;font-size:.92rem;font-weight:600;padding:9px 17px;border-radius:999px;
-  background:transparent;border:1px solid var(--line);color:inherit;cursor:pointer}
-.kbtn:hover:not(:disabled){border-color:var(--a)}
-.kbtn.ok{background:var(--a);border-color:var(--a);color:var(--on-accent,#0b160f)}
-.kbtn.wrong{border-color:#c9503f}
-.kbtn.reveal{border-color:var(--a);border-style:dashed}
-.kbtn:disabled{cursor:default}
-
-.prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:18px;margin:0 0 16px}
-.prob.solved{border-color:var(--free)}
-.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
-.probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
-.tag{font-size:.85rem;color:var(--dim)}
-.tag.done{color:var(--free);font-weight:700}
-.words{display:flex;flex-wrap:wrap;gap:6px}
-/* Every word is a target, so nothing about the layout hints at the answer.
-   A word that is not clickable would give it away. */
-.pw{background:transparent;border:1px solid transparent;border-radius:7px;
-  color:var(--fg);font:inherit;font-size:1.06rem;padding:6px 8px;cursor:pointer;
-  transition:background .12s,border-color .12s}
-.pw:hover{background:var(--boxfill);border-color:var(--boxline)}
-.pw:disabled{cursor:default}
-.pw.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
-.pw.wrong{border-color:#e5484d;color:#e5484d}
-.pw.reveal{border-color:var(--free);color:var(--free);font-weight:700}
-.nudge{margin-top:12px;font-size:.92rem;color:var(--dim);min-height:1.4em;line-height:1.6;max-width:66ch}
-.nudge.warn{color:#e5484d}
-.scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:16px;margin:22px 0 40px}
-.scorebar b{font-size:1.25rem}
-
-@media print{
-  .player,.themerow,.actions,.ns-back,.ground{display:none!important}
-  .prob{break-inside:avoid;page-break-inside:avoid}
-}
-/* ---------- player ---------- */
-.player{
-  /* Docked to the foot of the screen on every width. Paul, 2026-08-29:
-     "i said i want it to be on the bottom of the screen on the pc too and
-     follow the screen like on mobile."
-
-     ⚠️ TWO LEFTOVERS FROM THE STICKY VERSION BROKE THIS AND BOTH WERE SILENT:
-       margin:22px 0 34px  - a fixed box with bottom:0 AND a bottom margin
-                             floats 34px off the floor. It looked like the dock
-                             had failed rather than like a margin.
-       padding:14px 16px 12px - the shorthand came after padding-bottom and
-                             wiped the safe-area inset, so an iPhone home
-                             indicator would have sat over the controls.
-     Never leave a shorthand after the longhand it overwrites. */
-  position:fixed;left:0;right:0;bottom:0;top:auto;z-index:40;
-  margin:0;
-  max-height:80vh;overflow-y:auto;
-  display:flex;flex-direction:column;
-  background:var(--surface, var(--panel));
-  border:1px solid var(--rule, var(--line));
-  border-width:1px 0 0;
-  border-radius:0;
-  box-shadow:0 -6px 24px rgba(0,0,0,.30);
-  padding:8px 16px calc(10px + env(safe-area-inset-bottom, 0px));
-  font-family:"IBM Plex Sans",system-ui,sans-serif;
-}
-/* 🚨 THE THREE READING CONTROLS SIT IN THE MIDDLE. Paul, 2026-08-29. They
-   were left-aligned with a spacer shoving the speed selector to the far right,
-   which parked the primary action in the corner of a wide screen. Back, Play
-   and Forward are one centred cluster; speed sits centred underneath. */
-.btn{
-  font-family:inherit;font-size:14px;font-weight:500;
-  background:transparent;color:var(--ink, var(--fg));
-  border:1px solid var(--rule, var(--line));border-radius:3px;
-  padding:9px 12px;cursor:pointer;line-height:1;
-  display:inline-flex;align-items:center;gap:7px;
-  transition:background .15s,border-color .15s,color .15s;
-}
-.btn:hover{background:var(--surface-2, var(--boxfill));border-color:var(--ink-faint, var(--dim))}
-.btn:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
-/* One rule owns the play button. It is a FIXED rectangle - Paul, 2026-08-29:
-   "i want it just a small rectangle shape ... it doesnt need to stretch to
-   fit" - because a transport button that changes width when you press it never
-   feels solid. */
-.btn.primary{
-  background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a));
-  color:var(--on-accent, #0b160f);font-weight:600;
-  flex:0 0 auto;width:56px;min-width:56px;min-height:37px;
-  padding:0;justify-content:center;border-radius:6px;border-width:1.5px;
-}
-.btn.primary:hover{filter:brightness(1.06);background:var(--verdigris, var(--a))}
-.btn svg{display:block}
-.rate{
-  font-family:inherit;font-size:13px;font-weight:500;
-  color:var(--control-ink, var(--fg));
-  background-color:var(--control-bg, var(--boxfill));
-  border:1px solid var(--control-border, var(--boxline));border-radius:3px;
-  cursor:pointer;
-  /* native arrow sits hard against the right edge, which leaves a gap on a wide
-     select. Own arrow, tucked just after the text. */
-  -webkit-appearance:none;-moz-appearance:none;appearance:none;
-  padding:8px 27px 8px 10px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23DCEADF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;
-  background-position:right 9px center;
-  background-size:11px 7px;
-}
-.rate::-ms-expand{display:none}
-.rate option{background:var(--control-bg, var(--boxfill));color:var(--control-ink, var(--fg))}
-.rate:hover{border-color:var(--verdigris, var(--a))}
-.rate:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
-
-.scrub{
-  margin-top:10px;display:flex;gap:2px;height:16px;
-  align-items:stretch;cursor:pointer;
-  touch-action:none;      /* the bar scrubs; it must not also scroll the page */
-}
-.tick{flex:1;background:var(--surface-2, var(--boxfill));border-radius:1px;
-  transition:background .14s ease;pointer-events:auto}
-.tick.done{background:var(--tick-done, var(--accent-soft))}
-.tick.now{background:var(--tick-now, var(--a))}
-@media (hover:hover){ .tick:hover{background:var(--verdigris-soft, var(--accent-soft))} }
-/* while scrubbing, kill the transitions entirely: a drag should track the
-   finger exactly, not chase it 140ms behind */
-.scrub.dragging .tick{transition:none}
-.pcontrols{
-  display:flex;align-items:center;justify-content:center;
-  gap:10px;flex-wrap:wrap;
-}
-.pmeta{
-  order:2;display:flex;align-items:center;justify-content:center;
-  gap:14px;flex-wrap:wrap;text-align:center;
-  font-size:12px;color:var(--ink-faint, var(--dim));margin-top:7px;
-  font-variant-numeric:tabular-nums;letter-spacing:.02em;
-}
-.voicerow{
-  display:flex;align-items:center;gap:9px;margin-top:9px;
-  padding-top:9px;border-top:1px solid var(--rule, var(--line));
-}
-.voicerow.show{display:flex}
-.voicerow label{
-  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ink-faint, var(--dim));
-}
-.voicerow select{flex:0 1 auto;min-width:0;max-width:100%;font-size:13px}
-
-/* studio voice key */
-.linkbtn{
-  margin-left:auto;background:none;border:0;cursor:pointer;padding:4px 2px;
-  font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.04em;
-  color:var(--verdigris, var(--a));text-decoration:underline;text-underline-offset:3px;
-}
-.linkbtn:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
-.keyrow{display:none;margin-top:9px;padding-top:9px;border-top:1px solid var(--rule, var(--line))}
-.keyrow.show{display:block}
-.keyrow label{
-  display:block;font-size:11px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--ink-faint, var(--dim));margin-bottom:7px;
-}
-.keyfield{display:flex;gap:7px;flex-wrap:wrap}
-.keyfield input{
-  flex:1 1 180px;min-width:0;font-family:inherit;font-size:13px;
-  color:var(--control-ink, var(--fg));background:var(--control-bg, var(--boxfill));
-  border:1px solid var(--control-border, var(--boxline));border-radius:3px;padding:9px 10px;
-}
-.keyfield input:focus-visible{outline:2px solid var(--verdigris, var(--a));outline-offset:2px}
-.keynote{font-size:12px;line-height:1.5;color:var(--ink-soft, var(--dim));margin:8px 0 0}
-.keynote.bad{color:var(--porphyry)}
-.keynote.good{color:var(--verdigris-ink, var(--a))}
-
-/* colour picker */
-.themerow{
-  display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:9px;
-  padding-top:9px;border-top:1px solid var(--rule, var(--line));
-}
-.themerow .lbl{
-  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ink-faint, var(--dim));
-}
-.swatches{display:flex;gap:7px}
-/* `background-clip:padding-box` with a TRANSPARENT border meant the gradient
-   stopped short and a 2px ring of the dark page showed through every swatch.
-   Paul, 2026-08-26: "can you make the theme colors not have a black spare
-   outline ... compare it to the math one". The maths swatches never had it,
-   because the gradient runs to the edge and the border is drawn on top. Same
-   here now: the ring only appears on the one that is selected. */
-.sw{
-  width:26px;height:26px;border-radius:50%;cursor:pointer;padding:0;
-  border:2px solid var(--rule, var(--line));outline-offset:2px;
-  transition:transform .15s,border-color .15s;
-}
-.sw:hover{transform:scale(1.12)}
-.sw[aria-pressed="true"]{border-color:var(--verdigris, var(--a));transform:scale(1.12)}
-.sw:focus-visible{outline:2px solid var(--verdigris, var(--a))}
-.nospeech{
-  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;
-  color:var(--porphyry);margin-top:10px;display:none;line-height:1.5;
-}
-
-/* ---------- story ---------- */
-.part{margin:0 0 30px}
-h2{
-  font-family:Cinzel,Georgia,serif;font-weight:500;
-  font-size:13px;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--ink-faint, var(--dim));
-  margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--rule, var(--line));
-}
-/* 🚨 THE PARAGRAPH NEEDS THE SAME SCROLL ALLOWANCE AS A SENTENCE.
-   "Find it in the story" reveals the .para now, not the story top, and without
-   this the paragraph's first lines land UNDER the sticky nav - so the student is
-   dropped into the middle of the very paragraph he was sent to read. Caught on
-   the live page 2026-09-04, testing Question 10: the view opened on "command.
-   The exclamation point simply shows urgency", with the three sentences before
-   it hidden behind the header. */
-.para{margin:0;scroll-margin-top:var(--stickytop,180px)}
-
-/* ---------- the explainer ----------
-   Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
-   to you ... use a visual way of explaining along with the text so the youth can
-   see how these sentences are changing and what they mean. just like how you
-   explained with the math problem." And what it is FOR: "basically make this a
-   way for attention issue students to still stay engaged."
-   That purpose decides the design. One thing on screen at a time, the page holds
-   still while it is open, and the meaning is carried by the drawing rather than
-   by another paragraph of text to read.
-   🚨 --stickytop IS MEASURED, NOT GUESSED. Two things are pinned at the top now,
-   the nav and this, so anything scrolled to has to clear both. It used to be a
-   hardcoded 180px for the nav alone. */
-:root{--stickytop:180px}
-/* 🚨 IT DOES NOT PIN. Paul, 2026-09-04: "i like how you snapped it to the top
-   but it doesnt need to snap because it gets in the way later when answering
-   question even when you hide it the tab is still there."
-   A pinned bar is permanent furniture, and this panel is only wanted while the
-   reading is happening. Sticky meant the collapsed tab still sat over the
-   questions for the whole second half of the lesson, taking height off every
-   screen for a control nobody was going to press again. In normal flow it
-   scrolls away with the story it belongs to, which is the correct behaviour and
-   also less code: no z-index, no measured offset, nothing to keep in step. */
-.dbox{
-  max-width:760px;margin:0 auto 18px;
-  background:var(--surface-2, var(--boxfill));
-  border:1px solid var(--rule, var(--line));border-radius:10px;
-  padding:14px 16px 10px;
-  scroll-margin-top:var(--stickytop,180px);
-}
-/* 🚨 min-height on the CONTENT, not the box, so collapsing actually collapses.
-   While open the frame keeps its height through a blank stretch - a box that
-   grew and shrank every few sentences would jog the whole page under the reader,
-   which is the exact wobble the word highlight was kept plain to avoid. */
-/* The line being read, small and quiet above the drawing. It is a caption on the
-   panel, not a second place to read the lesson from - the story below is still
-   where the reading happens. */
-/* 🚨 A FIXED HEIGHT, BECAUSE THIS BAR MUST NOT RESIZE. Paul, 2026-09-05: "for the
-   visual panel it is resizing keep the top bar the same lenth o it doesnt expand
-   or contract. if the text is too long you could make it slightly smaller to
-   fit."
-   The sentence changes on every line of the lesson, and sentences are not the
-   same length, so a bar that grows to fit made the whole panel breathe in and
-   out several times a paragraph - the exact jitter this panel exists to stop.
-   Three lines at the base size, held open whatever is in it, and fitSentence()
-   below shrinks the type for the few sentences that need more. */
-.dbox-sent{
-  height:41px;                       /* 2 lines at 13.5px / 1.5 */
-  margin:0 auto 10px;padding-bottom:10px;box-sizing:content-box;
-  border-bottom:1px solid var(--rule, var(--line));
-  font-size:13.5px;line-height:1.5;text-align:center;
-  color:var(--ink-soft, var(--dim));
-  max-width:60ch;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-}
-.dbox.is-shut .dbox-sent{display:none}
-.dbox.is-wide .dbox-in{min-height:0}
-.dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
-.dbox-kind:empty{display:none}
-.dbox-kind{
-  margin:0 0 10px;text-align:center;
-  font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
-  color:var(--verdigris, var(--accent));
-}
-/* the sentence, pulled apart into its pieces */
-.dbox-line{
-  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;
-  gap:0 8px;margin:0;font-size:21px;line-height:1.4;color:var(--ink);
-}
-/* 🚨 The understood subject. An imperative sentence "leaves out the subject",
-   and that absence IS the lesson - so it is drawn, dimmed and bracketed. There
-   is no other way to point at a word that is not there. */
-.dbox-ghost{
-  color:var(--ink-faint, var(--dim));font-style:italic;
-  border:1px dashed var(--ink-faint, var(--dim));border-radius:5px;padding:0 7px;
-}
-.dbox-mark{
-  color:var(--on-accent, #fff);background:var(--verdigris, var(--accent));
-  border-radius:5px;padding:0 8px;font-weight:700;display:inline-block;
-}
-/* 🚨 A VERSE IS NOT A DIAGRAM. Paul, 2026-09-04: "bible verses should be
-   included in the panel." It gets the same frame and the same timing, but none
-   of the grammar furniture: no punctuation chip, no dashed understood subject.
-   Setting a verse in the diagram treatment would put a highlighter on the full
-   stop of Proverbs 25:11, which is not what anyone is being asked to look at. */
-.dbox-line.is-verse{
-  font-style:italic;font-size:19px;line-height:1.5;
-  max-width:46ch;margin-inline:auto;
-}
-/* the drawing, above the line it belongs to. currentColor means it takes the
-   lesson palette, so there is no second copy for the other theme. */
-.dbox-art{display:flex;justify-content:center;margin:0 0 10px;color:var(--verdigris, var(--accent))}
-/* a photo or illustration, as opposed to an inline icon */
-.dbox.is-wide{max-width:860px;width:calc(100vw - 44px);margin-left:50%;transform:translateX(-50%)}
-.dbox-art img{display:block;width:100%;height:auto;border-radius:8px;cursor:zoom-in}
-.dbox-art.pic{margin:0 0 10px}
-/* 🚨 THE SLOT IS 16:9 AND IS ALWAYS THERE. Paul, 2026-09-05: "it should just stay
-   consistant." On a picture lesson the art area keeps its shape whether this
-   frame has an image, a drawing or nothing at all, so the panel is one height
-   from the first sentence to the last. `contain` is what makes the reservation
-   safe: an image that is not exactly 16:9 letterboxes inside the slot instead of
-   being stretched to fill it, which is the distortion Paul caught earlier today. */
-.dbox.is-wide .dbox-art{width:100%;aspect-ratio:16/9;align-items:center;margin:0 0 10px}
-.dbox.is-wide .dbox-art img{height:100%;object-fit:contain}
-/* The two reserved text rows. `kind` is one line whether or not this frame names
-   one; the example and its note share a fixed block below it. Together with the
-   16:9 slot above, that is every part of the panel pinned to a height, which is
-   what makes it the same size from the first sentence to the last. */
-.dbox.is-wide .dbox-kind{display:block;height:21px;overflow:hidden}
-.dbox.is-wide .dbox-words{
-  height:74px;overflow:hidden;
-  display:flex;flex-direction:column;justify-content:center;
-}
-.dbox.is-wide .dbox-words .dbox-note{margin:6px 0 0}
-@media (max-height:820px){ .dbox.is-wide{max-width:660px} }
-@media (max-height:620px){ .dbox.is-wide{max-width:520px} }
-/* full screen on tap, because the detail in these does not survive a phone */
-.picfull{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);
-  display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
-.picfull img{max-width:100%;max-height:100%;border-radius:6px}
-.picfull[hidden]{display:none}
-.dbox-art svg{max-width:100%;height:auto}
-@media (max-width:560px){ .dbox-art svg{width:104px;height:auto} }
-
-/* the staged reveal - one word at a time, left to right */
-.dbox-pop{
-  display:inline-block;opacity:0;
-  animation:dboxpop .34s ease-out forwards;
-}
-.dbox-arrow{color:var(--ink-faint, var(--dim));margin:0 2px}
-@keyframes dboxpop{
-  from{opacity:0;transform:translateY(4px)}
-  to{opacity:1;transform:none}
-}
-@media (prefers-reduced-motion:reduce){
-  .dbox-pop{animation:none;opacity:1}
-}
-/* the one-line shout, for a frame that is a statement rather than a diagram */
-.dbox-line.is-shout{font-size:26px;font-weight:600;letter-spacing:.01em}
-.dbox-note{
-  margin:10px 0 0;text-align:center;font-size:14px;line-height:1.5;
-  color:var(--ink-soft, var(--dim));
-}
-/* 🚨 THE CONTROL NAMES THE PANEL. Paul, 2026-09-05: "when collapsed it says open
-   visual panel put a line seperator and it says close visual panel."
-   A separate label beside the button was the first attempt and it was redundant
-   the moment the button carried the name itself. One item, so it is genuinely
-   centred rather than a centred GROUP - two things in a centred row is the trap
-   where neither of them lands on the middle. */
-.dbox-foot{
-  display:flex;justify-content:center;
-  margin:10px 0 0;padding-top:8px;
-  border-top:1px solid var(--rule, var(--line));
-}
-.dbox-x{
-  font:inherit;font-size:12px;
-  letter-spacing:.08em;text-transform:uppercase;
-  background:none;border:0;cursor:pointer;padding:4px 10px;border-radius:5px;
-  color:var(--ink-faint, var(--dim));
-}
-.dbox-x:hover{color:var(--ink)}
-.dbox-x:focus-visible{outline:2px solid var(--verdigris, var(--accent));outline-offset:2px}
-/* blank keeps the frame and drops the contents; shut drops the frame too */
-.dbox.is-blank .dbox-in{visibility:hidden}
-.dbox.is-shut{padding:4px 16px}
-.dbox.is-shut .dbox-in{display:none}
-/* collapsed, the footer IS the panel, so drop the gap it had above the content */
-.dbox.is-shut .dbox-foot{margin:0;padding-top:0;border-top:0}
-
-
-/* ---------- the worked problems ----------
-   🚨 THE ESTIMATE COMES FIRST AND THE PAGE ENFORCES IT.
-   Paul, 2026-09-05: "another problem we have today is the fact we can ask Google
-   how to do these things instead of us solving them on our own which is the
-   point of this lesson."
-   The book's own answer to that is on page 6: before it divides 810 by 5 it
-   rounds and brackets the answer between 100 and 200. Google hands you 162; it
-   does not hand you "I decided beforehand this had to land between 100 and 200",
-   and that bracket is the only thing that tells a student when an answer is
-   wrong. So Solve stays SHUT until an estimate is in, and the order of the four
-   steps is the lesson rather than a suggestion.
-   ⚠️ Nothing here prints a number the student is supposed to work out. Every
-   value he is asked for is an input. A printed answer turns the whole thing back
-   into a worked example he watches. */
-.work{border:1px solid var(--rule);border-radius:10px;margin:22px 0 0;overflow:hidden}
-.work-h{
-  margin:0;padding:12px 16px;background:var(--surface-2);
-  border-bottom:1px solid var(--rule);
-  font-family:"IBM Plex Sans",system-ui,sans-serif;
-  font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
-  color:var(--verdigris);
-}
-.work-ask{margin:0;padding:14px 16px 0;font-size:17px;line-height:1.55;color:var(--ink)}
-.work-given{margin:10px 16px 0;padding:0;list-style:none;display:grid;gap:4px}
-.work-given li{
-  font-size:14.5px;color:var(--ink-soft);
-  display:flex;gap:8px;flex-wrap:wrap;
-}
-.work-given b{color:var(--ink);font-weight:600}
-/* one row per step, dimmed and inert until the step before it is done */
-.wstep{padding:14px 16px;border-top:1px solid var(--rule)}
-.wstep.is-locked{opacity:.42}
-.wstep-h{
-  margin:0 0 6px;font-family:"IBM Plex Sans",system-ui,sans-serif;
-  font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
-  color:var(--ink-faint);
-}
-.wstep.is-open .wstep-h{color:var(--verdigris)}
-.wstep p{margin:0 0 8px;font-size:15px;line-height:1.55;color:var(--ink-soft)}
-.wrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:17px;color:var(--ink)}
-.wbox{
-  font:inherit;font-size:17px;width:7.5ch;text-align:center;
-  padding:7px 6px;border-radius:6px;
-  border:1px solid var(--rule);background:var(--surface);color:var(--ink);
-  /* the spinner reserves space on the right and pushes the digits off centre */
-  appearance:textfield;-moz-appearance:textfield;
-}
-.wbox::-webkit-outer-spin-button,.wbox::-webkit-inner-spin-button{appearance:none;margin:0}
-.wbox:focus-visible{outline:2px solid var(--verdigris);outline-offset:1px}
-.wbox.is-right{border-color:#1c7a4a;background:rgba(28,122,74,.12)}
-.wbox.is-wrong{border-color:#a3312b;background:rgba(163,49,43,.12)}
-.wbox:disabled{cursor:not-allowed}
-.wnote{margin:8px 0 0;font-size:14px;line-height:1.5;color:var(--ink-soft);display:none}
-.wnote.show{display:block}
-.wnote.good{color:#1c7a4a}
-.wunit{color:var(--ink-soft);font-size:15px}
-:root:not([data-theme="light"]) .wbox.is-right{border-color:#3f9d6d}
-:root:not([data-theme="light"]) .wnote.good{color:#7fc9a1}
-:root[data-theme="dark"] .wbox.is-right{border-color:#3f9d6d}
-:root[data-theme="dark"] .wnote.good{color:#7fc9a1}
-@media (max-width:560px){
-  .work-ask{font-size:16px}
-  .wrow{font-size:16px}
-  .wbox{font-size:16px;width:6.5ch}
-}
-
-/* ---------- the compare box ----------
-   A silent, visual side-by-side for the place in a lesson where two things look
-   identical and are not. Paul asked for it on Kinds of Sentences: "it needs more
-   clarification why a certain sentence is imperative over exclamatory ... i
-   thought we were going to possibly add a visual box."
-   🚨 IT IS NOT PART OF THE STORY. Nothing here enters SENT, so it is never read
-   aloud, never highlighted, never counted by findsAt, and never re-baked. It is
-   something to LOOK BACK AT while answering, which is the one thing a spoken
-   paragraph cannot be. Adding it to the story instead would have renumbered
-   every find index in the lesson for no gain. */
-.cbox{
-  border:1px solid var(--rule, var(--line));border-radius:8px;
-  background:var(--surface-2, var(--boxfill));
-  padding:16px 18px;margin:18px 0 0;
-}
-.cbox-h{
-  font-family:Cinzel,Georgia,serif;font-weight:500;
-  font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ink-faint, var(--dim));margin:0;text-align:center;
-}
-.cbox-lead{
-  margin:6px 0 0;text-align:center;font-size:15px;line-height:1.5;
-  color:var(--ink-soft, var(--dim));
-}
-/* auto-fit so two columns become two stacked rows on a phone without a second
-   breakpoint to keep in step with the rest of the page */
-.cbox-cols{
-  display:grid;gap:12px;margin:14px 0 0;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-}
-.cbox-col{
-  border:1px solid var(--rule, var(--line));border-radius:6px;
-  background:var(--surface, var(--bg));padding:12px 14px;
-}
-.cbox-label{
-  font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
-  color:var(--verdigris, var(--accent));margin:0 0 6px;
-}
-/* the quoted sentence is the thing being compared, so it carries the weight */
-.cbox-s{margin:0;font-size:17px;line-height:1.45;color:var(--ink)}
-.cbox-why{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--ink-soft, var(--dim))}
-/* the test is the takeaway and sits apart from the two columns it resolves */
-.cbox-test{
-  margin:14px 0 0;padding-top:12px;
-  border-top:1px solid var(--rule, var(--line));
-  font-size:15px;line-height:1.55;color:var(--ink);
-}
-.sent{
-  border-radius:3px;padding:1px 0;
-  transition:background .2s;
-  scroll-margin-top:var(--stickytop,180px);
-}
-.sent.reading{background:var(--band)}
-/* ⚠️ NO BOLD, NO RING, NO SIZE CHANGE. Paul, 2026-08-29: "you are bolding or
-   making the words on NexVoice bigger i dont want them to do that." Weight
-   changes reflow the line as the highlight moves, which is exactly the wobble
-   a struggling reader does not need. Colour only. */
-.w.on{background:var(--word);border-radius:3px}
-.hunting .sent{
-  cursor:pointer;
-  box-shadow:inset 0 -1px 0 var(--ink-faint, var(--dim));
-}
-.hunting .sent:hover{background:var(--verdigris-soft, var(--accent-soft));box-shadow:inset 0 -1px 0 var(--verdigris, var(--a))}
-.sent.hit{background:var(--verdigris-soft, var(--accent-soft));box-shadow:inset 0 -2px 0 var(--verdigris, var(--a))}
-.sent.miss{background:var(--porphyry-soft);box-shadow:inset 0 -2px 0 var(--porphyry)}
-.sent.shown{background:var(--band);box-shadow:inset 0 -2px 0 var(--brass)}
-
-
-/* ── FORM FIELDS ───────────────────────────────────────────────────────────
-   🚨 A FIELD IS NOT A CONTROL, AND A FIELD IS PAPER. Paul, 2026-08-29: "the
-   text boxes need to be white with black lettering ... i would do outlines in
-   the theme color not the boxes themselves. you keep being bad at this across
-   all my apps."
-
-   The bug was structural and it was mine repeatedly: fields were painted with
-   the palette CONTROL tokens - ctlBg / ctlInk - which EVERY light palette
-   defines as a dark fill with near-white text, because those tokens were
-   written for solid buttons. So on a light page every select and input
-   rendered as a dark block. In graphite light that is ctlBg #333F55 sitting on
-   a #F5F5F7 page.
-
-   A field is white in BOTH modes. Making it a "lifted neutral" in dark was the
-   same instinct that caused the original bug - it dissolves the field back
-   into the panel it sits on. The theme colour lives in the OUTLINE.
-
-   ⚠️ The old dropdown arrow had a hardcoded pale stroke (#DCEADF) which was
-   invisible the moment a field went white. It is dark now, because the field
-   it sits on is always white. */
-select.rate{padding-top:9px;padding-bottom:9px}
-select.rate, .keyfield input{
-  font-family:inherit;font-size:13px;font-weight:500;
-  background-color:#FFFFFF;color:#14161A;
-  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;
-  padding:10px 12px;
-  transition:border-color .15s ease, box-shadow .15s ease;
-}
-select.rate{
-  -webkit-appearance:none;-moz-appearance:none;appearance:none;
-  cursor:pointer;max-width:100%;padding-right:30px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 12 8%27%3E%3Cpath d=%27M1 1.5 6 6.5 11 1.5%27 fill=%27none%27 stroke=%27%2314161A%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;background-size:11px 7px;
-}
-select.rate::-ms-expand{display:none}
-select.rate option{background:#FFFFFF;color:#14161A}
-select.rate:hover, .keyfield input:hover,
-select.rate:focus, .keyfield input:focus,
-select.rate:focus-visible, .keyfield input:focus-visible{
-  outline:none;border-color:var(--verdigris, var(--a));box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft));
-}
-.keyfield input{flex:1 1 200px;min-width:0;max-width:320px}
-.keyfield input::placeholder{color:#7A7D85}
-
-/* The docked bar covers the foot of the page on EVERY width now, so the
-   padding is not a phone special case. Measured by playerDock(). */
-body{padding-bottom:var(--player-pad, 150px)}
-
-/* ── THE CONTROL CLUSTER, shared ──────────────────────────────────────────
-   These live in the shared block rather than the history-only player CSS,
-   because maths imports the fields but not the player chrome - it keeps its
-   own stepping engine. Without them the maths cluster stayed left-aligned
-   while every other lesson was centred, which is the kind of small
-   inconsistency that makes a site feel unfinished. */
-.pcontrols{order:0;margin-top:0;position:relative;min-height:44px}
-/* pinned to the edges so the transport keeps the centre line to itself */
-.pcontrols .playerhide{position:absolute;right:2px;top:50%;transform:translateY(-50%);margin:0}
-.pcontrols .followchip{position:absolute;left:2px;top:50%;transform:translateY(-50%)}
-.scrub{order:1}
-.pmeta{order:2}
-.nospeech{order:3}
-.keyrow{order:4}
-.psettings{order:5}   /* last row: the one anchored to the bottom edge */
-.phead .playerhide{margin-left:auto}
-/* a switch has to LOOK like a switch: a real track, a real knob, at a size you
-   can see. It is unlabelled, not invisible. */
-@media (max-width: 620px){ .phint{display:none} }
-
-.psettings{order:5}
-
-
-/* 🚨 THE PLAY BUTTON DOES NOT STRETCH. Paul, 2026-08-29: "you made the button
-   for play and pause strech but i want it just a small retwngle shape like the
-   same size as on the pc right now. it doesnt need to strech to fit."
-   It is an icon in a fixed rectangle. A transport button that changes width
-   with the viewport stops being a landmark you can hit without looking. */
-
-/* ── HIDING THE BAR ────────────────────────────────────────────────────────
-   Paul, 2026-08-29: "maybe an option to hide it too."
-
-   Even a compact bar is a bar, and a student who just wants to READ a page
-   should be able to put it away. Hidden, it collapses to a small tab that
-   stays reachable - never gone, because a control you cannot get back is worse
-   than one taking up room. The choice is remembered per device, so a reader
-   who prefers the page clean is not asked again on every lesson.
-
-   It keeps PLAYING while hidden on purpose: a student may want to listen with
-   the whole screen given over to the words. */
-.playerhide{
-  display:inline-flex;align-items:center;
-  border:0;background:none;box-shadow:none;
-  padding:6px 2px;margin-right:10px;
-  color:var(--ink, var(--fg));cursor:pointer;
-}
-.playerhide input{position:absolute;opacity:0;width:1px;height:1px}
-.playerhide .track{
-  width:40px;height:23px;border-radius:999px;flex:0 0 auto;
-  background:var(--surface-2, var(--boxfill));
-  border:1px solid var(--rule, var(--line));
-  position:relative;transition:background .16s ease,border-color .16s ease;
-}
-.playerhide .knob{
-  position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;
-  background:var(--ink, var(--fg));transition:transform .16s ease;
-}
-.playerhide input:checked + .track{background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a))}
-.playerhide input:checked + .track .knob{transform:translateX(17px);background:var(--on-accent, #0b160f)}
-.playerhide input:focus-visible + .track{box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
-@media (prefers-reduced-motion: reduce){ .playerhide .track, .playerhide .knob{transition:none} }
-
-body.player-hidden .pcontrols,
-body.player-hidden .psettings,
-body.player-hidden .keyrow,
-body.player-hidden .nospeech{display:none}
-/* 🚨 the switch row stays when hidden, or the player buries its own
-   off-switch and hiding becomes a one-way door. */
-body.player-hidden .pmeta{display:none}
-body.player-hidden .phead{padding:2px 0}
-body.player-hidden .followchip{display:none}
-/* what survives: the step bar. Still live, still tappable, still moving. */
-body.player-hidden .player{padding-top:4px}
-body.player-hidden .phead{padding:0 0 4px}
-body.player-hidden .scrub{margin:0}
-@media (max-width: 620px){ .player{transition:transform .22s ease} }
-@media (prefers-reduced-motion: reduce){ .player, .playerhide{transition:none} }
-
-/* The resume chip. Fixed above the thumb on a phone, out of the way of the
-   text, and only present while following is off and something is playing. */
-.followchip{
-  opacity:0;pointer-events:none;visibility:hidden;
-  border:1px solid var(--verdigris, var(--a));border-radius:999px;
-  background:transparent;color:var(--verdigris, var(--a));
-  font-family:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;
-  cursor:pointer;white-space:nowrap;
-  transition:opacity .18s ease;
-}
-.followchip.show{opacity:1;pointer-events:auto;visibility:visible}
-.followchip:hover{background:var(--verdigris-soft, var(--accent-soft))}
-@media (prefers-reduced-motion: reduce){ .followchip{transition:none} }
-
-/* 🚨 WHY THE COLOURS WERE NOT CENTRED ON A DESKTOP. Paul, 2026-08-29: "you
-   also didnt center the theme colors on the pc." Correct, and centring the row
-   was never going to fix it: .linkbtn carries margin-left:auto, so the key
-   link was pinned to the far right and stretched the row across the whole
-   player. The swatches then sat wherever was left. The link has its own
-   centred row now, and the auto margin is off inside the player. */
-.player .linkbtn{margin-left:0}
-
-
-/* The disclosure arrow. Paul: "the dropdown arrow to add your own api is
-   really small. we need a way that is has an extension option like the text
-   that say Use my personal API part needs that arrow next to it." So the arrow
-   belongs to the LABEL, is the same size as the label, and turns over when the
-   panel opens - the whole thing reads as one control instead of a link with a
-   speck beside it. */
-/* 🚨 NO BOX. Paul, 2026-08-29: "i said just make the arrow bigger but you drew
-   an entire oval box around it and separated api and color themes. that not
-   what i wanted. i wanted it compact. i just wanted you to make the arrow
-   bigger."
-
-   He asked for one thing and I redesigned the panel around it. The pills and
-   the extra row are gone; the API link sits back beside the colours where it
-   always was. The ONLY change that stays is the arrow: an 18px SVG instead of
-   the ▾ character, because a glyph draws at whatever fraction of its em box
-   the font chooses, which is why raising font-size barely moved it. */
-.keydisclose{display:inline-flex;align-items:center;gap:6px}
-
-/* ── THE VOICE DROPDOWN ────────────────────────────────────────────────────
-   Ours, not the platform's, so a phone and a PC show the same control. The
-   trigger matches the other fields - white, theme outline - and the list opens
-   UPWARD, because the player is docked to the bottom of the screen and a menu
-   opening downward would go off the edge. */
-.vsel{position:relative;display:inline-block;min-width:200px;max-width:100%}
-.vsel-trigger{
-  width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  font:inherit;font-size:13px;font-weight:500;
-  background:#FFFFFF;color:#14161A;
-  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;
-  padding:10px 12px;cursor:pointer;text-align:left;
-}
-.vsel-trigger:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
-.vsel-trigger .chev{flex:0 0 auto;transition:transform .18s ease}
-.vsel-trigger[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.vsel-list{
-  position:absolute;left:0;right:0;bottom:calc(100% + 6px);z-index:70;
-  margin:0;padding:5px;list-style:none;
-  background:#FFFFFF;color:#14161A;
-  border:1.5px solid var(--verdigris, var(--a));border-radius:8px;
-  box-shadow:0 -8px 24px rgba(0,0,0,.28);
-  max-height:46vh;overflow-y:auto;
-}
-.vsel-list li{
-  padding:11px 12px;border-radius:5px;cursor:pointer;font-size:13.5px;
-}
-.vsel-list li[aria-selected="true"]{background:var(--verdigris, var(--a));color:var(--on-accent, #0b160f);font-weight:700}
-.vsel-list li[aria-disabled="true"]{opacity:.45;cursor:default}
-@media (hover:hover){ .vsel-list li:not([aria-disabled="true"]):hover{background:#eceff3} }
-.vsel-list li[aria-selected="true"]:hover{background:var(--verdigris, var(--a))}
-
-.keytogglerow{display:flex;justify-content:center;padding:2px 0}
-.psettings > summary{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  cursor:pointer;list-style:none;padding:6px 0 2px;
-  font-size:12px;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--ink-faint, var(--dim));
-}
-.psettings > summary::-webkit-details-marker{display:none}
-.psettings > summary::marker{content:""}
-/* The SVG points down. Closed is rotated up; open returns it to down. */
-.chev{flex:0 0 auto;transform:rotate(180deg);transition:transform .18s ease}
-.keydisclose[aria-expanded="true"] .chev,
-.psettings[open] > summary .chev{transform:rotate(0deg)}
-@media (prefers-reduced-motion: reduce){ .chev{transition:none} }
-.psettings{display:flex;flex-direction:column-reverse}
-.psettings[hidden]{display:none}
-
-/* ── VOICE AND COLOURS, CENTRED ────────────────────────────────────────────
-   Paul, 2026-08-29: "i want that voice selector centered in the middle along
-   with the theme colors for both pc and mobile."
-
-   These rows were laid out as label-left / control-right, which is a form
-   convention and wrong here: everything else in this player is a centred
-   cluster, so two left-aligned rows underneath read as a different component
-   bolted on. One axis for the whole player. */
-.voicerow, .voicerow.show{justify-content:center;flex-wrap:wrap}
-#speedrow, .voicerow, .themerow{
-  flex-direction:column;align-items:center;justify-content:center;gap:6px;
-}
-#speedrow label, .voicerow label, .themerow .lbl{
-  text-align:center;margin:0;
-}
-/* the API link is its own centred line under the swatches */
-.themerow .keydisclose{margin-top:2px}
-.themerow{justify-content:center;flex-wrap:wrap}
-
-/* ── THE PLAYER ON A PHONE ─────────────────────────────────────────────────
-   🚨 It was taking 327px of a 720px screen - 45% of the phone gone before a
-   word of the lesson. Measured, not guessed.
-
-   Nothing is removed, because a student on a phone needs the voice picker
-   MORE than one on a PC, not less. What changes is that voice and colours stop
-   being permanently open: they fold behind the settings summary, so the phone
-   gets the controls and the step bar, and the rest is one tap away. */
-/* ── THE PHONE PLAYER IS DOCKED TO THE BOTTOM ──────────────────────────────
-   Paul, 2026-08-29: "i wonder if we can just lock it to the bottom on mobile
-   and make it more compact."
-
-   Right. A player pinned to the TOP of a phone competes with the thing it is
-   reading: it takes the best part of the screen and pushes the text down. At
-   the bottom it is a transport bar - the shape every music and podcast app
-   settled on - it sits under the thumb instead of under the eyes, and the
-   whole top of the screen goes back to the lesson.
-
-   ⚠️ Three things have to move with it:
-     - the body needs padding, or the bar covers the last paragraph
-     - the settings disclosure opens UPWARD, or it would open off-screen
-     - nsInView has to know the screen is short from the BOTTOM now, not the
-       top, or the reader will happily scroll a sentence to a place the bar is
-       covering
-   The safe-area inset keeps it clear of the home indicator on an iPhone. */
-
-
-/* ── BACK AND FORWARD ──────────────────────────────────────────────────────
-   Paul, 2026-08-29: "draw a better outline around the back and forward
-   button." They carried the generic hairline in --rule, a DIVIDER colour, so
-   the arrows read as faint marks beside a solid Play. Back is the most-used
-   control here - a student replays a sentence far more often than he starts
-   one - so it must not be the faintest thing on the page. */
-#back, #fwd{
-  border:1.5px solid var(--verdigris, var(--a));border-radius:6px;background:transparent;
-  color:var(--ink, var(--fg));min-height:37px;min-width:40px;padding:0 10px;justify-content:center;
-}
-#back:hover, #fwd:hover{background:var(--verdigris-soft, var(--accent-soft));border-color:var(--verdigris, var(--a));color:var(--ink, var(--fg))}
-#back:focus-visible, #fwd:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
-#back:disabled, #fwd:disabled{opacity:.4;cursor:default}
-#back:disabled:hover, #fwd:disabled:hover{background:transparent}
-
-/* Save sits ON the field row, so it matches the field height exactly. Save is
-   filled because it is what you almost always want; Clear stays an outline. */
-.keyfield .btn{
-  padding:10px 16px;border-radius:6px;border:1.5px solid var(--verdigris, var(--a));
-  font-size:13px;font-weight:600;line-height:1.2;min-height:41px;
-  background:transparent;color:var(--ink, var(--fg));
-}
-.keyfield .btn:hover{background:var(--verdigris-soft, var(--accent-soft))}
-.keyfield .btn:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
-#keySave{background:var(--verdigris, var(--a));border-color:var(--verdigris, var(--a));color:var(--on-accent, #0b160f);font-weight:700}
-#keySave:hover{filter:brightness(1.08);background:var(--verdigris, var(--a))}
-
-.keyrow.show{
-  display:block;margin:12px auto 0;padding:14px;
-  max-width:520px;
-  background:var(--verdigris-soft, var(--accent-soft));border:1px solid var(--verdigris, var(--a));border-radius:8px;
-}
-.keynote a{color:var(--verdigris-ink, var(--a, currentColor));text-decoration:underline;text-underline-offset:2px}
-.keydisc{
-  display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.55;
-  color:var(--ink, var(--fg));margin:0 0 11px;font-weight:600;
-}
-
-/* ── ADDED, not asked for ──────────────────────────────────────────────────
-   The player is sticky at the top. Without this, jumping to a sentence scrolls
-   it to y=0 and parks it UNDER the player, so the line being read is the one
-   line you cannot see. */
-.s{scroll-margin-top:16px;scroll-margin-bottom:150px}
-@media (prefers-reduced-motion: reduce){
-  *{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
-}
-
-
-@media (max-width: 620px){
-  .player{padding-left:10px;padding-right:10px}
-  /* ⚠️ Measured, not guessed. The bar changes height when the settings panel
-     is opened, when the voice list wraps, and on a device with a home
-     indicator - a hardcoded number is wrong within a tap, and being wrong here
-     means the last lines of a lesson sit behind the bar where nobody can read
-     them. Set from the real height by playerDock(). */
-
-  /* settings open upward: the summary is the last thing, the panel above it */
-  .psettings{display:flex;flex-direction:column-reverse}
-.psettings[hidden]{display:none}
-  .s{scroll-margin-top:16px;scroll-margin-bottom:150px}
-  .pcontrols{gap:8px}
-  .pcontrols{min-height:40px;padding-bottom:12px}     /* lifts it clear of the bar */
-  .btn.primary{width:50px;min-width:50px;min-height:40px}
-  #back, #fwd{min-height:40px;min-width:42px;padding:0 8px}
-  .scrub{margin-top:2px}
-
-  /* the switch comes down with them, so the row stays balanced */
-  .playerhide .track{width:34px;height:20px}
-  .playerhide .knob{top:2px;left:2px;width:14px;height:14px}
-  .playerhide input:checked + .track .knob{transform:translateX(14px)}
-
-  /* Jump back stays vertically centred on that row, hard left. It is already
-     absolutely positioned, so it does not push the transport off centre. */
-  .pcontrols .followchip{font-size:11px;padding:3px 9px}
-  .pcontrols .tag{display:none}
-  .pmeta{font-size:11px;margin:4px 0 0}
-  .pmeta span:last-child{display:none}         /* "tap any sentence" is a desktop hint */
-  .scrub{height:24px;margin:2px 0 0}
-  .tick{border-radius:2px}
-
-}
-
-</style>
-</head>
-<body>
-
-<div class="scrim" id="scrim"></div>
-<div class="menucol" id="menucol">
-<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
-  <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
-  <a class="dl" href="/">Home<small>Start here</small></a>
-  <button class="dl dl-open" type="button" data-sub="gr">Grades<small>K through 8</small><i aria-hidden="true">&#8250;</i></button>
-  <button class="dl dl-open" type="button" data-sub="r">Resources<small>Tools we use</small><i aria-hidden="true">&#8250;</i></button>
-  <button class="dl dl-open" type="button" data-sub="g">Games<small>Play in the browser</small><i aria-hidden="true">&#8250;</i></button>
-  <button class="dl dl-open" type="button" data-sub="c">Comics<small>Read on the site</small><i aria-hidden="true">&#8250;</i></button>
-  <button class="dl dl-open" type="button" data-sub="p">For Parents<small>Placement exams</small><i aria-hidden="true">&#8250;</i></button>
-  <a class="dl" href="/extras/">Extras<small>Reading log and more</small></a>
-  <a class="navbtn" href="https://www.paypal.com/donate/?hosted_button_id=PZ9D8N9KVURDA" target="_blank" rel="noopener">Support Us</a>
-  <button class="mswitch mswitch-drawer" type="button" data-mode-toggle aria-label="Switch between day and night"><span class="mswitch-track"><span class="mswitch-knob"></span></span><span data-mode-label>Night Mode</span></button>
-</aside>
-<div class="dsubs" id="dsubs"><aside class="dsub" data-subpanel="gr" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Grades</h3><div class="dsub-body"><div class="dst-grid"><a class="dst" href="/grade-k/" aria-label="Kindergarten"><b>K</b></a><a class="dst" href="/grade-1/" aria-label="Grade 1"><b>1</b></a><a class="dst" href="/grade-2/" aria-label="Grade 2"><b>2</b></a><a class="dst" href="/grade-3/" aria-label="Grade 3"><b>3</b></a><a class="dst" href="/grade-4/" aria-label="Grade 4"><b>4</b></a><a class="dst" href="/grade-5/" aria-label="Grade 5"><b>5</b></a><a class="dst" href="/grade-6/" aria-label="Grade 6"><b>6</b></a><a class="dst" href="/grade-7/" aria-label="Grade 7"><b>7</b></a><a class="dst" href="/grade-8/" aria-label="Grade 8"><b>8</b></a></div></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></aside>
-<aside class="dsub" data-subpanel="r" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Resources</h3><div class="dsub-body"><a class="dsr view" href="/resources/">View Resources</a><a class="dsr" href="/resources/">What We Use<small>Books, tools and supplies</small></a><a class="dsr" href="/resources/books-and-readers/">Books and Readers<small>What he actually reads</small></a><a class="dsr" href="/resources/tools-and-supplies/">Tools and Supplies<small>Paper, pencils, the desk</small></a><a class="dsr" href="/resources/science-experiments/">Science Experiments<small>Run them at home</small></a><a class="dsr" href="/resources/reading-lists/">Reading Lists<small>By grade</small></a><a class="dsr" href="/blog/">Blog<small>How we teach it</small></a><a class="dsr" href="/resources/placement-tests/">Placement Tests<small>Free, and not ours</small></a></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></aside>
-<aside class="dsub" data-subpanel="g" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Games</h3><div class="dsub-body"><a class="dsr view" href="/games/">View Games</a><a class="dsr" href="/games/speed-run-math/">Speed Run Math<small>Multiplication, timed</small></a><a class="dsr" href="/games/remainder-race/">Remainder Race<small>Being built</small></a><a class="dsr" href="/games/fraction-match/">Fraction Match<small>Being built</small></a><a class="dsr" href="/games/spelling-ladder/">Spelling Ladder<small>Being built</small></a><a class="dsr" href="/games/comma-catcher/">Comma Catcher<small>Being built</small></a><a class="dsr" href="/games/show-me-the-states/">Show Me The States<small>Fifty states and capitals</small></a><a class="dsr" href="/games/sort-the-mixture/">Sort the Mixture<small>Being built</small></a></div></aside>
-<aside class="dsub" data-subpanel="c" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Comics</h3><div class="dsub-body"><a class="dsr view" href="/comics/">View Comics</a><a class="dsr" href="/comics/">Donut Boy<small>8 episodes</small></a><a class="dsr" href="/comics/more-strips/">More Strips<small>What is coming</small></a></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></aside>
-<aside class="dsub" data-subpanel="p" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>For Parents</h3><div class="dsub-body"><a class="dsr view" href="/for-parents/">View For Parents</a><a class="dsr" href="/placement-exam.html">Reading Placement Exam</a><a class="dsr" href="/resources/">What We Use</a><a class="dsr" href="/about/">About</a><a class="dsr" href="/contact/">Contact</a></div></aside></div>
-</div>
-
-<nav id="nav" class="ns-nav"><div class="nv">
-  <!-- 🚨 BURGER AND HOME SHARE ONE GRID CELL.
-       On mobile .nv is a THREE column grid - 1fr auto 1fr - so the logo sits
-       dead centre. Adding the home icon as a fourth grid item pushed the
-       logo, account and cart onto a second row. Paul saw it immediately:
-       "well you moved all the logo cart and login".
-       Wrapping both controls in .navleft keeps the grid at three items, so
-       the logo stays centred and the icon still sits beside the burger. -->
-  <div class="navleft">
-    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-      <i></i><i></i><i></i>
-    </button>
-    <!-- 🚨 HOME IS AN ICON IN THE HEADER, NOT A BREADCRUMB CRUTCH.
-         Paul, 2026-09-02: "i dont even like how that is even an option on that
-         home name being the home button. can we just add a home icon on the
-         header next to the hamburger?" and "we dont need Home> Terms of Use".
-         A breadcrumb whose only rung is Home is not navigation, it is a link
-         wearing a costume. The icon is always there, on every page, in the same
-         place - which is what a reader actually wants from a way home.
-         ⚠️ The wordmark also links home; that is deliberate redundancy, not a
-         duplicate to clean up. The icon is a target, the wordmark is a brand. -->
-    <a class="homeb" href="/" aria-label="Home" title="Home">
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
-    </a>
-  </div>
-  <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
-  <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a><a class="mg-top" href="/extras/">Extras</a></div>
-  
-  <div class="navicons"><a class="navicon" href="/account/" aria-label="Sign in" title="Sign in"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></a><a class="navicon" id="cartLink" href="/cart/" aria-label="Cart" title="Cart"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg><span class="cartn" id="cartn" hidden aria-hidden="true"></span></a></div>
-</div>
-<div class="mg-panel" id="megapanel" aria-hidden="true"><div class="mg-inner" data-for="gr"><div class="mg-body"><div class="mg-grades"><a class="mg-grade live" href="/grade-k/"><b>K</b><span>Live</span></a><a class="mg-grade live" href="/grade-1/"><b>1</b><span>Live</span></a><a class="mg-grade live" href="/grade-2/"><b>2</b><span>Live</span></a><a class="mg-grade live" href="/grade-3/"><b>3</b><span>Live</span></a><a class="mg-grade live" href="/grade-4/"><b>4</b><span>Live</span></a><a class="mg-grade live" href="/grade-5/"><b>5</b><span>Live</span></a><a class="mg-grade live" href="/grade-6/"><b>6</b><span>Live</span></a><a class="mg-grade live" href="/grade-7/"><b>7</b><span>Live</span></a><a class="mg-grade live" href="/grade-8/"><b>8</b><span>Live</span></a></div><p class="mg-note">Organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></div><div class="mg-inner" data-for="r"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>What We Use</h4><ul><li><a href="/resources/books-and-readers/">Books and Readers</a></li><li><a href="/resources/tools-and-supplies/">Tools and Supplies</a></li></ul></div><div class="mg-col"><h4>Extras</h4><ul><li><a href="/resources/science-experiments/">Science Experiments</a></li><li><a href="/resources/reading-lists/">Reading Lists</a></li></ul></div><div class="mg-col"><h4>Writing</h4><ul><li><a href="/blog/">Blog</a></li><li><a href="/resources/placement-tests/">Placement Tests</a></li></ul></div></div><p class="mg-note">Things we actually use, not a list copied off somebody else&rsquo;s blog. Any affiliate link is marked as one. Lessons and printables are not here &mdash; they live under each grade.</p><p class="mg-all"><a href="/resources/">All resources &rarr;</a></p></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></div><div class="mg-inner" data-for="g"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Math</h4><ul><li><a href="/games/speed-run-math/">Speed Run Math</a></li><li><a href="/games/remainder-race/">Remainder Race</a></li><li><a href="/games/fraction-match/">Fraction Match</a></li></ul></div><div class="mg-col"><h4>English</h4><ul><li><a href="/games/spelling-ladder/">Spelling Ladder</a></li><li><a href="/games/comma-catcher/">Comma Catcher</a></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><a href="/games/show-me-the-states/">Show Me The States</a></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><a href="/games/sort-the-mixture/">Sort the Mixture</a></li></ul></div></div><p class="mg-note">Two are playable now. The rest have a page saying what they will be.</p><p class="mg-all"><a href="/games/">All games &rarr;</a></p></div></div><div class="mg-inner" data-for="c"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Donut Boy</h4><ul><li><a href="/comics/">Start at Episode 1</a></li><li><a href="/comics/">All 8 Episodes</a></li></ul></div><div class="mg-col"><h4>More strips</h4><ul><li><a href="/comics/more-strips/">What Is Coming</a></li></ul></div></div><p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p><p class="mg-all"><a href="/comics/">All comics &rarr;</a></p></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></div><div class="mg-inner" data-for="p"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Placement</h4><ul><li><a href="/placement-exam.html">Reading Placement Exam</a></li></ul></div><div class="mg-col"><h4>Planning</h4><ul><li><a href="/resources/">What We Use</a></li><li><a href="/about/">About NexStudents</a></li><li><a href="/contact/">Contact</a></li></ul></div></div><p class="mg-all"><a href="/for-parents/">All for parents &rarr;</a></p></div></div></div>
-</nav>
-<div class="cscrim" id="cscrim"></div><aside class="cdrawer" id="cdrawer" aria-hidden="true" aria-label="Cart"><div class="cd-top"><h2 class="cd-h">Cart <span class="cd-n" id="cdN">0</span></h2><button class="cd-x" id="cdClose" type="button" aria-label="Close cart">&times;</button></div><div class="cd-body" id="cdBody"></div><div class="cd-foot"><div class="cd-tot"><span>Total</span><span id="cdTotal">&mdash;</span></div><div class="cd-acts"><a class="navbtn" href="/cart/"><span>View Cart</span></a><a class="navbtn" href="/cart/"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="12" height="8" rx="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg><span>Check Out</span></a></div></div></aside>
-
-<div class="wrapx">
-  <div class="ns-back"><a href="/grade-3/english/lessons/">&larr; 3rd Grade English</a></div>
-  <h1>Verbs: Action and Being</h1>
-  <p class="dek">Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.</p>
-
-  <details class="ground" id="ground">
-    <summary><span class="who">For the teacher</span> Ground Control</summary>
-    <div class="gbody"><h4>What it is</h4><p>By the end of this lesson a student should be able to find the verb in a sentence and say whether it is an action verb or a being verb. An action verb tells what someone or something does, and that action can be physical, like <i>run, jump</i> or <i>open</i>, or it can happen in the mind, like <i>think, remember</i> or <i>understand</i>. A being verb tells what someone or something is or was instead of showing an action, and there are only eight of them: <b>am, is, are, was, were, be, been, being</b>. Compare "The dog chased the ball" with "The dog is tired". In the first, <i>chased</i> tells what the dog did. In the second, <i>is</i> tells us something about the dog.</p>
-<h4>Why it matters</h4><p>Verbs are the hinge everything later swings on. Tense is a verb changing to show time. Subject-verb agreement is a verb changing to match who is doing it. Sentence types, clauses, and eventually essay writing all assume a student can find the verb without thinking about it. A student who is shaky here is shaky in every grammar lesson after it, and usually nobody notices, because the later lessons look like they are about something else.</p>
-<h4>What he will get wrong</h4><p>A word's job can change depending on the sentence, and this is where students lose the thread. In "We walk to school", <i>walk</i> is an action verb. In "The walk was long", <i>walk</i> is a noun and the verb is <i>was</i>. Most students hunt for a word that sounds like doing something, which works until the verb is <i>is, was</i> or <i>are</i> and then they freeze or grab a noun. It comes from teaching "a verb is an action word", which is not true, and it is why so many students stall on this exact page.</p>
-<h4>What to say when he is stuck</h4><ul><li>There are TWO tests here and they answer different questions. If he cannot FIND the verb, say: "Read it again, but start with Yesterday. Which word had to change?" That word is the verb, every time.</li><li>Once he has found it, the quick check names its kind. Use these exact words: "Is the subject doing something, or is the sentence telling what the subject is?" Doing means action. Is or was means being.</li><li>If they pick a noun, ask: "Is anybody doing that right now, or is it just a thing?" A walk sitting on the page is a thing. Walking is not.</li><li>If they meet a sentence like "The dog is running", tell them plainly that <i>is</i> is helping the action verb <i>running</i>. Helping verbs are their own lesson and nothing here depends on them.</li><li>The shortcut worth repeating out loud until it sticks: action tells what something DOES, being tells what something IS.</li><li>When they get it right, do not stop at "correct". Ask HOW they knew. If the answer is "it looked like one", they got lucky and the test has not stuck yet.</li></ul></div>
-  </details>
-
-  <div class="rulebox">
-    <p class="short">A verb tells what the subject does, or what the subject is.</p>
-    <p class="long">Verbs come in two kinds. An <b>action verb</b> says something happens: <i>ran, built, decided, forgot</i>. A <b>being verb</b> says something simply is: <i>am, is, are, was, were, be, been, being</i>. Being verbs do not act. They join the subject to what it is, the way an equals sign joins two sides of a sum.</p>
-    <p class="ruletest"><b>Run this test.</b> TWO TESTS, TWO JOBS. <b>To FIND the verb</b>, put <i>Yesterday</i> in front of the sentence and read it again — the one word that has to change shape is the verb. <b>To NAME its kind</b>, ask: <i>is someone or something doing something, or is the sentence telling me what someone or something is?</i> Doing means an action verb. Is or was means a being verb. Action means DO. Being means IS.</p>
-  </div>
-
-  <h2 class="section-head">The Lesson</h2>
-  <p class="section-note">Press play to have it read to you. The line being read lights up, so you can follow along.</p>
-
-  <div class="player" id="player">
-    <div class="pcontrols">
-      <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
-      <label class="playerhide" for="playerhide" title="Show or hide the settings" aria-label="Show or hide the settings">
-        <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the settings">
-        <span class="track" aria-hidden="true"><span class="knob"></span></span>
-      </label>
-      <button class="btn" id="back" title="Back one sentence" aria-label="Back one sentence">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13 2.5v11L5.5 8 13 2.5zM4 2.5h1.6v11H4z"/></svg>
-      </button>
-      <button class="btn primary" type="button" id="play" aria-label="Read to me" title="Read to me"><svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.2l9 5.8-9 5.8z"/></svg></button>
-      <button class="btn" id="fwd" title="Forward one sentence" aria-label="Forward one sentence">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 2.5v11L10.5 8 3 2.5zM10.4 2.5H12v11h-1.6z"/></svg>
-      </button>
-    </div>
-    <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Jump to a sentence" aria-valuemin="1" aria-valuemax="26" aria-valuenow="1"></div>
-    <div class="pmeta">
-      <span id="pos">Sentence 1 of 26</span>
-      <span class="phint">Tap any sentence to start reading there</span>
-    </div>
-    <details class="psettings" id="psettings">
-      <summary><span>Settings</span><svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></summary>
-    <div class="voicerow" id="speedrow">
-      <label for="rate">Speed</label>
-      <select class="rate" id="rate" aria-label="Reading speed">
-        <option value="0.7">Slow</option>
-        <option value="0.85" selected>Normal</option>
-        <option value="1">Fast</option>
-      </select>
-    </div>
-    <div class="voicerow" id="voicerow">
-      <label for="voice">Voice</label>
-      <div class="vsel" id="vsel">
-        <button class="vsel-trigger" id="vselBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
-          <span id="vselLabel">Voice</span>
-          <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg>
-        </button>
-        <ul class="vsel-list" id="vselList" role="listbox" hidden></ul>
-      </div>
-      <select class="rate" id="voice" aria-label="Choose a reading voice" hidden></select>
-    </div>
-
-    <div class="keytogglerow">
-      <button class="linkbtn keydisclose" type="button" id="keyToggle" aria-expanded="false" aria-controls="keyrow">Use My Personal API (Voice) Key<svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></button>
-    </div>
-    <div class="keyrow" id="keyrow">
-      <p class="keydisc"><span aria-hidden="true">&#128274;</span><span><b>Stored on this device only.</b> Your key stays in this browser. It is never sent to NexStudents, never shared, and never leaves your machine except to the voice provider it belongs to.</span></p>
-      <label for="ttskey">Your API key</label>
-      <div class="keyfield">
-        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
-        <button class="btn" type="button" id="keySave">Save</button>
-        <button class="btn" type="button" id="keyClear">Clear</button>
-      </div>
-      <p class="keynote" id="keynote"><b>Where to get a key.</b> <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener">Google Cloud TTS</a> powers the built-in voices on this page and has a free monthly allowance. <a href="https://elevenlabs.io/" target="_blank" rel="noopener">ElevenLabs</a> is worth a look if you want a more natural voice and do not mind setting up an account.</p>
-    </div>
-    <div class="themerow" id="themerow">
-      <span class="lbl">Colors</span>
-      <div class="swatches" id="swatches"></div>
-    </div>
-    </details>
-
-    <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
-  </div>
-  <div id="story"></div>
-
-  <h2 class="section-head">Worked Examples</h2>
-  <p class="section-note">Five done for you. The underlined word is the verb, and the line under it says how you could have known.</p>
-  <div id="examples"><div class="ex">
-  <p class="sent">The mechanic <u>tightened</u> the bolt.</p>
-  <p class="why">The mechanic is doing something, and you could watch it happen. Tightened is the verb, and it is an action verb.</p>
-</div>
-<div class="ex">
-  <p class="sent">The hall <u>is</u> enormous.</p>
-  <p class="why">Nobody is doing anything here. The sentence is telling you what the hall is, and is connects hall with enormous. That makes is a being verb.</p>
-</div>
-<div class="ex">
-  <p class="sent">He <u>forgot</u> his umbrella.</p>
-  <p class="why">You cannot watch someone forget, but forgetting is still something he did. Not every action is one you can see.</p>
-</div>
-<div class="ex">
-  <p class="sent">The journey <u>was</u> long.</p>
-  <p class="why">The trap. Journey looks like something you do, but here nobody is journeying. It is the name of a thing that was long, so the verb is was.</p>
-</div>
-<div class="ex">
-  <p class="sent">Those students <u>are</u> ready.</p>
-  <p class="why">A being verb again. Are tells you what the students are. Notice it is are and not is, because students is more than one. That is agreement, and it is coming later.</p>
-</div></div>
-
-  <h2 class="section-head">Your Turn</h2>
-  <p class="section-note">Two parts, like a worksheet. Part A asks which word is the verb. Part B asks what kind of verb it is. A wrong answer tells you why and lets you try again, so nothing here counts against you.</p>
-  <div class="actions">
-    <button class="tab act" type="button" id="reset">Start Over</button>
-    <button class="tab act" type="button" id="reveal">Show Me The Answers</button>
-  </div>
-
-  <!-- 🚨 TWO PARTS, LIKE A WORKSHEET. Paul, 2026-08-29: "make the questions
-       also resemble that like kinds of verbs and which is a verb together but
-       in two different sections ... like a worksheet does."
-       Part A asks WHICH WORD. Part B asks WHICH KIND. They are two different
-       skills and running them together as one list of ten hid that. -->
-  <section class="wspart">
-    <h3 class="ws-head">Part A. Find The Verb.</h3>
-    <p class="ws-note">10 sentences. Click the verb in each one. A wrong click tells you why and lets you try again.</p>
-    <div id="problems"></div>
-  </section>
-
-  <section class="wspart">
-    <h3 class="ws-head">Part B. Action Or Being?</h3>
-    <p class="ws-note">6 more sentences, and the verb is underlined for you. Decide whether it is an action verb or a being verb.</p>
-    <div id="kinds"></div>
-  </section>
-
-  <div class="scorebar" id="scorebar"></div>
-</div>
-
-<script>
 (function(){
 "use strict";
 
-var LESSON_ID = "english/verbs-action-and-being";
-var PARTS     = [{"title":"Every Sentence Needs a Verb","s":["Imagine a sentence is like a car. It might have a driver, seats, wheels and a radio, but none of those make the car go. The engine does.","","The verb is the engine. It is the one word that makes a sentence work, and every sentence in English has one.","","The driver stopped the bus.","","What happened? The driver stopped. The word stopped is the verb, because it tells us what the driver did.","","Cross out stopped and the sentence stops working. You are left with a driver and a bus and nothing happening between them.","","In this lesson we are going to learn about two important kinds of verbs. Action verbs and being verbs."]},{"title":"Action Verbs","s":["An action verb tells what someone or something does.","","The dog chased the ball.","","The word chased is the action verb, because it tells what the dog did.","","The same thing happens here.","","The engine stalled.","","The engine did something. It stalled.","","Not every action is something you can see. Look at this one.","","The student remembered the answer.","","You cannot actually watch someone remember something. There is no giant light bulb that suddenly appears over his head. Remembering happens inside the mind, but it is still something he did. That makes remembered an action verb.","","Words like think, remember, wonder and understand can all be action verbs, even though the action happens inside your head."]},{"title":"Being Verbs","s":["Now look at a different sentence.","","The road is wet.","","What action did the road perform? Nothing. The sentence is simply telling us something about the road. The word is connects road with wet, and that makes is a being verb.","","A being verb tells what someone or something is or was, instead of telling what it does.","","There are eight forms of the verb be. These are important words to recognise, because you will see them again and again in English.","","Am. Is. Are. Was. Were. Be. Been. Being."]},{"title":"Action or Being?","s":["Compare these two sentences.","","The kettle boiled.","","The kettle is empty.","","They are both about the same kettle, but the verbs are doing different jobs.","","In the first sentence something happened. The kettle boiled, so boiled is an action verb.","","In the second sentence the kettle is not doing anything. The word is tells us about the condition of the kettle, so is is a being verb.","","Here is an easy way to remember the difference. An action verb tells what someone or something does. A being verb tells what someone or something is or was."]},{"title":"The Word That Tries to Trick You","s":["Sometimes a word that looks like a verb is not actually the verb in the sentence.","","We walk through the park.","","Here, walk tells what we are doing, so it is an action verb.","","Now look at this one.","","The walk was long.","","This time nobody is actually walking. The walk is the name of a thing, so it is being used as a noun. The actual verb is was.","","This teaches an important rule about language. A word's job in the sentence decides what kind of word it is. Do not choose a verb just because a word looks like one. Look at what the word is actually doing."]},{"title":"Two Tests, Two Jobs","s":["There are two things to work out about a sentence, and each one has its own test. Do not mix them up.","","The first job is finding the verb. Put the word Yesterday in front of the sentence and read it again. The one word that has to change shape is the verb. Nothing else in a sentence changes when the time changes.","","The bell rings loudly. Yesterday the bell rang loudly.","","Only one word moved. Rings became rang. That is your verb.","","The second job is naming what kind of verb it is, and that is a different question."]},{"title":"Try the Verb Test","s":["Once you have found the verb, ask yourself a simple question.","","Is someone or something doing something, or is the sentence telling me what someone or something is?","","If the subject is doing something, you have probably found an action verb. If the verb tells what the subject is or was, you have probably found a being verb.","","The boy kicked the ball.","","The boy did something. He kicked, so kicked is an action verb.","","The boy is tired.","","The boy is not performing an action. The word is connects the boy with the word tired, so is is a being verb."]},{"title":"Your Turn","s":["Now it is your turn to become the verb detective.","Part A has ten sentences. Find the verb in each one and click it.","Part B marks the verb for you. Your job there is to decide what that verb is doing. Is it telling you what someone or something does, or what someone or something is?","Remember the shortcut. Action means DO. Being means IS.","If you click the wrong word nothing bad happens. The page tells you why, so read that before you try again."]}];
-var PRACTICE  = [{"sentence":"The bell rang loudly.","answer":2,"why":"The bell did something. Rang is the verb, and it is an action verb."},{"sentence":"The puppy is hungry.","answer":2,"why":"The puppy is not doing anything. The sentence tells you what the puppy is, so is is the verb."},{"sentence":"Rain fell all afternoon.","answer":1,"why":"Something happened, and you could have watched it. Fell is the verb."},{"sentence":"The old wooden gate is heavy.","answer":4,"why":"Nobody does anything here. Is tells you what the gate is, and four words go by before you reach it."},{"sentence":"She repaired the broken shelf.","answer":1,"why":"She is doing something you could point a camera at. Repaired is the verb."},{"sentence":"We are ready.","answer":1,"why":"Nothing is happening. Are tells you what we are, and the whole sentence is only three words."},{"sentence":"The long walk tired everyone.","answer":3,"why":"The trap. Nobody is walking here, so walk is a thing, not something anyone does. Tired is what that walk DID to everyone, so tired is the verb. Watch for it again two sentences from now, doing a completely different job."},{"sentence":"Her first attempt was perfect.","answer":3,"why":"The trap again. Attempt is the name of a thing, not something anyone is doing. Was is the verb."},{"sentence":"The tired driver from the next town remembered every turn.","answer":7,"why":"The word tired is here again, but this time it is NOT the verb. It is just describing the driver. Nobody is doing tired to anybody. Seven words go by before you reach remembered, and you cannot watch someone remember, but it is still what he did."},{"sentence":"Both engines started without trouble.","answer":2,"why":"The engines did something. Started is the verb."}];   /* Part A - which word is the verb */
-var SORT      = [{"sentence":"The kettle boiled quickly.","at":2,"kind":"action","why":"Something happened, and you could have filmed it. Boiled is an action verb."},{"sentence":"The classroom is quiet.","at":2,"kind":"being","why":"Nothing happens. Is joins the classroom to quiet, so it is a being verb."},{"sentence":"He built a small shelf.","at":1,"kind":"action","why":"He did something you could point a camera at. Built is an action verb."},{"sentence":"Those books were expensive.","at":2,"kind":"being","why":"Nobody does anything. Were joins the books to expensive, so it is a being verb."},{"sentence":"She remembered the answer.","at":1,"kind":"action","why":"You cannot watch someone remember, but it is still something she did. Remembered is an action verb."},{"sentence":"I am ready now.","at":1,"kind":"being","why":"Nothing is happening. Am joins I to ready, so it is a being verb."}];       /* Part B - which KIND of verb it is */
+
+document.getElementById("turnnote").textContent += SPEC.allowRemainder
+  ? " Some of these leave a remainder. Write what's left over in the box up top."
+  : " None of these have a remainder.";
+
+/* ── colours ───────────────────────────────────────────────────────────────
+   The same five palettes the history lessons use, spliced in from
+   lesson-template.html at build time so there is one source of truth, and
+   stored under the same ns:theme key so a choice made in one lesson is
+   already made in the other.
+   ------------------------------------------------------------------------ */
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch (e){} }
+
+var THEMES = {
+  forest: { name:"Forest",
+    light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
+            accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
+            ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
+            brass:"#7E6A16",band:"rgba(158,138,40,.42)",word:"rgba(158,138,40,.74)" },
+    dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
+            accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
+            ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
+            brass:"#D8B355",band:"rgba(216,179,85,.3)",word:"rgba(216,179,85,.62)" } },
+
+  ocean: { name:"Ocean",
+    light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
+            accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
+            ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.38)",word:"rgba(196,132,24,.68)" },
+    dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
+            accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
+            ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.3)",word:"rgba(224,182,92,.62)" } },
+
+  ember: { name:"Ember",
+    light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
+            accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
+            ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
+            brass:"#6B5A11",band:"rgba(120,104,26,.38)",word:"rgba(120,104,26,.68)" },
+    dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
+            accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
+            ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
+            brass:"#D6C169",band:"rgba(214,193,105,.28)",word:"rgba(214,193,105,.59)" } },
+
+  violet: { name:"Violet",
+    light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
+            accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
+            ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
+            brass:"#7A6212",band:"rgba(150,122,26,.38)",word:"rgba(150,122,26,.68)" },
+    dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
+            accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
+            ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.28)",word:"rgba(220,187,99,.59)" } },
+
+  graphite: { name:"Graphite",
+    light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
+            accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
+            ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
+            brass:"#7A6318",band:"rgba(152,124,32,.38)",word:"rgba(152,124,32,.68)" },
+    dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
+            accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
+            ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
+            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } }
+};
+
+/* ns.css names its variables differently from the history template, so the
+   same palette is mapped onto the names this page actually uses. */
+var VAR_MAP = {
+  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
+  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
+  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
+};
+
+var themeKey = load("theme", "graphite");
+if (!THEMES[themeKey]) themeKey = "graphite";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+/* 🚨 MATHS DOES NOT BUILD SWATCHES. The player builds them. This page had its
+   own row as well, which is why ten colour dots appeared instead of five once
+   the shared player arrived. What maths still owns is the MAPPING - it uses
+   ns.css variable names - so it hands that to the player as a hook. */
+window.nsOnTheme = function(k){ themeKey = k; applyTheme(); };
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+document.body.style.background = "var(--bg)";
+
+/* ── where the problems come from ──────────────────────────────────────────
+   Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
+   doesn't help improve." The set is rolled from SPEC, seeded by the date, so
+   it holds still all day and changes tomorrow. New problems reseeds by hand.
+   ------------------------------------------------------------------------ */
+function rng(seed){                       /* mulberry32, small and repeatable */
+  var a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function seedFromString(s){
+  var h = 2166136261;
+  for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function today(){
+  var d = new Date();
+  return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+}
+
+/* One problem. Pick the ANSWER first, then multiply back to get the dividend.
+   That keeps the quotient filling the top row exactly, which is the only case
+   the bracket layout is built for - remainder or not. SPEC.allowRemainder
+   adds a nonzero leftover on top of that same dividend. */
+function makeProblem(rand){
+  for (var tries = 0; tries < 500; tries++){
+    var divisor = SPEC.divisors[Math.floor(rand() * SPEC.divisors.length)];
+    var lo = Math.pow(10, SPEC.digits - 1), hi = Math.pow(10, SPEC.digits) - 1;
+    var quotient = lo + Math.floor(rand() * (hi - lo + 1));
+    if (!SPEC.allowZeroDigit && String(quotient).indexOf("0") >= 0) continue;
+    var remainder = SPEC.allowRemainder ? 1 + Math.floor(rand() * (divisor - 1)) : 0;
+    var dividend = quotient * divisor + remainder;
+    if (String(dividend).length !== SPEC.digits) continue;   /* must fill the top row */
+    if (String(Math.floor(dividend / divisor)).length !== SPEC.digits) continue;
+    return { dividend: dividend, divisor: divisor };
+  }
+  return SPEC.allowRemainder ? { dividend: 587, divisor: 3 } : { dividend: 852, divisor: 4 };
+}
+function makeSet(seedStr){
+  var rand = rng(seedFromString(LESSON_ID + "|" + seedStr));
+  var out = [], seen = {};
+  var guard = 0;
+  while (out.length < SPEC.count && guard++ < 2000){
+    var p = makeProblem(rand);
+    var k = p.dividend + "/" + p.divisor;
+    if (seen[k]) continue;                  /* never the same one twice on a page */
+    seen[k] = true;
+    out.push(p);
+  }
+  return out;
+}
+
+/* ── the arithmetic, one entry per step ────────────────────────────────── */
+function solve(dividend, divisor){
+  var d = String(dividend).split("").map(Number), r = 0, steps = [];
+  for (var i = 0; i < d.length; i++){
+    var cur = r * 10 + d[i];
+    var q = Math.floor(cur / divisor);
+    var prod = q * divisor;
+    var diff = cur - prod;
+    steps.push({ i: i, cur: cur, q: q, prod: prod, diff: diff, bring: d[i + 1] });
+    r = diff;
+  }
+  return { digits: d, divisor: divisor, dividend: dividend, steps: steps,
+           quotient: steps.map(function(s){ return s.q; }).join(""), remainder: r };
+}
+
+/* Column 0 holds the divisor, so dividend digit i sits in column i + 1.
+   withRem adds two more columns at the end of the TOP row only - "R" then
+   the remainder digit - so the final answer reads "195 R 2" next to the
+   quotient once it is known. Off (the default) leaves the no-remainder
+   lesson's grid exactly as it was. */
+function build(host, S, withRem){
+  host.innerHTML = "";
+  var n = S.digits.length, remCols = withRem ? 2 : 0;
+  var cols = n + 2 + remCols, rows = 2 + S.steps.length * 2;
+  host.style.gridTemplateColumns = "repeat(" + cols + ", 2.1em)";
+  var cells = {};
+  for (var r = 0; r < rows; r++){
+    for (var c = 0; c < cols; c++){
+      var el = document.createElement("div");
+      el.className = "cell";
+      host.appendChild(el);
+      cells[r + ":" + c] = el;
+    }
+  }
+  var at = function(r, c){ return cells[r + ":" + c]; };
+  at(1, 0).textContent = S.divisor;
+  for (var i = 0; i < n; i++){
+    var cell = at(1, i + 1);
+    cell.textContent = S.digits[i];
+    cell.classList.add(i === 0 ? "brk" : "bar");
+  }
+  var remCell = null;
+  if (withRem){
+    at(0, n + 1).textContent = "R";
+    at(0, n + 1).classList.add("remlabel");
+    remCell = at(0, n + 2);
+  }
+  return { at: at, cols: cols, rows: rows, remCell: remCell };
+}
+
+/* Right-align a written number so its last digit lands under this step's digit. */
+function slots(g, row, value, step, opts){
+  var s = String(value), out = [];
+  var end = step.i + 1, start = end - s.length + 1;
+  for (var k = 0; k < s.length; k++){
+    var c = g.at(row, start + k);
+    out.push({ cell: c, want: Number(s[k]) });
+    if (opts && opts.under) c.classList.add("under");
+  }
+  if (opts && opts.minus && start - 1 >= 0) g.at(row, start - 1).textContent = "−";
+  return out;
+}
+
+/* ── what gets said, and what gets read on screen ─────────────────────── */
+function captions(S){
+  var out = [{ text: "We're dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
+                     " goes outside the bracket, and " + S.dividend + " sits underneath it." }];
+  S.steps.forEach(function(st, k){
+    out.push({ step: k, phase: "divide",
+      text: "Step " + (k + 1) + ". Divide. How many " + S.divisor + "s fit into " + st.cur +
+            "? " + st.q + ". Write that " + st.q + " on top." });
+    out.push({ step: k, phase: "multiply",
+      text: "Multiply. " + st.q + " times " + S.divisor + " is " + st.prod +
+            ". Write it underneath." });
+    out.push({ step: k, phase: "subtract",
+      text: "Subtract. " + st.cur + " minus " + st.prod + " is " + st.diff + "." });
+    if (st.bring !== undefined) out.push({ step: k, phase: "bring",
+      text: "Bring down the next digit, the " + st.bring + ". Now you've got " + (st.diff * 10 + st.bring) + "." });
+  });
+  if (S.remainder > 0){
+    out.push({ revealRemainder: true,
+               text: "Nothing left to bring down, and we've still got " + S.remainder +
+                     " sitting there after that last subtraction. That " + S.remainder + " is the remainder." });
+    out.push({ text: S.remainder + " is smaller than " + S.divisor + ", and that's how you know you're done. " +
+                     "If it were " + S.divisor + " or bigger, another " + S.divisor + " would still fit in." });
+    out.push({ text: "Read the top row: " + S.quotient + ", with " + S.remainder + " left over. So " +
+                     S.dividend + " divided by " + S.divisor + " is " + S.quotient + " with a remainder of " + S.remainder + "." });
+  } else {
+    out.push({ text: "Read the top row: " + S.quotient + ". So " + S.dividend + " divided by " +
+                     S.divisor + " is " + S.quotient + "." });
+  }
+  return out;
+}
+
+/* ── the worked example ───────────────────────────────────────────────── */
+var S = solve(DEMO.dividend, DEMO.divisor);
+/* ⚠️ The captions come from the BUILD now (tools/math-captions.js), not from
+   captions() running here. They have to be identical to the ones the audio was
+   generated from, and the only way to guarantee that is for both to come from
+   one place. The local captions() is still used as a fallback if the build did
+   not supply them. */
+var CAPS = (typeof BAKED_CAPS !== "undefined" && BAKED_CAPS && BAKED_CAPS.length)
+  ? BAKED_CAPS : captions(S);
+var demoHost = document.getElementById("demo");
+var posEl = document.getElementById("stepPos");
+var at = 0, playing = false, gen = 0;
+
+var synth = window.speechSynthesis;
+var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
+if (!supported) document.getElementById("nospeech").classList.add("show");
+
+function write(g, row, value, step, opts){
+  slots(g, row, value, step, opts).forEach(function(s){ s.cell.textContent = s.want; });
+}
+
+function paintDemo(upto){
+  var g = build(demoHost, S, SPEC.allowRemainder);
+  for (var k = 0; k <= upto && k < CAPS.length; k++){
+    var c = CAPS[k];
+    if (c.revealRemainder && g.remCell){
+      g.remCell.textContent = S.remainder;
+      g.remCell.classList.add("remval");
+    }
+    if (c.step === undefined) continue;
+    var st = S.steps[c.step];
+    if (c.phase === "divide") g.at(0, st.i + 1).textContent = st.q;
+    if (c.phase === "multiply") write(g, 2 + c.step * 2, st.prod, st, { minus: true, under: true });
+    if (c.phase === "subtract") write(g, 3 + c.step * 2, st.diff, st, {});
+    if (c.phase === "bring"){
+      var cell = g.at(3 + c.step * 2, st.i + 2);
+      cell.textContent = st.bring;
+      if (k === upto) cell.classList.add("drop");
+    }
+  }
+  /* ⚠️ The position line belongs to the PLAYER now. Math used to own a
+     #stepPos of its own and write "Step 3 of 13" into it; with the shared
+     markup that element is gone and the variable resolved to the players own
+     #pos instead, so maths quietly overwrote "Sentence 3 of 13" on every
+     repaint. The player counts; maths just draws the grid. */
+}
+
+/* ── THE READING PLAYER ────────────────────────────────────────────────────
+   🚨 THIS IS THE HISTORY PLAYER, VERBATIM. Paul, 2026-08-29: "i want the exact
+   system from history into math. i like those markers you can select and jump
+   around we can use them for math too."
+
+   Math used to run its own narrator. It is gone. The captions are handed to
+   the shared engine as sentences, so maths gets the identical thing history
+   has: back and forward, the scrub bar you can click to jump to any step, the
+   same voices, the same key panel, the resume position and the keyboard.
+
+   The grid follows the reader through window.nsOnSentence - one hook in the
+   one engine - so the worked example and the narration can never fall out of
+   step with each other the way two separate players would. */
+var PARTS = [{ title: "", s: CAPS.map(function(c){ return c.text; }) }];
 
 /* ---------- saved settings and progress ----------
    Keys are shared site-wide on purpose:
@@ -3294,208 +2410,300 @@ scrub.addEventListener("keydown", function(e){
 })();
 
 
-/* ── practice ─────────────────────────────────────────────────────────────
-   Click the word. Every word is a target so the layout gives nothing away,
-   and a wrong click is not fatal: it says WHY it is wrong and lets him go
-   again. Paul's standing rule for this site is no punishment for wrong.
-   Progress is stored per lesson so closing the tab does not lose the work. */
-var KEY = "prog:" + LESSON_ID;
-var state = {};
-try { state = JSON.parse(load(KEY, "{}")) || {}; } catch (e) { state = {}; }
 
-var wrap  = document.getElementById("problems");
-var kwrap = document.getElementById("kinds");
-var bar   = document.getElementById("scorebar");
+/* Draw the division grid up to whichever step is being read. */
+window.nsOnSentence = function(i){ paintDemo(i); };
+paintDemo(0);
 
-function save(){ store(KEY, JSON.stringify(state)); }
-
-/* ⚠️ Part A and Part B are stored under PREFIXED keys, "a3" and "b3", not bare
-   numbers. Two parts sharing one number would mark a Part B answer as a solved
-   Part A sentence, and the score would count work nobody did. */
-function render(){
-  wrap.innerHTML = "";
-  PRACTICE.forEach(function(p, n){
-    var done = state["a" + n] === true;
-    var box = document.createElement("div");
-    box.className = "prob" + (done ? " solved" : "");
-
-    var head = document.createElement("div");
-    head.className = "probhead";
-    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Found it" : "Click the verb") + '</span>';
-    box.appendChild(head);
-
-    var row = document.createElement("div");
-    row.className = "words";
-    var nudge = document.createElement("p");
-    nudge.className = "nudge";
-
-    p.sentence.split(" ").forEach(function(word, wi){
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "pw"; b.textContent = word;
-      if (done) {
-        b.disabled = true;
-        if (wi === p.answer) b.classList.add("ok");
-      } else {
-        b.onclick = function(){
-          if (wi === p.answer) {
-            state["a" + n] = true; save();
-            render();
-            /* keep the explanation on screen after the re-render */
-            var fresh = wrap.children[n].querySelector(".nudge");
-            if (fresh) fresh.textContent = p.why;
-            score();
-          } else {
-            b.classList.add("wrong");
-            nudge.classList.add("warn");
-            nudge.textContent = wrongWhy(word, p);
-          }
-        };
-      }
-      row.appendChild(b);
-    });
-
-    box.appendChild(row);
-    if (done) { nudge.textContent = p.why; }
-    box.appendChild(nudge);
-    wrap.appendChild(box);
-  });
-  renderKinds();
-}
-
-/* ── PART B. Which kind of verb is it? ────────────────────────────────────
-   The verb is already underlined here on purpose. Part A was "which word";
-   asking it again would test the same thing twice and hide the actual
-   question, which is what that word DOES. */
-function renderKinds(){
-  kwrap.innerHTML = "";
-  SORT.forEach(function(p, n){
-    var done = state["b" + n] === true;
-    var box = document.createElement("div");
-    box.className = "prob" + (done ? " solved" : "");
-
-    var head = document.createElement("div");
-    head.className = "probhead";
-    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Got it" : "Action or being") + '</span>';
-    box.appendChild(head);
-
-    /* the sentence, with the verb underlined */
-    var line = document.createElement("div");
-    line.className = "words";
-    p.sentence.split(" ").forEach(function(word, wi){
-      if (wi > 0) line.appendChild(document.createTextNode(" "));
-      var sp = document.createElement("span");
-      if (wi === p.at) sp.className = "kverb";
-      sp.textContent = word;
-      line.appendChild(sp);
-    });
-    box.appendChild(line);
-
-    var nudge = document.createElement("p");
-    nudge.className = "nudge";
-
-    var pick = document.createElement("div");
-    pick.className = "kpick";
-    ["action", "being"].forEach(function(kind){
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "kbtn";
-      b.textContent = kind === "action" ? "Action verb" : "Being verb";
-      if (done) {
-        b.disabled = true;
-        if (kind === p.kind) b.classList.add("ok");
-      } else {
-        b.onclick = function(){
-          if (kind === p.kind) {
-            state["b" + n] = true; save();
-            render();
-            var fresh = kwrap.children[n].querySelector(".nudge");
-            if (fresh) fresh.textContent = p.why;
-            score();
-          } else {
-            /* Same rule as Part A: a reason, never a buzzer. */
-            b.classList.add("wrong");
-            nudge.classList.add("warn");
-            nudge.textContent = kind === "action"
-              ? "Not action. Try to film this sentence - if nothing happens that you could point a camera at, the verb is a being verb."
-              : "Not being. The being verbs are am, is, are, was, were, be, been and being. This underlined word is not one of them, so something is happening.";
-          }
-        };
-      }
-      pick.appendChild(b);
-    });
-    box.appendChild(pick);
-    if (done) { nudge.textContent = p.why; }
-    box.appendChild(nudge);
-    kwrap.appendChild(box);
-  });
-  score();
-}
-
-/* A wrong answer gets a reason, not a buzzer. The two reasons cover the two
-   mistakes this lesson is actually about. */
-function wrongWhy(word, p){
-  var clean = word.replace(/[^A-Za-z']/g, "").toLowerCase();
-  var being = ["am","is","are","was","were","be","been","being"];
-  if (being.indexOf(clean) >= 0)
-    return "“" + clean + "” is a being verb, but it is not the one doing the work here. Try the time test again.";
-  return "Not that one. Put “Yesterday” at the front and read it again — which word has to change shape?";
-}
-
-/* One score across BOTH parts, and it says the split, because "8 / 16" hides
-   whether he can find verbs and cannot name them, or the other way round.
-   Paul's rule from the quizzes: show the score AND the percentage. */
-function score(){
-  var a = 0, b = 0, i;
-  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
-  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
-  var got = a + b, all = PRACTICE.length + SORT.length;
-  var pct = Math.round((got / all) * 100);
-  bar.innerHTML = "<b>" + got + " / " + all + "</b> · " + pct + "%" +
-    " <span class=\"tag\">Part A " + a + "/" + PRACTICE.length +
-    " · Part B " + b + "/" + SORT.length + "</span>" +
-    (got === all ? " — all of them. Write the score in your notes." : "");
-}
-
-document.getElementById("reset").onclick = function(){
-  state = {}; save(); render(); score();
-};
-document.getElementById("reveal").onclick = function(){
-  var i, j;
-  var boxes = wrap.children;
-  for (i = 0; i < PRACTICE.length; i++) {
-    if (state["a" + i]) continue;
-    var ws = boxes[i].querySelectorAll(".pw");
-    for (j = 0; j < ws.length; j++) {
-      ws[j].disabled = true;
-      if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");
-    }
-    var nd = boxes[i].querySelector(".nudge");
-    nd.classList.remove("warn");
-    nd.textContent = PRACTICE[i].why;
+/* The legend's four steps say nothing about the leftover number sitting at
+   the bottom of a remainder problem. Add a fifth only when this lesson's own
+   demo actually has one, so the no-remainder lesson's legend is unchanged. */
+if (S.remainder > 0){
+  var legendEl = document.querySelector(".legend");
+  if (legendEl){
+    var remSpan = document.createElement("span");
+    remSpan.innerHTML = "<b>Remainder</b> what's left over, always smaller than the divisor";
+    legendEl.appendChild(remSpan);
   }
-  /* ⚠️ Reveal has to cover Part B too. It used to walk one list, and after the
-     split that silently left half the worksheet unanswered. */
-  var kboxes = kwrap.children;
-  for (i = 0; i < SORT.length; i++) {
-    if (state["b" + i]) continue;
-    var kb = kboxes[i].querySelectorAll(".kbtn");
-    for (j = 0; j < kb.length; j++) {
-      kb[j].disabled = true;
-      if ((j === 0 ? "action" : "being") === SORT[i].kind) kb[j].classList.add("reveal");
-    }
-    var knd = kboxes[i].querySelector(".nudge");
-    knd.classList.remove("warn");
-    knd.textContent = SORT[i].why;
-  }
-};
+}
 
-render();
+/* ── the problems he fills in ─────────────────────────────────────────── */
+var host = document.getElementById("problems");
+var solved = 0;
+var PROBLEMS = [];
+
+/* Two modes, the same bracket.
+   PRACTICE catches a wrong digit at the digit, which is how you build the
+   habit. TEST lets every wrong digit stand and marks the paper at the end,
+   which is how you find out you never really had it. Paul, 2026-08-26. */
+var MODE = "practice";
+var BOXES = [];                       /* every input on the page, in answer order */
+
+/* Test mode moves the cursor along for him but never judges the digit. Paul,
+   2026-08-26: "practice should lead you through all the boxes while test
+   doesn't lead you." Leading here means the cursor, not the answer. */
+function stepTo(from, dir){
+  var i = -1;
+  for (var k = 0; k < BOXES.length; k++){ if (BOXES[k].el === from){ i = k; break; } }
+  if (i < 0) return;
+  var next = BOXES[i + (dir || 1)];
+  if (!next) return;
+  next.el.focus();
+  if (next.el.parentElement.scrollIntoView) {
+    next.el.parentElement.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+}
+
+function renderSet(list, label){
+  PROBLEMS = list;
+  solved = 0;
+  BOXES = [];
+  host.innerHTML = "";
+  /* Check my work belongs to Test only. Practice already checks every digit. */
+  document.getElementById("check").hidden = MODE !== "test";
+  document.getElementById("modenote").textContent = MODE === "practice"
+    ? "A wrong digit clears itself and tells you which of the four steps you're on. The next digit drops down once you've finished the subtraction."
+    : "Nothing gets checked as you go. Fill in the whole bracket, wrong digits and all, then press Check my work. This is the one that tells you what you actually know.";
+  list.forEach(addProblem);
+  paintScore();
+}
+
+function addProblem(P, pi){
+  var PS = solve(P.dividend, P.divisor);
+  var box = document.createElement("div");
+  box.className = "prob";
+  box.setAttribute("data-i", pi);
+  box.innerHTML =
+    '<div class="probhead"><span class="probnum">Problem ' + (pi + 1) + '</span>' +
+    '<span class="tag">' + P.dividend + " ÷ " + P.divisor + '</span></div>' +
+    '<div class="gridwrap"><div class="dgrid"></div></div>' +
+    '<p class="nudge"></p>';
+  host.appendChild(box);
+
+  var g = build(box.querySelector(".dgrid"), PS, SPEC.allowRemainder);
+  var nudge = box.querySelector(".nudge");
+  var tag = box.querySelector(".tag");
+  var queue = [];
+
+  PS.steps.forEach(function(st, k){
+    queue.push({ cell: g.at(0, st.i + 1), want: st.q,
+      ask: "Divide. How many " + PS.divisor + "s fit into " + st.cur + "? Put it on top." });
+    slots(g, 2 + k * 2, st.prod, st, { minus: true, under: true }).forEach(function(s){
+      queue.push({ cell: s.cell, want: s.want,
+        ask: "Multiply. " + st.q + " times " + PS.divisor + ". Write it underneath." });
+    });
+    var isFinalRemainder = PS.remainder > 0 && st.bring === undefined;
+    slots(g, 3 + k * 2, st.diff, st, {}).forEach(function(s){
+      queue.push({ cell: s.cell, want: s.want,
+        ask: isFinalRemainder
+          ? "Subtract. " + st.cur + " minus " + st.prod + ". That's your remainder."
+          : "Subtract. " + st.cur + " minus " + st.prod + " is what?" });
+    });
+    if (st.bring !== undefined) queue.push({ bring: true, cell: g.at(3 + k * 2, st.i + 2), want: st.bring });
+  });
+
+  /* The remainder up top is TYPED, not filled in for him - Paul, 2026-08-30:
+     "they need to put the remainder at the top dont just automatically do it
+     for them." It is the last thing in the queue, because it is not known
+     until every step below it is done. */
+  if (SPEC.allowRemainder && g.remCell){
+    queue.push({ cell: g.remCell, want: PS.remainder,
+      ask: "Now write that remainder up here, next to your answer." });
+  }
+
+  queue.forEach(function(q){
+    /* In PRACTICE the bring-down is something to watch, so it drops in on its
+       own. In TEST he writes it himself: Paul, 2026-08-26, "they should write
+       both numbers not just the first one." */
+    if (q.bring && MODE === "practice") return;
+
+    var inp = document.createElement("input");
+    inp.type = "text";
+    inp.inputMode = "numeric";
+    inp.maxLength = 1;
+    inp.setAttribute("aria-label", "digit");
+    /* A space placeholder is what lets :placeholder-shown mean "still empty",
+       which is how an untouched box is faded without fading a typed digit. */
+    inp.placeholder = " ";
+    inp.disabled = MODE === "practice";
+    q.el = inp;
+    q.cell.appendChild(inp);
+
+    if (MODE === "test"){
+      BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P });
+      /* Tap any box to go back and change it, and typing replaces what is
+         there rather than being swallowed by maxLength. */
+      inp.addEventListener("focus", function(){ inp.select(); });
+      inp.addEventListener("input", function(){
+        var v = inp.value.replace(/[^0-9]/g, "");
+        inp.value = v;
+        if (v !== "") stepTo(inp);      /* no marking, just move the cursor on */
+      });
+      inp.addEventListener("keydown", function(e){
+        if (e.key === "Backspace" && inp.value === "") stepTo(inp, -1);
+      });
+      return;
+    }
+    inp.addEventListener("input", function(){
+      var v = inp.value.replace(/[^0-9]/g, "");
+      inp.value = v;
+      if (v === "") return;
+      if (Number(v) === q.want){
+        /* Kill any pending wrong-answer wipe first. Without this, a wrong digit
+           followed quickly by the right one erased the right one 320ms later. */
+        clearTimeout(q.timer);
+        inp.classList.remove("bad");
+        inp.classList.add("ok");
+        inp.disabled = true;
+        nudge.classList.remove("warn");
+        advance();
+      } else {
+        inp.classList.add("bad");
+        nudge.classList.add("warn");
+        nudge.textContent = "Not that one. " + q.ask;
+        clearTimeout(q.timer);
+        q.timer = setTimeout(function(){
+          inp.classList.remove("bad");
+          if (!inp.classList.contains("ok")) inp.value = "";
+        }, 320);
+      }
+    });
+  });
+
+  var pos = 0;
+  function advance(){
+    pos++;
+    /* the bring-down is something to watch, not something to type */
+    while (pos < queue.length && queue[pos].bring){
+      queue[pos].cell.textContent = queue[pos].want;
+      queue[pos].cell.classList.add("drop");
+      pos++;
+    }
+    if (pos >= queue.length){ finish(); return; }
+    var q = queue[pos];
+    q.el.disabled = false;
+    q.el.focus();
+    /* On a phone the next box is often below the keyboard. Keep it on screen. */
+    if (q.cell.scrollIntoView) q.cell.scrollIntoView({ block: "center", behavior: "smooth" });
+    nudge.classList.remove("warn");
+    nudge.textContent = q.ask;
+  }
+
+  function finish(){
+    box.classList.add("solved");
+    tag.classList.add("done");
+    var remTag = PS.remainder > 0 ? " with a remainder of " + PS.remainder : "";
+    tag.textContent = P.dividend + " ÷ " + P.divisor + " = " + PS.quotient + remTag;
+    nudge.classList.remove("warn");
+    nudge.textContent = PS.remainder > 0
+      ? "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
+      : "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " = " + P.dividend + ".";
+    solved++;
+    save();
+    paintScore();
+  }
+
+  if (MODE === "test"){
+    nudge.textContent = "";
+    return;
+  }
+  queue[0].el.disabled = false;
+  nudge.textContent = queue[0].ask;
+}
+
+/* ── marking the test ─────────────────────────────────────────────────── */
+function markTest(){
+  var right = 0, blank = 0;
+  var perBox = {};
+  BOXES.forEach(function(b){
+    var v = b.el.value.replace(/[^0-9]/g, "");
+    b.el.classList.remove("ok", "wrong");
+    if (v === ""){ blank++; }
+    else if (Number(v) === b.want){ b.el.classList.add("ok"); right++; }
+    else { b.el.classList.add("wrong"); }
+    b.el.disabled = true;
+    var key = b.box.getAttribute("data-i");
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box, PS: b.PS, P: b.P };
+    if (v === "" || Number(v) !== b.want) perBox[key].ok = false;
+  });
+
+  solved = 0;
+  Object.keys(perBox).forEach(function(k){
+    var r = perBox[k];
+    var tag = r.box.querySelector(".tag");
+    var nudge = r.box.querySelector(".nudge");
+    var remMark = r.PS.remainder > 0 ? " with a remainder of " + r.PS.remainder : "";
+    if (r.ok){
+      solved++;
+      r.box.classList.add("solved");
+      tag.classList.add("done");
+      tag.textContent = r.P.dividend + " ÷ " + r.P.divisor + " = " + r.PS.quotient + remMark;
+      nudge.classList.remove("warn");
+      nudge.textContent = "Right the whole way down.";
+    } else {
+      nudge.classList.add("warn");
+      nudge.textContent = "The answer is " + r.PS.quotient + remMark +
+        ". Every red digit is where it went wrong. Try that one again in Practice.";
+    }
+  });
+
+  document.getElementById("check").disabled = true;
+  save();
+  var el = document.getElementById("scorebar");
+  el.innerHTML = "<b>" + solved + " of " + PROBLEMS.length + " problems fully right.</b>" +
+    '<p style="margin:6px 0 0;color:var(--dim)">' + right + " of " + BOXES.length +
+    " digits correct" + (blank ? ", " + blank + " left blank" : "") +
+    ". Press New problems for another test.</p>";
+}
+
+/* Today's set, a button for a fresh one, and the two modes. */
+var currentSeed = today(), currentLabel = "Today's set";
+
+function reload(seed, label){
+  currentSeed = seed; currentLabel = label;
+  document.getElementById("check").disabled = false;
+  renderSet(makeSet(seed), label);
+}
+
+reload(currentSeed, currentLabel);
+
+document.getElementById("reroll").addEventListener("click", function(){
+  reload(String(Date.now()), "A fresh set");
+  host.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("check").addEventListener("click", markTest);
+
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m;
+  var pt = document.getElementById("tabPractice"), tt = document.getElementById("tabTest");
+  pt.classList.toggle("on", m === "practice");
+  tt.classList.toggle("on", m === "test");
+  pt.setAttribute("aria-selected", String(m === "practice"));
+  tt.setAttribute("aria-selected", String(m === "test"));
+  /* Same problems in both modes, so a test can be worked again in practice. */
+  reload(currentSeed, currentLabel);
+}
+document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
+document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
+
+/* ── progress, stored the way the other lessons store it ──────────────── */
+function save(){
+  try {
+    localStorage.setItem("ns:prog:" + LESSON_ID, JSON.stringify({
+      done: solved, total: PROBLEMS.length, complete: solved === PROBLEMS.length
+    }));
+  } catch (e) {}
+}
+function paintScore(){
+  var el = document.getElementById("scorebar");
+  el.innerHTML = solved === PROBLEMS.length
+    ? "<b>All " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That\'s the lesson finished.</p>'
+    : "<b>" + solved + " of " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Work down the boxes in order. ' +
+      "A wrong digit clears itself, so nothing's lost.</p>";
+}
+paintScore();
+
 })();
-</script>
-
-<script src="/assets/supabase-config.js"></script>
-<script src="/assets/ns-account.js"></script>
-<script src="/assets/lesson-shared.c34d45ea.js"></script>
-</body>
-</html>

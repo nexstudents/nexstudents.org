@@ -95,6 +95,22 @@ for (const f of files) {
     if (out !== html) { touched++; if (!DRY) fs.writeFileSync(f, out, 'utf8'); }
 }
 
+/* Same sweep as split-lesson-engine.js: these files are hash-named, so editing
+   the player writes a new one and orphans the old. Remove what nothing links. */
+if (!DRY) {
+    const wanted = new Set();
+    for (const f of files)
+        for (const m of fs.readFileSync(f, 'utf8').matchAll(/\/assets\/(lesson-shared\.[^"']+)/g))
+            wanted.add(m[1]);
+    let swept = 0;
+    for (const f of fs.readdirSync(ASSETS)) {
+        if (!/^lesson-shared\./.test(f) || wanted.has(f)) continue;
+        fs.unlinkSync(path.join(ASSETS, f)); swept++;
+        console.log(`  swept stale asset: ${f}`);
+    }
+    if (swept) console.log(`  ${swept} orphaned asset(s) removed`);
+}
+
 const pct = before ? Math.round((1 - after / before) * 100) : 0;
 console.log(`\n  ${touched} of ${files.length} pages rewritten${DRY ? '  (DRY RUN, nothing written)' : ''}`);
 console.log(`  pages: ${(before / 1048576).toFixed(1)} MB -> ${(after / 1048576).toFixed(1)} MB   (${pct}% smaller)`);
