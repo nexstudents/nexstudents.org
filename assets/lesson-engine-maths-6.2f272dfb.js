@@ -1,360 +1,137 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://nexstudents.org/lessons/maths/estimation-using-patterns/">
-<meta property="og:site_name" content="NexStudents">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://nexstudents.org/lessons/maths/estimation-using-patterns/">
-<meta property="og:title" content="Estimation Strategy: Using Patterns | NexStudents">
-<meta property="og:description" content="Once you know one small multiplication fact, patterns let you estimate huge ones in your head.">
-<meta property="og:image" content="https://nexstudents.org/assets/brand/share.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Estimation Strategy: Using Patterns | NexStudents">
-<meta name="twitter:description" content="Once you know one small multiplication fact, patterns let you estimate huge ones in your head.">
-<meta name="twitter:image" content="https://nexstudents.org/assets/brand/share.png">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://nexstudents.org/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "7th Grade Math",
-      "item": "https://nexstudents.org/grade-7/maths/lessons/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Estimation Strategy: Using Patterns"
-    }
-  ]
-}
-</script>
-<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
-<link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
-<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<title>Estimation Strategy: Using Patterns | NexStudents</title>
-<meta name="description" content="A NexStudents history lesson: read along, then find the answers in the text.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-<link rel="stylesheet" href="/assets/lesson-shared.977696a1.css">
-<link rel="stylesheet" href="/assets/lesson-nav.css">
-<style>
-  /* The site nav reads six variables of its own; map them onto this page's
-     palette so the nav re-themes with the lesson. */
-  :root{--nv-bg:var(--surface);--nv-fg:var(--ink);--nv-dim:var(--ink-soft);
-    --nv-line:var(--rule);--nv-accent:var(--verdigris);--nv-on:var(--on-accent)}
-</style>
-</head>
-<body>
-<div class="scrim" id="scrim"></div>
-<div class="menucol" id="menucol">
-<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
-  <button class="x" id="drawerClose" aria-label="Close menu">&times;</button>
-  <a class="dl" href="/">Home<small>Start here</small></a>
-  <button class="dl dl-open" type="button" data-sub="gr">Grades<small>K through 8</small><i aria-hidden="true">&#8250;</i></button>
-  <button class="dl dl-open" type="button" data-sub="r">Resources<small>Tools we use</small><i aria-hidden="true">&#8250;</i></button>
-  <button class="dl dl-open" type="button" data-sub="g">Games<small>Play in the browser</small><i aria-hidden="true">&#8250;</i></button>
-  <button class="dl dl-open" type="button" data-sub="c">Comics<small>Read on the site</small><i aria-hidden="true">&#8250;</i></button>
-  <button class="dl dl-open" type="button" data-sub="p">For Parents<small>Placement exams</small><i aria-hidden="true">&#8250;</i></button>
-  <a class="dl" href="/extras/">Extras<small>Reading log and more</small></a>
-  <a class="navbtn" href="https://www.paypal.com/donate/?hosted_button_id=PZ9D8N9KVURDA" target="_blank" rel="noopener">Support Us</a>
-  <button class="mswitch mswitch-drawer" type="button" data-mode-toggle aria-label="Switch between day and night"><span class="mswitch-track"><span class="mswitch-knob"></span></span><span data-mode-label>Night Mode</span></button>
-</aside>
-<div class="dsubs" id="dsubs"><aside class="dsub" data-subpanel="gr" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Grades</h3><div class="dsub-body"><div class="dst-grid"><a class="dst" href="/grade-k/" aria-label="Kindergarten"><b>K</b></a><a class="dst" href="/grade-1/" aria-label="Grade 1"><b>1</b></a><a class="dst" href="/grade-2/" aria-label="Grade 2"><b>2</b></a><a class="dst" href="/grade-3/" aria-label="Grade 3"><b>3</b></a><a class="dst" href="/grade-4/" aria-label="Grade 4"><b>4</b></a><a class="dst" href="/grade-5/" aria-label="Grade 5"><b>5</b></a><a class="dst" href="/grade-6/" aria-label="Grade 6"><b>6</b></a><a class="dst" href="/grade-7/" aria-label="Grade 7"><b>7</b></a><a class="dst" href="/grade-8/" aria-label="Grade 8"><b>8</b></a></div></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></aside>
-<aside class="dsub" data-subpanel="r" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Resources</h3><div class="dsub-body"><a class="dsr view" href="/resources/">View Resources</a><a class="dsr" href="/resources/">What We Use<small>Books, tools and supplies</small></a><a class="dsr" href="/resources/books-and-readers/">Books and Readers<small>What he actually reads</small></a><a class="dsr" href="/resources/tools-and-supplies/">Tools and Supplies<small>Paper, pencils, the desk</small></a><a class="dsr" href="/resources/science-experiments/">Science Experiments<small>Run them at home</small></a><a class="dsr" href="/resources/reading-lists/">Reading Lists<small>By grade</small></a><a class="dsr" href="/blog/">Blog<small>How we teach it</small></a><a class="dsr" href="/resources/placement-tests/">Placement Tests<small>Free, and not ours</small></a></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></aside>
-<aside class="dsub" data-subpanel="g" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Games</h3><div class="dsub-body"><a class="dsr view" href="/games/">View Games</a><a class="dsr" href="/games/speed-run-math/">Speed Run Math<small>Multiplication, timed</small></a><a class="dsr" href="/games/remainder-race/">Remainder Race<small>Being built</small></a><a class="dsr" href="/games/fraction-match/">Fraction Match<small>Being built</small></a><a class="dsr" href="/games/spelling-ladder/">Spelling Ladder<small>Being built</small></a><a class="dsr" href="/games/comma-catcher/">Comma Catcher<small>Being built</small></a><a class="dsr" href="/games/show-me-the-states/">Show Me The States<small>Fifty states and capitals</small></a><a class="dsr" href="/games/sort-the-mixture/">Sort the Mixture<small>Being built</small></a></div></aside>
-<aside class="dsub" data-subpanel="c" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>Comics</h3><div class="dsub-body"><a class="dsr view" href="/comics/">View Comics</a><a class="dsr" href="/comics/">Donut Boy<small>8 episodes</small></a><a class="dsr" href="/comics/more-strips/">More Strips<small>What is coming</small></a></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></aside>
-<aside class="dsub" data-subpanel="p" aria-hidden="true"><button class="dsub-back" type="button" data-sub-back="">&#8249; Menu</button><h3>For Parents</h3><div class="dsub-body"><a class="dsr view" href="/for-parents/">View For Parents</a><a class="dsr" href="/placement-exam.html">Reading Placement Exam</a><a class="dsr" href="/resources/">What We Use</a><a class="dsr" href="/about/">About</a><a class="dsr" href="/contact/">Contact</a></div></aside></div>
-</div>
 
-<nav id="nav" class="ns-nav"><div class="nv">
-  <!-- 🚨 BURGER AND HOME SHARE ONE GRID CELL.
-       On mobile .nv is a THREE column grid - 1fr auto 1fr - so the logo sits
-       dead centre. Adding the home icon as a fourth grid item pushed the
-       logo, account and cart onto a second row. Paul saw it immediately:
-       "well you moved all the logo cart and login".
-       Wrapping both controls in .navleft keeps the grid at three items, so
-       the logo stays centred and the icon still sits beside the burger. -->
-  <div class="navleft">
-    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-      <i></i><i></i><i></i>
-    </button>
-    <!-- 🚨 HOME IS AN ICON IN THE HEADER, NOT A BREADCRUMB CRUTCH.
-         Paul, 2026-09-02: "i dont even like how that is even an option on that
-         home name being the home button. can we just add a home icon on the
-         header next to the hamburger?" and "we dont need Home> Terms of Use".
-         A breadcrumb whose only rung is Home is not navigation, it is a link
-         wearing a costume. The icon is always there, on every page, in the same
-         place - which is what a reader actually wants from a way home.
-         ⚠️ The wordmark also links home; that is deliberate redundancy, not a
-         duplicate to clean up. The icon is a target, the wordmark is a brand. -->
-    <a class="homeb" href="/" aria-label="Home" title="Home">
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
-    </a>
-  </div>
-  <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
-  <div class="tabs"><a class="mg-top" href="/">Home</a><a class="mg-top" href="/#grades" data-menu="gr" aria-haspopup="true" aria-expanded="false">Grades</a><a class="mg-top" href="/resources/" data-menu="r" aria-haspopup="true" aria-expanded="false">Resources</a><a class="mg-top" href="/games/" data-menu="g" aria-haspopup="true" aria-expanded="false">Games</a><a class="mg-top" href="/comics/" data-menu="c" aria-haspopup="true" aria-expanded="false">Comics</a><a class="mg-top" href="/for-parents/" data-menu="p" aria-haspopup="true" aria-expanded="false">For Parents</a><a class="mg-top" href="/extras/">Extras</a></div>
-  
-  <div class="navicons"><a class="navicon" href="/account/" aria-label="Sign in" title="Sign in"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></a><a class="navicon" id="cartLink" href="/cart/" aria-label="Cart" title="Cart"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2 11h9.9l2-8H6.4"/><circle cx="9.5" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg><span class="cartn" id="cartn" hidden aria-hidden="true"></span></a></div>
-</div>
-<div class="mg-panel" id="megapanel" aria-hidden="true"><div class="mg-inner" data-for="gr"><div class="mg-body"><div class="mg-grades"><a class="mg-grade live" href="/grade-k/"><b>K</b><span>Live</span></a><a class="mg-grade live" href="/grade-1/"><b>1</b><span>Live</span></a><a class="mg-grade live" href="/grade-2/"><b>2</b><span>Live</span></a><a class="mg-grade live" href="/grade-3/"><b>3</b><span>Live</span></a><a class="mg-grade live" href="/grade-4/"><b>4</b><span>Live</span></a><a class="mg-grade live" href="/grade-5/"><b>5</b><span>Live</span></a><a class="mg-grade live" href="/grade-6/"><b>6</b><span>Live</span></a><a class="mg-grade live" href="/grade-7/"><b>7</b><span>Live</span></a><a class="mg-grade live" href="/grade-8/"><b>8</b><span>Live</span></a></div><p class="mg-note">Organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p></div><a class="mg-promo" href="/worksheets/history/us-history-semester-1/" style="--promo-ratio:1/1"><img src="/worksheets/history/us-history-semester-1/thumb.jpg" alt="Complete 8th Grade US History, Units 1 to 5 bundle" decoding="async"><b>8th Grade US History</b></a></div><div class="mg-inner" data-for="r"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>What We Use</h4><ul><li><a href="/resources/books-and-readers/">Books and Readers</a></li><li><a href="/resources/tools-and-supplies/">Tools and Supplies</a></li></ul></div><div class="mg-col"><h4>Extras</h4><ul><li><a href="/resources/science-experiments/">Science Experiments</a></li><li><a href="/resources/reading-lists/">Reading Lists</a></li></ul></div><div class="mg-col"><h4>Writing</h4><ul><li><a href="/blog/">Blog</a></li><li><a href="/resources/placement-tests/">Placement Tests</a></li></ul></div></div><p class="mg-note">Things we actually use, not a list copied off somebody else&rsquo;s blog. Any affiliate link is marked as one. Lessons and printables are not here &mdash; they live under each grade.</p><p class="mg-all"><a href="/resources/">All resources &rarr;</a></p></div><a class="mg-promo" href="/worksheets/history/lewis-and-clark/" style="--promo-ratio:1/1"><img src="/worksheets/history/lewis-and-clark/thumb.jpg" alt="Lewis and Clark, the Corps of Discovery worksheet" decoding="async"><b>Free &middot; Lewis and Clark</b></a></div><div class="mg-inner" data-for="g"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Math</h4><ul><li><a href="/games/speed-run-math/">Speed Run Math</a></li><li><a href="/games/remainder-race/">Remainder Race</a></li><li><a href="/games/fraction-match/">Fraction Match</a></li></ul></div><div class="mg-col"><h4>English</h4><ul><li><a href="/games/spelling-ladder/">Spelling Ladder</a></li><li><a href="/games/comma-catcher/">Comma Catcher</a></li></ul></div><div class="mg-col"><h4>History</h4><ul><li><a href="/games/show-me-the-states/">Show Me The States</a></li></ul></div><div class="mg-col"><h4>Science</h4><ul><li><a href="/games/sort-the-mixture/">Sort the Mixture</a></li></ul></div></div><p class="mg-note">Two are playable now. The rest have a page saying what they will be.</p><p class="mg-all"><a href="/games/">All games &rarr;</a></p></div></div><div class="mg-inner" data-for="c"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Donut Boy</h4><ul><li><a href="/comics/">Start at Episode 1</a></li><li><a href="/comics/">All 8 Episodes</a></li></ul></div><div class="mg-col"><h4>More strips</h4><ul><li><a href="/comics/more-strips/">What Is Coming</a></li></ul></div></div><p class="mg-note">The Adventures of Donut Boy: The Hole Wonder. Read on the site, nothing to download.</p><p class="mg-all"><a href="/comics/">All comics &rarr;</a></p></div><a class="mg-promo" href="/comics/" style="--promo-ratio:3/2"><img src="/assets/comics/donut-boy-cover.jpg" alt="The Adventures of Donut Boy cover" decoding="async"><b>Donut Boy &middot; 8 episodes</b></a></div><div class="mg-inner" data-for="p"><div class="mg-body"><div class="mg-cols"><div class="mg-col"><h4>Placement</h4><ul><li><a href="/placement-exam.html">Reading Placement Exam</a></li></ul></div><div class="mg-col"><h4>Planning</h4><ul><li><a href="/resources/">What We Use</a></li><li><a href="/about/">About NexStudents</a></li><li><a href="/contact/">Contact</a></li></ul></div></div><p class="mg-all"><a href="/for-parents/">All for parents &rarr;</a></p></div></div></div>
-</nav>
-<div class="cscrim" id="cscrim"></div><aside class="cdrawer" id="cdrawer" aria-hidden="true" aria-label="Cart"><div class="cd-top"><h2 class="cd-h">Cart <span class="cd-n" id="cdN">0</span></h2><button class="cd-x" id="cdClose" type="button" aria-label="Close cart">&times;</button></div><div class="cd-body" id="cdBody"></div><div class="cd-foot"><div class="cd-tot"><span>Total</span><span id="cdTotal">&mdash;</span></div><div class="cd-acts"><a class="navbtn" href="/cart/"><span>View Cart</span></a><a class="navbtn" href="/cart/"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="12" height="8" rx="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg><span>Check Out</span></a></div></div></aside>
-
-  <div class="ns-back"><a href="/grade-7/maths/lessons/">&larr; 7th Grade Math</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.dea6d1b8.css">
-
-<div class="wrap">
-
-  <header class="mast">
-    <div class="eyebrow">
-      <span id="eyebrow0">Math</span><span class="dot"></span>
-      <span>Chapter 1 &middot; Lesson 1-3</span><span class="dot"></span>
-      <span>Tools for Problem Solving</span>
-    </div>
-    <h1>Estimation Strategy: Using Patterns</h1>
-    <p class="dek">Once you know one small multiplication fact, patterns let you estimate huge ones in your head.</p>
-  </header>
-
-  <!-- Teacher notes. Collapsed, above the reading, filled by build-lessons.js from
-       the lesson's `ground` block; the whole slot is empty for a lesson without one.
-       🚨 NO ANSWER KEY IN HERE - a <details> is not a lock and this page is public.
-       See requireGround() in build-lessons.js and ROADMAP item 23. -->
-  <details class="ground">
-    <summary>Teacher Notes</summary>
-    <div class="gbody">
-      <div class="gscore" id="gscore">
-        <p class="gscore-line" id="gscoreline">Not started yet.</p>
-        <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
-      </div>
-      <h3>Lesson Goal</h3>
-      <p>Students will estimate products and quotients using patterns: round one factor, or the divisor, to its greatest place value, then multiply or divide a short string of easy facts to reach the estimate.</p>
-      <h3>Key Concepts</h3>
-      <p>For multiplication, round the larger factor and leave a one-digit factor alone, then build a pattern by multiplying the small fact by ten each step. For division, round the divisor first and swap the dividend for a nearby number that divides evenly.</p>
-      <h3>Where Students Get Stuck</h3>
-      <p>Rounding the dividend before the divisor in a division problem gets the steps backwards. It also helps to say the pattern's easy fact out loud before multiplying zeros onto it, rather than jumping straight to the big number.</p>
-      <h3>Teaching Suggestion</h3>
-      <p>Give him a two- or three-digit multiplication problem from a grocery receipt or a sports stat and have him build the pattern by hand before checking it on a calculator.</p>
-      <h3>Key Vocabulary</h3>
-      <dl><dt>Pattern</dt><dd>A string of simple facts, like 3 times 5, 30 times 5, 300 times 5, that lets you multiply big rounded numbers in your head.</dd><dt>Divisor</dt><dd>The number you're dividing by. Round this one first when you estimate a quotient.</dd><dt>Dividend</dt><dd>The number being divided. Swap it for a nearby number that divides evenly once the divisor is rounded.</dd><dt>Quotient</dt><dd>The answer to a division problem, the thing a pattern helps you estimate quickly.</dd></dl>
-    </div>
-  </details>
-
-  <div class="player" id="player">
-    <div class="pcontrols">
-      <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
-      <label class="playerhide" for="playerhide" title="Show or hide the settings" aria-label="Show or hide the settings">
-        <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the settings">
-        <span class="track" aria-hidden="true"><span class="knob"></span></span>
-      </label>
-      <button class="btn" id="back" title="Back one sentence" aria-label="Back one sentence">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13 2.5v11L5.5 8 13 2.5zM4 2.5h1.6v11H4z"/></svg>
-      </button>
-      <button class="btn primary" type="button" id="play" aria-label="Read to me" title="Read to me"><svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.2l9 5.8-9 5.8z"/></svg></button>
-      <button class="btn" id="fwd" title="Forward one sentence" aria-label="Forward one sentence">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 2.5v11L10.5 8 3 2.5zM10.4 2.5H12v11h-1.6z"/></svg>
-      </button>
-    </div>
-    <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Jump to a sentence" aria-valuemin="1" aria-valuemax="26" aria-valuenow="1"></div>
-    <div class="pmeta">
-      <span id="pos">Sentence 1 of 26</span>
-      <span class="phint">Tap any sentence to start reading there</span>
-    </div>
-    <details class="psettings" id="psettings">
-      <summary><span>Settings</span><svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></summary>
-    <div class="voicerow" id="speedrow">
-      <label for="rate">Speed</label>
-      <select class="rate" id="rate" aria-label="Reading speed">
-        <option value="0.7">Slow</option>
-        <option value="0.85" selected>Normal</option>
-        <option value="1">Fast</option>
-      </select>
-    </div>
-    <div class="voicerow" id="voicerow">
-      <label for="voice">Voice</label>
-      <div class="vsel" id="vsel">
-        <button class="vsel-trigger" id="vselBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
-          <span id="vselLabel">Voice</span>
-          <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg>
-        </button>
-        <ul class="vsel-list" id="vselList" role="listbox" hidden></ul>
-      </div>
-      <select class="rate" id="voice" aria-label="Choose a reading voice" hidden></select>
-    </div>
-
-    <div class="keytogglerow">
-      <button class="linkbtn keydisclose" type="button" id="keyToggle" aria-expanded="false" aria-controls="keyrow">Use My Personal API (Voice) Key<svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></button>
-    </div>
-    <div class="keyrow" id="keyrow">
-      <p class="keydisc"><span aria-hidden="true">&#128274;</span><span><b>Stored on this device only.</b> Your key stays in this browser. It is never sent to NexStudents, never shared, and never leaves your machine except to the voice provider it belongs to.</span></p>
-      <label for="ttskey">Your API key</label>
-      <div class="keyfield">
-        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
-        <button class="btn" type="button" id="keySave">Save</button>
-        <button class="btn" type="button" id="keyClear">Clear</button>
-      </div>
-      <p class="keynote" id="keynote"><b>Where to get a key.</b> <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener">Google Cloud TTS</a> powers the built-in voices on this page and has a free monthly allowance. <a href="https://elevenlabs.io/" target="_blank" rel="noopener">ElevenLabs</a> is worth a look if you want a more natural voice and do not mind setting up an account.</p>
-    </div>
-    <div class="themerow" id="themerow">
-      <span class="lbl">Colors</span>
-      <div class="swatches" id="swatches"></div>
-    </div>
-    </details>
-
-    <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
-  </div>
-
-
-
-  <!-- 🚨 THE EXPLAINER. Hidden until script turns it on, and it stays hidden for
-       the whole life of a lesson with no VISUALS - an empty pinned frame takes
-       reading height and gives nothing back.
-       ⚠️ THE STORY UNDERNEATH IS ALWAYS WHOLE. An earlier attempt paged it into
-       one section at a time and Paul killed it: "this does conflict with find in
-       story mode." Every question can send a student back into the story, and
-       half the answers were in a section the pager had hidden. -->
-  <div class="dbox is-blank" id="dbox" hidden>
-    <!-- 🚨 THE SENTENCE BEING READ, ALWAYS. Paul, 2026-09-05: "i wonder if we
-         could put the sentences in the visual panel along with the examples
-         maybe across the top it just shows the sentence as a small text to read
-         when there is an example it show the example. this would also give you a
-         starting point where the example lands and how long it appears."
-         It also fixes something the blank state got wrong: with only the example
-         in here, the panel sat empty between frames and there was no way to see
-         WHERE a frame began or how long it stood. The sentence line runs the
-         whole time, so an example arriving is visible against it. -->
-    <p class="dbox-sent" id="dboxsent" aria-live="polite"></p>
-    <div class="dbox-in" aria-live="polite">
-      <p class="dbox-kind"></p>
-      <div class="dbox-art" hidden></div>
-      <!-- 🚨 ONE REGION, SO IT CAN BE RESERVED. The example and its note are the
-           only two things left that change height frame to frame, and they are
-           wrapped together for the same reason the sentence bar has a fixed
-           height: the panel holds one size and the type shrinks to fit, rather
-           than the box growing and pushing the story down mid-paragraph. -->
-      <div class="dbox-words">
-        <p class="dbox-line"></p>
-        <p class="dbox-note"></p>
-      </div>
-    </div>
-    <!-- 🚨 THE PANEL SAYS ITS OWN NAME. Paul, 2026-09-05: "we should just call it
-         the visual panel if i can remember what it is is called. remind me that
-         it is called that so i can remember. you could just name that in the
-         bottom actually for all the lessons."
-         The footer is also the whole panel when it is collapsed, so the name is
-         on screen either way, and there is no state where the control is visible
-         without the thing it controls being named. -->
-    <div class="dbox-foot">
-      <button class="dbox-x" type="button" id="dboxx" aria-expanded="true">Close Visual Panel</button>
-    </div>
-  </div>
-
-  <div class="picfull" id="picfull" hidden></div>
-
-  <main id="story"></main>
-
-  <!-- 🚨 THE WORKED PROBLEMS SIT BETWEEN THE READING AND THE QUESTIONS, because
-       that is where the book puts them: you read the method, you use it on two
-       problems, and only then are you asked about it. Built by script from WORK,
-       and removed outright when a lesson has none. -->
-  <section id="worked" hidden></section>
-
-  <div class="daysec" id="day1">
-    <div class="dayhead">
-      <div>
-        <p class="daytag">Part One</p>
-        <h2 class="section-head">The Questions</h2>
-      </div>
-      <span class="dayprog" id="prog1">0 of 0</span>
-    </div>
-    <div class="daybar"><i id="bar1"></i></div>
-    <!-- 🚨 THE COUNT IS FILLED IN BY SCRIPT, NEVER TYPED. This line read "Four
-         questions about the story you just read" on every lesson, hardcoded, and
-         Kinds of Sentences has TEN. Same class of stale number as the deks and
-         blurbs caught on 2026-09-03: a count written in prose goes wrong the
-         moment the data changes and nothing complains.
-         ⚠️ The fallback text below carries NO number, so if the script never
-         runs the sentence is still true. -->
-    <p class="section-note" id="day1note">Questions about the story you just read. Pick your answer straight off, or press Find it in the story if you would rather hunt for the sentence first.</p>
-    <div id="questions1"></div>
-  </div>
-
-  <div class="daysec" id="day2">
-    <div class="dayhead">
-      <div>
-        <p class="daytag">Part Two</p>
-        <h2 class="section-head">The Words</h2>
-      </div>
-      <span class="dayprog" id="prog2">0 of 0</span>
-    </div>
-    <div class="daybar"><i id="bar2"></i></div>
-    <!-- ⚠️ This note used to name the printed Leif the Lion workbook the Rome lessons were
-         built from. It is hardcoded and never replaced per lesson, so all four science
-         lessons pointed at a printed thing that does not exist. Found 2026-09-03 while
-         fixing the todo block's day order; the answer feedback further down said it too.
-         🚨 BOTH DAY NOTES ARE SHARED BY EVERY LESSON. Keep them true of any lesson:
-         no book, no subject, no lesson number. -->
-    <p class="section-note">Four words from the reading. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
-    <div class="cards" id="cards"></div>
-    <h3 class="sub-head">Vocabulary Check</h3>
-    <div id="questions2"></div>
-  </div>
-
-  <div class="score" id="score"></div>
-
-  <div class="status" id="status">
-    <div class="statusline">
-      <span class="mark" id="statusMark"></span>
-      <span id="statusText"></span>
-    </div>
-    <button class="btn" type="button" id="printKey">Print Answer Sheet</button>
-    <button class="btn" type="button" id="retake">Retake lesson</button>
-  </div>
-
-  <div class="done-note">
-    <b>When you finish:</b> write the answers out in your own words &mdash; not copied word for word from the choices. Saying it your own way is the part that proves you understood it. Then use <b>Print Answer Sheet</b> for a one-page record of what was answered and scored.
-  </div>
-
-<nav class="unitnav" aria-label="Unit navigation"><a class="back" href="/lessons/maths/estimation-using-rounding/"><em>&larr; Lesson 2</em><b>Estimation Strategy: Using Rounding</b></a><a class="fwd" href="/lessons/maths/determine-reasonable-answers/"><em>Lesson 4 &rarr;</em><b>Problem-Solving Strategy: Determine Reasonable Answers</b></a></nav>
-
-</div>
-
-<!-- Built when he prints. Screen-hidden; the print stylesheet shows only this.
-     🚨 THIS MUST BE A DIRECT CHILD OF <body>. The print rule is
-     `body>*{display:none!important}` then `#sheet{display:block!important}`, and
-     display:block on a DESCENDANT of a hidden element does nothing. It lived
-     inside .wrap until 2026-09-05, so every Print answer sheet on all 12 lessons
-     produced a blank page - correctly styled, correctly paginated, empty. No
-     error anywhere. Moving it back inside any container breaks it again. -->
-<div id="sheet" aria-hidden="true"></div>
-
-<div class="hunt-bar" id="huntbar">
-  <span class="label" id="huntlabel"></span>
-  <button class="btn" id="huntcancel">Cancel</button>
-</div>
-
-<script>
 (function(){
 "use strict";
+
+
+/* 🚨 The player speaks SENTENCES; the demo draws ROWS. Both come from CAPS,
+   so the narration and the drawing cannot fall out of step - the same
+   arrangement the long division bracket uses.
+
+   🚨 TWO PARTS, NOT ONE. Paul, 2026-08-30: "i told you that you need to
+   seperate the question part as a seperate paragraph." The first version
+   handed the player one flat list, so the four lines about the questions ran
+   straight on from the worked example as more of the same paragraph - and I
+   had then bolted a second copy of them underneath as their own block, so the
+   same text appeared twice on the page. Splitting PARTS is the fix: the
+   player renders the second part under its own heading and reads straight
+   into it, and there is only one copy.
+   ⚠️ No empty strings in `s` - a blank is a paragraph break to the player and
+   must never enter the sentence list, or every later clip plays one late. */
+var TODO_FROM = CAPS.findIndex(function(c){ return c.todo; });
+if (TODO_FROM < 0) TODO_FROM = CAPS.length;
+var PARTS = [
+  { title: "", s: CAPS.slice(0, TODO_FROM).map(function(c){ return c.text; }) },
+  { title: "What The Questions Ask", s: CAPS.slice(TODO_FROM).map(function(c){ return c.text; }) },
+];
+
+/* ── colours ───────────────────────────────────────────────────────────────
+   The same five palettes every other lesson type uses, spliced in from
+   lesson-template.html at build time, stored under the same ns:theme key so a
+   colour picked in a history lesson is already picked here.
+   ------------------------------------------------------------------------ */
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch (e){} }
+
+var THEMES = {
+  forest: { name:"Forest",
+    light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
+            accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
+            ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
+            brass:"#7E6A16",band:"rgba(158,138,40,.42)",word:"rgba(158,138,40,.74)" },
+    dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
+            accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
+            ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
+            brass:"#D8B355",band:"rgba(216,179,85,.3)",word:"rgba(216,179,85,.62)" } },
+
+  ocean: { name:"Ocean",
+    light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
+            accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
+            ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.38)",word:"rgba(196,132,24,.68)" },
+    dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
+            accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
+            ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.3)",word:"rgba(224,182,92,.62)" } },
+
+  ember: { name:"Ember",
+    light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
+            accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
+            ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
+            brass:"#6B5A11",band:"rgba(120,104,26,.38)",word:"rgba(120,104,26,.68)" },
+    dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
+            accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
+            ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
+            brass:"#D6C169",band:"rgba(214,193,105,.28)",word:"rgba(214,193,105,.59)" } },
+
+  violet: { name:"Violet",
+    light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
+            accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
+            ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
+            brass:"#7A6212",band:"rgba(150,122,26,.38)",word:"rgba(150,122,26,.68)" },
+    dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
+            accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
+            ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.28)",word:"rgba(220,187,99,.59)" } },
+
+  graphite: { name:"Graphite",
+    light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
+            accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
+            ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
+            brass:"#7A6318",band:"rgba(152,124,32,.38)",word:"rgba(152,124,32,.68)" },
+    dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
+            accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
+            ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
+            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } }
+};
+
+/* ns.css names its variables differently from the history template, so the
+   palette is mapped onto the names this page actually uses. Same map as
+   math/template.html. */
+var VAR_MAP = {
+  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
+  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
+  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
+};
+
+var themeKey = load("theme", "graphite");
+if (!THEMES[themeKey]) themeKey = "graphite";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+/* 🚨 THIS PAGE DOES NOT BUILD SWATCHES. The player builds them. What this
+   page owns is the MAPPING, handed to the player as a hook - same split as
+   maths, and the reason maths once rendered ten colour dots instead of five. */
+window.nsOnTheme = function(k){ themeKey = k; applyTheme(); };
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+document.body.style.background = "var(--bg)";
+
+var synth = window.speechSynthesis;
+var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
+if (!supported) document.getElementById("nospeech").classList.add("show");
 
 /* ---------- saved settings and progress ----------
    Keys are shared site-wide on purpose:
      ns:voice / ns:speed / ns:theme   settings, so they carry to every lesson
      ns:done:<lessonId>               progress, so the lesson list can tick it off
    Same origin means /grade-7/ and /history/ read the very same store. */
-var LESSON_ID = "maths/estimation-using-patterns";
+var LESSON_ID = "history/republic-to-empire";
 function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch(e){ return d; } }
 function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch(e){} }
 function drop(k){ try { localStorage.removeItem("ns:" + k); } catch(e){} }
@@ -574,212 +351,6 @@ var VISUALS = [];
 /* The worked problems, or []. build-lessons.js rewrites this ONE line. */
 var WORK = [];
 
-var PARTS = [
-  { title: "An Arena Carved From A Mountain", s: [
-    "During the Winter Olympics, the host country builds facilities that fit the games and the land both.",
-    "The Gjøvik Olympic Cavern Hall was built for the hockey competition, carved right out of a mountain called Hovdetoppen.",
-    "Building it took 29,000 truckloads of rock removed from inside the mountain.",
-    "If a single truck holds about 5 cubic yards of rock, about how many cubic yards were removed in all?"
-  ] },
-  { title: "Multiply By Patterns", s: [
-    "We need to estimate 29,000 times 5.",
-    "Patterns can estimate a product like that.",
-    "Round the bigger factor to its greatest place value, but leave a one-digit factor alone.",
-    "Round 29,000 to 30,000.",
-    "Now look for a pattern, and solve it mentally.",
-    "3 times 5 is 15.",
-    "30 times 5 is 150.",
-    "300 times 5 is 1,500.",
-    "3,000 times 5 is 15,000.",
-    "30,000 times 5 is 150,000.",
-    "About 150,000 cubic yards of rock were removed to build the Gjøvik Olympic Cavern Hall."
-  ] },
-  { title: "Two More Patterns", s: [
-    "Estimate 2,268 times 6 the same way.",
-    "Round 2,268 to 2,000.",
-    "2 times 6 is 12, 20 times 6 is 120, 200 times 6 is 1,200, and 2,000 times 6 is 12,000.",
-    "2,268 times 6 is about 12,000.",
-    "Now estimate 21 times 404.",
-    "This time, round both factors: 21 rounds to 20, and 404 rounds to 400.",
-    "20 times 4 is 80, 20 times 40 is 800, and 20 times 400 is 8,000.",
-    "21 times 404 is about 8,000."
-  ] },
-  { title: "Patterns Work For Division Too", s: [
-    "You can use patterns to estimate quotients as well, but the first move is different.",
-    "Round the divisor to its greatest place-value position instead of the dividend.",
-    "Then replace the dividend with a nearby number you already know divides easily.",
-    "The first Mickey Mouse animated film, Steamboat Willie, came out in 1928.",
-    "Ub Iwerks drew all 14,400 pictures in the film in just 24 days.",
-    "About how many pictures did he draw per day?",
-    "We need to estimate 14,400 divided by 24.",
-    "Round 24 to 20, rounding the divisor to its greatest place value.",
-    "Round 14,400 to 14,000, since you already know 14 is divisible by 2.",
-    "Use the pattern to divide mentally.",
-    "14 divided by 2 is 7.",
-    "140 divided by 20 is 7.",
-    "1,400 divided by 20 is 70.",
-    "14,000 divided by 20 is 700.",
-    "Ub Iwerks drew about 700 pictures a day, which is a lot of pictures."
-  ] },
-  { title: "What To Do Now", s: [
-    "Eight questions about the lesson, then four word cards with four more questions under them. Twelve questions in all.",
-    "Before you answer, say the pattern out loud: the small fact first, then one more zero at a time.",
-    "On a division question, check which number you rounded first.",
-    "It should always be the divisor, not the dividend.",
-    "If a pattern question stumps you, write out the string of easy facts, like 3 times 5, 30 times 5, 300 times 5, until the rounded numbers show up."
-  ] }
-];
-
-var WORDS = [
-  ["Pattern", "A string of simple facts, like 3 times 5, 30 times 5, 300 times 5, that lets you multiply big rounded numbers in your head."],
-  ["Divisor", "The number you're dividing by. Round this one first when you estimate a quotient."],
-  ["Dividend", "The number being divided. Swap it for a nearby number that divides evenly once the divisor is rounded."],
-  ["Quotient", "The answer to a division problem, the thing a pattern helps you estimate quickly."]
-];
-
-var QUESTIONS = [
-  {
-    day: 1,
-    q: "To estimate 29,000 times 5, what's the first move?",
-    find: [4, 7],
-    choices: [
-    "Round both numbers to the nearest hundred.",
-    "Round 5 to the nearest ten.",
-    "Round 29,000 to its greatest place value, 30,000.",
-    "Multiply the exact numbers first."
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "Once 29,000 is rounded to 30,000, how do you find 30,000 times 5?",
-    find: [9, 10, 11, 12, 13],
-    choices: [
-    "Multiply 29,000 by 5 directly.",
-    "Start from 3 times 5 is 15, then add a zero each time the factor grows by ten.",
-    "Round 5 up to 10 first.",
-    "Guess based on how big the numbers look."
-  ],
-    right: 1
-  },
-  {
-    day: 1,
-    q: "When you estimate 2,268 times 6, why does the 6 stay a 6 instead of getting rounded?",
-    find: [6],
-    choices: [
-    "A one-digit factor is left alone; only the bigger factor gets rounded.",
-    "Six can't be rounded to anything.",
-    "Rounding only works on numbers over 1,000.",
-    "The book rounds every factor except the first one."
-  ],
-    right: 0
-  },
-  {
-    day: 1,
-    q: "21 times 404 is estimated by rounding both factors. What do they round to?",
-    find: [20],
-    choices: [
-    "20 and 410.",
-    "25 and 400.",
-    "20 and 400.",
-    "21 and 400."
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "When you estimate a quotient, which number do you round first?",
-    find: [24],
-    choices: [
-    "Neither; you round only the answer.",
-    "The dividend, the number being divided.",
-    "Whichever number is bigger.",
-    "The divisor, the number you're dividing by."
-  ],
-    right: 3
-  },
-  {
-    day: 1,
-    q: "To estimate 14,400 divided by 24, the divisor 24 is rounded to 20. What happens to 14,400?",
-    find: [31],
-    choices: [
-    "It's swapped for 14,000, since 14 is easy to divide by 2.",
-    "It stays exactly 14,400.",
-    "It's rounded to 14,500.",
-    "It's divided by 20 with no change."
-  ],
-    right: 0
-  },
-  {
-    day: 1,
-    q: "Ub Iwerks drew 14,400 pictures in 24 days. About how many pictures a day is that?",
-    find: [36, 37],
-    choices: [
-    "About 7,000.",
-    "About 700.",
-    "About 600.",
-    "About 70."
-  ],
-    right: 1
-  },
-  {
-    day: 1,
-    q: "Estimate the quotient of 6,152 and 58.",
-    find: null,
-    why: "58 rounds to 60, and 6,000 divides evenly by 60 to give 100.",
-    choices: [
-    "About 10.",
-    "About 1,000.",
-    "About 60.",
-    "About 100."
-  ],
-    right: 3
-  },
-  {
-    day: 2,
-    q: "A <i>pattern</i> like 3 &times; 5, 30 &times; 5, 300 &times; 5 is useful because...",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "It only works with even numbers.",
-    "It lets you multiply big rounded numbers in your head."
-  ],
-    right: 1
-  },
-  {
-    day: 2,
-    q: "In a division problem, the <i>divisor</i> is...",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "The number you're dividing by.",
-    "The answer to the division."
-  ],
-    right: 0
-  },
-  {
-    day: 2,
-    q: "The <i>dividend</i> is...",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "The number being divided.",
-    "The number you divide by."
-  ],
-    right: 0
-  },
-  {
-    day: 2,
-    q: "The <i>quotient</i> is...",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "The remainder left over.",
-    "The answer to a division problem."
-  ],
-    right: 1
-  }
-];
 
 /* ---------- build the story ---------- */
 /* 🚨 WHICH PARAGRAPH EACH SENTENCE IS IN. The explainer blanks the moment the
@@ -2696,470 +2267,568 @@ scrub.addEventListener("keydown", function(e){
   });
 })();
 
-/* ---------- word cards ---------- */
-var cardsEl = document.getElementById("cards");
-WORDS.forEach(function(pair){
-  var b = document.createElement("button");
-  b.className = "card";
-  b.type = "button";
-  b.innerHTML = '<span class="term"></span><span class="prompt">What is it?</span><span class="def"></span>';
-  b.querySelector(".term").textContent = pair[0];
-  b.querySelector(".def").textContent = pair[1];
-  /* 🚨 `read` STICKS, `open` DOES NOT. Paul, 2026-09-04: "if you clicked on the
-     vocab section they turn green outline too to show you read them."
-     Opening a card is a toggle - he will close it again - but having read it is
-     not something that un-happens. So the green outline is a separate class that
-     is only ever added, and it survives closing the card. It is a record of what
-     he has looked at, which is exactly what a parent scanning the row wants. */
-  b.addEventListener("click", function(){
-    b.classList.toggle("open");
-    b.classList.add("read");
-  });
-  cardsEl.appendChild(b);
-});
 
-/* ---------- questions ---------- */
-var hunt = null;            // { qi, tries }
-var huntBar = document.getElementById("huntbar");
-var huntLabel = document.getElementById("huntlabel");
-var answered = [];
-var hunted = [];    // questions where Find was actually used
-var foundFirstTry = 0, huntTotal = 0;
-var qEl1 = document.getElementById("questions1");
-var qEl2 = document.getElementById("questions2");
 
-/* 🚨 THE QUESTION COUNT IS DERIVED. The note above questions used to say "Four
-   questions" on every lesson regardless - true of the science and history
-   lessons, wrong by six on Kinds of Sentences. Written from the data now, so it
-   cannot go stale. Spelled out to ten because a sentence reads better that way,
-   then digits beyond it. */
-(function day1Note(){
-  var el = document.getElementById("day1note");
-  if (!el) return;
-  var n = QUESTIONS.filter(function(q){ return q.day === 1; }).length;
-  if (!n) return;
-  var words = ["", "One", "Two", "Three", "Four", "Five",
-               "Six", "Seven", "Eight", "Nine", "Ten"];
-  var count = n <= 10 ? words[n] : String(n);
-  el.textContent = count + " question" + (n === 1 ? "" : "s") +
-    " about the story you just read. Pick your answer straight off, or press " +
-    "Find it in the story if you would rather hunt for the sentence first.";
-})();
+/* ── the walkthrough ───────────────────────────────────────────────────────
+   paintDemo(i) draws the state at sentence i: which example is on screen, how
+   many of its rows have been revealed, and whether the number line has drawn
+   its jump. `ex`, `show` and `line` on each caption are what carry that, so
+   they are structure rather than decoration.
+   ------------------------------------------------------------------------ */
+var workEl = document.getElementById("work");
+var nlEl   = document.getElementById("nlwrap");
 
-QUESTIONS.forEach(function(Q, qi){
-  if (Q.find) huntTotal++;
-  var card = document.createElement("div");
-  card.className = "q";          // never locked: answering is the default path
-  card.id = "q" + qi;
-
-  var num = document.createElement("div");
-  num.className = "qnum";
-  num.textContent = "Question " + (qi + 1);
-  card.appendChild(num);
-
-  var qt = document.createElement("div");
-  qt.className = "qtext";
-  qt.innerHTML = Q.q;   // our own strings; italics in vocabulary questions are intentional
-  card.appendChild(qt);
-
-  var stage = document.createElement("div");
-  stage.className = "stage";
-  card.appendChild(stage);
-
-  if (Q.find){
-    stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
-    var go = document.createElement("button");
-    go.className = "btn ghost";
-    go.type = "button";
-    go.textContent = "Find it in the story";
-    go.style.marginTop = "9px";
-    go.addEventListener("click", function(){ startHunt(qi); });
-    stage.appendChild(go);
-  } else {
-    stage.innerHTML = "<strong>No hunting on this one.</strong> " + Q.note;
+function nlSvg(S, ring){
+  /* Range is derived from the numbers in play, padded so the jump is never
+     flush against an edge. */
+  var lo = Math.min(S.start, S.ans, 0), hi = Math.max(S.start, S.ans, 0);
+  var padN = Math.max(1, Math.round((hi - lo) * 0.18));
+  lo -= padN; hi += padN;
+  var W = 640, H = 96, pad = 26, span = hi - lo || 1;
+  function x(v){ return pad + ((v - lo) / span) * (W - pad * 2); }
+  var axisY = 62, out = [];
+  /* One tick per unit while that stays legible, otherwise only the numbers
+     that matter. A 120-wide range drawn per unit is a grey smear. */
+  var stepN = span > 40 ? Math.ceil(span / 20) : 1;
+  for (var v = Math.ceil(lo); v <= hi; v++){
+    var isZero = v === 0, keyN = (v === S.start || v === S.ans);
+    if (!isZero && !keyN && (v % stepN)) continue;
+    out.push('<line x1="' + x(v).toFixed(1) + '" y1="' + (axisY - (isZero ? 9 : 5)) +
+      '" x2="' + x(v).toFixed(1) + '" y2="' + (axisY + (isZero ? 9 : 5)) +
+      '" stroke="currentColor" stroke-width="' + (isZero ? 2 : 1) + '"/>');
+    if (isZero || keyN)
+      out.push('<text x="' + x(v).toFixed(1) + '" y="' + (axisY + 26) +
+        '" text-anchor="middle" font-size="12" fill="currentColor">' + v + "</text>");
   }
-
-  var ch = document.createElement("div");
-  ch.className = "choices";
-  Q.choices.forEach(function(text, ci){
-    var b = document.createElement("button");
-    b.className = "choice";
-    b.type = "button";
-    b.textContent = text;
-    b.addEventListener("click", function(){ answer(qi, ci); });
-    ch.appendChild(b);
-  });
-  card.appendChild(ch);
-
-  var v = document.createElement("div");
-  v.className = "verdict";
-  card.appendChild(v);
-
-  (Q.day === 2 ? qEl2 : qEl1).appendChild(card);
-});
-
-function startHunt(qi){
-  hunted[qi] = true;
-  hunt = { qi: qi, tries: 0 };
-  if (playing){ playing = false; gen++; if (supported) synth.cancel(); clearWords(); paint(); }
-  document.body.classList.add("hunting");
-  storyEl.classList.add("hunting");
-  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
-  huntLabel.innerHTML = "<b>Question " + (qi + 1) + ".</b> Tap the sentence that answers it.";
-  huntBar.classList.add("show");
-  /* 🚨 SCROLL TO THE PARAGRAPH, NOT THE STORY TOP AND NOT THE SENTENCE.
-     Paul, 2026-09-04: "i think find in story should give you the top of the
-     paragraph not the direct place but does put you in the region to find it."
-
-     It used to reveal storyEl itself, which dumps the student at the very top of
-     the reading and makes him scan the whole lesson - fine when the story was
-     six sentences, useless at fifty-five. Revealing the target SENTENCE would be
-     the opposite mistake: it hands him the answer and there is nothing left to
-     hunt for.
-
-     The paragraph is the honest middle. He lands in the right region and still
-     has to read to find the line.
-     ⚠️ Falls back to the story top when a sentence has no .para parent, which is
-     the state during a render, not a normal one. */
-  var first = SENT[QUESTIONS[qi].find[0]];
-  var region = (first && first.el.closest) ? first.el.closest(".para") : null;
-  nsReveal(region || storyEl, "start");
-}
-
-function endHunt(){
-  hunt = null;
-  document.body.classList.remove("hunting");
-  storyEl.classList.remove("hunting");
-  huntBar.classList.remove("show");
-}
-
-document.getElementById("huntcancel").addEventListener("click", endHunt);
-
-storyEl.addEventListener("click", function(e){
-  var target = e.target.closest ? e.target.closest(".sent") : null;
-  if (!target) return;
-  var i = parseInt(target.getAttribute("data-i"), 10);
-
-  if (!hunt){
-    // not hunting: tap a sentence to read from there
-    playing = true;
-    speak(i);
-    return;
-  }
-
-  var Q = QUESTIONS[hunt.qi];
-  var card = document.getElementById("q" + hunt.qi);
-  var stage = card.querySelector(".stage");
-  hunt.tries++;
-
-  if (Q.find.indexOf(i) !== -1){
-    target.classList.add("hit");
-    if (hunt.tries === 1) foundFirstTry++;
-    stage.innerHTML = '<strong>Found it.</strong> Now say it in your own words &mdash; pick the choice that matches the sentence you found.';
-    endHunt();
-    nsReveal(card);
-  } else if (hunt.tries >= 3){
-    target.classList.add("miss");
-    Q.find.forEach(function(k){ SENT[k].el.classList.add("shown"); });
-    stage.innerHTML = '<strong>Here it is.</strong> The highlighted sentence is the one. Read it again, then pick your answer below.';
-    endHunt();
-    nsReveal(SENT[Q.find[0]].el);
-  } else {
-    target.classList.add("miss");
-    huntLabel.innerHTML = "<b>Not that one.</b> " + Q.hint;
-  }
-});
-
-function answer(qi, ci){
-  if (answered[qi] !== undefined) return;
-  var Q = QUESTIONS[qi];
-  var card = document.getElementById("q" + qi);
-  var btns = card.querySelectorAll(".choice");
-  answered[qi] = ci;
-
-  btns.forEach(function(b, k){
-    b.disabled = true;
-    if (k === Q.right) b.classList.add("right");
-    else if (k === ci) b.classList.add("wrong");
-  });
-
-  /* 🚨 THE VERDICT EXPLAINS, IT DOES NOT SET HOMEWORK. Paul, 2026-09-04:
-     "if they get the question right the correct Correct. Write that into your
-     notebook in your own words. this needs to be correct becaue there is not
-     notebook. just explain why its correct ... if wrong say incorrect making
-     everything red and show the right one."
-
-     He is right twice over. The old line told every student to write the answer
-     into a notebook, which was a leftover from the printed Rome workbook and is
-     not true of anyone using the site. And a verdict that says only "Correct"
-     teaches nothing - the WHY is the teaching.
-
-     ⚠️ `why` EXISTS ONLY ON THE ENGLISH LESSON TODAY. The four science and two
-     history lessons have none, so the text degrades to plain Correct/Incorrect
-     rather than printing "undefined". Add `why` to a question and the
-     explanation appears with no code change. */
-  var v = card.querySelector(".verdict");
-  v.className = "verdict show " + (ci === Q.right ? "good" : "bad");
-  var why = (Q.why || "").trim();
-  v.textContent = ci === Q.right
-    ? (why ? "Correct. " + why : "Correct.")
-    : (why
-        ? "Incorrect. The right answer is marked above. " + why
-        : "Incorrect. The right answer is marked above.");
-
-  paintProgress();
-
-  // A light progress record on every answer, so the lesson card on the shelf
-  // knows how far in he is without the lesson having to be finished first.
-  var d1p = dayStats(1), d2p = dayStats(2);
-  store("prog:" + LESSON_ID, JSON.stringify({
-    done: d1p.done + d2p.done, total: d1p.total + d2p.total,
-    d1: d1p.done, d1t: d1p.total, d2: d2p.done, d2t: d2p.total
-  }));
-
-  // Show the running score as soon as EITHER day is finished, because the two
-  // days happen on different days and he should not have to wait until Day 2
-  // to see how Day 1 went.
-  var d1 = dayStats(1), d2 = dayStats(2);
-  if (d1.done === d1.total || d2.done === d2.total) showScore();
-}
-
-function dayStats(day){
-  var total = 0, right = 0, done = 0;
-  QUESTIONS.forEach(function(Q, i){
-    if ((Q.day || 1) !== day) return;
-    total++;
-    if (answered[i] !== undefined) done++;
-    if (answered[i] === Q.right) right++;
-  });
-  return { total: total, right: right, done: done,
-           pct: total ? Math.round(right / total * 100) : 0 };
-}
-
-function paintProgress(){
-  /* The teacher line follows every answer and every reset. One call site, so it
-     cannot fall out of step with the progress bars. */
-  paintTeacherScore();
-  [1, 2].forEach(function(day){
-    var st = dayStats(day);
-    var label = document.getElementById("prog" + day);
-    var bar = document.getElementById("bar" + day);
-    if (label){
-      label.textContent = st.done + " of " + st.total + (st.done === st.total && st.total ? " — done" : " answered");
-      label.classList.toggle("done", st.total > 0 && st.done === st.total);
-    }
-    if (bar) bar.style.width = (st.total ? (st.done / st.total * 100) : 0) + "%";
-  });
-}
-
-function showScore(){
-  var d1 = dayStats(1), d2 = dayStats(2);
-  var right = d1.right + d2.right;
-  var total = d1.total + d2.total;
-  var pct = Math.round(right / total * 100);
-  var missed = QUESTIONS.filter(function(Q){ return Q.find; }).length - hunted.filter(Boolean).length;
-
-  var el = document.getElementById("score");
-  el.innerHTML =
-    '<div class="big">' + right + ' / ' + total + '</div>' +
-    '<div class="pct">' + pct + '%</div>' +
-    '<div class="split">' +
-      '<span><b>Part One</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>' +
-      '<span><b>Part Two</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>' +
-    '</div>' +
-    '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-    ' &middot; answered without hunting: ' + missed + '.<br>' +
-    'Use Print Answer Sheet for a record of this attempt.</div>';
-  el.classList.add("show");
-
-  // A lesson counts as complete only when BOTH days are answered. Finishing
-  // Day 1 saves progress, it does not finish the lesson.
-  var complete = (d1.done === d1.total) && (d2.done === d2.total);
-  var prev = readDone();
-  var better = !prev || right > prev.score;
-  // never let a part-finished retake overwrite a completed record
-  if (better || (complete && !(prev && prev.complete))){
-    store("done:" + LESSON_ID, JSON.stringify({
-      score: right, total: total, pct: pct, complete: complete,
-      d1: d1.right, d1t: d1.total, d2: d2.right, d2t: d2.total,
-      d1done: d1.done === d1.total, d2done: d2.done === d2.total,
-      found: foundFirstTry, hunts: huntTotal,
-      at: new Date().toISOString()
-    }));
-  }
-  paintStatus();
-  /* 🚨 ONLY JUMP TO THE SCORE WHEN THE LESSON IS ACTUALLY OVER. Paul, 2026-09-05:
-     "after i answer the first section of questions down to the vocab ... it jumps
-     to the bottom for the results but im not finished and i dont like how it
-     jumps to the bottom like that."
-     showScore() is called when EITHER day finishes (see the || at its call site),
-     because finishing Day 1 should record progress and update the box. But the
-     scroll treated that as the end of the lesson and threw the reader past the
-     vocabulary cards and the last four questions - the exact work still in front
-     of them. The box still updates either way; it just no longer drags the page
-     down to itself until both days are done. */
-  if (complete) nsReveal(el);
-}
-
-/* ---------- completed / retake ---------- */
-function readDone(){
-  try { return JSON.parse(load("done:" + LESSON_ID, "null")); } catch(e){ return null; }
-}
-
-function paintStatus(){
-  var d = readDone();
-  var box = document.getElementById("status");
-  if (!d){ box.classList.remove("show"); return; }
-  var when = "";
-  try {
-    when = new Date(d.at).toLocaleDateString(undefined, { month:"short", day:"numeric" });
-  } catch(e){}
-  var done = d.complete !== false;
-  box.classList.toggle("partial", !done || d.pct < 60);
-  document.getElementById("statusMark").textContent = !done ? "…" : (d.pct < 60 ? "!" : "✓");
-  document.getElementById("statusText").innerHTML =
-    (done
-      ? "<b>Lesson completed</b> &middot; best score " + d.score + " / " + d.total + " (" + d.pct + "%)"
-      : "<b>" + (d.d1done ? "Part One finished" : "Part Two finished") + "</b> &middot; " +
-        d.score + " / " + d.total + " so far, the other part is still to do") +
-    "<small>" + (when ? "Last worked " + when + ". " : "") +
-    "Retaking keeps your best score.</small>";
-  box.classList.add("show");
-}
-
-/* ── THE TEACHER'S SCORE LINE ──────────────────────────────────────────────
-   🚨 IT REPORTS, IT DOES NOT MARK. The percentage is computed from `answered`
-   against the dealt `right` for every question in the lesson, both days
-   together, because a parent wants one number for the sitting.
-
-   ⚠️ THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE. Nine right out
-   of ten answered is not 90% if the lesson has fourteen - it is a lesson still
-   in progress, and the line says so rather than flattering the number.
-   ⚠️ Locking is not done here. answer() already refuses a second attempt at an
-   answered question; this only shows what that lock has produced. */
-function paintTeacherScore(){
-  var line = document.getElementById("gscoreline");
-  var btn = document.getElementById("greset");
-  if (!line) return;
-  var total = QUESTIONS.length;
-  var done = 0, right = 0;
-  QUESTIONS.forEach(function(Q, i){
-    if (answered[i] === undefined) return;
-    done++;
-    if (answered[i] === Q.right) right++;
-  });
-  if (btn) btn.hidden = (done === 0);
-  if (!done){ line.textContent = "Not started yet."; line.className = "gscore-line"; return; }
-  var pct = Math.round((right / total) * 100);
-  if (done < total){
-    line.textContent = right + " right out of " + done + " answered, " +
-      (total - done) + " still to do.";
-    line.className = "gscore-line part";
-  } else {
-    line.textContent = "Score " + pct + "%  ·  " + right + " out of " + total + " correct.";
-    line.className = "gscore-line " + (pct >= 80 ? "good" : pct >= 60 ? "part" : "bad");
-  }
-}
-
-/* The reset the teacher owns. Same wipe as the retake button at the foot of the
-   lesson, so there is one behaviour and not two that drift. */
-function resetAttempt(){
-  document.getElementById("retake").click();
-}
-(function wireTeacherReset(){
-  var btn = document.getElementById("greset");
-  if (btn) btn.addEventListener("click", resetAttempt);
-})();
-
-document.getElementById("retake").addEventListener("click", function(){
-  // Wipe the attempt, keep the record. Nothing about the saved score changes.
-  if (playing){ playing = false; stopEngines(); clearWords(); paint(); }
-  answered = [];
-  hunted = [];
-  drop("prog:" + LESSON_ID);
-  foundFirstTry = 0;
-  endHunt();
-  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
-  document.getElementById("score").classList.remove("show");
-  QUESTIONS.forEach(function(Q, qi){
-    var card = document.getElementById("q" + qi);
-    card.querySelector(".verdict").className = "verdict";
-    [].forEach.call(card.querySelectorAll(".choice"), function(b){
-      b.disabled = false;
-      b.classList.remove("right","wrong");
-    });
-    var stage = card.querySelector(".stage");
-    if (Q.find){
-      stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
-    var go = document.createElement("button");
-    go.className = "btn ghost";
-    go.type = "button";
-    go.textContent = "Find it in the story";
-    go.style.marginTop = "9px";
-    go.addEventListener("click", function(){ startHunt(qi); });
-    stage.appendChild(go);
-    }
-  });
-  paintProgress();
-  nsReveal(document.getElementById("q0"));
-});
-
-/* ---------- printable answer sheet ----------
-   Proof the work was done: the five questions, what he answered, whether it was
-   right, and the score. Not the story - this is the record, not the lesson. */
-var LESSON_TITLE = "Estimation Strategy: Using Patterns";
-var LESSON_UNIT  = "Math · Chapter 1 · Lesson 1-3";
-
-document.getElementById("printKey").addEventListener("click", function(){
-  var d = readDone();
-  var right = 0;
-  QUESTIONS.forEach(function(Q, i){ if (answered[i] === Q.right) right++; });
-  var attempted = answered.filter(function(a){ return a !== undefined; }).length;
-  var pct = attempted ? Math.round(right / QUESTIONS.length * 100) : 0;
-  var now = new Date();
-  var dateStr = now.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
-
-  var rows = QUESTIONS.map(function(Q, i){
-    var pick = answered[i];
-    var ok = pick === Q.right;
-    var given = pick === undefined ? "(not answered)" : Q.choices[pick];
-    var mark = pick === undefined ? "–" : (ok ? "✓" : "✗");
-    var corrected = (pick !== undefined && !ok)
-      ? '<div class="a" style="margin-top:2mm"><span class="mk">→</span>Correct answer: ' + Q.choices[Q.right] + '</div>'
-      : "";
-    return '<li><div class="q">' + Q.q + '</div>' +
-           '<div class="a"><span class="mk">' + mark + '</span>' + given + '</div>' +
-           corrected + '</li>';
+  /* Circles round the values being compared, so "further from zero" is a
+     thing you can SEE rather than a claim. Paul, 2026-08-30: "perhaps put a
+     circle around the -9 and the put one around 0 to show it in the walk
+     through as it is speaking." */
+  var rings = (ring || []).map(function(v){
+    return '<circle cx="' + x(v).toFixed(1) + '" cy="' + axisY + '" r="13" fill="none" ' +
+      'stroke="var(--a)" stroke-width="2" stroke-dasharray="3 3"/>';
   }).join("");
+  /* The span being compared, drawn under the axis between the two circled
+     values, so the distance itself is visible. */
+  if ((ring || []).length === 2){
+    var rA = x(ring[0]), rB = x(ring[1]);
+    rings += '<line x1="' + Math.min(rA, rB).toFixed(1) + '" y1="' + (axisY + 34) +
+      '" x2="' + Math.max(rA, rB).toFixed(1) + '" y2="' + (axisY + 34) +
+      '" stroke="var(--a)" stroke-width="1.5" stroke-dasharray="2 3"/>';
+  }
 
-  document.getElementById("sheet").innerHTML =
-    '<div class="scorebox"><div class="n">' + right + '/' + QUESTIONS.length + '</div>' +
-      '<div class="p">' + pct + '%</div></div>' +
-    '<h1>' + LESSON_TITLE + '</h1>' +
-    '<p class="sub">' + LESSON_UNIT + '</p>' +
-    '<div class="idline">' +
-      '<span><b>Student:</b> ______________________</span>' +
-      '<span><b>Completed:</b> ' + (d && d.at ? new Date(d.at).toLocaleDateString() : dateStr) + '</span>' +
-      '<span><b>Printed:</b> ' + dateStr + '</span>' +
-    '</div>' +
-    '<ol>' + rows + '</ol>' +
-    '<div class="foot">Sentences found in the text on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-      '.  Answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find;}).length - hunted.filter(Boolean).length) + '.' +
-      (d ? '  Best recorded score: ' + d.score + '/' + d.total + ' (' + d.pct + '%).' : '') +
-    '</div>' +
-    '<div class="sign">Parent signature:<span></span></div>';
+  var x1 = x(S.start), x2 = x(S.ans);
+  return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="number line from ' +
+    S.start + " to " + S.ans + '">' +
+    '<defs><marker id="nlar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" ' +
+      'markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--a)"/></marker></defs>' +
+    '<line x1="' + pad + '" y1="' + axisY + '" x2="' + (W - pad) + '" y2="' + axisY +
+      '" stroke="currentColor" stroke-width="1.5"/>' + out.join("") + rings +
+    '<path d="M ' + x1.toFixed(1) + " 30 L " + x2.toFixed(1) + ' 30" stroke="var(--a)" ' +
+      'stroke-width="2.5" fill="none" marker-end="url(#nlar)"/>' +
+    '<circle cx="' + x1.toFixed(1) + '" cy="' + axisY + '" r="4.5" fill="var(--a)"/>' +
+    '<text x="' + ((x1 + x2) / 2).toFixed(1) + '" y="20" text-anchor="middle" font-size="12.5" ' +
+      'fill="var(--a)">' + (S.move >= 0 ? "+" : "") + S.move + "</text></svg>";
+}
 
-  window.print();
+/* 🚨 THE ROWS ARE BUILT ONCE PER EXAMPLE AND THEN ONLY TOGGLED.
+   The first version rebuilt every row on every paint and added the reveal
+   class inside requestAnimationFrame. That was wrong twice over: a rebuilt
+   element starts at its final style, so the fade could never actually run,
+   and rAF does not fire in a BACKGROUND TAB - a student who switched away and
+   came back found the walkthrough completely blank. Building once and
+   toggling a class fixes both, and needs no rAF at all. */
+var curEx = -1, rowEls = [];
+
+function buildRows(S){
+  workEl.innerHTML = "";
+  rowEls = S.rows.map(function(html, r){
+    var d = document.createElement("div");
+    d.className = "row" + (r === 1 && S.kind !== "subtract" ? " note" : "") +
+                  (r === S.rows.length - 1 ? " ans" : "");
+    /* The rows carry their own markup - the minus signs are wrapped in spans
+       by integer-captions.js so they can be highlighted. Generated here, not
+       user content, so innerHTML is safe. */
+    d.innerHTML = html;
+    workEl.appendChild(d);
+    return d;
+  });
+}
+
+function paintDemo(upto){
+  /* Walk forward to the latest caption belonging to an example. The closing
+     instructions carry no `ex`, so the last worked example stays on screen
+     behind the questions block. */
+  var ex = -1, show = 0, line = false, ring = null, hi = "";
+  for (var k = 0; k <= upto && k < CAPS.length; k++){
+    var c = CAPS[k];
+    if (c.ex === undefined) continue;
+    if (c.ex !== ex){ ex = c.ex; show = 0; line = false; ring = null; }
+    show = Math.max(show, c.show || 0);
+    if (c.line) line = true;
+    if (c.ring) ring = c.ring;
+    /* The highlight belongs to the sentence being read, not to everything
+       read so far, so it is taken from the LAST caption rather than merged. */
+    hi = (k === upto && c.hi) ? c.hi : (k === upto ? "" : hi);
+  }
+  if (ex < 0){ ex = 0; show = 0; line = false; }
+
+  var S = DEMO[ex];
+  if (ex !== curEx){ curEx = ex; buildRows(S); }
+  rowEls.forEach(function(d, r){ d.classList.toggle("on", r < show); });
+  workEl.className = "work" + (hi ? " hi-" + hi : "");
+
+  var key = (line ? "1" : "0") + "|" + ex + "|" + (ring ? ring.join(",") : "");
+  if (nlEl.getAttribute("data-key") !== key){
+    nlEl.setAttribute("data-key", key);
+    nlEl.innerHTML = line ? nlSvg(S, ring) : "";
+  }
+}
+
+/* One hook, one engine: the demo follows the reader. */
+window.nsOnSentence = function(i){ paintDemo(i); };
+paintDemo(0);
+
+/* ── where the problems come from ──────────────────────────────────────────
+   Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
+   doesn't help improve." Rolled from SPEC and seeded by the date, so the set
+   holds still all day and changes tomorrow. New Problems reseeds by hand.
+   ------------------------------------------------------------------------ */
+function rng(seed){                       /* mulberry32, small and repeatable */
+  var a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function seedFromString(s){
+  var h = 2166136261;
+  for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function today(){
+  var d = new Date();
+  return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+}
+
+var SIGNS = { pp:[1,1], nn:[-1,-1], pn:[1,-1], np:[-1,1] };
+
+/* An answer of exactly 0 is a real case but a poor practice item: zero has no
+   sign, so it hides the exact mistake this page is trying to catch. Skipped
+   here and in build-integers.js by the same rule. */
+/* 🚨 EASY FIRST, AND IN THAT ORDER.
+   Paul, 2026-08-30: "you are doing double digit questions and it might be
+   easier to do single digit at first. spectrum does this", then the sharper
+   version - "your wlk through was only single digits so why would you make
+   the questions not the same?" He was right: the walkthrough demonstrates
+   -4 + (-9) and the first version then asked 41 + (-40). The first tier now
+   matches the walkthrough exactly, and the tiers are dealt IN ORDER so the
+   page gets harder as it goes rather than at random. */
+function magsFor(tier, side){
+  var round = side === "a" ? tier.aRound : tier.bRound;
+  if (round) return round.slice();
+  var max = side === "a" ? tier.aMax : tier.bMax, out = [];
+  for (var i = 1; i <= max; i++) out.push(i);
+  return out;
+}
+
+function makeProblem(rand, key, tier){
+  var s = SIGNS[key];
+  var As = magsFor(tier, "a"), Bs = magsFor(tier, "b");
+  for (var tries = 0; tries < 400; tries++){
+    var a = As[Math.floor(rand() * As.length)] * s[0];
+    var b = Bs[Math.floor(rand() * Bs.length)] * s[1];
+    var ans = SPEC.kind === "add" ? a + b : a - b;
+    if (ans === 0) continue;
+    return { a:a, b:b, ans:ans, mix:key, span:Math.max(Math.abs(a), Math.abs(ans)) };
+  }
+  return SPEC.kind === "add" ? { a:-9, b:4, ans:-5, mix:"np", span:9 }
+                             : { a:5, b:-3, ans:8, mix:"pn", span:8 };
+}
+
+/* 🚨 THE SIGN MIX IS DEALT, NOT DRAWN.
+   Picking each problem's sign combination at random looked fine and was not:
+   a real generated set came out with seven negative+positive and ONE
+   positive+negative, so a student could work the whole page and barely meet
+   one of the four cases the lesson teaches. Drawing 15 times from 4 buckets
+   clusters badly far more often than it feels like it should.
+   So the combinations are dealt round-robin first and then shuffled, which
+   makes the balance structural instead of probabilistic. Same reasoning as
+   the Part B guards in build-english.js, which refuse a set where one kind is
+   over 70% or three run together. */
+function mixOrder(rand){
+  var order = [];
+  for (var i = 0; i < SPEC.count; i++) order.push(SPEC.mix[i % SPEC.mix.length]);
+  /* Fisher-Yates on the seeded rng, so the deal is even but the sequence is
+     not the same four repeating down the page. */
+  for (var j = order.length - 1; j > 0; j--){
+    var k = Math.floor(rand() * (j + 1));
+    var t = order[j]; order[j] = order[k]; order[k] = t;
+  }
+  /* A shuffle can still leave a run of three the same, which reads as a
+     pattern and lets a student coast. Break any run by swapping the offender
+     with the next item that differs from its new neighbours. */
+  for (var m = 2; m < order.length; m++){
+    if (order[m] !== order[m - 1] || order[m] !== order[m - 2]) continue;
+    for (var n = m + 1; n < order.length; n++){
+      if (order[n] === order[m]) continue;
+      var swap = order[n]; order[n] = order[m]; order[m] = swap;
+      break;
+    }
+  }
+  return order;
+}
+
+function makeSet(seedStr){
+  var rand = rng(seedFromString(LESSON_ID + "|" + seedStr));
+  var order = mixOrder(rand);
+  /* One tier per slot, dealt in order: the eight single-digit ones first,
+     then the round tens, then the few harder. The SIGNS are shuffled within
+     that, so the page gets harder without becoming predictable. */
+  var tierOf = [];
+  SPEC.tiers.forEach(function(t){
+    for (var i = 0; i < t.n; i++) tierOf.push(t);
+  });
+  var out = [], seen = {};
+  for (var i = 0; i < order.length && i < tierOf.length; i++){
+    var p = null;
+    for (var tries = 0; tries < 80; tries++){
+      var c = makeProblem(rand, order[i], tierOf[i]);
+      var k = c.a + "|" + c.b;
+      if (seen[k]) continue;              /* never the same one twice on a page */
+      seen[k] = true; p = c; break;
+    }
+    if (p) out.push(p);
+  }
+  return out;
+}
+
+/* A negative number after an operator wears brackets, the way a workbook
+   writes it. Without them "8 + -3" reads as two operators in a row. */
+function term(n){ return n < 0 ? "(" + n + ")" : String(n); }
+
+/* ── the problems ──────────────────────────────────────────────────────── */
+var host = document.getElementById("problems");
+var solved = 0, PROBLEMS = [], BOXES = [];
+var MODE = "practice";
+
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt !== undefined) e.textContent = txt;
+  return e;
+}
+
+/* Every answer box behaves the same way in both modes; only the CHECKING
+   differs. Practice marks the moment the right number is typed, which is why
+   there is no per-keystroke wrong marking: "-8" passes through "-" and "-"
+   is not an answer. A wrong answer is only called wrong on Enter or on
+   leaving the box. */
+function answerBox(want, ask, nudge, box, onSolved){
+  var inp = el("input", "ans");
+  inp.type = "text";
+  inp.inputMode = "text";        /* not numeric: the minus sign has to be typeable */
+  inp.autocomplete = "off";
+  inp.placeholder = "?";
+  inp.setAttribute("aria-label", ask);
+  var done = false;
+
+  function markRight(){
+    if (done) return;
+    done = true;
+    inp.classList.remove("bad", "wrong");
+    inp.classList.add("ok");
+    inp.disabled = true;
+    nudge.classList.remove("warn");
+    nudge.textContent = "";
+    onSolved();
+  }
+  function markWrong(){
+    if (done) return;
+    inp.classList.add("bad");
+    nudge.classList.add("warn");
+    nudge.textContent = ask;
+    setTimeout(function(){ inp.classList.remove("bad"); }, 320);
+  }
+
+  inp.addEventListener("input", function(){
+    var v = inp.value.replace(/[^0-9-]/g, "");
+    if (v.indexOf("-") > 0) v = v.replace(/-/g, "");   /* a minus only leads */
+    inp.value = v;
+    if (MODE !== "practice") return;
+    if (/^-?\d+$/.test(v) && Number(v) === want) markRight();
+  });
+  inp.addEventListener("keydown", function(e){
+    if (e.key !== "Enter" || MODE !== "practice") return;
+    e.preventDefault();
+    if (/^-?\d+$/.test(inp.value) && Number(inp.value) !== want) markWrong();
+  });
+  inp.addEventListener("blur", function(){
+    if (MODE !== "practice" || inp.value === "") return;
+    if (/^-?\d+$/.test(inp.value) && Number(inp.value) !== want) markWrong();
+  });
+
+  BOXES.push({ el: inp, want: want, box: box });
+  return inp;
+}
+
+/* A number line the student can click to answer. Range covers the numbers in
+   play with a little air; clicking snaps to the nearest whole number and
+   fills the answer box, which then runs through the same checking as typing.
+
+   🚨 EVERY PROBLEM GETS ONE. The first version hid the line whenever the span
+   passed 26 units, which meant the harder questions - the ones where seeing
+   it helps most - had none. Paul, 2026-08-30: "the larger digits dont have a
+   line to tap on. i get the point its a long line to add but perhaps you can
+   space them closer together with more tickes."
+
+   The fix is to hold the SPACING steady instead of the width. Every tick gets
+   at least MIN_PX, so a wide range simply makes a wide line and the wrapper
+   scrolls sideways - the ticks stay the same comfortable distance apart at
+   any range, rather than being squeezed into 3px each on a phone. */
+var PNL_MIN_PX = 11;      /* pixels per unit, before the line starts scrolling */
+var PNL_BASE_W = 620;
+
+function problemLine(P, setAnswer){
+  var lo = Math.min(P.a, P.ans, 0), hi = Math.max(P.a, P.ans, 0);
+  lo -= 2; hi += 2;
+  var span = hi - lo;
+
+  var H = 62, pad = 18, axisY = 30;
+  /* Wide enough to keep the ticks apart; never narrower than the panel. */
+  var W = Math.max(PNL_BASE_W, span * PNL_MIN_PX + pad * 2);
+  function x(v){ return pad + ((v - lo) / span) * (W - pad * 2); }
+
+  /* Label density follows the range so the numbers never collide, while a
+     tick still marks every single unit - which is what makes it clickable. */
+  var labelEvery = span <= 14 ? 1 : span <= 40 ? 5 : span <= 120 ? 10 : 25;
+  var parts = [];
+  for (var v = Math.ceil(lo); v <= hi; v++){
+    var zero = v === 0;
+    var major = zero || v % labelEvery === 0;
+    parts.push('<line x1="' + x(v).toFixed(1) + '" y1="' + (axisY - (zero ? 8 : major ? 6 : 4)) +
+      '" x2="' + x(v).toFixed(1) + '" y2="' + (axisY + (zero ? 8 : major ? 6 : 4)) +
+      '" stroke="currentColor" stroke-width="' + (zero ? 2 : 1) + '"/>');
+    if (major)
+      parts.push('<text x="' + x(v).toFixed(1) + '" y="' + (axisY + 22) +
+        '" text-anchor="middle" font-size="10" fill="currentColor">' + v + "</text>");
+  }
+
+  var wrap = document.createElement("div");
+  wrap.className = "pnl";
+  var svgStyle = W > PNL_BASE_W ? ' style="width:' + W + 'px;max-width:none"' : "";
+  wrap.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '"' + svgStyle + '>' +
+    '<line class="axis" x1="' + pad + '" y1="' + axisY + '" x2="' + (W - pad) + '" y2="' + axisY +
+      '" stroke="currentColor" stroke-width="1.5"/>' + parts.join("") +
+    '<circle class="pick" cx="0" cy="' + axisY + '" r="5" style="display:none"/>' +
+    '<rect class="hit" x="0" y="0" width="' + W + '" height="' + H + '"/></svg>';
+
+  var svg = wrap.querySelector("svg"), dot = wrap.querySelector(".pick");
+  function valueAt(clientX){
+    /* getBoundingClientRect is the RENDERED box, so it already accounts for
+       how far the wrapper has been scrolled sideways. */
+    var r = svg.getBoundingClientRect();
+    var vx = ((clientX - r.left) / r.width) * W;          /* into viewBox units */
+    return Math.round(lo + ((vx - pad) / (W - pad * 2)) * span);
+  }
+  wrap.addEventListener("click", function(e){
+    var v = valueAt(e.clientX);
+    if (v < lo || v > hi) return;
+    dot.setAttribute("cx", x(v).toFixed(1));
+    dot.style.display = "";
+    setAnswer(v);
+  });
+
+  /* A line that scrolls has to say so, or it looks truncated. */
+  wrap.setAttribute("data-wide", W > PNL_BASE_W ? "1" : "0");
+  return wrap;
+}
+
+function addProblem(P, pi){
+  var box = el("div", "prob");
+  box.setAttribute("data-i", pi);
+  var head = el("div", "probhead");
+  head.appendChild(el("span", "probnum", "Problem " + (pi + 1)));
+  var tag = el("span", "tag", "");
+  head.appendChild(tag);
+  box.appendChild(head);
+
+  var nudge = el("p", "nudge", "");
+  var need = SPEC.kind === "subtract" ? 2 : 1;
+  var got = 0;
+  var ansInput = null;          /* the box holding the ANSWER, set below */
+  function onSolved(){
+    got++;
+    if (got < need) return;
+    box.classList.add("solved");
+    tag.classList.add("done");
+    tag.textContent = "Solved";
+    nudge.classList.remove("warn");
+    nudge.textContent = SPEC.kind === "subtract"
+      ? "Right. " + P.a + " minus " + term(P.b) + " is the same as " + P.a + " plus " + term(-P.b) + "."
+      : "Right.";
+    solved++;
+    save();
+    paintScore();
+  }
+
+  if (SPEC.kind === "subtract"){
+    /* Two boxes: the rewrite, then the answer. Keep, Change, Change is the
+       whole lesson, so the conversion is typed rather than assumed - and when
+       one of the two is wrong you can see WHICH half failed. */
+    box.appendChild(el("p", "steplab", "Keep, change, change. Then add."));
+    var r1 = el("div", "expr");
+    r1.appendChild(el("span", null, String(P.a)));
+    r1.appendChild(el("span", "op", "-"));
+    r1.appendChild(el("span", null, term(P.b)));
+    r1.appendChild(el("span", "op", "="));
+    r1.appendChild(el("span", null, String(P.a)));
+    r1.appendChild(el("span", "op", "+"));
+    r1.appendChild(answerBox(-P.b, "Change the sign of " + P.b + ". What does it become?", nudge, box, onSolved));
+    box.appendChild(r1);
+
+    var r2 = el("div", "expr");
+    r2.style.marginTop = "10px";
+    r2.appendChild(el("span", "op", "="));
+    ansInput = answerBox(P.ans, "Now add. Same signs add and keep the sign, different signs subtract.", nudge, box, onSolved);
+    r2.appendChild(ansInput);
+    box.appendChild(r2);
+  } else {
+    var r = el("div", "expr");
+    r.appendChild(el("span", null, String(P.a)));
+    r.appendChild(el("span", "op", "+"));
+    r.appendChild(el("span", null, term(P.b)));
+    r.appendChild(el("span", "op", "="));
+    ansInput = answerBox(P.ans, "Are the signs the same or different? Same signs add and keep the sign. Different signs subtract, and take the sign of the one further from zero.", nudge, box, onSolved);
+    r.appendChild(ansInput);
+    box.appendChild(r);
+  }
+
+  /* The clickable line answers the ANSWER box - on a subtraction that is the
+     second one, because the first is the rewrite and is not a place on the
+     number line. Setting .value and firing `input` runs the same checking
+     path as typing, so there is one place where an answer is judged. */
+  var line = problemLine(P, function(v){
+    if (ansInput.disabled) return;
+    ansInput.value = String(v);
+    ansInput.dispatchEvent(new Event("input", { bubbles: true }));
+    ansInput.focus();
+  });
+  if (line){
+    box.appendChild(line);
+    var hint = el("p", "pnl-note", "Click the line to answer, or type it above.");
+    box.appendChild(hint);
+  }
+
+  box.appendChild(nudge);
+  host.appendChild(box);
+}
+
+function renderSet(list){
+  PROBLEMS = list;
+  solved = 0;
+  BOXES = [];
+  host.innerHTML = "";
+  document.getElementById("check").hidden = MODE !== "test";
+  document.getElementById("modenote").textContent = MODE === "practice"
+    ? "A box turns green the moment you type the right number. Press Enter if you want to be told you are wrong."
+    : "Nothing gets checked as you go. Fill in every box, wrong answers and all, then press Check my work. This is the one that tells you what you actually know.";
+  list.forEach(addProblem);
+  paintScore();
+}
+
+/* ── marking the test ─────────────────────────────────────────────────── */
+function markTest(){
+  var right = 0, blank = 0, perBox = {};
+  BOXES.forEach(function(b){
+    var v = b.el.value;
+    b.el.classList.remove("ok", "wrong");
+    if (v === "") blank++;
+    else if (/^-?\d+$/.test(v) && Number(v) === b.want){ b.el.classList.add("ok"); right++; }
+    else b.el.classList.add("wrong");
+    b.el.disabled = true;
+    var key = b.box.getAttribute("data-i");
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box };
+    if (!(/^-?\d+$/.test(v) && Number(v) === b.want)) perBox[key].ok = false;
+  });
+
+  solved = 0;
+  Object.keys(perBox).forEach(function(k){
+    var r = perBox[k];
+    var P = PROBLEMS[Number(k)];
+    var tag = r.box.querySelector(".tag");
+    var nudge = r.box.querySelector(".nudge");
+    if (r.ok){
+      solved++;
+      r.box.classList.add("solved");
+      tag.classList.add("done");
+      tag.textContent = "Solved";
+      nudge.classList.remove("warn");
+      nudge.textContent = "Right.";
+    } else {
+      nudge.classList.add("warn");
+      nudge.textContent = SPEC.kind === "subtract"
+        ? "The rewrite is " + P.a + " + " + term(-P.b) + ", and the answer is " + P.ans + "."
+        : "The answer is " + P.ans + ". Check the signs first, then the digits.";
+    }
+  });
+
+  document.getElementById("check").disabled = true;
+  save();
+  var el2 = document.getElementById("scorebar");
+  el2.innerHTML = "<b>" + solved + " of " + PROBLEMS.length + " problems fully right.</b>" +
+    '<p style="margin:6px 0 0;color:var(--dim)">' + right + " of " + BOXES.length +
+    " boxes correct" + (blank ? ", " + blank + " left blank" : "") +
+    ". Press New problems for another test.</p>";
+}
+
+var currentSeed = today();
+function reload(seed){
+  currentSeed = seed;
+  document.getElementById("check").disabled = false;
+  renderSet(makeSet(seed));
+}
+reload(currentSeed);
+
+document.getElementById("reroll").addEventListener("click", function(){
+  reload(String(Date.now()));
+  host.scrollIntoView({ behavior: "smooth", block: "start" });
 });
+document.getElementById("check").addEventListener("click", markTest);
 
-paintStatus();
-paintProgress();
-paint();
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m;
+  var pt = document.getElementById("tabPractice"), tt = document.getElementById("tabTest");
+  pt.classList.toggle("on", m === "practice");
+  tt.classList.toggle("on", m === "test");
+  pt.setAttribute("aria-selected", String(m === "practice"));
+  tt.setAttribute("aria-selected", String(m === "test"));
+  /* Same problems in both modes, so a test can be worked again in practice. */
+  reload(currentSeed);
+}
+document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
+document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
+
+/* ── progress, stored the way the other lessons store it ──────────────── */
+function save(){
+  try {
+    localStorage.setItem("ns:prog:" + LESSON_ID, JSON.stringify({
+      done: solved, total: PROBLEMS.length, complete: solved === PROBLEMS.length
+    }));
+  } catch (e) {}
+}
+function paintScore(){
+  var e = document.getElementById("scorebar");
+  e.innerHTML = solved === PROBLEMS.length
+    ? "<b>All " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That\'s the lesson finished.</p>'
+    : "<b>" + solved + " of " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Look at the signs before the digits. ' +
+      "A wrong answer tells you which rule to check.</p>";
+}
+paintScore();
+
 })();
-</script>
-
-<script src="/assets/supabase-config.js"></script>
-<script src="/assets/ns-account.js"></script>
-<script src="/assets/lesson-shared.c34d45ea.js"></script>
-</body>
-</html>
