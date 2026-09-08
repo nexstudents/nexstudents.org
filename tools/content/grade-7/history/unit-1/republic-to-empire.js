@@ -1,4 +1,6 @@
-/* history/republic-to-empire — one lesson, one file. Edit it here; tools/lessons.js only lists them. */
+/* history/republic-to-empire
+   Grade 7 · history · unit 1. Its home is this folder.
+   Built by tools/lessons.js. Edit the lesson here, not in the registry. */
 /* ════════════════ Unit 1 Lesson 1 — From Republic to Empire ═══════════════ */
 'use strict';
 module.exports = {

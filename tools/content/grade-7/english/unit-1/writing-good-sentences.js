@@ -1,4 +1,6 @@
-/* english/writing-good-sentences — one lesson, one file. Edit it here; tools/lessons.js only lists them. */
+/* english/writing-good-sentences
+   Grade 7 · english · unit 1. Its home is this folder.
+   Built by tools/lessons.js. Edit the lesson here, not in the registry. */
 'use strict';
 module.exports = {
   id: "english/writing-good-sentences",

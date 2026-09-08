@@ -1,4 +1,6 @@
-/* history/roman-government — one lesson, one file. Edit it here; tools/lessons.js only lists them. */
+/* history/roman-government
+   Grade 7 · history · unit 1. Its home is this folder.
+   Built by tools/lessons.js. Edit the lesson here, not in the registry. */
 /* ═══════════ Unit 1 Lesson 2 — Roman Government and Citizenship ═══════════ */
 'use strict';
 module.exports = {

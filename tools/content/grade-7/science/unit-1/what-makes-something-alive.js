@@ -1,4 +1,6 @@
-/* science/what-makes-something-alive — one lesson, one file. Edit it here; tools/lessons.js only lists them. */
+/* science/what-makes-something-alive
+   Grade 7 · science · unit 1. Its home is this folder.
+   Built by tools/lessons.js. Edit the lesson here, not in the registry. */
 'use strict';
 module.exports = {
   id: "science/what-makes-something-alive",
