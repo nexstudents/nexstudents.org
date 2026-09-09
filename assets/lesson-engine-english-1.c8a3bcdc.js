@@ -1291,6 +1291,165 @@ function demoOpen(){ return !!(dbox && !dbox.hidden && !dbox.classList.contains(
    lazy default and it quietly turns the panel into decoration.
    ⚠️ It is the PARAGRAPH, not the sentence. Blanking between every sentence
    would flicker the panel through the three examples it is there to show. */
+/* ── which HALF the panel is naming right now ───────────────────────────────
+   🚨 THE PANEL WALKS THE SENTENCE; IT DOES NOT SIT ON IT. Paul, 2026-09-08:
+   "the first half shows the green side ... then the second half plays and ...
+   has already mixed nine cans of paint (orange with complete predicate over
+   it)". Showing both halves lit at once names the parts; showing them in turn,
+   as the voice crosses the split, is what teaches WHERE the line falls.
+
+   🚨 IT IS DRIVEN BY REAL WORD POSITION, NEVER BY A TIMER. `flip` is how far
+   through the sentence the split sits, and NexVoice's timepoints say how far
+   through the sentence the reading is. A device voice reports nothing usable -
+   the same reason there is no word highlight on one - so it keeps both halves
+   lit rather than guessing. A panel that names the wrong half is worse than a
+   panel that names both.
+
+   phase -1 = both halves lit (at rest, and on a device voice)
+   phase  0 = the complete subject      phase 1 = the complete predicate */
+var curV = null, curStep = 0;
+var vPhase = -2;
+function setPhase(p){
+  if (p === vPhase || !dbox) return;
+  vPhase = p;
+  var line = dbox.querySelector(".dbox-line");
+  var kind = dbox.querySelector(".dbox-kind");
+  [line, kind].forEach(function(el){
+    if (!el) return;
+    el.classList.toggle("phase-a", p === 0);
+    el.classList.toggle("phase-b", p === 1);
+  });
+}
+/* ── STEPS: the panel MOVES THROUGH a sentence ─────────────────────────────
+   🚨 ONE SENTENCE CAN NAME MORE THAN ONE EXAMPLE, AND THE PANEL HAS TO KEEP UP.
+   Paul, 2026-09-08, on sentence 14: "the voice reader says the old floorboards
+   near the register is six words ... you needed to match the story to the text
+   on the panel". That sentence counts TWO subjects. Holding one frame across it
+   left the panel showing a sentence the voice had already moved off, so the
+   halves on screen were not the halves being talked about.
+
+   A step is a whole frame - its own sentence, its own split, its own note - and
+   `from` is how far through the reading it takes over, computed at build from a
+   phrase in the sentence. A frame with no steps behaves exactly as before. */
+function stepSpec(v, i){
+  if (v && v.steps && v.steps.length) return v.steps[Math.max(0, Math.min(i, v.steps.length - 1))];
+  return v;
+}
+function stepAt(f){
+  if (!curV || !curV.steps || !curV.steps.length) return 0;
+  var k = 0;
+  for (var i = 0; i < curV.steps.length; i++) if (curV.steps[i].from <= f) k = i;
+  return k;
+}
+/* 🚨 Text nodes, never innerHTML. This is lesson prose and must not be able to
+   carry markup into the page. */
+function paintHalves(line, spec){
+  if (!line || !spec) return;
+  var old = line.querySelectorAll(".dbox-pre, .dbox-body");
+  for (var i = 0; i < old.length; i++) old[i].remove();
+  var before = line.querySelector(".dbox-mark:not(.dbox-pre)");
+  if (spec.pre){
+    var pre = document.createElement("span");
+    /* Two classes: dbox-mark keeps the shared shape, dbox-pre is the hook a
+       lesson can recolour. A lesson about two named halves needs the panel to
+       use ITS two colours, not the theme accent. */
+    pre.className = "dbox-mark dbox-pre";
+    pre.textContent = spec.pre;
+    line.insertBefore(pre, before);
+  }
+  var body = document.createElement("span");
+  body.className = "dbox-body";   /* a hook only; unstyled by default */
+  body.textContent = spec.body || "";
+  line.insertBefore(body, before);
+  if (dbox) dbox.querySelector(".dbox-note").textContent = spec.note || "";
+}
+/* 🚨 REWIND ON EVERY PLAY, NOT ON EVERY FRAME CHANGE. paint() returns early
+   when the frame has not changed, so pressing play again on the SAME sentence
+   left the panel on the step the last pass ended on - the second example on
+   screen while the voice started the first one again. */
+function resetSteps(){
+  if (!curV || !curV.steps || !curV.steps.length) return;
+  curStep = -1;
+  applyStep(0);
+  var s0 = curV.steps[0];
+  vPhase = -2;
+  setPhase((s0.lock === 0 || s0.lock === 1) ? s0.lock : -1);
+}
+function applyStep(i){
+  if (i === curStep || !curV || !curV.steps || !curV.steps[i]) return;
+  curStep = i;
+  paintHalves(dbox.querySelector(".dbox-line"), curV.steps[i]);
+  vPhase = -2;                       /* force the phase classes to be rewritten */
+}
+
+/* How far through the sentence the reading is, 0 to 1. Everything that knows
+   the position converts to this, so there is one rule for the flip. */
+function phaseFromFraction(f){
+  if (!curV) { setPhase(-1); return; }
+  if (curV.steps && curV.steps.length) applyStep(stepAt(f));
+  var curV0 = curV;
+  curV = stepSpec(curV0, curStep);          /* read lock/flip off the live step */
+  try {
+  /* 🚨 A FRAME CAN BE LOCKED TO ONE HALF, AND THAT IS NOT THE SAME AS HAVING NO
+     FLIP. Most of the explanation is about the complete subject alone. Lighting
+     the predicate there - or trading to it - makes the panel claim something the
+     narration never said. Paul, 2026-09-08, on sentence 14: "the predicate part
+     is incorrect". `lock` is 0 or 1 and it outranks every position report. */
+  if (curV.lock === 0 || curV.lock === 1) { setPhase(curV.lock); return; }
+  if (curV.flip == null) { setPhase(-1); return; }
+  setPhase(f > curV.flip ? 1 : 0);
+  } finally { curV = curV0; }
+}
+/* Called from the clip tick with the word index the audio has reached. */
+function phaseFromWord(k, total){
+  if (!total || k < 0) { setPhase(-1); return; }
+  phaseFromFraction((k + 1) / total);
+}
+
+/* 🚨 THE FLIP RUNS ON EVERY VOICE, INCLUDING A DEVICE ONE. This is deliberately
+   NOT the rule that governs the word highlight, and the difference matters:
+
+     word highlight - twenty-odd positions. Off by half a second and it points a
+                      struggling reader at the wrong word. So it is NexVoice only.
+     panel flip     - TWO positions. Off by half a second and the green half
+                      stays lit a moment longer than it should.
+
+   Applying the highlight's rule here meant the one thing Paul asked for did not
+   happen on the only voice his machine can play, and he could not see his own
+   feature. Paul, 2026-09-08: "im just fighting with you to fix something so
+   simple." A guess that cannot mislead is not the guess that rule is about.
+
+   Local voices fire onboundary and give a real character position. Network
+   voices fire nothing, so a clock takes over at the estimated pace. Whichever
+   arrives first wins, and the boundary events keep correcting the clock. */
+var phaseRaf = null, sawBoundary = false;
+function stopPhaseClock(){
+  if (phaseRaf){ cancelAnimationFrame(phaseRaf); phaseRaf = null; }
+}
+function runPhaseClock(text, rate){
+  stopPhaseClock();
+  sawBoundary = false;
+  /* 🚨 A STEPPED FRAME NEEDS THE CLOCK TOO. The first version started it only
+     when the frame had a `flip`, so a frame whose halves are locked but whose
+     STEPS move never advanced: it sat on step 0 for the whole sentence. The
+     clock drives both jobs now, which step and which half. */
+  if (!curV) return;
+  if (curV.flip == null && !(curV.steps && curV.steps.length)) return;
+  resetSteps();
+  var words = String(text || "").trim().split(/\s+/).length;
+  /* ~2.6 words a second is speech-synthesis pace at rate 1. Only ever used to
+     decide WHEN to cross a single line, never to place a highlight. */
+  var secs = words / (2.6 * Math.max(0.5, rate || 1));
+  var t0 = (window.performance && performance.now) ? performance.now() : Date.now();
+  (function tick(){
+    if (!demoOpen()) { stopPhaseClock(); return; }
+    if (sawBoundary) { stopPhaseClock(); return; }   /* real positions took over */
+    var now = (window.performance && performance.now) ? performance.now() : Date.now();
+    phaseFromFraction(((now - t0) / 1000) / secs);
+    phaseRaf = requestAnimationFrame(tick);
+  })();
+}
+
 function visualFor(i){
   var found = null;
   for (var k = 0; k < VISUALS.length; k++){
@@ -1416,6 +1575,12 @@ function paintDemo(i){
   var key = v ? v.at : -1;
   if (key === curVis) return;                 /* repaint only on a real change */
   curVis = key;
+  /* A new frame starts on the half it is about. A locked frame stays there; an
+     unlocked one shows both until the reading walks it from one to the other. */
+  curV = v;
+  curStep = 0;
+  var s0 = stepSpec(v, 0);
+  setPhase(s0 && (s0.lock === 0 || s0.lock === 1) ? s0.lock : -1);
 
   /* 🚨 `blank: true` is a visual that deliberately shows NOTHING, and it is not
      the same as having no visual at all. Paul: "you could leave the box blank if
@@ -1428,7 +1593,22 @@ function paintDemo(i){
     return;
   }
   dbox.classList.remove("is-blank");
-  dbox.querySelector(".dbox-kind").textContent = v.kind || "";
+  /* 🚨 THE KIND ROW NAMES *BOTH* HALVES, EACH IN ITS OWN COLOUR. A frame that
+     highlights two parts and labels one of them says the wrong thing: the
+     student cannot tell which colour he is being told about. `kinds` is a list
+     of { text, cls } chips; plain `kind` still works for every other lesson. */
+  var kindRow = dbox.querySelector(".dbox-kind");
+  kindRow.textContent = "";
+  if (v.kinds && v.kinds.length){
+    for (var ki = 0; ki < v.kinds.length; ki++){
+      var chip = document.createElement("span");
+      chip.className = "dbox-kindchip" + (v.kinds[ki].cls ? " " + v.kinds[ki].cls : "");
+      chip.textContent = v.kinds[ki].text;
+      kindRow.appendChild(chip);
+    }
+  } else {
+    kindRow.textContent = v.kind || "";
+  }
 
   /* 🚨 THE ART SLOT. Paul, 2026-09-05: "For a drive show a car in the panel and
      show the 1000mi", then "i think we could do more svgs that would be nice."
@@ -1488,18 +1668,20 @@ function paintDemo(i){
     g.textContent = v.ghost;
     line.appendChild(g);
   }
-  /* 🚨 Text nodes, never innerHTML. This is lesson prose and must not be able to
-     carry markup into the page. */
-  var body = document.createElement("span");
-  body.textContent = v.body;
-  line.appendChild(body);
+  /* 🚨 `pre` IS A HIGHLIGHT THAT LEADS. `mark` already highlights, but it renders
+     AFTER the body, and a lesson about complete subjects needs the highlight on the
+     FRONT half: the subject is the part that comes first, and putting it last would
+     teach the wrong shape. Added 2026-09-08 for the split lessons.
+     ⚠️ Additive on purpose. A lesson that does not set `pre` renders exactly as it
+     did before, which is why this went here rather than into a fork of the panel. */
+  paintHalves(line, stepSpec(v, 0));
   if (v.mark){
     var m = document.createElement("span");
     m.className = "dbox-mark";
     m.textContent = v.mark;
     line.appendChild(m);
   }
-  dbox.querySelector(".dbox-note").textContent = v.note || "";
+  /* the note is written by paintHalves, which owns the whole step */
 
   /* 🚨 A STAGED REVEAL. Paul, 2026-09-05, on the line that names all four steps:
      "you can show each one popping them up one at a time Explore → Plan → Solve
@@ -1726,6 +1908,10 @@ function rateVal(){ return parseFloat(document.getElementById("rate").value); }
 
 function stopEngines(){
   gen++;
+  /* Back to both halves the moment the reading stops. A frozen half-lit frame
+     would claim the reading is still sitting in that half. */
+  stopPhaseClock();
+  setPhase(-1);
   if (supported){ try { synth.cancel(); } catch(e){} }
   if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
   if (audioEl){
@@ -1808,6 +1994,7 @@ function mediaUrl(src){
 
 function playClipFrom(mine, clip){
   var s = SENT[idx];
+  if (demoOpen()) resetSteps();
   var marks = clip.marks || [];
   audioEl = new Audio(mediaUrl(clip.src));
   /* 🚨 SPEED COMES FROM PLAYBACK, NOT FROM THE CLIP. Baked audio is generated
@@ -1830,6 +2017,9 @@ function playClipFrom(mine, clip){
        would behave differently on the one thing Paul actually asked for. */
     var lit = demoOpen() ? -1 : k;
     s.words.forEach(function(w, wi){ w.el.classList.toggle("on", wi === lit); });
+    /* The same word index the highlight uses. While the panel is open it moves
+       the panel from one half to the other instead of moving a word band. */
+    if (demoOpen()) phaseFromWord(k, s.words.length);
     rafId = requestAnimationFrame(tick);
   }
 
@@ -1884,7 +2074,16 @@ function playSynth(mine){
      is always correct, because we know exactly which sentence is playing.
      The estimator is gone rather than disabled; dead code that once ran is how
      it comes back by accident. */
+  /* A local voice reports a real character position. Use it when it comes, and
+     let it switch the clock off - the same flip, driven by better evidence. */
+  u.onboundary = function(e){
+    if (mine !== gen || !demoOpen()) return;
+    if (e == null || e.charIndex == null || !s.text.length) return;
+    sawBoundary = true;
+    phaseFromFraction(e.charIndex / s.text.length);
+  };
   u.onend = function(){ finished(mine); };
+  if (demoOpen()) runPhaseClock(s.text, u.rate);
   // Chrome drops long queues if the tab throttles; one sentence at a time avoids it
   synth.speak(u);
 }

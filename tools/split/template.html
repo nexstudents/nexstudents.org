@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ | NexStudents</title>
+<meta name="description" content="__DEK__">
+__CANONICAL__
+__MODEBOOT__
+__FAVICON__
+<link rel="stylesheet" href="/assets/ns.css">
+<link rel="stylesheet" href="/assets/lesson-nav.css">
+<style>
+/* 🚨 660px, THE SAME MEASURE AS EVERY OTHER READING LESSON. Paul, 2026-09-08,
+   pointing at /lessons/english/kinds-of-sentences/: "look at what this looks
+   like here". That page is built on lesson-template.html, whose `.wrap` is
+   660px centred - so its column sits under the middle of the panel and the
+   whole page reads as one thing. This page was on a 900px wrap with a 66ch
+   paragraph inside it, which left the reading column hugging the left edge
+   while the panel stayed centred: two columns that did not line up.
+   ⚠️ The TEXT inside stays left-aligned, exactly like the reference. Centring
+   the column and centring the running text are different things, and only the
+   first one is wanted. */
+.wrapx{max-width:660px;margin:0 auto;padding:0 20px}
+.ns-back{padding:18px 0;text-align:center}
+.ns-back a{color:var(--dim);text-decoration:none;font-size:.9rem}
+.ns-back a:hover{color:var(--fg)}
+/* 🚨 THE MASTHEAD IS CENTRED, LIKE EVERY OTHER LESSON. Paul, 2026-09-08: "you
+   also need to center the text like the other lessons". This page was built on
+   its own shell rather than lesson-template.html, so it never inherited the
+   `.mast` block and was the only lesson on the site opening flush left.
+   ⚠️ `text-align:center` ALONE IS NOT ENOUGH ON `.dek`. It has a max-width, so
+   its BOX still sits hard left and the text centres inside a left-hand column -
+   the trap already recorded in CLAUDE.md under the five ways to get centring
+   wrong. It needs margin-inline:auto as well. */
+.mast{text-align:center;padding:0 0 4px}
+h1{margin:0 0 6px}
+.eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 6px}
+.dek{color:var(--dim);max-width:60ch;margin:0 auto 22px}
+/* 🚨 EVERYTHING UNDER THE PANEL SITS ON THE PANEL'S CENTRE LINE. Paul,
+   2026-09-08: "center the text under the visual panel needs to be center".
+   The panel is centred in the page while the reading column was flush left
+   inside a 900px wrap, so the lesson read as two columns that did not line up.
+   ⚠️ The STORY PROSE keeps its left edge - only its BOX is centred. Centring
+   running text moves the start of every line, which is the one thing a
+   struggling reader needs to stay put. This is the max-width trap from
+   CLAUDE.md again: text-align and margin-inline are different jobs. */
+.section-head{margin:34px 0 4px;font-size:1.35rem}
+.section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
+#story p{margin-inline:auto}
+
+/* Fallbacks. applyTheme() overwrites these the moment it runs. */
+:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38);--accent-soft:rgba(255,255,255,.14)}
+:root{--nv-bg:var(--panel);--nv-fg:var(--fg);--nv-dim:var(--dim);
+  --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
+
+/* 🚨 THE TWO HALVES HAVE THEIR OWN COLOURS AND THEY MEAN SOMETHING.
+   Green is the complete subject, orange is the complete predicate, and the whole
+   lesson refers to them by name in the prose. They are complements so the two
+   halves read as a pair rather than as right and wrong.
+   ⚠️ The worksheet CANNOT use these. Printers drop background colour, and Paul's
+   printer is black and white, so the sheet says the same thing with a heavy
+   stroke and position instead. Do not "fix" the sheet by adding colour. */
+:root{--sj:rgba(60,200,150,.16);--sj-line:#3fc79a;--pd:rgba(230,140,90,.16);--pd-line:#e5906a}
+.subj{background:var(--sj);border-bottom:2px solid var(--sj-line);padding:1px 2px}
+.pred{background:var(--pd);border-bottom:2px solid var(--pd-line);padding:1px 2px}
+.sp{display:inline-block;color:var(--fg);font-weight:800;padding:0 .4em}
+.scline{margin:0 0 10px;line-height:2.1;max-width:64ch}
+
+/* The context box that holds the definition and the worked pair together, above
+   the story section that explains them. */
+.defbox{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  padding:16px 18px;margin:0 0 18px}
+/* 🚨 THE OUTLINED EXAMPLES LIVE IN THE BOX TOO. Paul, 2026-09-08: "move the
+   green and orange outline along with the defination green and orange box up".
+   The outline IS this list - seven sentences with the two halves drawn on them.
+   Leaving it at the bottom of the page as "More Examples" split one idea across
+   the whole lesson: the definition at the top, the worked examples of that same
+   definition a thousand pixels below the practice they were meant to precede. */
+.defbox .showcase{margin:16px 0 0}
+.defnote{color:var(--dim);font-size:.92rem;line-height:1.6;margin:0;max-width:62ch}
+/* 🚨 THE GREEN AND ORANGE EXAMPLE TEXT IS ITSELF A BOX. Paul, 2026-09-08: "i
+   want the text in a box also ... the green and orange example text". It keeps
+   its own frame inside the context box, so the worked pair reads as the exhibit
+   and the note above it reads as the caption. */
+.defbox .halves{margin:14px 0 0}
+.halves{display:grid;grid-template-columns:1fr auto 1fr;margin:16px 0 6px;
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.halves .h{padding:14px 15px}
+.halves .h.subject{background:var(--sj)}
+.halves .h.predicate{background:var(--pd)}
+.halves .divider{width:3px;background:var(--fg)}
+.halves .lbl{display:block;font-size:.62rem;font-weight:800;letter-spacing:.13em;
+  text-transform:uppercase;margin-bottom:5px}
+.halves .subject .lbl{color:var(--sj-line)}
+.halves .predicate .lbl{color:var(--pd-line)}
+/* Two columns of real sentence go one word per line on a phone. Stack instead. */
+@media (max-width:640px){
+  .halves{grid-template-columns:1fr}
+  .halves .divider{width:auto;height:3px}
+}
+
+.part{margin:0 0 26px}
+.part h3{margin:0 0 8px;font-size:1.08rem}
+.part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
+
+/* ── PART A: the sentence with a movable divider ──────────────────────────
+   Every gap between two words is a target. That is deliberate: if only the
+   plausible gaps were clickable the page would be telling him the answer. */
+.prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;margin:0 0 14px}
+.prob.solved{border-color:var(--free)}
+/* 🚨 A SHOWN ANSWER LOOKS DIFFERENT FROM AN EARNED ONE. Same information on
+   screen, deliberately NOT the green of a correct answer - the colour is the
+   only thing telling him which of the two happened. */
+.prob.shown{border-color:var(--boxline)}
+.tag.told{color:var(--dim);font-weight:700}
+.kbtn.told{background:var(--boxfill);border-color:var(--boxline);color:var(--fg)}
+.kbtn.here{outline:2px solid var(--a);outline-offset:2px}
+.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tag{font-size:.85rem;color:var(--dim)}
+.tag.done{color:var(--free);font-weight:800}
+/* 🚨 NOT `.sent`. THAT CLASS BELONGS TO THE READING PLAYER, which uses it for
+   every sentence it renders into #story. Styling it here as a flex row collapsed
+   the spaces between the player's word spans and the whole story came out as
+   onelongstringofletters. Caught on the first build, in the browser. */
+.splitline{display:flex;flex-wrap:wrap;align-items:baseline;font-size:1.12rem;line-height:2}
+.splitline .w{padding:2px 1px}
+.gap{width:16px;align-self:stretch;min-height:1.6em;background:transparent;border:0;
+  padding:0;cursor:pointer;position:relative}
+.gap::before{content:"";position:absolute;left:50%;top:12%;bottom:12%;width:2px;
+  transform:translateX(-50%);background:transparent;border-radius:2px}
+.gap:hover::before{background:var(--boxline)}
+.gap.here::before{background:var(--fg);width:3px}
+.gap:focus-visible{outline:2px solid var(--a);outline-offset:2px;border-radius:3px}
+.prob.solved .gap{cursor:default}
+.verdict{margin:10px 0 0;font-size:.95rem;line-height:1.6;max-width:62ch;min-height:1.2em}
+.verdict.ok{color:var(--free);font-weight:700}
+.verdict.no{color:var(--fg)}
+.readout{margin:8px 0 0;font-size:.95rem;line-height:1.9}
+.readout .lbl{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  margin-right:6px}
+.readout .s .lbl{color:var(--sj-line)}
+.readout .p .lbl{color:var(--pd-line)}
+.readout > div{margin-bottom:4px}
+
+/* ── PART B: name the shaded half ─────────────────────────────────────── */
+.kpick{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.kbtn{font:inherit;font-size:.92rem;font-weight:700;padding:9px 17px;border-radius:999px;
+  background:transparent;border:1px solid var(--line);color:inherit;cursor:pointer}
+.kbtn:hover:not(:disabled){border-color:var(--a)}
+.kbtn.ok{background:var(--a);border-color:var(--a);color:var(--on-accent,#0b160f)}
+.kbtn.wrong{border-color:#c9503f}
+.kbtn:disabled{cursor:default}
+
+/* 🚨 `.tabs` AND `.tab.on` WERE SIMPLY MISSING HERE. Paul, 2026-09-08: "why are
+   they not highlighted like a real button it feels like they are not even being
+   pressed". They were being pressed - the mode changed, the buttons below
+   swapped - but the selected tab was styled identically to the unselected one,
+   and without `.tabs` they were not even laid out as a row. Copied from
+   math/template.html so the switch looks the same on every lesson that has one.
+   ⚠️ This is the third time on this site that the markup and the JavaScript were
+   both right and the CSS rule had never been written. Check for the rule before
+   debugging the behaviour. */
+.tabs{display:flex;gap:6px;margin:0 0 12px}
+.actions{display:flex;gap:8px;margin:0 0 18px}
+.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
+  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
+.tab:hover{color:var(--fg)}
+.tab.on{background:var(--accent-soft);border-color:var(--a);color:var(--fg);font-weight:700}
+.tab.act{flex:1 1 0;color:var(--fg);border-color:var(--boxline);background:var(--boxfill);
+  font-weight:700;padding:11px 10px}
+.tab.act:hover{border-color:var(--a)}
+.scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px 16px;margin:18px 0 0}
+.scorebar b{font-size:1.2rem}
+
+/* ── Teacher Notes ──────────────────────────────────────────────────────
+   The grade and the reset live here, behind the disclosure. A reset the student
+   can reach is a lesson that records nothing. Centred with 1fr auto 1fr, because
+   text-align alone leaves the label off centre once the chevron takes width. */
+/* 🚨 10px AND A 4px GAP, THE SAME AS EVERY OTHER LESSON. lesson-template.html
+   sets `.ground{border-radius:10px;margin:14px 0 4px}` and the panel follows it
+   at `margin:0 auto 18px`, so Teacher Notes and the panel read as one stack.
+   Here it was `var(--r)` from ns.css, which is a much tighter radius, with a
+   26px gap underneath that pushed the panel away from it.
+   ⚠️ Do not put `--r` back. ns.css tokens are tuned for site cards, not for the
+   lesson shell, and this page is the only lesson that loads ns.css at all. */
+.ground{border:1px solid var(--boxline);border-radius:10px;margin:14px 0 4px;
+  background:var(--boxfill);overflow:hidden}
+.ground summary{cursor:pointer;padding:15px 18px;font-weight:700;list-style:none;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center}
+.ground summary::before{content:""}
+.ground summary::-webkit-details-marker{display:none}
+.ground summary::after{content:"▸";justify-self:end;color:var(--dim);
+  transition:transform .18s;display:inline-block}
+.ground[open] summary::after{transform:rotate(90deg)}
+.ground .gbody{padding:0 18px 18px;border-top:1px solid var(--line)}
+.ground h4{margin:18px 0 5px;font-size:.79rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--a)}
+.ground p{margin:0;line-height:1.6;max-width:68ch}
+.ground ul{margin:6px 0 0;padding-left:20px;line-height:1.65;max-width:68ch}
+.gscore{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0 2px}
+.gscore .gscore-line{margin:0;font-weight:700;font-size:14.5px;line-height:1.3}
+.gscore .gscore-line.good{color:var(--free)}
+.gscore .btn{margin-left:auto;font-size:12.5px;padding:6px 12px;background:transparent;
+  border:1px solid var(--line);border-radius:var(--r);color:var(--fg);cursor:pointer}
+
+__PLAYER_CSS__
+__PANEL_CSS__
+/* 🚨 THE PANEL USES THE LESSON'S OWN TWO COLOURS, NOT THE THEME ACCENT.
+   The whole lesson names them: "the green half", "the orange half". A panel that
+   highlights in the theme's accent is showing the student a third colour that
+   means nothing, right at the moment the words are telling him there are two. */
+/* 🚨 THE TWO HALVES GET THE IDENTICAL TREATMENT, ONE IN EACH COLOUR. The orange
+   half was a tint with an underline while the green half was a solid fill, so
+   the two halves of one sentence looked like two different KINDS of thing.
+   Paul, 2026-09-08: "you just have it highlighted and underlined for the
+   orange, while the green one is completely covered in green".
+   Same fill, same radius, same padding, same weight. Colour is the only
+   difference, because the colour is the only thing being taught here. */
+.dbox-line .dbox-pre,
+.dbox-line .dbox-body{
+  border-radius:5px;padding:0 8px;font-weight:700;
+}
+.dbox-line .dbox-pre { background:var(--sj-line);color:#07231b; }
+.dbox-line .dbox-body{ background:var(--pd-line);color:#2a1206; }
+
+/* ── ONE HALF AT A TIME, while the reading walks the sentence ───────────────
+   The half that is not being named drops back to plain sentence text. It stays
+   on screen, because seeing the whole sentence is the point; it just stops
+   claiming to be the part under discussion. */
+.dbox-line.phase-a .dbox-body,
+.dbox-line.phase-b .dbox-pre{
+  background:none;color:var(--ink);font-weight:400;
+}
+.dbox-kind.phase-a .dbox-kindchip.is-predicate,
+.dbox-kind.phase-b .dbox-kindchip.is-subject{ display:none }
+/* 🚨 ONE LABEL OVER TWO HIGHLIGHTED HALVES NAMES NEITHER. The panel shades the
+   complete subject green and the complete predicate orange, so the row above it
+   carries a chip per half, in that half's own colour and in the same left-to-
+   right order. Paul, 2026-09-08: "for the first half you show the green complete
+   subject and the second half you show complete predicate in orange". */
+.dbox-kindchip.is-subject{color:var(--sj-line)}
+.dbox-kindchip.is-predicate{color:var(--pd-line)}
+.dbox-kindchip::before{
+  content:"";display:inline-block;width:9px;height:9px;border-radius:2px;
+  margin-right:6px;vertical-align:baseline;background:currentColor;
+}
+__FIELD_CSS__
+</style>
+</head>
+<body>
+
+__NAV__
+
+<div class="wrapx">
+  <div class="ns-back"><a href="__BACKHREF__">&larr; __BACKLABEL__</a></div>
+  <div class="mast">
+    <p class="eyebrow">__EYEBROW__</p>
+    <h1>__TITLE__</h1>
+    <p class="dek">__DEK__</p>
+  </div>
+
+  <details class="ground">
+    <summary>Teacher Notes</summary>
+    <div class="gbody">
+      <div class="gscore" id="gscore">
+        <p class="gscore-line" id="gscoreline">Not started yet.</p>
+        <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
+      </div>
+      __GROUND__
+    </div>
+  </details>
+
+  <!-- 🚨 THE VISUAL PANEL GOES DIRECTLY ABOVE THE STORY, the way it does in
+       lesson-template.html. It is a normal block, not a sticky one: placed after
+       the player at the end of the body it rendered with content and was simply
+       never on screen beside the words it describes. -->
+__PANEL_MARKUP__
+
+  <!-- 🚨 NO "The Story" HEADING. Paul, 2026-09-08: "remove the text that says
+       The Story also". The story already announces itself - the player opens on
+       it and the piece carries its own title - so the heading was labelling the
+       obvious and pushing the reading further down the page. -->
+  <div id="story"></div>
+
+  <!-- 🚨 THE DEFINITION BOX BELONGS ABOVE THE STORY SECTION THAT EXPLAINS IT.
+       Paul, 2026-09-08: "put it above this section The Two Halves", quoting the
+       prose that starts "The green half tells you who or what the sentence is
+       about." That section is part of the READING, rendered into #story by the
+       player, so the box cannot simply be placed here in the markup.
+       `liftDefBox()` below moves it into the story, directly above that
+       heading, once the player has built the page. It is authored here so it
+       stays plain markup, and moved rather than duplicated so there is only
+       ever one of it. -->
+  <div class="defbox" id="defbox" hidden>
+    <p class="defnote">Green is the complete subject. Orange is the complete predicate. The line is
+    where one ends and the other begins.</p>
+    __EXAMPLE__
+    <div class="showcase">
+__SHOWCASE__
+    </div>
+  </div>
+
+
+  <h2 class="section-head">Part A</h2>
+  <p class="section-note">__NOTE_A__</p>
+  <!-- 🚨 TWO MODES, THE SAME SENTENCES - the pattern maths and integers already
+       use. Paul, 2026-09-08: "i would not do show me the answers directly and
+       mark it as finished. other test we have a practice and test mode."
+       PRACTICE judges each line as it is placed, which is how the habit is
+       built. TEST accepts every placement without a word and marks the paper on
+       demand, which is how you find out whether he actually had it.
+       The switch governs Part A AND Part B; they are one piece of work. -->
+  <div class="tabs" role="tablist">
+    <button class="tab on" type="button" id="tabPractice" role="tab" aria-selected="true">Practice</button>
+    <button class="tab" type="button" id="tabTest" role="tab" aria-selected="false">Test</button>
+  </div>
+  <p class="section-note" id="modenote"></p>
+  <div class="actions">
+    <button class="tab act" type="button" id="reveal">Show Me The Answers</button>
+    <button class="tab act" type="button" id="check" hidden>Check My Work</button>
+  </div>
+  <div id="problems"></div>
+
+  <h2 class="section-head">Part B</h2>
+  <p class="section-note">__NOTE_B__</p>
+  <div id="kinds"></div>
+
+  <div class="scorebar" id="scorebar"></div>
+</div>
+
+__PLAYER_MARKUP__
+
+<script>
+var LESSON_ID = "__ID__";
+var PARTS = __PARTS__;
+var PRACTICE = __PRACTICE__;
+var SORT = __SORT__;
+var VISUALS = __VISUALS__;
+__THEMES__
+</script>
+<script>
+__PLAYER_JS__
+</script>
+<script>
+(function(){
+"use strict";
+
+/* Progress is per lesson so closing the tab does not lose the work.
+   🚨 A finished lesson is never downgraded by reopening it. `solved` starts at 0
+   on every visit, and a blind save would turn complete:true into complete:false
+   the moment a box was touched. Only the teacher's Reset clears a record. */
+var KEY = "ns:prog:" + LESSON_ID;
+var state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
+
+var TOTAL = PRACTICE.length + SORT.length;
+function answered(){
+  var n = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i] === true) n++;
+  for (i = 0; i < SORT.length; i++)     if (state["b" + i] === true) n++;
+  return n;
+}
+function save(){
+  try {
+    var done = answered();
+    var prev = null;
+    try { prev = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e2) {}
+    if (prev && prev.complete === true && done < TOTAL) return;
+    state.done = done; state.total = TOTAL; state.complete = done === TOTAL;
+    localStorage.setItem(KEY, JSON.stringify(state));
+  } catch (e) {}
+}
+
+var wrap  = document.getElementById("problems");
+var kwrap = document.getElementById("kinds");
+var bar   = document.getElementById("scorebar");
+
+function halves(sentence, split){
+  var w = sentence.split(" ");
+  return { s: w.slice(0, split).join(" "), p: w.slice(split).join(" ") };
+}
+
+/* ── PART A ───────────────────────────────────────────────────────────────
+   Every gap between two words is a button. He moves the line and checks it.
+   The answer is NOT in the DOM until he is right: the gap only carries its
+   index, and `split` lives in the data this script closes over. */
+function renderA(){
+  wrap.innerHTML = "";
+  PRACTICE.forEach(function(P, n){
+    var done  = state["a" + n] === true;
+    var shown = shownA(n);
+    var locked = done || shown;
+    var box = document.createElement("div");
+    box.className = "prob" + (done ? " solved" : "") + (shown ? " shown" : "");
+
+    var head = document.createElement("div");
+    head.className = "probhead";
+    var num = document.createElement("span");
+    num.className = "probnum"; num.textContent = "Sentence " + (n + 1);
+    var tag = document.createElement("span");
+    tag.className = "tag" + (done ? " done" : shown ? " told" : "");
+    tag.textContent = done ? "Correct" : shown ? "Answer shown" : "";
+    head.appendChild(num); head.appendChild(tag);
+    box.appendChild(head);
+
+    var sent = document.createElement("p");
+    sent.className = "splitline";
+    var words = P.sentence.split(" ");
+    var chosen = locked ? P.split : (typeof state["p" + n] === "number" ? state["p" + n] : -1);
+
+    words.forEach(function(word, wi){
+      if (wi > 0) {
+        var g = document.createElement("button");
+        g.type = "button";
+        g.className = "gap" + (chosen === wi ? " here" : "");
+        g.setAttribute("aria-label", "Put the line before " + word);
+        g.addEventListener("click", function(){
+          if (state["a" + n] === true || shownA(n)) return;
+          state["p" + n] = wi; save(); renderA(); score();
+        });
+        sent.appendChild(g);
+      }
+      var s = document.createElement("span");
+      s.className = "w"; s.textContent = word;
+      sent.appendChild(s);
+    });
+    box.appendChild(sent);
+
+    var readout = document.createElement("div");
+    readout.className = "readout";
+    var verdict = document.createElement("p");
+    verdict.className = "verdict";
+
+    /* 🚨 TEST HIDES A JUDGEMENT, IT DOES NOT HIDE WORK ALREADY DONE. Switching
+       to Test used to blank a sentence he had already got right, which reads as
+       the mode wiping his progress. Only an UNJUDGED placement is silent. */
+    if (chosen > 0 && (done || shown || judging())) {
+      var h = halves(P.sentence, chosen);
+      readout.innerHTML =
+        '<div class="s"><span class="lbl">Complete subject</span><span class="subj">' +
+          h.s.replace(/</g, "&lt;") + '</span></div>' +
+        '<div class="p"><span class="lbl">Complete predicate</span><span class="pred">' +
+          h.p.replace(/</g, "&lt;") + '</span></div>';
+      if (shown) {
+        verdict.className = "verdict";
+        verdict.textContent = "This is where the line goes. " + P.why;
+      } else if (chosen === P.split) {
+        verdict.className = "verdict ok";
+        verdict.textContent = "Correct.";
+        if (state["a" + n] !== true) { state["a" + n] = true; save(); }
+        box.classList.add("solved");
+        tag.className = "tag done"; tag.textContent = "Correct";
+      } else {
+        verdict.className = "verdict no";
+        /* 🚨 THE WRONG ANSWER ASKS THE LESSON'S OWN QUESTION BACK. Not "wrong",
+           but the same question Paul ends the teaching with, pointed at these
+           words. `why` is written per sentence for exactly this. */
+        verdict.textContent = "Not there. " + P.why;
+      }
+      box.appendChild(readout);
+    }
+    box.appendChild(verdict);
+    wrap.appendChild(box);
+  });
+}
+
+/* ── PART B ─────────────────────────────────────────────────────────────── */
+function renderB(){
+  kwrap.innerHTML = "";
+  SORT.forEach(function(S, n){
+    var done = state["b" + n] === true;
+    var box = document.createElement("div");
+    box.className = "prob" + (done ? " solved" : "");
+
+    var head = document.createElement("div");
+    head.className = "probhead";
+    var num = document.createElement("span");
+    num.className = "probnum"; num.textContent = "Sentence " + (n + 1);
+    var tag = document.createElement("span");
+    tag.className = "tag" + (done ? " done" : "");
+    tag.textContent = done ? "Correct" : "";
+    head.appendChild(num); head.appendChild(tag);
+    box.appendChild(head);
+
+    var h = halves(S.sentence, S.split);
+    var sent = document.createElement("p");
+    sent.style.fontSize = "1.12rem"; sent.style.lineHeight = "2";
+    sent.innerHTML = (S.shaded === "subject"
+      ? '<span class="subj">' + h.s.replace(/</g, "&lt;") + '</span> ' + h.p.replace(/</g, "&lt;")
+      : h.s.replace(/</g, "&lt;") + ' <span class="pred">' + h.p.replace(/</g, "&lt;") + '</span>');
+    box.appendChild(sent);
+
+    var verdict = document.createElement("p");
+    verdict.className = "verdict";
+
+    var pick = document.createElement("div");
+    pick.className = "kpick";
+    ["subject", "predicate"].forEach(function(kind){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "kbtn";
+      b.textContent = kind === "subject" ? "Complete subject" : "Complete predicate";
+      if (done || shownB(n)) {
+        b.disabled = true;
+        if (kind === S.shaded) b.classList.add(shownB(n) && !done ? "told" : "ok");
+      }
+      /* In test mode the pick is remembered and judged later, exactly like a
+         placed line in Part A. Nothing is said at the moment of choosing. */
+      if (MODE === "test" && !CHECKED && state["bp" + n] === kind) b.classList.add("here");
+      b.addEventListener("click", function(){
+        if (state["b" + n] === true || shownB(n)) return;
+        if (MODE === "test" && !CHECKED) {
+          state["bp" + n] = kind; save(); renderB(); score(); return;
+        }
+        if (kind === S.shaded) {
+          state["b" + n] = true; save(); renderB(); score();
+        } else {
+          b.classList.add("wrong");
+          verdict.className = "verdict no";
+          verdict.textContent = "Not that one. " + S.why;
+        }
+      });
+      pick.appendChild(b);
+    });
+    box.appendChild(pick);
+    box.appendChild(verdict);
+    if (done) { verdict.className = "verdict ok"; verdict.textContent = S.why; }
+    else if (shownB(n)) { verdict.className = "verdict"; verdict.textContent = "The shaded half is the " +
+      (S.shaded === "subject" ? "complete subject" : "complete predicate") + ". " + S.why; }
+    kwrap.appendChild(box);
+  });
+}
+
+/* ⚠️ THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE. Four right out
+   of four answered is not 100% when the lesson has twelve. */
+/* 🚨 A REVEALED ANSWER IS NOT A CORRECT ANSWER. "Show Me The Answers" used to
+   write the right split into `state.a` - the same flag a real answer sets - so
+   pressing it once put the teacher line on "Completed 12/12 practised to
+   mastery". Paul, 2026-09-08: "i would not do show me the answers directly and
+   mark it as finished."
+   `shown` is a SEPARATE flag. It draws the answer, it locks the item, and it
+   never counts toward the score. The teacher line says how many were shown. */
+var MODE = "practice";
+function shownA(n){ return state["sa" + n] === true; }
+function shownB(n){ return state["sb" + n] === true; }
+function countShown(){
+  var k = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (shownA(i)) k++;
+  for (i = 0; i < SORT.length; i++)     if (shownB(i)) k++;
+  return k;
+}
+/* In test mode nothing is judged until Check My Work is pressed. */
+var CHECKED = false;
+function judging(){ return MODE === "practice" || CHECKED; }
+
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m;
+  CHECKED = false;
+  var pt = document.getElementById("tabPractice"), tt = document.getElementById("tabTest");
+  pt.classList.toggle("on", m === "practice");
+  tt.classList.toggle("on", m === "test");
+  pt.setAttribute("aria-selected", String(m === "practice"));
+  tt.setAttribute("aria-selected", String(m === "test"));
+  document.getElementById("reveal").hidden = m !== "practice";
+  document.getElementById("check").hidden  = m !== "test";
+  document.getElementById("modenote").textContent = m === "practice"
+    ? "Practice tells you straight away whether the line is in the right place."
+    : "Test says nothing until you press Check My Work. Place every line first.";
+  renderA(); renderB(); score();
+}
+
+function score(){
+  var a = 0, b = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i] === true) a++;
+  for (i = 0; i < SORT.length; i++)     if (state["b" + i] === true) b++;
+  var done = a + b;
+  var told = countShown();
+  /* 🚨 THE SCORE LINE NAMES WHAT WAS SHOWN. A page that says "5 of 12 done"
+     while seven answers were handed over is telling the teacher something
+     false by omission. */
+  var toldLine = told ? " <span style='color:var(--dim)'>(" + told +
+    (told === 1 ? " answer was shown" : " answers were shown") + ")</span>" : "";
+  bar.innerHTML = done === TOTAL
+    ? "<b>All " + TOTAL + " done.</b><p style='margin:6px 0 0;color:var(--dim)'>" +
+      "Part A " + a + " of " + PRACTICE.length + ", Part B " + b + " of " + SORT.length +
+      ". Now print the worksheet and do it on paper.</p>"
+    : "<b>" + done + " of " + TOTAL + " done.</b><p style='margin:6px 0 0;color:var(--dim)'>" +
+      "Part A " + a + " of " + PRACTICE.length + ", Part B " + b + " of " + SORT.length +
+      toldLine + ". A wrong answer tells you why and lets you try again.</p>";
+  paintTeacherScore();
+}
+
+/* The teacher's line and the reset, in Teacher Notes. Reads the STORED record,
+   not just this visit, so a lesson finished last week still shows its grade and
+   can still be reset. This lesson is retry-until-right, so finishing IS full
+   marks: say so rather than printing a bare 100% that reads like a test score. */
+function paintTeacherScore(){
+  var line = document.getElementById("gscoreline");
+  var btn  = document.getElementById("greset");
+  if (!line) return;
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+  var done = answered();
+  if (saved && typeof saved.done === "number" && saved.done > done) done = saved.done;
+  if (saved && saved.complete === true) done = TOTAL;
+  /* 🚨 SHOWN ANSWERS ARE REPORTED TO THE TEACHER, and they stop the line ever
+     reading "practised to mastery". That claim is the one thing on this page a
+     grade gets copied from, so it has to be earned. */
+  var told = countShown();
+  line.className = "gscore-line" + (done === 0 ? "" : (done === TOTAL && !told) ? " good" : "");
+  var suffix = told ? " · " + told + " shown, not scored" : "";
+  line.textContent = done === 0
+    ? (told ? "Nothing answered · " + told + " shown" : "Not started yet.")
+    : done === TOTAL
+      ? "Completed · " + TOTAL + "/" + TOTAL + " (100%) · practised to mastery"
+      : done + " of " + TOTAL + " answered · still in progress" + suffix;
+  if (btn) { btn.hidden = (done === 0 && told === 0); return; }
+  if (btn) btn.hidden = done === 0;
+}
+
+document.getElementById("greset").addEventListener("click", function(){
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  state = {}; CHECKED = false; renderA(); renderB(); score();
+});
+
+/* 🚨 SHOWING AN ANSWER MARKS IT SHOWN, NEVER CORRECT. It fills in every item he
+   has not already got right, in BOTH parts, and those items are excluded from
+   the score for good - which is the whole difference from the old behaviour. */
+document.getElementById("reveal").addEventListener("click", function(){
+  PRACTICE.forEach(function(P, n){
+    if (state["a" + n] === true) return;
+    state["p" + n] = P.split; state["sa" + n] = true;
+  });
+  SORT.forEach(function(S, n){ if (state["b" + n] !== true) state["sb" + n] = true; });
+  save(); renderA(); renderB(); score();
+});
+
+/* Test marks the paper here and nowhere else. */
+document.getElementById("check").addEventListener("click", function(){
+  CHECKED = true;
+  PRACTICE.forEach(function(P, n){
+    if (!shownA(n) && state["p" + n] === P.split) state["a" + n] = true;
+  });
+  SORT.forEach(function(S, n){
+    if (!shownB(n) && state["bp" + n] === S.shaded) state["b" + n] = true;
+  });
+  save(); renderA(); renderB(); score();
+});
+
+document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
+document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
+
+document.getElementById("modenote").textContent =
+  "Practice tells you straight away whether the line is in the right place.";
+renderA(); renderB(); score();
+
+/* 🚨 THE DEFINITION BOX IS MOVED INTO THE STORY, NOT COPIED THERE.
+   Paul, 2026-09-08: "put it above this section The Two Halves". That heading is
+   written by the reading player into #story, so the box has to be relocated
+   after the player has rendered. Moving it keeps ONE box on the page - a second
+   copy would be two things to keep in step, which is how the nav and the drawer
+   drifted apart.
+   ⚠️ It matches on the heading TEXT, so if the story part is ever renamed the
+   box quietly stays where it is rather than landing in the wrong place. The
+   `hidden` attribute comes off only on success, so a failed match shows nothing
+   instead of leaving a stray box floating above Part A. */
+function liftDefBox(){
+  var box = document.getElementById("defbox");
+  var story = document.getElementById("story");
+  if (!box || !story) return false;
+  var heads = story.querySelectorAll("h2");
+  for (var i = 0; i < heads.length; i++){
+    if (heads[i].textContent.trim().toLowerCase() !== "the two halves") continue;
+    /* 🚨 TWO BOXES, NOT ONE WRAPPED AROUND THE OTHER. Paul, 2026-09-08: "i want
+       the text in a box also ... the green and orange example text". The green
+       and orange example already had its box; "also" means the explanation
+       prose gets one of its own, sitting under it. Wrapping the prose AROUND
+       the example was tried first and was wrong - that is one object, and these
+       are two: the exhibit, then the teaching about it. */
+    var sec = heads[i].closest(".part") || heads[i].parentNode;
+    sec.parentNode.insertBefore(box, sec);
+    box.hidden = false;
+    return true;
+  }
+  return false;
+}
+/* The player builds the story on load; if it has not run yet, wait one frame. */
+if (!liftDefBox()) requestAnimationFrame(function(){ liftDefBox(); });
+})();
+</script>
+
+__NAVSCRIPT__
+</body>
+</html>

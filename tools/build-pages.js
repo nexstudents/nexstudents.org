@@ -339,6 +339,7 @@ const LESSON_SOURCES = [
   { file: "./math-lessons.js",      key: "MATH"     },  /* maths, show-your-work */
   { file: "./english-lessons.js",   key: "ENGLISH"  },  /* english, rule + test  */
   { file: "./integers-lessons.js",  key: "INTEGERS" },  /* maths, rule + drill   */
+  { file: "./split-lessons.js",     key: "SPLIT"    },  /* english, split the sentence */
 ];
 
 const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {

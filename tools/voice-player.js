@@ -124,6 +124,48 @@ function checkNoLessonData(js) {
   }
 }
 
+
+/* ── THE VISUAL PANEL ────────────────────────────────────────────────────────
+   The pinned frame that follows the reading and shows an example on the frame it
+   belongs to. Paul, 2026-09-05: "we should just call it the visual panel."
+
+   🚨 IT IS SLICED, NOT COPIED, for the same reason the player is. The panel's
+   ENGINE already travels inside playerScript, so a template that pastes its own
+   markup would fork the two apart the first time either changed. Until 2026-09-08
+   only lesson-template.html had the markup, which is why the panel worked on
+   history and science and silently did nothing anywhere else: VISUALS declared,
+   engine present, no #dbox to paint into and no error to say so. */
+function panelCss() {
+  const src = read();
+  const css = between(src,
+    "/* ---------- the explainer ----------",
+    "/* ---------- the worked problems ----------",
+    "visual panel CSS");
+  for (const must of [".dbox", ".dbox-line", ".dbox-note", ".dbox-mark"]) {
+    if (!css.includes(must)) fail("visual panel CSS is missing " + must);
+  }
+  return css;
+}
+
+function panelMarkup() {
+  const src = read();
+  const a = src.indexOf('<div class="dbox is-blank" id="dbox" hidden>');
+  if (a < 0) fail("the visual panel markup is gone from lesson-template.html");
+  /* Walk the divs so the slice ends at the panel's OWN close, not the first one. */
+  let i = a, depth = 0;
+  for (;;) {
+    const o = src.indexOf("<div", i), c = src.indexOf("</div>", i);
+    if (c < 0) fail("the visual panel markup has no closing tag");
+    if (o !== -1 && o < c) { depth++; i = o + 4; }
+    else { depth--; i = c + 6; if (depth === 0) break; }
+  }
+  const markup = src.slice(a, i);
+  for (const must of ['id="dbox"', "dbox-sent", "dbox-kind", "dbox-line", "dbox-note"]) {
+    if (!markup.includes(must)) fail("visual panel markup is missing " + must);
+  }
+  return markup;
+}
+
 /* Saved settings, the palettes, the story builder and the whole read-aloud
    engine. Stops before the word cards, which are history-only. */
 function playerScript() {
@@ -183,4 +225,4 @@ function playerScript() {
   return defaults + js;   /* the guarded defaults must ship WITH the engine */
 }
 
-module.exports = { playerCss, fieldCss, playerMarkup, playerScript };
+module.exports = { playerCss, fieldCss, playerMarkup, playerScript, panelCss, panelMarkup };

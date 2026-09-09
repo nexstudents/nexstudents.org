@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Verbs: Action and Being | NexStudents</title>
-<meta name="description" content="Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.">
-<link rel="canonical" href="https://nexstudents.org/lessons/english/verbs-action-and-being/">
+<title>Complete Subjects and Predicates | NexStudents</title>
+<meta name="description" content="Every sentence has two halves. One says who or what it is about, the other says something about it. Finding the line between them is the whole skill.">
+<link rel="canonical" href="https://nexstudents.org/lessons/english/complete-subjects-and-predicates/">
 <meta property="og:site_name" content="NexStudents">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://nexstudents.org/lessons/english/verbs-action-and-being/">
-<meta property="og:title" content="Verbs: Action and Being | NexStudents">
-<meta property="og:description" content="Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.">
+<meta property="og:url" content="https://nexstudents.org/lessons/english/complete-subjects-and-predicates/">
+<meta property="og:title" content="Complete Subjects and Predicates | NexStudents">
+<meta property="og:description" content="Every sentence has two halves. One says who or what it is about, the other says something about it. Finding the line between them is the whole skill.">
 <meta property="og:image" content="https://nexstudents.org/assets/brand/share.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Verbs: Action and Being | NexStudents">
-<meta name="twitter:description" content="Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.">
+<meta name="twitter:title" content="Complete Subjects and Predicates | NexStudents">
+<meta name="twitter:description" content="Every sentence has two halves. One says who or what it is about, the other says something about it. Finding the line between them is the whole skill.">
 <meta name="twitter:image" content="https://nexstudents.org/assets/brand/share.png">
 <script type="application/ld+json">
 {
@@ -30,13 +30,13 @@
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "3rd Grade English",
-      "item": "https://nexstudents.org/grade-3/english/lessons/"
+      "name": "7th Grade English",
+      "item": "https://nexstudents.org/grade-7/english/lessons/"
     },
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Verbs: Action and Being"
+      "name": "Complete Subjects and Predicates"
     }
   ]
 }
@@ -48,137 +48,203 @@
 <link rel="stylesheet" href="/assets/ns.css">
 <link rel="stylesheet" href="/assets/lesson-nav.css">
 <style>
-.wrapx{max-width:900px;margin:0 auto;padding:0 20px}
-.ns-back{padding:18px 0}
+/* 🚨 660px, THE SAME MEASURE AS EVERY OTHER READING LESSON. Paul, 2026-09-08,
+   pointing at /lessons/english/kinds-of-sentences/: "look at what this looks
+   like here". That page is built on lesson-template.html, whose `.wrap` is
+   660px centred - so its column sits under the middle of the panel and the
+   whole page reads as one thing. This page was on a 900px wrap with a 66ch
+   paragraph inside it, which left the reading column hugging the left edge
+   while the panel stayed centred: two columns that did not line up.
+   ⚠️ The TEXT inside stays left-aligned, exactly like the reference. Centring
+   the column and centring the running text are different things, and only the
+   first one is wanted. */
+.wrapx{max-width:660px;margin:0 auto;padding:0 20px}
+.ns-back{padding:18px 0;text-align:center}
 .ns-back a{color:var(--dim);text-decoration:none;font-size:.9rem}
 .ns-back a:hover{color:var(--fg)}
+/* 🚨 THE MASTHEAD IS CENTRED, LIKE EVERY OTHER LESSON. Paul, 2026-09-08: "you
+   also need to center the text like the other lessons". This page was built on
+   its own shell rather than lesson-template.html, so it never inherited the
+   `.mast` block and was the only lesson on the site opening flush left.
+   ⚠️ `text-align:center` ALONE IS NOT ENOUGH ON `.dek`. It has a max-width, so
+   its BOX still sits hard left and the text centres inside a left-hand column -
+   the trap already recorded in CLAUDE.md under the five ways to get centring
+   wrong. It needs margin-inline:auto as well. */
+.mast{text-align:center;padding:0 0 4px}
 h1{margin:0 0 6px}
-.dek{color:var(--dim);max-width:60ch;margin:0 0 22px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 22px}
+.eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 6px}
+.dek{color:var(--dim);max-width:60ch;margin:0 auto 22px}
+/* 🚨 EVERYTHING UNDER THE PANEL SITS ON THE PANEL'S CENTRE LINE. Paul,
+   2026-09-08: "center the text under the visual panel needs to be center".
+   The panel is centred in the page while the reading column was flush left
+   inside a 900px wrap, so the lesson read as two columns that did not line up.
+   ⚠️ The STORY PROSE keeps its left edge - only its BOX is centred. Centring
+   running text moves the start of every line, which is the one thing a
+   struggling reader needs to stay put. This is the max-width trap from
+   CLAUDE.md again: text-align and margin-inline are different jobs. */
 .section-head{margin:34px 0 4px;font-size:1.35rem}
 .section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
+#story p{margin-inline:auto}
 
 /* Fallbacks. applyTheme() overwrites these the moment it runs. */
 :root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38);--accent-soft:rgba(255,255,255,.14)}
-/* The site nav reads six variables of its own (assets/lesson-nav.css), mapped
-   onto this page's palette so the nav re-themes with the lesson.
-   NOTE: --pill belongs to ns.css and is a RADIUS. Never map a colour onto it. */
 :root{--nv-bg:var(--panel);--nv-fg:var(--fg);--nv-dim:var(--dim);
   --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
 
-/* ── Ground Control ────────────────────────────────────────────────────────
-   The teacher panel, and the reason this page exists. It is deliberately the
-   FIRST thing on the page and deliberately shut by default: the parent opens
-   it before the lesson, the student never needs to. */
-.ground{border:1px solid var(--boxline);border-radius:var(--r);margin:0 0 26px;
+/* 🚨 THE TWO HALVES HAVE THEIR OWN COLOURS AND THEY MEAN SOMETHING.
+   Green is the complete subject, orange is the complete predicate, and the whole
+   lesson refers to them by name in the prose. They are complements so the two
+   halves read as a pair rather than as right and wrong.
+   ⚠️ The worksheet CANNOT use these. Printers drop background colour, and Paul's
+   printer is black and white, so the sheet says the same thing with a heavy
+   stroke and position instead. Do not "fix" the sheet by adding colour. */
+:root{--sj:rgba(60,200,150,.16);--sj-line:#3fc79a;--pd:rgba(230,140,90,.16);--pd-line:#e5906a}
+.subj{background:var(--sj);border-bottom:2px solid var(--sj-line);padding:1px 2px}
+.pred{background:var(--pd);border-bottom:2px solid var(--pd-line);padding:1px 2px}
+.sp{display:inline-block;color:var(--fg);font-weight:800;padding:0 .4em}
+.scline{margin:0 0 10px;line-height:2.1;max-width:64ch}
+
+/* The context box that holds the definition and the worked pair together, above
+   the story section that explains them. */
+.defbox{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  padding:16px 18px;margin:0 0 18px}
+/* 🚨 THE OUTLINED EXAMPLES LIVE IN THE BOX TOO. Paul, 2026-09-08: "move the
+   green and orange outline along with the defination green and orange box up".
+   The outline IS this list - seven sentences with the two halves drawn on them.
+   Leaving it at the bottom of the page as "More Examples" split one idea across
+   the whole lesson: the definition at the top, the worked examples of that same
+   definition a thousand pixels below the practice they were meant to precede. */
+.defbox .showcase{margin:16px 0 0}
+.defnote{color:var(--dim);font-size:.92rem;line-height:1.6;margin:0;max-width:62ch}
+/* 🚨 THE GREEN AND ORANGE EXAMPLE TEXT IS ITSELF A BOX. Paul, 2026-09-08: "i
+   want the text in a box also ... the green and orange example text". It keeps
+   its own frame inside the context box, so the worked pair reads as the exhibit
+   and the note above it reads as the caption. */
+.defbox .halves{margin:14px 0 0}
+.halves{display:grid;grid-template-columns:1fr auto 1fr;margin:16px 0 6px;
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.halves .h{padding:14px 15px}
+.halves .h.subject{background:var(--sj)}
+.halves .h.predicate{background:var(--pd)}
+.halves .divider{width:3px;background:var(--fg)}
+.halves .lbl{display:block;font-size:.62rem;font-weight:800;letter-spacing:.13em;
+  text-transform:uppercase;margin-bottom:5px}
+.halves .subject .lbl{color:var(--sj-line)}
+.halves .predicate .lbl{color:var(--pd-line)}
+/* Two columns of real sentence go one word per line on a phone. Stack instead. */
+@media (max-width:640px){
+  .halves{grid-template-columns:1fr}
+  .halves .divider{width:auto;height:3px}
+}
+
+.part{margin:0 0 26px}
+.part h3{margin:0 0 8px;font-size:1.08rem}
+.part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
+
+/* ── PART A: the sentence with a movable divider ──────────────────────────
+   Every gap between two words is a target. That is deliberate: if only the
+   plausible gaps were clickable the page would be telling him the answer. */
+.prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;margin:0 0 14px}
+.prob.solved{border-color:var(--free)}
+/* 🚨 A SHOWN ANSWER LOOKS DIFFERENT FROM AN EARNED ONE. Same information on
+   screen, deliberately NOT the green of a correct answer - the colour is the
+   only thing telling him which of the two happened. */
+.prob.shown{border-color:var(--boxline)}
+.tag.told{color:var(--dim);font-weight:700}
+.kbtn.told{background:var(--boxfill);border-color:var(--boxline);color:var(--fg)}
+.kbtn.here{outline:2px solid var(--a);outline-offset:2px}
+.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tag{font-size:.85rem;color:var(--dim)}
+.tag.done{color:var(--free);font-weight:800}
+/* 🚨 NOT `.sent`. THAT CLASS BELONGS TO THE READING PLAYER, which uses it for
+   every sentence it renders into #story. Styling it here as a flex row collapsed
+   the spaces between the player's word spans and the whole story came out as
+   onelongstringofletters. Caught on the first build, in the browser. */
+.splitline{display:flex;flex-wrap:wrap;align-items:baseline;font-size:1.12rem;line-height:2}
+.splitline .w{padding:2px 1px}
+.gap{width:16px;align-self:stretch;min-height:1.6em;background:transparent;border:0;
+  padding:0;cursor:pointer;position:relative}
+.gap::before{content:"";position:absolute;left:50%;top:12%;bottom:12%;width:2px;
+  transform:translateX(-50%);background:transparent;border-radius:2px}
+.gap:hover::before{background:var(--boxline)}
+.gap.here::before{background:var(--fg);width:3px}
+.gap:focus-visible{outline:2px solid var(--a);outline-offset:2px;border-radius:3px}
+.prob.solved .gap{cursor:default}
+.verdict{margin:10px 0 0;font-size:.95rem;line-height:1.6;max-width:62ch;min-height:1.2em}
+.verdict.ok{color:var(--free);font-weight:700}
+.verdict.no{color:var(--fg)}
+.readout{margin:8px 0 0;font-size:.95rem;line-height:1.9}
+.readout .lbl{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  margin-right:6px}
+.readout .s .lbl{color:var(--sj-line)}
+.readout .p .lbl{color:var(--pd-line)}
+.readout > div{margin-bottom:4px}
+
+/* ── PART B: name the shaded half ─────────────────────────────────────── */
+.kpick{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.kbtn{font:inherit;font-size:.92rem;font-weight:700;padding:9px 17px;border-radius:999px;
+  background:transparent;border:1px solid var(--line);color:inherit;cursor:pointer}
+.kbtn:hover:not(:disabled){border-color:var(--a)}
+.kbtn.ok{background:var(--a);border-color:var(--a);color:var(--on-accent,#0b160f)}
+.kbtn.wrong{border-color:#c9503f}
+.kbtn:disabled{cursor:default}
+
+/* 🚨 `.tabs` AND `.tab.on` WERE SIMPLY MISSING HERE. Paul, 2026-09-08: "why are
+   they not highlighted like a real button it feels like they are not even being
+   pressed". They were being pressed - the mode changed, the buttons below
+   swapped - but the selected tab was styled identically to the unselected one,
+   and without `.tabs` they were not even laid out as a row. Copied from
+   math/template.html so the switch looks the same on every lesson that has one.
+   ⚠️ This is the third time on this site that the markup and the JavaScript were
+   both right and the CSS rule had never been written. Check for the rule before
+   debugging the behaviour. */
+.tabs{display:flex;gap:6px;margin:0 0 12px}
+.actions{display:flex;gap:8px;margin:0 0 18px}
+.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
+  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
+.tab:hover{color:var(--fg)}
+.tab.on{background:var(--accent-soft);border-color:var(--a);color:var(--fg);font-weight:700}
+.tab.act{flex:1 1 0;color:var(--fg);border-color:var(--boxline);background:var(--boxfill);
+  font-weight:700;padding:11px 10px}
+.tab.act:hover{border-color:var(--a)}
+.scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px 16px;margin:18px 0 0}
+.scorebar b{font-size:1.2rem}
+
+/* ── Teacher Notes ──────────────────────────────────────────────────────
+   The grade and the reset live here, behind the disclosure. A reset the student
+   can reach is a lesson that records nothing. Centred with 1fr auto 1fr, because
+   text-align alone leaves the label off centre once the chevron takes width. */
+/* 🚨 10px AND A 4px GAP, THE SAME AS EVERY OTHER LESSON. lesson-template.html
+   sets `.ground{border-radius:10px;margin:14px 0 4px}` and the panel follows it
+   at `margin:0 auto 18px`, so Teacher Notes and the panel read as one stack.
+   Here it was `var(--r)` from ns.css, which is a much tighter radius, with a
+   26px gap underneath that pushed the panel away from it.
+   ⚠️ Do not put `--r` back. ns.css tokens are tuned for site cards, not for the
+   lesson shell, and this page is the only lesson that loads ns.css at all. */
+.ground{border:1px solid var(--boxline);border-radius:10px;margin:14px 0 4px;
   background:var(--boxfill);overflow:hidden}
-/* 🚨 CENTRED, THE WAY THE HISTORY TEMPLATE DOES IT: 1fr auto 1fr with an empty
-   ::before as the left spacer, so the chevron on the right cannot pull the label
-   off centre. Flex with margin-left:auto centres nothing — the same trap listed in
-   CLAUDE.md under the five ways to get centring wrong.
-   ⚠️ The "For the teacher" eyebrow was removed 2026-09-08 at Paul's request. */
 .ground summary{cursor:pointer;padding:15px 18px;font-weight:700;list-style:none;
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center}
 .ground summary::before{content:""}
 .ground summary::-webkit-details-marker{display:none}
 .ground summary::after{content:"▸";justify-self:end;color:var(--dim);
-  transition:transform .18s}
-.ground[open] summary::after{transform:rotate(180deg)}
-.ground summary:hover{color:var(--a)}
-.ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--dim);font-weight:600}
+  transition:transform .18s;display:inline-block}
+.ground[open] summary::after{transform:rotate(90deg)}
 .ground .gbody{padding:0 18px 18px;border-top:1px solid var(--line)}
 .ground h4{margin:18px 0 5px;font-size:.79rem;letter-spacing:.09em;
   text-transform:uppercase;color:var(--a)}
 .ground p{margin:0;line-height:1.6;max-width:68ch}
 .ground ul{margin:6px 0 0;padding-left:20px;line-height:1.65;max-width:68ch}
-.ground li{margin:0 0 7px}
+.gscore{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0 2px}
+.gscore .gscore-line{margin:0;font-weight:700;font-size:14.5px;line-height:1.3}
+.gscore .gscore-line.good{color:var(--free)}
+.gscore .btn{margin-left:auto;font-size:12.5px;padding:6px 12px;background:transparent;
+  border:1px solid var(--line);border-radius:var(--r);color:var(--fg);cursor:pointer}
 
-/* ── the rule ─────────────────────────────────────────────────────────────
-   A rule the student can point at. `.ruletest` is set apart on purpose: the
-   definition is what he is told, the test is what he can actually DO. */
-.rulebox{border:1px solid var(--a);border-radius:var(--r);padding:20px;margin:0 0 26px;
-  background:var(--accent-soft)}
-.rulebox .short{font-size:1.16rem;font-weight:700;margin:0 0 12px;line-height:1.45}
-.rulebox .long{margin:0;color:var(--fg);line-height:1.65;max-width:66ch}
-.ruletest{margin:16px 0 0;padding:14px 16px;border-radius:10px;
-  background:var(--panel);border:1px solid var(--boxline);line-height:1.6;max-width:66ch}
-.ruletest b:first-child{color:var(--a)}
-
-/* The reading player CSS is injected from lesson-template.html via
-   tools/voice-player.js. Do not restyle it here - one player, every lesson. */
-
-/* ── taught prose ── */
-.part{margin:0 0 26px}
-.part h3{margin:0 0 8px;font-size:1.08rem}
-.part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
-
-/* ── worked examples ── */
-.ex{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:16px 18px;margin:0 0 12px}
-.ex .sent{font-size:1.1rem;line-height:1.6;margin:0 0 8px}
-.ex .sent u{text-decoration:none;color:var(--a);font-weight:700;
-  border-bottom:2px solid var(--a);padding-bottom:1px}
-.ex .why{margin:0;color:var(--dim);font-size:.93rem;line-height:1.6;max-width:66ch}
-
-/* ── practice: click the word ── */
-.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
-  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
-.tab:hover{color:var(--fg)}
-.actions{display:flex;flex-wrap:nowrap;gap:8px;margin:0 0 18px}
-.tab.act{flex:1 1 0;min-width:0;color:var(--fg);border-color:var(--boxline);
-  background:var(--boxfill);font-weight:600;white-space:nowrap;padding:11px 10px;font-size:.88rem}
-.tab.act:hover{border-color:var(--a)}
-.tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
-/* ── the two worksheet parts ──────────────────────────────────────────────
-   A printed worksheet says "Part A" with its own directions underneath, and a
-   rule across the page so you can see where one job stops and the next starts.
-   That rule is the whole reason this reads as two tasks rather than a list. */
-.wspart{margin:22px 0 0;padding-top:18px;border-top:2px solid var(--line)}
-.wspart:first-of-type{border-top:0;padding-top:0}
-.ws-head{margin:0 0 4px;font-size:1.06rem;letter-spacing:.01em}
-.ws-note{color:var(--dim);font-size:.9rem;margin:0 0 14px;max-width:62ch}
-
-/* Part B: the sentence, then two buttons. The verb is already underlined,
-   because the question is not which word it is - that was Part A. */
-.kverb{text-decoration:underline;text-underline-offset:3px;font-weight:700}
-.kpick{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
-.kbtn{font:inherit;font-size:.92rem;font-weight:600;padding:9px 17px;border-radius:999px;
-  background:transparent;border:1px solid var(--line);color:inherit;cursor:pointer}
-.kbtn:hover:not(:disabled){border-color:var(--a)}
-.kbtn.ok{background:var(--a);border-color:var(--a);color:var(--on-accent,#0b160f)}
-.kbtn.wrong{border-color:#c9503f}
-.kbtn.reveal{border-color:var(--a);border-style:dashed}
-.kbtn:disabled{cursor:default}
-
-.prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:18px;margin:0 0 16px}
-.prob.solved{border-color:var(--free)}
-.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
-.probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
-.tag{font-size:.85rem;color:var(--dim)}
-.tag.done{color:var(--free);font-weight:700}
-.words{display:flex;flex-wrap:wrap;gap:6px}
-/* Every word is a target, so nothing about the layout hints at the answer.
-   A word that is not clickable would give it away. */
-.pw{background:transparent;border:1px solid transparent;border-radius:7px;
-  color:var(--fg);font:inherit;font-size:1.06rem;padding:6px 8px;cursor:pointer;
-  transition:background .12s,border-color .12s}
-.pw:hover{background:var(--boxfill);border-color:var(--boxline)}
-.pw:disabled{cursor:default}
-.pw.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
-.pw.wrong{border-color:#e5484d;color:#e5484d}
-.pw.reveal{border-color:var(--free);color:var(--free);font-weight:700}
-.nudge{margin-top:12px;font-size:.92rem;color:var(--dim);min-height:1.4em;line-height:1.6;max-width:66ch}
-.nudge.warn{color:#e5484d}
-.scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:16px;margin:22px 0 40px}
-.scorebar b{font-size:1.25rem}
-
-@media print{
-  .player,.themerow,.actions,.ns-back,.ground{display:none!important}
-  .prob{break-inside:avoid;page-break-inside:avoid}
-}
 /* ---------- player ---------- */
 .player{
   /* Docked to the foot of the screen on every width. Paul, 2026-08-29:
@@ -662,6 +728,219 @@ h2{
 .sent.shown{background:var(--band);box-shadow:inset 0 -2px 0 var(--brass)}
 
 
+/* ---------- the explainer ----------
+   Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
+   to you ... use a visual way of explaining along with the text so the youth can
+   see how these sentences are changing and what they mean. just like how you
+   explained with the math problem." And what it is FOR: "basically make this a
+   way for attention issue students to still stay engaged."
+   That purpose decides the design. One thing on screen at a time, the page holds
+   still while it is open, and the meaning is carried by the drawing rather than
+   by another paragraph of text to read.
+   🚨 --stickytop IS MEASURED, NOT GUESSED. Two things are pinned at the top now,
+   the nav and this, so anything scrolled to has to clear both. It used to be a
+   hardcoded 180px for the nav alone. */
+:root{--stickytop:180px}
+/* 🚨 IT DOES NOT PIN. Paul, 2026-09-04: "i like how you snapped it to the top
+   but it doesnt need to snap because it gets in the way later when answering
+   question even when you hide it the tab is still there."
+   A pinned bar is permanent furniture, and this panel is only wanted while the
+   reading is happening. Sticky meant the collapsed tab still sat over the
+   questions for the whole second half of the lesson, taking height off every
+   screen for a control nobody was going to press again. In normal flow it
+   scrolls away with the story it belongs to, which is the correct behaviour and
+   also less code: no z-index, no measured offset, nothing to keep in step. */
+.dbox{
+  max-width:760px;margin:0 auto 18px;
+  background:var(--surface-2, var(--boxfill));
+  border:1px solid var(--rule, var(--line));border-radius:10px;
+  padding:14px 16px 10px;
+  scroll-margin-top:var(--stickytop,180px);
+}
+/* 🚨 min-height on the CONTENT, not the box, so collapsing actually collapses.
+   While open the frame keeps its height through a blank stretch - a box that
+   grew and shrank every few sentences would jog the whole page under the reader,
+   which is the exact wobble the word highlight was kept plain to avoid. */
+/* The line being read, small and quiet above the drawing. It is a caption on the
+   panel, not a second place to read the lesson from - the story below is still
+   where the reading happens. */
+/* 🚨 A FIXED HEIGHT, BECAUSE THIS BAR MUST NOT RESIZE. Paul, 2026-09-05: "for the
+   visual panel it is resizing keep the top bar the same lenth o it doesnt expand
+   or contract. if the text is too long you could make it slightly smaller to
+   fit."
+   The sentence changes on every line of the lesson, and sentences are not the
+   same length, so a bar that grows to fit made the whole panel breathe in and
+   out several times a paragraph - the exact jitter this panel exists to stop.
+   Three lines at the base size, held open whatever is in it, and fitSentence()
+   below shrinks the type for the few sentences that need more. */
+.dbox-sent{
+  height:41px;                       /* 2 lines at 13.5px / 1.5 */
+  margin:0 auto 10px;padding-bottom:10px;box-sizing:content-box;
+  border-bottom:1px solid var(--rule, var(--line));
+  font-size:13.5px;line-height:1.5;text-align:center;
+  color:var(--ink-soft, var(--dim));
+  max-width:60ch;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.dbox.is-shut .dbox-sent{display:none}
+.dbox.is-wide .dbox-in{min-height:0}
+.dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
+.dbox-kind:empty{display:none}
+.dbox-kind{
+  /* flex, not a plain block, so a frame naming TWO parts can put a chip per
+     part side by side. A one-word kind centres identically either way. */
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;
+  margin:0 0 10px;text-align:center;
+  font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--verdigris, var(--accent));
+}
+/* the sentence, pulled apart into its pieces */
+.dbox-line{
+  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;
+  gap:0 8px;margin:0;font-size:21px;line-height:1.4;color:var(--ink);
+}
+/* 🚨 The understood subject. An imperative sentence "leaves out the subject",
+   and that absence IS the lesson - so it is drawn, dimmed and bracketed. There
+   is no other way to point at a word that is not there. */
+.dbox-ghost{
+  color:var(--ink-faint, var(--dim));font-style:italic;
+  border:1px dashed var(--ink-faint, var(--dim));border-radius:5px;padding:0 7px;
+}
+.dbox-mark{
+  color:var(--on-accent, #fff);background:var(--verdigris, var(--accent));
+  border-radius:5px;padding:0 8px;font-weight:700;display:inline-block;
+}
+/* 🚨 A VERSE IS NOT A DIAGRAM. Paul, 2026-09-04: "bible verses should be
+   included in the panel." It gets the same frame and the same timing, but none
+   of the grammar furniture: no punctuation chip, no dashed understood subject.
+   Setting a verse in the diagram treatment would put a highlighter on the full
+   stop of Proverbs 25:11, which is not what anyone is being asked to look at. */
+.dbox-line.is-verse{
+  font-style:italic;font-size:19px;line-height:1.5;
+  max-width:46ch;margin-inline:auto;
+}
+/* the drawing, above the line it belongs to. currentColor means it takes the
+   lesson palette, so there is no second copy for the other theme. */
+.dbox-art{display:flex;justify-content:center;margin:0 0 10px;color:var(--verdigris, var(--accent))}
+/* a photo or illustration, as opposed to an inline icon */
+.dbox.is-wide{max-width:860px;width:calc(100vw - 44px);margin-left:50%;transform:translateX(-50%)}
+.dbox-art img{display:block;width:100%;height:auto;border-radius:8px;cursor:zoom-in}
+.dbox-art.pic{margin:0 0 10px}
+/* 🚨 THE SLOT IS 16:9 AND IS ALWAYS THERE. Paul, 2026-09-05: "it should just stay
+   consistant." On a picture lesson the art area keeps its shape whether this
+   frame has an image, a drawing or nothing at all, so the panel is one height
+   from the first sentence to the last. `contain` is what makes the reservation
+   safe: an image that is not exactly 16:9 letterboxes inside the slot instead of
+   being stretched to fill it, which is the distortion Paul caught earlier today. */
+.dbox.is-wide .dbox-art{width:100%;aspect-ratio:16/9;align-items:center;margin:0 0 10px}
+.dbox.is-wide .dbox-art img{height:100%;object-fit:contain}
+/* The two reserved text rows. `kind` is one line whether or not this frame names
+   one; the example and its note share a fixed block below it. Together with the
+   16:9 slot above, that is every part of the panel pinned to a height, which is
+   what makes it the same size from the first sentence to the last. */
+.dbox.is-wide .dbox-kind{height:21px;overflow:hidden}
+.dbox.is-wide .dbox-words{
+  height:74px;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.dbox.is-wide .dbox-words .dbox-note{margin:6px 0 0}
+@media (max-height:820px){ .dbox.is-wide{max-width:660px} }
+@media (max-height:620px){ .dbox.is-wide{max-width:520px} }
+/* full screen on tap, because the detail in these does not survive a phone */
+.picfull{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);
+  display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.picfull img{max-width:100%;max-height:100%;border-radius:6px}
+.picfull[hidden]{display:none}
+.dbox-art svg{max-width:100%;height:auto}
+@media (max-width:560px){ .dbox-art svg{width:104px;height:auto} }
+
+/* the staged reveal - one word at a time, left to right */
+.dbox-pop{
+  display:inline-block;opacity:0;
+  animation:dboxpop .34s ease-out forwards;
+}
+.dbox-arrow{color:var(--ink-faint, var(--dim));margin:0 2px}
+@keyframes dboxpop{
+  from{opacity:0;transform:translateY(4px)}
+  to{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .dbox-pop{animation:none;opacity:1}
+}
+/* the one-line shout, for a frame that is a statement rather than a diagram */
+.dbox-line.is-shout{font-size:26px;font-weight:600;letter-spacing:.01em}
+.dbox-note{
+  margin:10px 0 0;text-align:center;font-size:14px;line-height:1.5;
+  color:var(--ink-soft, var(--dim));
+}
+/* 🚨 THE CONTROL NAMES THE PANEL. Paul, 2026-09-05: "when collapsed it says open
+   visual panel put a line seperator and it says close visual panel."
+   A separate label beside the button was the first attempt and it was redundant
+   the moment the button carried the name itself. One item, so it is genuinely
+   centred rather than a centred GROUP - two things in a centred row is the trap
+   where neither of them lands on the middle. */
+.dbox-foot{
+  display:flex;justify-content:center;
+  margin:10px 0 0;padding-top:8px;
+  border-top:1px solid var(--rule, var(--line));
+}
+.dbox-x{
+  font:inherit;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;
+  background:none;border:0;cursor:pointer;padding:4px 10px;border-radius:5px;
+  color:var(--ink-faint, var(--dim));
+}
+.dbox-x:hover{color:var(--ink)}
+.dbox-x:focus-visible{outline:2px solid var(--verdigris, var(--accent));outline-offset:2px}
+/* blank keeps the frame and drops the contents; shut drops the frame too */
+.dbox.is-blank .dbox-in{visibility:hidden}
+.dbox.is-shut{padding:4px 16px}
+.dbox.is-shut .dbox-in{display:none}
+/* collapsed, the footer IS the panel, so drop the gap it had above the content */
+.dbox.is-shut .dbox-foot{margin:0;padding-top:0;border-top:0}
+
+
+
+/* 🚨 THE PANEL USES THE LESSON'S OWN TWO COLOURS, NOT THE THEME ACCENT.
+   The whole lesson names them: "the green half", "the orange half". A panel that
+   highlights in the theme's accent is showing the student a third colour that
+   means nothing, right at the moment the words are telling him there are two. */
+/* 🚨 THE TWO HALVES GET THE IDENTICAL TREATMENT, ONE IN EACH COLOUR. The orange
+   half was a tint with an underline while the green half was a solid fill, so
+   the two halves of one sentence looked like two different KINDS of thing.
+   Paul, 2026-09-08: "you just have it highlighted and underlined for the
+   orange, while the green one is completely covered in green".
+   Same fill, same radius, same padding, same weight. Colour is the only
+   difference, because the colour is the only thing being taught here. */
+.dbox-line .dbox-pre,
+.dbox-line .dbox-body{
+  border-radius:5px;padding:0 8px;font-weight:700;
+}
+.dbox-line .dbox-pre { background:var(--sj-line);color:#07231b; }
+.dbox-line .dbox-body{ background:var(--pd-line);color:#2a1206; }
+
+/* ── ONE HALF AT A TIME, while the reading walks the sentence ───────────────
+   The half that is not being named drops back to plain sentence text. It stays
+   on screen, because seeing the whole sentence is the point; it just stops
+   claiming to be the part under discussion. */
+.dbox-line.phase-a .dbox-body,
+.dbox-line.phase-b .dbox-pre{
+  background:none;color:var(--ink);font-weight:400;
+}
+.dbox-kind.phase-a .dbox-kindchip.is-predicate,
+.dbox-kind.phase-b .dbox-kindchip.is-subject{ display:none }
+/* 🚨 ONE LABEL OVER TWO HIGHLIGHTED HALVES NAMES NEITHER. The panel shades the
+   complete subject green and the complete predicate orange, so the row above it
+   carries a chip per half, in that half's own colour and in the same left-to-
+   right order. Paul, 2026-09-08: "for the first half you show the green complete
+   subject and the second half you show complete predicate in orange". */
+.dbox-kindchip.is-subject{color:var(--sj-line)}
+.dbox-kindchip.is-predicate{color:var(--pd-line)}
+.dbox-kindchip::before{
+  content:"";display:inline-block;width:9px;height:9px;border-radius:2px;
+  margin-right:6px;vertical-align:baseline;background:currentColor;
+}
 /* ── FORM FIELDS ───────────────────────────────────────────────────────────
    🚨 A FIELD IS NOT A CONTROL, AND A FIELD IS PAPER. Paul, 2026-08-29: "the
    text boxes need to be white with black lettering ... i would do outlines in
@@ -1066,43 +1345,130 @@ body.player-hidden .scrub{margin:0}
 <div class="cscrim" id="cscrim"></div><aside class="cdrawer" id="cdrawer" aria-hidden="true" aria-label="Cart"><div class="cd-top"><h2 class="cd-h">Cart <span class="cd-n" id="cdN">0</span></h2><button class="cd-x" id="cdClose" type="button" aria-label="Close cart">&times;</button></div><div class="cd-body" id="cdBody"></div><div class="cd-foot"><div class="cd-tot"><span>Total</span><span id="cdTotal">&mdash;</span></div><div class="cd-acts"><a class="navbtn" href="/cart/"><span>View Cart</span></a><a class="navbtn" href="/cart/"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="12" height="8" rx="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg><span>Check Out</span></a></div></div></aside>
 
 <div class="wrapx">
-  <div class="ns-back"><a href="/grade-3/english/lessons/">&larr; 3rd Grade English</a></div>
-  <h1>Verbs: Action and Being</h1>
-  <p class="dek">Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.</p>
+  <div class="ns-back"><a href="/grade-7/english/lessons/">&larr; 7th Grade English</a></div>
+  <div class="mast">
+    <p class="eyebrow">English · The Sentence · Unit 1 · Lesson 2</p>
+    <h1>Complete Subjects and Predicates</h1>
+    <p class="dek">Every sentence has two halves. One says who or what it is about, the other says something about it. Finding the line between them is the whole skill.</p>
+  </div>
 
-  <details class="ground" id="ground">
+  <details class="ground">
     <summary>Teacher Notes</summary>
     <div class="gbody">
-      <!-- 🚨 THE GRADE AND THE RESET LIVE HERE, BEHIND THE TEACHER DISCLOSURE, and
-           that placement is the whole point. "Start Over" used to sit in the open
-           above the questions, so a student could wipe a finished lesson with one
-           click and no confirmation — and the shelf card then read as though he had
-           never done it. A lesson he can re-roll at will records nothing.
-           Same markup and same ids as the history template, so one script shape
-           serves every lesson type.
-           ⚠️ The summary said "Ground Control" until 2026-09-08. That framing is
-           retired from everything published — see BEHAVIOR.md. -->
       <div class="gscore" id="gscore">
         <p class="gscore-line" id="gscoreline">Not started yet.</p>
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
-      <h4>What it is</h4><p>By the end of this lesson a student should be able to find the verb in a sentence and say whether it is an action verb or a being verb. An action verb tells what someone or something does, and that action can be physical, like <i>run, jump</i> or <i>open</i>, or it can happen in the mind, like <i>think, remember</i> or <i>understand</i>. A being verb tells what someone or something is or was instead of showing an action, and there are only eight of them: <b>am, is, are, was, were, be, been, being</b>. Compare "The dog chased the ball" with "The dog is tired". In the first, <i>chased</i> tells what the dog did. In the second, <i>is</i> tells us something about the dog.</p>
-<h4>Why it matters</h4><p>Verbs are the hinge everything later swings on. Tense is a verb changing to show time. Subject-verb agreement is a verb changing to match who is doing it. Sentence types, clauses, and eventually essay writing all assume a student can find the verb without thinking about it. A student who is shaky here is shaky in every grammar lesson after it, and usually nobody notices, because the later lessons look like they are about something else.</p>
-<h4>What he will get wrong</h4><p>A word's job can change depending on the sentence, and this is where students lose the thread. In "We walk to school", <i>walk</i> is an action verb. In "The walk was long", <i>walk</i> is a noun and the verb is <i>was</i>. Most students hunt for a word that sounds like doing something, which works until the verb is <i>is, was</i> or <i>are</i> and then they freeze or grab a noun. It comes from teaching "a verb is an action word", which is not true, and it is why so many students stall on this exact page.</p>
-<h4>What to say when he is stuck</h4><ul><li>There are TWO tests here and they answer different questions. If he cannot FIND the verb, say: "Read it again, but start with Yesterday. Which word had to change?" That word is the verb, every time.</li><li>Once he has found it, the quick check names its kind. Use these exact words: "Is the subject doing something, or is the sentence telling what the subject is?" Doing means action. Is or was means being.</li><li>If they pick a noun, ask: "Is anybody doing that right now, or is it just a thing?" A walk sitting on the page is a thing. Walking is not.</li><li>If they meet a sentence like "The dog is running", tell them plainly that <i>is</i> is helping the action verb <i>running</i>. Helping verbs are their own lesson and nothing here depends on them.</li><li>The shortcut worth repeating out loud until it sticks: action tells what something DOES, being tells what something IS.</li><li>When they get it right, do not stop at "correct". Ask HOW they knew. If the answer is "it looked like one", they got lucky and the test has not stuck yet.</li></ul>
+      <h4>What it is</h4><p>Every sentence splits into two parts. The complete subject is all the words that tell who or what the sentence is about. The complete predicate is all the words that tell what that subject does, or what is true about it.</p>
+<h4>Why it matters</h4><p>Almost everything later in this unit depends on being able to see those two halves. Simple subjects, compound subjects and finding the subject in an unusual sentence are all this same skill, narrowed down.</p>
+<h4>What he will get wrong</h4><p>Stopping the subject too early. A student marks the first noun and leaves the rest behind, so The old floorboards near the register becomes The old floorboards. Ask them which floorboards, and they usually fix it themselves.</p>
+<h4>What to say when he is stuck</h4><ul><li>Say the sentence out loud and stop where it finishes telling you who or what it is about. That pause is the line.</li><li>If he cannot hear it, ask him which one. See whether the next few words answer that question.</li><li>If he is still stuck, cover everything after his line and ask whether what is left tells you who the sentence is about.</li></ul>
     </div>
   </details>
 
-  <div class="rulebox">
-    <p class="short">A verb tells what the subject does, or what the subject is.</p>
-    <p class="long">Verbs come in two kinds. An <b>action verb</b> says something happens: <i>ran, built, decided, forgot</i>. A <b>being verb</b> says something simply is: <i>am, is, are, was, were, be, been, being</i>. Being verbs do not act. They join the subject to what it is, the way an equals sign joins two sides of a sum.</p>
-    <p class="ruletest"><b>Run this test.</b> TWO TESTS, TWO JOBS. <b>To FIND the verb</b>, put <i>Yesterday</i> in front of the sentence and read it again — the one word that has to change shape is the verb. <b>To NAME its kind</b>, ask: <i>is someone or something doing something, or is the sentence telling me what someone or something is?</i> Doing means an action verb. Is or was means a being verb. Action means DO. Being means IS.</p>
+  <!-- 🚨 THE VISUAL PANEL GOES DIRECTLY ABOVE THE STORY, the way it does in
+       lesson-template.html. It is a normal block, not a sticky one: placed after
+       the player at the end of the body it rendered with content and was simply
+       never on screen beside the words it describes. -->
+<div class="dbox is-blank" id="dbox" hidden>
+    <!-- 🚨 THE SENTENCE BEING READ, ALWAYS. Paul, 2026-09-05: "i wonder if we
+         could put the sentences in the visual panel along with the examples
+         maybe across the top it just shows the sentence as a small text to read
+         when there is an example it show the example. this would also give you a
+         starting point where the example lands and how long it appears."
+         It also fixes something the blank state got wrong: with only the example
+         in here, the panel sat empty between frames and there was no way to see
+         WHERE a frame began or how long it stood. The sentence line runs the
+         whole time, so an example arriving is visible against it. -->
+    <p class="dbox-sent" id="dboxsent" aria-live="polite"></p>
+    <div class="dbox-in" aria-live="polite">
+      <p class="dbox-kind"></p>
+      <div class="dbox-art" hidden></div>
+      <!-- 🚨 ONE REGION, SO IT CAN BE RESERVED. The example and its note are the
+           only two things left that change height frame to frame, and they are
+           wrapped together for the same reason the sentence bar has a fixed
+           height: the panel holds one size and the type shrinks to fit, rather
+           than the box growing and pushing the story down mid-paragraph. -->
+      <div class="dbox-words">
+        <p class="dbox-line"></p>
+        <p class="dbox-note"></p>
+      </div>
+    </div>
+    <!-- 🚨 THE PANEL SAYS ITS OWN NAME. Paul, 2026-09-05: "we should just call it
+         the visual panel if i can remember what it is is called. remind me that
+         it is called that so i can remember. you could just name that in the
+         bottom actually for all the lessons."
+         The footer is also the whole panel when it is collapsed, so the name is
+         on screen either way, and there is no state where the control is visible
+         without the thing it controls being named. -->
+    <div class="dbox-foot">
+      <button class="dbox-x" type="button" id="dboxx" aria-expanded="true">Close Visual Panel</button>
+    </div>
   </div>
 
-  <h2 class="section-head">The Lesson</h2>
-  <p class="section-note">Press play to have it read to you. The line being read lights up, so you can follow along.</p>
+  <!-- 🚨 NO "The Story" HEADING. Paul, 2026-09-08: "remove the text that says
+       The Story also". The story already announces itself - the player opens on
+       it and the piece carries its own title - so the heading was labelling the
+       obvious and pushing the reading further down the page. -->
+  <div id="story"></div>
 
-  <div class="player" id="player">
+  <!-- 🚨 THE DEFINITION BOX BELONGS ABOVE THE STORY SECTION THAT EXPLAINS IT.
+       Paul, 2026-09-08: "put it above this section The Two Halves", quoting the
+       prose that starts "The green half tells you who or what the sentence is
+       about." That section is part of the READING, rendered into #story by the
+       player, so the box cannot simply be placed here in the markup.
+       `liftDefBox()` below moves it into the story, directly above that
+       heading, once the player has built the page. It is authored here so it
+       stays plain markup, and moved rather than duplicated so there is only
+       ever one of it. -->
+  <div class="defbox" id="defbox" hidden>
+    <p class="defnote">Green is the complete subject. Orange is the complete predicate. The line is
+    where one ends and the other begins.</p>
+    <div class="halves">
+  <div class="h subject"><span class="lbl">Complete subject</span>The man behind the paint counter</div>
+  <div class="divider" aria-hidden="true"></div>
+  <div class="h predicate"><span class="lbl">Complete predicate</span>has already mixed nine cans of paint.</div>
+</div>
+    <div class="showcase">
+  <p class="scline"><span class="subj">The man behind the paint counter</span><span class="sp" aria-hidden="true">|</span><span class="pred">has already mixed nine cans of paint.</span></p>
+  <p class="scline"><span class="subj">Customers waiting nearby</span><span class="sp" aria-hidden="true">|</span><span class="pred">watch as he carefully matches each color.</span></p>
+  <p class="scline"><span class="subj">A woman in a green jacket</span><span class="sp" aria-hidden="true">|</span><span class="pred">is comparing two different door handles.</span></p>
+  <p class="scline"><span class="subj">Her young son</span><span class="sp" aria-hidden="true">|</span><span class="pred">spins the rack of keys while he waits for her to decide.</span></p>
+  <p class="scline"><span class="subj">The old floorboards near the register</span><span class="sp" aria-hidden="true">|</span><span class="pred">creak every time someone walks across them.</span></p>
+  <p class="scline"><span class="subj">The workers at the store</span><span class="sp" aria-hidden="true">|</span><span class="pred">have heard those squeaky boards for years.</span></p>
+  <p class="scline"><span class="subj">The busy hardware store</span><span class="sp" aria-hidden="true">|</span><span class="pred">has helped dozens of customers find what they need by the time noon arrives.</span></p>
+    </div>
+  </div>
+
+
+  <h2 class="section-head">Part A</h2>
+  <p class="section-note">There are seven sentences. Place the line where the complete subject ends and the complete predicate starts, then check it.</p>
+  <!-- 🚨 TWO MODES, THE SAME SENTENCES - the pattern maths and integers already
+       use. Paul, 2026-09-08: "i would not do show me the answers directly and
+       mark it as finished. other test we have a practice and test mode."
+       PRACTICE judges each line as it is placed, which is how the habit is
+       built. TEST accepts every placement without a word and marks the paper on
+       demand, which is how you find out whether he actually had it.
+       The switch governs Part A AND Part B; they are one piece of work. -->
+  <div class="tabs" role="tablist">
+    <button class="tab on" type="button" id="tabPractice" role="tab" aria-selected="true">Practice</button>
+    <button class="tab" type="button" id="tabTest" role="tab" aria-selected="false">Test</button>
+  </div>
+  <p class="section-note" id="modenote"></p>
+  <div class="actions">
+    <button class="tab act" type="button" id="reveal">Show Me The Answers</button>
+    <button class="tab act" type="button" id="check" hidden>Check My Work</button>
+  </div>
+  <div id="problems"></div>
+
+  <h2 class="section-head">Part B</h2>
+  <p class="section-note">There are five sentences, already divided. One half is shaded. Say which half it is.</p>
+  <div id="kinds"></div>
+
+  <div class="scorebar" id="scorebar"></div>
+</div>
+
+<div class="player" id="player">
     <div class="pcontrols">
       <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
       <label class="playerhide" for="playerhide" title="Show or hide the settings" aria-label="Show or hide the settings">
@@ -1165,70 +1531,66 @@ body.player-hidden .scrub{margin:0}
 
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
   </div>
-  <div id="story"></div>
-
-  <h2 class="section-head">Worked Examples</h2>
-  <p class="section-note">Five done for you. The underlined word is the verb, and the line under it says how you could have known.</p>
-  <div id="examples"><div class="ex">
-  <p class="sent">The mechanic <u>tightened</u> the bolt.</p>
-  <p class="why">The mechanic is doing something, and you could watch it happen. Tightened is the verb, and it is an action verb.</p>
-</div>
-<div class="ex">
-  <p class="sent">The hall <u>is</u> enormous.</p>
-  <p class="why">Nobody is doing anything here. The sentence is telling you what the hall is, and is connects hall with enormous. That makes is a being verb.</p>
-</div>
-<div class="ex">
-  <p class="sent">He <u>forgot</u> his umbrella.</p>
-  <p class="why">You cannot watch someone forget, but forgetting is still something he did. Not every action is one you can see.</p>
-</div>
-<div class="ex">
-  <p class="sent">The journey <u>was</u> long.</p>
-  <p class="why">The trap. Journey looks like something you do, but here nobody is journeying. It is the name of a thing that was long, so the verb is was.</p>
-</div>
-<div class="ex">
-  <p class="sent">Those students <u>are</u> ready.</p>
-  <p class="why">A being verb again. Are tells you what the students are. Notice it is are and not is, because students is more than one. That is agreement, and it is coming later.</p>
-</div></div>
-
-  <h2 class="section-head">Your Turn</h2>
-  <p class="section-note">Two parts, like a worksheet. Part A asks which word is the verb. Part B asks what kind of verb it is. A wrong answer tells you why and lets you try again, so nothing here counts against you.</p>
-  <!-- ⚠️ "Start Over" MOVED into Teacher Notes 2026-09-08. Out here it wiped every
-       answer on one click with no confirmation, so a student could un-finish a
-       lesson he had already completed and the shelf card would show it as never
-       done. Do not put a reset back on the student's side of the page. -->
-  <div class="actions">
-    <button class="tab act" type="button" id="reveal">Show Me The Answers</button>
-  </div>
-
-  <!-- 🚨 TWO PARTS, LIKE A WORKSHEET. Paul, 2026-08-29: "make the questions
-       also resemble that like kinds of verbs and which is a verb together but
-       in two different sections ... like a worksheet does."
-       Part A asks WHICH WORD. Part B asks WHICH KIND. They are two different
-       skills and running them together as one list of ten hid that. -->
-  <section class="wspart">
-    <h3 class="ws-head">Part A. Find The Verb.</h3>
-    <p class="ws-note">10 sentences. Click the verb in each one. A wrong click tells you why and lets you try again.</p>
-    <div id="problems"></div>
-  </section>
-
-  <section class="wspart">
-    <h3 class="ws-head">Part B. Action Or Being?</h3>
-    <p class="ws-note">6 more sentences, and the verb is underlined for you. Decide whether it is an action verb or a being verb.</p>
-    <div id="kinds"></div>
-  </section>
-
-  <div class="scorebar" id="scorebar"></div>
-</div>
 
 <script>
-(function(){
-"use strict";
+var LESSON_ID = "english/complete-subjects-and-predicates";
+var PARTS = [{"title":"Saturday at the Hardware Store","s":["Saturday morning at the hardware store is always busy.","The man behind the paint counter has already mixed nine cans of paint.","Customers waiting nearby watch as he carefully matches each color.","A woman in a green jacket is comparing two different door handles.","Her young son spins the rack of keys while he waits for her to decide.","The old floorboards near the register creak every time someone walks across them.","The workers at the store have heard those squeaky boards for years.","The busy hardware store has helped dozens of customers find what they need by the time noon arrives."]},{"title":"The Two Halves","s":["The green half tells you who or what the sentence is about. That is the complete subject.","The orange half tells you what the subject does or what is true about it. That is the complete predicate.","","Look at this sentence. The man behind the paint counter has already mixed nine cans of paint.","The complete subject is not just the man. Think about a busy hardware store on Saturday. There might be several men inside. The words behind the paint counter tell you which man we are talking about.","So keep those words together. The man behind the paint counter. That whole part is the complete subject.","","Complete subjects can be different sizes. Her young son is only three words. The old floorboards near the register is six words. That is okay. A complete subject keeps all the words that belong together to tell you who or what the sentence is about.","","Here is where students sometimes stop too early. The old floorboards near the register creak every time someone walks across them.","You might stop at floorboards. Don't. The words near the register are still telling you which floorboards we mean, so they stay with the subject.","","For now, our sentences will usually put the complete subject first and the complete predicate after it.","A good question to ask yourself is this. Where does the sentence stop telling me who or what it is about, and start telling me something about it? That is where your dividing line goes."]},{"title":"Your Turn","s":["Read the story about the hardware store and listen to the explanation.","Part A has seven sentences. Put the dividing line where the sentence stops telling you who or what it is about.","Part B has five sentences. One half is already shaded. Name it.","When you have finished both parts, print the worksheet and do it on paper. Writing the sentences out yourself is where this really sticks."]}];
+var PRACTICE = [{"sentence":"The pitcher warmed up along the fence.","split":2,"why":"The sentence stops telling you who it is about after the pitcher. Everything after that is what he did."},{"sentence":"My cousin plays second base.","split":2,"why":"My cousin is who the sentence is about. Plays second base is what he does."},{"sentence":"The batter in the red helmet swung too early.","split":6,"why":"Does in the red helmet tell you which batter? Then it belongs on the left."},{"sentence":"Two coaches from the other team walked out to the mound.","split":6,"why":"Does from the other team tell you which coaches? Then it belongs on the left."},{"sentence":"A foul ball landed in the parking lot.","split":3,"why":"A foul ball is the whole subject. Landed in the parking lot is what it did."},{"sentence":"Everyone in the bleachers stood up at once.","split":4,"why":"Does in the bleachers tell you which everyone? Then it belongs on the left."},{"sentence":"The umpire behind home plate called the last strike.","split":5,"why":"Does behind home plate tell you which umpire? Then it belongs on the left."}];
+var SORT = [{"sentence":"The tallest piece on the board is the king.","split":6,"shaded":"subject","why":"The tallest piece on the board tells you what the sentence is about, so it is the complete subject."},{"sentence":"My grandfather taught me this opening.","split":2,"shaded":"predicate","why":"Taught me this opening tells you what my grandfather did, so it is the complete predicate."},{"sentence":"A knight moves in an L shape.","split":2,"shaded":"subject","why":"A knight is who the sentence is about, so it is the complete subject."},{"sentence":"The two players at the corner table have not spoken in an hour.","split":7,"shaded":"predicate","why":"Have not spoken in an hour tells you something about the two players, so it is the complete predicate."},{"sentence":"Every pawn on the back rank can become a queen.","split":6,"shaded":"subject","why":"Every pawn on the back rank is what the sentence is about, so it is the complete subject."}];
+var VISUALS = [{"at":1,"flip":0.46153846153846156,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The man behind the paint counter","body":" has already mixed nine cans of paint.","note":"Not just the man. Behind the paint counter tells you which man."},{"at":2,"flip":0.3,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"Customers waiting nearby","body":" watch as he carefully matches each color.","note":"Waiting nearby tells you which customers, so it stays with them."},{"at":3,"flip":0.5,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"A woman in a green jacket","body":" is comparing two different door handles.","note":"In a green jacket tells you which woman."},{"at":4,"flip":0.2,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"Her young son","body":" spins the rack of keys while he waits for her to decide.","note":"Only three words this time. A complete subject can be short."},{"at":5,"flip":0.46153846153846156,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The old floorboards near the register","body":" creak every time someone walks across them.","note":"Six words. Near the register is still telling you which floorboards."},{"at":6,"flip":0.4166666666666667,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The workers at the store","body":" have heard those squeaky boards for years.","note":"At the store tells you which workers."},{"at":7,"flip":0.2222222222222222,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The busy hardware store","body":" has helped dozens of customers find what they need by the time noon arrives.","note":"The store itself is what this one is about."},{"at":8,"flip":null,"lock":0,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The man behind the paint counter","body":" has already mixed nine cans of paint.","note":"The green half. Who or what the sentence is about."},{"at":9,"flip":null,"lock":1,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The man behind the paint counter","body":" has already mixed nine cans of paint.","note":"The orange half. What he does, or what is true about him."},{"at":10,"flip":0.6021505376344086,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The man behind the paint counter","body":" has already mixed nine cans of paint.","note":"Green is the complete subject. Everything after it is the complete predicate."},{"at":11,"flip":null,"lock":0,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The man behind the paint counter","body":" has already mixed nine cans of paint.","note":"Behind the paint counter is doing the work. It says WHICH man."},{"at":13,"flip":null,"lock":0,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"Her young son","body":" spins the rack of keys while he waits for her to decide.","note":"Three words this time, and still a complete subject.","steps":[{"from":0,"pre":"Her young son","body":" spins the rack of keys while he waits for her to decide.","note":"Three words this time, and still a complete subject.","lock":0,"flip":null},{"from":0.3092369477911647,"pre":"The old floorboards near the register","body":" creak every time someone walks across them.","note":"Six words this time. Still one complete subject.","lock":0,"flip":null}]},{"at":14,"flip":null,"lock":0,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The old floorboards near the register","body":" creak every time someone walks across them.","note":"Six words. Stopping at floorboards would leave near the register behind."},{"at":15,"flip":null,"lock":0,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The old floorboards near the register","body":" creak every time someone walks across them.","note":"Near the register stays on the green side. It tells you which floorboards."},{"at":17,"flip":0.572972972972973,"lock":null,"kinds":[{"text":"Complete subject","cls":"is-subject"},{"text":"Complete predicate","cls":"is-predicate"}],"pre":"The workers at the store","body":" have heard those squeaky boards for years.","note":"Ask it out loud. The place you pause is the place the line goes."}];
+var THEMES = {
+  forest: { name:"Forest",
+    light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
+            accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
+            ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
+            brass:"#7E6A16",band:"rgba(158,138,40,.42)",word:"rgba(158,138,40,.74)" },
+    dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
+            accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
+            ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
+            brass:"#D8B355",band:"rgba(216,179,85,.3)",word:"rgba(216,179,85,.62)" } },
 
-var LESSON_ID = "english/verbs-action-and-being";
-var PARTS     = [{"title":"Every Sentence Needs a Verb","s":["Imagine a sentence is like a car. It might have a driver, seats, wheels and a radio, but none of those make the car go. The engine does.","","The verb is the engine. It is the one word that makes a sentence work, and every sentence in English has one.","","The driver stopped the bus.","","What happened? The driver stopped. The word stopped is the verb, because it tells us what the driver did.","","Cross out stopped and the sentence stops working. You are left with a driver and a bus and nothing happening between them.","","In this lesson we are going to learn about two important kinds of verbs. Action verbs and being verbs."]},{"title":"Action Verbs","s":["An action verb tells what someone or something does.","","The dog chased the ball.","","The word chased is the action verb, because it tells what the dog did.","","The same thing happens here.","","The engine stalled.","","The engine did something. It stalled.","","Not every action is something you can see. Look at this one.","","The student remembered the answer.","","You cannot actually watch someone remember something. There is no giant light bulb that suddenly appears over his head. Remembering happens inside the mind, but it is still something he did. That makes remembered an action verb.","","Words like think, remember, wonder and understand can all be action verbs, even though the action happens inside your head."]},{"title":"Being Verbs","s":["Now look at a different sentence.","","The road is wet.","","What action did the road perform? Nothing. The sentence is simply telling us something about the road. The word is connects road with wet, and that makes is a being verb.","","A being verb tells what someone or something is or was, instead of telling what it does.","","There are eight forms of the verb be. These are important words to recognise, because you will see them again and again in English.","","Am. Is. Are. Was. Were. Be. Been. Being."]},{"title":"Action or Being?","s":["Compare these two sentences.","","The kettle boiled.","","The kettle is empty.","","They are both about the same kettle, but the verbs are doing different jobs.","","In the first sentence something happened. The kettle boiled, so boiled is an action verb.","","In the second sentence the kettle is not doing anything. The word is tells us about the condition of the kettle, so is is a being verb.","","Here is an easy way to remember the difference. An action verb tells what someone or something does. A being verb tells what someone or something is or was."]},{"title":"The Word That Tries to Trick You","s":["Sometimes a word that looks like a verb is not actually the verb in the sentence.","","We walk through the park.","","Here, walk tells what we are doing, so it is an action verb.","","Now look at this one.","","The walk was long.","","This time nobody is actually walking. The walk is the name of a thing, so it is being used as a noun. The actual verb is was.","","This teaches an important rule about language. A word's job in the sentence decides what kind of word it is. Do not choose a verb just because a word looks like one. Look at what the word is actually doing."]},{"title":"Two Tests, Two Jobs","s":["There are two things to work out about a sentence, and each one has its own test. Do not mix them up.","","The first job is finding the verb. Put the word Yesterday in front of the sentence and read it again. The one word that has to change shape is the verb. Nothing else in a sentence changes when the time changes.","","The bell rings loudly. Yesterday the bell rang loudly.","","Only one word moved. Rings became rang. That is your verb.","","The second job is naming what kind of verb it is, and that is a different question."]},{"title":"Try the Verb Test","s":["Once you have found the verb, ask yourself a simple question.","","Is someone or something doing something, or is the sentence telling me what someone or something is?","","If the subject is doing something, you have probably found an action verb. If the verb tells what the subject is or was, you have probably found a being verb.","","The boy kicked the ball.","","The boy did something. He kicked, so kicked is an action verb.","","The boy is tired.","","The boy is not performing an action. The word is connects the boy with the word tired, so is is a being verb."]},{"title":"Your Turn","s":["Now it is your turn to become the verb detective.","Part A has ten sentences. Find the verb in each one and click it.","Part B marks the verb for you. Your job there is to decide what that verb is doing. Is it telling you what someone or something does, or what someone or something is?","Remember the shortcut. Action means DO. Being means IS.","If you click the wrong word nothing bad happens. The page tells you why, so read that before you try again."]}];
-var PRACTICE  = [{"sentence":"The bell rang loudly.","answer":2,"why":"The bell did something. Rang is the verb, and it is an action verb."},{"sentence":"The puppy is hungry.","answer":2,"why":"The puppy is not doing anything. The sentence tells you what the puppy is, so is is the verb."},{"sentence":"Rain fell all afternoon.","answer":1,"why":"Something happened, and you could have watched it. Fell is the verb."},{"sentence":"The old wooden gate is heavy.","answer":4,"why":"Nobody does anything here. Is tells you what the gate is, and four words go by before you reach it."},{"sentence":"She repaired the broken shelf.","answer":1,"why":"She is doing something you could point a camera at. Repaired is the verb."},{"sentence":"We are ready.","answer":1,"why":"Nothing is happening. Are tells you what we are, and the whole sentence is only three words."},{"sentence":"The long walk tired everyone.","answer":3,"why":"The trap. Nobody is walking here, so walk is a thing, not something anyone does. Tired is what that walk DID to everyone, so tired is the verb. Watch for it again two sentences from now, doing a completely different job."},{"sentence":"Her first attempt was perfect.","answer":3,"why":"The trap again. Attempt is the name of a thing, not something anyone is doing. Was is the verb."},{"sentence":"The tired driver from the next town remembered every turn.","answer":7,"why":"The word tired is here again, but this time it is NOT the verb. It is just describing the driver. Nobody is doing tired to anybody. Seven words go by before you reach remembered, and you cannot watch someone remember, but it is still what he did."},{"sentence":"Both engines started without trouble.","answer":2,"why":"The engines did something. Started is the verb."}];   /* Part A - which word is the verb */
-var SORT      = [{"sentence":"The kettle boiled quickly.","at":2,"kind":"action","why":"Something happened, and you could have filmed it. Boiled is an action verb."},{"sentence":"The classroom is quiet.","at":2,"kind":"being","why":"Nothing happens. Is joins the classroom to quiet, so it is a being verb."},{"sentence":"He built a small shelf.","at":1,"kind":"action","why":"He did something you could point a camera at. Built is an action verb."},{"sentence":"Those books were expensive.","at":2,"kind":"being","why":"Nobody does anything. Were joins the books to expensive, so it is a being verb."},{"sentence":"She remembered the answer.","at":1,"kind":"action","why":"You cannot watch someone remember, but it is still something she did. Remembered is an action verb."},{"sentence":"I am ready now.","at":1,"kind":"being","why":"Nothing is happening. Am joins I to ready, so it is a being verb."}];       /* Part B - which KIND of verb it is */
+  ocean: { name:"Ocean",
+    light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
+            accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
+            ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.38)",word:"rgba(196,132,24,.68)" },
+    dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
+            accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
+            ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.3)",word:"rgba(224,182,92,.62)" } },
 
+  ember: { name:"Ember",
+    light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
+            accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
+            ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
+            brass:"#6B5A11",band:"rgba(120,104,26,.38)",word:"rgba(120,104,26,.68)" },
+    dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
+            accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
+            ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
+            brass:"#D6C169",band:"rgba(214,193,105,.28)",word:"rgba(214,193,105,.59)" } },
+
+  violet: { name:"Violet",
+    light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
+            accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
+            ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
+            brass:"#7A6212",band:"rgba(150,122,26,.38)",word:"rgba(150,122,26,.68)" },
+    dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
+            accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
+            ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.28)",word:"rgba(220,187,99,.59)" } },
+
+  graphite: { name:"Graphite",
+    light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
+            accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
+            ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
+            brass:"#7A6318",band:"rgba(152,124,32,.38)",word:"rgba(152,124,32,.68)" },
+    dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
+            accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
+            ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
+            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } }
+};
+</script>
+<script>
 /* Defaults for hosts that do not define these. See voice-player.js. */
 if (typeof ART === 'undefined')      { var ART = {}; }
 if (typeof VISUALS === 'undefined')  { var VISUALS = []; }
@@ -3527,242 +3889,352 @@ scrub.addEventListener("keydown", function(e){
 })();
 
 
-/* ── practice ─────────────────────────────────────────────────────────────
-   Click the word. Every word is a target so the layout gives nothing away,
-   and a wrong click is not fatal: it says WHY it is wrong and lets him go
-   again. Paul's standing rule for this site is no punishment for wrong.
-   Progress is stored per lesson so closing the tab does not lose the work. */
-var KEY = "prog:" + LESSON_ID;
+</script>
+<script>
+(function(){
+"use strict";
+
+/* Progress is per lesson so closing the tab does not lose the work.
+   🚨 A finished lesson is never downgraded by reopening it. `solved` starts at 0
+   on every visit, and a blind save would turn complete:true into complete:false
+   the moment a box was touched. Only the teacher's Reset clears a record. */
+var KEY = "ns:prog:" + LESSON_ID;
 var state = {};
-try { state = JSON.parse(load(KEY, "{}")) || {}; } catch (e) { state = {}; }
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
+
+var TOTAL = PRACTICE.length + SORT.length;
+function answered(){
+  var n = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i] === true) n++;
+  for (i = 0; i < SORT.length; i++)     if (state["b" + i] === true) n++;
+  return n;
+}
+function save(){
+  try {
+    var done = answered();
+    var prev = null;
+    try { prev = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e2) {}
+    if (prev && prev.complete === true && done < TOTAL) return;
+    state.done = done; state.total = TOTAL; state.complete = done === TOTAL;
+    localStorage.setItem(KEY, JSON.stringify(state));
+  } catch (e) {}
+}
 
 var wrap  = document.getElementById("problems");
 var kwrap = document.getElementById("kinds");
 var bar   = document.getElementById("scorebar");
 
-/* 🚨 THE SHELF CARD CANNOT COUNT THIS LESSON'S PARTS, so the lesson has to say so
-   itself. `state` is keyed a0..aN and b0..bN, which means nothing to a card that
-   does not know how many of each there are — so a FINISHED English lesson sat at
-   "part done" forever and never got its green tick. Writing `complete` here, the
-   same shape maths and integers already write, lets one rule on the card cover
-   every lesson type. Found 2026-09-08, on lessons Kolten had actually finished. */
-function save(){
-  var a = 0, b = 0, i;
-  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
-  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
-  state.done     = a + b;
-  state.total    = PRACTICE.length + SORT.length;
-  state.complete = state.total > 0 && state.done === state.total;
-  store(KEY, JSON.stringify(state));
+function halves(sentence, split){
+  var w = sentence.split(" ");
+  return { s: w.slice(0, split).join(" "), p: w.slice(split).join(" ") };
 }
 
-/* ⚠️ Part A and Part B are stored under PREFIXED keys, "a3" and "b3", not bare
-   numbers. Two parts sharing one number would mark a Part B answer as a solved
-   Part A sentence, and the score would count work nobody did. */
-function render(){
+/* ── PART A ───────────────────────────────────────────────────────────────
+   Every gap between two words is a button. He moves the line and checks it.
+   The answer is NOT in the DOM until he is right: the gap only carries its
+   index, and `split` lives in the data this script closes over. */
+function renderA(){
   wrap.innerHTML = "";
-  PRACTICE.forEach(function(p, n){
-    var done = state["a" + n] === true;
+  PRACTICE.forEach(function(P, n){
+    var done  = state["a" + n] === true;
+    var shown = shownA(n);
+    var locked = done || shown;
     var box = document.createElement("div");
-    box.className = "prob" + (done ? " solved" : "");
+    box.className = "prob" + (done ? " solved" : "") + (shown ? " shown" : "");
 
     var head = document.createElement("div");
     head.className = "probhead";
-    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Found it" : "Click the verb") + '</span>';
+    var num = document.createElement("span");
+    num.className = "probnum"; num.textContent = "Sentence " + (n + 1);
+    var tag = document.createElement("span");
+    tag.className = "tag" + (done ? " done" : shown ? " told" : "");
+    tag.textContent = done ? "Correct" : shown ? "Answer shown" : "";
+    head.appendChild(num); head.appendChild(tag);
     box.appendChild(head);
 
-    var row = document.createElement("div");
-    row.className = "words";
-    var nudge = document.createElement("p");
-    nudge.className = "nudge";
+    var sent = document.createElement("p");
+    sent.className = "splitline";
+    var words = P.sentence.split(" ");
+    var chosen = locked ? P.split : (typeof state["p" + n] === "number" ? state["p" + n] : -1);
 
-    p.sentence.split(" ").forEach(function(word, wi){
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "pw"; b.textContent = word;
-      if (done) {
-        b.disabled = true;
-        if (wi === p.answer) b.classList.add("ok");
-      } else {
-        b.onclick = function(){
-          if (wi === p.answer) {
-            state["a" + n] = true; save();
-            render();
-            /* keep the explanation on screen after the re-render */
-            var fresh = wrap.children[n].querySelector(".nudge");
-            if (fresh) fresh.textContent = p.why;
-            score();
-          } else {
-            b.classList.add("wrong");
-            nudge.classList.add("warn");
-            nudge.textContent = wrongWhy(word, p);
-          }
-        };
+    words.forEach(function(word, wi){
+      if (wi > 0) {
+        var g = document.createElement("button");
+        g.type = "button";
+        g.className = "gap" + (chosen === wi ? " here" : "");
+        g.setAttribute("aria-label", "Put the line before " + word);
+        g.addEventListener("click", function(){
+          if (state["a" + n] === true || shownA(n)) return;
+          state["p" + n] = wi; save(); renderA(); score();
+        });
+        sent.appendChild(g);
       }
-      row.appendChild(b);
+      var s = document.createElement("span");
+      s.className = "w"; s.textContent = word;
+      sent.appendChild(s);
     });
+    box.appendChild(sent);
 
-    box.appendChild(row);
-    if (done) { nudge.textContent = p.why; }
-    box.appendChild(nudge);
+    var readout = document.createElement("div");
+    readout.className = "readout";
+    var verdict = document.createElement("p");
+    verdict.className = "verdict";
+
+    /* 🚨 TEST HIDES A JUDGEMENT, IT DOES NOT HIDE WORK ALREADY DONE. Switching
+       to Test used to blank a sentence he had already got right, which reads as
+       the mode wiping his progress. Only an UNJUDGED placement is silent. */
+    if (chosen > 0 && (done || shown || judging())) {
+      var h = halves(P.sentence, chosen);
+      readout.innerHTML =
+        '<div class="s"><span class="lbl">Complete subject</span><span class="subj">' +
+          h.s.replace(/</g, "&lt;") + '</span></div>' +
+        '<div class="p"><span class="lbl">Complete predicate</span><span class="pred">' +
+          h.p.replace(/</g, "&lt;") + '</span></div>';
+      if (shown) {
+        verdict.className = "verdict";
+        verdict.textContent = "This is where the line goes. " + P.why;
+      } else if (chosen === P.split) {
+        verdict.className = "verdict ok";
+        verdict.textContent = "Correct.";
+        if (state["a" + n] !== true) { state["a" + n] = true; save(); }
+        box.classList.add("solved");
+        tag.className = "tag done"; tag.textContent = "Correct";
+      } else {
+        verdict.className = "verdict no";
+        /* 🚨 THE WRONG ANSWER ASKS THE LESSON'S OWN QUESTION BACK. Not "wrong",
+           but the same question Paul ends the teaching with, pointed at these
+           words. `why` is written per sentence for exactly this. */
+        verdict.textContent = "Not there. " + P.why;
+      }
+      box.appendChild(readout);
+    }
+    box.appendChild(verdict);
     wrap.appendChild(box);
   });
-  renderKinds();
 }
 
-/* ── PART B. Which kind of verb is it? ────────────────────────────────────
-   The verb is already underlined here on purpose. Part A was "which word";
-   asking it again would test the same thing twice and hide the actual
-   question, which is what that word DOES. */
-function renderKinds(){
+/* ── PART B ─────────────────────────────────────────────────────────────── */
+function renderB(){
   kwrap.innerHTML = "";
-  SORT.forEach(function(p, n){
+  SORT.forEach(function(S, n){
     var done = state["b" + n] === true;
     var box = document.createElement("div");
     box.className = "prob" + (done ? " solved" : "");
 
     var head = document.createElement("div");
     head.className = "probhead";
-    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Got it" : "Action or being") + '</span>';
+    var num = document.createElement("span");
+    num.className = "probnum"; num.textContent = "Sentence " + (n + 1);
+    var tag = document.createElement("span");
+    tag.className = "tag" + (done ? " done" : "");
+    tag.textContent = done ? "Correct" : "";
+    head.appendChild(num); head.appendChild(tag);
     box.appendChild(head);
 
-    /* the sentence, with the verb underlined */
-    var line = document.createElement("div");
-    line.className = "words";
-    p.sentence.split(" ").forEach(function(word, wi){
-      if (wi > 0) line.appendChild(document.createTextNode(" "));
-      var sp = document.createElement("span");
-      if (wi === p.at) sp.className = "kverb";
-      sp.textContent = word;
-      line.appendChild(sp);
-    });
-    box.appendChild(line);
+    var h = halves(S.sentence, S.split);
+    var sent = document.createElement("p");
+    sent.style.fontSize = "1.12rem"; sent.style.lineHeight = "2";
+    sent.innerHTML = (S.shaded === "subject"
+      ? '<span class="subj">' + h.s.replace(/</g, "&lt;") + '</span> ' + h.p.replace(/</g, "&lt;")
+      : h.s.replace(/</g, "&lt;") + ' <span class="pred">' + h.p.replace(/</g, "&lt;") + '</span>');
+    box.appendChild(sent);
 
-    var nudge = document.createElement("p");
-    nudge.className = "nudge";
+    var verdict = document.createElement("p");
+    verdict.className = "verdict";
 
     var pick = document.createElement("div");
     pick.className = "kpick";
-    ["action", "being"].forEach(function(kind){
+    ["subject", "predicate"].forEach(function(kind){
       var b = document.createElement("button");
       b.type = "button"; b.className = "kbtn";
-      b.textContent = kind === "action" ? "Action verb" : "Being verb";
-      if (done) {
+      b.textContent = kind === "subject" ? "Complete subject" : "Complete predicate";
+      if (done || shownB(n)) {
         b.disabled = true;
-        if (kind === p.kind) b.classList.add("ok");
-      } else {
-        b.onclick = function(){
-          if (kind === p.kind) {
-            state["b" + n] = true; save();
-            render();
-            var fresh = kwrap.children[n].querySelector(".nudge");
-            if (fresh) fresh.textContent = p.why;
-            score();
-          } else {
-            /* Same rule as Part A: a reason, never a buzzer. */
-            b.classList.add("wrong");
-            nudge.classList.add("warn");
-            nudge.textContent = kind === "action"
-              ? "Not action. Try to film this sentence - if nothing happens that you could point a camera at, the verb is a being verb."
-              : "Not being. The being verbs are am, is, are, was, were, be, been and being. This underlined word is not one of them, so something is happening.";
-          }
-        };
+        if (kind === S.shaded) b.classList.add(shownB(n) && !done ? "told" : "ok");
       }
+      /* In test mode the pick is remembered and judged later, exactly like a
+         placed line in Part A. Nothing is said at the moment of choosing. */
+      if (MODE === "test" && !CHECKED && state["bp" + n] === kind) b.classList.add("here");
+      b.addEventListener("click", function(){
+        if (state["b" + n] === true || shownB(n)) return;
+        if (MODE === "test" && !CHECKED) {
+          state["bp" + n] = kind; save(); renderB(); score(); return;
+        }
+        if (kind === S.shaded) {
+          state["b" + n] = true; save(); renderB(); score();
+        } else {
+          b.classList.add("wrong");
+          verdict.className = "verdict no";
+          verdict.textContent = "Not that one. " + S.why;
+        }
+      });
       pick.appendChild(b);
     });
     box.appendChild(pick);
-    if (done) { nudge.textContent = p.why; }
-    box.appendChild(nudge);
+    box.appendChild(verdict);
+    if (done) { verdict.className = "verdict ok"; verdict.textContent = S.why; }
+    else if (shownB(n)) { verdict.className = "verdict"; verdict.textContent = "The shaded half is the " +
+      (S.shaded === "subject" ? "complete subject" : "complete predicate") + ". " + S.why; }
     kwrap.appendChild(box);
   });
-  score();
 }
 
-/* A wrong answer gets a reason, not a buzzer. The two reasons cover the two
-   mistakes this lesson is actually about. */
-function wrongWhy(word, p){
-  var clean = word.replace(/[^A-Za-z']/g, "").toLowerCase();
-  var being = ["am","is","are","was","were","be","been","being"];
-  if (being.indexOf(clean) >= 0)
-    return "“" + clean + "” is a being verb, but it is not the one doing the work here. Try the time test again.";
-  return "Not that one. Put “Yesterday” at the front and read it again — which word has to change shape?";
+/* ⚠️ THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE. Four right out
+   of four answered is not 100% when the lesson has twelve. */
+/* 🚨 A REVEALED ANSWER IS NOT A CORRECT ANSWER. "Show Me The Answers" used to
+   write the right split into `state.a` - the same flag a real answer sets - so
+   pressing it once put the teacher line on "Completed 12/12 practised to
+   mastery". Paul, 2026-09-08: "i would not do show me the answers directly and
+   mark it as finished."
+   `shown` is a SEPARATE flag. It draws the answer, it locks the item, and it
+   never counts toward the score. The teacher line says how many were shown. */
+var MODE = "practice";
+function shownA(n){ return state["sa" + n] === true; }
+function shownB(n){ return state["sb" + n] === true; }
+function countShown(){
+  var k = 0, i;
+  for (i = 0; i < PRACTICE.length; i++) if (shownA(i)) k++;
+  for (i = 0; i < SORT.length; i++)     if (shownB(i)) k++;
+  return k;
+}
+/* In test mode nothing is judged until Check My Work is pressed. */
+var CHECKED = false;
+function judging(){ return MODE === "practice" || CHECKED; }
+
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m;
+  CHECKED = false;
+  var pt = document.getElementById("tabPractice"), tt = document.getElementById("tabTest");
+  pt.classList.toggle("on", m === "practice");
+  tt.classList.toggle("on", m === "test");
+  pt.setAttribute("aria-selected", String(m === "practice"));
+  tt.setAttribute("aria-selected", String(m === "test"));
+  document.getElementById("reveal").hidden = m !== "practice";
+  document.getElementById("check").hidden  = m !== "test";
+  document.getElementById("modenote").textContent = m === "practice"
+    ? "Practice tells you straight away whether the line is in the right place."
+    : "Test says nothing until you press Check My Work. Place every line first.";
+  renderA(); renderB(); score();
 }
 
-/* One score across BOTH parts, and it says the split, because "8 / 16" hides
-   whether he can find verbs and cannot name them, or the other way round.
-   Paul's rule from the quizzes: show the score AND the percentage. */
 function score(){
-  paintTeacherScore();          /* the teacher line moves with the student's */
   var a = 0, b = 0, i;
-  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
-  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
-  var got = a + b, all = PRACTICE.length + SORT.length;
-  var pct = Math.round((got / all) * 100);
-  bar.innerHTML = "<b>" + got + " / " + all + "</b> · " + pct + "%" +
-    " <span class=\"tag\">Part A " + a + "/" + PRACTICE.length +
-    " · Part B " + b + "/" + SORT.length + "</span>" +
-    (got === all ? " — all of them. Write the score in your notes." : "");
+  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i] === true) a++;
+  for (i = 0; i < SORT.length; i++)     if (state["b" + i] === true) b++;
+  var done = a + b;
+  var told = countShown();
+  /* 🚨 THE SCORE LINE NAMES WHAT WAS SHOWN. A page that says "5 of 12 done"
+     while seven answers were handed over is telling the teacher something
+     false by omission. */
+  var toldLine = told ? " <span style='color:var(--dim)'>(" + told +
+    (told === 1 ? " answer was shown" : " answers were shown") + ")</span>" : "";
+  bar.innerHTML = done === TOTAL
+    ? "<b>All " + TOTAL + " done.</b><p style='margin:6px 0 0;color:var(--dim)'>" +
+      "Part A " + a + " of " + PRACTICE.length + ", Part B " + b + " of " + SORT.length +
+      ". Now print the worksheet and do it on paper.</p>"
+    : "<b>" + done + " of " + TOTAL + " done.</b><p style='margin:6px 0 0;color:var(--dim)'>" +
+      "Part A " + a + " of " + PRACTICE.length + ", Part B " + b + " of " + SORT.length +
+      toldLine + ". A wrong answer tells you why and lets you try again.</p>";
+  paintTeacherScore();
 }
 
-/* The teacher's line and reset, in Teacher Notes. Mirrors the history template so
-   both read the same on the page and in a screenshot for HomeschoolGrades.
-   🚨 THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE — 8 right out of 8
-   answered is not 100% when the lesson has 16. It is a lesson still in progress
-   and the line says so rather than flattering the number.
-   ⚠️ This lesson is retry-until-right, so a finished one IS full marks. Say
-   "practised to mastery" rather than printing a bare 100% that reads like a test
-   result it never was. */
+/* The teacher's line and the reset, in Teacher Notes. Reads the STORED record,
+   not just this visit, so a lesson finished last week still shows its grade and
+   can still be reset. This lesson is retry-until-right, so finishing IS full
+   marks: say so rather than printing a bare 100% that reads like a test score. */
 function paintTeacherScore(){
   var line = document.getElementById("gscoreline");
   var btn  = document.getElementById("greset");
   if (!line) return;
-  var total = PRACTICE.length + SORT.length, done = 0, i;
-  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) done++;
-  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) done++;
-  line.className = "gscore-line" + (done === 0 ? "" : done === total ? " good" : " part");
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+  var done = answered();
+  if (saved && typeof saved.done === "number" && saved.done > done) done = saved.done;
+  if (saved && saved.complete === true) done = TOTAL;
+  /* 🚨 SHOWN ANSWERS ARE REPORTED TO THE TEACHER, and they stop the line ever
+     reading "practised to mastery". That claim is the one thing on this page a
+     grade gets copied from, so it has to be earned. */
+  var told = countShown();
+  line.className = "gscore-line" + (done === 0 ? "" : (done === TOTAL && !told) ? " good" : "");
+  var suffix = told ? " · " + told + " shown, not scored" : "";
   line.textContent = done === 0
-    ? "Not started yet."
-    : done === total
-      ? "Completed · " + total + "/" + total + " (100%) · practised to mastery"
-      : done + " of " + total + " answered · still in progress";
+    ? (told ? "Nothing answered · " + told + " shown" : "Not started yet.")
+    : done === TOTAL
+      ? "Completed · " + TOTAL + "/" + TOTAL + " (100%) · practised to mastery"
+      : done + " of " + TOTAL + " answered · still in progress" + suffix;
+  if (btn) { btn.hidden = (done === 0 && told === 0); return; }
   if (btn) btn.hidden = done === 0;
 }
 
-document.getElementById("greset").onclick = function(){
-  state = {}; save(); render(); score(); paintTeacherScore();
-};
-document.getElementById("reveal").onclick = function(){
-  var i, j;
-  var boxes = wrap.children;
-  for (i = 0; i < PRACTICE.length; i++) {
-    if (state["a" + i]) continue;
-    var ws = boxes[i].querySelectorAll(".pw");
-    for (j = 0; j < ws.length; j++) {
-      ws[j].disabled = true;
-      if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");
-    }
-    var nd = boxes[i].querySelector(".nudge");
-    nd.classList.remove("warn");
-    nd.textContent = PRACTICE[i].why;
-  }
-  /* ⚠️ Reveal has to cover Part B too. It used to walk one list, and after the
-     split that silently left half the worksheet unanswered. */
-  var kboxes = kwrap.children;
-  for (i = 0; i < SORT.length; i++) {
-    if (state["b" + i]) continue;
-    var kb = kboxes[i].querySelectorAll(".kbtn");
-    for (j = 0; j < kb.length; j++) {
-      kb[j].disabled = true;
-      if ((j === 0 ? "action" : "being") === SORT[i].kind) kb[j].classList.add("reveal");
-    }
-    var knd = kboxes[i].querySelector(".nudge");
-    knd.classList.remove("warn");
-    knd.textContent = SORT[i].why;
-  }
-};
+document.getElementById("greset").addEventListener("click", function(){
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  state = {}; CHECKED = false; renderA(); renderB(); score();
+});
 
-render();
+/* 🚨 SHOWING AN ANSWER MARKS IT SHOWN, NEVER CORRECT. It fills in every item he
+   has not already got right, in BOTH parts, and those items are excluded from
+   the score for good - which is the whole difference from the old behaviour. */
+document.getElementById("reveal").addEventListener("click", function(){
+  PRACTICE.forEach(function(P, n){
+    if (state["a" + n] === true) return;
+    state["p" + n] = P.split; state["sa" + n] = true;
+  });
+  SORT.forEach(function(S, n){ if (state["b" + n] !== true) state["sb" + n] = true; });
+  save(); renderA(); renderB(); score();
+});
+
+/* Test marks the paper here and nowhere else. */
+document.getElementById("check").addEventListener("click", function(){
+  CHECKED = true;
+  PRACTICE.forEach(function(P, n){
+    if (!shownA(n) && state["p" + n] === P.split) state["a" + n] = true;
+  });
+  SORT.forEach(function(S, n){
+    if (!shownB(n) && state["bp" + n] === S.shaded) state["b" + n] = true;
+  });
+  save(); renderA(); renderB(); score();
+});
+
+document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
+document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
+
+document.getElementById("modenote").textContent =
+  "Practice tells you straight away whether the line is in the right place.";
+renderA(); renderB(); score();
+
+/* 🚨 THE DEFINITION BOX IS MOVED INTO THE STORY, NOT COPIED THERE.
+   Paul, 2026-09-08: "put it above this section The Two Halves". That heading is
+   written by the reading player into #story, so the box has to be relocated
+   after the player has rendered. Moving it keeps ONE box on the page - a second
+   copy would be two things to keep in step, which is how the nav and the drawer
+   drifted apart.
+   ⚠️ It matches on the heading TEXT, so if the story part is ever renamed the
+   box quietly stays where it is rather than landing in the wrong place. The
+   `hidden` attribute comes off only on success, so a failed match shows nothing
+   instead of leaving a stray box floating above Part A. */
+function liftDefBox(){
+  var box = document.getElementById("defbox");
+  var story = document.getElementById("story");
+  if (!box || !story) return false;
+  var heads = story.querySelectorAll("h2");
+  for (var i = 0; i < heads.length; i++){
+    if (heads[i].textContent.trim().toLowerCase() !== "the two halves") continue;
+    /* 🚨 TWO BOXES, NOT ONE WRAPPED AROUND THE OTHER. Paul, 2026-09-08: "i want
+       the text in a box also ... the green and orange example text". The green
+       and orange example already had its box; "also" means the explanation
+       prose gets one of its own, sitting under it. Wrapping the prose AROUND
+       the example was tried first and was wrong - that is one object, and these
+       are two: the exhibit, then the teaching about it. */
+    var sec = heads[i].closest(".part") || heads[i].parentNode;
+    sec.parentNode.insertBefore(box, sec);
+    box.hidden = false;
+    return true;
+  }
+  return false;
+}
+/* The player builds the story on load; if it has not run yet, wait one frame. */
+if (!liftDefBox()) requestAnimationFrame(function(){ liftDefBox(); });
 })();
 </script>
 

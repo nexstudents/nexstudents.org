@@ -406,6 +406,9 @@ h2{
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
 .dbox-kind:empty{display:none}
 .dbox-kind{
+  /* flex, not a plain block, so a frame naming TWO parts can put a chip per
+     part side by side. A one-word kind centres identically either way. */
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;
   margin:0 0 10px;text-align:center;
   font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
   color:var(--verdigris, var(--accent));
@@ -454,7 +457,7 @@ h2{
    one; the example and its note share a fixed block below it. Together with the
    16:9 slot above, that is every part of the panel pinned to a height, which is
    what makes it the same size from the first sentence to the last. */
-.dbox.is-wide .dbox-kind{display:block;height:21px;overflow:hidden}
+.dbox.is-wide .dbox-kind{height:21px;overflow:hidden}
 .dbox.is-wide .dbox-words{
   height:74px;overflow:hidden;
   display:flex;flex-direction:column;justify-content:center;
