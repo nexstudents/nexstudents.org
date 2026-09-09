@@ -67,6 +67,47 @@
    click into the code, then ctrl+End followed by ctrl+shift+Home.
    ───────────────────────────────────────────────────────────────────────── */
 
+/* ── REDEPLOYED 2026-09-09, version c4329f76 ──────────────────────────────
+   The checkout and PayPal routes above went live in this deploy. Verified on
+   the real hostname straight after:
+     /                                    200
+     /paid/animal-cell.pdf                404  <- the guard that matters
+     /download?t=garbage                  404
+     POST /stripe-webhook  (no signature) 400  <- signature check working
+     POST /checkout {"slug":"animal-cell"} returns a real cs_test_ clientSecret
+
+   🚨 DEPLOYED WITH WRANGLER, NOT THE DASHBOARD EDITOR, AND THAT IS NOW THE ONLY
+   WAY. The dashboard code editor accepts mouse clicks but ignores synthesised
+   keyboard events, so a 700-line paste is impossible to automate there - typing
+   a test string produced nothing. Recipe, from a folder OUTSIDE the repo:
+     npm i wrangler
+     wrangler.json: { name, main, compatibility_date, r2_buckets:[MEDIA],
+                      observability:{enabled:true, logs:{enabled:true}} }
+     CLOUDFLARE_API_TOKEN=<Edit Cloudflare Workers template token>
+     CLOUDFLARE_ACCOUNT_ID=b5e0c3ee9540dbe359de9ee1829128ba
+     wrangler deploy --keep-vars
+   ⚠️ `--keep-vars` IS NOT OPTIONAL. Without it the deploy wipes every variable
+   and secret set in the dashboard.
+   ⚠️ AND DECLARE `observability` IN THE CONFIG. The first deploy left it out and
+   silently turned Worker logs OFF - the config replaces remote settings whether
+   or not you mentioned them. Fixed in c4329f76.
+
+   🚨 DO NOT READ AN API KEY OFF THE STRIPE DASHBOARD'S TEXT. The accessibility
+   tree exposes a MASKED rendering of the secret key that looks exactly like a
+   real one - right prefix, plausible length - and Stripe answers "Invalid API
+   Key provided". That cost a deploy and a confusing 503. Click the copy button
+   and read the clipboard instead; the real key was 107 chars, the masked one
+   100.
+
+   ── VARS THIS WORKER NOW NEEDS ───────────────────────────────────────────
+     SUPABASE_URL · SUPABASE_KEY        as before, publishable key
+     STRIPE_SECRET_KEY                  secret
+     STRIPE_WEBHOOK_SECRET              secret, from the webhook destination
+     PURCHASE_SECRET                    secret, must EQUAL webhook_config.purchase_secret
+     PAYPAL_CLIENT_ID · PAYPAL_SECRET   not set yet, PayPal routes 503 until they are
+     PAYPAL_API                         sandbox hostname while testing
+   ───────────────────────────────────────────────────────────────────────── */
+
 /* 🚨 EVERYTHING UNDER THIS PREFIX IS PAID AND IS NOT PUBLIC.
    The plain media route below refuses it outright. It is reachable only through
    /download?t=<token>, and only after Postgres has confirmed the purchase. */
