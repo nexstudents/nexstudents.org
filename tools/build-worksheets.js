@@ -183,6 +183,23 @@ function cartBtn(s) {
 const STRIPE_PK = process.env.STRIPE_PK || "";
 const PAYPAL_ID = process.env.PAYPAL_CLIENT_ID || "";
 
+/* 🚨 APPLE PAY AND GOOGLE PAY NEED THE DOMAIN REGISTERED, AND EMBEDDED IS THE
+   ONE MODE WHERE THAT IS NOT AUTOMATIC.
+   Stripe's docs: "For Payment Links or hosted Checkout, Apple Pay works with no
+   additional configuration. For Elements or embedded Checkout, you need to
+   register your domain." Register nexstudents.org at
+   dashboard.stripe.com/settings/payment_method_domains, live mode, before going
+   live. Same registration covers Google Pay, Link and PayPal.
+
+   ⚠️ AND EMBEDDED APPLE PAY IS SAFARI 17+ / iOS 17+ ONLY, because the embedded
+   form is a cross-domain iframe. Hosted Checkout has no such floor. That is a
+   real cost of keeping the buyer on our page, and it is worth knowing before
+   anyone reports Apple Pay as "broken" on an older iPhone.
+
+   ⚠️ NEITHER WALLET EVER SHOWS ON localhost OR OVER http. A preview server will
+   always look like the wallets are missing. Do not debug that; it is expected.
+   No extra fee either way - wallets bill at the standard card rate. */
+
 /* 🚨 EITHER KEY IS ENOUGH, NEITHER IS "COMING SOON". Paul, 2026-09-09: "I think
    i like the option to just give a choice regardless i gotta deal with two
    different options." So the page offers whichever processors are configured -
@@ -192,19 +209,32 @@ const PAYPAL_ID = process.env.PAYPAL_CLIENT_ID || "";
    defaults. */
 function buyBlock(s) {
   if (s.buy && (STRIPE_PK || PAYPAL_ID)) {
+    /* ⚠️ NO PRICE ON THE BUTTON. Paul, 2026-09-09: "i dont like that pay by
+       card - $2". The price is already set in 2rem type in `.buyleft`, directly
+       beside it, so repeating it on the control says the same thing twice and
+       makes the two buttons different lengths. The pair now names the two
+       processors and nothing else, which is what he asked for: "i would like
+       pay with stripe or pay with paypal". */
     const card = STRIPE_PK
-      ? `<button class="btn buy" type="button" data-buy="${s.slug}">Pay by Card &mdash; ${s.price}</button>`
+      ? `<button class="btn buy" type="button" data-buy="${s.slug}">Pay with Stripe</button>`
       : "";
-    const pp = PAYPAL_ID ? `<div class="ppbtn" id="paypal-buttons"></div>` : "";
+    /* 🚨 CLASSES, NEVER IDS. buyBlock() is rendered TWICE on a paid page - a bar
+       above the description and one below it - so an id here is duplicated and
+       `getElementById` silently serves only the first. That shipped: the bottom
+       bar drew a "PayPal" heading over an empty gap while the top one looked
+       perfect. Found by scrolling the page, not by any build check.
+       ⚠️ Anything added to this block must be found with querySelectorAll and
+       scoped to its own `.buyright`, or it will work once and look broken once. */
+    const pp = PAYPAL_ID ? `<div class="ppbtn"></div>` : "";
     /* ⚠️ Only say "or" when there are genuinely two things to choose between. */
     const orRule = (STRIPE_PK && PAYPAL_ID)
       ? `<p class="payor"><span>or</span></p>` : "";
 
     return `<div class="paychoice">${card}${orRule}${pp}</div>
-      <div class="checkout" id="checkout" hidden></div>
+      <div class="checkout" hidden></div>
       <p class="buynote">Secure checkout on this page. Your download appears the moment payment clears.</p>
       ${STRIPE_PK ? `<script async src="https://js.stripe.com/v3/"></script>` : ""}
-      ${PAYPAL_ID ? `<script src="https://www.paypal.com/sdk/js?client-id=${PAYPAL_ID}&currency=USD"></script>` : ""}
+      ${PAYPAL_ID ? `<script src="https://www.paypal.com/sdk/js?client-id=${PAYPAL_ID}&currency=USD&disable-funding=paylater,credit,card"></script>` : ""}
       <script>${checkoutScript(s.slug)}</script>`;
   }
   return `<span class="btn buy is-off" aria-disabled="true">${s.price} &mdash; Coming Soon</span>
@@ -219,32 +249,49 @@ function checkoutScript(slug) {
     '(function(){',
     '  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";',
     '  var SLUG = "' + slug + '";',
-    '  var box = document.getElementById("checkout");',
+    /* 🚨 EVERY BUY BAR ON THE PAGE, NOT THE FIRST ONE. There are two, and the
+       old getElementById version wired up only the top. See the note in
+       buyBlock. Each bar is handled inside its own `.buyright` so the two can
+       never reach into each other. */
+    '  var BARS = [].slice.call(document.querySelectorAll(".buyright"));',
+    '  if (!BARS.length) return;',
     /* ⚠️ THIS IS THE PAYPAL SUCCESS PATH ONLY, and it is worth being clear
        about why the two differ. Stripe's embedded form finishes by REDIRECTING
        to return_url, so a card buyer lands on /thank-you/ and is served there.
        PayPal finishes in a popup with the buyer still on this page, so there is
        nowhere to send them - the download has to appear right here.
        Both end at the same /download?t= link built from the same token. */
+    /* ⚠️ The purchase is page-wide, so BOTH bars must show the result. Updating
+       only the bar the buyer used leaves the other one still offering to sell
+       them what they just bought. */
     '  function showDownload(token, note){',
-    '    var wrap = document.querySelector(".paychoice");',
-    '    if (wrap) wrap.hidden = true;',
-    '    if (box) box.hidden = true;',
-    '    var p = document.querySelector(".buynote");',
-    '    if (!p) return;',
-    '    if (token) {',
-    '      p.innerHTML = "<strong>Thank you. Your download is ready.</strong><br>"',
-    '        + "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(token) + "\\">Download the PDF</a>";',
-    '    } else {',
-    '      p.textContent = note || "Payment received. Your download is being prepared.";',
-    '    }',
+    '    BARS.forEach(function(bar){',
+    '      var choice = bar.querySelector(".paychoice");',
+    '      var box = bar.querySelector(".checkout");',
+    '      if (choice) choice.hidden = true;',
+    '      if (box) box.hidden = true;',
+    '      var p = bar.querySelector(".buynote");',
+    '      if (!p) return;',
+    '      if (token) {',
+    '        p.innerHTML = "<strong>Thank you. Your download is ready.</strong><br>"',
+    '          + "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(token) + "\\">Download the PDF</a>";',
+    '      } else {',
+    '        p.textContent = note || "Payment received. Your download is being prepared.";',
+    '      }',
+    '    });',
     '  }',
   ];
 
   if (STRIPE_PK) parts.push(...[
-    '  var btn = document.querySelector(\'[data-buy="' + slug + '"]\');',
-    '  if (btn && box) stripeCard(btn);',
-    '  function stripeCard(btn){',
+    '  BARS.forEach(function(bar){',
+    '    var b = bar.querySelector("[data-buy]");',
+    '    if (b) stripeCard(b, bar);',
+    '  });',
+    '  function stripeCard(btn, bar){',
+    /* Each bar has its own container, so the form mounts where it was clicked
+       rather than jumping the reader to the other end of the page. */
+    '  var box = bar.querySelector(".checkout");',
+    '  if (!box) return;',
     '  var mounted = false;',
     '  btn.addEventListener("click", function(){',
     '    if (mounted) return;',
@@ -269,8 +316,12 @@ function checkoutScript(slug) {
     '      if (!d || !d.clientSecret) throw new Error(d && d.error || "no client secret");',
     '      box.hidden = false;',
     '      btn.hidden = true;',
+    /* ⚠️ mount() takes the ELEMENT, not a "#checkout" selector. With two bars on
+       the page a selector would always resolve to the first one, so clicking
+       the bottom button would open the form at the top, off screen, looking
+       like nothing happened. */
     '      return stripe.initEmbeddedCheckout({ clientSecret: d.clientSecret })',
-    '        .then(function(c){ c.mount("#checkout"); });',
+    '        .then(function(c){ c.mount(box); });',
     '    }).catch(function(e){',
     '      fail("Checkout is unavailable right now. Please try again shortly.");',
     '    });',
@@ -283,7 +334,7 @@ function checkoutScript(slug) {
     '    btn.disabled = false;',
     '    btn.hidden = false;',
     '    btn.textContent = "Buy - try again";',
-    '    var p = document.querySelector(".buynote");',
+    '    var p = bar.querySelector(".buynote");',
     '    if (p) { p.textContent = msg; }',
     '  }',
     '  }',
@@ -293,9 +344,20 @@ function checkoutScript(slug) {
     /* ⚠️ The SDK is loaded without `async`, so `paypal` is defined by the time
        this runs. Guarded anyway: a blocked script must not throw and take the
        card button down with it. */
-    '  if (window.paypal && document.getElementById("paypal-buttons")) {',
+    /* 🚨 RENDER INTO EVERY `.ppbtn`, ONE Buttons INSTANCE EACH. This is the bug
+       the screenshot caught: getElementById filled the top bar and left the
+       bottom one showing an "or" rule above an empty gap. PayPal will not
+       render one instance into two containers, so each needs its own. */
+    '  if (window.paypal) {',
+    '    [].slice.call(document.querySelectorAll(".ppbtn")).forEach(function(slot){',
     '    paypal.Buttons({',
-    '      style: { layout: "horizontal", height: 44, tagline: false },',
+    /* 🚨 ONE PAYPAL BUTTON, FULL WIDTH. Paul, 2026-09-09: "i dont think we have
+       to do the pay later option on paypal either." Pay Later and PayPal Credit
+       are turned off in the SDK url with disable-funding, which is the only
+       thing that actually removes them - a style change just rearranges them.
+       `card` is off too: Stripe is the card route here, and PayPal's own card
+       button beside a "Pay with Stripe" button is two ways to do one thing. */
+    '      style: { layout: "vertical", height: 44, tagline: false },',
     /* 🚨 THE AMOUNT IS NEVER SENT FROM HERE. The Worker reads the price out of
        Postgres. All the browser may say is which product it wants. */
     '      createOrder: function(){',
@@ -322,10 +384,12 @@ function checkoutScript(slug) {
     '        });',
     '      },',
     '      onError: function(){',
-    '        var p = document.querySelector(".buynote");',
+    '        var bar = slot.closest(".buyright");',
+    '        var p = bar && bar.querySelector(".buynote");',
     '        if (p) p.textContent = "PayPal could not complete that. Please try again, or pay by card.";',
     '      }',
-    '    }).render("#paypal-buttons");',
+    '    }).render(slot);',
+    '    });',
     '  }',
   ]);
 
