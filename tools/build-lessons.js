@@ -23,7 +23,7 @@ const fs = require("fs");
 const path = require("path");
 const { LESSONS } = require("./lessons.js");
 /* The same nav every other page has. Paul, 2026-08-26. */
-const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead, navCssTag } = require("./nav.js");
 /* 🚨 partsFor() prepends the shared "how to use this page" and appends the
    lesson's OWN closing instructions. bake-voice.js calls the same function, so
    the audio cannot read something the page does not show. */
@@ -766,6 +766,7 @@ for (const L of LESSONS) {
   h = swapBlock(h, "var QUESTIONS = [", "\n];", S.questions);
 
   h = h.replace("__MODEBOOT__", modeBoot);
+  h = h.replace("__NAVCSS__", navCssTag(ROOT));
   h = h.replace("__FAVICON__", faviconTags);
   h = h.replace("__NAV__", () => navMarkup(null, "navbtn"));
   h = h.replace("__NAVSCRIPT__", navScript);

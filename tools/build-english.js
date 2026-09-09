@@ -29,7 +29,7 @@
 const fs = require("fs");
 const path = require("path");
 const { ENGLISH } = require("./english-lessons.js");
-const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead, navCssTag } = require("./nav.js");
 /* The closing instructions, and the guard that a lesson has some. Shared with
    history and maths so all three say the task the same way. */
 const { partsFor, requireTodo } = require("./lesson-instructions.js");
@@ -268,6 +268,7 @@ for (const L of ENGLISH) {
       backHref: backFor(L, L.id.split("/")[0], ROOT, L.id).href,
     }))
     .replace("__MODEBOOT__", modeBoot)
+    .replace("__NAVCSS__", navCssTag(ROOT))
     .replace("__FAVICON__", faviconTags)
     .replace("__NAV__", () => navMarkup(null, "navbtn"))
     .replace("__NAVSCRIPT__", navScript);
@@ -277,7 +278,7 @@ for (const L of ENGLISH) {
                       "__PRACTICE_NOTE__", "__NOTE_A__", "__NOTE_B__",
                       "__PARTS__", "__PRACTICE__", "__SORT__", "__THEMES__",
                       "__PLAYER_CSS__", "__FIELD_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__",
-                      "__CANONICAL__", "__MODEBOOT__", "__FAVICON__", "__NAV__", "__NAVSCRIPT__"]) {
+                      "__CANONICAL__", "__MODEBOOT__", "__NAVCSS__", "__FAVICON__", "__NAV__", "__NAVSCRIPT__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
   }
 

@@ -1101,6 +1101,23 @@ ${/* 🚨 THE COLUMNS COLLAPSE ON A PHONE, and the open state is set HERE rather
 })();</scr` + `ipt>
 </footer>`;
 
-module.exports = { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
+/* 🚨 `lesson-nav.css` WAS THE ONE STYLESHEET ON THE SITE WITH NO CACHE-BUSTER.
+   Paul, 2026-09-09, on a fix that was live and correct: "did you fix the blue
+   under writing good sentences i dont see it changed. perhaps you didnt push
+   this yet." It WAS pushed. His browser was holding the old file, because every
+   other stylesheet here is either hash-named or carries `?v=`, and this one was
+   linked bare - and GitHub Pages caches CSS hard.
+   That made every future edit to the lesson nav invisible to anyone who had
+   already visited, with no error and no symptom except "you didn't push it".
+   ⚠️ Keyed on the file's own CONTENTS, so it only changes when the CSS does. */
+function navCssTag(ROOT) {
+  const fs = require("fs"), path = require("path");
+  const v = require("crypto").createHash("sha1")
+    .update(fs.readFileSync(path.join(ROOT, "assets/lesson-nav.css")))
+    .digest("hex").slice(0, 8);
+  return '<link rel="stylesheet" href="/assets/lesson-nav.css?v=' + v + '">';
+}
+
+module.exports = { NAV, navCssTag, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
                    megaPanel, navMarkup, navScript, modeSwitch, modeBoot, footerMarkup, FOOTER_COLS,
                    socialTags, breadcrumbLd, crumbTrail, lessonHead, SITE_ORIGIN };

@@ -16,7 +16,7 @@ const path = require("path");
 const { MATH } = require("./math-lessons.js");
 /* Same nav as every other page. Paul, 2026-08-26: a lesson with no way back
    into the site is what stops it feeling like a website. */
-const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead, navCssTag } = require("./nav.js");
 /* The shared field, arrow and key-panel rules. Math keeps its own stepping
    engine - a step here drives the division animation, not just narration - but
    the CHROME is identical to every other lesson. Paul, 2026-08-29. */
@@ -143,11 +143,12 @@ for (const L of MATH) {
       backHref: backFor(L, L.id.split("/")[0], ROOT, L.id).href,
     }))
     .replace("__MODEBOOT__", modeBoot)
+    .replace("__NAVCSS__", navCssTag(ROOT))
     .replace("__FAVICON__", faviconTags)
     .replace("__NAV__", () => navMarkup(null, "navbtn"))
     .replace("__NAVSCRIPT__", navScript);
 
-  for (const slot of ["__DEMO__", "__CAPTIONS__", "__SPEC__", "__TITLE__", "__THEMES__", "__FIELD_CSS__", "__PLAYER_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__", "__NAV__", "__NAVSCRIPT__", "__CANONICAL__", "__MODEBOOT__", "__FAVICON__"]) {
+  for (const slot of ["__DEMO__", "__CAPTIONS__", "__SPEC__", "__TITLE__", "__THEMES__", "__FIELD_CSS__", "__PLAYER_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__", "__NAV__", "__NAVSCRIPT__", "__CANONICAL__", "__MODEBOOT__", "__NAVCSS__", "__FAVICON__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
   }
 

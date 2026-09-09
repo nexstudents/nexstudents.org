@@ -54,7 +54,7 @@
 const fs = require("fs");
 const path = require("path");
 const { INTEGERS } = require("./integers-lessons.js");
-const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require("./nav.js");
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead, navCssTag } = require("./nav.js");
 const { requireTodo } = require("./lesson-instructions.js");
 /* The walkthrough, shared with tools/bake-voice.js so the words on the page
    and the words in the audio come from one place. */
@@ -376,6 +376,7 @@ for (const L of INTEGERS) {
       backHref: backFor(L, L.id.split("/")[0], ROOT, L.id).href,
     }))
     .replace("__MODEBOOT__", modeBoot)
+    .replace("__NAVCSS__", navCssTag(ROOT))
     .replace("__FAVICON__", faviconTags)
     .replace("__NAV__", () => navMarkup(null, "navbtn"))
     .replace("__NAVSCRIPT__", navScript);
@@ -384,7 +385,7 @@ for (const L of INTEGERS) {
                       "__PRACTICE_NOTE__", "__TODO_TITLE__",
                       "__CAPTIONS__", "__DEMO__", "__SPEC__",
                       "__THEMES__", "__PLAYER_CSS__", "__FIELD_CSS__", "__PLAYER_MARKUP__",
-                      "__PLAYER_JS__", "__CANONICAL__", "__MODEBOOT__", "__FAVICON__",
+                      "__PLAYER_JS__", "__CANONICAL__", "__MODEBOOT__", "__NAVCSS__", "__FAVICON__",
                       "__NAV__", "__NAVSCRIPT__", "__BACKHREF__", "__BACKLABEL__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
   }

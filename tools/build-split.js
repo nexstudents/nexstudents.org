@@ -25,7 +25,7 @@
 const fs = require('fs');
 const path = require('path');
 const { SPLIT } = require('./split-lessons.js');
-const { navMarkup, navScript, modeBoot, faviconTags, lessonHead } = require('./nav.js');
+const { navMarkup, navScript, modeBoot, faviconTags, lessonHead, navCssTag } = require('./nav.js');
 const { partsFor, requireTodo } = require('./lesson-instructions.js');
 const { backFor } = require('./lesson-back.js');
 const player = require('./voice-player.js');
@@ -333,6 +333,7 @@ for (const raw of SPLIT) {
       backLabel: back.label, backHref: back.href
     }))
     .replace('__MODEBOOT__', modeBoot)
+    .replace('__NAVCSS__', navCssTag(ROOT))
     .replace('__FAVICON__', faviconTags)
     .replace('__NAV__', () => navMarkup(null, 'navbtn'))
     .replace('__NAVSCRIPT__', navScript);
@@ -340,7 +341,7 @@ for (const raw of SPLIT) {
   for (const slot of ['__TITLE__', '__DEK__', '__EYEBROW__', '__ID__', '__GROUND__', '__STORY__',
     '__SHOWCASE__', '__EXAMPLE__', '__SHEETHREF__', '__SHEETPDF__', '__NOTE_A__', '__NOTE_B__', '__PARTS__', '__PRACTICE__',
     '__SORT__', '__VISUALS__', '__THEMES__', '__PLAYER_CSS__', '__PANEL_CSS__', '__PANEL_MARKUP__', '__FIELD_CSS__', '__PLAYER_MARKUP__',
-    '__PLAYER_JS__', '__CANONICAL__', '__MODEBOOT__', '__FAVICON__', '__NAV__', '__NAVSCRIPT__',
+    '__PLAYER_JS__', '__CANONICAL__', '__MODEBOOT__', '__NAVCSS__', '__FAVICON__', '__NAV__', '__NAVSCRIPT__',
     '__BACKHREF__', '__BACKLABEL__']) {
     if (h.includes(slot)) fail('unfilled slot ' + slot + ' in ' + L.slug);
   }
