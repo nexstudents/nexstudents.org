@@ -32,7 +32,16 @@ module.exports = {
     ]
   },
 
-  seq: { unit: "The Sentence · Unit 1 · Lesson 2", unitTitle: "The Sentence", n: 2 },
+/* 🚨 `unit` IS THE UNIT NUMBER, AND `n` IS THE SHELF ORDER. Not the eyebrow.
+     This shipped as `unit: "The Sentence · Unit 1 · Lesson 2"`, which put the
+     lesson in a GROUP OF ITS OWN - so it never sat behind the lesson before it
+     and independently claimed the up-next ring. Paul, 2026-09-09: "we currently
+     have two cards highlighted in white."
+     ⚠️ `n` is the position on the SHELF, not the number in the book. The book
+     calls this Lesson 2, but Writing Good Sentences is a craft lesson between
+     book 1 and book 2, so on the shelf this is the third card. The eyebrow keeps
+     the book's own numbering; `seq` keeps the order the student walks. */
+  seq: { unit: 1, unitTitle: "The Sentence", n: 3 },
 
   ground: {
     whatItIs: "Every sentence splits into two parts. The complete subject is all the words that tell who or what the sentence is about. The complete predicate is all the words that tell what that subject does, or what is true about it.",

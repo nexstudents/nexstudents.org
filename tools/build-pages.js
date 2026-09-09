@@ -691,8 +691,18 @@ const englishPager = (course) => course.units
          build-time note, not something a student should ever see. A page
          number on a card also implies the reader has the book, which they
          do not; these are borrow-only scans. */
+      /* 🚨 THE CARD CARRIES THE LESSON NUMBER, NOT JUST THE UNIT. Paul,
+         2026-09-09: "on the cards they dont say unit 1 lesson 1 or lesson 2.
+         they only say unit 1." Every other pager prints one - Leif says
+         "Unit 1 · Lesson 3", maths and science say "Lesson 1-1" - and English
+         was the only shelf where every card in a unit read identically.
+         ⚠️ A craft lesson has NO number in the book. Houghton Mifflin runs them
+         between the numbered ones as "Revising Strategies", so that is what the
+         card says rather than inventing a number the book does not use. */
+      var num = l.n ? " &middot; Lesson " + l.n
+              : l.craft ? " &middot; Revising Strategies" : "";
       items.push({
-        label: "Unit " + u.n + (chapterN ? " &middot; Chapter " + chapterN : ""),
+        label: "Unit " + u.n + (chapterN ? " &middot; Chapter " + chapterN : "") + num,
         title: l.title, slug: l.slug || null,
       });
     };
@@ -911,12 +921,24 @@ const progressScript = `<script>
      so history and maths are untouched by any of this.
      WARNING: this whole block is inside a JS template literal. A backtick in a
      comment here closes the string and the build dies on the next word. */
+  /* 🚨 ONE RING PER COURSE, NOT PER UNIT. The comment above always said "per
+     course"; the code grouped on the whole data-unit, which is subject AND unit
+     number, so a shelf with built lessons in two units would ring one card in
+     each. Paul, 2026-09-09: "the next one should be highlighted ... its suppose
+     to be the next one in the series", singular.
+     ⚠️ Ordering therefore has to compare UNIT FIRST, then the lesson number.
+     Comparing n alone would let unit 2 lesson 1 beat unit 1 lesson 3. */
   var groups = {};
   cards.forEach(function(c){
     var g = c.dataset.unit;
     if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
-    var n = parseInt(c.dataset.n, 10);
-    if (!groups[g] || n < groups[g].n) groups[g] = { n: n, el: c };
+    var parts = g.split("|");
+    var subject = parts[0];
+    var unit = parseInt(parts[1], 10); if (isNaN(unit)) unit = 0;
+    var n = parseInt(c.dataset.n, 10); if (isNaN(n)) n = 0;
+    var cur = groups[subject];
+    if (!cur || unit < cur.unit || (unit === cur.unit && n < cur.n))
+      groups[subject] = { unit: unit, n: n, el: c };
   });
   Object.keys(groups).forEach(function(g){
     var c = groups[g].el;

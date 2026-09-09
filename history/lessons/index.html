@@ -728,12 +728,24 @@
      so history and maths are untouched by any of this.
      WARNING: this whole block is inside a JS template literal. A backtick in a
      comment here closes the string and the build dies on the next word. */
+  /* 🚨 ONE RING PER COURSE, NOT PER UNIT. The comment above always said "per
+     course"; the code grouped on the whole data-unit, which is subject AND unit
+     number, so a shelf with built lessons in two units would ring one card in
+     each. Paul, 2026-09-09: "the next one should be highlighted ... its suppose
+     to be the next one in the series", singular.
+     ⚠️ Ordering therefore has to compare UNIT FIRST, then the lesson number.
+     Comparing n alone would let unit 2 lesson 1 beat unit 1 lesson 3. */
   var groups = {};
   cards.forEach(function(c){
     var g = c.dataset.unit;
     if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
-    var n = parseInt(c.dataset.n, 10);
-    if (!groups[g] || n < groups[g].n) groups[g] = { n: n, el: c };
+    var parts = g.split("|");
+    var subject = parts[0];
+    var unit = parseInt(parts[1], 10); if (isNaN(unit)) unit = 0;
+    var n = parseInt(c.dataset.n, 10); if (isNaN(n)) n = 0;
+    var cur = groups[subject];
+    if (!cur || unit < cur.unit || (unit === cur.unit && n < cur.n))
+      groups[subject] = { unit: unit, n: n, el: c };
   });
   Object.keys(groups).forEach(function(g){
     var c = groups[g].el;
