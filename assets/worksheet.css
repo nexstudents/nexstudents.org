@@ -219,6 +219,21 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
    squeezed into 330px wraps its fields badly. */
 .checkout{margin:18px 0 0;width:100%}
 
+/* 🚨 `[hidden]` DOES NOTHING TO THESE WITHOUT THIS RULE. FOURTH TIME ON THIS
+   SITE - see CLAUDE.md, where `.res[hidden]` and `.rail[hidden]` are the same
+   fix for the same cause. The UA sheet's `[hidden]{display:none}` is a single
+   attribute selector, so ANY class rule setting `display` outranks it. `.btn`
+   is inline-flex and `.paychoice` is flex, so `el.hidden = true` set the
+   attribute, the DOM agreed it was hidden, and the control stayed on screen.
+   It shipped: after the card form mounted, the button sat above it reading
+   "Loading checkout..." forever, which looks like a stuck page on the one
+   screen that takes money.
+   ⚠️ VERIFY A HIDE WITH getComputedStyle().display, NEVER el.hidden. */
+.paychoice[hidden],
+.paychoice .btn.buy[hidden],
+.ppbtn[hidden],
+.checkout[hidden]{display:none!important}
+
 /* 🚨 NEITHER PAYMENT CONTROL MAY EVER PRINT. These are worksheets: a printed
    sheet carrying a dead Pay button is confusing on paper and wastes ink. The
    sheet print rule hides body children, but the buy bar sits inside .sheet on

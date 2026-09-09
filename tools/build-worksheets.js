@@ -315,7 +315,12 @@ function checkoutScript(slug) {
     '    }).then(function(r){ return r.json(); }).then(function(d){',
     '      if (!d || !d.clientSecret) throw new Error(d && d.error || "no client secret");',
     '      box.hidden = false;',
-    '      btn.hidden = true;',
+    /* ⚠️ HIDE THE WHOLE CHOICE BLOCK, not just the button. With PayPal also on
+       there is an "or" divider and a PayPal button beside it, and leaving those
+       above an open card form offers the buyer a second way to pay for the
+       thing they are already paying for. */
+    '      var choice = bar.querySelector(".paychoice");',
+    '      if (choice) choice.hidden = true; else btn.hidden = true;',
     /* ⚠️ mount() takes the ELEMENT, not a "#checkout" selector. With two bars on
        the page a selector would always resolve to the first one, so clicking
        the bottom button would open the form at the top, off screen, looking
@@ -333,6 +338,8 @@ function checkoutScript(slug) {
     '    mounted = false;',
     '    btn.disabled = false;',
     '    btn.hidden = false;',
+    '    var choice = bar.querySelector(".paychoice");',
+    '    if (choice) choice.hidden = false;',
     '    btn.textContent = "Buy - try again";',
     '    var p = bar.querySelector(".buynote");',
     '    if (p) { p.textContent = msg; }',
