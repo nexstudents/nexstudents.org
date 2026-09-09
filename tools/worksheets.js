@@ -340,7 +340,7 @@ const SHEETS = [
     "Golgi apparatus and the secretory vesicles leaving it",
     "Peroxisome, lysosome and mitochondrion",
   ],
-  price: "$2", buy: null, art: false, thumb: true,
+  price: "$2", buy: true, art: false, thumb: true,
 },
 
 /* ═══════════════════ 4. SEMESTER 1 BUNDLE (paid, preview only) ═══════════

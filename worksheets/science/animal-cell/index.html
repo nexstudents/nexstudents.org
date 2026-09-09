@@ -128,8 +128,74 @@
       <span class="price">$2</span>
       <span class="pricenote">One download &middot; yours to keep &middot; print as often as you like</span>
     </div>
-    <div class="buyright"><span class="btn buy is-off" aria-disabled="true">$2 &mdash; Coming Soon</span>
-      <p class="buynote">Not on sale yet. This page is the finished layout; checkout is wired once the units are complete.</p></div>
+    <div class="buyright"><div class="paychoice"><button class="btn buy" type="button" data-buy="animal-cell">Pay with Stripe</button></div>
+      <div class="checkout" hidden></div>
+      <p class="buynote">Secure checkout on this page. Your download appears the moment payment clears.</p>
+      <script async src="https://js.stripe.com/v3/"></script>
+      
+      <script>(function(){
+  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
+  var SLUG = "animal-cell";
+  var BARS = [].slice.call(document.querySelectorAll(".buyright"));
+  if (!BARS.length) return;
+  function showDownload(token, note){
+    BARS.forEach(function(bar){
+      var choice = bar.querySelector(".paychoice");
+      var box = bar.querySelector(".checkout");
+      if (choice) choice.hidden = true;
+      if (box) box.hidden = true;
+      var p = bar.querySelector(".buynote");
+      if (!p) return;
+      if (token) {
+        p.innerHTML = "<strong>Thank you. Your download is ready.</strong><br>"
+          + "<a class=\"btn\" href=\"" + WORKER + "/download?t=" + encodeURIComponent(token) + "\">Download the PDF</a>";
+      } else {
+        p.textContent = note || "Payment received. Your download is being prepared.";
+      }
+    });
+  }
+  BARS.forEach(function(bar){
+    var b = bar.querySelector("[data-buy]");
+    if (b) stripeCard(b, bar);
+  });
+  function stripeCard(btn, bar){
+  var box = bar.querySelector(".checkout");
+  if (!box) return;
+  var mounted = false;
+  btn.addEventListener("click", function(){
+    if (mounted) return;
+    mounted = true;
+    btn.disabled = true;
+    btn.textContent = "Loading checkout...";
+    if (!window.Stripe) {
+      fail("Checkout could not load. Please refresh and try again.");
+      return;
+    }
+    var stripe = Stripe("pk_test_51UDogSAu4JPty5AZuhf6wYGrR53iREhg9p664HR85pz1yzgbFoJzqJ2llXIv9Xn87N6XFCiBq5pCHK1ceGAKpLoN002mY6Cxn9");
+    fetch(WORKER + "/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: "animal-cell" })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if (!d || !d.clientSecret) throw new Error(d && d.error || "no client secret");
+      box.hidden = false;
+      btn.hidden = true;
+      return stripe.initEmbeddedCheckout({ clientSecret: d.clientSecret })
+        .then(function(c){ c.mount(box); });
+    }).catch(function(e){
+      fail("Checkout is unavailable right now. Please try again shortly.");
+    });
+  });
+  function fail(msg){
+    mounted = false;
+    btn.disabled = false;
+    btn.hidden = false;
+    btn.textContent = "Buy - try again";
+    var p = bar.querySelector(".buynote");
+    if (p) { p.textContent = msg; }
+  }
+  }
+}());</script></div>
   </div>
 
   <figure class="shot">
@@ -163,8 +229,74 @@
       <span class="price">$2</span>
       <span class="pricenote">Worksheet &middot; answer key &middot; instant download</span>
     </div>
-    <div class="buyright"><span class="btn buy is-off" aria-disabled="true">$2 &mdash; Coming Soon</span>
-      <p class="buynote">Not on sale yet. This page is the finished layout; checkout is wired once the units are complete.</p></div>
+    <div class="buyright"><div class="paychoice"><button class="btn buy" type="button" data-buy="animal-cell">Pay with Stripe</button></div>
+      <div class="checkout" hidden></div>
+      <p class="buynote">Secure checkout on this page. Your download appears the moment payment clears.</p>
+      <script async src="https://js.stripe.com/v3/"></script>
+      
+      <script>(function(){
+  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
+  var SLUG = "animal-cell";
+  var BARS = [].slice.call(document.querySelectorAll(".buyright"));
+  if (!BARS.length) return;
+  function showDownload(token, note){
+    BARS.forEach(function(bar){
+      var choice = bar.querySelector(".paychoice");
+      var box = bar.querySelector(".checkout");
+      if (choice) choice.hidden = true;
+      if (box) box.hidden = true;
+      var p = bar.querySelector(".buynote");
+      if (!p) return;
+      if (token) {
+        p.innerHTML = "<strong>Thank you. Your download is ready.</strong><br>"
+          + "<a class=\"btn\" href=\"" + WORKER + "/download?t=" + encodeURIComponent(token) + "\">Download the PDF</a>";
+      } else {
+        p.textContent = note || "Payment received. Your download is being prepared.";
+      }
+    });
+  }
+  BARS.forEach(function(bar){
+    var b = bar.querySelector("[data-buy]");
+    if (b) stripeCard(b, bar);
+  });
+  function stripeCard(btn, bar){
+  var box = bar.querySelector(".checkout");
+  if (!box) return;
+  var mounted = false;
+  btn.addEventListener("click", function(){
+    if (mounted) return;
+    mounted = true;
+    btn.disabled = true;
+    btn.textContent = "Loading checkout...";
+    if (!window.Stripe) {
+      fail("Checkout could not load. Please refresh and try again.");
+      return;
+    }
+    var stripe = Stripe("pk_test_51UDogSAu4JPty5AZuhf6wYGrR53iREhg9p664HR85pz1yzgbFoJzqJ2llXIv9Xn87N6XFCiBq5pCHK1ceGAKpLoN002mY6Cxn9");
+    fetch(WORKER + "/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: "animal-cell" })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if (!d || !d.clientSecret) throw new Error(d && d.error || "no client secret");
+      box.hidden = false;
+      btn.hidden = true;
+      return stripe.initEmbeddedCheckout({ clientSecret: d.clientSecret })
+        .then(function(c){ c.mount(box); });
+    }).catch(function(e){
+      fail("Checkout is unavailable right now. Please try again shortly.");
+    });
+  });
+  function fail(msg){
+    mounted = false;
+    btn.disabled = false;
+    btn.hidden = false;
+    btn.textContent = "Buy - try again";
+    var p = bar.querySelector(".buynote");
+    if (p) { p.textContent = msg; }
+  }
+  }
+}());</script></div>
   </div>
 
 </div>
