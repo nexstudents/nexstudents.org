@@ -186,6 +186,45 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
   box-shadow:inset 0 0 0 1px var(--line);cursor:not-allowed}
 .buynote{font-size:.73rem;line-height:1.45;color:var(--dim);margin:0}
 
+/* ── THE TWO WAYS TO PAY ────────────────────────────────────────────────────
+   Card (Stripe) above, PayPal below, with a rule between them. Added
+   2026-09-09 with embedded checkout.
+   🚨 THESE RULES ARE LOAD-BEARING AND WERE WRITTEN WITH THE MARKUP, NOT AFTER.
+   Three separate bugs on this site have been "the CSS rule simply does not
+   exist" while the markup and the JavaScript were both correct - see
+   CLAUDE.md. `.paychoice` unstyled leaves the PayPal iframe full column width
+   beside a 330px button, which looks like a broken layout rather than a
+   choice. */
+.paychoice{display:flex;flex-direction:column;align-items:stretch;
+  gap:10px;width:100%;max-width:330px}
+/* ⚠️ `.buyright` is already a column flex with align-items:flex-start, so a
+   child stretches to its CONTENT, not its width. Override it here or the two
+   controls come out different widths and read as unrelated. */
+.buyright .paychoice{align-self:stretch}
+.paychoice .btn.buy{width:100%;text-align:center;justify-content:center}
+
+/* The "or" divider. A line each side, drawn with borders rather than a
+   background, so it survives printing the way every other rule here does. */
+.payor{display:flex;align-items:center;gap:10px;margin:0;
+  font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.payor::before,.payor::after{content:"";flex:1;border-top:1px solid var(--line)}
+
+/* 🚨 PayPal renders its own button into an IFRAME and sets the height itself.
+   Give it a min-height so the page does not jump as it loads, and never a
+   fixed height, which would clip the button on a narrow phone. */
+.ppbtn{width:100%;min-height:46px}
+
+/* ⚠️ Stripe's embedded form is also an iframe and comes with NO margin of its
+   own - their docs say to supply it. Full column width, because a card form
+   squeezed into 330px wraps its fields badly. */
+.checkout{margin:18px 0 0;width:100%}
+
+/* 🚨 NEITHER PAYMENT CONTROL MAY EVER PRINT. These are worksheets: a printed
+   sheet carrying a dead Pay button is confusing on paper and wastes ink. The
+   sheet print rule hides body children, but the buy bar sits inside .sheet on
+   the paid-sheet layout, so it needs saying explicitly. */
+@media print{ .paychoice,.checkout,.payor,.ppbtn{display:none!important} }
+
 .gets{margin:0;padding-left:20px;color:var(--dim);font-size:.92rem;line-height:1.6}
 .gets li{margin-bottom:5px}
 .gets li::marker{color:var(--free)}

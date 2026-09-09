@@ -165,13 +165,172 @@ function cartBtn(s) {
     </button>`;
 }
 
+/* ── EMBEDDED CHECKOUT ──────────────────────────────────────────────────────
+   Paul, 2026-09-09: "I want it embedded into the checkout."
+
+   This used to be `<a href="{buy}">` pointing at a Stripe Payment Link, which
+   sent the buyer to buy.stripe.com and off the site. Now `buy: true` means "on
+   sale", and Stripe's card form is mounted in a div ON THIS PAGE.
+
+   🚨 `buy` IS A BOOLEAN NOW, NOT A URL. The price is not here either - it lives
+   in the `products` table in Postgres, which is what /checkout reads. `price` in
+   worksheets.js is the SHOP WINDOW only, the number a visitor sees before the
+   form loads. ⚠️ Change a price in both, or the page advertises one number and
+   charges another.
+
+   ⚠️ THE OLD "the download is emailed to you" LINE IS GONE, and it had to go:
+   nothing on this site sends email. The buyer downloads on the return page. */
+const STRIPE_PK = process.env.STRIPE_PK || "";
+const PAYPAL_ID = process.env.PAYPAL_CLIENT_ID || "";
+
+/* 🚨 EITHER KEY IS ENOUGH, NEITHER IS "COMING SOON". Paul, 2026-09-09: "I think
+   i like the option to just give a choice regardless i gotta deal with two
+   different options." So the page offers whichever processors are configured -
+   both, or one, or none - and never renders a control that cannot work.
+   ⚠️ Mounting a payment SDK without its key draws an empty box, which reads as
+   a broken shop rather than a shut one. That is why these are guards and not
+   defaults. */
 function buyBlock(s) {
-  if (s.buy) {
-    return `<a class="btn buy" href="${s.buy}">Buy &mdash; ${s.price}</a>
-      <p class="buynote">Secure checkout by Stripe. The download is emailed to you the moment payment clears.</p>`;
+  if (s.buy && (STRIPE_PK || PAYPAL_ID)) {
+    const card = STRIPE_PK
+      ? `<button class="btn buy" type="button" data-buy="${s.slug}">Pay by Card &mdash; ${s.price}</button>`
+      : "";
+    const pp = PAYPAL_ID ? `<div class="ppbtn" id="paypal-buttons"></div>` : "";
+    /* ⚠️ Only say "or" when there are genuinely two things to choose between. */
+    const orRule = (STRIPE_PK && PAYPAL_ID)
+      ? `<p class="payor"><span>or</span></p>` : "";
+
+    return `<div class="paychoice">${card}${orRule}${pp}</div>
+      <div class="checkout" id="checkout" hidden></div>
+      <p class="buynote">Secure checkout on this page. Your download appears the moment payment clears.</p>
+      ${STRIPE_PK ? `<script async src="https://js.stripe.com/v3/"></script>` : ""}
+      ${PAYPAL_ID ? `<script src="https://www.paypal.com/sdk/js?client-id=${PAYPAL_ID}&currency=USD"></script>` : ""}
+      <script>${checkoutScript(s.slug)}</script>`;
   }
   return `<span class="btn buy is-off" aria-disabled="true">${s.price} &mdash; Coming Soon</span>
       <p class="buynote">Not on sale yet. This page is the finished layout; checkout is wired once the units are complete.</p>`;
+}
+
+/* ⚠️ NO BACKTICKS ANYWHERE IN HERE, comments included. This string is returned
+   into a template literal, the same trap that has killed this build twice
+   before - see the note at the top of reading-log.js. */
+function checkoutScript(slug) {
+  const parts = [
+    '(function(){',
+    '  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";',
+    '  var SLUG = "' + slug + '";',
+    '  var box = document.getElementById("checkout");',
+    /* ⚠️ THIS IS THE PAYPAL SUCCESS PATH ONLY, and it is worth being clear
+       about why the two differ. Stripe's embedded form finishes by REDIRECTING
+       to return_url, so a card buyer lands on /thank-you/ and is served there.
+       PayPal finishes in a popup with the buyer still on this page, so there is
+       nowhere to send them - the download has to appear right here.
+       Both end at the same /download?t= link built from the same token. */
+    '  function showDownload(token, note){',
+    '    var wrap = document.querySelector(".paychoice");',
+    '    if (wrap) wrap.hidden = true;',
+    '    if (box) box.hidden = true;',
+    '    var p = document.querySelector(".buynote");',
+    '    if (!p) return;',
+    '    if (token) {',
+    '      p.innerHTML = "<strong>Thank you. Your download is ready.</strong><br>"',
+    '        + "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(token) + "\\">Download the PDF</a>";',
+    '    } else {',
+    '      p.textContent = note || "Payment received. Your download is being prepared.";',
+    '    }',
+    '  }',
+  ];
+
+  if (STRIPE_PK) parts.push(...[
+    '  var btn = document.querySelector(\'[data-buy="' + slug + '"]\');',
+    '  if (btn && box) stripeCard(btn);',
+    '  function stripeCard(btn){',
+    '  var mounted = false;',
+    '  btn.addEventListener("click", function(){',
+    '    if (mounted) return;',
+    '    mounted = true;',
+    '    btn.disabled = true;',
+    '    btn.textContent = "Loading checkout...";',
+    /* Stripe.js is loaded async, so it may not be there on a fast click. */
+    /* ⚠️ `!window.Stripe`, not a typeof test. The build guard at the bottom of
+       this file fails on the literal string "undefined" anywhere in a page, and
+       it is right to - that is how a template slot resolving to nothing gets
+       caught. Truthiness says the same thing and keeps the guard useful. */
+    '    if (!window.Stripe) {',
+    '      fail("Checkout could not load. Please refresh and try again.");',
+    '      return;',
+    '    }',
+    '    var stripe = Stripe("' + STRIPE_PK + '");',
+    '    fetch(WORKER + "/checkout", {',
+    '      method: "POST",',
+    '      headers: { "Content-Type": "application/json" },',
+    '      body: JSON.stringify({ slug: "' + slug + '" })',
+    '    }).then(function(r){ return r.json(); }).then(function(d){',
+    '      if (!d || !d.clientSecret) throw new Error(d && d.error || "no client secret");',
+    '      box.hidden = false;',
+    '      btn.hidden = true;',
+    '      return stripe.initEmbeddedCheckout({ clientSecret: d.clientSecret })',
+    '        .then(function(c){ c.mount("#checkout"); });',
+    '    }).catch(function(e){',
+    '      fail("Checkout is unavailable right now. Please try again shortly.");',
+    '    });',
+    '  });',
+    /* 🚨 A FAILED CHECKOUT MUST GIVE THE BUTTON BACK. Leaving it disabled and
+       reading "Loading checkout..." forever is how a customer decides the site
+       is broken and leaves, on the one page that was meant to take money. */
+    '  function fail(msg){',
+    '    mounted = false;',
+    '    btn.disabled = false;',
+    '    btn.hidden = false;',
+    '    btn.textContent = "Buy - try again";',
+    '    var p = document.querySelector(".buynote");',
+    '    if (p) { p.textContent = msg; }',
+    '  }',
+    '  }',
+  ]);
+
+  if (PAYPAL_ID) parts.push(...[
+    /* ⚠️ The SDK is loaded without `async`, so `paypal` is defined by the time
+       this runs. Guarded anyway: a blocked script must not throw and take the
+       card button down with it. */
+    '  if (window.paypal && document.getElementById("paypal-buttons")) {',
+    '    paypal.Buttons({',
+    '      style: { layout: "horizontal", height: 44, tagline: false },',
+    /* 🚨 THE AMOUNT IS NEVER SENT FROM HERE. The Worker reads the price out of
+       Postgres. All the browser may say is which product it wants. */
+    '      createOrder: function(){',
+    '        return fetch(WORKER + "/paypal/create", {',
+    '          method: "POST",',
+    '          headers: { "Content-Type": "application/json" },',
+    '          body: JSON.stringify({ slug: SLUG })',
+    '        }).then(function(r){ return r.json(); }).then(function(d){',
+    '          if (!d || !d.id) throw new Error(d && d.error || "no order id");',
+    '          return d.id;',
+    '        });',
+    '      },',
+    '      onApprove: function(data){',
+    '        return fetch(WORKER + "/paypal/capture", {',
+    '          method: "POST",',
+    '          headers: { "Content-Type": "application/json" },',
+    '          body: JSON.stringify({ orderID: data.orderID })',
+    '        }).then(function(r){ return r.json(); }).then(function(d){',
+    /* 🚨 d.ok WITH A NULL TOKEN STILL MEANS PAID. The capture succeeded and only
+       the filing failed, so the buyer must never be told the payment did not
+       work - d.error carries what to do next. */
+    '          if (d && d.ok) return showDownload(d.token, d.error);',
+    '          throw new Error(d && d.error || "capture failed");',
+    '        });',
+    '      },',
+    '      onError: function(){',
+    '        var p = document.querySelector(".buynote");',
+    '        if (p) p.textContent = "PayPal could not complete that. Please try again, or pay by card.";',
+    '      }',
+    '    }).render("#paypal-buttons");',
+    '  }',
+  ]);
+
+  parts.push('}());');
+  return parts.join("\n");
 }
 
 /* kind "paid-sheet" — a PAID SINGLE SHEET whose product is a finished PDF.

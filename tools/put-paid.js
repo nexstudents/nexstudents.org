@@ -3,8 +3,8 @@
  * ─────────────────────────────────────────────────────────────────────────
  *   node tools/put-paid.js <local file> <slug>
  *
- * The file lands at paid/<slug>/<basename>, which is the prefix the Worker's
- * redeem_download path serves from. Nothing else in the bucket uses `paid/`.
+ * The file lands at paid/<slug><ext>, which is exactly what the Worker's
+ * /download path fetches. Nothing else in the bucket uses `paid/`.
  *
  * 🚨 THE PRODUCT MUST NEVER ENTER THE REPO. build-worksheets.js fails the
  * build if it finds any .pdf beside a paid page, because GitHub Pages serves
@@ -50,7 +50,15 @@ async function main() {
   if (!store.configured()) { console.error(store.help()); process.exit(2); }
 
   const ext = path.extname(abs).toLowerCase();
-  const key = "paid/" + slug + "/" + path.basename(abs);
+  /* 🚨 THE KEY IS `paid/<slug><ext>`, NOT `paid/<slug>/<basename>`.
+     This was `paid/<slug>/<basename>` and r2-worker.js has always fetched
+     `PAID + slug + ".pdf"`, so the two never agreed. Nothing caught it because
+     neither side had ever run: the first customer to pay would have been told
+     "your purchase is valid but the file is not ready yet" while the file sat
+     in the bucket one path segment away. Found 2026-09-09, before any sale.
+     ⚠️ The basename is deliberately DISCARDED. It is whatever the file was
+     called on Paul's desktop, and the Worker has no way to learn it. */
+  const key = "paid/" + slug + ext;
   const body = fs.readFileSync(abs);
   await store.put(key, body, TYPES[ext] || "application/octet-stream");
 

@@ -1691,6 +1691,90 @@ const extrasShelf = () => `<div class="band"><div class="wrap">
 </div></div>`;
 
 
+/* ── /thank-you/ — WHERE A PAID DOWNLOAD ACTUALLY HAPPENS ───────────────────
+   Added 2026-09-09 with embedded checkout. Stripe sends the buyer here as the
+   Checkout Session's return_url, with ?session_id=cs_live_...
+
+   🚨 THIS PAGE DOES NOT DECIDE ANYTHING. It asks Postgres what that session
+   bought, exactly the way /download asks about a token. A page cannot be
+   trusted to know it was paid - it is running on the buyer's machine.
+
+   ⚠️ IT MAY ARRIVE BEFORE THE WEBHOOK DOES. The redirect and the webhook race,
+   and the redirect usually wins by a second or two. So a missing row is NOT an
+   error here: it retries. Telling a customer who just paid that nothing was
+   found is the worst thing this page could do. */
+const thankYouMarkup = () => `
+<div class="wrap"><div class="prose" style="max-width:640px">
+  <div id="tyState">
+    <p class="dim">Confirming your payment&hellip;</p>
+  </div>
+</div></div>
+<script src="/assets/supabase-config.js"></script>`;
+
+/* ⚠️ NO BACKTICKS IN HERE. Returned into a template literal. */
+function thankYouScript() {
+  return [
+    '(function(){',
+    '  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";',
+    '  var box = document.getElementById("tyState");',
+    '  var cfg = window.NS_SUPABASE || {};',
+    '  var sid = new URLSearchParams(location.search).get("session_id") || "";',
+    '  if (!sid || !cfg.url) { return done(false); }',
+    /* 🚨 STRIP THE SESSION ID OUT OF THE ADDRESS BAR. It is a bearer credential
+       for this purchase - the same reasoning ns-account.js applies to the magic
+       link fragment. It survives in screenshots and anything Paul pastes into a
+       chat asking for help. */
+    '  history.replaceState(null, "", location.pathname);',
+    '  var tries = 0;',
+    '  ask();',
+    '  function ask(){',
+    '    tries++;',
+    '    fetch(cfg.url + "/rest/v1/rpc/purchase_by_session", {',
+    '      method: "POST",',
+    '      headers: {',
+    '        "apikey": cfg.publishableKey,',
+    '        "Authorization": "Bearer " + cfg.publishableKey,',
+    '        "Content-Type": "application/json"',
+    '      },',
+    '      body: JSON.stringify({ p_session: sid })',
+    '    }).then(function(r){ return r.json(); }).then(function(rows){',
+    '      if (Array.isArray(rows) && rows.length) return show(rows[0]);',
+    /* Six tries over about fifteen seconds, then an honest holding message.
+       The purchase is real either way; only this page is early. */
+    '      if (tries < 6) return setTimeout(ask, 2500);',
+    '      done(true);',
+    '    }).catch(function(){',
+    '      if (tries < 6) return setTimeout(ask, 2500);',
+    '      done(true);',
+    '    });',
+    '  }',
+    '  function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }',
+    '  function show(row){',
+    '    box.innerHTML = "<h2 style=\\"margin-top:0\\">Thank you. Your download is ready.</h2>"',
+    '      + "<p>" + esc(row.title) + "</p>"',
+    '      + "<p><a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\\">Download the PDF</a></p>"',
+    '      + "<p class=\\"dim\\">Keep this link. You can also find it any time by signing in at "',
+    '      + "<a href=\\"/account/\\">your account</a> with the email you paid with.</p>";',
+    '  }',
+    /* 🚨 NEVER SAY "we could not find your purchase". Two very different things
+       land here - a slow webhook and someone opening the page with no session
+       id at all - and neither means the money went missing. Say what is true:
+       payment is safe, the receipt is coming, here is how to reach a human. */
+    '  function done(paid){',
+    '    box.innerHTML = paid',
+    '      ? "<h2 style=\\"margin-top:0\\">Payment received.</h2>"',
+    '        + "<p>Your download is still being prepared. Sign in at <a href=\\"/account/\\">your account</a>"',
+    '        + " with the email you paid with and it will be there.</p>"',
+    '        + "<p class=\\"dim\\">If it is not there in a few minutes, email hello@nexstudents.org and we will send it straight over.</p>"',
+    '      : "<h2 style=\\"margin-top:0\\">Nothing to confirm here.</h2>"',
+    '        + "<p>This page shows your download after a purchase. Browse the "',
+    '        + "<a href=\\"/worksheets/\\">worksheets</a>.</p>";',
+    '  }',
+    '}());',
+  ].join("\n");
+}
+
+
 const pages = [
   /* /grades/ was DELETED on 2026-08-26. Paul: "get rid of the grades tab and
      replace it with the nav panel." The dropdown lists every grade and the
@@ -1749,6 +1833,21 @@ const pages = [
        the How This Works disclosure inside the card; this is just the label. */
     lead: "Time your reading, then write down what you read.",
     body: readingLogMarkup(), script: readingLogScript() },
+
+  /* Stripe's return_url lands here. `bare: true` skips social tags and the
+     breadcrumb, the way the 404 does: this is a real page, but it describes one
+     person's transaction and has no business in a search result or a share
+     card. ⚠️ It carries no crumb for the same reason. */
+  /* 🚨 noindex, AND IT IS NOT OPTIONAL. This URL describes one person's
+     transaction. Indexed, it puts a "Thank you for your purchase" page in
+     search results for a shop with almost nothing sold, and build-sitemap.js
+     keys its skip off exactly this meta. */
+  { dir: "thank-you", active: null, pclass: "termshead", bare: true, noindex: true,
+    title: "Thank You | NexStudents",
+    desc: "Your purchase and download.",
+    crumb: "", h1: "Thank you.",
+    lead: "",
+    body: thankYouMarkup(), script: thankYouScript() },
 
   { dir: "games", active: "g",
     title: "Games | NexStudents",

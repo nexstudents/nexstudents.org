@@ -110,6 +110,36 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    /* ── THE TWO CHECKOUT ROUTES, AND WHY THEY LIVE HERE ────────────────────
+       Paul, 2026-09-09: "I want it embedded into the checkout." Embedded
+       Checkout renders Stripe's card form in an iframe ON the worksheet page,
+       so the buyer never leaves nexstudents.org. It costs a server, because
+       the Checkout Session must be created with a secret key and a secret key
+       can never sit in a static page on GitHub Pages.
+
+       ⭐ THIS WORKER IS ALREADY THAT SERVER. It is deployed, it already talks
+       to Supabase, and it already guards the paid files. Adding a second host
+       to run two endpoints would mean two deploys, two sets of secrets and two
+       things to remember. These routes are POST, so they cannot collide with
+       an object key, which is always fetched with GET.
+
+       They are matched BEFORE the GET/HEAD guard below, which would otherwise
+       405 them. */
+    if (url.pathname === "/checkout")      return checkout(request, env);
+    if (url.pathname === "/stripe-webhook") return stripeWebhook(request, env);
+
+    /* ── AND THE SAME TWO THINGS FOR PAYPAL ─────────────────────────────────
+       Paul, 2026-09-09: "I think i like the option to just give a choice
+       regardless i gotta deal with two different options."
+
+       He is right that the bookkeeping cost is already paid: the PayPal
+       business account exists either way. So the buyer picks card or PayPal and
+       BOTH land in the same purchases table through record_purchase(). The
+       stockroom, the ledger and the thank-you page never learn which one it
+       was, which is the whole reason adding this was cheap. */
+    if (url.pathname === "/paypal/create")  return paypalCreate(request, env);
+    if (url.pathname === "/paypal/capture") return paypalCapture(request, env);
+
     /* Audio is fetched with GET and probed with HEAD by some browsers. Nothing
        else is ever legitimate here - this bucket is written by bake-voice.js
        over the S3 API, never over this hostname. */
@@ -245,4 +275,428 @@ function deny() {
     "https://nexstudents.org/account/ with the email you used and it will be there.",
     { status: 404, headers: { "content-type": "text/plain; charset=utf-8" } }
   );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   EMBEDDED CHECKOUT
+   Added 2026-09-09. Paul: "I want it embedded into the checkout."
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* The only origin allowed to start a checkout. A wildcard here would let any
+   site mount our payment form and bill our account for the Stripe fees. */
+const SITE = "https://nexstudents.org";
+
+function cors(extra) {
+  const h = new Headers(extra || {});
+  h.set("access-control-allow-origin", SITE);
+  h.set("access-control-allow-methods", "POST, OPTIONS");
+  h.set("access-control-allow-headers", "content-type");
+  h.set("vary", "origin");
+  return h;
+}
+
+function jsonOut(obj, status) {
+  return new Response(JSON.stringify(obj),
+    { status: status || 200, headers: cors({ "content-type": "application/json" }) });
+}
+
+/* ── POST /checkout  {slug} -> {clientSecret} ───────────────────────────────
+   🚨 THE PRICE IS READ FROM POSTGRES, NEVER FROM THE REQUEST. This is the same
+   rule checkout_free() enforces, and for the same reason: the browser may ask
+   for any slug it likes, but what that slug costs is not the browser's to say.
+   A client-supplied amount is how a $14 bundle gets bought for one cent.
+
+   ⚠️ It also refuses anything FREE. A zero-price item has its own path through
+   checkout_free(), which records the download without touching Stripe. Sending
+   a free item here would create a Stripe session for $0, which Stripe rejects
+   anyway - its one-time minimum is 50 cents. Fail with a clear reason instead
+   of passing a doomed request to Stripe. */
+async function checkout(request, env) {
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
+  if (request.method !== "POST") return jsonOut({ error: "Method not allowed" }, 405);
+
+  if (!env.STRIPE_SECRET_KEY || !env.SUPABASE_URL || !env.SUPABASE_KEY) {
+    console.error("[checkout] not configured");
+    return jsonOut({ error: "Checkout is temporarily unavailable." }, 503);
+  }
+
+  let slug;
+  try {
+    const body = await request.json();
+    slug = String((body && body.slug) || "").trim();
+  } catch (e) {
+    return jsonOut({ error: "Bad request" }, 400);
+  }
+  if (!/^[a-z0-9-]{1,80}$/.test(slug)) return jsonOut({ error: "Bad request" }, 400);
+
+  /* The catalogue is publicly readable, so the publishable key is right here.
+     Nothing secret is being fetched - this is the shop window. */
+  let product;
+  try {
+    const r = await fetch(env.SUPABASE_URL + "/rest/v1/products?slug=eq." +
+                          encodeURIComponent(slug) + "&select=slug,title,price_cents,active",
+      { headers: { apikey: env.SUPABASE_KEY, Authorization: "Bearer " + env.SUPABASE_KEY } });
+    if (!r.ok) throw new Error("products " + r.status);
+    const rows = await r.json();
+    product = Array.isArray(rows) && rows.length ? rows[0] : null;
+  } catch (e) {
+    console.error("[checkout] " + e.message);
+    return jsonOut({ error: "Checkout is temporarily unavailable." }, 503);
+  }
+
+  if (!product || product.active === false) return jsonOut({ error: "No such product" }, 404);
+  if (!(product.price_cents > 0)) {
+    return jsonOut({ error: "This item is free. Use the free checkout." }, 400);
+  }
+
+  /* ⚠️ ui_mode `embedded_page` is the current name. Accounts pinned to an older
+     API version want the earlier value `embedded` - if Stripe answers with
+     "invalid value for ui_mode", that rename is the reason, and it is a one
+     word fix here. */
+  const form = new URLSearchParams();
+  form.set("ui_mode", "embedded_page");
+  form.set("mode", "payment");
+  form.set("line_items[0][quantity]", "1");
+  form.set("line_items[0][price_data][currency]", "usd");
+  form.set("line_items[0][price_data][unit_amount]", String(product.price_cents));
+  form.set("line_items[0][price_data][product_data][name]", product.title || slug);
+  form.set("return_url", SITE + "/thank-you/?session_id={CHECKOUT_SESSION_ID}");
+  /* 🚨 THE SLUG MUST RIDE ON THE SESSION. The webhook has no other way to know
+     WHAT was bought - it receives a session, not a shopping cart. Without this
+     every purchase row would have to be guessed from the amount. */
+  form.set("metadata[slug]", slug);
+
+  let session;
+  try {
+    const r = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + env.STRIPE_SECRET_KEY,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: form.toString(),
+    });
+    session = await r.json();
+    if (!r.ok) throw new Error((session.error && session.error.message) || ("stripe " + r.status));
+  } catch (e) {
+    console.error("[checkout] " + e.message);
+    return jsonOut({ error: "Checkout is temporarily unavailable." }, 503);
+  }
+
+  return jsonOut({ clientSecret: session.client_secret });
+}
+
+/* ── POST /stripe-webhook ───────────────────────────────────────────────────
+   🚨 THIS IS THE ONLY THING THAT MAY CREATE A PURCHASE, and the signature check
+   below is the whole reason it can be trusted. Without it this endpoint is an
+   open door that grants anyone any product: it is a public URL that writes to
+   the purchases table.
+
+   ⚠️ FULFILL FROM THE WEBHOOK, NOT FROM THE RETURN PAGE. Stripe's own guidance,
+   and it matters here: the buyer can close the tab the instant the card clears
+   and never load the thank-you page. The webhook still arrives.
+
+   ⚠️ ALWAYS ANSWER 200 ONCE THE SIGNATURE IS VALID, even for an event we ignore.
+   A non-2xx makes Stripe retry for days and eventually disable the endpoint. */
+async function stripeWebhook(request, env) {
+  if (request.method !== "POST") return new Response("Method not allowed", { status: 405 });
+
+  if (!env.STRIPE_WEBHOOK_SECRET || !env.SUPABASE_URL || !env.SUPABASE_KEY ||
+      !env.PURCHASE_SECRET) {
+    console.error("[webhook] not configured");
+    return new Response("not configured", { status: 503 });
+  }
+
+  /* The raw text, byte for byte. Parsing first and re-serialising would change
+     key order and whitespace, and the signature is over the exact bytes. */
+  const raw = await request.text();
+  const sig = request.headers.get("stripe-signature") || "";
+
+  if (!(await verifyStripeSignature(raw, sig, env.STRIPE_WEBHOOK_SECRET))) {
+    console.error("[webhook] bad signature");
+    return new Response("bad signature", { status: 400 });
+  }
+
+  let event;
+  try { event = JSON.parse(raw); } catch (e) { return new Response("bad json", { status: 400 }); }
+
+  if (event.type !== "checkout.session.completed") {
+    return new Response("ignored", { status: 200 });
+  }
+
+  const s = event.data && event.data.object ? event.data.object : {};
+  /* `payment_status` is the field that means money actually moved. A completed
+     session with an async payment method can still be `unpaid`. */
+  if (s.payment_status !== "paid") return new Response("not paid yet", { status: 200 });
+
+  const slug  = String((s.metadata && s.metadata.slug) || "");
+  const email = String(s.customer_details && s.customer_details.email || "");
+  if (!/^[a-z0-9-]{1,80}$/.test(slug) || !email) {
+    console.error("[webhook] missing slug or email on " + s.id);
+    return new Response("nothing to record", { status: 200 });
+  }
+
+  try {
+    const r = await fetch(env.SUPABASE_URL + "/rest/v1/rpc/record_purchase", {
+      method: "POST",
+      headers: {
+        apikey: env.SUPABASE_KEY,
+        Authorization: "Bearer " + env.SUPABASE_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        p_secret: env.PURCHASE_SECRET,
+        p_slug: slug,
+        p_email: email,
+        p_session: String(s.id || ""),
+        p_amount: Number(s.amount_total || 0),
+      }),
+    });
+    if (!r.ok) throw new Error("rpc " + r.status + " " + (await r.text()).slice(0, 200));
+  } catch (e) {
+    /* 🚨 A 500 HERE IS CORRECT AND IS NOT A BUG. The money is taken but the
+       purchase is unrecorded, so we WANT Stripe to retry. record_purchase is
+       idempotent on the session id, so a retry cannot double-grant. */
+    console.error("[webhook] " + e.message);
+    return new Response("retry please", { status: 500 });
+  }
+
+  return new Response("ok", { status: 200 });
+}
+
+/* Stripe signs `<timestamp>.<raw body>` with HMAC-SHA256 and sends it as
+   `t=<ts>,v1=<hex>`. There is no Stripe SDK in a Worker, so this is done with
+   Web Crypto directly - it is about twenty lines and no dependency. */
+async function verifyStripeSignature(raw, header, secret) {
+  const parts = {};
+  for (const bit of header.split(",")) {
+    const i = bit.indexOf("=");
+    if (i > 0) {
+      const k = bit.slice(0, i).trim();
+      /* v1 can legitimately appear more than once while a secret is being
+         rotated. Keep the first; any one matching is a valid signature. */
+      if (!(k in parts)) parts[k] = bit.slice(i + 1).trim();
+    }
+  }
+  const ts = parts.t, given = parts.v1;
+  if (!ts || !given) return false;
+
+  /* ⚠️ REPLAY WINDOW. Without it a captured webhook body stays valid forever,
+     and re-sending it would re-grant the product. Five minutes is Stripe's own
+     default tolerance. */
+  const age = Math.abs(Math.floor(Date.now() / 1000) - Number(ts));
+  if (!Number.isFinite(age) || age > 300) return false;
+
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const mac = await crypto.subtle.sign("HMAC", key, enc.encode(ts + "." + raw));
+  const hex = [...new Uint8Array(mac)].map((b) => b.toString(16).padStart(2, "0")).join("");
+
+  /* Constant time. A plain === leaks how much of the signature was right, one
+     byte at a time, which is enough to forge one given enough attempts. */
+  if (hex.length !== given.length) return false;
+  let diff = 0;
+  for (let i = 0; i < hex.length; i++) diff |= hex.charCodeAt(i) ^ given.charCodeAt(i);
+  return diff === 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAYPAL
+   Added 2026-09-09, beside Stripe rather than instead of it.
+
+   🚨 WHY THERE IS NO PAYPAL WEBHOOK HERE, AND WHY THAT IS NOT A SHORTCUT.
+   The Stripe flow needs one because Stripe tells us about the payment out of
+   band. PayPal's does not: THIS WORKER performs the capture itself and reads
+   the result in the reply. There is no second party to wait for and nothing to
+   verify a signature against, because we made the call.
+   ⚠️ The one case it does not cover is a buyer who approves in the popup and
+   then closes the tab before the capture fires. PayPal voids an uncaptured
+   authorisation on its own, so no money is taken and nothing is owed. If that
+   ever needs catching, a webhook on PAYMENT.CAPTURE.COMPLETED is the fix.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Live and sandbox are different hostnames. PAYPAL_API is set in the Worker so
+   sandbox testing never needs a code change:
+     sandbox  https://api-m.sandbox.paypal.com
+     live     https://api-m.paypal.com */
+function paypalBase(env) {
+  return (env.PAYPAL_API || "https://api-m.paypal.com").replace(/\/+$/, "");
+}
+
+/* ⚠️ A fresh token per request. PayPal's tokens last hours and could be cached,
+   but a Worker isolate is not a safe place to keep one - it may be reused
+   across requests or destroyed between them with no warning. The extra call is
+   cheaper than the class of bug where a stale token starts failing checkouts. */
+async function paypalToken(env) {
+  const auth = btoa(env.PAYPAL_CLIENT_ID + ":" + env.PAYPAL_SECRET);
+  const r = await fetch(paypalBase(env) + "/v1/oauth2/token", {
+    method: "POST",
+    headers: {
+      Authorization: "Basic " + auth,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "grant_type=client_credentials",
+  });
+  const d = await r.json();
+  if (!r.ok || !d.access_token) throw new Error("paypal auth " + r.status);
+  return d.access_token;
+}
+
+/* The catalogue lookup both PayPal routes need. Same rule as /checkout: the
+   price comes from Postgres, never from the browser. */
+async function paidProduct(env, slug) {
+  const r = await fetch(env.SUPABASE_URL + "/rest/v1/products?slug=eq." +
+                        encodeURIComponent(slug) + "&select=slug,title,price_cents,active",
+    { headers: { apikey: env.SUPABASE_KEY, Authorization: "Bearer " + env.SUPABASE_KEY } });
+  if (!r.ok) throw new Error("products " + r.status);
+  const rows = await r.json();
+  const p = Array.isArray(rows) && rows.length ? rows[0] : null;
+  if (!p || p.active === false || !(p.price_cents > 0)) return null;
+  return p;
+}
+
+function paypalReady(env) {
+  return env.PAYPAL_CLIENT_ID && env.PAYPAL_SECRET &&
+         env.SUPABASE_URL && env.SUPABASE_KEY && env.PURCHASE_SECRET;
+}
+
+/* ── POST /paypal/create  {slug} -> {id} ────────────────────────────────────
+   Creates the order. The buyer approves it in PayPal's popup, over our page. */
+async function paypalCreate(request, env) {
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
+  if (request.method !== "POST") return jsonOut({ error: "Method not allowed" }, 405);
+  if (!paypalReady(env)) {
+    console.error("[paypal] not configured");
+    return jsonOut({ error: "PayPal is temporarily unavailable." }, 503);
+  }
+
+  let slug;
+  try {
+    const body = await request.json();
+    slug = String((body && body.slug) || "").trim();
+  } catch (e) { return jsonOut({ error: "Bad request" }, 400); }
+  if (!/^[a-z0-9-]{1,80}$/.test(slug)) return jsonOut({ error: "Bad request" }, 400);
+
+  try {
+    const product = await paidProduct(env, slug);
+    if (!product) return jsonOut({ error: "No such product" }, 404);
+
+    const token = await paypalToken(env);
+    const r = await fetch(paypalBase(env) + "/v2/checkout/orders", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        intent: "CAPTURE",
+        purchase_units: [{
+          /* 🚨 THE SLUG RIDES ALONG, same reason as the Stripe metadata: the
+             capture below must know what was bought without trusting the
+             browser to tell it a second time. */
+          custom_id: slug,
+          description: (product.title || slug).slice(0, 127),
+          amount: {
+            currency_code: "USD",
+            /* PayPal wants a decimal string, not cents. */
+            value: (product.price_cents / 100).toFixed(2),
+          },
+        }],
+        application_context: {
+          brand_name: "NexStudents",
+          shipping_preference: "NO_SHIPPING",
+          user_action: "PAY_NOW",
+        },
+      }),
+    });
+    const d = await r.json();
+    if (!r.ok || !d.id) throw new Error("paypal create " + r.status);
+    return jsonOut({ id: d.id });
+  } catch (e) {
+    console.error("[paypal] " + e.message);
+    return jsonOut({ error: "PayPal is temporarily unavailable." }, 503);
+  }
+}
+
+/* ── POST /paypal/capture  {orderID} -> {ok, token} ─────────────────────────
+   🚨 THE AMOUNT IS RE-READ FROM PAYPAL'S OWN REPLY, NOT FROM THE BROWSER, and
+   the slug comes from custom_id, which only we ever set. The browser hands us
+   an order id and nothing else that is trusted. */
+async function paypalCapture(request, env) {
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
+  if (request.method !== "POST") return jsonOut({ error: "Method not allowed" }, 405);
+  if (!paypalReady(env)) return jsonOut({ error: "PayPal is temporarily unavailable." }, 503);
+
+  let orderID;
+  try {
+    const body = await request.json();
+    orderID = String((body && body.orderID) || "").trim();
+  } catch (e) { return jsonOut({ error: "Bad request" }, 400); }
+  if (!/^[A-Z0-9]{5,40}$/i.test(orderID)) return jsonOut({ error: "Bad request" }, 400);
+
+  let cap;
+  try {
+    const token = await paypalToken(env);
+    const r = await fetch(paypalBase(env) + "/v2/checkout/orders/" + orderID + "/capture", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    });
+    cap = await r.json();
+    /* ⚠️ 422 with ORDER_ALREADY_CAPTURED is a DOUBLE CLICK, not a failure. The
+       purchase is real and record_purchase is idempotent, so fall through and
+       let the lookup below find it rather than telling a paying customer no. */
+    if (!r.ok && !(cap && JSON.stringify(cap).indexOf("ORDER_ALREADY_CAPTURED") >= 0)) {
+      throw new Error("paypal capture " + r.status);
+    }
+  } catch (e) {
+    console.error("[paypal] " + e.message);
+    return jsonOut({ error: "We could not complete that payment." }, 502);
+  }
+
+  if (cap.status && cap.status !== "COMPLETED") {
+    return jsonOut({ error: "Payment not completed." }, 402);
+  }
+
+  const unit  = (cap.purchase_units && cap.purchase_units[0]) || {};
+  const capt  = (unit.payments && unit.payments.captures && unit.payments.captures[0]) || {};
+  const slug  = String(unit.custom_id || capt.custom_id || "");
+  const email = String((cap.payer && cap.payer.email_address) || "");
+  const cents = Math.round(Number((capt.amount && capt.amount.value) || 0) * 100);
+
+  if (!/^[a-z0-9-]{1,80}$/.test(slug) || !email) {
+    console.error("[paypal] captured but missing slug or email on " + orderID);
+    return jsonOut({ error: "Payment taken but we could not file it. Email hello@nexstudents.org." }, 500);
+  }
+
+  try {
+    const r = await fetch(env.SUPABASE_URL + "/rest/v1/rpc/record_purchase", {
+      method: "POST",
+      headers: {
+        apikey: env.SUPABASE_KEY,
+        Authorization: "Bearer " + env.SUPABASE_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        p_secret: env.PURCHASE_SECRET,
+        p_slug: slug,
+        p_email: email,
+        /* 🚨 PREFIXED so a PayPal id can never collide with a Stripe session id
+           in the same unique column, and so the ledger says which processor
+           took the money without needing a second field. */
+        p_session: "paypal_" + (capt.id || orderID),
+        p_amount: cents,
+      }),
+    });
+    if (!r.ok) throw new Error("rpc " + r.status + " " + (await r.text()).slice(0, 200));
+    const token = await r.json();
+    /* The token IS the download. Handing it straight back means PayPal buyers
+       never wait on a webhook the way card buyers briefly do. */
+    return jsonOut({ ok: true, token: token });
+  } catch (e) {
+    /* 🚨 THE MONEY IS TAKEN. Never imply otherwise. */
+    console.error("[paypal] captured but rpc failed: " + e.message);
+    return jsonOut({
+      ok: true, token: null,
+      error: "Your payment went through. The download is still being prepared - " +
+             "sign in at nexstudents.org/account/ with your PayPal email.",
+    }, 200);
+  }
 }
