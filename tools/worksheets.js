@@ -304,6 +304,45 @@ const SHEETS = [
 },
 
 
+/* ═══════════════════ 3b. ANIMAL CELL (paid, preview only) ════════════════
+   kind "paid-sheet" - the product is a two page PDF that is NOT in this repo.
+   See paidSheetHtml() in build-worksheets.js for why that kind had to exist:
+   kind "pdf" demands the file be present and the paid guard forbids it.
+
+   🚨 THE SHEET IS GENERATED, BY tools/build-cell.js, FROM ONE ARRAY OF 16
+   PARTS. Both pages - the worksheet and the answer key - are drawn from that
+   same array, sharing every anchor and every slot, so a number cannot point
+   at one organelle on page 1 and a different one on page 2. That is not a
+   hypothetical: the ChatGPT-made PDF this replaces shipped that exact defect
+   twice on 2026-09-09, once with 15 boxes against a 16 item word list, and
+   once with the nucleolus, nucleoplasm and nuclear envelope rotated.
+
+   Placed at grade 7 to match the course: science-units.js has cell structure
+   at Unit 2 "Inside the Cell", section 2-2, Merrill Life Science page 34. */
+{
+  slug: "animal-cell", subject: "Science", grade: 7,
+  kind: "paid-sheet", tagline: "Life Science",
+  title: "Animal Cell: Label the Parts",
+  dek: "Sixteen numbered parts on one diagram, a word list to match them against, and a full answer key on the second page.",
+  blurb: "Label 16 parts of an animal cell. Answer key included.",
+  contains: [
+    "A large, full colour animal cell diagram, sixteen parts numbered",
+    "A word list of all sixteen parts to match the numbers against",
+    "A complete answer key, labelled on the diagram and listed underneath",
+    "Two pages, US Letter, drawn as vector so it prints sharp at any size",
+    "Name and date lines, ready to hand out",
+  ],
+  lockNote: "The sheet covers the sixteen parts a life science course names at this stage, from the cell membrane inwards to the nucleolus. Five of them, so you can judge the level:",
+  sample: [
+    "Nuclear envelope, nucleoplasm and nucleolus told apart, not lumped as &ldquo;the nucleus&rdquo;",
+    "Rough and smooth endoplasmic reticulum as two separate parts",
+    "Centrosome and centriole distinguished",
+    "Golgi apparatus and the secretory vesicles leaving it",
+    "Peroxisome, lysosome and mitochondrion",
+  ],
+  price: "$2", buy: null, art: false, thumb: true,
+},
+
 /* ═══════════════════ 4. SEMESTER 1 BUNDLE (paid, preview only) ═══════════
    A paid product page. The renderer emits ONLY the preview paragraphs - the
    rest of the reading, every question and every answer key stays out of the

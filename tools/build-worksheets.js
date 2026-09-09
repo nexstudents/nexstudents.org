@@ -174,6 +174,100 @@ function buyBlock(s) {
       <p class="buynote">Not on sale yet. This page is the finished layout; checkout is wired once the units are complete.</p>`;
 }
 
+/* kind "paid-sheet" — a PAID SINGLE SHEET whose product is a finished PDF.
+   ⭐ THE KIND THAT `pdf` AND `bundle` COULD NOT COVER BETWEEN THEM.
+   `pdf` requires the file to sit in the folder; the paid guard forbids exactly
+   that. So a priced single sheet had no renderer at all until this one. Here
+   the PDF is NEVER in the repo: it lives in R2 behind the redeem_download
+   worker, and this page only advertises it.
+
+   🚨 WHAT MAY GO ON THIS PAGE. The card art and nothing else pictorial. The
+   art is a marketing mockup - too small and too styled to work from - so it
+   sells the sheet without being the sheet. Never embed the printable itself,
+   not even downscaled: a determined buyer would just print the preview.
+   `sample` lists a handful of the parts, never all of them, because the full
+   list IS half the worksheet. */
+function paidSheetHtml(s) {
+  const subjectSlug = subjSlug(s.subject);
+  const art = `/worksheets/${subjectSlug}/${s.slug}/thumb.jpg`;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+${sheetHead(s)}
+${modeBoot()}
+${faviconTags()}
+<title>${s.title} | NexStudents</title>
+<meta name="description" content="${s.blurb}">
+<link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
+<link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
+<style>
+  .shot { margin: 26px 0 6px; text-align: center; }
+  .shot img { width: 100%; max-width: 420px; height: auto; border-radius: 8px;
+              border: 1px solid var(--line); background: #fff; }
+  .shot figcaption { font-size: 12.5px; color: var(--dim); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+${navMarkup("w")}
+
+<div class="bar">
+  ${backLink(s)}
+</div>
+
+<div class="sheet">
+
+  <div class="head">
+    <p class="eyebrow">${s.subject} &middot; ${gradeWord(s.grade)}${s.tagline ? " &middot; " + s.tagline : ""}</p>
+    <h1>${s.title}</h1>
+    <p class="dek">${s.dek}</p>
+  </div>
+
+  <div class="buybar">
+    <div class="buyleft">
+      <span class="price">${s.price}</span>
+      <span class="pricenote">One download &middot; yours to keep &middot; print as often as you like</span>
+    </div>
+    <div class="buyright">${buyBlock(s)}</div>
+  </div>
+
+  <figure class="shot">
+    <img src="${art}" alt="${s.title}" width="420" height="420">
+    <figcaption>Two pages, US Letter. The worksheet, then its answer key.</figcaption>
+  </figure>
+
+  <h2>What You Get</h2>
+  <ul class="gets">
+    ${s.contains.map((c) => "<li>" + c + "</li>").join("\n    ")}
+  </ul>
+
+  <div class="locked">
+    <p class="lockhead">What is on the sheet</p>
+    <p>${s.lockNote}</p>
+    <ul>
+      ${s.sample.map((x) => "<li>" + x + "</li>").join("\n      ")}
+    </ul>
+  </div>
+
+  <div class="buybar bottom">
+    <div class="buyleft">
+      <span class="price">${s.price}</span>
+      <span class="pricenote">Worksheet &middot; answer key &middot; instant download</span>
+    </div>
+    <div class="buyright">${buyBlock(s)}</div>
+  </div>
+
+</div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+
+${navScript()}
+</body>
+</html>
+`;
+}
+
 /* PAID PAGE. Only the preview paragraphs are emitted. The remaining reading,
    every question and every answer key are simply not in this file. Hiding
    them with CSS would ship them to anyone who opens the page source. */
@@ -968,6 +1062,30 @@ for (const s of SHEETS) {
     process.exit(1);
   }
 
+  /* GUARD: a paid single sheet sells a PDF that must not be in the repo at
+     all - not under any name. The guard above only catches <slug>.pdf, which
+     is the name the free build writes; a hand-copied "animal-cell-final.pdf"
+     would sail past it and Pages would hand out the product for nothing. */
+  if (s.kind === "paid-sheet") {
+    if (!isPaid(s)) {
+      console.error("FAIL: " + s.slug + " is kind:paid-sheet but priced " +
+                    (s.price || "$0") + ". Use kind:pdf for a free sheet.");
+      process.exit(1);
+    }
+    const pdfs = fs.existsSync(dir)
+      ? fs.readdirSync(dir).filter((f) => f.toLowerCase().endsWith(".pdf")) : [];
+    if (pdfs.length) {
+      console.error("FAIL: " + s.slug + " is paid but the repo holds " +
+                    pdfs.join(", ") + ". Pages would serve the product free.");
+      process.exit(1);
+    }
+    if (!fs.existsSync(path.join(dir, "thumb.jpg"))) {
+      console.error("FAIL: " + s.slug + " is kind:paid-sheet but thumb.jpg is missing - " +
+                    "it is the only picture the page has to sell with.");
+      process.exit(1);
+    }
+  }
+
   /* GUARD: an image sheet is nothing without its image. The page would build
      clean and show a broken picture, which is the kind of failure nobody
      notices until a parent hits Print. */
@@ -987,6 +1105,7 @@ for (const s of SHEETS) {
 
   const html = s.kind === "handwriting" ? handwritingHtml(s)
              : s.kind === "image"      ? imageHtml(s)
+             : s.kind === "paid-sheet" ? paidSheetHtml(s)
              : s.kind === "pdf"        ? pdfHtml(s)
              : s.kind === "blank"      ? blankHtml(s)
              : s.kind === "split"      ? splitHtml(s)
