@@ -2674,11 +2674,38 @@ const SOON_PAGES = [
     e.preventDefault();
     var btn = e.target.querySelector("button");
     btn.disabled = true; $("coMsg").textContent = "Checking out\u2026";
-    NSAccount.checkoutFree($("coEmail").value).then(function(){
+    /* 🚨 SNAPSHOT BEFORE CHECKING OUT. checkoutFree() calls cartClear(), which
+       drops the slugs AND the display hints, so a receipt built afterwards has
+       nothing left to name or to link to. */
+    var bought = NSAccount.cart().map(function(slug){
+      return { slug: slug, href: NSAccount.cartHref(slug) };
+    });
+
+    NSAccount.checkoutFree($("coEmail").value).then(function(rows){
+      /* 🚨 NEVER SAY "SENT TO". Paul, 2026-09-09: "i didnt get it in my email
+         that i can see." He was right, and the old message was simply false:
+         NOTHING on this site sends email. checkout_free() writes the row and
+         mints a token, and the chain stops there. Telling a customer to go and
+         check an inbox that will never receive anything is worse than saying
+         nothing at all.
+         ⚠️ When a sender is wired, email is the RECEIPT, never the delivery.
+         The sheet must still appear here, on screen, so a message eaten by a
+         spam filter never costs somebody their file. */
+      var titles = {};
+      (rows || []).forEach(function(r){ if(r && r.product) titles[r.product] = r.product; });
+      var ref = (rows && rows[0] && rows[0].id) ? String(rows[0].id).slice(0, 8) : "";
+      var lines = bought.map(function(b){
+        var name = b.slug.replace(/-/g, " ");
+        return "<li style='margin-bottom:6px'>" +
+          (b.href ? "<a href='" + b.href + "'>" + name + "</a>" : name) + "</li>";
+      }).join("");
       $("cartFull").innerHTML =
-        "<div class='card'><h2 style='margin-top:0'>Done.</h2>" +
-        "<p class='dim'>Sent to <b>" + $("coEmail").value + "</b>. " +
-        "Make an account with that address any time and it will all be there.</p>" +
+        "<div class='card'><h2 style='margin-top:0'>Thank you. That is yours.</h2>" +
+        (ref ? "<p class='dim'>Order " + ref + "</p>" : "") +
+        "<p>Open a sheet and use Print or Download on its page:</p>" +
+        "<ul>" + lines + "</ul>" +
+        "<p class='dim'>Saved against <b>" + $("coEmail").value + "</b>. Make an " +
+        "account with that address and everything you have taken will be listed there.</p>" +
         "<a class='btn' href='/account/'>Make an account</a> " +
         "<a class='btn ghost' href='/worksheets/'>Keep browsing</a></div>";
     }).catch(function(err){

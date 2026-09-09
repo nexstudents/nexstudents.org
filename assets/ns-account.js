@@ -28,6 +28,12 @@
   var SESSION_KEY = "ns:session";
   var CART_KEY = "ns:cart";
   var THUMB_KEY = "ns:cartthumbs";
+  /* ⚠️ A SECOND DISPLAY HINT, SAME RULES AS THE THUMBNAIL. The confirmation
+     after checkout has to link each sheet somewhere, and `products` holds only
+     slug, title and price - it has no idea where a sheet lives on the site.
+     Storing the href when it goes into the cart is the cheapest way to know.
+     Cosmetic, so a tampered value is a wrong link and nothing worse. */
+  var HREF_KEY = "ns:carthrefs";
 
   /* ── storage helpers ──────────────────────────────────────────────────────
      ⚠️ Every localStorage call is wrapped. Private mode and "block site data"
@@ -146,6 +152,14 @@
     write(THUMB_KEY, m);
   }
 
+  function cartHref(slug) { return read(HREF_KEY, {})[slug] || ""; }
+  function rememberHref(slug, url) {
+    if (!url) return;
+    var m = read(HREF_KEY, {});
+    m[slug] = url;
+    write(HREF_KEY, m);
+  }
+
   /* `added` tells the drawer whether to OPEN. A removal repaints it where it
      already is, and cartClear() at checkout must not pop it back up over the
      confirmation. Adding is the only event a reader needs confirmed. */
@@ -159,6 +173,7 @@
     var c = cart();
     if (c.indexOf(slug) < 0) { c.push(slug); write(CART_KEY, c); }
     if (meta && meta.thumb) rememberThumb(slug, meta.thumb);
+    if (meta && meta.href) rememberHref(slug, meta.href);
     fire(c, true);
     return c;
   }
@@ -168,9 +183,14 @@
     fire(c, false);
     return c;
   }
+  /* 🚨 THE CONFIRMATION NEEDS THE HINTS AFTER THE CART IS GONE. cartClear runs
+     inside checkoutFree, before the page can draw a receipt, so anything the
+     confirmation wants must be READ FIRST and held by the caller. See the cart
+     page, which snapshots titles and links before checking out. */
   function cartClear() {
     drop(CART_KEY);
     drop(THUMB_KEY);
+    drop(HREF_KEY);
     fire([], false);
   }
 
@@ -232,7 +252,7 @@
     signIn: signIn, signOut: signOut, getUser: getUser,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
-    cartThumb: cartThumb,
+    cartThumb: cartThumb, cartHref: cartHref,
     priceList: priceList, checkoutFree: checkoutFree, myPurchases: myPurchases
   };
 })();

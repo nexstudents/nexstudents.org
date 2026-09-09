@@ -147,18 +147,29 @@ const ICON_CART = '<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="
    removing them to force people through a checkout is not what was asked for.
    This is a third door, for someone who wants the sheet kept on their account.
 
-   🚨 PAID ITEMS GET NOTHING HERE. checkout_free() re-reads the price and
-   refuses anything non-zero, so an Add to Cart on the bundle would walk a
-   customer into a dead end. The bundle keeps its honest "Coming Soon" until
-   Stripe is wired -- see buyBlock below. */
-function cartBtn(s) {
-  if (isPaid(s)) return "";
+   🚨 PAID ITEMS COME THROUGH HERE NOW TOO. Paul, 2026-09-09: "it should just
+   have an add to the cart button where they purchase in the cart." That is
+   what migration-004 always said - "even if a free item is purchased it goes
+   to the cart" - and the paid path was the odd one out, not the rule.
+   ⚠️ The old comment here said paid items get nothing because checkout_free()
+   refuses a priced slug. Still true, and no longer the whole story: the CART
+   decides which checkout to run, free or Stripe. See /cart/ in build-pages.js.
+
+   `variant` is "ghost" for a free sheet, where Add to Cart sits beside Print
+   and Download as a third door, and "" (the solid buy colour) for a paid one,
+   where it is the ONLY door and must read as the primary action. */
+function cartBtn(s, variant) {
   /* The thumbnail is a display hint only; the title and the price always come
      back from the products table. A sheet with no thumb passes nothing and the
      drawer draws a plain tile. */
   const thumb = s.thumb ? `/worksheets/${subjSlug(s.subject)}/${s.slug}/thumb.jpg` : "";
-  const meta = thumb ? `,{thumb:'${thumb}'}` : "";
-  return `<button class="btn ghost" type="button" data-cart="${s.slug}"
+  /* ⚠️ THE CONFIRMATION CANNOT WORK THIS OUT ON ITS OWN. `products` holds slug,
+     title and price and nothing about where a sheet lives, so the receipt after
+     checkout would have nothing to link. The href rides along from here. */
+  const href = `/worksheets/${subjSlug(s.subject)}/${s.slug}/`;
+  const meta = `,{thumb:'${thumb}',href:'${href}'}`;
+  const cls = variant === undefined ? "btn ghost" : ("btn " + variant).trim();
+  return `<button class="${cls}" type="button" data-cart="${s.slug}"
       title="Save this sheet to your cart" aria-label="Add this sheet to your cart"
       onclick="window.NSAccount&&NSAccount.cartAdd('${s.slug}'${meta})">
       ${ICON_CART}<span class="lbl">Add to Cart</span>
