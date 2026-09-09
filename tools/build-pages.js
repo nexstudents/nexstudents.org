@@ -431,7 +431,11 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
   unit: w.unit || "Printable &middot; answer key included",
   title: w.title, blurb: w.blurb, contains: w.contains,
   thumb: w.thumb ? "/worksheets/" + SUBJ_TOKEN[w.subject] + "/" + w.slug + "/thumb.jpg" : null,
-  meta: "Print or Download", price: w.price,
+  /* A PAID card must not say "Print or Download" beside its price - that is a
+     promise the page does not keep, because nothing downloads until it is
+     bought. This hit the Semester 1 bundle too, from the day it went up. */
+  meta: (w.price || "$0") === "$0" ? "Print or Download" : "Buy to Download",
+  price: w.price,
 }));
 
 /* The core subjects, in the order they appear everywhere on the site.
