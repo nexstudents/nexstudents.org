@@ -349,6 +349,36 @@ const SHEETS = [
    Two entries were tried first and were wrong: the English shelf is not filtered
    by grade, so the same sheet appeared on it twice with nothing to tell the
    two cards apart. */
+/* ══════════ COMPLETE SUBJECTS AND PREDICATES (split) ══════════
+   kind "split" - the paper half of the lesson at
+   /lessons/english/complete-subjects-and-predicates/.
+   🚨 IT CARRIES NO SENTENCES OF ITS OWN. `lesson` names the entry in
+   split-lessons.js and tools/split-sheet.js reads Part A and Part B straight
+   out of it, so the sheet cannot drift from the page it belongs to.
+   🚨 BLACK AND WHITE ONLY. The lesson shades the halves green and orange; the
+   sheet uses a drawn line and a printed rule instead, because Paul's printer
+   is black and white and a colour that prints grey is a question with no
+   answer. Do not "improve" this sheet by adding the lesson's colours. */
+{
+  slug: "complete-subjects-and-predicates", subject: "English", grade: 7, grades: [7],
+  kind: "split", lesson: "complete-subjects-and-predicates",
+  title: "Complete Subjects and Predicates",
+  dek: "Twelve sentences on paper. Place the line, then name the half.",
+  blurb: "The paper half of the lesson. Draw the dividing line, then say which half is which.",
+  unit: "Printable &middot; answer key included",
+  contains: [
+    "Seven sentences where you draw the dividing line yourself",
+    "Five more with one half already marked, and you name it",
+    "An answer key for both parts at the foot of the sheet",
+    "Black and white, one page, and a PDF to print again",
+  ],
+  price: "$0", buy: null, art: false, thumb: true,
+  eyebrow: "The Sentence &middot; Unit 1 &middot; Lesson 2",
+  noteA: "Draw one straight line down between the complete subject and the complete predicate.",
+  noteB: "One half of each sentence is underlined. Write whether it is the complete subject or the complete predicate.",
+  signoff: "Say the sentence out loud. Where you pause is usually where the line goes.",
+},
+
 {
   slug: "weekly-spelling-test", subject: "English", grade: 3, grades: [3, 7], kind: "blank",
   title: "Weekly Spelling Test",

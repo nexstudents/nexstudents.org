@@ -443,3 +443,38 @@ body.print-all .wk+.wk{page-break-before:always}
 .useline a{color:var(--dim);text-underline-offset:2px}
 .useline a:hover{color:var(--fg)}
 @media print{ .useline{display:none!important} }
+
+/* ── SPLIT SHEET: place the line, then name the half ───────────────────────
+   🚨 NO COLOUR CARRIES MEANING HERE. Paul's printer is black and white, so the
+   lesson's green and orange become a wide gap he draws into and a printed rule
+   under the half being asked about. A tinted half would print as grey on grey
+   and the question would be unanswerable.
+   ⚠️ Backgrounds are dropped when printing; borders are not. Everything that
+   has to survive the printer is a border or a text rule. */
+.inst{font-size:.92rem;margin:0 0 14px}
+.splits,.sorts{list-style:none;margin:0 0 26px;padding:0}
+.splits > li,.sorts > li{display:flex;gap:12px;align-items:baseline;padding:14px 0 0}
+.splits > li > b,.sorts > li > b{font-weight:800;min-width:26px;text-align:right}
+
+/* 🚨 THE GAP IS THE ANSWER SPACE. Every gap between two words is equally wide,
+   so the spacing gives nothing away - the same reason every gap on the page is
+   a button. Wide enough to take a pencil stroke without touching a letter. */
+.splits .spl{margin:0;font-size:1.05rem;line-height:2.4}
+.splits .spl span{display:inline-block;margin-right:15px}
+
+.sorts .sortrow{flex:1}
+.sorts .sortsent{margin:0 0 6px;font-size:1.05rem;line-height:1.9}
+/* The marked half: a rule under the words, drawn clear of the descenders. */
+.sorts .sortsent .mk{text-decoration:none;border-bottom:2px solid var(--line-ink);
+  padding-bottom:2px}
+.sorts .sortsent .pl{}
+.sorts .sortans{margin:0;font-size:.92rem;display:flex;gap:8px;align-items:baseline}
+.sorts .sortans u{text-decoration:none;flex:1;max-width:250px;
+  border-bottom:1px solid var(--line-ink);min-height:1.5em}
+
+/* 🚨 KEEP page-break-inside OFF THE LIST ITSELF. On a block most of a page tall
+   the browser obeys by moving the WHOLE thing to page two and printing a blank
+   page one. Small children only. */
+@media print{
+  .splits > li,.sorts > li{break-inside:avoid;page-break-inside:avoid}
+}

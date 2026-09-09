@@ -266,6 +266,65 @@ ${navScript()}
    The numbered lines run DOWN each column, not across the row, because a
    student reads 1-2-3-4-5 down the left before crossing to 6. The CSS grid
    fills across, so the markup is interleaved 1,6,2,7 to come out right. */
+/* 🚨 THE SPLIT SHEET IS THE PAPER HALF OF A SPLIT LESSON, and its sentences are
+   READ FROM THE LESSON, never retyped here. tools/split-sheet.js does that. */
+function splitHtml(s) {
+  const { splitSheetBody } = require("./split-sheet.js");
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+${sheetHead(s)}
+${modeBoot()}
+${faviconTags()}
+<title>${s.title} | NexStudents</title>
+<meta name="description" content="${s.blurb}">
+<link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
+<link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
+</head>
+<body>
+
+${navMarkup("w")}
+
+<div class="bar">
+  ${backLink(s)}
+  <div class="acts">
+    <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
+      ${ICON_PRINT}<span class="lbl">Print</span>
+    </button>
+    <a class="btn ghost" href="${s.slug}.pdf" download title="Save the PDF so you can print it again without coming back" aria-label="Download the PDF">
+      ${ICON_DL}<span class="lbl">Download</span>
+    </a>
+    ${cartBtn(s)}
+  </div>
+</div>
+
+<div class="sheet">
+
+  <div class="head">
+    <p class="eyebrow">${s.subject} &middot; ${s.eyebrow}</p>
+    <h1>${s.title}</h1>
+    <p class="dek">${s.dek}</p>
+  </div>
+
+  <div class="namebar">
+    <span>Name <u></u></span>
+    <span>Date <u></u></span>
+  </div>
+${splitSheetBody(s)}
+  <p class="signoff"><em>${s.signoff}</em>
+    <small>Copyright &copy; NexEdge Studios</small></p>
+
+</div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+
+${navScript()}
+</body>
+</html>
+`;
+}
+
 function blankHtml(s) {
   const subjectSlug = subjSlug(s.subject);
   const half = Math.ceil(s.count / 2);
@@ -930,6 +989,7 @@ for (const s of SHEETS) {
              : s.kind === "image"      ? imageHtml(s)
              : s.kind === "pdf"        ? pdfHtml(s)
              : s.kind === "blank"      ? blankHtml(s)
+             : s.kind === "split"      ? splitHtml(s)
              : s.kind === "flashcards" ? flashHtml(s)
              : isPaid(s)               ? bundleHtml(s)
              :                           sheetHtml(s);

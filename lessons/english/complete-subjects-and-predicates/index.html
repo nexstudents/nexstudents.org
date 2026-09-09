@@ -213,6 +213,9 @@ h1{margin:0 0 6px}
 .scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:14px 16px;margin:18px 0 0}
 .scorebar b{font-size:1.2rem}
+.sheetcta{margin:26px 0 0}
+.sheetnote{color:var(--dim);font-size:.95rem;line-height:1.6;margin:0 0 12px;max-width:62ch}
+.sheetcta .tab.act{text-align:center;text-decoration:none;line-height:1.3}
 
 /* ── Teacher Notes ──────────────────────────────────────────────────────
    The grade and the reset live here, behind the disclosure. A reset the student
@@ -1466,6 +1469,24 @@ body.player-hidden .scrub{margin:0}
   <div id="kinds"></div>
 
   <div class="scorebar" id="scorebar"></div>
+
+  <!-- 🚨 THE SHEET IS LINKED FROM THE LESSON THAT OWNS IT. Paul, 2026-09-08:
+       "link the worksheet to the bottom of this lesson like it says to download
+       and prractice to print out." The lesson's own `todo` already tells him to
+       print it, and an instruction with nothing to press is not an instruction.
+       ⚠️ The worksheet href below is filled by build-split.js, which FAILS the
+       build if the folder has no index.html - the same rule the back links
+       follow. Do NOT name the slot token in this comment: the generator fills
+       slots with a plain .replace, which takes the FIRST match, so a token
+       mentioned in prose above the markup gets filled instead of the markup. -->
+  <div class="sheetcta">
+    <p class="sheetnote">Now do it on paper. Writing the sentences out yourself is
+      where this really sticks.</p>
+    <div class="actions">
+      <a class="tab act" href="/worksheets/english/complete-subjects-and-predicates/">Open The Worksheet</a>
+      <a class="tab act" href="/worksheets/english/complete-subjects-and-predicates/complete-subjects-and-predicates.pdf" download>Download The PDF</a>
+    </div>
+  </div>
 </div>
 
 <div class="player" id="player">

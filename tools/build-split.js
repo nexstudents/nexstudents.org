@@ -104,6 +104,19 @@ function fillTodo(L) {
 
 /* ── rendering ──────────────────────────────────────────────────────────── */
 
+/* The sheet lives under /worksheets/<subject>/<slug>/ and is built by
+   build-worksheets.js from the SAME lesson data. Run that generator first. */
+function sheetHref(L) {
+  const subject = (L.shelf && L.shelf.subject ? L.shelf.subject : 'English').toLowerCase();
+  const href = '/worksheets/' + subject + '/' + L.slug + '/';
+  const disk = path.join(ROOT, href.slice(1), 'index.html');
+  if (!fs.existsSync(disk)) {
+    fail(L.slug + ': the lesson links a worksheet that is not built - ' + href +
+         '. Run build-worksheets.js before this generator.');
+  }
+  return href;
+}
+
 function halves(sentence, split) {
   const w = sentence.split(' ');
   return { s: w.slice(0, split).join(' '), p: w.slice(split).join(' ') };
@@ -285,6 +298,11 @@ for (const raw of SPLIT) {
     .replace('__STORY__', partsHtml(L.parts))
     .replace('__SHOWCASE__', showcaseHtml(L.showcase))
     .replace('__EXAMPLE__', exampleHtml(L.example))
+    /* 🚨 THE WORKSHEET LINK IS CHECKED, NOT ASSUMED. A lesson that tells the
+       student to print a sheet and then links nowhere is worse than one that
+       says nothing. Same rule as the back links: the target must exist. */
+    .replace('__SHEETHREF__', sheetHref(L))
+    .replace('__SHEETPDF__', sheetHref(L) + L.slug + '.pdf')
     /* 🚨 A FULL SENTENCE, NOT A COUNT WITH A FULL STOP AFTER IT. Paul,
        2026-09-08: "there are seven sentences". The note opened on a bare
        "seven sentences." which reads as a label, not as someone telling the
@@ -320,7 +338,7 @@ for (const raw of SPLIT) {
     .replace('__NAVSCRIPT__', navScript);
 
   for (const slot of ['__TITLE__', '__DEK__', '__EYEBROW__', '__ID__', '__GROUND__', '__STORY__',
-    '__SHOWCASE__', '__EXAMPLE__', '__NOTE_A__', '__NOTE_B__', '__PARTS__', '__PRACTICE__',
+    '__SHOWCASE__', '__EXAMPLE__', '__SHEETHREF__', '__SHEETPDF__', '__NOTE_A__', '__NOTE_B__', '__PARTS__', '__PRACTICE__',
     '__SORT__', '__VISUALS__', '__THEMES__', '__PLAYER_CSS__', '__PANEL_CSS__', '__PANEL_MARKUP__', '__FIELD_CSS__', '__PLAYER_MARKUP__',
     '__PLAYER_JS__', '__CANONICAL__', '__MODEBOOT__', '__FAVICON__', '__NAV__', '__NAVSCRIPT__',
     '__BACKHREF__', '__BACKLABEL__']) {
