@@ -2,17 +2,328 @@
 (function(){
 "use strict";
 
-/* ═══════════ THIS LESSON'S OWN DATA — everything above the engine ═══════════
-   🚨 KEEP EVERY PER-LESSON `var` IN THIS ONE BLOCK, and keep the block here at
-   the top. build-lessons.js rewrites these lines by name, and the build then
-   lifts the ENGINE BELOW into a shared /assets/ file that every lesson of the
-   same shape links instead of inlining. That only works while the changing part
-   is one contiguous run at the top: a `var` left down in the engine makes the
-   engine differ per lesson, and the page goes back to carrying its own copy.
-   ⚠️ `voice-player.js` slices this template between section markers. If you move
-   a marker, fix it there too — it fails the build rather than slicing wrong. */
 
+document.getElementById("turnnote").textContent += SPEC.allowRemainder
+  ? " Some of these leave a remainder. Write what's left over in the box up top."
+  : " None of these have a remainder.";
 
+/* ── colours ───────────────────────────────────────────────────────────────
+   The same five palettes the history lessons use, spliced in from
+   lesson-template.html at build time so there is one source of truth, and
+   stored under the same ns:theme key so a choice made in one lesson is
+   already made in the other.
+   ------------------------------------------------------------------------ */
+function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
+function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
+function drop(k){ try { localStorage.removeItem("ns:" + k); } catch (e){} }
+
+var THEMES = {
+  forest: { name:"Forest",
+    light:{ ground:"#E7EDE4",surface:"#F2F7EF",s2:"#D8E2D2",ink:"#152018",inkSoft:"#48594D",inkFaint:"#7B8C7F",rule:"#C2CFBD",
+            accent:"#25664A",accentInk:"#174630",accentSoft:"rgba(37,102,74,.12)",onAccent:"#F2F7EF",
+            ctlBg:"#1F5A41",ctlInk:"#EDF4EA",ctlBorder:"#164630",tickNow:"#14432E",tickDone:"rgba(37,102,74,.30)",
+            brass:"#7E6A16",band:"rgba(158,138,40,.42)",word:"rgba(158,138,40,.74)" },
+    dark:{  ground:"#0E1A13",surface:"#14251A",s2:"#1C3123",ink:"#E2EBE2",inkSoft:"#93A896",inkFaint:"#6B8071",rule:"#27402F",
+            accent:"#66C293",accentInk:"#93D9B2",accentSoft:"rgba(102,194,147,.16)",onAccent:"#0B160F",
+            ctlBg:"#17301F",ctlInk:"#DCEADF",ctlBorder:"#345A41",tickNow:"#3F9B69",tickDone:"rgba(102,194,147,.28)",
+            brass:"#D8B355",band:"rgba(216,179,85,.3)",word:"rgba(216,179,85,.62)" } },
+
+  ocean: { name:"Ocean",
+    light:{ ground:"#E4EBF0",surface:"#F1F6FA",s2:"#D3DFE8",ink:"#111C24",inkSoft:"#455663",inkFaint:"#788996",rule:"#BCCCD8",
+            accent:"#1F5E80",accentInk:"#154257",accentSoft:"rgba(31,94,128,.12)",onAccent:"#F1F6FA",
+            ctlBg:"#1B5170",ctlInk:"#E8F1F7",ctlBorder:"#123C53",tickNow:"#123D53",tickDone:"rgba(31,94,128,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.38)",word:"rgba(196,132,24,.68)" },
+    dark:{  ground:"#0B1620",surface:"#122130",s2:"#182C3D",ink:"#DEE9F1",inkSoft:"#8CA1B2",inkFaint:"#657A8B",rule:"#233A4C",
+            accent:"#59B4DC",accentInk:"#8CCFEC",accentSoft:"rgba(89,180,220,.16)",onAccent:"#08131B",
+            ctlBg:"#152B3C",ctlInk:"#D9E8F2",ctlBorder:"#2E5068",tickNow:"#3A8CB4",tickDone:"rgba(89,180,220,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.3)",word:"rgba(224,182,92,.62)" } },
+
+  ember: { name:"Ember",
+    light:{ ground:"#F0E9E3",surface:"#F9F4EF",s2:"#E3D8CD",ink:"#231A14",inkSoft:"#5B4C41",inkFaint:"#8E7E72",rule:"#D3C5B7",
+            accent:"#96441C",accentInk:"#6C3013",accentSoft:"rgba(150,68,28,.12)",onAccent:"#F9F4EF",
+            ctlBg:"#7A3A18",ctlInk:"#F7EDE5",ctlBorder:"#5C2B11",tickNow:"#5C2B11",tickDone:"rgba(150,68,28,.30)",
+            brass:"#6B5A11",band:"rgba(120,104,26,.38)",word:"rgba(120,104,26,.68)" },
+    dark:{  ground:"#1A120C",surface:"#241A12",s2:"#2F231A",ink:"#EDE2D8",inkSoft:"#AC998A",inkFaint:"#82705F",rule:"#3E2E22",
+            accent:"#E08A4E",accentInk:"#EEAB79",accentSoft:"rgba(224,138,78,.16)",onAccent:"#15100A",
+            ctlBg:"#2C2016",ctlInk:"#EFE3D8",ctlBorder:"#54402E",tickNow:"#B96C31",tickDone:"rgba(224,138,78,.28)",
+            brass:"#D6C169",band:"rgba(214,193,105,.28)",word:"rgba(214,193,105,.59)" } },
+
+  violet: { name:"Violet",
+    light:{ ground:"#E9E6EF",surface:"#F4F2F9",s2:"#DAD5E5",ink:"#1A1626",inkSoft:"#4F485F",inkFaint:"#827A93",rule:"#C6BFD6",
+            accent:"#553093",accentInk:"#3D216B",accentSoft:"rgba(85,48,147,.12)",onAccent:"#F4F2F9",
+            ctlBg:"#4A2A80",ctlInk:"#EFEAF7",ctlBorder:"#361D5F",tickNow:"#341C5D",tickDone:"rgba(85,48,147,.30)",
+            brass:"#7A6212",band:"rgba(150,122,26,.38)",word:"rgba(150,122,26,.68)" },
+    dark:{  ground:"#130F1D",surface:"#1C1729",s2:"#261E36",ink:"#E5E0EE",inkSoft:"#9E95B2",inkFaint:"#7A7090",rule:"#332944",
+            accent:"#A585E4",accentInk:"#C0A9EE",accentSoft:"rgba(165,133,228,.16)",onAccent:"#0E0A16",
+            ctlBg:"#241C33",ctlInk:"#E3DCF0",ctlBorder:"#443761",tickNow:"#7B5BBC",tickDone:"rgba(165,133,228,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.28)",word:"rgba(220,187,99,.59)" } },
+
+  graphite: { name:"Graphite",
+    light:{ ground:"#EAEAEC",surface:"#F5F5F7",s2:"#DBDBDF",ink:"#17181B",inkSoft:"#4C4E54",inkFaint:"#7F8189",rule:"#C6C7CC",
+            accent:"#3A4A63",accentInk:"#273448",accentSoft:"rgba(58,74,99,.12)",onAccent:"#F5F5F7",
+            ctlBg:"#333F55",ctlInk:"#EFF0F3",ctlBorder:"#242E3F",tickNow:"#242E3F",tickDone:"rgba(58,74,99,.30)",
+            brass:"#7A6318",band:"rgba(152,124,32,.38)",word:"rgba(152,124,32,.68)" },
+    dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
+            accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
+            ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
+            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } }
+};
+
+/* ns.css names its variables differently from the history template, so the
+   same palette is mapped onto the names this page actually uses. */
+var VAR_MAP = {
+  ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
+  inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
+  accent:"--a", accentSoft:"--accent-soft", onAccent:"--on-accent"
+};
+
+var themeKey = load("theme", "graphite");
+if (!THEMES[themeKey]) themeKey = "graphite";
+
+function currentMode(){
+  var t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark" || t === "light") return t;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(){
+  var set = THEMES[themeKey][currentMode()];
+  var root = document.documentElement;
+  for (var k in VAR_MAP){ if (set[k]) root.style.setProperty(VAR_MAP[k], set[k]); }
+  [].forEach.call(document.querySelectorAll(".sw"), function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
+  });
+}
+/* 🚨 MATHS DOES NOT BUILD SWATCHES. The player builds them. This page had its
+   own row as well, which is why ten colour dots appeared instead of five once
+   the shared player arrived. What maths still owns is the MAPPING - it uses
+   ns.css variable names - so it hands that to the player as a hook. */
+window.nsOnTheme = function(k){ themeKey = k; applyTheme(); };
+applyTheme();
+if (window.matchMedia){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq, "change") : mq.addListener.bind(mq))(applyTheme);
+}
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+document.body.style.background = "var(--bg)";
+
+/* ── where the problems come from ──────────────────────────────────────────
+   Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
+   doesn't help improve." The set is rolled from SPEC, seeded by the date, so
+   it holds still all day and changes tomorrow. New problems reseeds by hand.
+   ------------------------------------------------------------------------ */
+function rng(seed){                       /* mulberry32, small and repeatable */
+  var a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function seedFromString(s){
+  var h = 2166136261;
+  for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function today(){
+  var d = new Date();
+  return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+}
+
+/* One problem. Pick the ANSWER first, then multiply back to get the dividend.
+   That keeps the quotient filling the top row exactly, which is the only case
+   the bracket layout is built for - remainder or not. SPEC.allowRemainder
+   adds a nonzero leftover on top of that same dividend. */
+function makeProblem(rand){
+  for (var tries = 0; tries < 500; tries++){
+    var divisor = SPEC.divisors[Math.floor(rand() * SPEC.divisors.length)];
+    var lo = Math.pow(10, SPEC.digits - 1), hi = Math.pow(10, SPEC.digits) - 1;
+    var quotient = lo + Math.floor(rand() * (hi - lo + 1));
+    if (!SPEC.allowZeroDigit && String(quotient).indexOf("0") >= 0) continue;
+    var remainder = SPEC.allowRemainder ? 1 + Math.floor(rand() * (divisor - 1)) : 0;
+    var dividend = quotient * divisor + remainder;
+    if (String(dividend).length !== SPEC.digits) continue;   /* must fill the top row */
+    if (String(Math.floor(dividend / divisor)).length !== SPEC.digits) continue;
+    return { dividend: dividend, divisor: divisor };
+  }
+  return SPEC.allowRemainder ? { dividend: 587, divisor: 3 } : { dividend: 852, divisor: 4 };
+}
+function makeSet(seedStr){
+  var rand = rng(seedFromString(LESSON_ID + "|" + seedStr));
+  var out = [], seen = {};
+  var guard = 0;
+  while (out.length < SPEC.count && guard++ < 2000){
+    var p = makeProblem(rand);
+    var k = p.dividend + "/" + p.divisor;
+    if (seen[k]) continue;                  /* never the same one twice on a page */
+    seen[k] = true;
+    out.push(p);
+  }
+  return out;
+}
+
+/* ── the arithmetic, one entry per step ────────────────────────────────── */
+function solve(dividend, divisor){
+  var d = String(dividend).split("").map(Number), r = 0, steps = [];
+  for (var i = 0; i < d.length; i++){
+    var cur = r * 10 + d[i];
+    var q = Math.floor(cur / divisor);
+    var prod = q * divisor;
+    var diff = cur - prod;
+    steps.push({ i: i, cur: cur, q: q, prod: prod, diff: diff, bring: d[i + 1] });
+    r = diff;
+  }
+  return { digits: d, divisor: divisor, dividend: dividend, steps: steps,
+           quotient: steps.map(function(s){ return s.q; }).join(""), remainder: r };
+}
+
+/* Column 0 holds the divisor, so dividend digit i sits in column i + 1.
+   withRem adds two more columns at the end of the TOP row only - "R" then
+   the remainder digit - so the final answer reads "195 R 2" next to the
+   quotient once it is known. Off (the default) leaves the no-remainder
+   lesson's grid exactly as it was. */
+function build(host, S, withRem){
+  host.innerHTML = "";
+  var n = S.digits.length, remCols = withRem ? 2 : 0;
+  var cols = n + 2 + remCols, rows = 2 + S.steps.length * 2;
+  host.style.gridTemplateColumns = "repeat(" + cols + ", 2.1em)";
+  var cells = {};
+  for (var r = 0; r < rows; r++){
+    for (var c = 0; c < cols; c++){
+      var el = document.createElement("div");
+      el.className = "cell";
+      host.appendChild(el);
+      cells[r + ":" + c] = el;
+    }
+  }
+  var at = function(r, c){ return cells[r + ":" + c]; };
+  at(1, 0).textContent = S.divisor;
+  for (var i = 0; i < n; i++){
+    var cell = at(1, i + 1);
+    cell.textContent = S.digits[i];
+    cell.classList.add(i === 0 ? "brk" : "bar");
+  }
+  var remCell = null;
+  if (withRem){
+    at(0, n + 1).textContent = "R";
+    at(0, n + 1).classList.add("remlabel");
+    remCell = at(0, n + 2);
+  }
+  return { at: at, cols: cols, rows: rows, remCell: remCell };
+}
+
+/* Right-align a written number so its last digit lands under this step's digit. */
+function slots(g, row, value, step, opts){
+  var s = String(value), out = [];
+  var end = step.i + 1, start = end - s.length + 1;
+  for (var k = 0; k < s.length; k++){
+    var c = g.at(row, start + k);
+    out.push({ cell: c, want: Number(s[k]) });
+    if (opts && opts.under) c.classList.add("under");
+  }
+  if (opts && opts.minus && start - 1 >= 0) g.at(row, start - 1).textContent = "−";
+  return out;
+}
+
+/* ── what gets said, and what gets read on screen ─────────────────────── */
+function captions(S){
+  var out = [{ text: "We're dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
+                     " goes outside the bracket, and " + S.dividend + " sits underneath it." }];
+  S.steps.forEach(function(st, k){
+    out.push({ step: k, phase: "divide",
+      text: "Step " + (k + 1) + ". Divide. How many " + S.divisor + "s fit into " + st.cur +
+            "? " + st.q + ". Write that " + st.q + " on top." });
+    out.push({ step: k, phase: "multiply",
+      text: "Multiply. " + st.q + " times " + S.divisor + " is " + st.prod +
+            ". Write it underneath." });
+    out.push({ step: k, phase: "subtract",
+      text: "Subtract. " + st.cur + " minus " + st.prod + " is " + st.diff + "." });
+    if (st.bring !== undefined) out.push({ step: k, phase: "bring",
+      text: "Bring down the next digit, the " + st.bring + ". Now you've got " + (st.diff * 10 + st.bring) + "." });
+  });
+  if (S.remainder > 0){
+    out.push({ revealRemainder: true,
+               text: "Nothing left to bring down, and we've still got " + S.remainder +
+                     " sitting there after that last subtraction. That " + S.remainder + " is the remainder." });
+    out.push({ text: S.remainder + " is smaller than " + S.divisor + ", and that's how you know you're done. " +
+                     "If it were " + S.divisor + " or bigger, another " + S.divisor + " would still fit in." });
+    out.push({ text: "Read the top row: " + S.quotient + ", with " + S.remainder + " left over. So " +
+                     S.dividend + " divided by " + S.divisor + " is " + S.quotient + " with a remainder of " + S.remainder + "." });
+  } else {
+    out.push({ text: "Read the top row: " + S.quotient + ". So " + S.dividend + " divided by " +
+                     S.divisor + " is " + S.quotient + "." });
+  }
+  return out;
+}
+
+/* ── the worked example ───────────────────────────────────────────────── */
+var S = solve(DEMO.dividend, DEMO.divisor);
+/* ⚠️ The captions come from the BUILD now (tools/math-captions.js), not from
+   captions() running here. They have to be identical to the ones the audio was
+   generated from, and the only way to guarantee that is for both to come from
+   one place. The local captions() is still used as a fallback if the build did
+   not supply them. */
+var CAPS = (typeof BAKED_CAPS !== "undefined" && BAKED_CAPS && BAKED_CAPS.length)
+  ? BAKED_CAPS : captions(S);
+var demoHost = document.getElementById("demo");
+var posEl = document.getElementById("stepPos");
+var at = 0, playing = false, gen = 0;
+
+var synth = window.speechSynthesis;
+var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
+if (!supported) document.getElementById("nospeech").classList.add("show");
+
+function write(g, row, value, step, opts){
+  slots(g, row, value, step, opts).forEach(function(s){ s.cell.textContent = s.want; });
+}
+
+function paintDemo(upto){
+  var g = build(demoHost, S, SPEC.allowRemainder);
+  for (var k = 0; k <= upto && k < CAPS.length; k++){
+    var c = CAPS[k];
+    if (c.revealRemainder && g.remCell){
+      g.remCell.textContent = S.remainder;
+      g.remCell.classList.add("remval");
+    }
+    if (c.step === undefined) continue;
+    var st = S.steps[c.step];
+    if (c.phase === "divide") g.at(0, st.i + 1).textContent = st.q;
+    if (c.phase === "multiply") write(g, 2 + c.step * 2, st.prod, st, { minus: true, under: true });
+    if (c.phase === "subtract") write(g, 3 + c.step * 2, st.diff, st, {});
+    if (c.phase === "bring"){
+      var cell = g.at(3 + c.step * 2, st.i + 2);
+      cell.textContent = st.bring;
+      if (k === upto) cell.classList.add("drop");
+    }
+  }
+  /* ⚠️ The position line belongs to the PLAYER now. Math used to own a
+     #stepPos of its own and write "Step 3 of 13" into it; with the shared
+     markup that element is gone and the variable resolved to the players own
+     #pos instead, so maths quietly overwrote "Sentence 3 of 13" on every
+     repaint. The player counts; maths just draws the grid. */
+}
+
+/* ── THE READING PLAYER ────────────────────────────────────────────────────
+   🚨 THIS IS THE HISTORY PLAYER, VERBATIM. Paul, 2026-08-29: "i want the exact
+   system from history into math. i like those markers you can select and jump
+   around we can use them for math too."
+
+   Math used to run its own narrator. It is gone. The captions are handed to
+   the shared engine as sentences, so maths gets the identical thing history
+   has: back and forward, the scrub bar you can click to jump to any step, the
+   same voices, the same key panel, the resume position and the keyboard.
+
+   The grid follows the reader through window.nsOnSentence - one hook in the
+   one engine - so the worked example and the narration can never fall out of
+   step with each other the way two separate players would. */
+var PARTS = [{ title: "", s: CAPS.map(function(c){ return c.text; }) }];
+
+/* Defaults for hosts that do not define these. See voice-player.js. */
+if (typeof ART === 'undefined')      { var ART = {}; }
+if (typeof VISUALS === 'undefined')  { var VISUALS = []; }
+if (typeof WORK === 'undefined')     { var WORK = []; }
+if (typeof WORDS === 'undefined')    { var WORDS = []; }
+if (typeof QUESTIONS === 'undefined'){ var QUESTIONS = []; }
 
 /* ---------- saved settings and progress ----------
    Keys are shared site-wide on purpose:
@@ -1588,6 +1899,9 @@ function paintDemo(i){
      about a single sentence any more" - the opening story, the closing Proverbs
      - so the last drawing stops standing over text it does not describe. A stale
      picture is read as a claim about what is on screen now. */
+  /* A Coming Soon panel has no frames to paint. The sentence bar above it is
+     written before this point and keeps updating, which is the whole idea. */
+  if (typeof PANEL_SOON !== "undefined" && PANEL_SOON) return;
   if (!v || v.blank){
     dbox.classList.add("is-blank");
     return;
@@ -1791,7 +2105,33 @@ function setDemoOpen(on, why){
   }
 }
 
-if (VISUALS.length && dbox){
+/* 🚨 A LESSON WITH NO FRAMES STILL GETS THE PANEL, MARKED COMING SOON.
+   Paul, 2026-09-09: "this lesson also doesnt have a visual panel. we can create
+   it as a coming soon feature ... the panel is there and the text still shows,
+   the inside the panel where it shows more in the middle it just says coming
+   soon. the top of it still shows the text like now."
+   Writing the frames is the expensive, hand-made part of a lesson - see
+   ROADMAP 38 - so this is what lets a lesson ship without them while still
+   showing the reader where the drawing will be. The sentence bar across the
+   top keeps working, because that part is generated and costs nothing.
+   ⚠️ NOT a fake frame. It says the feature is not built yet, in words. A panel
+   that sat empty would read as broken, and one that invented a diagram would be
+   worse than either. */
+var PANEL_SOON = !VISUALS.length;
+if (PANEL_SOON && dbox){
+  dbox.classList.add("is-soon");
+  dbox.classList.remove("is-blank");
+  var soon = document.createElement("p");
+  soon.className = "dbox-soon";
+  soon.textContent = "Visual panel coming soon";
+  var soonNote = document.createElement("p");
+  soonNote.className = "dbox-soonnote";
+  soonNote.textContent = "The sentence being read shows above. The drawing for this lesson is not built yet.";
+  var inBox = dbox.querySelector(".dbox-in");
+  if (inBox){ inBox.textContent = ""; inBox.appendChild(soon); inBox.appendChild(soonNote); }
+}
+
+if ((VISUALS.length || PANEL_SOON) && dbox){
   dbox.hidden = false;
   /* 🚨 Remembered per reader, and OPEN by default. It is the reason the lesson
      looks the way it does, so a student meeting the page for the first time has
@@ -2304,461 +2644,368 @@ scrub.addEventListener("keydown", function(e){
   });
 })();
 
-/* ---------- word cards ---------- */
-var cardsEl = document.getElementById("cards");
-WORDS.forEach(function(pair){
-  var b = document.createElement("button");
-  b.className = "card";
-  b.type = "button";
-  b.innerHTML = '<span class="term"></span><span class="prompt">What is it?</span><span class="def"></span>';
-  b.querySelector(".term").textContent = pair[0];
-  b.querySelector(".def").textContent = pair[1];
-  /* 🚨 `read` STICKS, `open` DOES NOT. Paul, 2026-09-04: "if you clicked on the
-     vocab section they turn green outline too to show you read them."
-     Opening a card is a toggle - he will close it again - but having read it is
-     not something that un-happens. So the green outline is a separate class that
-     is only ever added, and it survives closing the card. It is a record of what
-     he has looked at, which is exactly what a parent scanning the row wants. */
-  b.addEventListener("click", function(){
-    b.classList.toggle("open");
-    b.classList.add("read");
+
+
+/* Draw the division grid up to whichever step is being read. */
+window.nsOnSentence = function(i){ paintDemo(i); };
+paintDemo(0);
+
+/* The legend's four steps say nothing about the leftover number sitting at
+   the bottom of a remainder problem. Add a fifth only when this lesson's own
+   demo actually has one, so the no-remainder lesson's legend is unchanged. */
+if (S.remainder > 0){
+  var legendEl = document.querySelector(".legend");
+  if (legendEl){
+    var remSpan = document.createElement("span");
+    remSpan.innerHTML = "<b>Remainder</b> what's left over, always smaller than the divisor";
+    legendEl.appendChild(remSpan);
+  }
+}
+
+/* ── the problems he fills in ─────────────────────────────────────────── */
+var host = document.getElementById("problems");
+var solved = 0;
+var PROBLEMS = [];
+
+/* Two modes, the same bracket.
+   PRACTICE catches a wrong digit at the digit, which is how you build the
+   habit. TEST lets every wrong digit stand and marks the paper at the end,
+   which is how you find out you never really had it. Paul, 2026-08-26. */
+var MODE = "practice";
+var BOXES = [];                       /* every input on the page, in answer order */
+
+/* Test mode moves the cursor along for him but never judges the digit. Paul,
+   2026-08-26: "practice should lead you through all the boxes while test
+   doesn't lead you." Leading here means the cursor, not the answer. */
+function stepTo(from, dir){
+  var i = -1;
+  for (var k = 0; k < BOXES.length; k++){ if (BOXES[k].el === from){ i = k; break; } }
+  if (i < 0) return;
+  var next = BOXES[i + (dir || 1)];
+  if (!next) return;
+  next.el.focus();
+  if (next.el.parentElement.scrollIntoView) {
+    next.el.parentElement.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+}
+
+function renderSet(list, label){
+  PROBLEMS = list;
+  solved = 0;
+  BOXES = [];
+  host.innerHTML = "";
+  /* Check my work belongs to Test only. Practice already checks every digit. */
+  document.getElementById("check").hidden = MODE !== "test";
+  document.getElementById("modenote").textContent = MODE === "practice"
+    ? "A wrong digit clears itself and tells you which of the four steps you're on. The next digit drops down once you've finished the subtraction."
+    : "Nothing gets checked as you go. Fill in the whole bracket, wrong digits and all, then press Check my work. This is the one that tells you what you actually know.";
+  list.forEach(addProblem);
+  paintScore();
+}
+
+function addProblem(P, pi){
+  var PS = solve(P.dividend, P.divisor);
+  var box = document.createElement("div");
+  box.className = "prob";
+  box.setAttribute("data-i", pi);
+  box.innerHTML =
+    '<div class="probhead"><span class="probnum">Problem ' + (pi + 1) + '</span>' +
+    '<span class="tag">' + P.dividend + " ÷ " + P.divisor + '</span></div>' +
+    '<div class="gridwrap"><div class="dgrid"></div></div>' +
+    '<p class="nudge"></p>';
+  host.appendChild(box);
+
+  var g = build(box.querySelector(".dgrid"), PS, SPEC.allowRemainder);
+  var nudge = box.querySelector(".nudge");
+  var tag = box.querySelector(".tag");
+  var queue = [];
+
+  PS.steps.forEach(function(st, k){
+    queue.push({ cell: g.at(0, st.i + 1), want: st.q,
+      ask: "Divide. How many " + PS.divisor + "s fit into " + st.cur + "? Put it on top." });
+    slots(g, 2 + k * 2, st.prod, st, { minus: true, under: true }).forEach(function(s){
+      queue.push({ cell: s.cell, want: s.want,
+        ask: "Multiply. " + st.q + " times " + PS.divisor + ". Write it underneath." });
+    });
+    var isFinalRemainder = PS.remainder > 0 && st.bring === undefined;
+    slots(g, 3 + k * 2, st.diff, st, {}).forEach(function(s){
+      queue.push({ cell: s.cell, want: s.want,
+        ask: isFinalRemainder
+          ? "Subtract. " + st.cur + " minus " + st.prod + ". That's your remainder."
+          : "Subtract. " + st.cur + " minus " + st.prod + " is what?" });
+    });
+    if (st.bring !== undefined) queue.push({ bring: true, cell: g.at(3 + k * 2, st.i + 2), want: st.bring });
   });
-  cardsEl.appendChild(b);
-});
 
-/* ---------- questions ---------- */
-var hunt = null;            // { qi, tries }
-var huntBar = document.getElementById("huntbar");
-var huntLabel = document.getElementById("huntlabel");
-var answered = [];
-var hunted = [];    // questions where Find was actually used
-var foundFirstTry = 0, huntTotal = 0;
-var qEl1 = document.getElementById("questions1");
-var qEl2 = document.getElementById("questions2");
-
-/* 🚨 THE QUESTION COUNT IS DERIVED. The note above questions used to say "Four
-   questions" on every lesson regardless - true of the science and history
-   lessons, wrong by six on Kinds of Sentences. Written from the data now, so it
-   cannot go stale. Spelled out to ten because a sentence reads better that way,
-   then digits beyond it. */
-(function day1Note(){
-  var el = document.getElementById("day1note");
-  if (!el) return;
-  var n = QUESTIONS.filter(function(q){ return q.day === 1; }).length;
-  if (!n) return;
-  var words = ["", "One", "Two", "Three", "Four", "Five",
-               "Six", "Seven", "Eight", "Nine", "Ten"];
-  var count = n <= 10 ? words[n] : String(n);
-  el.textContent = count + " question" + (n === 1 ? "" : "s") +
-    " about the story you just read. Pick your answer straight off, or press " +
-    "Find it in the story if you would rather hunt for the sentence first.";
-})();
-
-QUESTIONS.forEach(function(Q, qi){
-  if (Q.find) huntTotal++;
-  var card = document.createElement("div");
-  card.className = "q";          // never locked: answering is the default path
-  card.id = "q" + qi;
-
-  var num = document.createElement("div");
-  num.className = "qnum";
-  num.textContent = "Question " + (qi + 1);
-  card.appendChild(num);
-
-  var qt = document.createElement("div");
-  qt.className = "qtext";
-  qt.innerHTML = Q.q;   // our own strings; italics in vocabulary questions are intentional
-  card.appendChild(qt);
-
-  var stage = document.createElement("div");
-  stage.className = "stage";
-  card.appendChild(stage);
-
-  if (Q.find){
-    stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
-    var go = document.createElement("button");
-    go.className = "btn ghost";
-    go.type = "button";
-    go.textContent = "Find it in the story";
-    go.style.marginTop = "9px";
-    go.addEventListener("click", function(){ startHunt(qi); });
-    stage.appendChild(go);
-  } else {
-    stage.innerHTML = "<strong>No hunting on this one.</strong> " + Q.note;
+  /* The remainder up top is TYPED, not filled in for him - Paul, 2026-08-30:
+     "they need to put the remainder at the top dont just automatically do it
+     for them." It is the last thing in the queue, because it is not known
+     until every step below it is done. */
+  if (SPEC.allowRemainder && g.remCell){
+    queue.push({ cell: g.remCell, want: PS.remainder,
+      ask: "Now write that remainder up here, next to your answer." });
   }
 
-  var ch = document.createElement("div");
-  ch.className = "choices";
-  Q.choices.forEach(function(text, ci){
-    var b = document.createElement("button");
-    b.className = "choice";
-    b.type = "button";
-    b.textContent = text;
-    b.addEventListener("click", function(){ answer(qi, ci); });
-    ch.appendChild(b);
+  queue.forEach(function(q){
+    /* In PRACTICE the bring-down is something to watch, so it drops in on its
+       own. In TEST he writes it himself: Paul, 2026-08-26, "they should write
+       both numbers not just the first one." */
+    if (q.bring && MODE === "practice") return;
+
+    var inp = document.createElement("input");
+    inp.type = "text";
+    inp.inputMode = "numeric";
+    inp.maxLength = 1;
+    inp.setAttribute("aria-label", "digit");
+    /* A space placeholder is what lets :placeholder-shown mean "still empty",
+       which is how an untouched box is faded without fading a typed digit. */
+    inp.placeholder = " ";
+    inp.disabled = MODE === "practice";
+    q.el = inp;
+    q.cell.appendChild(inp);
+
+    if (MODE === "test"){
+      BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P });
+      /* Tap any box to go back and change it, and typing replaces what is
+         there rather than being swallowed by maxLength. */
+      inp.addEventListener("focus", function(){ inp.select(); });
+      inp.addEventListener("input", function(){
+        var v = inp.value.replace(/[^0-9]/g, "");
+        inp.value = v;
+        if (v !== "") stepTo(inp);      /* no marking, just move the cursor on */
+      });
+      inp.addEventListener("keydown", function(e){
+        if (e.key === "Backspace" && inp.value === "") stepTo(inp, -1);
+      });
+      return;
+    }
+    inp.addEventListener("input", function(){
+      var v = inp.value.replace(/[^0-9]/g, "");
+      inp.value = v;
+      if (v === "") return;
+      if (Number(v) === q.want){
+        /* Kill any pending wrong-answer wipe first. Without this, a wrong digit
+           followed quickly by the right one erased the right one 320ms later. */
+        clearTimeout(q.timer);
+        inp.classList.remove("bad");
+        inp.classList.add("ok");
+        inp.disabled = true;
+        nudge.classList.remove("warn");
+        advance();
+      } else {
+        inp.classList.add("bad");
+        nudge.classList.add("warn");
+        nudge.textContent = "Not that one. " + q.ask;
+        clearTimeout(q.timer);
+        q.timer = setTimeout(function(){
+          inp.classList.remove("bad");
+          if (!inp.classList.contains("ok")) inp.value = "";
+        }, 320);
+      }
+    });
   });
-  card.appendChild(ch);
 
-  var v = document.createElement("div");
-  v.className = "verdict";
-  card.appendChild(v);
+  var pos = 0;
+  function advance(){
+    pos++;
+    /* the bring-down is something to watch, not something to type */
+    while (pos < queue.length && queue[pos].bring){
+      queue[pos].cell.textContent = queue[pos].want;
+      queue[pos].cell.classList.add("drop");
+      pos++;
+    }
+    if (pos >= queue.length){ finish(); return; }
+    var q = queue[pos];
+    q.el.disabled = false;
+    q.el.focus();
+    /* On a phone the next box is often below the keyboard. Keep it on screen. */
+    if (q.cell.scrollIntoView) q.cell.scrollIntoView({ block: "center", behavior: "smooth" });
+    nudge.classList.remove("warn");
+    nudge.textContent = q.ask;
+  }
 
-  (Q.day === 2 ? qEl2 : qEl1).appendChild(card);
-});
+  function finish(){
+    box.classList.add("solved");
+    tag.classList.add("done");
+    var remTag = PS.remainder > 0 ? " with a remainder of " + PS.remainder : "";
+    tag.textContent = P.dividend + " ÷ " + P.divisor + " = " + PS.quotient + remTag;
+    nudge.classList.remove("warn");
+    nudge.textContent = PS.remainder > 0
+      ? "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
+      : "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " = " + P.dividend + ".";
+    solved++;
+    save();
+    paintScore();
+  }
 
-function startHunt(qi){
-  hunted[qi] = true;
-  hunt = { qi: qi, tries: 0 };
-  if (playing){ playing = false; gen++; if (supported) synth.cancel(); clearWords(); paint(); }
-  document.body.classList.add("hunting");
-  storyEl.classList.add("hunting");
-  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
-  huntLabel.innerHTML = "<b>Question " + (qi + 1) + ".</b> Tap the sentence that answers it.";
-  huntBar.classList.add("show");
-  /* 🚨 SCROLL TO THE PARAGRAPH, NOT THE STORY TOP AND NOT THE SENTENCE.
-     Paul, 2026-09-04: "i think find in story should give you the top of the
-     paragraph not the direct place but does put you in the region to find it."
-
-     It used to reveal storyEl itself, which dumps the student at the very top of
-     the reading and makes him scan the whole lesson - fine when the story was
-     six sentences, useless at fifty-five. Revealing the target SENTENCE would be
-     the opposite mistake: it hands him the answer and there is nothing left to
-     hunt for.
-
-     The paragraph is the honest middle. He lands in the right region and still
-     has to read to find the line.
-     ⚠️ Falls back to the story top when a sentence has no .para parent, which is
-     the state during a render, not a normal one. */
-  var first = SENT[QUESTIONS[qi].find[0]];
-  var region = (first && first.el.closest) ? first.el.closest(".para") : null;
-  nsReveal(region || storyEl, "start");
-}
-
-function endHunt(){
-  hunt = null;
-  document.body.classList.remove("hunting");
-  storyEl.classList.remove("hunting");
-  huntBar.classList.remove("show");
-}
-
-document.getElementById("huntcancel").addEventListener("click", endHunt);
-
-storyEl.addEventListener("click", function(e){
-  var target = e.target.closest ? e.target.closest(".sent") : null;
-  if (!target) return;
-  var i = parseInt(target.getAttribute("data-i"), 10);
-
-  if (!hunt){
-    // not hunting: tap a sentence to read from there
-    playing = true;
-    speak(i);
+  if (MODE === "test"){
+    nudge.textContent = "";
     return;
   }
-
-  var Q = QUESTIONS[hunt.qi];
-  var card = document.getElementById("q" + hunt.qi);
-  var stage = card.querySelector(".stage");
-  hunt.tries++;
-
-  if (Q.find.indexOf(i) !== -1){
-    target.classList.add("hit");
-    if (hunt.tries === 1) foundFirstTry++;
-    stage.innerHTML = '<strong>Found it.</strong> Now say it in your own words &mdash; pick the choice that matches the sentence you found.';
-    endHunt();
-    nsReveal(card);
-  } else if (hunt.tries >= 3){
-    target.classList.add("miss");
-    Q.find.forEach(function(k){ SENT[k].el.classList.add("shown"); });
-    stage.innerHTML = '<strong>Here it is.</strong> The highlighted sentence is the one. Read it again, then pick your answer below.';
-    endHunt();
-    nsReveal(SENT[Q.find[0]].el);
-  } else {
-    target.classList.add("miss");
-    huntLabel.innerHTML = "<b>Not that one.</b> " + Q.hint;
-  }
-});
-
-function answer(qi, ci){
-  if (answered[qi] !== undefined) return;
-  var Q = QUESTIONS[qi];
-  var card = document.getElementById("q" + qi);
-  var btns = card.querySelectorAll(".choice");
-  answered[qi] = ci;
-
-  btns.forEach(function(b, k){
-    b.disabled = true;
-    if (k === Q.right) b.classList.add("right");
-    else if (k === ci) b.classList.add("wrong");
-  });
-
-  /* 🚨 THE VERDICT EXPLAINS, IT DOES NOT SET HOMEWORK. Paul, 2026-09-04:
-     "if they get the question right the correct Correct. Write that into your
-     notebook in your own words. this needs to be correct becaue there is not
-     notebook. just explain why its correct ... if wrong say incorrect making
-     everything red and show the right one."
-
-     He is right twice over. The old line told every student to write the answer
-     into a notebook, which was a leftover from the printed Rome workbook and is
-     not true of anyone using the site. And a verdict that says only "Correct"
-     teaches nothing - the WHY is the teaching.
-
-     ⚠️ `why` EXISTS ONLY ON THE ENGLISH LESSON TODAY. The four science and two
-     history lessons have none, so the text degrades to plain Correct/Incorrect
-     rather than printing "undefined". Add `why` to a question and the
-     explanation appears with no code change. */
-  var v = card.querySelector(".verdict");
-  v.className = "verdict show " + (ci === Q.right ? "good" : "bad");
-  var why = (Q.why || "").trim();
-  v.textContent = ci === Q.right
-    ? (why ? "Correct. " + why : "Correct.")
-    : (why
-        ? "Incorrect. The right answer is marked above. " + why
-        : "Incorrect. The right answer is marked above.");
-
-  paintProgress();
-
-  // A light progress record on every answer, so the lesson card on the shelf
-  // knows how far in he is without the lesson having to be finished first.
-  var d1p = dayStats(1), d2p = dayStats(2);
-  store("prog:" + LESSON_ID, JSON.stringify({
-    done: d1p.done + d2p.done, total: d1p.total + d2p.total,
-    d1: d1p.done, d1t: d1p.total, d2: d2p.done, d2t: d2p.total
-  }));
-
-  // Show the running score as soon as EITHER day is finished, because the two
-  // days happen on different days and he should not have to wait until Day 2
-  // to see how Day 1 went.
-  var d1 = dayStats(1), d2 = dayStats(2);
-  if (d1.done === d1.total || d2.done === d2.total) showScore();
+  queue[0].el.disabled = false;
+  nudge.textContent = queue[0].ask;
 }
 
-function dayStats(day){
-  var total = 0, right = 0, done = 0;
-  QUESTIONS.forEach(function(Q, i){
-    if ((Q.day || 1) !== day) return;
-    total++;
-    if (answered[i] !== undefined) done++;
-    if (answered[i] === Q.right) right++;
+/* ── marking the test ─────────────────────────────────────────────────── */
+function markTest(){
+  var right = 0, blank = 0;
+  var perBox = {};
+  BOXES.forEach(function(b){
+    var v = b.el.value.replace(/[^0-9]/g, "");
+    b.el.classList.remove("ok", "wrong");
+    if (v === ""){ blank++; }
+    else if (Number(v) === b.want){ b.el.classList.add("ok"); right++; }
+    else { b.el.classList.add("wrong"); }
+    b.el.disabled = true;
+    var key = b.box.getAttribute("data-i");
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box, PS: b.PS, P: b.P };
+    if (v === "" || Number(v) !== b.want) perBox[key].ok = false;
   });
-  return { total: total, right: right, done: done,
-           pct: total ? Math.round(right / total * 100) : 0 };
-}
 
-function paintProgress(){
-  /* The teacher line follows every answer and every reset. One call site, so it
-     cannot fall out of step with the progress bars. */
-  paintTeacherScore();
-  [1, 2].forEach(function(day){
-    var st = dayStats(day);
-    var label = document.getElementById("prog" + day);
-    var bar = document.getElementById("bar" + day);
-    if (label){
-      label.textContent = st.done + " of " + st.total + (st.done === st.total && st.total ? " — done" : " answered");
-      label.classList.toggle("done", st.total > 0 && st.done === st.total);
+  solved = 0;
+  Object.keys(perBox).forEach(function(k){
+    var r = perBox[k];
+    var tag = r.box.querySelector(".tag");
+    var nudge = r.box.querySelector(".nudge");
+    var remMark = r.PS.remainder > 0 ? " with a remainder of " + r.PS.remainder : "";
+    if (r.ok){
+      solved++;
+      r.box.classList.add("solved");
+      tag.classList.add("done");
+      tag.textContent = r.P.dividend + " ÷ " + r.P.divisor + " = " + r.PS.quotient + remMark;
+      nudge.classList.remove("warn");
+      nudge.textContent = "Right the whole way down.";
+    } else {
+      nudge.classList.add("warn");
+      nudge.textContent = "The answer is " + r.PS.quotient + remMark +
+        ". Every red digit is where it went wrong. Try that one again in Practice.";
     }
-    if (bar) bar.style.width = (st.total ? (st.done / st.total * 100) : 0) + "%";
   });
+
+  document.getElementById("check").disabled = true;
+  save();
+  var el = document.getElementById("scorebar");
+  el.innerHTML = "<b>" + solved + " of " + PROBLEMS.length + " problems fully right.</b>" +
+    '<p style="margin:6px 0 0;color:var(--dim)">' + right + " of " + BOXES.length +
+    " digits correct" + (blank ? ", " + blank + " left blank" : "") +
+    ". Press New problems for another test.</p>";
 }
 
-function showScore(){
-  var d1 = dayStats(1), d2 = dayStats(2);
-  var right = d1.right + d2.right;
-  var total = d1.total + d2.total;
-  var pct = Math.round(right / total * 100);
-  var missed = QUESTIONS.filter(function(Q){ return Q.find; }).length - hunted.filter(Boolean).length;
+/* Today's set, a button for a fresh one, and the two modes. */
+var currentSeed = today(), currentLabel = "Today's set";
 
-  var el = document.getElementById("score");
-  el.innerHTML =
-    '<div class="big">' + right + ' / ' + total + '</div>' +
-    '<div class="pct">' + pct + '%</div>' +
-    '<div class="split">' +
-      '<span><b>Part One</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>' +
-      '<span><b>Part Two</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>' +
-    '</div>' +
-    '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-    ' &middot; answered without hunting: ' + missed + '.<br>' +
-    'Use Print Answer Sheet for a record of this attempt.</div>';
-  el.classList.add("show");
-
-  // A lesson counts as complete only when BOTH days are answered. Finishing
-  // Day 1 saves progress, it does not finish the lesson.
-  var complete = (d1.done === d1.total) && (d2.done === d2.total);
-  var prev = readDone();
-  var better = !prev || right > prev.score;
-  // never let a part-finished retake overwrite a completed record
-  if (better || (complete && !(prev && prev.complete))){
-    store("done:" + LESSON_ID, JSON.stringify({
-      score: right, total: total, pct: pct, complete: complete,
-      d1: d1.right, d1t: d1.total, d2: d2.right, d2t: d2.total,
-      d1done: d1.done === d1.total, d2done: d2.done === d2.total,
-      found: foundFirstTry, hunts: huntTotal,
-      at: new Date().toISOString()
-    }));
-  }
-  paintStatus();
-  /* 🚨 ONLY JUMP TO THE SCORE WHEN THE LESSON IS ACTUALLY OVER. Paul, 2026-09-05:
-     "after i answer the first section of questions down to the vocab ... it jumps
-     to the bottom for the results but im not finished and i dont like how it
-     jumps to the bottom like that."
-     showScore() is called when EITHER day finishes (see the || at its call site),
-     because finishing Day 1 should record progress and update the box. But the
-     scroll treated that as the end of the lesson and threw the reader past the
-     vocabulary cards and the last four questions - the exact work still in front
-     of them. The box still updates either way; it just no longer drags the page
-     down to itself until both days are done. */
-  if (complete) nsReveal(el);
+function reload(seed, label){
+  currentSeed = seed; currentLabel = label;
+  document.getElementById("check").disabled = false;
+  renderSet(makeSet(seed), label);
 }
 
-/* ---------- completed / retake ---------- */
-function readDone(){
-  try { return JSON.parse(load("done:" + LESSON_ID, "null")); } catch(e){ return null; }
-}
+reload(currentSeed, currentLabel);
 
-function paintStatus(){
-  var d = readDone();
-  var box = document.getElementById("status");
-  if (!d){ box.classList.remove("show"); return; }
-  var when = "";
+document.getElementById("reroll").addEventListener("click", function(){
+  reload(String(Date.now()), "A fresh set");
+  host.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("check").addEventListener("click", markTest);
+
+function setMode(m){
+  if (MODE === m) return;
+  MODE = m;
+  var pt = document.getElementById("tabPractice"), tt = document.getElementById("tabTest");
+  pt.classList.toggle("on", m === "practice");
+  tt.classList.toggle("on", m === "test");
+  pt.setAttribute("aria-selected", String(m === "practice"));
+  tt.setAttribute("aria-selected", String(m === "test"));
+  /* Same problems in both modes, so a test can be worked again in practice. */
+  reload(currentSeed, currentLabel);
+}
+document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
+document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
+
+/* ── progress, stored the way the other lessons store it ──────────────── */
+function save(){
   try {
-    when = new Date(d.at).toLocaleDateString(undefined, { month:"short", day:"numeric" });
-  } catch(e){}
-  var done = d.complete !== false;
-  box.classList.toggle("partial", !done || d.pct < 60);
-  document.getElementById("statusMark").textContent = !done ? "…" : (d.pct < 60 ? "!" : "✓");
-  document.getElementById("statusText").innerHTML =
-    (done
-      ? "<b>Lesson completed</b> &middot; best score " + d.score + " / " + d.total + " (" + d.pct + "%)"
-      : "<b>" + (d.d1done ? "Part One finished" : "Part Two finished") + "</b> &middot; " +
-        d.score + " / " + d.total + " so far, the other part is still to do") +
-    "<small>" + (when ? "Last worked " + when + ". " : "") +
-    "Retaking keeps your best score.</small>";
-  box.classList.add("show");
+    var K = "ns:prog:" + LESSON_ID;
+    /* 🚨 NEVER LET A REOPEN UNDO A FINISHED LESSON. This page does not restore what
+       was solved last time, so `solved` starts at 0 on every visit. A blind save
+       then overwrote {done:5,total:5,complete:true} with {done:1,...,false} the
+       moment a box was touched, and the shelf card lost its green tick — work the
+       student really had done, gone, with nothing anywhere to say so. Found
+       2026-09-08 on Kolten's own progress. The history template has carried this
+       same guard since it was written; these two never got it.
+       ⚠️ Only the teacher's Reset, in Teacher Notes, clears a completed record. */
+    var prev = null;
+    try { prev = JSON.parse(localStorage.getItem(K)); } catch (e2) {}
+    var complete = solved === PROBLEMS.length;
+    if (prev && prev.complete === true && !complete) return;
+    localStorage.setItem(K, JSON.stringify({
+      done: solved, total: PROBLEMS.length, complete: complete
+    }));
+  } catch (e) {}
 }
-
-/* ── THE TEACHER'S SCORE LINE ──────────────────────────────────────────────
-   🚨 IT REPORTS, IT DOES NOT MARK. The percentage is computed from `answered`
-   against the dealt `right` for every question in the lesson, both days
-   together, because a parent wants one number for the sitting.
-
-   ⚠️ THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE. Nine right out
-   of ten answered is not 90% if the lesson has fourteen - it is a lesson still
-   in progress, and the line says so rather than flattering the number.
-   ⚠️ Locking is not done here. answer() already refuses a second attempt at an
-   answered question; this only shows what that lock has produced. */
+/* The teacher's line and reset. Mirrors the history, English and integers
+   templates so all four read the same on the page and in a screenshot for
+   HomeschoolGrades.
+   ⚠️ Retry-until-right by design — a wrong digit clears itself — so a finished
+   lesson IS full marks. Say "practised to mastery" rather than a bare 100% that
+   reads like a test result it never was. */
 function paintTeacherScore(){
   var line = document.getElementById("gscoreline");
-  var btn = document.getElementById("greset");
+  var btn  = document.getElementById("greset");
   if (!line) return;
-  var total = QUESTIONS.length;
-  var done = 0, right = 0;
-  QUESTIONS.forEach(function(Q, i){
-    if (answered[i] === undefined) return;
-    done++;
-    if (answered[i] === Q.right) right++;
-  });
-  if (btn) btn.hidden = (done === 0);
-  if (!done){ line.textContent = "Not started yet."; line.className = "gscore-line"; return; }
-  var pct = Math.round((right / total) * 100);
-  if (done < total){
-    line.textContent = right + " right out of " + done + " answered, " +
-      (total - done) + " still to do.";
-    line.className = "gscore-line part";
-  } else {
-    line.textContent = "Score " + pct + "%  ·  " + right + " out of " + total + " correct.";
-    line.className = "gscore-line " + (pct >= 80 ? "good" : pct >= 60 ? "part" : "bad");
-  }
-}
+  /* 🚨 TAKE THE TOTAL FROM THE STORED RECORD WHEN THERE IS ONE. PROBLEMS is
+     generated fresh on every visit and is still EMPTY the first time this paints,
+     so PROBLEMS.length was 0, total was 0, and a completed lesson read "Not
+     started yet." with Reset hidden. The saved record carries its own total and
+     does not depend on render order. */
+  var saved0 = null;
+  try { saved0 = JSON.parse(localStorage.getItem("ns:prog:" + LESSON_ID)); } catch (e0) {}
+  var total = PROBLEMS.length || (saved0 && saved0.total) || 0;
+  if (total === 0) { line.textContent = "Not started yet."; if (btn) btn.hidden = true; return; }
+  /* 🚨 READ THE STORED RECORD, NOT JUST THIS VISIT. The page does not restore what
+     was solved last time, so `solved` is 0 on a reopen — and a teacher looking at
+     a lesson the student finished last week saw "Not started yet." with the Reset
+     button hidden, so there was no way to clear it and no grade to copy into
+     HomeschoolGrades. The stored record is the truth; this visit only beats it. */
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem("ns:prog:" + LESSON_ID)); } catch (e) {}
+  var done = solved;
+  if (saved && typeof saved.done === "number" && saved.done > done) done = saved.done;
+  if (saved && saved.complete === true) done = total;
 
-/* The reset the teacher owns. Same wipe as the retake button at the foot of the
-   lesson, so there is one behaviour and not two that drift. */
-function resetAttempt(){
-  document.getElementById("retake").click();
+  line.className = "gscore-line" + (done === 0 ? "" : done === total ? " good" : "");
+  line.textContent = done === 0
+    ? "Not started yet."
+    : done === total
+      ? "Completed · " + total + "/" + total + " (100%) · practised to mastery"
+      : done + " of " + total + " solved · still in progress";
+  if (btn) btn.hidden = done === 0;
 }
+/* 🚨 CALL IT DIRECTLY, NOT ONLY FROM paintScore(). paintScore() does not run on
+   load here — the scorebar is empty until the first answer — so hanging the
+   teacher line off it left a finished lesson reading "Not started yet." with the
+   Reset hidden. Found in the browser 2026-09-08; nothing in the build could see it. */
+paintTeacherScore();
+
 (function wireTeacherReset(){
   var btn = document.getElementById("greset");
-  if (btn) btn.addEventListener("click", resetAttempt);
+  if (!btn) return;
+  btn.addEventListener("click", function(){
+    try { localStorage.removeItem("ns:prog:" + LESSON_ID); } catch (e) {}
+    location.reload();
+  });
 })();
 
-document.getElementById("retake").addEventListener("click", function(){
-  // Wipe the attempt, keep the record. Nothing about the saved score changes.
-  if (playing){ playing = false; stopEngines(); clearWords(); paint(); }
-  answered = [];
-  hunted = [];
-  drop("prog:" + LESSON_ID);
-  foundFirstTry = 0;
-  endHunt();
-  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
-  document.getElementById("score").classList.remove("show");
-  QUESTIONS.forEach(function(Q, qi){
-    var card = document.getElementById("q" + qi);
-    card.querySelector(".verdict").className = "verdict";
-    [].forEach.call(card.querySelectorAll(".choice"), function(b){
-      b.disabled = false;
-      b.classList.remove("right","wrong");
-    });
-    var stage = card.querySelector(".stage");
-    if (Q.find){
-      stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
-    var go = document.createElement("button");
-    go.className = "btn ghost";
-    go.type = "button";
-    go.textContent = "Find it in the story";
-    go.style.marginTop = "9px";
-    go.addEventListener("click", function(){ startHunt(qi); });
-    stage.appendChild(go);
-    }
-  });
-  paintProgress();
-  nsReveal(document.getElementById("q0"));
-});
+function paintScore(){
+  paintTeacherScore();
+  var el = document.getElementById("scorebar");
+  el.innerHTML = solved === PROBLEMS.length
+    ? "<b>All " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That\'s the lesson finished.</p>'
+    : "<b>" + solved + " of " + PROBLEMS.length + " solved.</b>" +
+      '<p style="margin:6px 0 0;color:var(--dim)">Work down the boxes in order. ' +
+      "A wrong digit clears itself, so nothing's lost.</p>";
+}
+paintScore();
 
-/* ---------- printable answer sheet ----------
-   Proof the work was done: the five questions, what he answered, whether it was
-   right, and the score. Not the story - this is the record, not the lesson. */
-
-document.getElementById("printKey").addEventListener("click", function(){
-  var d = readDone();
-  var right = 0;
-  QUESTIONS.forEach(function(Q, i){ if (answered[i] === Q.right) right++; });
-  var attempted = answered.filter(function(a){ return a !== undefined; }).length;
-  var pct = attempted ? Math.round(right / QUESTIONS.length * 100) : 0;
-  var now = new Date();
-  var dateStr = now.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
-
-  var rows = QUESTIONS.map(function(Q, i){
-    var pick = answered[i];
-    var ok = pick === Q.right;
-    var given = pick === undefined ? "(not answered)" : Q.choices[pick];
-    var mark = pick === undefined ? "–" : (ok ? "✓" : "✗");
-    var corrected = (pick !== undefined && !ok)
-      ? '<div class="a" style="margin-top:2mm"><span class="mk">→</span>Correct answer: ' + Q.choices[Q.right] + '</div>'
-      : "";
-    return '<li><div class="q">' + Q.q + '</div>' +
-           '<div class="a"><span class="mk">' + mark + '</span>' + given + '</div>' +
-           corrected + '</li>';
-  }).join("");
-
-  document.getElementById("sheet").innerHTML =
-    '<div class="scorebox"><div class="n">' + right + '/' + QUESTIONS.length + '</div>' +
-      '<div class="p">' + pct + '%</div></div>' +
-    '<h1>' + LESSON_TITLE + '</h1>' +
-    '<p class="sub">' + LESSON_UNIT + '</p>' +
-    '<div class="idline">' +
-      '<span><b>Student:</b> ______________________</span>' +
-      '<span><b>Completed:</b> ' + (d && d.at ? new Date(d.at).toLocaleDateString() : dateStr) + '</span>' +
-      '<span><b>Printed:</b> ' + dateStr + '</span>' +
-    '</div>' +
-    '<ol>' + rows + '</ol>' +
-    '<div class="foot">Sentences found in the text on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-      '.  Answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find;}).length - hunted.filter(Boolean).length) + '.' +
-      (d ? '  Best recorded score: ' + d.score + '/' + d.total + ' (' + d.pct + '%).' : '') +
-    '</div>' +
-    '<div class="sign">Parent signature:<span></span></div>';
-
-  window.print();
-});
-
-paintStatus();
-paintProgress();
-paint();
 })();

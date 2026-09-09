@@ -369,13 +369,19 @@ const SHEETS = [
   contains: [
     "Seven sentences where you draw the dividing line yourself",
     "Five more with one half already marked, and you name it",
-    "An answer key for both parts at the foot of the sheet",
+    "Three of your own sentences to write and take apart",
+    "An answer key at the foot of the sheet",
     "Black and white, one page, and a PDF to print again",
   ],
   price: "$0", buy: null, art: false, thumb: true,
   eyebrow: "The Sentence &middot; Unit 1 &middot; Lesson 2",
   noteA: "Draw one straight line down between the complete subject and the complete predicate.",
   noteB: "One half of each sentence is underlined. Write whether it is the complete subject or the complete predicate.",
+  /* 🚨 PART C IS THE POINT OF THE SHEET. The page can already ask him to find a
+     line someone else drew; only paper can ask him to write a sentence of his
+     own and then take it apart. Paul, 2026-09-09. */
+  ownCount: 3,
+  noteC: "Write a sentence of your own. Draw the line between the two halves, then write each half on the lines below it.",
   signoff: "Say the sentence out loud. Where you pause is usually where the line goes.",
 },
 

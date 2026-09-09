@@ -410,6 +410,17 @@ h2{
 .dbox.is-shut .dbox-sent{display:none}
 .dbox.is-wide .dbox-in{min-height:0}
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
+/* The Coming Soon state: the sentence bar stays, the frame area says so. */
+.dbox.is-soon .dbox-in{min-height:96px;justify-content:center;text-align:center}
+.dbox-soon{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--verdigris, var(--accent));margin:0 0 8px;
+}
+.dbox-soonnote{
+  font-size:14px;line-height:1.6;color:var(--ink-faint, var(--dim));
+  margin:0 auto;max-width:44ch;
+}
 .dbox-kind:empty{display:none}
 .dbox-kind{
   /* flex, not a plain block, so a frame naming TWO parts can put a chip per
@@ -519,6 +530,11 @@ h2{
 .dbox-x:focus-visible{outline:2px solid var(--verdigris, var(--accent));outline-offset:2px}
 /* blank keeps the frame and drops the contents; shut drops the frame too */
 .dbox.is-blank .dbox-in{visibility:hidden}
+/* 🚨 `is-soon` OUTRANKS `is-blank`. The panel ships with `is-blank` on the
+   element in the markup, so a Coming Soon panel inherited it and hid the very
+   message it exists to show - an empty box that reads as broken, which is the
+   one outcome worse than no panel at all. */
+.dbox.is-soon .dbox-in{visibility:visible}
 .dbox.is-shut{padding:4px 16px}
 .dbox.is-shut .dbox-in{display:none}
 /* collapsed, the footer IS the panel, so drop the gap it had above the content */

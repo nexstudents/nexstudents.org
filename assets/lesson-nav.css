@@ -132,7 +132,20 @@ nav:not(.js-nav) .mg-top.on::after,
   text-decoration:none;transition:transform .2s,border-color .2s}
 .mg-grade b{font-size:1.15rem;font-weight:800;letter-spacing:-.03em;line-height:1}
 .mg-grade span{font-size:.5rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
-.mg-grade.live{background:var(--nv-accent);color:var(--nv-on);border-color:var(--nv-accent)}
+/* 🚨 THE GRADE TILES ARE SITE CHROME, SO THEY ARE THE SITE'S COLOUR. Paul,
+   2026-09-09: "above this particular lesson if i go to grades its a different
+   color. like the graphite blue color for the grade selector boxes instead of
+   being white."
+   They were taking `--nv-accent`, which every lesson maps to ITS OWN palette,
+   so the grade picker changed colour depending on which lesson you happened to
+   be reading. ns.css uses `--a` / `--a-ink` here, which is white on dark and
+   graphite on light. LITERAL, exactly like `.drawer .navbtn` below and for the
+   same reason: the mega menu belongs to the site, not to the lesson.
+   ⚠️ `check-nav-css.js` CANNOT catch this. It fails when a class is styled in
+   one stylesheet and not the other, and this class is styled in both - just in
+   the wrong colour. Compare the VALUES when touching shared chrome. */
+.mg-grade.live{background:#ffffff;color:#0a0b0d;border-color:#ffffff}
+:root[data-theme="light"] .mg-grade.live{background:#27313f;color:#ffffff;border-color:#27313f}
 .mg-grade.soon{color:var(--nv-dim);opacity:.6}
 @media(hover:hover){ .mg-grade.live:hover{transform:translateY(-3px)} }
 .mg-note{color:var(--nv-dim);font-size:.82rem;margin:14px 0 0;max-width:62ch}

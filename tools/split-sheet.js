@@ -55,6 +55,24 @@ function keyItem(P) {
          esc(w.slice(P.split).join(' ')) + '</li>';
 }
 
+/* 🚨 PART C IS THE ONLY PART THE PAGE CANNOT DO. Paul, 2026-09-09: "it needs a
+   spot for the student to write a personal sentence they write. like write your
+   own sentence and point out which side is the complete subject and complete
+   predicate."
+   Everything above this checks whether he can find a line someone else drew.
+   This checks whether he can build a sentence and then take it apart, which is
+   what the lesson is actually for.
+   ⚠️ It has no answer key and must not pretend to. The key says what to LOOK FOR
+   instead, because the only wrong answer here lives in a sentence nobody has
+   seen yet. */
+function ownItem(n) {
+  return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' +
+         '<p class="ownline"><span class="olbl">My sentence</span><u></u></p>' +
+         '<p class="ownhalf"><span class="olbl">Complete subject</span><u></u></p>' +
+         '<p class="ownhalf"><span class="olbl">Complete predicate</span><u></u></p>' +
+         '</div></li>';
+}
+
 function keyItemB(S) {
   return '<li>' + (S.shaded === 'subject' ? 'complete subject' : 'complete predicate') + '</li>';
 }
@@ -74,6 +92,12 @@ function splitSheetBody(s) {
     ${L.sort.map(partBItem).join('\n    ')}
   </ul>
 
+  <h2 class="scored">Part C &mdash; Write your own <span class="pts"><u></u> / ${s.ownCount}</span></h2>
+  <p class="inst">${s.noteC}</p>
+  <ul class="owns">
+    ${Array.from({ length: s.ownCount }, function (_, i) { return ownItem(i); }).join('\n    ')}
+  </ul>
+
   <div class="key">
     <h2>Answer key</h2>
     <p class="kv"><b>Part A</b> &mdash; the line goes where the bar is.</p>
@@ -84,6 +108,10 @@ function splitSheetBody(s) {
     <ol>
       ${L.sort.map(keyItemB).join('\n      ')}
     </ol>
+    <p class="kv"><b>Part C</b> &mdash; answers vary. Look for a complete subject that keeps every
+      word telling you WHICH one, and a complete predicate that starts at the verb and runs to the
+      end. A subject cut short &mdash; <em>The man</em> where the sentence says <em>The man behind
+      the paint counter</em> &mdash; is the mistake to watch for.</p>
   </div>
 `;
 }

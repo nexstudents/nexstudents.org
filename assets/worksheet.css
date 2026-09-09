@@ -105,9 +105,45 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
 @media print{
   /* Printed sheets are black on white whatever the screen is doing. */
   body{background:#fff;color:#000;font-size:11pt;line-height:1.5}
-  .bar{display:none}
+  /* 🚨 HIDE THE WHOLE SITE CHROME, NOT JUST THE ACTION BAR. Paul, 2026-09-09:
+     "there is a line down the right side that needs removed for printing", and
+     "the letters are too close to the left".
+     Only `.bar` was hidden here, and `ns.css` has NO print block at all - so the
+     nav, the scrim and the slide-out drawer were all being PRINTED. The drawer
+     is `position:fixed`, which means it lays out on EVERY page, and the PDF's
+     own drawing commands showed it: a 680-wide dark panel plus a 1px border,
+     repeated once per page. That border is the line down the right side, and the
+     panel is what pushed the sheet off centre.
+     ⚠️ `visibility:hidden` on `.menucol` did not save us. Print still painted it.
+     Hide it with `display:none`. */
+  /* 🚨 PRINT THE SHEET AND NOTHING ELSE. Naming the chrome one class at a time
+     did not work - the PDF's own drawing commands still showed a dark 680-wide
+     panel with a 1px border, once per page, painted from the SITE's dark theme
+     tokens. `ns.css` has no print block at all, so anything it renders outside
+     the sheet is fair game for the printer, and a `position:fixed` element lays
+     out on EVERY page.
+     This is the same pattern the lesson answer sheet already uses and it is the
+     only one that has held: hide every body child, then bring the sheet back.
+     ⚠️ It works ONLY while `.sheet` is a DIRECT CHILD of <body>. `display:block`
+     on a descendant of a `display:none` element does nothing, which is how the
+     answer sheet once printed a perfectly styled, completely EMPTY page. */
+  /* 🚨 SCOPED WITH :has(), AND THAT IS NOT A FLOURISH. The handwriting sheets
+     have NO `.sheet` wrapper - their content sits at body level - so an
+     unscoped `body > *{display:none}` prints them as a completely blank page,
+     which is the exact failure already recorded in CLAUDE.md. The rule now
+     applies only to pages that actually have a body-level sheet to bring back.
+     ⚠️ A browser without :has() simply keeps today's behaviour (chrome prints)
+     rather than printing nothing. Fail open, never closed. */
+  body:has(> .sheet) > *{display:none!important}
+  body:has(> .sheet) > .sheet{display:block!important}
   @page{margin:14mm}
-  .sheet{max-width:none;margin:0;border:0;border-radius:0;padding:0;background:#fff}
+  /* 🚨 KILL THE SHADOW FOR PRINT. Paul, 2026-09-09: "there is a line down the
+     right side that needs removed for printing." The border and radius were
+     already cleared here; the box-shadow was not, and Chrome PRINTS shadows.
+     A 10px blur at the sheet's edge comes out of the printer as a grey rule
+     down the side of every sheet on the site. */
+  .sheet{max-width:none;margin:0;border:0;border-radius:0;padding:0;background:#fff;
+    box-shadow:none}
   .sheet h1{font-size:19pt}
   .sheet h2,.eyebrow,.dek,.passage,.key .kv,.note{color:#000}
   .sheet h2{border-color:#000}
@@ -477,4 +513,22 @@ body.print-all .wk+.wk{page-break-before:always}
    page one. Small children only. */
 @media print{
   .splits > li,.sorts > li{break-inside:avoid;page-break-inside:avoid}
+}
+
+/* ── PART C: his own sentence, then its two halves ─────────────────────────
+   The only part of this sheet the web page cannot do. Three ruled lines per
+   item: one for the sentence, one for each half. Labels sit above the rule so
+   a long sentence is not squeezed into what is left of the line. */
+.owns{list-style:none;margin:0 0 26px;padding:0}
+.owns > li{display:flex;gap:12px;align-items:baseline;padding:18px 0 0}
+.owns > li > b{font-weight:800;min-width:26px;text-align:right}
+.owns .ownrow{flex:1}
+.owns .ownline,.owns .ownhalf{margin:0 0 12px;display:flex;gap:10px;align-items:baseline}
+.owns .ownhalf{margin-left:18px}
+.owns .olbl{font-size:.78rem;color:var(--dim);white-space:nowrap;min-width:118px}
+.owns u{text-decoration:none;flex:1;border-bottom:1px solid var(--line-ink);min-height:1.7em}
+@media print{
+  .owns u{border-bottom-color:#000}
+  .owns .olbl{color:#000}
+  .owns > li{break-inside:avoid;page-break-inside:avoid}
 }

@@ -413,6 +413,17 @@ h2{
 .dbox.is-shut .dbox-sent{display:none}
 .dbox.is-wide .dbox-in{min-height:0}
 .dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
+/* The Coming Soon state: the sentence bar stays, the frame area says so. */
+.dbox.is-soon .dbox-in{min-height:96px;justify-content:center;text-align:center}
+.dbox-soon{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--verdigris, var(--accent));margin:0 0 8px;
+}
+.dbox-soonnote{
+  font-size:14px;line-height:1.6;color:var(--ink-faint, var(--dim));
+  margin:0 auto;max-width:44ch;
+}
 .dbox-kind:empty{display:none}
 .dbox-kind{
   /* flex, not a plain block, so a frame naming TWO parts can put a chip per
@@ -522,6 +533,11 @@ h2{
 .dbox-x:focus-visible{outline:2px solid var(--verdigris, var(--accent));outline-offset:2px}
 /* blank keeps the frame and drops the contents; shut drops the frame too */
 .dbox.is-blank .dbox-in{visibility:hidden}
+/* 🚨 `is-soon` OUTRANKS `is-blank`. The panel ships with `is-blank` on the
+   element in the markup, so a Coming Soon panel inherited it and hid the very
+   message it exists to show - an empty box that reads as broken, which is the
+   one outcome worse than no panel at all. */
+.dbox.is-soon .dbox-in{visibility:visible}
 .dbox.is-shut{padding:4px 16px}
 .dbox.is-shut .dbox-in{display:none}
 /* collapsed, the footer IS the panel, so drop the gap it had above the content */
@@ -2810,6 +2826,9 @@ function paintDemo(i){
      about a single sentence any more" - the opening story, the closing Proverbs
      - so the last drawing stops standing over text it does not describe. A stale
      picture is read as a claim about what is on screen now. */
+  /* A Coming Soon panel has no frames to paint. The sentence bar above it is
+     written before this point and keeps updating, which is the whole idea. */
+  if (typeof PANEL_SOON !== "undefined" && PANEL_SOON) return;
   if (!v || v.blank){
     dbox.classList.add("is-blank");
     return;
@@ -3013,7 +3032,33 @@ function setDemoOpen(on, why){
   }
 }
 
-if (VISUALS.length && dbox){
+/* 🚨 A LESSON WITH NO FRAMES STILL GETS THE PANEL, MARKED COMING SOON.
+   Paul, 2026-09-09: "this lesson also doesnt have a visual panel. we can create
+   it as a coming soon feature ... the panel is there and the text still shows,
+   the inside the panel where it shows more in the middle it just says coming
+   soon. the top of it still shows the text like now."
+   Writing the frames is the expensive, hand-made part of a lesson - see
+   ROADMAP 38 - so this is what lets a lesson ship without them while still
+   showing the reader where the drawing will be. The sentence bar across the
+   top keeps working, because that part is generated and costs nothing.
+   ⚠️ NOT a fake frame. It says the feature is not built yet, in words. A panel
+   that sat empty would read as broken, and one that invented a diagram would be
+   worse than either. */
+var PANEL_SOON = !VISUALS.length;
+if (PANEL_SOON && dbox){
+  dbox.classList.add("is-soon");
+  dbox.classList.remove("is-blank");
+  var soon = document.createElement("p");
+  soon.className = "dbox-soon";
+  soon.textContent = "Visual panel coming soon";
+  var soonNote = document.createElement("p");
+  soonNote.className = "dbox-soonnote";
+  soonNote.textContent = "The sentence being read shows above. The drawing for this lesson is not built yet.";
+  var inBox = dbox.querySelector(".dbox-in");
+  if (inBox){ inBox.textContent = ""; inBox.appendChild(soon); inBox.appendChild(soonNote); }
+}
+
+if ((VISUALS.length || PANEL_SOON) && dbox){
   dbox.hidden = false;
   /* 🚨 Remembered per reader, and OPEN by default. It is the reason the lesson
      looks the way it does, so a student meeting the page for the first time has
