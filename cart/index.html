@@ -327,6 +327,18 @@
     });
 
     NSAccount.checkoutFree($("coEmail").value).then(function(rows){
+      /* 📧 THE FREE RECEIPT. Fire and forget: the sheets are already on screen,
+         so a failed email must never block this page. The Worker sends only
+         what claim_free_receipt() (migration 009) confirms for these ids.
+         ⚠️ Free-only carts. A mixed cart's receipt comes from the Stripe
+         webhook, and two emails for one order would read as a mistake. */
+      try {
+        fetch(WORKER + "/free-receipt", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: $("coEmail").value,
+                                 ids: (rows || []).map(function(r){ return r && r.id; }) })
+        }).catch(function(){});
+      } catch (e) {}
       /* 🚨 NEVER SAY "SENT TO". Paul, 2026-09-09: "i didnt get it in my email
          that i can see." He was right, and the old message was simply false:
          NOTHING on this site sends email. checkout_free() writes the row and

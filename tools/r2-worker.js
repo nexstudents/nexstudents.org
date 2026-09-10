@@ -167,6 +167,7 @@ export default {
        They are matched BEFORE the GET/HEAD guard below, which would otherwise
        405 them. */
     if (url.pathname === "/checkout")      return checkout(request, env);
+    if (url.pathname === "/free-receipt")  return freeReceipt(request, env);
     if (url.pathname === "/stripe-webhook") return stripeWebhook(request, env);
 
     /* ── AND THE SAME TWO THINGS FOR PAYPAL ─────────────────────────────────
@@ -571,17 +572,63 @@ async function stripeWebhook(request, env) {
    back at THIS Worker, so the file still only ever comes from us.
    ⚠️ FROM onboarding@resend.dev UNTIL THE DOMAIN IS VERIFIED. Resend's test
    sender delivers to the account owner's own address and refuses the rest.
-   Set RECEIPT_FROM to "NexStudents <hello@nexstudents.org>" once SPF and DKIM
-   are in at Squarespace; no code change needed.
+   nexstudents.org was added to Resend on 2026-09-10 (DKIM resend._domainkey,
+   CNAMEs send + rsend at Squarespace). Once it shows Verified, the Worker
+   secret RECEIPT_FROM = "NexStudents <receipts@nexstudents.org>"; no code
+   change. Squarespace's Email Security preset (spf -all, DMARC p=reject,
+   strict) STAYS: Resend's DKIM signs as nexstudents.org, which aligns.
    ⚠️ Idempotency-Key is the Stripe session, so a replayed webhook cannot send a
    second copy (Resend holds the key for 24 hours).
    🚨 NO EM DASHES IN THE COPY. Paul: "it's very easy to tell that it's AI." */
+/* ── POST /free-receipt  {ids, email} ──────────────────────────────────────
+   The cart calls this after checkout_free() succeeds, with the purchase ids it
+   got back. 🚨 THE WORKER DOES NOT DECIDE WHETHER TO SEND. claim_free_receipt()
+   (migration 009) returns rows only for those ids, that email, free, placed in
+   the last 15 minutes, and never receipted - and marks them as it returns. So
+   this route cannot be used to mail a stranger, or to mail anyone twice.
+   ⚠️ Always answers 200 {ok:true}. The page has already shown the sheets, and
+   whether an email went out tells a caller nothing they are owed. */
+async function freeReceipt(request, env) {
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
+  if (request.method !== "POST") return jsonOut({ error: "Method not allowed" }, 405);
+  let ids, email;
+  try {
+    const b = await request.json();
+    ids = (Array.isArray(b && b.ids) ? b.ids : []).map(String)
+      .filter((x) => /^[0-9a-f-]{36}$/i.test(x)).slice(0, 20);
+    email = String((b && b.email) || "").trim();
+  } catch (e) { return jsonOut({ ok: true }); }
+  if (!ids.length || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return jsonOut({ ok: true });
+
+  try {
+    const r = await fetch(env.SUPABASE_URL + "/rest/v1/rpc/claim_free_receipt", {
+      method: "POST",
+      headers: { apikey: env.SUPABASE_KEY, Authorization: "Bearer " + env.SUPABASE_KEY,
+                 "Content-Type": "application/json" },
+      body: JSON.stringify({ p_ids: ids, p_email: email }),
+    });
+    const rows = r.ok ? await r.json() : [];
+    if (Array.isArray(rows) && rows.length) {
+      await sendReceipt(env, {
+        email, free: true, session: "free-" + ids.slice().sort().join("-").slice(0, 60),
+        items: rows.map((x) => ({ slug: x.product, cents: 0 })), tokens: {},
+        titles: Object.fromEntries(rows.map((x) => [x.product, x.title])),
+        worker: new URL(request.url).origin,
+      });
+    }
+  } catch (e) {
+    console.error("[free-receipt] " + e.message);
+  }
+  return jsonOut({ ok: true });
+}
+
 async function sendReceipt(env, o) {
   if (!env.RESEND_API_KEY) { console.error("[receipt] RESEND_API_KEY not set"); return; }
 
-  /* Titles come from the catalogue, the same place the price did. */
-  let titles = {};
-  try {
+  /* Titles come from the catalogue, the same place the price did. A free
+     receipt already has them from claim_free_receipt(). */
+  let titles = o.titles || {};
+  if (!o.titles) try {
     const r = await fetch(env.SUPABASE_URL + "/rest/v1/products?slug=in.(" +
       o.items.map((it) => encodeURIComponent(it.slug)).join(",") + ")&select=slug,title",
       { headers: { apikey: env.SUPABASE_KEY, Authorization: "Bearer " + env.SUPABASE_KEY } });
@@ -609,7 +656,9 @@ async function sendReceipt(env, o) {
     <tr><td style="padding:14px 0;font-weight:bold">Total</td>
       <td style="padding:14px 0;font-weight:bold;text-align:right">${money(total)}</td></tr>
   </table>
-  <p style="font-size:14px;line-height:1.6;color:#5d6874;margin:20px 0 0">Your download was ready on screen when you checked out. You can also find it any time by signing in at <a href="${SITE}/account/" style="color:#1b2229">nexstudents.org</a> with this email.</p>
+  <p style="font-size:14px;line-height:1.6;color:#5d6874;margin:20px 0 0">${o.free
+    ? "Your sheets are ready to print from their pages on the site."
+    : "Your download was ready on screen when you checked out."} You can also find ${o.items.length > 1 ? "them" : "it"} any time by signing in at <a href="${SITE}/account/" style="color:#1b2229">nexstudents.org</a> with this email.</p>
   <p style="font-size:14px;line-height:1.6;color:#5d6874;margin:12px 0 0">Questions? Reach us through the <a href="${SITE}/contact/" style="color:#1b2229">contact page</a>.</p>
 </div>`;
 
@@ -622,6 +671,9 @@ async function sendReceipt(env, o) {
     },
     body: JSON.stringify({
       from: env.RECEIPT_FROM || "NexStudents <onboarding@resend.dev>",
+      /* The sending address has no mailbox. A buyer who presses Reply reaches
+         a person at the support address instead. Paul, 2026-09-10. */
+      reply_to: env.RECEIPT_REPLY_TO || "support@nexedgestudios.com",
       to: [o.email],
       subject: "Your NexStudents receipt",
       html,
