@@ -940,8 +940,9 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .authgo{width:100%;display:flex;align-items:center;justify-content:center;
   margin-top:12px;min-height:52px;font-size:1rem}
 /* Reset Link Sent: the button changes colour and stays pressed, like the
-   Lizzie Peirce reference. Green reads as done on both themes. */
-.authgo.is-sent,.authgo.is-sent:disabled{background:#2e7d4f;border-color:#2e7d4f;color:#fff;
+   Lizzie Peirce reference. Gray, Paul's call ("dont make the sent button
+   green"); a mid gray with white text reads on both themes. */
+.authgo.is-sent,.authgo.is-sent:disabled{background:#5b6470;border-color:#5b6470;color:#fff;
   opacity:1;cursor:default;transform:none}
 
 /* 🔑 THE ACCOUNT CARD, 2026-09-10, to Lizzie Peirce's login and create pages:
