@@ -1984,6 +1984,17 @@ nav{border-bottom:1px solid var(--line)}
    sentence. */
 .termshead p{font-weight:800;color:var(--fg);font-size:19px;letter-spacing:-.01em}
 
+/* ── THE THANK-YOU BLOCK, CENTRED ──────────────────────────────────────────
+   Paul, 2026-09-10: a simple Thank you at the top (the page h1), then "Your
+   download is ready." directly above the button, with the button in the
+   middle. 🚨 margin-inline:auto on the h2 and the note, not only
+   text-align - .prose gives both a max-width, the same trap as .prose h2.mid. */
+.ty{text-align:center;padding-top:34px}
+.ty h2{margin:0 auto 6px;text-align:center}
+.ty .ty-item{margin:0 0 26px}
+.ty .ty-title{margin:0 auto 14px;color:var(--dim)}
+.ty > p{margin-inline:auto;text-align:center}
+
 /* The line under the unit dots explaining a shelf that does not start at Unit 1.
    See unitPager() in build-pages.js — Paul: "this one starts a two and ends at 5". */
 .unitnote{margin:14px 0 0;text-align:center;font-size:.85rem;color:var(--dim);

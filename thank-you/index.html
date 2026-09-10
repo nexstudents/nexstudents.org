@@ -18,7 +18,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=ecf84c5c">
+<link rel="stylesheet" href="/assets/ns.css?v=2b795f3a">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -490,10 +490,12 @@ if(cdrawer){
   function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
   function show(rows, partial){
     var many = rows.length > 1;
-    box.innerHTML = "<h2 style=\"margin-top:0\">Your " + (many ? "downloads are" : "download is") + " ready.</h2>"
-      + rows.map(function(row){
-          return "<p><b>" + esc(row.title) + "</b><br>"
-            + "<a class=\"btn\" href=\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\">Download the PDF</a></p>";
+    box.className = "ty";
+    box.innerHTML = rows.map(function(row, i){
+          return "<div class=\"ty-item\">"
+            + (i === 0 ? "<h2>Your " + (many ? "downloads are" : "download is") + " ready.</h2>" : "")
+            + "<p class=\"ty-title\">" + esc(row.title) + "</p>"
+            + "<a class=\"btn\" href=\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\">Download the PDF</a></div>";
         }).join("")
       + (partial ? "<p class=\"dim\">The rest of your order is still being prepared. It will be on your account in a few minutes.</p>" : "")
       + "<p class=\"dim\">Keep " + (many ? "these links" : "this link") + ". You can also find " + (many ? "them" : "it") + " any time by signing in at "

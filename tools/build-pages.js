@@ -1760,11 +1760,16 @@ function thankYouScript() {
     /* 🛒 EVERY ROW, ONE DOWNLOAD EACH. This used to render rows[0] only. */
     '  function show(rows, partial){',
     '    var many = rows.length > 1;',
-    /* The page title already says "Thank you.", so this does not say it again. */
-    '    box.innerHTML = "<h2 style=\\"margin-top:0\\">Your " + (many ? "downloads are" : "download is") + " ready.</h2>"',
-    '      + rows.map(function(row){',
-    '          return "<p><b>" + esc(row.title) + "</b><br>"',
-    '            + "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\\">Download the PDF</a></p>";',
+    /* 🎨 CENTRED, AND THE LINE SITS RIGHT ABOVE THE BUTTON. Paul, 2026-09-10:
+       "put at the top just a simple thank you and then right above the button
+       your download is ready", with the button in the middle. The page h1 is
+       the simple Thank you; this block is centred by .ty in ns.css. */
+    '    box.className = "ty";',
+    '    box.innerHTML = rows.map(function(row, i){',
+    '          return "<div class=\\"ty-item\\">"',
+    '            + (i === 0 ? "<h2>Your " + (many ? "downloads are" : "download is") + " ready.</h2>" : "")',
+    '            + "<p class=\\"ty-title\\">" + esc(row.title) + "</p>"',
+    '            + "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\\">Download the PDF</a></div>";',
     '        }).join("")',
     '      + (partial ? "<p class=\\"dim\\">The rest of your order is still being prepared. It will be on your account in a few minutes.</p>" : "")',
     '      + "<p class=\\"dim\\">Keep " + (many ? "these links" : "this link") + ". You can also find " + (many ? "them" : "it") + " any time by signing in at "',
