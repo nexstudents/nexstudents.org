@@ -352,7 +352,14 @@ function productBlock(s) {
   const short = s.included || s.contains.slice(0, 3);
   const more = s.included || s.contains.length > 3;
   const hasCarousel = previewFiles(s).length > 0;
-  return `<section class="product">
+  /* 🛡️ What the ADMIN bar needs (ns-account.js adminBar, 2026-09-10): the
+     printable page and the file. A free sheet's file sits in its folder; a paid
+     one comes from the Worker's /admin-file for the admin only, so no path. */
+  const dirAbs = path.join(ROOT, "worksheets", subjSlug(s.subject), s.slug);
+  const pdf = paid ? ""
+    : fs.existsSync(path.join(dirAbs, s.slug + ".pdf")) ? `${dir}${s.slug}.pdf`
+    : (s.file ? `${dir}${s.file}` : "");
+  return `<section class="product" data-slug="${s.slug}" data-paid="${paid ? 1 : 0}" data-print="${dir}print/" data-pdf="${pdf}">
     ${hasCarousel ? carousel(s, dir, art)
       : `<div class="p-img">${s.thumb ? `<img src="${art}" alt="${s.title}" width="700" height="700">` : ""}</div>`}
     <div class="p-info">

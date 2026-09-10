@@ -168,6 +168,7 @@ export default {
        405 them. */
     if (url.pathname === "/checkout")      return checkout(request, env);
     if (url.pathname === "/free-receipt")  return freeReceipt(request, env);
+    if (url.pathname === "/admin-file")    return adminFile(request, env, url);
     if (url.pathname === "/stripe-webhook") return stripeWebhook(request, env);
 
     /* ── AND THE SAME TWO THINGS FOR PAYPAL ─────────────────────────────────
@@ -621,6 +622,40 @@ async function freeReceipt(request, env) {
     console.error("[free-receipt] " + e.message);
   }
   return jsonOut({ ok: true });
+}
+
+/* ── GET /admin-file?slug=  (Authorization: Bearer <login token>) ──────────
+   Paul, 2026-09-10: "have buttons to print worksheets myself without paying
+   for them." A paid PDF for the ADMIN only.
+   🚨 THE WORKER DOES NOT TRUST THE TOKEN'S OWN CLAIM. It hands the token to
+   Supabase's /auth/v1/user, which validates it and returns the real user, and
+   only then reads app_metadata.role (set by migration 011, writable by no
+   browser). Anything else is a 404, the same answer as a bad download token.
+   ⚠️ private, no-store: the file must never sit in a shared cache. */
+async function adminFile(request, env, url) {
+  /* ⚠️ Set AFTER cors(): it writes its own POST-only methods and headers over
+     anything passed in, which would fail the browser's preflight here. */
+  const h = cors();
+  h.set("access-control-allow-headers", "content-type, authorization");
+  h.set("access-control-allow-methods", "GET, OPTIONS");
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: h });
+  const slug = String(url.searchParams.get("slug") || "");
+  const auth = request.headers.get("authorization") || "";
+  if (!/^[a-z0-9-]{1,80}$/.test(slug) || !/^Bearer\s+\S+/.test(auth)) return new Response("Not found", { status: 404, headers: h });
+  let user = null;
+  try {
+    const r = await fetch(env.SUPABASE_URL + "/auth/v1/user", { headers: { apikey: env.SUPABASE_KEY, Authorization: auth } });
+    if (r.ok) user = await r.json();
+  } catch (e) { /* treated as not admin */ }
+  if (!user || !user.app_metadata || user.app_metadata.role !== "admin") {
+    return new Response("Not found", { status: 404, headers: h });
+  }
+  const obj = await env.MEDIA.get(PAID + slug + ".pdf");
+  if (!obj) return new Response("Not found", { status: 404, headers: h });
+  h.set("content-type", "application/pdf");
+  h.set("cache-control", "private, no-store");
+  h.set("content-disposition", 'inline; filename="' + slug + '.pdf"');
+  return new Response(obj.body, { status: 200, headers: h });
 }
 
 async function sendReceipt(env, o) {

@@ -647,6 +647,14 @@ body.print-all .wk+.wk{page-break-before:always}
 .p-more-detail > p{margin:10px 0 8px}
 .p-more{margin-top:48px}
 
+/* 🛡️ The admin bar: only Paul, only in Admin view (ns-account.js adminBar).
+   Red so it can never be mistaken for something a customer sees. */
+.admin-bar{order:-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 16px;
+  padding:10px 12px;border:1px dashed #c62828;border-radius:8px}
+.admin-bar span{font:800 11px/1 inherit;letter-spacing:.12em;text-transform:uppercase;color:#c62828;margin-right:4px}
+.admin-bar a,.admin-bar button{appearance:none;border:0;border-radius:6px;padding:8px 12px;cursor:pointer;
+  font:700 13px/1 inherit;background:#c62828;color:#fff;text-decoration:none}
+
 /* You Might Also Like: three small tiles under the product, nothing more. */
 .p-also{max-width:1120px;margin:56px auto 0;padding:0 20px}
 .p-also-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}

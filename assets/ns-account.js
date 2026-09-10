@@ -377,9 +377,97 @@
     });
   }
 
+  /* ── ADMIN (2026-09-10, migration 011) ────────────────────────────────────
+     Paul: "have buttons to print worksheets myself without paying for them
+     ... I can also see things on guest mode and admin mode."
+     🚨 THIS ONLY DECIDES WHAT TO SHOW. The role is read from the login token's
+     app_metadata, which no browser can write, and every admin POWER is checked
+     again on the server: the Worker's /admin-file asks Supabase who the token
+     belongs to, and admin database calls go through is_admin(). A console edit
+     here shows buttons that then refuse to work.
+     ⚠️ A login from before migration 011 carries no role. Sign out and in. */
+  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
+  var VIEW_KEY = "ns:viewas";
+  function claims() {
+    try {
+      var p = session.access_token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(decodeURIComponent(escape(atob(p))));
+    } catch (e) { return null; }
+  }
+  function isAdmin() {
+    var c = session && claims();
+    return !!(c && c.app_metadata && c.app_metadata.role === "admin");
+  }
+  function viewAs() { return read(VIEW_KEY, "admin"); }
+  function adminMode() { return isAdmin() && viewAs() === "admin"; }
+  /* A paid PDF, fetched with the login token and opened in a new tab where the
+     browser's own viewer can print or save it. */
+  function adminFile(slug) {
+    var win = window.open("", "_blank");
+    return refreshIfNeeded().then(function (s) {
+      if (!s) throw new Error("Sign in again.");
+      return fetch(WORKER + "/admin-file?slug=" + encodeURIComponent(slug),
+                   { headers: { "Authorization": "Bearer " + s.access_token } });
+    }).then(function (r) {
+      if (!r.ok) throw new Error("Not available");
+      return r.blob();
+    }).then(function (b) {
+      var u = URL.createObjectURL(b);
+      if (win) win.location = u; else location.href = u;
+    }).catch(function (e) { if (win) win.close(); throw e; });
+  }
+
+  /* The pill: bottom left, on every page that loads this file, for the admin
+     only. It flips Admin view and Guest view and links the admin page. */
+  function adminPill() {
+    if (!isAdmin() || document.getElementById("nsAdminPill")) return;
+    var guest = viewAs() !== "admin";
+    var d = document.createElement("div");
+    d.id = "nsAdminPill";
+    d.setAttribute("style", "position:fixed;left:14px;bottom:14px;z-index:900;display:flex;gap:6px;" +
+      "font:700 12px/1 Archivo,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase");
+    var b = "border:0;border-radius:999px;padding:9px 13px;cursor:pointer;";
+    d.innerHTML =
+      '<button type="button" id="nsAdminFlip" style="' + b + (guest ? "background:#f1f3f5;color:#1b2229" : "background:#c62828;color:#fff") + '">' +
+        (guest ? "Guest View" : "Admin View") + '</button>';
+    /* ⚠️ The /admin/ help page (look up a parent, reset progress, unlock an
+       item) is step 5. Its link joins this pill the day the page exists. */
+    document.body.appendChild(d);
+    document.getElementById("nsAdminFlip").onclick = function () {
+      write(VIEW_KEY, guest ? "admin" : "guest");
+      location.reload();
+    };
+  }
+  /* Product pages: Print and Download, paid included, in Admin view. The page
+     marks itself with data-slug / data-paid / data-print / data-pdf. */
+  function adminBar() {
+    var p = document.querySelector(".product[data-slug]");
+    if (!p || !adminMode()) return;
+    var slug = p.getAttribute("data-slug"), paid = p.getAttribute("data-paid") === "1";
+    var bar = document.createElement("div");
+    bar.className = "admin-bar";
+    bar.innerHTML = '<span>Admin</span>' +
+      (paid
+        ? '<button type="button" data-a="open">Print or Download</button>'
+        : '<a href="' + p.getAttribute("data-print") + '">Print</a>' +
+          (p.getAttribute("data-pdf") ? '<a href="' + p.getAttribute("data-pdf") + '" download>Download</a>' : ""));
+    var info = p.querySelector(".p-info");
+    info.insertBefore(bar, info.firstChild);
+    var btn = bar.querySelector('[data-a="open"]');
+    if (btn) btn.onclick = function () {
+      btn.textContent = "Opening...";
+      adminFile(slug).then(function () { btn.textContent = "Print or Download"; })
+        .catch(function () { btn.textContent = "Not available. Sign out and back in."; });
+    };
+  }
+  function adminBoot() { adminPill(); adminBar(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", adminBoot);
+  else adminBoot();
+
   captureFromUrl();
 
   window.NSAccount = {
+    isAdmin: isAdmin, adminMode: adminMode, viewAs: viewAs, adminFile: adminFile,
     owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
     logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile,
     isRecovery: function () { return recovery; },
