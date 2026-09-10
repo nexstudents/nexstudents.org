@@ -270,6 +270,52 @@ function carousel(s, dir, art) {
     })();</script>`;
 }
 
+/* ── MORE DETAIL, COLLAPSED ────────────────────────────────────────────────
+   Paul, 2026-09-10, after cutting the page twice to lift Add To Cart: "you
+   could also just add an expansion section for more detail but make it simple
+   to understand." So the long list lives here, CLOSED, and the short list
+   above stays the thing people read.
+   ⚠️ A native <details>: it opens with a keyboard and with JavaScript off, the
+   same reason the mega menu uses one. `covers` is one plain sentence. */
+function moreDetail(s) {
+  return `<details class="p-more-detail">
+        <summary>More Detail</summary>
+        ${s.covers ? `<p>${s.covers}</p>` : ""}
+        <ul class="p-list">
+          ${s.contains.map((c) => "<li>" + c + "</li>").join("\n          ")}
+        </ul>
+      </details>`;
+}
+
+/* ── YOU MIGHT ALSO LIKE ───────────────────────────────────────────────────
+   Paul, 2026-09-10: "you could add other products available but I don't want
+   to overcrowd this." The reference ends its product page with the same row.
+   🚨 THREE, NEVER MORE. Picked from worksheets.js, so it can never link a sheet
+   that does not exist: same subject AND grade first, then same subject, then
+   same grade, then anything with a picture.
+   ⚠️ Prices read "$0.00", never "Free" - the same rule as the cart. */
+function alsoLike(s) {
+  const rank = (o) => (o.subject === s.subject ? 0 : 2) + (String(o.grade) === String(s.grade) ? 0 : 1);
+  const picks = SHEETS
+    .filter((o) => o.slug !== s.slug && o.thumb && o.title)
+    .map((o, i) => ({ o, i }))
+    .sort((a, b) => rank(a.o) - rank(b.o) || a.i - b.i)
+    .slice(0, 3)
+    .map(({ o }) => o);
+  if (!picks.length) return "";
+  return `<section class="p-also">
+    <h2 class="p-h">You Might Also Like</h2>
+    <div class="p-also-row">
+      ${picks.map((o) => {
+        const href = `/worksheets/${subjSlug(o.subject)}/${o.slug}/`;
+        return `<a class="p-also-card" href="${href}">
+        <span class="p-also-img"><img src="${href}thumb.jpg" alt="" width="300" height="300" loading="lazy"></span>
+        <b>${o.title}</b><span>${priceText(o.price)}</span></a>`;
+      }).join("\n      ")}
+    </div>
+  </section>`;
+}
+
 function productBlock(s) {
   const dir = `/worksheets/${subjSlug(s.subject)}/${s.slug}/`;
   const art = `${dir}thumb.jpg`;
@@ -296,13 +342,15 @@ function productBlock(s) {
       <ul class="p-list">
         ${(s.included || s.contains).map((c) => "<li>" + c + "</li>").join("\n        ")}
       </ul>
+      ${s.included ? moreDetail(s) : ""}
       <h2 class="p-h">Where's My Download?</h2>
       <p>It appears on screen the moment checkout finishes, so there is nothing to wait for.</p>
       <h2 class="p-h">More Questions?</h2>
       <p>Ask us on the <a href="/contact/">contact page</a>.</p>
       ${btn}
     </div>
-  </section>`;
+  </section>
+  ${alsoLike(s)}`;
 }
 
 /* kind "paid-sheet" — a PAID SINGLE SHEET whose product is a finished PDF.
@@ -347,7 +395,7 @@ ${navMarkup("w")}
 
 ${productBlock(s)}
 
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
@@ -410,7 +458,7 @@ ${productBlock(s)}
   </div>
 
 </div>
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
@@ -476,7 +524,7 @@ ${splitSheetBody(s)}
     <small>Copyright &copy; NexEdge Studios</small></p>
 
 </div>
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
@@ -559,7 +607,7 @@ ${navMarkup("w")}
     <small>Copyright &copy; NexEdge Studios</small></p>
 
 </div>
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
@@ -700,7 +748,7 @@ ${navMarkup("w")}
   show(w >= 1 && w <= weeks.length ? w : 1);
 })();
 </script>
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
@@ -795,7 +843,7 @@ ${s.scripture ? `
   </div>
 
 </div>
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
@@ -880,7 +928,7 @@ ${navMarkup("w")}
 
 </div>
 
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
@@ -1001,7 +1049,7 @@ ${navMarkup("w")}
 
 </div>
 
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>
@@ -1104,7 +1152,7 @@ ${navMarkup("w")}
 
 </div>
 
-<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
+<div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
 </body>

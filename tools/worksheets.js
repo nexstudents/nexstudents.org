@@ -354,6 +354,9 @@ const SHEETS = [
     "Word list, with name and date lines",
     "Answer key on page 2",
   ],
+  /* One plain sentence at the top of the collapsed More Detail, above the
+     long `contains` list. Paul: "make it simple to understand." */
+  covers: "Covers the 16 cell parts a 7th grade life science course names, from the cell membrane on the outside to the nucleolus in the middle.",
 },
 
 /* ═══════════════════ 4. SEMESTER 1 BUNDLE (paid, preview only) ═══════════
