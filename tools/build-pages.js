@@ -2558,7 +2558,7 @@ const SOON_PAGES = [
     <p class="dim" id="siMsg" style="font-size:.9rem;margin:14px 0 0"></p>
     <p class="authlinks" id="siLinks"></p>
 
-    <p class="dim" style="font-size:.85rem;margin:18px 0 0">
+    <p class="dim" id="siGuest" style="font-size:.85rem;margin:18px 0 0">
       Bought something as a guest? Create an account with the same email you used at
       checkout and it will be waiting here.</p>
   </div>
@@ -2689,6 +2689,8 @@ const SOON_PAGES = [
   }
   $("siForm").onsubmit = function(e){
     e.preventDefault();
+    /* After the reset link goes out, the one button is Back to Sign In. */
+    if (mode === "sent") return setMode("in");
     var btn = e.target.querySelector("button");
     btn.disabled = true; $("siMsg").textContent = "Sending\u2026";
     var em = $("siEmail").value.trim(), pw = $("siPass").value, pw2 = $("siPass2").value;
@@ -2712,9 +2714,12 @@ const SOON_PAGES = [
                                       "confirm your account. Press it, then sign in here.";
                                   })
             : mode === "forgot" ? NSAccount.forgot(em).then(function(){
-                                    $("siMsg").innerHTML = "<b>Check your email.</b> If there is an account " +
-                                      "for that address, a link to reset the password is on its way.";
-                                    btn.disabled = false;
+                                    /* A clear done state, not the send button left live under
+                                       a line of small print. Paul: "the buttons feels odd". */
+                                    setMode("sent");
+                                    $("siLede").textContent = "If there is an account for " + em +
+                                      ", a link to choose a new password is on its way. It can take a " +
+                                      "minute, and it may land in spam.";
                                   })
             :                     NSAccount.newPassword(pw).then(function(){
                                     msg.textContent = ""; setMode("in"); paint();
@@ -2748,7 +2753,9 @@ const SOON_PAGES = [
     forgot: { head: "Reset Your Password", btn: "Send Reset Link", names: false, pass: false, pass2: false,
               lede: "Type your email and we will send you a link to choose a new password.",
               links: [["Back to Sign In", "in"]] },
-    reset:  { head: "Choose a New Password", btn: "Save New Password", names: false, pass: true, pass2: true,
+    sent:   { head: "Check Your Email", btn: "Back to Sign In", names: false, pass: false, pass2: false,
+              email: false, lede: " ", links: [["Did not get it? Send Again", "forgot"]] },
+    reset: { head: "Choose a New Password", btn: "Save New Password", names: false, pass: true, pass2: true,
               ph: "New Password", email: false, links: [] }
   };
   function setMode(m){
@@ -2774,6 +2781,8 @@ const SOON_PAGES = [
     });
     $("siMsg").textContent = "";
     $("siPass").value = ""; $("siPass2").value = "";
+    /* The guest line only helps someone signing in or creating an account. */
+    $("siGuest").classList.toggle("hidden", m !== "in" && m !== "up");
   }
   setMode("in");
 
