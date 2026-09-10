@@ -365,8 +365,9 @@ const SHEETS = [
    plantcell/build_sheet.py: 13 parts, numbers scrambled so they do not follow
    the word list. The PDF lives OUTSIDE the repo (Desktop\Temp Screenshots\
    Plant_Cell_Worksheet_Final.pdf) and in R2 at paid/plant-cell.pdf.
-   ⚠️ thumb.jpg is Paul's BLANK cell for now. He is making a proper cover;
-   replace thumb.jpg with it and nothing else changes. */
+   thumb.jpg is Paul's ChatGPT cover (2026-09-10, 1:26 PM image).
+   ⚠️ Its drawn worksheet mockup shows 16 boxes and "Vesicles"; the real sheet
+   has 13 parts and no vesicles. Flagged to Paul the same day, his call. */
 {
   slug: "plant-cell", subject: "Science", grade: 7,
   kind: "paid-sheet", tagline: "Life Science",
