@@ -700,6 +700,10 @@ body.print-all .wk+.wk{page-break-before:always}
 .p-dots button{width:9px;height:9px;padding:0;border-radius:50%;border:0;cursor:pointer;
   background:var(--dim);opacity:.6}
 .p-dots button.on{background:var(--a);opacity:1}
+/* ⚠️ A thin ring on every dot: the "on" dot is white on the dark theme and
+   vanished against a white picture (the plant cell cover), reading as 2 dots
+   where there were 3. */
+.p-dots button{box-shadow:0 0 0 1.5px rgba(10,11,13,.45)}
 @media (min-width:860px){
   .product{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:56px;align-items:start}
   /* Desktop: back to the bottom, after all the reading. */

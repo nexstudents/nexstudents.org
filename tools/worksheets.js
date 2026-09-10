@@ -359,6 +359,43 @@ const SHEETS = [
   covers: "Covers the 16 cell parts a 7th grade life science course names, from the cell membrane on the outside to the nucleolus in the middle.",
 },
 
+/* PLANT CELL — the animal cell's twin, 2026-09-10. Paul made both pictures in
+   ChatGPT (a labeled reference and a blank cell) and asked for "numbers and
+   lines pointing" plus an answer key. Built by the scratchpad script
+   plantcell/build_sheet.py: 13 parts, numbers scrambled so they do not follow
+   the word list. The PDF lives OUTSIDE the repo (Desktop\Temp Screenshots\
+   Plant_Cell_Worksheet_Final.pdf) and in R2 at paid/plant-cell.pdf.
+   ⚠️ thumb.jpg is Paul's BLANK cell for now. He is making a proper cover;
+   replace thumb.jpg with it and nothing else changes. */
+{
+  slug: "plant-cell", subject: "Science", grade: 7,
+  kind: "paid-sheet", tagline: "Life Science",
+  title: "Plant Cell: Label the Parts",
+  dek: "Thirteen numbered parts on one diagram, a word list to match them against, and a full answer key on the second page.",
+  blurb: "Label 13 parts of a plant cell. Answer key included.",
+  contains: [
+    "A large, full colour plant cell diagram, thirteen parts numbered",
+    "A word list of all thirteen parts to match the numbers against",
+    "A complete answer key, labelled on the diagram and listed underneath",
+    "Two pages, US Letter",
+    "Name and date lines, ready to hand out",
+  ],
+  lockNote: "The sheet covers the parts that make a plant cell different from an animal cell, along with the ones they share.",
+  sample: [
+    "Cell wall and cell membrane as two separate layers",
+    "Chloroplast and the large central vacuole",
+    "Rough and smooth endoplasmic reticulum as two separate parts",
+  ],
+  price: "$2", buy: true, art: false, thumb: true,
+  preview: true,
+  included: [
+    "Full colour plant cell diagram, 13 parts numbered",
+    "Word list, with name and date lines",
+    "Answer key on page 2",
+  ],
+  covers: "Covers the 13 plant cell parts a 7th grade life science course names, from the cell wall on the outside to the nucleolus in the middle.",
+},
+
 /* ═══════════════════ 4. SEMESTER 1 BUNDLE (paid, preview only) ═══════════
    A paid product page. The renderer emits ONLY the preview paragraphs - the
    rest of the reading, every question and every answer key stays out of the
