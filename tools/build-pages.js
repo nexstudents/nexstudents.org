@@ -2689,8 +2689,6 @@ const SOON_PAGES = [
   }
   $("siForm").onsubmit = function(e){
     e.preventDefault();
-    /* After the reset link goes out, the one button is Back to Sign In. */
-    if (mode === "sent") return setMode("in");
     var btn = e.target.querySelector("button");
     btn.disabled = true; $("siMsg").textContent = "Sending\u2026";
     var em = $("siEmail").value.trim(), pw = $("siPass").value, pw2 = $("siPass2").value;
@@ -2714,12 +2712,12 @@ const SOON_PAGES = [
                                       "confirm your account. Press it, then sign in here.";
                                   })
             : mode === "forgot" ? NSAccount.forgot(em).then(function(){
-                                    /* A clear done state, not the send button left live under
-                                       a line of small print. Paul: "the buttons feels odd". */
-                                    setMode("sent");
-                                    $("siLede").textContent = "If there is an account for " + em +
-                                      ", a link to choose a new password is on its way. It can take a " +
-                                      "minute, and it may land in spam.";
+                                    /* Like the Lizzie Peirce reference: the button itself
+                                       changes colour and reads Reset Link Sent, and Back to
+                                       Sign In stays underneath. Paul: "the buttons feels odd". */
+                                    msg.textContent = "";
+                                    btn.textContent = "Reset Link Sent";
+                                    btn.classList.add("is-sent");
                                   })
             :                     NSAccount.newPassword(pw).then(function(){
                                     msg.textContent = ""; setMode("in"); paint();
@@ -2753,8 +2751,6 @@ const SOON_PAGES = [
     forgot: { head: "Reset Your Password", btn: "Send Reset Link", names: false, pass: false, pass2: false,
               lede: "Type your email and we will send you a link to choose a new password.",
               links: [["Back to Sign In", "in"]] },
-    sent:   { head: "Check Your Email", btn: "Back to Sign In", names: false, pass: false, pass2: false,
-              email: false, lede: " ", links: [["Did not get it? Send Again", "forgot"]] },
     reset: { head: "Choose a New Password", btn: "Save New Password", names: false, pass: true, pass2: true,
               ph: "New Password", email: false, links: [] }
   };
@@ -2773,6 +2769,7 @@ const SOON_PAGES = [
     $("siPass2").placeholder = m === "reset" ? "Re-type New Password" : "Re-type Password";
     $("siBtn").textContent = c.btn;
     $("siBtn").disabled = false;
+    $("siBtn").classList.remove("is-sent");
     $("siLinks").innerHTML = c.links.map(function(l){
       return '<button type="button" data-mode="' + l[1] + '">' + l[0] + '</button>';
     }).join("");
