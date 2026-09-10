@@ -361,33 +361,48 @@ async function checkout(request, env) {
     return jsonOut({ error: "Checkout is temporarily unavailable." }, 503);
   }
 
-  let slug;
+  /* 🛒 A CART, NOT ONE SHEET (ROADMAP 37, 2026-09-10). The body is
+     {slugs:[...], email} from /cart/. {slug} alone is still accepted, so a page
+     cached from before the change cannot break. */
+  let slugs, email;
   try {
     const body = await request.json();
-    slug = String((body && body.slug) || "").trim();
+    slugs = Array.isArray(body && body.slugs) ? body.slugs : [body && body.slug];
+    slugs = [...new Set(slugs.map((s) => String(s || "").trim()))];
+    email = String((body && body.email) || "").trim();
   } catch (e) {
     return jsonOut({ error: "Bad request" }, 400);
   }
-  if (!/^[a-z0-9-]{1,80}$/.test(slug)) return jsonOut({ error: "Bad request" }, 400);
+  /* ⚠️ TWENTY IS A CEILING FOR STRIPE METADATA, not a shop rule. Every slug and
+     price rides in one 500-character metadata value, below. */
+  if (!slugs.length || slugs.length > 20 || !slugs.every((s) => /^[a-z0-9-]{1,80}$/.test(s))) {
+    return jsonOut({ error: "Bad request" }, 400);
+  }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) email = "";
 
   /* The catalogue is publicly readable, so the publishable key is right here.
      Nothing secret is being fetched - this is the shop window. */
-  let product;
+  let products;
   try {
-    const r = await fetch(env.SUPABASE_URL + "/rest/v1/products?slug=eq." +
-                          encodeURIComponent(slug) + "&select=slug,title,price_cents,active",
+    const r = await fetch(env.SUPABASE_URL + "/rest/v1/products?slug=in.(" +
+                          slugs.map(encodeURIComponent).join(",") + ")&select=slug,title,price_cents,active",
       { headers: { apikey: env.SUPABASE_KEY, Authorization: "Bearer " + env.SUPABASE_KEY } });
     if (!r.ok) throw new Error("products " + r.status);
-    const rows = await r.json();
-    product = Array.isArray(rows) && rows.length ? rows[0] : null;
+    products = await r.json();
   } catch (e) {
     console.error("[checkout] " + e.message);
     return jsonOut({ error: "Checkout is temporarily unavailable." }, 503);
   }
 
-  if (!product || product.active === false) return jsonOut({ error: "No such product" }, 404);
-  if (!(product.price_cents > 0)) {
-    return jsonOut({ error: "This item is free. Use the free checkout." }, 400);
+  /* 🚨 EVERY SLUG MUST BE A LIVE, PAID PRODUCT, or nothing is charged. A cart
+     that quietly dropped the one bad item would take money for a different
+     order than the buyer saw. Free items go through checkout_free() from the
+     cart BEFORE this is called, so one arriving here is a bug. */
+  const bySlug = Object.fromEntries((products || []).map((p) => [p.slug, p]));
+  for (const s of slugs) {
+    const p = bySlug[s];
+    if (!p || p.active === false) return jsonOut({ error: "No such product: " + s }, 404);
+    if (!(p.price_cents > 0)) return jsonOut({ error: "This item is free. Use the free checkout." }, 400);
   }
 
   /* ⚠️ ui_mode `embedded_page` is the current name. Accounts pinned to an older
@@ -397,15 +412,25 @@ async function checkout(request, env) {
   const form = new URLSearchParams();
   form.set("ui_mode", "embedded_page");
   form.set("mode", "payment");
-  form.set("line_items[0][quantity]", "1");
-  form.set("line_items[0][price_data][currency]", "usd");
-  form.set("line_items[0][price_data][unit_amount]", String(product.price_cents));
-  form.set("line_items[0][price_data][product_data][name]", product.title || slug);
-  form.set("return_url", SITE + "/thank-you/?session_id={CHECKOUT_SESSION_ID}");
-  /* 🚨 THE SLUG MUST RIDE ON THE SESSION. The webhook has no other way to know
-     WHAT was bought - it receives a session, not a shopping cart. Without this
-     every purchase row would have to be guessed from the amount. */
-  form.set("metadata[slug]", slug);
+  slugs.forEach((s, i) => {
+    const p = bySlug[s];
+    form.set(`line_items[${i}][quantity]`, "1");
+    form.set(`line_items[${i}][price_data][currency]`, "usd");
+    form.set(`line_items[${i}][price_data][unit_amount]`, String(p.price_cents));
+    form.set(`line_items[${i}][price_data][product_data][name]`, p.title || s);
+  });
+  /* `n` tells the thank-you page how many rows to wait for. The webhook writes
+     them one at a time, and the page must not show one of two and stop. */
+  form.set("return_url", SITE + "/thank-you/?n=" + slugs.length + "&session_id={CHECKOUT_SESSION_ID}");
+  /* The address typed in the cart, so the buyer does not type it twice. */
+  if (email) form.set("customer_email", email);
+  /* 🚨 WHAT WAS BOUGHT MUST RIDE ON THE SESSION. The webhook receives a session,
+     not a shopping cart. `items` is "slug:cents,slug:cents": the PRICE travels
+     too, so each purchase row records what that sheet cost rather than the
+     whole bill. Stripe caps a metadata value at 500 characters. */
+  const items = slugs.map((s) => s + ":" + bySlug[s].price_cents).join(",");
+  if (items.length > 500) return jsonOut({ error: "Too many items for one checkout" }, 400);
+  form.set("metadata[items]", items);
 
   let session;
   try {
@@ -470,34 +495,53 @@ async function stripeWebhook(request, env) {
      session with an async payment method can still be `unpaid`. */
   if (s.payment_status !== "paid") return new Response("not paid yet", { status: 200 });
 
-  const slug  = String((s.metadata && s.metadata.slug) || "");
+  /* 🛒 ONE ROW PER ITEM. `items` is "slug:cents,..." from a cart checkout;
+     a session started before 2026-09-10 carries only `slug`, and its one row
+     costs the whole session total. Both are read so neither can be orphaned. */
+  const md = s.metadata || {};
+  let items;
+  if (md.items) {
+    items = String(md.items).split(",").map((pair) => {
+      const i = pair.lastIndexOf(":");
+      return { slug: pair.slice(0, i), cents: Number(pair.slice(i + 1)) };
+    });
+  } else {
+    items = [{ slug: String(md.slug || ""), cents: Number(s.amount_total || 0) }];
+  }
   const email = String(s.customer_details && s.customer_details.email || "");
-  if (!/^[a-z0-9-]{1,80}$/.test(slug) || !email) {
-    console.error("[webhook] missing slug or email on " + s.id);
+  if (!email || !items.length ||
+      !items.every((it) => /^[a-z0-9-]{1,80}$/.test(it.slug) && Number.isFinite(it.cents))) {
+    console.error("[webhook] missing items or email on " + s.id);
     return new Response("nothing to record", { status: 200 });
   }
 
   try {
-    const r = await fetch(env.SUPABASE_URL + "/rest/v1/rpc/record_purchase", {
-      method: "POST",
-      headers: {
-        apikey: env.SUPABASE_KEY,
-        Authorization: "Bearer " + env.SUPABASE_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        p_secret: env.PURCHASE_SECRET,
-        p_slug: slug,
-        p_email: email,
-        p_session: String(s.id || ""),
-        p_amount: Number(s.amount_total || 0),
-      }),
-    });
-    if (!r.ok) throw new Error("rpc " + r.status + " " + (await r.text()).slice(0, 200));
+    /* ⚠️ ONE AT A TIME, IN ORDER. If the second fails, the 500 below makes Stripe
+       replay the WHOLE session, and record_purchase hands back the first row's
+       existing token instead of granting it twice. */
+    for (const it of items) {
+      const r = await fetch(env.SUPABASE_URL + "/rest/v1/rpc/record_purchase", {
+        method: "POST",
+        headers: {
+          apikey: env.SUPABASE_KEY,
+          Authorization: "Bearer " + env.SUPABASE_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          p_secret: env.PURCHASE_SECRET,
+          p_slug: it.slug,
+          p_email: email,
+          p_session: String(s.id || ""),
+          p_amount: it.cents,
+        }),
+      });
+      if (!r.ok) throw new Error("rpc " + it.slug + " " + r.status + " " + (await r.text()).slice(0, 200));
+    }
   } catch (e) {
     /* 🚨 A 500 HERE IS CORRECT AND IS NOT A BUG. The money is taken but the
        purchase is unrecorded, so we WANT Stripe to retry. record_purchase is
-       idempotent on the session id, so a retry cannot double-grant. */
+       idempotent on (session, product) since migration 007, so a retry cannot
+       double-grant. */
     console.error("[webhook] " + e.message);
     return new Response("retry please", { status: 500 });
   }

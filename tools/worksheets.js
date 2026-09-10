@@ -341,6 +341,9 @@ const SHEETS = [
     "Peroxisome, lysosome and mitochondrion",
   ],
   price: "$2", buy: true, art: false, thumb: true,
+  /* Page 1, watermarked, as the second carousel slide. Made by
+     tools/make-preview.py from the PDF outside the repo. */
+  preview: true,
 },
 
 /* ═══════════════════ 4. SEMESTER 1 BUNDLE (paid, preview only) ═══════════

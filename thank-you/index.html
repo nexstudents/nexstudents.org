@@ -458,7 +458,9 @@ if(cdrawer){
   var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
   var box = document.getElementById("tyState");
   var cfg = window.NS_SUPABASE || {};
-  var sid = new URLSearchParams(location.search).get("session_id") || "";
+  var qs = new URLSearchParams(location.search);
+  var sid = qs.get("session_id") || "";
+  var want = Math.max(1, parseInt(qs.get("n"), 10) || 1);
   if (!sid || !cfg.url) { return done(false); }
   history.replaceState(null, "", location.pathname);
   var tries = 0;
@@ -474,8 +476,10 @@ if(cdrawer){
       },
       body: JSON.stringify({ p_session: sid })
     }).then(function(r){ return r.json(); }).then(function(rows){
-      if (Array.isArray(rows) && rows.length) return show(rows[0]);
+      rows = Array.isArray(rows) ? rows : [];
+      if (rows.length >= want) return show(rows);
       if (tries < 6) return setTimeout(ask, 2500);
+      if (rows.length) return show(rows, true);
       done(true);
     }).catch(function(){
       if (tries < 6) return setTimeout(ask, 2500);
@@ -483,12 +487,17 @@ if(cdrawer){
     });
   }
   function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
-  function show(row){
-    box.innerHTML = "<h2 style=\"margin-top:0\">Thank you. Your download is ready.</h2>"
-      + "<p>" + esc(row.title) + "</p>"
-      + "<p><a class=\"btn\" href=\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\">Download the PDF</a></p>"
-      + "<p class=\"dim\">Keep this link. You can also find it any time by signing in at "
+  function show(rows, partial){
+    var many = rows.length > 1;
+    box.innerHTML = "<h2 style=\"margin-top:0\">Thank you. Your " + (many ? "downloads are" : "download is") + " ready.</h2>"
+      + rows.map(function(row){
+          return "<p><b>" + esc(row.title) + "</b><br>"
+            + "<a class=\"btn\" href=\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\">Download the PDF</a></p>";
+        }).join("")
+      + (partial ? "<p class=\"dim\">The rest of your order is still being prepared. It will be on your account in a few minutes.</p>" : "")
+      + "<p class=\"dim\">Keep " + (many ? "these links" : "this link") + ". You can also find them any time by signing in at "
       + "<a href=\"/account/\">your account</a> with the email you paid with.</p>";
+    if (window.NSAccount) rows.forEach(function(row){ NSAccount.cartRemove(row.product); });
   }
   function done(paid){
     box.innerHTML = paid

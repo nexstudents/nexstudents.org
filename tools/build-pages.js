@@ -1718,7 +1718,12 @@ function thankYouScript() {
     '  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";',
     '  var box = document.getElementById("tyState");',
     '  var cfg = window.NS_SUPABASE || {};',
-    '  var sid = new URLSearchParams(location.search).get("session_id") || "";',
+    '  var qs = new URLSearchParams(location.search);',
+    '  var sid = qs.get("session_id") || "";',
+    /* 🛒 HOW MANY ROWS TO WAIT FOR. The Worker puts n on the return_url because
+       the webhook writes a cart's rows one at a time, and showing the first of
+       two and stopping reads as "you only got one". Old links have no n: 1. */
+    '  var want = Math.max(1, parseInt(qs.get("n"), 10) || 1);',
     '  if (!sid || !cfg.url) { return done(false); }',
     /* 🚨 STRIP THE SESSION ID OUT OF THE ADDRESS BAR. It is a bearer credential
        for this purchase - the same reasoning ns-account.js applies to the magic
@@ -1738,10 +1743,13 @@ function thankYouScript() {
     '      },',
     '      body: JSON.stringify({ p_session: sid })',
     '    }).then(function(r){ return r.json(); }).then(function(rows){',
-    '      if (Array.isArray(rows) && rows.length) return show(rows[0]);',
+    '      rows = Array.isArray(rows) ? rows : [];',
+    '      if (rows.length >= want) return show(rows);',
     /* Six tries over about fifteen seconds, then an honest holding message.
-       The purchase is real either way; only this page is early. */
+       The purchase is real either way; only this page is early. If SOME rows
+       arrived, show those rather than nothing - the rest are on the account. */
     '      if (tries < 6) return setTimeout(ask, 2500);',
+    '      if (rows.length) return show(rows, true);',
     '      done(true);',
     '    }).catch(function(){',
     '      if (tries < 6) return setTimeout(ask, 2500);',
@@ -1749,12 +1757,20 @@ function thankYouScript() {
     '    });',
     '  }',
     '  function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }',
-    '  function show(row){',
-    '    box.innerHTML = "<h2 style=\\"margin-top:0\\">Thank you. Your download is ready.</h2>"',
-    '      + "<p>" + esc(row.title) + "</p>"',
-    '      + "<p><a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\\">Download the PDF</a></p>"',
-    '      + "<p class=\\"dim\\">Keep this link. You can also find it any time by signing in at "',
+    /* 🛒 EVERY ROW, ONE DOWNLOAD EACH. This used to render rows[0] only. */
+    '  function show(rows, partial){',
+    '    var many = rows.length > 1;',
+    '    box.innerHTML = "<h2 style=\\"margin-top:0\\">Thank you. Your " + (many ? "downloads are" : "download is") + " ready.</h2>"',
+    '      + rows.map(function(row){',
+    '          return "<p><b>" + esc(row.title) + "</b><br>"',
+    '            + "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\\">Download the PDF</a></p>";',
+    '        }).join("")',
+    '      + (partial ? "<p class=\\"dim\\">The rest of your order is still being prepared. It will be on your account in a few minutes.</p>" : "")',
+    '      + "<p class=\\"dim\\">Keep " + (many ? "these links" : "this link") + ". You can also find them any time by signing in at "',
     '      + "<a href=\\"/account/\\">your account</a> with the email you paid with.</p>";',
+    /* Bought, so out of the cart. Only what Postgres confirmed - never a blanket
+       clear, which would also throw away anything added after checkout began. */
+    '    if (window.NSAccount) rows.forEach(function(row){ NSAccount.cartRemove(row.product); });',
     '  }',
     /* 🚨 NEVER SAY "we could not find your purchase". Two very different things
        land here - a slow webhook and someone opening the page with no session
@@ -2573,9 +2589,19 @@ const SOON_PAGES = [
   <div id="cartFull" class="hidden">
     <div class="ck-grid">
 
-      <div class="ck-table">
+      <div class="ck-table" id="ckTable">
         <div class="ck-head"><span>Product</span><span>Quantity</span><span>Total</span></div>
         <div id="cartItems"></div>
+      </div>
+
+      <!-- 🛒 THE PAYMENT STEP (ROADMAP 37). Stripe's embedded form mounts here and
+           takes the product column while it is open, the reference's shape:
+           payment on the left, the order summary on the right. -->
+      <div class="ck-pay hidden" id="ckPay">
+        <!-- A BUTTON, not a hash-only link: the build refuses dead anchors, and
+             this one does something rather than going somewhere. -->
+        <p class="ck-note"><button type="button" class="ck-rm" id="ckBack">&larr; Back to your cart</button></p>
+        <div id="ckStripe"></div>
       </div>
 
       <!-- 🚨 GUEST OR SIGNED IN, NEVER A WALL. Forcing an account before
@@ -2611,10 +2637,15 @@ const SOON_PAGES = [
 
 </div></div>
 <script src="/assets/supabase-config.js"></script>
+<script src="/assets/stripe-config.js"></script>
 <script src="/assets/ns-account.js"></script>
+<!-- Stripe.js is only ever loaded on THIS page, the one that takes a card.
+     Its own docs require it from js.stripe.com, never self-hosted. -->
+<script async src="https://js.stripe.com/v3/"></script>
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
+  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
   /* 🚨 A REAL PRICE, NEVER THE WORD "Free". Paul, 2026-09-07: "subtotal should
      not say free but $0 having an actual price." A cart is a receipt, and $0.00
      in the money column reads as a figure that was calculated. "Free" reads as
@@ -2670,9 +2701,72 @@ const SOON_PAGES = [
     NSAccount.getUser().then(function(u){ if(u && u.email) $("coEmail").value = u.email; });
   }
 
+  /* 🛒 ONE CHECKOUT BUTTON, TWO ROUTES (ROADMAP 37, 2026-09-10).
+     All free  -> freeOnly(), the checkout_free() path exactly as before.
+     Any paid  -> free items recorded first, then Stripe's embedded form opens
+                  in the product column for the paid ones.
+     🚨 PRICES DECIDE THE ROUTE, AND THEY COME FROM POSTGRES (priceList), never
+     from the page. The Worker re-reads them again before charging anything. */
   $("coForm").onsubmit = function(e){
     e.preventDefault();
     var btn = e.target.querySelector("button");
+    var email = $("coEmail").value;
+    btn.disabled = true; $("coMsg").textContent = "Checking out\\u2026";
+    NSAccount.priceList(NSAccount.cart()).then(function(rows){
+      var paid = rows.filter(function(r){ return r.price_cents > 0; })
+                     .map(function(r){ return r.slug; });
+      if (!paid.length) return freeOnly(btn);
+      var free = rows.filter(function(r){ return !(r.price_cents > 0); })
+                     .map(function(r){ return r.slug; });
+      return (free.length ? NSAccount.checkoutFree(email, free) : Promise.resolve())
+        .then(function(){ return pay(paid, email, btn); });
+    }).catch(function(err){
+      $("coMsg").textContent = (err && err.message) || "That did not go through.";
+      btn.disabled = false;
+    });
+  };
+
+  var checkout = null;
+  function pay(paid, email, btn){
+    /* Stripe.js loads async, so a very fast click can beat it. Say so plainly;
+       the button comes back for a second try. */
+    if (!window.Stripe || !(window.NS_STRIPE && NS_STRIPE.publishableKey)) {
+      throw new Error("Card checkout is still loading. Please try again in a moment.");
+    }
+    return fetch(WORKER + "/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slugs: paid, email: email })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if (!d || !d.clientSecret) throw new Error((d && d.error) || "Checkout is unavailable right now.");
+      return Stripe(NS_STRIPE.publishableKey).initEmbeddedCheckout({ clientSecret: d.clientSecret });
+    }).then(function(c){
+      checkout = c;
+      $("ckTable").classList.add("hidden");
+      $("ckPay").classList.remove("hidden");
+      /* mount() takes the ELEMENT, never a selector string. */
+      c.mount($("ckStripe"));
+      $("coForm").classList.add("hidden");
+      $("coMsg").textContent = "Paying as " + email;
+      btn.disabled = false;
+    });
+  }
+  /* 🚨 A WAY BACK THAT WORKS. Stripe refuses a second initEmbeddedCheckout while
+     one is mounted, so leaving must destroy() it, or Check Out does nothing the
+     second time and the buyer is stuck. */
+  $("ckBack").onclick = function(e){
+    e.preventDefault();
+    if (checkout) { checkout.destroy(); checkout = null; }
+    $("ckPay").classList.add("hidden");
+    $("ckTable").classList.remove("hidden");
+    $("coForm").classList.remove("hidden");
+    $("coMsg").textContent = "";
+    paint();
+  };
+
+  /* The all-free route. The body below is unchanged from before the cart could
+     take a card; only its opening lines moved up into onsubmit. */
+  function freeOnly(btn){
     btn.disabled = true; $("coMsg").textContent = "Checking out\u2026";
     /* 🚨 SNAPSHOT BEFORE CHECKING OUT. checkoutFree() calls cartClear(), which
        drops the slugs AND the display hints, so a receipt built afterwards has
@@ -2709,8 +2803,9 @@ const SOON_PAGES = [
         "<a class='btn' href='/account/'>Make an account</a> " +
         "<a class='btn ghost' href='/worksheets/'>Keep browsing</a></div>";
     }).catch(function(err){
-      /* ⚠️ A paid item lands here until Stripe is wired. Say so plainly rather
-         than failing silently -- the database refuses it, and it should. */
+      /* ⚠️ A paid item can no longer reach this path - onsubmit routes it to
+         pay() - but if one ever does, the database refuses it and this says so
+         plainly rather than failing silently. */
       $("coMsg").textContent = err.message || "That did not go through.";
       btn.disabled = false;
     });

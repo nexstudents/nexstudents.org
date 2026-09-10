@@ -209,8 +209,12 @@
      and refuses anything that is not zero. Paid items are NOT handled here --
      they need Stripe, and a purchase row may only ever be written by the webhook
      holding the secret key. */
-  function checkoutFree(email) {
-    var items = cart();
+  /* `only` (2026-09-10): a MIXED cart records its free items here first, then
+     sends the paid ones to Stripe. With `only`, the cart is NOT cleared - the
+     paid items are still owed, and the thank-you page removes each one once
+     Postgres confirms it was bought. */
+  function checkoutFree(email, only) {
+    var items = only || cart();
     if (!items.length) return Promise.reject(new Error("The cart is empty"));
     return priceList(items).then(function (rows) {
       var paid = rows.filter(function (r) { return r.price_cents > 0; });
@@ -231,7 +235,10 @@
           });
         }));
       });
-    }).then(function (rows) { cartClear(); return rows; });
+    }).then(function (rows) {
+      if (only) only.forEach(function (s) { cartRemove(s); }); else cartClear();
+      return rows;
+    });
   }
 
   /* What this person owns. Works signed in; a guest sees nothing here and uses

@@ -169,250 +169,141 @@ function cartBtn(s, variant) {
   const href = `/worksheets/${subjSlug(s.subject)}/${s.slug}/`;
   const meta = `,{thumb:'${thumb}',href:'${href}'}`;
   const cls = variant === undefined ? "btn ghost" : ("btn " + variant).trim();
+  /* 🎨 THE PRODUCT PAGE BUTTON IS WORDS ONLY. The Lizzie Peirce reference has no
+     icon on it, and the phone rule below 470px hides `.lbl` to leave icons only,
+     which would leave this one blank. So no icon and no `.lbl` wrapper. */
+  const inner = variant === "p-cart" ? "Add To Cart" : `${ICON_CART}<span class="lbl">Add to Cart</span>`;
   return `<button class="${cls}" type="button" data-cart="${s.slug}"
       title="Save this sheet to your cart" aria-label="Add this sheet to your cart"
       onclick="window.NSAccount&&NSAccount.cartAdd('${s.slug}'${meta})">
-      ${ICON_CART}<span class="lbl">Add to Cart</span>
+      ${inner}
     </button>`;
 }
 
-/* ── EMBEDDED CHECKOUT ──────────────────────────────────────────────────────
-   Paul, 2026-09-09: "I want it embedded into the checkout."
+/* 🚨 THE ON-PAGE CHECKOUT (buyBlock + checkoutScript) WAS DELETED 2026-09-10.
+   A product page only ever says Add To Cart now; the card form lives on /cart/
+   (build-pages.js). Its hard-won notes moved with it or into CLAUDE.md:
+   wallets need the domain registered in LIVE mode too, embedded Apple Pay is
+   Safari 17+ only, and no wallet shows on localhost or over http.
+   ⚠️ The PayPal BUTTON went with it. The Worker's /paypal routes still exist
+   and still answer 503 until PAYPAL_* is set; a PayPal choice in the cart is a
+   later job, not a lost one. Git history has the old button code. */
 
-   This used to be `<a href="{buy}">` pointing at a Stripe Payment Link, which
-   sent the buyer to buy.stripe.com and off the site. Now `buy: true` means "on
-   sale", and Stripe's card form is mounted in a div ON THIS PAGE.
+/* ── THE PRODUCT BLOCK ─────────────────────────────────────────────────────
+   ROADMAP 38. Paul picked the shape on 2026-09-09: lizziepeirce.com/free-stuff,
+   any product. 🚨 MATCH IT, DO NOT REINTERPRET IT.
+     left   one large image on a pale tile, nothing else
+     right  title → price → description → caps headings → THEN the button
+   The button sits at the BOTTOM, after all the reading, not beside the price.
 
-   🚨 `buy` IS A BOOLEAN NOW, NOT A URL. The price is not here either - it lives
-   in the `products` table in Postgres, which is what /checkout reads. `price` in
-   worksheets.js is the SHOP WINDOW only, the number a visitor sees before the
-   form loads. ⚠️ Change a price in both, or the page advertises one number and
-   charges another.
+   🚨 THE ONLY DOOR IS ADD TO CART (ROADMAP 37). Paul: "it should just have an
+   add to the cart button where they purchase in the cart." A product page never
+   takes a payment. buyBlock() and checkoutScript() used to mount Stripe here;
+   if an inline form ever comes back, that is a regression.
 
-   ⚠️ THE OLD "the download is emailed to you" LINE IS GONE, and it had to go:
-   nothing on this site sends email. The buyer downloads on the return page. */
-const STRIPE_PK = process.env.STRIPE_PK || "";
-const PAYPAL_ID = process.env.PAYPAL_CLIENT_ID || "";
-
-/* 🚨 APPLE PAY AND GOOGLE PAY NEED THE DOMAIN REGISTERED, AND EMBEDDED IS THE
-   ONE MODE WHERE THAT IS NOT AUTOMATIC.
-   Stripe's docs: "For Payment Links or hosted Checkout, Apple Pay works with no
-   additional configuration. For Elements or embedded Checkout, you need to
-   register your domain." Register nexstudents.org at
-   dashboard.stripe.com/settings/payment_method_domains, live mode, before going
-   live. Same registration covers Google Pay, Link and PayPal.
-
-   ⚠️ AND EMBEDDED APPLE PAY IS SAFARI 17+ / iOS 17+ ONLY, because the embedded
-   form is a cross-domain iframe. Hosted Checkout has no such floor. That is a
-   real cost of keeping the buyer on our page, and it is worth knowing before
-   anyone reports Apple Pay as "broken" on an older iPhone.
-
-   ⚠️ NEITHER WALLET EVER SHOWS ON localhost OR OVER http. A preview server will
-   always look like the wallets are missing. Do not debug that; it is expected.
-   No extra fee either way - wallets bill at the standard card rate. */
-
-/* 🚨 EITHER KEY IS ENOUGH, NEITHER IS "COMING SOON". Paul, 2026-09-09: "I think
-   i like the option to just give a choice regardless i gotta deal with two
-   different options." So the page offers whichever processors are configured -
-   both, or one, or none - and never renders a control that cannot work.
-   ⚠️ Mounting a payment SDK without its key draws an empty box, which reads as
-   a broken shop rather than a shut one. That is why these are guards and not
-   defaults. */
-function buyBlock(s) {
-  if (s.buy && (STRIPE_PK || PAYPAL_ID)) {
-    /* ⚠️ NO PRICE ON THE BUTTON. Paul, 2026-09-09: "i dont like that pay by
-       card - $2". The price is already set in 2rem type in `.buyleft`, directly
-       beside it, so repeating it on the control says the same thing twice and
-       makes the two buttons different lengths. The pair now names the two
-       processors and nothing else, which is what he asked for: "i would like
-       pay with stripe or pay with paypal". */
-    const card = STRIPE_PK
-      ? `<button class="btn buy" type="button" data-buy="${s.slug}">Pay with Stripe</button>`
-      : "";
-    /* 🚨 CLASSES, NEVER IDS. buyBlock() is rendered TWICE on a paid page - a bar
-       above the description and one below it - so an id here is duplicated and
-       `getElementById` silently serves only the first. That shipped: the bottom
-       bar drew a "PayPal" heading over an empty gap while the top one looked
-       perfect. Found by scrolling the page, not by any build check.
-       ⚠️ Anything added to this block must be found with querySelectorAll and
-       scoped to its own `.buyright`, or it will work once and look broken once. */
-    const pp = PAYPAL_ID ? `<div class="ppbtn"></div>` : "";
-    /* ⚠️ Only say "or" when there are genuinely two things to choose between. */
-    const orRule = (STRIPE_PK && PAYPAL_ID)
-      ? `<p class="payor"><span>or</span></p>` : "";
-
-    return `<div class="paychoice">${card}${orRule}${pp}</div>
-      <div class="checkout" hidden></div>
-      <p class="buynote">Secure checkout on this page. Your download appears the moment payment clears.</p>
-      ${STRIPE_PK ? `<script async src="https://js.stripe.com/v3/"></script>` : ""}
-      ${PAYPAL_ID ? `<script src="https://www.paypal.com/sdk/js?client-id=${PAYPAL_ID}&currency=USD&disable-funding=paylater,credit,card"></script>` : ""}
-      <script>${checkoutScript(s.slug)}</script>`;
-  }
-  return `<span class="btn buy is-off" aria-disabled="true">${s.price} &mdash; Coming Soon</span>
-      <p class="buynote">Not on sale yet. This page is the finished layout; checkout is wired once the units are complete.</p>`;
+   ⚠️ DO NOT COPY THEIR DOWNLOAD PROMISE. Theirs is "emailed to you, 24 hours".
+   Ours appears on screen at checkout; email is only ever the receipt.
+   ⚠️ `extra` is for content a product has that the reference does not, placed
+   between the included list and the download heading, never after the button. */
+function priceText(p) {
+  /* "$2" -> "$2.00". The reference shows cents, and so does our cart. */
+  const n = Number(String(p).replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) ? "$" + n.toFixed(2) : p;
+}
+/* ── THE PRODUCT CAROUSEL ───────────────────────────────────────────────────
+   Paul, 2026-09-10: "the first sheet the cover photo and the second the actual
+   worksheet but we agreed not to show the answer key ... create a page for the
+   third and say answer key hidden from preview."
+     1  the cover (thumb.jpg)
+     2  page 1, WATERMARKED and downscaled (preview-1.jpg, tools/make-preview.py)
+     3  a tile saying the answer key is hidden. 🚨 A TILE, NEVER AN IMAGE OF THE
+        KEY, blurred or otherwise. What is not sold is not shipped.
+   A product with no `preview` keeps the single image, exactly as before.
+   ⚠️ Scroll-snap does the work, so it still swipes with JavaScript off; the
+   script only drives the arrows and the dots. */
+function carousel(s, dir, art) {
+  const slides = [
+    `<figure class="p-slide"><img src="${art}" alt="${s.title}, cover" width="700" height="700"></figure>`,
+    `<figure class="p-slide"><img src="${dir}preview-1.jpg" alt="${s.title}, page 1 preview" width="900" height="1165" loading="lazy"></figure>`,
+    `<figure class="p-slide p-hidden"><div><span class="p-lock" aria-hidden="true">&#128274;</span>
+        <b>Answer Key</b><span>Hidden From Preview</span></div></figure>`,
+  ];
+  const dots = slides.map((_, i) =>
+    `<button type="button" aria-label="Image ${i + 1} of ${slides.length}"${i ? "" : ' class="on"'}></button>`).join("");
+  return `<div class="p-img p-car">
+      <div class="p-track" tabindex="0" aria-label="Product images">${slides.join("")}</div>
+      <button class="p-nav prev" type="button" aria-label="Previous image">&lsaquo;</button>
+      <button class="p-nav next" type="button" aria-label="Next image">&rsaquo;</button>
+      <div class="p-dots">${dots}</div>
+    </div>
+    <script>(function(){
+      var car = document.currentScript.previousElementSibling;
+      var track = car.querySelector(".p-track");
+      var dots = [].slice.call(car.querySelectorAll(".p-dots button"));
+      /* ⚠️ THE CURRENT SLIDE IS KEPT, NOT READ BACK FROM scrollLeft. Reading it
+         mid-way through a smooth scroll rounds to the slide being LEFT, so a
+         second quick click went nowhere. */
+      var cur = 0;
+      function paint(){
+        dots.forEach(function(d, j){ d.classList.toggle("on", cur === j); });
+        car.querySelector(".prev").hidden = cur === 0;
+        car.querySelector(".next").hidden = cur === dots.length - 1;
+      }
+      function go(i){
+        cur = Math.max(0, Math.min(dots.length - 1, i));
+        track.scrollTo({ left: cur * track.clientWidth, behavior: "smooth" });
+        paint();
+      }
+      car.querySelector(".prev").onclick = function(){ go(cur - 1); };
+      car.querySelector(".next").onclick = function(){ go(cur + 1); };
+      dots.forEach(function(d, i){ d.onclick = function(){ go(i); }; });
+      /* A swipe moves the track without a click, so settle cur from where it
+         comes to rest. (No backticks in here: this is a template literal.) */
+      var t;
+      track.addEventListener("scroll", function(){
+        clearTimeout(t);
+        t = setTimeout(function(){
+          cur = Math.round(track.scrollLeft / track.clientWidth); paint();
+        }, 120);
+      }, { passive: true });
+      paint();
+    })();</script>`;
 }
 
-/* ⚠️ NO BACKTICKS ANYWHERE IN HERE, comments included. This string is returned
-   into a template literal, the same trap that has killed this build twice
-   before - see the note at the top of reading-log.js. */
-function checkoutScript(slug) {
-  const parts = [
-    '(function(){',
-    '  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";',
-    '  var SLUG = "' + slug + '";',
-    /* 🚨 EVERY BUY BAR ON THE PAGE, NOT THE FIRST ONE. There are two, and the
-       old getElementById version wired up only the top. See the note in
-       buyBlock. Each bar is handled inside its own `.buyright` so the two can
-       never reach into each other. */
-    '  var BARS = [].slice.call(document.querySelectorAll(".buyright"));',
-    '  if (!BARS.length) return;',
-    /* ⚠️ THIS IS THE PAYPAL SUCCESS PATH ONLY, and it is worth being clear
-       about why the two differ. Stripe's embedded form finishes by REDIRECTING
-       to return_url, so a card buyer lands on /thank-you/ and is served there.
-       PayPal finishes in a popup with the buyer still on this page, so there is
-       nowhere to send them - the download has to appear right here.
-       Both end at the same /download?t= link built from the same token. */
-    /* ⚠️ The purchase is page-wide, so BOTH bars must show the result. Updating
-       only the bar the buyer used leaves the other one still offering to sell
-       them what they just bought. */
-    '  function showDownload(token, note){',
-    '    BARS.forEach(function(bar){',
-    '      var choice = bar.querySelector(".paychoice");',
-    '      var box = bar.querySelector(".checkout");',
-    '      if (choice) choice.hidden = true;',
-    '      if (box) box.hidden = true;',
-    '      var p = bar.querySelector(".buynote");',
-    '      if (!p) return;',
-    '      if (token) {',
-    '        p.innerHTML = "<strong>Thank you. Your download is ready.</strong><br>"',
-    '          + "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(token) + "\\">Download the PDF</a>";',
-    '      } else {',
-    '        p.textContent = note || "Payment received. Your download is being prepared.";',
-    '      }',
-    '    });',
-    '  }',
-  ];
-
-  if (STRIPE_PK) parts.push(...[
-    '  BARS.forEach(function(bar){',
-    '    var b = bar.querySelector("[data-buy]");',
-    '    if (b) stripeCard(b, bar);',
-    '  });',
-    '  function stripeCard(btn, bar){',
-    /* Each bar has its own container, so the form mounts where it was clicked
-       rather than jumping the reader to the other end of the page. */
-    '  var box = bar.querySelector(".checkout");',
-    '  if (!box) return;',
-    '  var mounted = false;',
-    '  btn.addEventListener("click", function(){',
-    '    if (mounted) return;',
-    '    mounted = true;',
-    '    btn.disabled = true;',
-    '    btn.textContent = "Loading checkout...";',
-    /* Stripe.js is loaded async, so it may not be there on a fast click. */
-    /* ⚠️ `!window.Stripe`, not a typeof test. The build guard at the bottom of
-       this file fails on the literal string "undefined" anywhere in a page, and
-       it is right to - that is how a template slot resolving to nothing gets
-       caught. Truthiness says the same thing and keeps the guard useful. */
-    '    if (!window.Stripe) {',
-    '      fail("Checkout could not load. Please refresh and try again.");',
-    '      return;',
-    '    }',
-    '    var stripe = Stripe("' + STRIPE_PK + '");',
-    '    fetch(WORKER + "/checkout", {',
-    '      method: "POST",',
-    '      headers: { "Content-Type": "application/json" },',
-    '      body: JSON.stringify({ slug: "' + slug + '" })',
-    '    }).then(function(r){ return r.json(); }).then(function(d){',
-    '      if (!d || !d.clientSecret) throw new Error(d && d.error || "no client secret");',
-    '      box.hidden = false;',
-    /* ⚠️ HIDE THE WHOLE CHOICE BLOCK, not just the button. With PayPal also on
-       there is an "or" divider and a PayPal button beside it, and leaving those
-       above an open card form offers the buyer a second way to pay for the
-       thing they are already paying for. */
-    '      var choice = bar.querySelector(".paychoice");',
-    '      if (choice) choice.hidden = true; else btn.hidden = true;',
-    /* ⚠️ mount() takes the ELEMENT, not a "#checkout" selector. With two bars on
-       the page a selector would always resolve to the first one, so clicking
-       the bottom button would open the form at the top, off screen, looking
-       like nothing happened. */
-    '      return stripe.initEmbeddedCheckout({ clientSecret: d.clientSecret })',
-    '        .then(function(c){ c.mount(box); });',
-    '    }).catch(function(e){',
-    '      fail("Checkout is unavailable right now. Please try again shortly.");',
-    '    });',
-    '  });',
-    /* 🚨 A FAILED CHECKOUT MUST GIVE THE BUTTON BACK. Leaving it disabled and
-       reading "Loading checkout..." forever is how a customer decides the site
-       is broken and leaves, on the one page that was meant to take money. */
-    '  function fail(msg){',
-    '    mounted = false;',
-    '    btn.disabled = false;',
-    '    btn.hidden = false;',
-    '    var choice = bar.querySelector(".paychoice");',
-    '    if (choice) choice.hidden = false;',
-    '    btn.textContent = "Buy - try again";',
-    '    var p = bar.querySelector(".buynote");',
-    '    if (p) { p.textContent = msg; }',
-    '  }',
-    '  }',
-  ]);
-
-  if (PAYPAL_ID) parts.push(...[
-    /* ⚠️ The SDK is loaded without `async`, so `paypal` is defined by the time
-       this runs. Guarded anyway: a blocked script must not throw and take the
-       card button down with it. */
-    /* 🚨 RENDER INTO EVERY `.ppbtn`, ONE Buttons INSTANCE EACH. This is the bug
-       the screenshot caught: getElementById filled the top bar and left the
-       bottom one showing an "or" rule above an empty gap. PayPal will not
-       render one instance into two containers, so each needs its own. */
-    '  if (window.paypal) {',
-    '    [].slice.call(document.querySelectorAll(".ppbtn")).forEach(function(slot){',
-    '    paypal.Buttons({',
-    /* 🚨 ONE PAYPAL BUTTON, FULL WIDTH. Paul, 2026-09-09: "i dont think we have
-       to do the pay later option on paypal either." Pay Later and PayPal Credit
-       are turned off in the SDK url with disable-funding, which is the only
-       thing that actually removes them - a style change just rearranges them.
-       `card` is off too: Stripe is the card route here, and PayPal's own card
-       button beside a "Pay with Stripe" button is two ways to do one thing. */
-    '      style: { layout: "vertical", height: 44, tagline: false },',
-    /* 🚨 THE AMOUNT IS NEVER SENT FROM HERE. The Worker reads the price out of
-       Postgres. All the browser may say is which product it wants. */
-    '      createOrder: function(){',
-    '        return fetch(WORKER + "/paypal/create", {',
-    '          method: "POST",',
-    '          headers: { "Content-Type": "application/json" },',
-    '          body: JSON.stringify({ slug: SLUG })',
-    '        }).then(function(r){ return r.json(); }).then(function(d){',
-    '          if (!d || !d.id) throw new Error(d && d.error || "no order id");',
-    '          return d.id;',
-    '        });',
-    '      },',
-    '      onApprove: function(data){',
-    '        return fetch(WORKER + "/paypal/capture", {',
-    '          method: "POST",',
-    '          headers: { "Content-Type": "application/json" },',
-    '          body: JSON.stringify({ orderID: data.orderID })',
-    '        }).then(function(r){ return r.json(); }).then(function(d){',
-    /* 🚨 d.ok WITH A NULL TOKEN STILL MEANS PAID. The capture succeeded and only
-       the filing failed, so the buyer must never be told the payment did not
-       work - d.error carries what to do next. */
-    '          if (d && d.ok) return showDownload(d.token, d.error);',
-    '          throw new Error(d && d.error || "capture failed");',
-    '        });',
-    '      },',
-    '      onError: function(){',
-    '        var bar = slot.closest(".buyright");',
-    '        var p = bar && bar.querySelector(".buynote");',
-    '        if (p) p.textContent = "PayPal could not complete that. Please try again, or pay by card.";',
-    '      }',
-    '    }).render(slot);',
-    '    });',
-    '  }',
-  ]);
-
-  parts.push('}());');
-  return parts.join("\n");
+function productBlock(s, extra) {
+  const dir = `/worksheets/${subjSlug(s.subject)}/${s.slug}/`;
+  const art = `${dir}thumb.jpg`;
+  /* 🚨 `preview: true` PROMISES A FILE. Fail the build rather than ship a slide
+     that shows a broken image on the page that is meant to sell the sheet. */
+  if (s.preview && !fs.existsSync(path.join(ROOT, dir, "preview-1.jpg"))) {
+    console.error(`[${s.slug}] preview: true but ${dir}preview-1.jpg is missing. ` +
+                  `Run: py tools/make-preview.py <source.pdf> ${s.slug} ${subjSlug(s.subject)}`);
+    process.exit(1);
+  }
+  /* Not on sale yet: same place, same width, plainly off. Never a live button
+     that adds something the cart cannot check out. */
+  const btn = s.buy
+    ? cartBtn(s, "p-cart")
+    : `<span class="btn p-cart is-off" aria-disabled="true">Coming Soon</span>`;
+  return `<section class="product">
+    ${s.preview ? carousel(s, dir, art)
+      : `<div class="p-img">${s.thumb ? `<img src="${art}" alt="${s.title}" width="700" height="700">` : ""}</div>`}
+    <div class="p-info">
+      <h1>${s.title}</h1>
+      <p class="p-price">${priceText(s.price)}</p>
+      <p class="p-desc">${s.dek}</p>
+      <h2 class="p-h">What's Included?</h2>
+      <ul class="p-list">
+        ${s.contains.map((c) => "<li>" + c + "</li>").join("\n        ")}
+      </ul>
+      ${extra || ""}
+      <h2 class="p-h">Where's My Download?</h2>
+      <p>It appears on screen the moment checkout finishes, so there is nothing to wait for.</p>
+      <h2 class="p-h">More Questions?</h2>
+      <p>Ask us on the <a href="/contact/">contact page</a>.</p>
+      ${btn}
+    </div>
+  </section>`;
 }
 
 /* kind "paid-sheet" — a PAID SINGLE SHEET whose product is a finished PDF.
@@ -429,8 +320,13 @@ function checkoutScript(slug) {
    `sample` lists a handful of the parts, never all of them, because the full
    list IS half the worksheet. */
 function paidSheetHtml(s) {
-  const subjectSlug = subjSlug(s.subject);
-  const art = `/worksheets/${subjectSlug}/${s.slug}/thumb.jpg`;
+  /* The five sample parts ride inside the product block, under their own caps
+     heading, because they are what tells a parent the level before buying. */
+  const extra = `<h2 class="p-h">What's On The Sheet?</h2>
+      <p>${s.lockNote}</p>
+      <ul class="p-list">
+        ${s.sample.map((x) => "<li>" + x + "</li>").join("\n        ")}
+      </ul>`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -443,64 +339,17 @@ ${faviconTags()}
 <meta name="description" content="${s.blurb}">
 <link rel="stylesheet" href="/assets/ns.css?v=${CSS_V}">
 <link rel="stylesheet" href="/assets/worksheet.css?v=${CSS_V}">
-<style>
-  .shot { margin: 26px 0 6px; text-align: center; }
-  .shot img { width: 100%; max-width: 420px; height: auto; border-radius: 8px;
-              border: 1px solid var(--line); background: #fff; }
-  .shot figcaption { font-size: 12.5px; color: var(--dim); margin-top: 8px; }
-</style>
 </head>
 <body>
 
 ${navMarkup("w")}
 
-<div class="bar">
+<div class="bar wide">
   ${backLink(s)}
 </div>
 
-<div class="sheet">
+${productBlock(s, extra)}
 
-  <div class="head">
-    <p class="eyebrow">${s.subject} &middot; ${gradeWord(s.grade)}${s.tagline ? " &middot; " + s.tagline : ""}</p>
-    <h1>${s.title}</h1>
-    <p class="dek">${s.dek}</p>
-  </div>
-
-  <div class="buybar">
-    <div class="buyleft">
-      <span class="price">${s.price}</span>
-      <span class="pricenote">One download &middot; yours to keep &middot; print as often as you like</span>
-    </div>
-    <div class="buyright">${buyBlock(s)}</div>
-  </div>
-
-  <figure class="shot">
-    <img src="${art}" alt="${s.title}" width="420" height="420">
-    <figcaption>Two pages, US Letter. The worksheet, then its answer key.</figcaption>
-  </figure>
-
-  <h2>What You Get</h2>
-  <ul class="gets">
-    ${s.contains.map((c) => "<li>" + c + "</li>").join("\n    ")}
-  </ul>
-
-  <div class="locked">
-    <p class="lockhead">What is on the sheet</p>
-    <p>${s.lockNote}</p>
-    <ul>
-      ${s.sample.map((x) => "<li>" + x + "</li>").join("\n      ")}
-    </ul>
-  </div>
-
-  <div class="buybar bottom">
-    <div class="buyleft">
-      <span class="price">${s.price}</span>
-      <span class="pricenote">Worksheet &middot; answer key &middot; instant download</span>
-    </div>
-    <div class="buyright">${buyBlock(s)}</div>
-  </div>
-
-</div>
 <div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
 
 ${navScript()}
@@ -531,30 +380,16 @@ ${faviconTags()}
 
 ${navMarkup("w")}
 
-<div class="bar">
+<div class="bar wide">
   ${backLink(s)}
 </div>
 
-<div class="sheet">
+${productBlock(s)}
 
-  <div class="head">
-    <p class="eyebrow">${s.subject} &middot; Grade ${s.grade} &middot; ${s.tagline}</p>
-    <h1>${s.title}</h1>
-    <p class="dek">${s.dek}</p>
-  </div>
-
-  <div class="buybar">
-    <div class="buyleft">
-      <span class="price">${s.price}</span>
-      <span class="pricenote">One download &middot; yours to keep &middot; print as often as you like</span>
-    </div>
-    <div class="buyright">${buyBlock(s)}</div>
-  </div>
-
-  <h2>What You Get</h2>
-  <ul class="gets">
-    ${s.contains.map((c) => "<li>" + c + "</li>").join("\n    ")}
-  </ul>
+<!-- ⚠️ BELOW THE PRODUCT, where the reference puts its reviews. The units and
+     the sample reading are what a $14 bundle has that a single sheet does not,
+     and they are read after the decision block, not before it. -->
+<div class="sheet p-more">
 
   <h2>The Five Units</h2>
   <ol class="units">
@@ -575,14 +410,6 @@ ${navMarkup("w")}
       <li>75 questions, four of every five answerable from the text</li>
       <li>15 answer keys, each citing where the answer is found</li>
     </ul>
-  </div>
-
-  <div class="buybar bottom">
-    <div class="buyleft">
-      <span class="price">${s.price}</span>
-      <span class="pricenote">Semester 1 &middot; 15 worksheets &middot; 15 answer keys</span>
-    </div>
-    <div class="buyright">${buyBlock(s)}</div>
   </div>
 
 </div>
