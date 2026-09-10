@@ -1815,6 +1815,83 @@ function thankYouScript() {
 }
 
 
+/* ── /order/?t=<token>,<token> — AN ORDER, OPENED FROM ANYWHERE ─────────────
+   Paul, 2026-09-10: "is there a way we can get a page if they missed the thank
+   you page ... a link forward back to the nexstudents.org site where it opens
+   to redownload it?" Two doors lead here:
+     · the FREE checkout, straight after (?new=1), so it is that order's
+       thank-you page - "Thank you." instead of "Your Order."
+     · the View Your Order button in EVERY receipt email, paid or free
+   🚨 IT DECIDES NOTHING ITSELF. Each token is checked with redeem_download()
+   (migration 005), the same call the Worker makes before handing out a file.
+   Paid rows get Download (the Worker), free rows get Open (the sheet's page).
+   ⚠️ Tokens are bearer links, so they leave the address bar at once, and the
+   order is remembered on this device (NSAccount.rememberOwned) for /account/.
+   ⚠️ NO BACKTICKS IN orderScript: it returns into a template literal. */
+const orderMarkup = () => `
+<div class="wrap"><div class="prose" style="max-width:640px">
+  <div id="orState" class="ty"><p class="dim">Opening your order&hellip;</p></div>
+</div></div>
+<script src="/assets/supabase-config.js"></script>`;
+
+function orderScript() {
+  return "<script>\n" + [
+    '(function(){',
+    '  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";',
+    '  var HREF = ' + JSON.stringify(SHEET_HREF) + ';',
+    '  var cfg = window.NS_SUPABASE || {};',
+    '  var box = document.getElementById("orState");',
+    '  var qs = new URLSearchParams(location.search);',
+    '  var fresh = qs.get("new") === "1";',
+    '  var toks = (qs.get("t") || "").split(",").filter(function(t){ return /^[0-9a-f-]{36}$/i.test(t); }).slice(0, 20);',
+    '  var h1 = document.querySelector("h1");',
+    '  if (h1 && fresh) h1.textContent = "Thank you.";',
+    '  if (!toks.length || !cfg.url) return none();',
+    '  history.replaceState(null, "", location.pathname);',
+    '  var H = { "apikey": cfg.publishableKey, "Authorization": "Bearer " + cfg.publishableKey, "Content-Type": "application/json" };',
+    '  Promise.all(toks.map(function(t){',
+    '    return fetch(cfg.url + "/rest/v1/rpc/redeem_download", { method: "POST", headers: H, body: JSON.stringify({ p_token: t }) })',
+    '      .then(function(r){ return r.ok ? r.json() : []; })',
+    '      .then(function(rows){ return rows && rows[0] ? { product: rows[0].product, title: rows[0].title, token: t } : null; })',
+    '      .catch(function(){ return null; });',
+    '  })).then(function(list){',
+    '    list = list.filter(Boolean);',
+    '    if (!list.length) return none();',
+    /* Price decides Open or Download. Read from the catalogue, never assumed. */
+    '    var q = cfg.url + "/rest/v1/products?select=slug,price_cents&slug=in.(" + list.map(function(x){ return encodeURIComponent(x.product); }).join(",") + ")";',
+    '    return fetch(q, { headers: H }).then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })',
+    '      .then(function(prices){',
+    '        var pc = {}; (prices || []).forEach(function(p){ pc[p.slug] = p.price_cents; });',
+    '        list.forEach(function(x){ x.amount_cents = pc[x.product] == null ? null : pc[x.product]; });',
+    '        show(list);',
+    '        if (window.NSAccount && NSAccount.rememberOwned) NSAccount.rememberOwned(list);',
+    '      });',
+    '  });',
+    '  function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }',
+    '  function show(list){',
+    '    var many = list.length > 1;',
+    '    box.innerHTML = list.map(function(x, i){',
+    '      var free = x.amount_cents === 0;',
+    '      var go = free',
+    '        ? (HREF[x.product] ? "<a class=\\"btn\\" href=\\"" + HREF[x.product] + "\\">Open the Sheet</a>" : "")',
+    '        : "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(x.token) + "\\">Download the PDF</a>";',
+    '      return "<div class=\\"ty-item\\">"',
+    '        + (i === 0 ? "<h2>Your " + (many ? "items are" : "item is") + " ready.</h2>" : "")',
+    '        + "<p class=\\"ty-title\\">" + esc(x.title) + "</p>" + go + "</div>";',
+    '    }).join("")',
+    '      + "<p class=\\"dim\\">This page is also linked from your receipt email, so you can come back any time. "',
+    '      + "Or sign in at <a href=\\"/account/\\">your account</a> with the email you used.</p>";',
+    '  }',
+    '  function none(){',
+    '    box.innerHTML = "<h2>We could not open that order.</h2>"',
+    '      + "<p>Try the View Your Order button in your receipt email again, or sign in at "',
+    '      + "<a href=\\"/account/\\">your account</a> with the email you used.</p>"',
+    '      + "<p class=\\"dim\\">Still stuck? Email support@nexedgestudios.com and we will sort it out.</p>";',
+    '  }',
+    '}());',
+  ].join("\n") + "\n<\/script>";
+}
+
 const pages = [
   /* /grades/ was DELETED on 2026-08-26. Paul: "get rid of the grades tab and
      replace it with the nav panel." The dropdown lists every grade and the
@@ -1888,6 +1965,15 @@ const pages = [
     crumb: "", h1: "Thank you.",
     lead: "",
     body: thankYouMarkup(), script: thankYouScript() },
+
+  /* 🚨 noindex for the same reason as /thank-you/: it describes one person's
+     order, and its links are that person's bearer tokens. */
+  { dir: "order", active: null, pclass: "termshead", bare: true, noindex: true,
+    title: "Your Order | NexStudents",
+    desc: "Your order and its downloads.",
+    crumb: "", h1: "Your Order.",
+    lead: "",
+    body: orderMarkup(), script: orderScript() },
 
   { dir: "games", active: "g",
     title: "Games | NexStudents",
@@ -2835,56 +2921,36 @@ const SOON_PAGES = [
     if (e.key === "Escape" && checkout) closePay();
   });
 
-  /* The all-free route. The body below is unchanged from before the cart could
-     take a card; only its opening lines moved up into onsubmit. */
+  /* The all-free route. */
   function freeOnly(btn){
     btn.disabled = true; $("coMsg").textContent = "Checking out\u2026";
-    /* 🚨 SNAPSHOT BEFORE CHECKING OUT. checkoutFree() calls cartClear(), which
-       drops the slugs AND the display hints, so a receipt built afterwards has
-       nothing left to name or to link to. */
-    var bought = NSAccount.cart().map(function(slug){
-      return { slug: slug, href: NSAccount.cartHref(slug) };
-    });
+    var email = $("coEmail").value;
 
-    NSAccount.checkoutFree($("coEmail").value).then(function(rows){
-      /* 📧 THE FREE RECEIPT. Fire and forget: the sheets are already on screen,
-         so a failed email must never block this page. The Worker sends only
-         what claim_free_receipt() (migration 009) confirms for these ids.
+    NSAccount.checkoutFree(email).then(function(rows){
+      rows = rows || [];
+      /* 📧 THE FREE RECEIPT, and it must survive the redirect below.
+         keepalive lets the request finish after the page leaves; text/plain
+         keeps it a simple request with no preflight to be cut short. The
+         Worker reads the body as JSON either way, and sends only what
+         claim_free_receipt() (migrations 009, 010) confirms for these ids.
          ⚠️ Free-only carts. A mixed cart's receipt comes from the Stripe
          webhook, and two emails for one order would read as a mistake. */
       try {
         fetch(WORKER + "/free-receipt", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: $("coEmail").value,
-                                 ids: (rows || []).map(function(r){ return r && r.id; }) })
+          method: "POST", keepalive: true, headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ email: email,
+                                 ids: rows.map(function(r){ return r && r.id; }) })
         }).catch(function(){});
       } catch (e) {}
-      /* 🚨 NEVER SAY "SENT TO". Paul, 2026-09-09: "i didnt get it in my email
-         that i can see." He was right, and the old message was simply false:
-         NOTHING on this site sends email. checkout_free() writes the row and
-         mints a token, and the chain stops there. Telling a customer to go and
-         check an inbox that will never receive anything is worse than saying
-         nothing at all.
-         ⚠️ When a sender is wired, email is the RECEIPT, never the delivery.
-         The sheet must still appear here, on screen, so a message eaten by a
-         spam filter never costs somebody their file. */
-      var titles = {};
-      (rows || []).forEach(function(r){ if(r && r.product) titles[r.product] = r.product; });
-      var ref = (rows && rows[0] && rows[0].id) ? String(rows[0].id).slice(0, 8) : "";
-      var lines = bought.map(function(b){
-        var name = b.slug.replace(/-/g, " ");
-        return "<li style='margin-bottom:6px'>" +
-          (b.href ? "<a href='" + b.href + "'>" + name + "</a>" : name) + "</li>";
-      }).join("");
-      $("cartFull").innerHTML =
-        "<div class='card'><h2 style='margin-top:0'>Thank you. That is yours.</h2>" +
-        (ref ? "<p class='dim'>Order " + ref + "</p>" : "") +
-        "<p>Open a sheet and use Print or Download on its page:</p>" +
-        "<ul>" + lines + "</ul>" +
-        "<p class='dim'>Saved against <b>" + $("coEmail").value + "</b>. Make an " +
-        "account with that address and everything you have taken will be listed there.</p>" +
-        "<a class='btn' href='/account/'>Make an account</a> " +
-        "<a class='btn ghost' href='/worksheets/'>Keep browsing</a></div>";
+      /* 🚨 THE CONFIRMATION IS ITS OWN PAGE NOW. Paul, 2026-09-10, after a
+         free Lewis and Clark checkout: "I didn't get a thank you page." It had
+         been drawn INSIDE the cart, and checkoutFree() empties the cart, which
+         fires ns:cart, which repaints the cart as empty - so the confirmation
+         vanished the moment it appeared. /order/ is the same page the receipt
+         email opens, so there is one confirmation, not two to keep in step.
+         ⚠️ The sheet is still reachable on screen, never only in the email. */
+      var toks = rows.map(function(r){ return r && r.access_token; }).filter(Boolean);
+      location.href = "/order/?new=1&t=" + toks.map(encodeURIComponent).join(",");
     }).catch(function(err){
       /* ⚠️ A paid item can no longer reach this path - onsubmit routes it to
          pay() - but if one ever does, the database refuses it and this says so

@@ -611,7 +611,8 @@ async function freeReceipt(request, env) {
     if (Array.isArray(rows) && rows.length) {
       await sendReceipt(env, {
         email, free: true, session: "free-" + ids.slice().sort().join("-").slice(0, 60),
-        items: rows.map((x) => ({ slug: x.product, cents: 0 })), tokens: {},
+        items: rows.map((x) => ({ slug: x.product, cents: 0 })),
+        tokens: Object.fromEntries(rows.filter((x) => x.token).map((x) => [x.product, String(x.token)])),
         titles: Object.fromEntries(rows.map((x) => [x.product, x.title])),
         worker: new URL(request.url).origin,
       });
@@ -642,12 +643,18 @@ async function sendReceipt(env, o) {
 
   const rows = o.items.map((it) => {
     const name = esc(titles[it.slug] || it.slug);
-    const link = o.tokens[it.slug]
-      ? `<br><a href="${o.worker}/download?t=${encodeURIComponent(o.tokens[it.slug])}" style="color:#1b2229">Download the PDF</a>`
-      : "";
-    return `<tr><td style="padding:12px 0;border-bottom:1px solid #e3e7ec">${name}${link}</td>
+    return `<tr><td style="padding:12px 0;border-bottom:1px solid #e3e7ec">${name}</td>
       <td style="padding:12px 0;border-bottom:1px solid #e3e7ec;text-align:right;vertical-align:top">${money(it.cents)}</td></tr>`;
   }).join("");
+
+  /* 🔗 ONE BUTTON, BACK TO THE SITE. Paul, 2026-09-10: "instead of delivering
+     to the email it can just forward them to the page to download their item
+     again." /order/ lists the order with Open or Download buttons, so the file
+     still only ever comes from nexstudents.org. Tokens are the same bearer
+     links the thank-you page uses, one per item. */
+  const toks = o.items.map((it) => o.tokens[it.slug]).filter(Boolean);
+  const orderUrl = toks.length ? `${SITE}/order/?t=${toks.map(encodeURIComponent).join(",")}` : `${SITE}/account/`;
+  const button = `<p style="margin:22px 0 0"><a href="${orderUrl}" style="display:inline-block;background:#1b2229;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:6px">View Your Order</a></p>`;
 
   const html = `<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#1b2229">
   <h1 style="font-size:22px;margin:0 0 6px">Thank you for your order.</h1>
@@ -656,9 +663,8 @@ async function sendReceipt(env, o) {
     <tr><td style="padding:14px 0;font-weight:bold">Total</td>
       <td style="padding:14px 0;font-weight:bold;text-align:right">${money(total)}</td></tr>
   </table>
-  <p style="font-size:14px;line-height:1.6;color:#5d6874;margin:20px 0 0">${o.free
-    ? "Your sheets are ready to print from their pages on the site."
-    : "Your download was ready on screen when you checked out."} You can also find ${o.items.length > 1 ? "them" : "it"} any time by signing in at <a href="${SITE}/account/" style="color:#1b2229">nexstudents.org</a> with this email.</p>
+  ${button}
+  <p style="font-size:14px;line-height:1.6;color:#5d6874;margin:20px 0 0">That button opens your order on nexstudents.org, where you can ${o.free ? "open" : "download"} ${o.items.length > 1 ? "your items" : "it"} again any time. You can also sign in at <a href="${SITE}/account/" style="color:#1b2229">nexstudents.org</a> with this email to see everything you have.</p>
   <p style="font-size:14px;line-height:1.6;color:#5d6874;margin:12px 0 0">Questions? Reach us through the <a href="${SITE}/contact/" style="color:#1b2229">contact page</a>.</p>
 </div>`;
 

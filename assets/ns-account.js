@@ -269,7 +269,11 @@
     (rows || []).forEach(function (r) {
       if (!r || !r.product || !r.token) return;
       if (list.some(function (o) { return o.product === r.product && o.token === r.token; })) return;
-      list.push({ product: r.product, title: r.title || r.product, token: r.token });
+      /* amount_cents rides along when known, so a FREE item is offered as Open
+         (its sheet page) rather than Download (the Worker, which holds only
+         paid files). */
+      list.push({ product: r.product, title: r.title || r.product, token: r.token,
+                  amount_cents: r.amount_cents == null ? null : r.amount_cents });
     });
     write(OWNED_KEY, list);
   }
