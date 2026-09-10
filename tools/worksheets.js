@@ -344,6 +344,16 @@ const SHEETS = [
   /* Page 1, watermarked, as the second carousel slide. Made by
      tools/make-preview.py from the PDF outside the repo. */
   preview: true,
+  /* 🎨 THE SHORT LIST for the product page's What's Included. Paul,
+     2026-09-10: "too much context on the page where I have to scroll down
+     just to see the checkout button ... we need a better summary." Three
+     lines, so the button is on the first screen. `contains` keeps the long
+     version for anywhere that wants it. */
+  included: [
+    "Full colour cell diagram, 16 parts numbered",
+    "Word list, with name and date lines",
+    "Answer key on page 2",
+  ],
 },
 
 /* ═══════════════════ 4. SEMESTER 1 BUNDLE (paid, preview only) ═══════════

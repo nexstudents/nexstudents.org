@@ -294,16 +294,16 @@ function productBlock(s, extra) {
       <p class="p-desc">${s.dek}</p>
       <h2 class="p-h">What's Included?</h2>
       <ul class="p-list">
-        ${s.contains.map((c) => "<li>" + c + "</li>").join("\n        ")}
+        ${(s.included || s.contains).map((c) => "<li>" + c + "</li>").join("\n        ")}
       </ul>
-      ${extra || ""}
       <h2 class="p-h">Where's My Download?</h2>
       <p>It appears on screen the moment checkout finishes, so there is nothing to wait for.</p>
       <h2 class="p-h">More Questions?</h2>
       <p>Ask us on the <a href="/contact/">contact page</a>.</p>
       ${btn}
     </div>
-  </section>`;
+  </section>
+  ${extra ? `<section class="sheet p-more">${extra}</section>` : ""}`;
 }
 
 /* kind "paid-sheet" — a PAID SINGLE SHEET whose product is a finished PDF.
@@ -320,8 +320,9 @@ function productBlock(s, extra) {
    `sample` lists a handful of the parts, never all of them, because the full
    list IS half the worksheet. */
 function paidSheetHtml(s) {
-  /* The five sample parts ride inside the product block, under their own caps
-     heading, because they are what tells a parent the level before buying. */
+  /* The five sample parts tell a parent the level before buying, so they stay
+     on the page - but BELOW the product block, not in the right column. Paul,
+     2026-09-10: in the column they pushed Add To Cart off the first screen. */
   const extra = `<h2 class="p-h">What's On The Sheet?</h2>
       <p>${s.lockNote}</p>
       <ul class="p-list">

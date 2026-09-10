@@ -627,8 +627,10 @@ body.print-all .wk+.wk{page-break-before:always}
 .p-info > *{order:3}
 .p-info h1{order:0}
 .p-info .p-price{order:1}
+/* Paul, 2026-09-10: "make the check out button slightly smaller." 18px -> 14px
+   padding and 14px -> 13px type. Still full width of its column. */
 .btn.p-cart{order:2;display:flex;width:100%;justify-content:center;margin:0 0 26px;
-  padding:18px 20px;border-radius:0;font-size:14px;text-transform:uppercase;
+  padding:14px 20px;border-radius:0;font-size:13px;text-transform:uppercase;
   letter-spacing:.16em}
 .btn.p-cart.is-off{opacity:.45;cursor:not-allowed}
 .p-more{margin-top:48px}
