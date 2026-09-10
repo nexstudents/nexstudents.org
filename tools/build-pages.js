@@ -2721,7 +2721,14 @@ const SOON_PAGES = [
       return (free.length ? NSAccount.checkoutFree(email, free) : Promise.resolve())
         .then(function(){ return pay(paid, email, btn); });
     }).catch(function(err){
-      $("coMsg").textContent = (err && err.message) || "That did not go through.";
+      /* ⚠️ A network failure throws a TypeError whose message is the browser's
+         own "Failed to fetch". Paul saw it on 2026-09-10 and it tells a
+         customer nothing. Our own errors (a refused item, a closed shop) keep
+         their message, because those were written for a person. */
+      var net = err && err.name === "TypeError";
+      $("coMsg").textContent = net
+        ? "Checkout could not connect. Please check your connection and try again."
+        : ((err && err.message) || "That did not go through.");
       btn.disabled = false;
     });
   };
