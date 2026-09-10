@@ -1760,13 +1760,14 @@ function thankYouScript() {
     /* 🛒 EVERY ROW, ONE DOWNLOAD EACH. This used to render rows[0] only. */
     '  function show(rows, partial){',
     '    var many = rows.length > 1;',
-    '    box.innerHTML = "<h2 style=\\"margin-top:0\\">Thank you. Your " + (many ? "downloads are" : "download is") + " ready.</h2>"',
+    /* The page title already says "Thank you.", so this does not say it again. */
+    '    box.innerHTML = "<h2 style=\\"margin-top:0\\">Your " + (many ? "downloads are" : "download is") + " ready.</h2>"',
     '      + rows.map(function(row){',
     '          return "<p><b>" + esc(row.title) + "</b><br>"',
     '            + "<a class=\\"btn\\" href=\\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\\">Download the PDF</a></p>";',
     '        }).join("")',
     '      + (partial ? "<p class=\\"dim\\">The rest of your order is still being prepared. It will be on your account in a few minutes.</p>" : "")',
-    '      + "<p class=\\"dim\\">Keep " + (many ? "these links" : "this link") + ". You can also find them any time by signing in at "',
+    '      + "<p class=\\"dim\\">Keep " + (many ? "these links" : "this link") + ". You can also find " + (many ? "them" : "it") + " any time by signing in at "',
     '      + "<a href=\\"/account/\\">your account</a> with the email you paid with.</p>";',
     /* Bought, so out of the cart. Only what Postgres confirmed - never a blanket
        clear, which would also throw away anything added after checkout began. */
@@ -1787,7 +1788,13 @@ function thankYouScript() {
     '        + "<a href=\\"/worksheets/\\">worksheets</a>.</p>";',
     '  }',
     '}());',
-  ].join("\n");
+  /* 🚨 THE <script> TAGS ARE OURS TO WRITE. shell() inserts `script` RAW, the
+     way readingLogScript() expects. This returned bare JavaScript from
+     2026-09-09, so the browser PRINTED it under the footer and the page sat on
+     "Confirming your payment" forever: the thank-you page never worked for
+     anyone. Paul found it on his first sandbox purchase, 2026-09-10. The
+     guard in the page-writing loop now refuses a bare script. */
+  ].join("\n").replace(/^/, "<script>\n") + "\n<\/script>";
 }
 
 
@@ -2885,6 +2892,12 @@ for (const p of pages) {
   const html = shell(p);
   if (html.includes("undefined")) { console.error("FAIL: undefined in " + p.dir); process.exit(1); }
   if (/href="#"/.test(html)) { console.error("FAIL: dead link in " + p.dir); process.exit(1); }
+  /* 🚨 A PAGE SCRIPT MUST BRING ITS OWN <script> TAG. shell() drops `script`
+     in raw, so bare JavaScript renders as TEXT and never runs. That is how the
+     thank-you page shipped dead for a day. */
+  if (p.script && !/^\s*<script[\s>]/.test(p.script)) {
+    console.error("FAIL: script for " + p.dir + " is not wrapped in <script>"); process.exit(1);
+  }
   fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
   written.push(p.dir);
 }

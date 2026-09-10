@@ -454,7 +454,8 @@ if(cdrawer){
 }
 
 })();
-</script>(function(){
+</script><script>
+(function(){
   var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
   var box = document.getElementById("tyState");
   var cfg = window.NS_SUPABASE || {};
@@ -489,13 +490,13 @@ if(cdrawer){
   function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
   function show(rows, partial){
     var many = rows.length > 1;
-    box.innerHTML = "<h2 style=\"margin-top:0\">Thank you. Your " + (many ? "downloads are" : "download is") + " ready.</h2>"
+    box.innerHTML = "<h2 style=\"margin-top:0\">Your " + (many ? "downloads are" : "download is") + " ready.</h2>"
       + rows.map(function(row){
           return "<p><b>" + esc(row.title) + "</b><br>"
             + "<a class=\"btn\" href=\"" + WORKER + "/download?t=" + encodeURIComponent(row.token) + "\">Download the PDF</a></p>";
         }).join("")
       + (partial ? "<p class=\"dim\">The rest of your order is still being prepared. It will be on your account in a few minutes.</p>" : "")
-      + "<p class=\"dim\">Keep " + (many ? "these links" : "this link") + ". You can also find them any time by signing in at "
+      + "<p class=\"dim\">Keep " + (many ? "these links" : "this link") + ". You can also find " + (many ? "them" : "it") + " any time by signing in at "
       + "<a href=\"/account/\">your account</a> with the email you paid with.</p>";
     if (window.NSAccount) rows.forEach(function(row){ NSAccount.cartRemove(row.product); });
   }
@@ -510,5 +511,6 @@ if(cdrawer){
         + "<a href=\"/worksheets/\">worksheets</a>.</p>";
   }
 }());
+</script>
 </body>
 </html>
