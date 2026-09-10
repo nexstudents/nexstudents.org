@@ -503,6 +503,7 @@ if(cdrawer){
     if (window.NSAccount) rows.forEach(function(row){ NSAccount.cartRemove(row.product); });
   }
   function done(paid){
+    box.className = "ty";
     box.innerHTML = paid
       ? "<h2 style=\"margin-top:0\">Payment received.</h2>"
         + "<p>Your download is still being prepared. Sign in at <a href=\"/account/\">your account</a>"

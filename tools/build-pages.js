@@ -1782,7 +1782,10 @@ function thankYouScript() {
        land here - a slow webhook and someone opening the page with no session
        id at all - and neither means the money went missing. Say what is true:
        payment is safe, the receipt is coming, here is how to reach a human. */
+    /* Centred like show(). Paul, 2026-09-10: "there's a nothing to confirm
+       title and it's not centered" - this branch never got the .ty class. */
     '  function done(paid){',
+    '    box.className = "ty";',
     '    box.innerHTML = paid',
     '      ? "<h2 style=\\"margin-top:0\\">Payment received.</h2>"',
     '        + "<p>Your download is still being prepared. Sign in at <a href=\\"/account/\\">your account</a>"',

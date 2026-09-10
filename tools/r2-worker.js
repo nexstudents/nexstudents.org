@@ -515,6 +515,7 @@ async function stripeWebhook(request, env) {
     return new Response("nothing to record", { status: 200 });
   }
 
+  const tokens = {};
   try {
     /* ⚠️ ONE AT A TIME, IN ORDER. If the second fails, the 500 below makes Stripe
        replay the WHOLE session, and record_purchase hands back the first row's
@@ -536,6 +537,8 @@ async function stripeWebhook(request, env) {
         }),
       });
       if (!r.ok) throw new Error("rpc " + it.slug + " " + r.status + " " + (await r.text()).slice(0, 200));
+      /* record_purchase returns the access token as a bare JSON string. */
+      try { tokens[it.slug] = String(await r.json()); } catch (e) { /* receipt goes without that link */ }
     }
   } catch (e) {
     /* 🚨 A 500 HERE IS CORRECT AND IS NOT A BUG. The money is taken but the
@@ -546,7 +549,85 @@ async function stripeWebhook(request, env) {
     return new Response("retry please", { status: 500 });
   }
 
+  /* 📧 THE RECEIPT (ROADMAP 39). Sent only AFTER every row is recorded, and
+     🚨 NEVER ALLOWED TO FAIL THE WEBHOOK: the purchase is already safe, and a
+     500 here would make Stripe replay a finished order. Logged and dropped. */
+  try {
+    await sendReceipt(env, {
+      email, session: String(s.id || ""), items, tokens,
+      worker: new URL(request.url).origin,
+    });
+  } catch (e) {
+    console.error("[receipt] " + e.message);
+  }
+
   return new Response("ok", { status: 200 });
+}
+
+/* ── THE RECEIPT EMAIL, VIA RESEND ──────────────────────────────────────────
+   Paul, 2026-09-09: "send them a confirmation and the file downloads off the
+   site." 🚨 EMAIL IS THE RECEIPT, NEVER THE DELIVERY. The download already
+   appeared on the thank-you page; the links here are a convenience that point
+   back at THIS Worker, so the file still only ever comes from us.
+   ⚠️ FROM onboarding@resend.dev UNTIL THE DOMAIN IS VERIFIED. Resend's test
+   sender delivers to the account owner's own address and refuses the rest.
+   Set RECEIPT_FROM to "NexStudents <hello@nexstudents.org>" once SPF and DKIM
+   are in at Squarespace; no code change needed.
+   ⚠️ Idempotency-Key is the Stripe session, so a replayed webhook cannot send a
+   second copy (Resend holds the key for 24 hours).
+   🚨 NO EM DASHES IN THE COPY. Paul: "it's very easy to tell that it's AI." */
+async function sendReceipt(env, o) {
+  if (!env.RESEND_API_KEY) { console.error("[receipt] RESEND_API_KEY not set"); return; }
+
+  /* Titles come from the catalogue, the same place the price did. */
+  let titles = {};
+  try {
+    const r = await fetch(env.SUPABASE_URL + "/rest/v1/products?slug=in.(" +
+      o.items.map((it) => encodeURIComponent(it.slug)).join(",") + ")&select=slug,title",
+      { headers: { apikey: env.SUPABASE_KEY, Authorization: "Bearer " + env.SUPABASE_KEY } });
+    if (r.ok) for (const p of await r.json()) titles[p.slug] = p.title;
+  } catch (e) { /* fall back to the slug below */ }
+
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const money = (c) => "$" + (Number(c || 0) / 100).toFixed(2);
+  const total = o.items.reduce((n, it) => n + Number(it.cents || 0), 0);
+  const ref = o.session.slice(-8).toUpperCase();
+
+  const rows = o.items.map((it) => {
+    const name = esc(titles[it.slug] || it.slug);
+    const link = o.tokens[it.slug]
+      ? `<br><a href="${o.worker}/download?t=${encodeURIComponent(o.tokens[it.slug])}" style="color:#1b2229">Download the PDF</a>`
+      : "";
+    return `<tr><td style="padding:12px 0;border-bottom:1px solid #e3e7ec">${name}${link}</td>
+      <td style="padding:12px 0;border-bottom:1px solid #e3e7ec;text-align:right;vertical-align:top">${money(it.cents)}</td></tr>`;
+  }).join("");
+
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#1b2229">
+  <h1 style="font-size:22px;margin:0 0 6px">Thank you for your order.</h1>
+  <p style="margin:0 0 20px;color:#5d6874">Order ${esc(ref)}</p>
+  <table style="width:100%;border-collapse:collapse;font-size:15px">${rows}
+    <tr><td style="padding:14px 0;font-weight:bold">Total</td>
+      <td style="padding:14px 0;font-weight:bold;text-align:right">${money(total)}</td></tr>
+  </table>
+  <p style="font-size:14px;line-height:1.6;color:#5d6874;margin:20px 0 0">Your download was ready on screen when you checked out. You can also find it any time by signing in at <a href="${SITE}/account/" style="color:#1b2229">nexstudents.org</a> with this email.</p>
+  <p style="font-size:14px;line-height:1.6;color:#5d6874;margin:12px 0 0">Questions? Reach us through the <a href="${SITE}/contact/" style="color:#1b2229">contact page</a>.</p>
+</div>`;
+
+  const r = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + env.RESEND_API_KEY,
+      "Content-Type": "application/json",
+      "Idempotency-Key": "receipt-" + o.session,
+    },
+    body: JSON.stringify({
+      from: env.RECEIPT_FROM || "NexStudents <onboarding@resend.dev>",
+      to: [o.email],
+      subject: "Your NexStudents receipt",
+      html,
+    }),
+  });
+  if (!r.ok) throw new Error("resend " + r.status + " " + (await r.text()).slice(0, 200));
 }
 
 /* Stripe signs `<timestamp>.<raw body>` with HMAC-SHA256 and sends it as
