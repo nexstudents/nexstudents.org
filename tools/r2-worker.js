@@ -681,7 +681,13 @@ async function sendReceipt(env, o) {
          a person at the support address instead. Paul, 2026-09-10. */
       reply_to: env.RECEIPT_REPLY_TO || "support@nexedgestudios.com",
       to: [o.email],
-      subject: "Your NexStudents receipt",
+      /* 🚨 ONE SUBJECT PER ORDER. Every receipt used to say "Your NexStudents
+         receipt", so Gmail stacked the second one INSIDE the first thread and
+         Paul reported it missing (2026-09-10). The order number makes each
+         subject unique, and X-Entity-Ref-ID is the header Gmail honours to
+         keep otherwise-alike messages out of one conversation. */
+      subject: "Your NexStudents receipt, order " + ref,
+      headers: { "X-Entity-Ref-ID": o.session },
       html,
     }),
   });

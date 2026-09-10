@@ -708,6 +708,7 @@ body.print-all .wk+.wk{page-break-before:always}
   .product{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:56px;align-items:start}
   /* Desktop: back to the bottom, after all the reading. */
   .btn.p-cart{order:4;margin:34px 0 0}
-  /* The image stays in view while the reading scrolls past it. */
-  .p-img{position:sticky;top:96px}
+  /* 🚨 NOT STICKY. Paul, 2026-09-10: "as I scroll down the image here moves
+     down with the page until I get to a certain point." It scrolls with the
+     page like the rest of the reference does. */
 }
