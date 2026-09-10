@@ -1556,16 +1556,29 @@ html{-webkit-tap-highlight-color:transparent}
 .ck-row{display:grid;grid-template-columns:minmax(0,1fr) 99px 251px;gap:16px;
   align-items:start;padding:32px 0;border-bottom:1px solid var(--line)}
 .ck-prod{display:flex;align-items:flex-start;gap:20px;min-width:0}
-/* 🚨 A WIDE FLAT TILE, NO BORDER, NO RADIUS. 96x64 on a light ground. Ours was
-   a 64px bordered rounded square, which is what made the rows read as chunky
-   next to theirs.
-   ⚠️ object-fit:contain, NOT fill. Their photos are already 3:2 so fill costs
-   them nothing; our worksheet art is square (1200x1200) and fill would stretch
-   every cover. Contain letterboxes it inside the tile, which is why the tile
-   carries its own light background rather than being transparent. */
-.ck-thumb{width:96px;height:64px;flex:none;border:0;border-radius:0;
-  object-fit:contain;background:#f1f3f5}
+/* 🚨 A SQUARE WITH SLIGHTLY ROUNDED CORNERS, NOT THE 3:2 TILE. Paul, 2026-09-10:
+   "the checkout cart item is a rectangle and I want it a square with slightly
+   rounded corners. it'll match our thumbnail." The 96x64 tile was copied from
+   lttstore, whose photos are 3:2; ours are square (1200x1200) and letterboxed
+   in it. Square art in a square tile needs no letterbox, so `cover` is safe
+   and the light background only shows while the image loads. No border. */
+.ck-thumb{width:84px;height:84px;flex:none;border:0;border-radius:6px;
+  object-fit:cover;background:#f1f3f5}
 .ck-nothumb{background:var(--panel-2)}
+
+/* ── THE PAYMENT WINDOW ────────────────────────────────────────────────────
+   Stripe's embedded form in a centred overlay (see /cart/ in build-pages.js).
+   White box because the form is white; it scrolls inside itself so a long form
+   never pushes the page. ⚠️ .hidden is display:none!important, so toggling
+   that class is enough - `display:grid` here cannot beat it. */
+.ck-modal{position:fixed;inset:0;z-index:1000;background:rgba(5,6,8,.72);
+  display:grid;place-items:center;padding:16px}
+.ck-modal-box{position:relative;width:min(560px,100%);max-height:calc(100vh - 32px);
+  overflow:auto;background:#fff;border-radius:12px;padding:44px 6px 10px}
+.ck-x{position:absolute;top:8px;right:10px;width:36px;height:36px;border:0;border-radius:50%;
+  background:#f1f3f5;color:#1b2229;font-size:22px;line-height:1;cursor:pointer;
+  display:grid;place-items:center}
+@media(hover:hover){ .ck-x:hover{background:#e3e7ec} }
 /* align-items:flex-start is written EXPLICITLY rather than left to the default,
    because the default is what the collision above overrode. */
 .ck-meta{min-width:0;display:flex;flex-direction:column;align-items:flex-start;
@@ -1989,7 +2002,9 @@ nav{border-bottom:1px solid var(--line)}
    download is ready." directly above the button, with the button in the
    middle. 🚨 margin-inline:auto on the h2 and the note, not only
    text-align - .prose gives both a max-width, the same trap as .prose h2.mid. */
-.ty{text-align:center;padding-top:34px}
+/* ⚠️ 12px, not 34px: Paul, "move that up. it's a little too low." Zero put
+   the heading on the divider line; 34 floated it. */
+.ty{text-align:center;padding-top:12px}
 .ty h2{margin:0 auto 6px;text-align:center}
 .ty .ty-item{margin:0 0 26px}
 .ty .ty-title{margin:0 auto 14px;color:var(--dim)}

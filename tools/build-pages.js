@@ -2606,15 +2606,6 @@ const SOON_PAGES = [
         <div id="cartItems"></div>
       </div>
 
-      <!-- 🛒 THE PAYMENT STEP (ROADMAP 37). Stripe's embedded form mounts here and
-           takes the product column while it is open, the reference's shape:
-           payment on the left, the order summary on the right. -->
-      <div class="ck-pay hidden" id="ckPay">
-        <!-- A BUTTON, not a hash-only link: the build refuses dead anchors, and
-             this one does something rather than going somewhere. -->
-        <p class="ck-note"><button type="button" class="ck-rm" id="ckBack">&larr; Back to your cart</button></p>
-        <div id="ckStripe"></div>
-      </div>
 
       <!-- 🚨 GUEST OR SIGNED IN, NEVER A WALL. Forcing an account before
            checkout is where free downloads are lost. The email is what ties a
@@ -2644,6 +2635,20 @@ const SOON_PAGES = [
           <a href="/account/">Sign in here</a></p>
       </aside>
 
+    </div>
+  </div>
+
+  <!-- 🛒 THE PAYMENT WINDOW (ROADMAP 37). Paul, 2026-09-10: the embedded form
+       "looks way off and to the left and seems cut off and I have to scroll.
+       maybe we will add a different window for it." Squeezed into the product
+       column it had ~620px and no height of its own. A centred overlay gives
+       it the width Stripe designs for and a scroll of its own.
+       ⚠️ Only the X closes it. A backdrop click could throw away a half-typed
+       card, which is the one moment a buyer must not lose their place. -->
+  <div class="ck-modal hidden" id="ckPay" role="dialog" aria-modal="true" aria-label="Payment">
+    <div class="ck-modal-box">
+      <button type="button" class="ck-x" id="ckBack" aria-label="Close payment">&times;</button>
+      <div id="ckStripe"></div>
     </div>
   </div>
 
@@ -2761,27 +2766,29 @@ const SOON_PAGES = [
       return Stripe(NS_STRIPE.publishableKey).initEmbeddedCheckout({ clientSecret: d.clientSecret });
     }).then(function(c){
       checkout = c;
-      $("ckTable").classList.add("hidden");
       $("ckPay").classList.remove("hidden");
+      /* The page behind the window must not scroll with it. */
+      document.documentElement.style.overflow = "hidden";
       /* mount() takes the ELEMENT, never a selector string. */
       c.mount($("ckStripe"));
-      $("coForm").classList.add("hidden");
-      $("coMsg").textContent = "Paying as " + email;
+      $("coMsg").textContent = "";
       btn.disabled = false;
     });
   }
   /* 🚨 A WAY BACK THAT WORKS. Stripe refuses a second initEmbeddedCheckout while
      one is mounted, so leaving must destroy() it, or Check Out does nothing the
      second time and the buyer is stuck. */
-  $("ckBack").onclick = function(e){
-    e.preventDefault();
+  function closePay(){
     if (checkout) { checkout.destroy(); checkout = null; }
     $("ckPay").classList.add("hidden");
-    $("ckTable").classList.remove("hidden");
-    $("coForm").classList.remove("hidden");
-    $("coMsg").textContent = "";
+    document.documentElement.style.overflow = "";
     paint();
-  };
+  }
+  $("ckBack").onclick = closePay;
+  /* Escape closes it too, the way every dialog on the web does. */
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && checkout) closePay();
+  });
 
   /* The all-free route. The body below is unchanged from before the cart could
      take a card; only its opening lines moved up into onsubmit. */
