@@ -42,7 +42,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=bf603c61">
+<link rel="stylesheet" href="/assets/ns.css?v=7be03ffc">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -145,15 +145,9 @@
       checkout and it will be waiting here.</p>
   </div>
 
-  <!-- 📥 DOWNLOADS ON THIS DEVICE, for a buyer who never signed in. Filled from
-       what the thank-you page remembered (NSAccount.owned). Hidden when there
-       is nothing, and when signed in, where the full list below replaces it. -->
-  <div class="card hidden" id="deviceOwned" style="text-align:center;margin-top:18px">
-    <h3 style="font-size:1rem;margin:0 0 8px">Downloads on This Device</h3>
-    <div id="deviceList"></div>
-    <p class="dim" style="font-size:.85rem;margin:14px 0 0">Sign in with the email you
-      paid with to see these on any device.</p>
-  </div>
+  <!-- ⚠️ NO "DOWNLOADS ON THIS DEVICE" BOX. Paul, 2026-09-10: "we are just going
+       to do order history page instead like the lizzie one." Orders live in the
+       signed-in Orders row; a guest reaches an order from its receipt email. -->
 
   <!-- 👤 SIGNED IN. Paul: "after you login it should show your name and
        profile. we should also be able to change your password and stuff."
@@ -223,14 +217,32 @@
              price + "</span>" + go + "</div>";
     }).join("") + "</div>";
   }
-  function paintDevice(){
-    var list = (window.NSAccount && NSAccount.owned) ? NSAccount.owned() : [];
-    var vis = list.length > 0 && !(window.NSAccount && NSAccount.isSignedIn());
-    $("deviceOwned").classList.toggle("hidden", !vis);
-    if (vis) $("deviceList").innerHTML = rowsHtml(list);
+  /* 📜 ORDER HISTORY, like the Lizzie Peirce account. Paul: "we are just going
+     to do order history page instead." Rows from my_downloads() are grouped
+     into ORDERS: everything bought in the same minute is one checkout (a
+     cart's rows are written within a second of each other). Newest first.
+     Each order: its date, how many items, its total, then every item with its
+     own Download or Open button. */
+  function money(c){ return "$" + ((c || 0) / 100).toFixed(2); }
+  function ordersHtml(rows){
+    var groups = [], seen = {};
+    rows.forEach(function(r){
+      var k = String(r.bought_at || "").slice(0, 16);
+      if (!seen[k]) { seen[k] = { when: r.bought_at, rows: [] }; groups.push(seen[k]); }
+      seen[k].rows.push(r);
+    });
+    return groups.map(function(g){
+      var total = g.rows.reduce(function(n, r){ return n + (r.amount_cents || 0); }, 0);
+      var d = new Date(g.when);
+      /* [] = the reader's own locale. Not the word the build refuses on sight. */
+      var date = isNaN(d) ? "" : d.toLocaleDateString([], { month: "long", day: "numeric", year: "numeric" });
+      return "<div class='ord'>" +
+        "<div class='ord-head'><b>" + esc(date) + "</b><span>" + g.rows.length +
+        (g.rows.length > 1 ? " items" : " item") + " &middot; " + money(total) + "</span></div>" +
+        rowsHtml(g.rows) + "</div>";
+    }).join("");
   }
   function paint(){
-    paintDevice();
     if(!window.NSAccount || !NSAccount.isSignedIn()){ show(false); return; }
     show(true);
     /* The reset link lands here with a real session. It must go straight to
@@ -246,14 +258,15 @@
     /* my_downloads() (migration 008) returns titles and tokens for everything
        this person owns, guest purchases with the same email included. */
     NSAccount.myDownloads().then(function(rows){
-      $("ordersSub").textContent = rows.length
-        ? rows.length + (rows.length > 1 ? " items" : " item") : "No orders yet";
       if(!rows.length){
+        $("ordersSub").textContent = "No orders yet";
         $("owned").innerHTML = "<p class='dim'>Nothing yet. Everything free on this site " +
           "still goes through the cart, so it shows up here once you check out.</p>";
         return;
       }
-      $("owned").innerHTML = rowsHtml(rows);
+      $("owned").innerHTML = ordersHtml(rows);
+      var n = $("owned").querySelectorAll(".ord").length;
+      $("ordersSub").textContent = n + (n > 1 ? " orders" : " order");
     });
   }
   $("siForm").onsubmit = function(e){

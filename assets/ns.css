@@ -970,6 +970,11 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .acct-row[open] > summary{padding-bottom:8px}
 .acct-row > :not(summary){margin-left:4px;margin-right:4px}
 .acct-row > form, .acct-row > #owned{padding-bottom:16px}
+/* Order history: one block per order, its date and total on a header line. */
+.ord{margin:6px 0 14px}
+.ord-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;
+  padding:8px 16px;background:var(--panel-2);border-radius:6px}
+.ord-head span{font-size:.85rem;color:var(--dim)}
 .acct-h{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
   color:var(--dim);margin:14px 0 2px}
 .authswap{margin:16px 0 0;font-size:.9rem;color:var(--dim)}
