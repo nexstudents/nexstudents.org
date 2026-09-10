@@ -253,9 +253,39 @@
     });
   }
 
+  /* ── downloading again (2026-09-10) ───────────────────────────────────────
+     Paul: "a link that can confirm it was purchased by this user if they are
+     logged in or through their cache if they are not."
+     SIGNED IN  -> my_downloads() (migration 008): every paid row that is theirs,
+                   including guest purchases made with the same email earlier.
+     NOT SIGNED -> what the thank-you page remembered on THIS device.
+     🚨 A token is a bearer credential, the same one the receipt email carries.
+     Keeping it in localStorage puts it exactly where the buyer's own browser
+     already had it; it never leaves the device from here. */
+  var OWNED_KEY = "ns:owned";
+  function owned() { return read(OWNED_KEY, []); }
+  function rememberOwned(rows) {
+    var list = owned();
+    (rows || []).forEach(function (r) {
+      if (!r || !r.product || !r.token) return;
+      if (list.some(function (o) { return o.product === r.product && o.token === r.token; })) return;
+      list.push({ product: r.product, title: r.title || r.product, token: r.token });
+    });
+    write(OWNED_KEY, list);
+  }
+  function myDownloads() {
+    return refreshIfNeeded().then(function (s) {
+      if (!s) return [];
+      return fetch(REST + "/rpc/my_downloads", { method: "POST", headers: headers(true), body: "{}" })
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .catch(function () { return []; });
+    });
+  }
+
   captureFromUrl();
 
   window.NSAccount = {
+    owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
     signIn: signIn, signOut: signOut, getUser: getUser,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,

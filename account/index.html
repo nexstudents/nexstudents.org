@@ -42,7 +42,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=5214ccc7">
+<link rel="stylesheet" href="/assets/ns.css?v=10e57f70">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -176,10 +176,20 @@
       checkout and it will be waiting here.</p>
   </div>
 
+  <!-- 📥 DOWNLOADS ON THIS DEVICE, for a buyer who never signed in. Filled from
+       what the thank-you page remembered (NSAccount.owned). Hidden when there
+       is nothing, and when signed in, where the full list below replaces it. -->
+  <div class="card hidden" id="deviceOwned" style="text-align:center;margin-top:18px">
+    <h3 style="font-size:1rem;margin:0 0 8px">Downloads on This Device</h3>
+    <div id="deviceList"></div>
+    <p class="dim" style="font-size:.85rem;margin:14px 0 0">Sign in with the email you
+      paid with to see these on any device.</p>
+  </div>
+
   <div class="card hidden" id="signedIn" style="text-align:center">
     <h2 style="margin-top:0">Your account</h2>
     <p class="dim" id="whoami"></p>
-    <h3 style="font-size:1rem;margin:22px 0 8px">What you own</h3>
+    <h3 style="font-size:1rem;margin:22px 0 8px">Your Downloads</h3>
     <div id="owned"><p class="dim">Loading&hellip;</p></div>
     <button class="btn ghost" id="signOut" style="margin-top:20px">Sign out</button>
   </div>
@@ -197,23 +207,46 @@
   /* ⚠️ The magic link lands back here with the session in the URL fragment.
      ns-account.js captures it and strips it from the address bar before this
      runs, so by now isSignedIn() is already true. */
+  /* 📥 ONE ROW PER THING OWNED: title, price, and the way back to it.
+     Paid -> the Worker download, with the row's own token.
+     Free -> the sheet's page, where Print and Download already live.
+     Prices read $0.00, never "free" - the same rule as the cart. */
+  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
+  var HREF = {"manuscript-alphabet":"/worksheets/english/manuscript-alphabet/","cursive-alphabet":"/worksheets/english/cursive-alphabet/","multiplication-drill-100":"/worksheets/maths/multiplication-drill-100/","division-drill-100":"/worksheets/maths/division-drill-100/","lewis-and-clark":"/worksheets/history/lewis-and-clark/","thirteen-colonies":"/worksheets/history/thirteen-colonies/","boston-tea-party":"/worksheets/history/boston-tea-party/","animal-cell":"/worksheets/science/animal-cell/","us-history-semester-1":"/worksheets/history/us-history-semester-1/","complete-subjects-and-predicates":"/worksheets/english/complete-subjects-and-predicates/","weekly-spelling-test":"/worksheets/english/weekly-spelling-test/","spelling-flashcards":"/worksheets/english/spelling-flashcards/","newtons-laws-of-motion":"/worksheets/science/newtons-laws-of-motion/"};
+  function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+  function rowsHtml(rows){
+    return "<div class='dl-list'>" + rows.map(function(r){
+      var paid = r.amount_cents == null ? true : r.amount_cents > 0;
+      var go = paid
+        ? "<a class='btn dl-btn' href='" + WORKER + "/download?t=" + encodeURIComponent(r.token) + "'>Download</a>"
+        : (HREF[r.product] ? "<a class='btn ghost dl-btn' href='" + HREF[r.product] + "'>Open</a>" : "");
+      var price = r.amount_cents == null ? "" : "<span class='dim'>$" + (r.amount_cents/100).toFixed(2) + "</span>";
+      return "<div class='dl-row'><span class='dl-name'><b>" + esc(r.title || r.product) + "</b>" +
+             price + "</span>" + go + "</div>";
+    }).join("") + "</div>";
+  }
+  function paintDevice(){
+    var list = (window.NSAccount && NSAccount.owned) ? NSAccount.owned() : [];
+    var vis = list.length > 0 && !(window.NSAccount && NSAccount.isSignedIn());
+    $("deviceOwned").classList.toggle("hidden", !vis);
+    if (vis) $("deviceList").innerHTML = rowsHtml(list);
+  }
   function paint(){
+    paintDevice();
     if(!window.NSAccount || !NSAccount.isSignedIn()){ show(false); return; }
     show(true);
     NSAccount.getUser().then(function(u){
       $("whoami").textContent = u && u.email ? "Signed in as " + u.email : "Signed in.";
     });
-    NSAccount.myPurchases().then(function(rows){
+    /* my_downloads() (migration 008) returns titles and tokens for everything
+       this person owns, guest purchases with the same email included. */
+    NSAccount.myDownloads().then(function(rows){
       if(!rows.length){
         $("owned").innerHTML = "<p class='dim'>Nothing yet. Everything free on this site " +
           "still goes through the cart, so it shows up here once you check out.</p>";
         return;
       }
-      $("owned").innerHTML = "<ul style='margin:0;padding-left:18px'>" + rows.map(function(r){
-        return "<li style='margin-bottom:6px'>" + r.product +
-               (r.amount_cents ? " <span class='dim'>&middot; $" + (r.amount_cents/100).toFixed(2) + "</span>"
-                               : " <span class='dim'>&middot; free</span>") + "</li>";
-      }).join("") + "</ul>";
+      $("owned").innerHTML = rowsHtml(rows);
     });
   }
   $("siForm").onsubmit = function(e){

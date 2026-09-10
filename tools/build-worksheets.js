@@ -350,7 +350,40 @@ function productBlock(s) {
       ${btn}
     </div>
   </section>
+  ${s.buy ? ownedSwap(s.slug) : ""}
   ${alsoLike(s)}`;
+}
+
+/* ── ALREADY OWNED? THE BUTTON SAYS DOWNLOAD AGAIN ─────────────────────────
+   Paul, 2026-09-10: "I would still like a way they can download it again."
+   This device remembered it (thank-you page), or the signed-in account owns it
+   (my_downloads, migration 008): Add To Cart becomes a Download Again link
+   carrying that purchase's own token.
+   ⚠️ Runs on DOMContentLoaded because NSAccount arrives with navScript at the
+   END of the body, after this block. ⚠️ No backticks: template literal. */
+function ownedSwap(slug) {
+  return `<script>(function(){
+    var SLUG = "${slug}";
+    var W = "https://nexstudents-media.nexedgetech.workers.dev";
+    function swap(token){
+      var b = document.querySelector('.p-cart[data-cart="' + SLUG + '"]');
+      if (!b || !token) return;
+      var a = document.createElement("a");
+      a.className = "btn p-cart";
+      a.href = W + "/download?t=" + encodeURIComponent(token);
+      a.textContent = "Download Again";
+      b.parentNode.replaceChild(a, b);
+    }
+    function mine(rows){ return (rows || []).filter(function(r){ return r.product === SLUG; })[0]; }
+    document.addEventListener("DOMContentLoaded", function(){
+      if (!window.NSAccount || !NSAccount.owned) return;
+      var o = mine(NSAccount.owned());
+      if (o) return swap(o.token);
+      if (NSAccount.isSignedIn()) NSAccount.myDownloads().then(function(rows){
+        var m = mine(rows); if (m) swap(m.token);
+      });
+    });
+  })();</script>`;
 }
 
 /* kind "paid-sheet" — a PAID SINGLE SHEET whose product is a finished PDF.

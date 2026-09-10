@@ -1566,6 +1566,13 @@ html{-webkit-tap-highlight-color:transparent}
   object-fit:cover;background:#f1f3f5}
 .ck-nothumb{background:var(--panel-2)}
 
+/* ── /account/ DOWNLOAD ROWS ── title and price left, the button right. */
+.dl-list{text-align:left;margin:6px 0 0}
+.dl-row{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 0;border-bottom:1px solid var(--line)}
+.dl-name{display:flex;flex-direction:column;gap:2px;min-width:0}
+.btn.dl-btn{padding:9px 16px;font-size:13px;flex:none;text-decoration:none}
+
 /* ── THE PAYMENT WINDOW ────────────────────────────────────────────────────
    Stripe's embedded form in a centred overlay (see /cart/ in build-pages.js).
    White box because the form is white; it scrolls inside itself so a long form

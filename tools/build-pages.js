@@ -420,6 +420,12 @@ LESSONS.forEach(l => {
 /* Printables. Empty on purpose - an honest empty state beats a fake card. */
 /* Derived from worksheets.js, the same file build-worksheets.js renders the
    sheets from, so a sheet and its shelf card can never disagree. */
+/* slug -> sheet page, for /account/'s download list. A FREE item has no file in
+   R2, so its row opens the sheet's own page (Print and Download live there); a
+   paid one downloads through the Worker. `products` knows neither address. */
+const SHEET_HREF = Object.fromEntries(require("./worksheets.js").SHEETS
+  .map(w => [w.slug, "/worksheets/" + SUBJ_TOKEN[w.subject] + "/" + w.slug + "/"]));
+
 const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
   href: "/worksheets/" + SUBJ_TOKEN[w.subject] + "/" + w.slug + "/",
   id: SUBJ_TOKEN[w.subject] + "/" + w.slug,
@@ -1777,6 +1783,9 @@ function thankYouScript() {
     /* Bought, so out of the cart. Only what Postgres confirmed - never a blanket
        clear, which would also throw away anything added after checkout began. */
     '    if (window.NSAccount) rows.forEach(function(row){ NSAccount.cartRemove(row.product); });',
+    /* Remembered on this device, so /account/ and the product page can offer
+       Download Again without a sign-in. See rememberOwned() in ns-account.js. */
+    '    if (window.NSAccount && NSAccount.rememberOwned) NSAccount.rememberOwned(rows);',
     '  }',
     /* 🚨 NEVER SAY "we could not find your purchase". Two very different things
        land here - a slow webhook and someone opening the page with no session
@@ -2496,10 +2505,20 @@ const SOON_PAGES = [
       checkout and it will be waiting here.</p>
   </div>
 
+  <!-- 📥 DOWNLOADS ON THIS DEVICE, for a buyer who never signed in. Filled from
+       what the thank-you page remembered (NSAccount.owned). Hidden when there
+       is nothing, and when signed in, where the full list below replaces it. -->
+  <div class="card hidden" id="deviceOwned" style="text-align:center;margin-top:18px">
+    <h3 style="font-size:1rem;margin:0 0 8px">Downloads on This Device</h3>
+    <div id="deviceList"></div>
+    <p class="dim" style="font-size:.85rem;margin:14px 0 0">Sign in with the email you
+      paid with to see these on any device.</p>
+  </div>
+
   <div class="card hidden" id="signedIn" style="text-align:center">
     <h2 style="margin-top:0">Your account</h2>
     <p class="dim" id="whoami"></p>
-    <h3 style="font-size:1rem;margin:22px 0 8px">What you own</h3>
+    <h3 style="font-size:1rem;margin:22px 0 8px">Your Downloads</h3>
     <div id="owned"><p class="dim">Loading&hellip;</p></div>
     <button class="btn ghost" id="signOut" style="margin-top:20px">Sign out</button>
   </div>
@@ -2517,23 +2536,46 @@ const SOON_PAGES = [
   /* ⚠️ The magic link lands back here with the session in the URL fragment.
      ns-account.js captures it and strips it from the address bar before this
      runs, so by now isSignedIn() is already true. */
+  /* 📥 ONE ROW PER THING OWNED: title, price, and the way back to it.
+     Paid -> the Worker download, with the row's own token.
+     Free -> the sheet's page, where Print and Download already live.
+     Prices read $0.00, never "free" - the same rule as the cart. */
+  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
+  var HREF = ${JSON.stringify(SHEET_HREF)};
+  function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+  function rowsHtml(rows){
+    return "<div class='dl-list'>" + rows.map(function(r){
+      var paid = r.amount_cents == null ? true : r.amount_cents > 0;
+      var go = paid
+        ? "<a class='btn dl-btn' href='" + WORKER + "/download?t=" + encodeURIComponent(r.token) + "'>Download</a>"
+        : (HREF[r.product] ? "<a class='btn ghost dl-btn' href='" + HREF[r.product] + "'>Open</a>" : "");
+      var price = r.amount_cents == null ? "" : "<span class='dim'>$" + (r.amount_cents/100).toFixed(2) + "</span>";
+      return "<div class='dl-row'><span class='dl-name'><b>" + esc(r.title || r.product) + "</b>" +
+             price + "</span>" + go + "</div>";
+    }).join("") + "</div>";
+  }
+  function paintDevice(){
+    var list = (window.NSAccount && NSAccount.owned) ? NSAccount.owned() : [];
+    var vis = list.length > 0 && !(window.NSAccount && NSAccount.isSignedIn());
+    $("deviceOwned").classList.toggle("hidden", !vis);
+    if (vis) $("deviceList").innerHTML = rowsHtml(list);
+  }
   function paint(){
+    paintDevice();
     if(!window.NSAccount || !NSAccount.isSignedIn()){ show(false); return; }
     show(true);
     NSAccount.getUser().then(function(u){
       $("whoami").textContent = u && u.email ? "Signed in as " + u.email : "Signed in.";
     });
-    NSAccount.myPurchases().then(function(rows){
+    /* my_downloads() (migration 008) returns titles and tokens for everything
+       this person owns, guest purchases with the same email included. */
+    NSAccount.myDownloads().then(function(rows){
       if(!rows.length){
         $("owned").innerHTML = "<p class='dim'>Nothing yet. Everything free on this site " +
           "still goes through the cart, so it shows up here once you check out.</p>";
         return;
       }
-      $("owned").innerHTML = "<ul style='margin:0;padding-left:18px'>" + rows.map(function(r){
-        return "<li style='margin-bottom:6px'>" + r.product +
-               (r.amount_cents ? " <span class='dim'>&middot; $" + (r.amount_cents/100).toFixed(2) + "</span>"
-                               : " <span class='dim'>&middot; free</span>") + "</li>";
-      }).join("") + "</ul>";
+      $("owned").innerHTML = rowsHtml(rows);
     });
   }
   $("siForm").onsubmit = function(e){
