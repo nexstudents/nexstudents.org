@@ -286,7 +286,7 @@ async function download(url, env, request) {
     console.error("[download] paid object missing for " + slug);
     return new Response(
       "Your purchase is valid but the file is not ready yet. " +
-      "Email hello@nexstudents.org and we will send it straight over.",
+      "Email support@nexedgestudios.com and we will send it straight over.",
       { status: 503, headers: { "content-type": "text/plain; charset=utf-8" } }
     );
   }
@@ -829,7 +829,7 @@ async function paypalCapture(request, env) {
 
   if (!/^[a-z0-9-]{1,80}$/.test(slug) || !email) {
     console.error("[paypal] captured but missing slug or email on " + orderID);
-    return jsonOut({ error: "Payment taken but we could not file it. Email hello@nexstudents.org." }, 500);
+    return jsonOut({ error: "Payment taken but we could not file it. Email support@nexedgestudios.com." }, 500);
   }
 
   try {

@@ -1790,7 +1790,7 @@ function thankYouScript() {
     '      ? "<h2 style=\\"margin-top:0\\">Payment received.</h2>"',
     '        + "<p>Your download is still being prepared. Sign in at <a href=\\"/account/\\">your account</a>"',
     '        + " with the email you paid with and it will be there.</p>"',
-    '        + "<p class=\\"dim\\">If it is not there in a few minutes, email hello@nexstudents.org and we will send it straight over.</p>"',
+    '        + "<p class=\\"dim\\">If it is not there in a few minutes, email support@nexedgestudios.com and we will send it straight over.</p>"',
     '      : "<h2 style=\\"margin-top:0\\">Nothing to confirm here.</h2>"',
     '        + "<p>This page shows your download after a purchase. Browse the "',
     '        + "<a href=\\"/worksheets/\\">worksheets</a>.</p>";',
