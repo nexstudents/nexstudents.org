@@ -203,8 +203,8 @@ function cartBtn(s, variant) {
 
    ⚠️ DO NOT COPY THEIR DOWNLOAD PROMISE. Theirs is "emailed to you, 24 hours".
    Ours appears on screen at checkout; email is only ever the receipt.
-   ⚠️ `extra` is for content a product has that the reference does not, placed
-   between the included list and the download heading, never after the button. */
+   🚨 KEEP IT SHORT ENOUGH THAT ADD TO CART IS ON THE FIRST SCREEN. Paul cut it
+   twice on 2026-09-10. A longer list goes in `included`, three lines at most. */
 function priceText(p) {
   /* "$2" -> "$2.00". The reference shows cents, and so does our cart. */
   const n = Number(String(p).replace(/[^0-9.]/g, ""));
@@ -270,7 +270,7 @@ function carousel(s, dir, art) {
     })();</script>`;
 }
 
-function productBlock(s, extra) {
+function productBlock(s) {
   const dir = `/worksheets/${subjSlug(s.subject)}/${s.slug}/`;
   const art = `${dir}thumb.jpg`;
   /* 🚨 `preview: true` PROMISES A FILE. Fail the build rather than ship a slide
@@ -302,8 +302,7 @@ function productBlock(s, extra) {
       <p>Ask us on the <a href="/contact/">contact page</a>.</p>
       ${btn}
     </div>
-  </section>
-  ${extra ? `<section class="sheet p-more">${extra}</section>` : ""}`;
+  </section>`;
 }
 
 /* kind "paid-sheet" — a PAID SINGLE SHEET whose product is a finished PDF.
@@ -320,14 +319,11 @@ function productBlock(s, extra) {
    `sample` lists a handful of the parts, never all of them, because the full
    list IS half the worksheet. */
 function paidSheetHtml(s) {
-  /* The five sample parts tell a parent the level before buying, so they stay
-     on the page - but BELOW the product block, not in the right column. Paul,
-     2026-09-10: in the column they pushed Add To Cart off the first screen. */
-  const extra = `<h2 class="p-h">What's On The Sheet?</h2>
-      <p>${s.lockNote}</p>
-      <ul class="p-list">
-        ${s.sample.map((x) => "<li>" + x + "</li>").join("\n        ")}
-      </ul>`;
+  /* 🚨 NO "WHAT'S ON THE SHEET?" SECTION. Paul, 2026-09-10, first moved it out
+     of the column ("I have to scroll down just to see the checkout button"),
+     then dropped it: "I don't think we need the what's on the sheet section
+     underneath and it's kind of confusing." The product block is the page.
+     ⚠️ `lockNote` and `sample` stay in worksheets.js as his wording, unused. */
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -349,7 +345,7 @@ ${navMarkup("w")}
   ${backLink(s)}
 </div>
 
-${productBlock(s, extra)}
+${productBlock(s)}
 
 <div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets &mdash; <a href="/terms/">terms of use</a>.</p></div>
 
