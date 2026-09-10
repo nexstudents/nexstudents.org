@@ -66,6 +66,11 @@
      🚨 It must be cleared from the address bar immediately. A fragment is not
      sent to the server, but it stays in history, in a screenshot, and in
      anything the user pastes to ask for help. */
+  /* 2026-09-10: the fragment now arrives from the CONFIRM-YOUR-EMAIL link
+     (type=signup) and the FORGOT-PASSWORD link (type=recovery). A recovery
+     session is real but must go straight to "choose a new password", so it is
+     flagged for the account page to act on. */
+  var recovery = false;
   function captureFromUrl() {
     if (!location.hash || location.hash.indexOf("access_token") < 0) return false;
     var p = new URLSearchParams(location.hash.slice(1));
@@ -76,10 +81,38 @@
       refresh_token: rt,
       expires_at: Date.now() + (parseInt(p.get("expires_in"), 10) || 3600) * 1000
     };
+    recovery = p.get("type") === "recovery";
     write(SESSION_KEY, session);
     history.replaceState(null, "", location.pathname + location.search);
     return true;
   }
+  function setSession(d) {
+    session = { access_token: d.access_token, refresh_token: d.refresh_token,
+                expires_at: Date.now() + (d.expires_in || 3600) * 1000 };
+    write(SESSION_KEY, session);
+    document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: d.user || null } }));
+  }
+  /* Supabase's own error words are written for developers. These are for a
+     parent at a kitchen table. Unknown ones fall through unchanged. */
+  function friendly(e, fallback) {
+    var m = (e && (e.msg || e.error_description || e.message)) || "";
+    if (/invalid login credentials/i.test(m)) return "That email and password do not match. Check both, or use Forgot password.";
+    if (/email not confirmed/i.test(m)) return "Confirm your email first. The link is in the email we sent when you signed up.";
+    if (/already registered|already been registered/i.test(m)) return "That email already has an account. Log in instead, or use Forgot password.";
+    if (/password should be at least|weak password/i.test(m)) return "Pick a longer password: at least 8 characters.";
+    if (/rate limit|too many/i.test(m)) return "Too many tries in a row. Wait a minute and try again.";
+    return m || fallback;
+  }
+  function authCall(path, body, fallback) {
+    return fetch(AUTH + path, { method: "POST", headers: headers(false), body: JSON.stringify(body) })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          if (!r.ok) throw new Error(friendly(d, fallback));
+          return d;
+        });
+      });
+  }
+  var clean = function (email) { return String(email || "").trim().toLowerCase(); };
 
   /* ⚠️ Refreshed a minute EARLY. A token that expires mid-request fails the
      request, not the next one, and the user sees a random error rather than a
@@ -101,19 +134,77 @@
       }).catch(function () { return null; });
   }
 
-  function signIn(email) {
-    /* Magic link. `create_user: true` means signing in and signing up are the
-       same action -- there is no separate register form to get wrong. */
-    return fetch(AUTH + "/otp", {
-      method: "POST", headers: headers(false),
-      body: JSON.stringify({
-        email: String(email || "").trim().toLowerCase(),
-        create_user: true,
-        options: { email_redirect_to: location.origin + "/account/" }
-      })
-    }).then(function (r) {
-      if (!r.ok) return r.json().then(function (e) { throw new Error(e.msg || e.error_description || "Could not send the link"); });
-      return true;
+  /* ── EMAIL AND PASSWORD (2026-09-10) ──────────────────────────────────────
+     Paul: "there is an email but no password to login. i dont like it. it just
+     sends a verification to click to sign in through your email." The email
+     link sign-in is GONE. This is the account every other site has:
+       logIn        email + password                  -> signed in
+       signUp       email + password                  -> "confirm your email" sent
+       forgot       email                             -> reset link sent
+       newPassword  (from the reset link's session)   -> password changed
+     The confirm and reset emails come from NexStudents <accounts@nexstudents.org>
+     through Resend (Supabase custom SMTP, set 2026-09-10). */
+  function logIn(email, password) {
+    return authCall("/token?grant_type=password",
+      { email: clean(email), password: String(password || "") }, "Could not log in.")
+      .then(function (d) { setSession(d); return d.user; });
+  }
+  function signUp(email, password, first, last) {
+    /* redirect_to is where the CONFIRM link lands: /account/, which picks the
+       session out of the fragment and shows the account, already signed in.
+       The name rides in user_metadata. Paul: "after you login it should show
+       your name and profile." */
+    return authCall("/signup?redirect_to=" + encodeURIComponent(location.origin + "/account/"),
+      { email: clean(email), password: String(password || ""),
+        data: { first_name: String(first || "").trim(), last_name: String(last || "").trim() } },
+      "Could not make the account.")
+      .then(function (d) {
+        /* With email confirmation on there is no session yet, only a user.
+           ⚠️ Supabase answers an EXISTING email the same way on purpose, so a
+           stranger cannot test which emails have accounts. The page says the
+           same thing either way: check your email. */
+        if (d && d.access_token) setSession(d);
+        return !!(d && d.access_token);
+      });
+  }
+  /* Resend the confirm-your-email link. Paul, 2026-09-10: "she also has an
+     email verification system" - hers offers Resend Verification Email, and a
+     lost first email must not strand anyone. */
+  function resendConfirm(email) {
+    return authCall("/resend?redirect_to=" + encodeURIComponent(location.origin + "/account/"),
+      { type: "signup", email: clean(email) }, "Could not resend the email.").then(function () { return true; });
+  }
+  function forgot(email) {
+    return authCall("/recover?redirect_to=" + encodeURIComponent(location.origin + "/account/"),
+      { email: clean(email) }, "Could not send the reset email.").then(function () { return true; });
+  }
+  /* Profile: the name lives in the user's own user_metadata, which only that
+     signed-in user can change. */
+  function updateProfile(first, last) {
+    return refreshIfNeeded().then(function (s) {
+      if (!s) throw new Error("Please sign in again.");
+      return fetch(AUTH + "/user", { method: "PUT", headers: headers(true),
+        body: JSON.stringify({ data: { first_name: String(first || "").trim(), last_name: String(last || "").trim() } }) })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (d) {
+            if (!r.ok) throw new Error(friendly(d, "Could not save your name."));
+            return d;
+          });
+        });
+    });
+  }
+  function newPassword(password) {
+    return refreshIfNeeded().then(function (s) {
+      if (!s) throw new Error("That reset link has expired. Ask for a new one.");
+      return fetch(AUTH + "/user", { method: "PUT", headers: headers(true),
+                                     body: JSON.stringify({ password: String(password || "") }) })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (d) {
+            if (!r.ok) throw new Error(friendly(d, "Could not change the password."));
+            recovery = false;
+            return true;
+          });
+        });
     });
   }
 
@@ -290,7 +381,9 @@
 
   window.NSAccount = {
     owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
-    signIn: signIn, signOut: signOut, getUser: getUser,
+    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile,
+    isRecovery: function () { return recovery; },
+    signOut: signOut, getUser: getUser,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
     cartThumb: cartThumb, cartHref: cartHref,

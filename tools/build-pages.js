@@ -2524,73 +2524,42 @@ const SOON_PAGES = [
      (ROADMAP 7) exists, so these say where things stand instead of being
      buttons that ignore you. */
   { dir: "account", active: "p",
-    title: "Sign In or Create an Account | NexStudents",
-    desc: "One email, one link. New here or coming back, it is the same box.",
-    crumb: "Account", h1: "Sign In or Create an Account.",
-    lead: "One email, one link, no password. New here? The same box makes your account.",
+    title: "Your Account | NexStudents",
+    desc: "Sign in with your email and password, or create a NexStudents account.",
+    crumb: "Account", h1: "Your Account.",
+    lead: "",
     body: `<div class="band"><div class="wrap" style="max-width:560px">
 
-  <!-- 🚨 MAGIC LINK, NO PASSWORD FIELD. There is nothing to forget, nothing to
-       reset, and no password for this site to store or leak. Signing in and
-       signing up are the SAME action -- create_user is true -- so there is no
-       separate register form to get out of step with this one.
+  <!-- 🔑 EMAIL AND PASSWORD, 2026-09-10. Paul: "there is an email but no
+       password to login. i dont like it." The email-link sign-in is gone. The
+       card follows Lizzie Peirce's login (lizziepeirce.com/account/login): a
+       plain welcome line, underlined fields, ONE dark button, and Forgot
+       Password? beside Create Account underneath.
+       FOUR MODES, ONE CARD: in (sign in) · up (create account, with first and
+       last name) · forgot (send a reset link) · reset (arrived from that link,
+       choose a new password). Only the fields and words change.
+       ⚠️ The links under the button are BUTTONS: they switch the card, they do
+       not navigate, and the build refuses empty-fragment links. -->
+  <div class="card auth-card" id="signedOut">
+    <h2 id="siHead">Welcome to NexStudents</h2>
+    <p class="dim hidden" id="siLede" style="margin:0 0 6px"></p>
 
-       🚨 BUT THE PAGE HAS TO SAY SO. Paul, 2026-09-07: "this sign in also needs
-       a signup." He was right about the page even though the mechanism was
-       already there: a first-time visitor reads "Sign in" and assumes an
-       account has to exist first, so the one box that would have made them one
-       looks like a door they cannot open.
-       ⚠️ THE FIX IS WORDING, NOT A SECOND FORM. Adding a separate register form
-       would recreate exactly the drift this design avoids - two forms, one
-       backend, guaranteed to disagree eventually. -->
-  <!-- 🚨 TWO TABS, ONE CODE PATH. Paul, 2026-09-07, twice: "this sign in also
-       needs a signup", then "new accounts need a sign up to sign in. this is
-       normal on every website. also the way we have ours looks wrong."
-
-       He is right and my first answer was wrong in an important way. I argued
-       against a second form because two forms drift apart - but the drift that
-       actually bites is two forms hitting two CODE PATHS. These two tabs call
-       the SAME NSAccount.signIn(), which is create_user:true, so there is one
-       backend, one endpoint, and nothing that can get out of step. What was
-       missing was the affordance a reader expects, and that costs nothing.
-
-       ⚠️ SO DO NOT "SIMPLIFY" THIS BACK TO ONE BOX. The mechanism was already
-       identical; the page was the problem. A visitor with no account looks for
-       the word Sign Up and does not find a way in without it. -->
-  <div class="card" id="signedOut" style="text-align:center">
-
-    <h2 id="siHead" style="margin-top:0">Log In</h2>
-    <p class="dim" id="siLede">Welcome back. Type your email and we send you a
-      link. No password to remember.</p>
-
-    <!-- ONE form for both routes. Only the words change; both submit to the
-         same handler and the same NSAccount.signIn(). -->
-    <form id="siForm" autocomplete="on">
-      <input type="email" id="siEmail" required autocomplete="email"
-             placeholder="you@example.com" aria-label="Your email"
-             style="width:100%;font:inherit;font-size:1rem;padding:13px 15px;border-radius:10px;
-                    background:var(--panel-2);border:1px solid var(--line);color:var(--fg)">
-      <!-- Title Case on the control, sentence case in the prose around it. -->
-      <button class="btn authgo" type="submit" id="siBtn">Email Me a Link</button>
+    <form id="siForm" autocomplete="on" novalidate>
+      <div class="auth-row hidden" id="siNames">
+        <input class="auth-in" type="text" id="siFirst" autocomplete="given-name" placeholder="First Name" aria-label="First name">
+        <input class="auth-in" type="text" id="siLast" autocomplete="family-name" placeholder="Last Name" aria-label="Last name">
+      </div>
+      <input class="auth-in" type="email" id="siEmail" autocomplete="email" placeholder="Email" aria-label="Email">
+      <input class="auth-in" type="password" id="siPass" autocomplete="current-password" placeholder="Password" aria-label="Password">
+      <input class="auth-in hidden" type="password" id="siPass2" autocomplete="new-password" placeholder="Confirm password" aria-label="Confirm password">
+      <button class="btn authgo" type="submit" id="siBtn">Sign In</button>
     </form>
 
     <p class="dim" id="siMsg" style="font-size:.9rem;margin:14px 0 0"></p>
-
-    <!-- 🚨 THE SECOND ROUTE IS A LINK UNDER THE PRIMARY BUTTON, which is how
-         Paul's own HG login page does it: one solid action, then "New here?
-         Sign up free" beneath. Not tabs - he rejected those explicitly. -->
-    <!-- ⚠️ A BUTTON, NOT A DEAD ANCHOR. This switches the form in place and
-         does not navigate, so an anchor would misdescribe it - and build-pages
-         fails the build on empty-fragment links anyway.
-         🚨 DO NOT WRITE THAT PATTERN LITERALLY IN THIS COMMENT. The guard tests
-         the RENDERED HTML, comments included, so naming the forbidden string
-         here trips the check on itself. It did exactly that on 2026-09-07.
-         Same species as check-nav-css.js, which strips comments first. -->
-    <p class="authswap" id="siSwap">New here?
-      <button type="button" id="siSwapLink">Sign up free</button></p>
+    <p class="authlinks" id="siLinks"></p>
 
     <p class="dim" style="font-size:.85rem;margin:18px 0 0">
-      Bought something as a guest? Sign in with the same email you used at
+      Bought something as a guest? Create an account with the same email you used at
       checkout and it will be waiting here.</p>
   </div>
 
@@ -2604,12 +2573,41 @@ const SOON_PAGES = [
       paid with to see these on any device.</p>
   </div>
 
-  <div class="card hidden" id="signedIn" style="text-align:center">
-    <h2 style="margin-top:0">Your account</h2>
-    <p class="dim" id="whoami"></p>
-    <h3 style="font-size:1rem;margin:22px 0 8px">Your Downloads</h3>
-    <div id="owned"><p class="dim">Loading&hellip;</p></div>
-    <button class="btn ghost" id="signOut" style="margin-top:20px">Sign out</button>
+  <!-- 👤 SIGNED IN. Paul: "after you login it should show your name and
+       profile. we should also be able to change your password and stuff."
+       Shaped like Lizzie Peirce's account panel: "Hi, Paul" with a small Sign
+       out, then ROWS - a title and one line under it - that open in place.
+       Orders and Profile only: Stripe holds the cards and a download needs no
+       address, so her Payment Methods and Address rows have nothing to hold.
+       ⚠️ Native <details>: opens with a keyboard and with JavaScript off. -->
+  <div class="card auth-card hidden" id="signedIn">
+    <h2 id="hello" style="margin-bottom:4px">Hi</h2>
+    <p style="margin:0 0 18px"><button type="button" class="acct-out" id="signOut">Sign out</button></p>
+
+    <details class="acct-row" open>
+      <summary><b>Orders</b><span id="ordersSub">Loading&hellip;</span></summary>
+      <div id="owned"></div>
+    </details>
+
+    <details class="acct-row">
+      <summary><b>Profile</b><span id="whoami"></span></summary>
+      <p class="acct-h">Name</p>
+      <form id="pfForm" novalidate>
+        <div class="auth-row">
+          <input class="auth-in" type="text" id="pfFirst" autocomplete="given-name" placeholder="First name" aria-label="First name">
+          <input class="auth-in" type="text" id="pfLast" autocomplete="family-name" placeholder="Last name" aria-label="Last name">
+        </div>
+        <button class="btn authgo" type="submit">Save Name</button>
+      </form>
+      <p class="dim" id="pfMsg" style="font-size:.9rem;margin:10px 0 0"></p>
+      <p class="acct-h">Change Password</p>
+      <form id="pwForm" novalidate>
+        <input class="auth-in" type="password" id="pwNew" autocomplete="new-password" placeholder="New Password" aria-label="New password">
+        <input class="auth-in" type="password" id="pwNew2" autocomplete="new-password" placeholder="Re-type New Password" aria-label="Re-type new password">
+        <button class="btn authgo" type="submit">Save Password</button>
+      </form>
+      <p class="dim" id="pwMsg" style="font-size:.9rem;margin:10px 0 0"></p>
+    </details>
   </div>
 
 </div></div>
@@ -2653,12 +2651,21 @@ const SOON_PAGES = [
     paintDevice();
     if(!window.NSAccount || !NSAccount.isSignedIn()){ show(false); return; }
     show(true);
+    /* The reset link lands here with a real session. It must go straight to
+       "choose a new password", not the account, or the reset never happens. */
+    if (NSAccount.isRecovery && NSAccount.isRecovery()) { show(false); setMode("reset"); return; }
     NSAccount.getUser().then(function(u){
-      $("whoami").textContent = u && u.email ? "Signed in as " + u.email : "Signed in.";
+      var md = (u && u.user_metadata) || {};
+      $("hello").textContent = md.first_name ? "Hi, " + md.first_name : "Hi";
+      $("whoami").textContent = u && u.email ? u.email : "";
+      $("pfFirst").value = md.first_name || "";
+      $("pfLast").value = md.last_name || "";
     });
     /* my_downloads() (migration 008) returns titles and tokens for everything
        this person owns, guest purchases with the same email included. */
     NSAccount.myDownloads().then(function(rows){
+      $("ordersSub").textContent = rows.length
+        ? rows.length + (rows.length > 1 ? " items" : " item") : "No orders yet";
       if(!rows.length){
         $("owned").innerHTML = "<p class='dim'>Nothing yet. Everything free on this site " +
           "still goes through the cart, so it shows up here once you check out.</p>";
@@ -2671,46 +2678,114 @@ const SOON_PAGES = [
     e.preventDefault();
     var btn = e.target.querySelector("button");
     btn.disabled = true; $("siMsg").textContent = "Sending\u2026";
-    NSAccount.signIn($("siEmail").value).then(function(){
-      $("siMsg").innerHTML = "<b>Check your email.</b> The link signs you straight in. " +
-                             "It can take a minute, and it may land in spam the first time.";
-    }).catch(function(err){
-      $("siMsg").textContent = err.message || "That did not send. Try again in a moment.";
-      btn.disabled = false;
+    var em = $("siEmail").value.trim(), pw = $("siPass").value, pw2 = $("siPass2").value;
+    var msg = $("siMsg");
+    function stop(t){ msg.textContent = t; btn.disabled = false; }
+    /* Checked here first, so a mistyped password never costs a round trip. */
+    if (mode !== "reset" && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(em)) return stop("Type your email address.");
+    if ((mode === "in" || mode === "up" || mode === "reset") && !pw) return stop("Type your password.");
+    if ((mode === "up" || mode === "reset") && pw.length < 8) return stop("Pick a password with at least 8 characters.");
+    if ((mode === "up" || mode === "reset") && pw !== pw2) return stop("The two passwords do not match.");
+    if (mode === "up" && !$("siFirst").value.trim()) return stop("Type your first name.");
+    msg.textContent = { in: "Signing in", up: "Creating your account", forgot: "Sending the reset link",
+                        reset: "Saving your new password" }[mode] + "...";
+
+    var job = mode === "in"     ? NSAccount.logIn(em, pw).then(function(){ msg.textContent = ""; paint(); })
+            : mode === "up"     ? NSAccount.signUp(em, pw, $("siFirst").value, $("siLast").value).then(function(signedIn){
+                                    if (signedIn) { msg.textContent = ""; paint(); return; }
+                                    /* The confirm email comes from NexStudents <accounts@nexstudents.org>. */
+                                    setMode("in");
+                                    $("siMsg").innerHTML = "<b>Check your email.</b> We sent a link to " +
+                                      "confirm your account. Press it, then sign in here.";
+                                  })
+            : mode === "forgot" ? NSAccount.forgot(em).then(function(){
+                                    $("siMsg").innerHTML = "<b>Check your email.</b> If there is an account " +
+                                      "for that address, a link to reset the password is on its way.";
+                                    btn.disabled = false;
+                                  })
+            :                     NSAccount.newPassword(pw).then(function(){
+                                    msg.textContent = ""; setMode("in"); paint();
+                                  });
+    job.catch(function(err){
+      var t = (err && err.message) || "That did not work. Try again in a moment.";
+      stop(t);
+      /* Not confirmed yet: offer the resend right there, like the reference. */
+      if (mode === "in" && /confirm your email/i.test(t)) {
+        msg.innerHTML = msg.textContent + ' <button type="button" class="acct-out" id="siResend">Resend Verification Email</button>';
+        $("siResend").onclick = function(){
+          msg.textContent = "Sending...";
+          NSAccount.resendConfirm(em).then(function(){
+            msg.innerHTML = "<b>Sent.</b> Check your email for the confirm link, then sign in here.";
+          }).catch(function(e2){ msg.textContent = e2.message; });
+        };
+      }
     });
   };
   $("signOut").onclick = function(){ NSAccount.signOut(); location.reload(); };
 
-  /* 🚨 THE BUTTON SAYS WHAT THE TAB IS FOR. Paul, 2026-09-07: "usually you have
-     two differnt buttons and we need a create account button." A reader on the
-     Sign Up tab looking at a button reading "Email Me a Link" cannot tell it
-     will make them an account.
-     ⚠️ ONE FORM, ONE ENDPOINT UNDERNEATH. Both tabs submit the same handler and
-     call the same NSAccount.signIn(), which is create_user:true. The tabs
-     change the words and nothing else, so there is no second path to drift. */
+  /* ── THE FOUR MODES OF THE CARD ── one form, the fields and words change.
+     Wording copied from the Lizzie Peirce reference: "Create Account",
+     "Create Password", "Re-type Password", "Already have an account? Sign in". */
   var mode = "in";
+  var MODES = {
+    in:     { head: "Welcome to NexStudents", btn: "Sign In", names: false, pass: true,  pass2: false,
+              ph: "Password", links: [["Forgot Password?", "forgot"], ["Create Account", "up"]] },
+    up:     { head: "Create Account", btn: "Create Account", names: true, pass: true, pass2: true,
+              ph: "Create Password", links: [["Already have an account? Sign In", "in"]] },
+    forgot: { head: "Reset Your Password", btn: "Send Reset Link", names: false, pass: false, pass2: false,
+              lede: "Type your email and we will send you a link to choose a new password.",
+              links: [["Back to Sign In", "in"]] },
+    reset:  { head: "Choose a New Password", btn: "Save New Password", names: false, pass: true, pass2: true,
+              ph: "New Password", email: false, links: [] }
+  };
   function setMode(m){
     mode = m;
-    var up = m === "up";
-    $("siHead").textContent = up ? "Create Your Account" : "Log In";
-    $("siLede").textContent = up
-      ? "Type your email and we send you a link that makes your account. No password to pick, and nothing to forget."
-      : "Welcome back. Type your email and we send you a link. No password to remember.";
-    $("siBtn").textContent = up ? "Create My Account" : "Email Me a Link";
-    $("siSwap").innerHTML = up
-      ? 'Already have an account? <button type="button" id="siSwapLink">Log in</button>'
-      : 'New here? <button type="button" id="siSwapLink">Sign up free</button>';
-    /* innerHTML replaced the anchor, so the handler has to be re-attached. */
-    wireSwap();
+    var c = MODES[m];
+    $("siHead").textContent = c.head;
+    $("siLede").textContent = c.lede || "";
+    $("siLede").classList.toggle("hidden", !c.lede);
+    $("siNames").classList.toggle("hidden", !c.names);
+    $("siEmail").classList.toggle("hidden", c.email === false);
+    $("siPass").classList.toggle("hidden", !c.pass);
+    $("siPass2").classList.toggle("hidden", !c.pass2);
+    $("siPass").placeholder = c.ph || "Password";
+    $("siPass").autocomplete = m === "in" ? "current-password" : "new-password";
+    $("siPass2").placeholder = m === "reset" ? "Re-type New Password" : "Re-type Password";
+    $("siBtn").textContent = c.btn;
+    $("siBtn").disabled = false;
+    $("siLinks").innerHTML = c.links.map(function(l){
+      return '<button type="button" data-mode="' + l[1] + '">' + l[0] + '</button>';
+    }).join("");
+    [].forEach.call($("siLinks").querySelectorAll("button"), function(b){
+      b.onclick = function(){ setMode(b.getAttribute("data-mode")); };
+    });
     $("siMsg").textContent = "";
-    $("siEmail").focus();
+    $("siPass").value = ""; $("siPass2").value = "";
   }
-  function wireSwap(){
-    var a = $("siSwapLink");
-    if (!a) return;
-    a.onclick = function(e){ e.preventDefault(); setMode(mode === "up" ? "in" : "up"); };
-  }
-  wireSwap();
+  setMode("in");
+
+  /* Profile: the name, saved to the account's own metadata. */
+  $("pfForm").onsubmit = function(e){
+    e.preventDefault();
+    $("pfMsg").textContent = "Saving...";
+    NSAccount.updateProfile($("pfFirst").value, $("pfLast").value).then(function(){
+      $("pfMsg").textContent = "Saved.";
+      var f = $("pfFirst").value.trim();
+      $("hello").textContent = f ? "Hi, " + f : "Hi";
+    }).catch(function(err){ $("pfMsg").textContent = err.message; });
+  };
+  /* Change Password while signed in. */
+  $("pwForm").onsubmit = function(e){
+    e.preventDefault();
+    var a = $("pwNew").value, b = $("pwNew2").value;
+    if (a.length < 8) { $("pwMsg").textContent = "Pick a password with at least 8 characters."; return; }
+    if (a !== b) { $("pwMsg").textContent = "The two passwords do not match."; return; }
+    $("pwMsg").textContent = "Saving...";
+    NSAccount.newPassword(a).then(function(){
+      $("pwMsg").textContent = "Password changed.";
+      $("pwNew").value = ""; $("pwNew2").value = "";
+    }).catch(function(err){ $("pwMsg").textContent = err.message; });
+  };
 
   document.addEventListener("ns:auth", paint);
   paint();

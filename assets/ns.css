@@ -939,6 +939,39 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    NSAccount.signIn() with create_user:true. Only the words change. */
 .authgo{width:100%;display:flex;align-items:center;justify-content:center;
   margin-top:12px;min-height:52px;font-size:1rem}
+
+/* 🔑 THE ACCOUNT CARD, 2026-09-10, to Lizzie Peirce's login and create pages:
+   a centred heading, UNDERLINED fields (no boxes), one full-width button, and
+   small text links underneath. The form is email and password now. */
+.auth-card{text-align:center;padding:30px 28px}
+/* ⚠️ max-width:none + margin-inline:auto: a site-wide h2 max-width left the
+   heading in a narrow box, flush left, however centred its text was. */
+.auth-card h2{margin:0 auto 16px;max-width:none;text-align:center;font-size:1.5rem}
+.auth-in{display:block;width:100%;font:inherit;font-size:1rem;color:var(--fg);background:transparent;
+  border:0;border-bottom:1px solid var(--line);border-radius:0;padding:13px 4px;margin:0 0 6px}
+.auth-in::placeholder{color:var(--dim)}
+.auth-in:focus{outline:none;border-bottom-color:var(--fg)}
+.auth-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.authlinks{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:14px 0 0}
+.authlinks button{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:inherit;
+  font-size:.88rem;color:var(--fg);text-decoration:underline;text-underline-offset:3px}
+@media(hover:hover){ .authlinks button:hover{color:var(--dim)} }
+/* Signed in: Lizzie Peirce's account rows. A title, one quiet line under it,
+   a hairline between rows; each opens in place. */
+.acct-out{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:inherit;
+  font-size:.82rem;color:var(--dim);text-decoration:underline;text-underline-offset:3px}
+.acct-row{border-top:1px solid var(--line);text-align:left}
+.acct-row:last-of-type{border-bottom:1px solid var(--line)}
+.acct-row > summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;
+  gap:3px;padding:16px 8px;text-align:center}
+.acct-row > summary::-webkit-details-marker{display:none}
+.acct-row > summary b{font-size:1.05rem;font-weight:600}
+.acct-row > summary span{font-size:.85rem;color:var(--dim)}
+.acct-row[open] > summary{padding-bottom:8px}
+.acct-row > :not(summary){margin-left:4px;margin-right:4px}
+.acct-row > form, .acct-row > #owned{padding-bottom:16px}
+.acct-h{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);margin:14px 0 2px}
 .authswap{margin:16px 0 0;font-size:.9rem;color:var(--dim)}
 /* ⚠️ A BUTTON WEARING A LINK'S CLOTHES. It switches the form in place rather
    than navigating, and build-pages.js fails the build on href="#" anyway. The
