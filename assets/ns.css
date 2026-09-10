@@ -1568,8 +1568,10 @@ html{-webkit-tap-highlight-color:transparent}
 
 /* ── /account/ DOWNLOAD ROWS ── title and price left, the button right. */
 .dl-list{text-align:left;margin:6px 0 0}
+/* ⚠️ Side padding of its own: the account cards run their content to the
+   card edge, and a title and a button flush against it looked unfinished. */
 .dl-row{display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:12px 0;border-bottom:1px solid var(--line)}
+  padding:12px 16px;border-bottom:1px solid var(--line)}
 .dl-name{display:flex;flex-direction:column;gap:2px;min-width:0}
 .btn.dl-btn{padding:9px 16px;font-size:13px;flex:none;text-decoration:none}
 
