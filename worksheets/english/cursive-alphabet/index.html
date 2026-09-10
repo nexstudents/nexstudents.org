@@ -47,45 +47,6 @@
 <meta name="description" content="All 26 cursive letters to trace, then space to practise on your own.">
 <link rel="stylesheet" href="/assets/ns.css?v=151e3313">
 <link rel="stylesheet" href="/assets/worksheet.css?v=151e3313">
-<style>
-  /* The sheet is capped on screen so the page reads as a page, not a wall of
-     paper. ⚠️ It is NOT the print source - printing uses the same image at
-     its full pixel size, so shrinking it here costs nothing on paper. */
-  /* 🚨 ALL THE READING SITS ABOVE THE SHEET. Paul, 2026-09-02: there was a
-     block under the worksheet too and it was not wanted - "honestly maybe we
-     don't need the content below the worksheet." One place to read, then the
-     thing you came for. Do not reintroduce a section after the image. */
-  /* WARNING: .note in worksheet.css has only 12px of top padding, which is
-     fine while its first child brings its own margin. Zeroing every p inside
-     it - which an earlier version of this block did - left the heading hard
-     against the top border while the foot still had padding plus a divider.
-     Paul, 2026-09-02: "the top of the instructions on this worksheet looks cut
-     off." Set the padding here rather than fighting margins, and never
-     blanket-zero margins inside a shared component.
-
-     NO BACKTICKS IN THIS COMMENT. It lives inside a JS template literal, so a
-     backtick closes the string and the build dies on the next word. That is
-     already recorded in CLAUDE.md for progressScript and it caught me here
-     too - and because the build was piped to /dev/null, the crash was silent
-     and a "fix" was pushed that never built. Never hide build stderr. */
-  .note { padding: 16px 16px 14px; }
-  .note > p:first-child { margin: 0 0 4px; }
-  .note ol { margin: 0; padding-left: 20px; }
-  .note li { font-size: 13.5px; line-height: 1.5; margin: 2px 0; }
-  .note .later { font-size: 12.5px; color: var(--dim); margin: 12px 0 0;
-                 padding-top: 10px; border-top: 1px solid var(--line); }
-  .imgwrap { margin: 30px 0 6px; text-align: center; }
-  .imgwrap img { width: 100%; max-width: 620px; height: auto;
-                 border: 1px solid var(--line); border-radius: 6px; background: #fff; }
-  .imgcap { font-size: 12.5px; color: var(--dim); margin: 8px 0 0; }
-  @media print {
-    /* Everything except the sheet itself is screen furniture. */
-    nav, .bar, .head, .note, .imgcap { display: none !important; }
-    .sheet { border: 0; padding: 0; margin: 0; box-shadow: none; }
-    .imgwrap { margin: 0; }
-    .imgwrap img { max-width: 100%; width: 100%; border: 0; border-radius: 0; }
-  }
-</style>
 </head>
 <body>
 
@@ -144,43 +105,117 @@
 </nav>
 <div class="cscrim" id="cscrim"></div><aside class="cdrawer" id="cdrawer" aria-hidden="true" aria-label="Cart"><div class="cd-top"><h2 class="cd-h">Cart <span class="cd-n" id="cdN">0</span></h2><button class="cd-x" id="cdClose" type="button" aria-label="Close cart">&times;</button></div><div class="cd-body" id="cdBody"></div><div class="cd-foot"><div class="cd-tot"><span>Total</span><span id="cdTotal">&mdash;</span></div><div class="cd-acts"><a class="btn" href="/cart/"><span>View Cart</span></a><a class="btn" href="/cart/"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="12" height="8" rx="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg><span>Check Out</span></a></div></div></aside>
 
-<div class="bar">
+<div class="bar wide">
   <a class="back" href="/grade-4/english/worksheets/">&larr; 4th Grade English Worksheets</a>
-  <div class="acts">
-    <button class="btn" type="button" onclick="window.print()" title="Print this sheet" aria-label="Print this sheet">
-      <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M6 3h8v3H6V3zm-3 5h14a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2v-3H5v3H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zm3 6h8v3H6v-3z"/></svg><span class="lbl">Print</span>
-    </button>
-    <a class="btn ghost" href="cursive-alphabet.png" download title="Save the sheet so you can print it again without coming back" aria-label="Download the sheet">
-      <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M9 2h2v7h3l-4 5-4-5h3V2zM3 15h14v3H3v-3z"/></svg><span class="lbl">Download</span>
-    </a>
-    <button class="btn ghost" type="button" data-cart="cursive-alphabet"
+</div>
+
+<section class="product">
+    <div class="p-img p-car">
+      <div class="p-track" tabindex="0" aria-label="Product images"><figure class="p-slide"><img src="/worksheets/english/cursive-alphabet/thumb.jpg" alt="Cursive Alphabet: Trace and Practice, cover" width="700" height="700"></figure><figure class="p-slide"><img src="/worksheets/english/cursive-alphabet/preview-1.jpg" alt="Cursive Alphabet: Trace and Practice, page 1" width="900" height="1165" loading="lazy"></figure></div>
+      <button class="p-nav prev" type="button" aria-label="Previous image">&lsaquo;</button>
+      <button class="p-nav next" type="button" aria-label="Next image">&rsaquo;</button>
+      <div class="p-dots"><button type="button" aria-label="Image 1 of 2" class="on"></button><button type="button" aria-label="Image 2 of 2"></button></div>
+    </div>
+    <script>(function(){
+      var car = document.currentScript.previousElementSibling;
+      var track = car.querySelector(".p-track");
+      var dots = [].slice.call(car.querySelectorAll(".p-dots button"));
+      /* ⚠️ THE CURRENT SLIDE IS KEPT, NOT READ BACK FROM scrollLeft. Reading it
+         mid-way through a smooth scroll rounds to the slide being LEFT, so a
+         second quick click went nowhere. */
+      var cur = 0;
+      function paint(){
+        dots.forEach(function(d, j){ d.classList.toggle("on", cur === j); });
+        car.querySelector(".prev").hidden = cur === 0;
+        car.querySelector(".next").hidden = cur === dots.length - 1;
+      }
+      function go(i){
+        cur = Math.max(0, Math.min(dots.length - 1, i));
+        track.scrollTo({ left: cur * track.clientWidth, behavior: "smooth" });
+        paint();
+      }
+      car.querySelector(".prev").onclick = function(){ go(cur - 1); };
+      car.querySelector(".next").onclick = function(){ go(cur + 1); };
+      dots.forEach(function(d, i){ d.onclick = function(){ go(i); }; });
+      /* A swipe moves the track without a click, so settle cur from where it
+         comes to rest. (No backticks in here: this is a template literal.) */
+      var t;
+      track.addEventListener("scroll", function(){
+        clearTimeout(t);
+        t = setTimeout(function(){
+          cur = Math.round(track.scrollLeft / track.clientWidth); paint();
+        }, 120);
+      }, { passive: true });
+      paint();
+    })();</script>
+    <div class="p-info">
+      <h1>Cursive Alphabet: Trace and Practice</h1>
+      <p class="p-price">$0.00</p>
+      <p class="p-desc">Every cursive letter, capital and lowercase, dotted to trace, with room at the bottom to write them without help.</p>
+      <h2 class="p-h">What's Included?</h2>
+      <ul class="p-list">
+        <li>All 26 letters, capital and lowercase, in cursive</li>
+        <li>Dotted letterforms to trace over</li>
+        <li>Ruled lines with a dashed midline</li>
+      </ul>
+      <details class="p-more-detail">
+        <summary>More Detail</summary>
+        
+        <ul class="p-list">
+          <li>All 26 letters, capital and lowercase, in cursive</li>
+          <li>Dotted letterforms to trace over</li>
+          <li>Ruled lines with a dashed midline</li>
+          <li>A practice box at the foot of the page</li>
+        </ul>
+      </details>
+      <h2 class="p-h">Where's My Download?</h2>
+      <p>It opens the moment checkout finishes, ready to print. There is nothing to pay.</p>
+      <h2 class="p-h">More Questions?</h2>
+      <p>Ask us on the <a href="/contact/">contact page</a>.</p>
+      <button class="btn p-cart" type="button" data-cart="cursive-alphabet"
       title="Save this sheet to your cart" aria-label="Add this sheet to your cart"
       onclick="window.NSAccount&&NSAccount.cartAdd('cursive-alphabet',{thumb:'/worksheets/english/cursive-alphabet/thumb.jpg',href:'/worksheets/english/cursive-alphabet/'})">
-      <svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 3h1.8l1.7 9.2h8.3l1.7-6.7H5.3"/><circle cx="8" cy="16" r="1.2"/><circle cx="14.2" cy="16" r="1.2"/></svg><span class="lbl">Add to Cart</span>
+      Add To Cart
     </button>
-  </div>
-</div>
-
-<div class="sheet">
-
-  <div class="head">
-    <p class="eyebrow">English &middot; Grade 4 &middot; Handwriting</p>
-    <h1>Cursive Alphabet: Trace and Practice</h1>
-    <p class="dek">Every cursive letter, capital and lowercase, dotted to trace, with room at the bottom to write them without help.</p>
-  </div>
-
-  <div class="note">
-    <p><b>Before you start</b></p>
-    <ol><li>Print the sheet, or open it on a tablet you can write on.</li><li>Trace every dotted letter, capital first, then lowercase.</li><li>Go slowly. Cursive is one continuous line, so keep the pencil down until the letter is finished.</li><li>When the tracing is done, use the box at the bottom to write the letters with nothing to follow.</li></ol>
-    <p class="later">Come back to this sheet whenever a letter starts to drift. Tracing the shape again fixes it faster than practising it wrong.</p>
-  </div>
-
-  <div class="imgwrap">
-    <img src="cursive-alphabet.png" alt="Cursive Alphabet: Trace and Practice" width="1103" height="1426">
-    <p class="imgcap">Print at full size, portrait, with margins set to none so nothing is cut off.</p>
-  </div>
-
-</div>
+    </div>
+  </section>
+  <script>(function(){
+    var SLUG = "cursive-alphabet";
+    var OPEN = "/worksheets/english/cursive-alphabet/print/";
+    var W = "https://nexstudents-media.nexedgetech.workers.dev";
+    function swap(token){
+      var b = document.querySelector('.p-cart[data-cart="' + SLUG + '"]');
+      if (!b || !token) return;
+      var a = document.createElement("a");
+      a.className = "btn p-cart";
+      a.href = OPEN || (W + "/download?t=" + encodeURIComponent(token));
+      a.textContent = OPEN ? "Open the Sheet" : "Download Again";
+      b.parentNode.replaceChild(a, b);
+    }
+    function mine(rows){ return (rows || []).filter(function(r){ return r.product === SLUG; })[0]; }
+    document.addEventListener("DOMContentLoaded", function(){
+      if (!window.NSAccount || !NSAccount.owned) return;
+      var o = mine(NSAccount.owned());
+      if (o) return swap(o.token);
+      if (NSAccount.isSignedIn()) NSAccount.myDownloads().then(function(rows){
+        var m = mine(rows); if (m) swap(m.token);
+      });
+    });
+  })();</script>
+  <section class="p-also">
+    <h2 class="p-h">You Might Also Like</h2>
+    <div class="p-also-row">
+      <a class="p-also-card" href="/worksheets/english/manuscript-alphabet/">
+        <span class="p-also-img"><img src="/worksheets/english/manuscript-alphabet/thumb.jpg" alt="" width="300" height="300" loading="lazy"></span>
+        <b>Manuscript Alphabet: Stroke Order and Direction</b><span>$0.00</span></a>
+      <a class="p-also-card" href="/worksheets/english/complete-subjects-and-predicates/">
+        <span class="p-also-img"><img src="/worksheets/english/complete-subjects-and-predicates/thumb.jpg" alt="" width="300" height="300" loading="lazy"></span>
+        <b>Complete Subjects and Predicates</b><span>$0.00</span></a>
+      <a class="p-also-card" href="/worksheets/english/weekly-spelling-test/">
+        <span class="p-also-img"><img src="/worksheets/english/weekly-spelling-test/thumb.jpg" alt="" width="300" height="300" loading="lazy"></span>
+        <b>Weekly Spelling Test</b><span>$0.00</span></a>
+    </div>
+  </section>
 
 <div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 

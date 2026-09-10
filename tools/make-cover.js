@@ -101,7 +101,10 @@ function findRoot(from) {
 const root = findRoot(abs);
 if (!root) { console.error("FAIL: no assets/ns.css above " + abs); process.exit(1); }
 
-const out = path.resolve(process.argv[3] || path.join(path.dirname(abs), "thumb.jpg"));
+/* A printable in <sheet>/print/ still gets its thumb in <sheet>/. */
+const sheetDir = path.basename(path.dirname(abs)) === "print"
+  ? path.dirname(path.dirname(abs)) : path.dirname(abs);
+const out = path.resolve(process.argv[3] || path.join(sheetDir, "thumb.jpg"));
 
 /* The proof page is built in memory and served from one URL. Nothing is
    written beside the worksheet, so a stale proof file cannot be left behind

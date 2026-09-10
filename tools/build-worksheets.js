@@ -218,16 +218,30 @@ function priceText(p) {
      2  page 1, WATERMARKED and downscaled (preview-1.jpg, tools/make-preview.py)
      3  a tile saying the answer key is hidden. 🚨 A TILE, NEVER AN IMAGE OF THE
         KEY, blurred or otherwise. What is not sold is not shipped.
-   A product with no `preview` keeps the single image, exactly as before.
+   A product with no previews keeps the single image, exactly as before.
+   🆓 FREE SHEETS (2026-09-10): cover, then every preview-N.jpg found, PLAIN,
+   and no hidden tile - an answer key is always free with its sheet, so there
+   is nothing to hide. `tools/make-preview.py <pdf> <slug> <subj> --plain
+   --pages 2` makes them. A free sheet with no cover starts on page 1.
    ⚠️ Scroll-snap does the work, so it still swipes with JavaScript off; the
    script only drives the arrows and the dots. */
+function previewFiles(s) {
+  const dirAbs = path.join(ROOT, "worksheets", subjSlug(s.subject), s.slug);
+  const files = [];
+  for (let i = 1; i <= 6; i++) {
+    if (fs.existsSync(path.join(dirAbs, `preview-${i}.jpg`))) files.push(`preview-${i}.jpg`);
+    else break;
+  }
+  return files;
+}
 function carousel(s, dir, art) {
-  const slides = [
-    `<figure class="p-slide"><img src="${art}" alt="${s.title}, cover" width="700" height="700"></figure>`,
-    `<figure class="p-slide"><img src="${dir}preview-1.jpg" alt="${s.title}, page 1 preview" width="900" height="1165" loading="lazy"></figure>`,
-    `<figure class="p-slide p-hidden"><div><span class="p-lock" aria-hidden="true">&#128274;</span>
-        <b>Answer Key</b><span>Hidden From Preview</span></div></figure>`,
-  ];
+  const paid = isPaid(s);
+  const slides = [];
+  if (s.thumb) slides.push(`<figure class="p-slide"><img src="${art}" alt="${s.title}, cover" width="700" height="700"></figure>`);
+  previewFiles(s).forEach((f, i) => slides.push(
+    `<figure class="p-slide"><img src="${dir}${f}" alt="${s.title}, page ${i + 1}${paid ? " preview" : ""}" width="900" height="1165"${slides.length ? ' loading="lazy"' : ""}></figure>`));
+  if (paid) slides.push(`<figure class="p-slide p-hidden"><div><span class="p-lock" aria-hidden="true">&#128274;</span>
+        <b>Answer Key</b><span>Hidden From Preview</span></div></figure>`);
   const dots = slides.map((_, i) =>
     `<button type="button" aria-label="Image ${i + 1} of ${slides.length}"${i ? "" : ' class="on"'}></button>`).join("");
   return `<div class="p-img p-car">
@@ -326,13 +340,20 @@ function productBlock(s) {
                   `Run: py tools/make-preview.py <source.pdf> ${s.slug} ${subjSlug(s.subject)}`);
     process.exit(1);
   }
-  /* Not on sale yet: same place, same width, plainly off. Never a live button
-     that adds something the cart cannot check out. */
-  const btn = s.buy
+  const paid = isPaid(s);
+  /* A free sheet is always available. A paid one not yet on sale is plainly
+     off: same place, same width, and never a live button that adds something
+     the cart cannot check out. */
+  const btn = (!paid || s.buy)
     ? cartBtn(s, "p-cart")
     : `<span class="btn p-cart is-off" aria-disabled="true">Coming Soon</span>`;
+  /* 🆓 The short list: a sheet's own `included`, else the first three of its
+     `contains` - its OWN words, never new copy. The rest goes in More Detail. */
+  const short = s.included || s.contains.slice(0, 3);
+  const more = s.included || s.contains.length > 3;
+  const hasCarousel = previewFiles(s).length > 0;
   return `<section class="product">
-    ${s.preview ? carousel(s, dir, art)
+    ${hasCarousel ? carousel(s, dir, art)
       : `<div class="p-img">${s.thumb ? `<img src="${art}" alt="${s.title}" width="700" height="700">` : ""}</div>`}
     <div class="p-info">
       <h1>${s.title}</h1>
@@ -340,17 +361,19 @@ function productBlock(s) {
       <p class="p-desc">${s.dek}</p>
       <h2 class="p-h">What's Included?</h2>
       <ul class="p-list">
-        ${(s.included || s.contains).map((c) => "<li>" + c + "</li>").join("\n        ")}
+        ${short.map((c) => "<li>" + c + "</li>").join("\n        ")}
       </ul>
-      ${s.included ? moreDetail(s) : ""}
+      ${more ? moreDetail(s) : ""}
       <h2 class="p-h">Where's My Download?</h2>
-      <p>It appears on screen the moment checkout finishes, so there is nothing to wait for.</p>
+      <p>${paid
+        ? "It appears on screen the moment checkout finishes, so there is nothing to wait for."
+        : "It opens the moment checkout finishes, ready to print. There is nothing to pay."}</p>
       <h2 class="p-h">More Questions?</h2>
       <p>Ask us on the <a href="/contact/">contact page</a>.</p>
       ${btn}
     </div>
   </section>
-  ${s.buy ? ownedSwap(s.slug) : ""}
+  ${paid ? (s.buy ? ownedSwap(s.slug) : "") : ownedSwap(s.slug, `${dir}print/`)}
   ${alsoLike(s)}`;
 }
 
@@ -361,17 +384,20 @@ function productBlock(s) {
    carrying that purchase's own token.
    ⚠️ Runs on DOMContentLoaded because NSAccount arrives with navScript at the
    END of the body, after this block. ⚠️ No backticks: template literal. */
-function ownedSwap(slug) {
+/* 🆓 FREE: pass `openHref` (the sheet's /print/ page). Already taken, and the
+   button reads Open the Sheet and goes straight to the printable. */
+function ownedSwap(slug, openHref) {
   return `<script>(function(){
     var SLUG = "${slug}";
+    var OPEN = ${openHref ? JSON.stringify(openHref) : "null"};
     var W = "https://nexstudents-media.nexedgetech.workers.dev";
     function swap(token){
       var b = document.querySelector('.p-cart[data-cart="' + SLUG + '"]');
       if (!b || !token) return;
       var a = document.createElement("a");
       a.className = "btn p-cart";
-      a.href = W + "/download?t=" + encodeURIComponent(token);
-      a.textContent = "Download Again";
+      a.href = OPEN || (W + "/download?t=" + encodeURIComponent(token));
+      a.textContent = OPEN ? "Open the Sheet" : "Download Again";
       b.parentNode.replaceChild(a, b);
     }
     function mine(rows){ return (rows || []).filter(function(r){ return r.product === SLUG; })[0]; }
@@ -1259,7 +1285,31 @@ for (const s of SHEETS) {
              : isPaid(s)               ? bundleHtml(s)
              :                           sheetHtml(s);
   if (html.includes("undefined")) { console.error("FAIL: undefined in " + s.slug); process.exit(1); }
-  fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
+
+  /* 🆓 EVERY FREE SHEET GETS A PRODUCT PAGE (2026-09-10). Paul: "all of the
+     worksheets need to be redone to an actual add to cart." Squarespace's own
+     shape: the product page takes the sheet's address, the one every shelf,
+     lesson and search result already points at, and the printable moves one
+     step down to print/.
+     🚨 <base> KEEPS THE PRINTABLE'S RELATIVE FILES WORKING. It links art.jpg,
+     <slug>.pdf, the png and week-NN.pdf by bare name; from print/ those would
+     all 404. The base puts them back in the sheet folder. The built sheets had
+     no hash links for a base to break (checked the day this went in).
+     ⚠️ The print page stays open to anyone with the link - it is free - so a
+     lesson can still link straight to it. make-pdf.js and make-cover.js step
+     out of print/ on their own when handed a print page. */
+  if (!isPaid(s)) {
+    const printDir = path.join(dir, "print");
+    fs.mkdirSync(printDir, { recursive: true });
+    const base = `<base href="/worksheets/${subjSlug(s.subject)}/${s.slug}/">`;
+    if (!html.includes("<head>")) { console.error("FAIL: no <head> to put <base> in for " + s.slug); process.exit(1); }
+    fs.writeFileSync(path.join(printDir, "index.html"), html.replace("<head>", "<head>\n" + base), "utf8");
+    const product = paidSheetHtml(s);
+    if (product.includes("undefined")) { console.error("FAIL: undefined in product page " + s.slug); process.exit(1); }
+    fs.writeFileSync(path.join(dir, "index.html"), product, "utf8");
+  } else {
+    fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
+  }
   written.push(s.slug);
 }
 console.log(JSON.stringify({ written, cssV: CSS_V }, null, 1));

@@ -183,14 +183,15 @@
   </section>
   <script>(function(){
     var SLUG = "animal-cell";
+    var OPEN = null;
     var W = "https://nexstudents-media.nexedgetech.workers.dev";
     function swap(token){
       var b = document.querySelector('.p-cart[data-cart="' + SLUG + '"]');
       if (!b || !token) return;
       var a = document.createElement("a");
       a.className = "btn p-cart";
-      a.href = W + "/download?t=" + encodeURIComponent(token);
-      a.textContent = "Download Again";
+      a.href = OPEN || (W + "/download?t=" + encodeURIComponent(token));
+      a.textContent = OPEN ? "Open the Sheet" : "Download Again";
       b.parentNode.replaceChild(a, b);
     }
     function mine(rows){ return (rows || []).filter(function(r){ return r.product === SLUG; })[0]; }

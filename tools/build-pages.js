@@ -423,8 +423,11 @@ LESSONS.forEach(l => {
 /* slug -> sheet page, for /account/'s download list. A FREE item has no file in
    R2, so its row opens the sheet's own page (Print and Download live there); a
    paid one downloads through the Worker. `products` knows neither address. */
+/* 🆓 2026-09-10: a free sheet's address is now its PRODUCT page; the thing to
+   open after taking it is the printable one step down, print/. */
 const SHEET_HREF = Object.fromEntries(require("./worksheets.js").SHEETS
-  .map(w => [w.slug, "/worksheets/" + SUBJ_TOKEN[w.subject] + "/" + w.slug + "/"]));
+  .map(w => [w.slug, "/worksheets/" + SUBJ_TOKEN[w.subject] + "/" + w.slug + "/" +
+                     (/[1-9]/.test(String(w.price || "")) ? "" : "print/")]));
 
 const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
   href: "/worksheets/" + SUBJ_TOKEN[w.subject] + "/" + w.slug + "/",

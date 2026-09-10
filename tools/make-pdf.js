@@ -79,8 +79,13 @@ if (!root) {
 }
 
 // Default name: the folder name, which is already the slug.
+/* 2026-09-10: a free sheet's printable lives at <sheet>/print/index.html, and
+   <sheet>/index.html is its product page. The PDF still belongs in <sheet>/,
+   named after <sheet>, so step up out of print/. */
+const sheetDir = path.basename(path.dirname(abs)) === "print"
+  ? path.dirname(path.dirname(abs)) : path.dirname(abs);
 const out = path.resolve(
-  rest[1] || path.join(path.dirname(abs), path.basename(path.dirname(abs)) + ".pdf")
+  rest[1] || path.join(sheetDir, path.basename(sheetDir) + ".pdf")
 );
 
 const server = http.createServer((req, res) => {
