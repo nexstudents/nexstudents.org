@@ -1571,7 +1571,11 @@ html{-webkit-tap-highlight-color:transparent}
    every page, a generic two-letter prefix is a collision waiting to happen -
    namespace the component. */
 .ck-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:34px;align-items:start}
-.ck-table{width:100%}
+/* All the items in a box, the same card as the Order Summary beside it, like
+   the Lizzie Peirce checkout's boxes. Paul, 2026-09-10: "all the items in a box". */
+.ck-table{width:100%;border:1px solid var(--line);border-radius:12px;background:var(--panel);
+  padding:24px}
+.ck-table .ck-row:last-child{border-bottom:0;padding-bottom:8px}
 /* Column headings over a rule, exactly as the reference has them. */
 /* 🚨 THE TYPE SCALE AND ROW METRICS ARE MEASURED OFF THE REFERENCE, NOT GUESSED.
    Paul, 2026-09-07: "ours is much bigger for the products compared to theirs.
@@ -1684,6 +1688,25 @@ html{-webkit-tap-highlight-color:transparent}
 .ck-mail{width:100%;font:inherit;font-size:.95rem;padding:12px 14px;border-radius:9px;
   background:var(--panel-2);border:1px solid var(--line);color:var(--fg);margin-top:6px}
 .ck-sum hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+/* Small bits from the Lizzie Peirce checkout (2026-09-10): a Tax line under
+   Subtotal, a Total, a Your Account line, and the secure checkout line. */
+.ck-sum-h{font-size:1.15rem;font-weight:700;letter-spacing:-.01em;margin:0 0 16px;
+  max-width:none;text-align:left}
+.ck-sub{display:flex;justify-content:space-between;gap:12px;color:var(--dim);
+  font-size:.92rem;margin-top:10px}
+.ck-sum-row.ck-total{font-size:1.25rem}
+.ck-sum-row:not(.ck-total){font-size:1rem;font-weight:600}
+.ck-center{text-align:center;margin-top:12px}
+.ck-center a{color:var(--fg);text-decoration:underline;text-underline-offset:2px}
+.ck-who{margin-bottom:4px}
+.ck-who-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.ck-out{background:none;border:0;padding:0;color:var(--fg);font:inherit;font-size:.72rem;
+  font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.ck-out:hover{text-decoration:underline}
+.ck-secure{display:flex;align-items:center;justify-content:center;gap:8px;margin:18px 0 0;
+  padding-top:16px;border-top:1px solid var(--line);color:var(--dim);font-size:.7rem;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.ck-secure svg{flex:none}
 
 @media(max-width:860px){
   /* The summary goes UNDER the items, and stops sticking - a sticky card in a
