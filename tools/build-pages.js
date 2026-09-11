@@ -1205,7 +1205,8 @@ const progressScript = `<script>
     c.classList.add("is-next");
     if (!c.classList.contains("is-part")){
       var s = c.querySelector(".tick-score");
-      if (s) s.textContent = "Start here";
+      /* No grade yet, so it takes the plain foreground rather than a band colour. */
+      if (s){ s.textContent = "Start here"; s.className = "tick-score g-next"; }
     }
   });
 })();

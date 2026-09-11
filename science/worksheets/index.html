@@ -48,7 +48,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=f8a9a5b6">
+<link rel="stylesheet" href="/assets/ns.css?v=4cefa91e">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -321,7 +321,8 @@
     c.classList.add("is-next");
     if (!c.classList.contains("is-part")){
       var s = c.querySelector(".tick-score");
-      if (s) s.textContent = "Start here";
+      /* No grade yet, so it takes the plain foreground rather than a band colour. */
+      if (s){ s.textContent = "Start here"; s.className = "tick-score g-next"; }
     }
   });
 })();
