@@ -220,12 +220,19 @@
     if (pr && pr.done > 0){
       c.classList.add("is-part");
       var ps = c.querySelector(".tick-score");
-      if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
-      /* 🚨 NO GREEN BAR. Paul, 2026-09-11: "you can get rid of the progress green
+      /* 🚨 PAUL'S EXACT FORMAT, 2026-09-11: "like 15/16 Completed  95%". Count
+         first, then the word, then the percentage — the same count-AND-percentage
+         rule the quizzes follow → [[feedback-quiz-percentage]]. It read
+         "1 of 5 answered" before, which gave him neither shape.
+         ⚠️ Two non-breaking spaces, because HTML collapses ordinary ones and the
+         gap he typed is the separator; there is no middot in what he wrote. */
+      if (ps) ps.textContent = pr.done + "/" + pr.total + " Completed\u00a0\u00a0" +
+        Math.round(pr.done / pr.total * 100) + "%";
+      /* 🚨 NO GREEN BAR. Paul, same message: "you can get rid of the progress green
          bar on it too and just leave the how many out of how many questions are
-         completed." The line says 1 of 5 answered, which is the same fact stated
-         exactly, and the bar was a second element drawn into .cbody that changed
-         the card's height as soon as a lesson was started. */
+         completed." The line above states the same fact exactly, and the bar was a
+         second element drawn into .cbody that changed the card's height as soon as
+         a lesson was started. */
       return;
     }
 
