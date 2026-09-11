@@ -721,7 +721,16 @@ const modeBoot = () => "<scr" + "ipt>" +
    count could not be shown anywhere else. Both files are local and small; no
    third-party script is added to any page by this. See ns-account.js for why
    supabase-js itself is deliberately not used. */
-const navScript = () =>
+/* 🗜️ COMMENTS STAY IN THIS FILE, NOT IN EVERY PAGE. Paul, 2026-09-10: "we
+   still need to keep the tokens usage down so helping the site stay compact
+   ... is a priority." The notes below are for us; shipped, they were 10.6 KB of
+   the 33.6 KB script on EVERY page. navScript() strips block comments and blank
+   lines on the way out. ⚠️ Safe only while no string in the script contains
+   the two characters slash-star. Checked 2026-09-10; node --check passed. */
+const navScript = () => navScriptRaw()
+  .replace(/\/\*[\s\S]*?\*\//g, "")
+  .replace(/\n[ \t]*\n+/g, "\n");
+const navScriptRaw = () =>
   '<scr' + 'ipt src="/assets/supabase-config.js"></scr' + 'ipt>\n' +
   '<scr' + 'ipt src="/assets/ns-account.js"></scr' + 'ipt>\n' +
   "<scr" + "ipt>\n" + "(function(){\n" + `

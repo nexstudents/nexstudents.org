@@ -961,27 +961,12 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .authlinks button{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:inherit;
   font-size:.88rem;color:var(--fg);text-decoration:underline;text-underline-offset:3px}
 @media(hover:hover){ .authlinks button:hover{color:var(--dim)} }
-/* Signed in: Lizzie Peirce's account rows. A title, one quiet line under it,
-   a hairline between rows; each opens in place. */
+/* The small underlined button, used by Resend Verification Email on /account/.
+   ⚠️ The signed-in account rows, order blocks and download rows that lived
+   here were DELETED 2026-09-10 with the account card: the account is the side
+   panel now (.ad-* rules). Dead CSS that once ran is how a design creeps back. */
 .acct-out{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:inherit;
   font-size:.82rem;color:var(--dim);text-decoration:underline;text-underline-offset:3px}
-.acct-row{border-top:1px solid var(--line);text-align:left}
-.acct-row:last-of-type{border-bottom:1px solid var(--line)}
-.acct-row > summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;
-  gap:3px;padding:16px 8px;text-align:center}
-.acct-row > summary::-webkit-details-marker{display:none}
-.acct-row > summary b{font-size:1.05rem;font-weight:600}
-.acct-row > summary span{font-size:.85rem;color:var(--dim)}
-.acct-row[open] > summary{padding-bottom:8px}
-.acct-row > :not(summary){margin-left:4px;margin-right:4px}
-.acct-row > form, .acct-row > #owned{padding-bottom:16px}
-/* Order history: one block per order, its date and total on a header line. */
-.ord{margin:6px 0 14px}
-.ord-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;
-  padding:8px 16px;background:var(--panel-2);border-radius:6px}
-.ord-head span{font-size:.85rem;color:var(--dim)}
-.acct-h{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--dim);margin:14px 0 2px}
 .authswap{margin:16px 0 0;font-size:.9rem;color:var(--dim)}
 /* ⚠️ A BUTTON WEARING A LINK'S CLOTHES. It switches the form in place rather
    than navigating, and build-pages.js fails the build on href="#" anyway. The
@@ -1612,15 +1597,6 @@ html{-webkit-tap-highlight-color:transparent}
 .ck-thumb{width:84px;height:84px;flex:none;border:0;border-radius:6px;
   object-fit:cover;background:#f1f3f5}
 .ck-nothumb{background:var(--panel-2)}
-
-/* ── /account/ DOWNLOAD ROWS ── title and price left, the button right. */
-.dl-list{text-align:left;margin:6px 0 0}
-/* ⚠️ Side padding of its own: the account cards run their content to the
-   card edge, and a title and a button flush against it looked unfinished. */
-.dl-row{display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:12px 16px;border-bottom:1px solid var(--line)}
-.dl-name{display:flex;flex-direction:column;gap:2px;min-width:0}
-.btn.dl-btn{padding:9px 16px;font-size:13px;flex:none;text-decoration:none}
 
 /* ── THE PAYMENT WINDOW ────────────────────────────────────────────────────
    Stripe's embedded form in a centred overlay (see /cart/ in build-pages.js).

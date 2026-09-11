@@ -44,7 +44,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=198dce83">
+<link rel="stylesheet" href="/assets/ns.css?v=dcc3ffb2">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -1077,53 +1077,20 @@ if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measureRail);
 
 
 
+
 <!-- ns:nav-script -->
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/ns-account.js"></script>
 <script>
 (function(){
-
 var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
     scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
-
-/* 🚨 THE SCROLL LOCK GOES ON <html>, NOT <body>, AND THAT IS THE WHOLE BUG.
-   Paul, 2026-09-07, of the cart drawer: "they have a x that prevents the user
-   from scrolling when the draw is open" - ours did not.
-   Measured with the drawer open: document.scrollingElement is HTML, body's
-   computed overflow-y was already "hidden" (the old line worked), html's was
-   "visible", and the page still scrolled 0 -> 576.
-   ⚠️ Setting overflow on BODY does nothing here because html carries
-   overflow-x clip and is therefore the scroll container - the same reason
-   already written up in CLAUDE.md for why window scroll events died when
-   overflow-x sat on body.
-   ⚠️ KNOWN SIDE EFFECT, MEASURED AND ACCEPTED: while locked, html's overflow-x
-   computes from clip to hidden. That is the CSS rule, not a bug - clip paired
-   with a non-clip value computes to hidden - and it lasts only while a drawer
-   is open. The sticky nav was checked in that state and still computes sticky.
-   If it ever does bite, the alternative is a position:fixed body lock, which
-   costs a saved scroll offset to restore.
-
-   ⚠️ NO BACKTICKS IN THIS COMMENT. It lives inside a template literal and one
-   backtick closes the string - the trap already documented for pagerScript and
-   progressScript, hit again here on 2026-09-07.
-
-   ⚠️ AND DO NOT VERIFY THIS WITH window.scrollBy. A programmatic scroll moves a
-   container with overflow:hidden anyway; only wheel, touch and the scrollbar
-   are blocked. Read the computed overflow-y instead. The first test here said
-   the lock had failed when it had not.
-   ⚠️ overflow-Y ONLY. The shorthand would reset html's overflow-x to hidden and
-   quietly undo that fix.
-   ⚠️ Both drawers share this. The menu drawer carried the identical dead line,
-   so it never locked scrolling either. */
 var nsLocks=0;
 function nsLockScroll(on){
   nsLocks=Math.max(0,nsLocks+(on?1:-1));
   document.documentElement.style.overflowY=nsLocks?"hidden":"";
 }
-
 function setNav(o){
-  /* Same no-op guard as nsCartOpen: the lock counts, so a repeated call in the
-     state it is already in would leak one. */
   if(document.body.classList.contains("nav-open")===o) return;
   document.body.classList.toggle("nav-open",o);
   burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
@@ -1133,8 +1100,6 @@ burger.onclick=function(){setNav(!document.body.classList.contains("nav-open"));
 scrim.onclick=dClose.onclick=function(){setNav(false);};
 var nav=document.getElementById("nav");
 addEventListener("scroll",function(){nav.classList.toggle("stuck",scrollY>16);},{passive:true});
-
-/* ── day and night ── */
 function nsMode(){ return document.documentElement.getAttribute("data-theme")==="light"?"light":"dark"; }
 function nsPaintMode(){
   var light=nsMode()==="light";
@@ -1143,9 +1108,6 @@ function nsPaintMode(){
   document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
     e.setAttribute("aria-label", light?"Switch to night mode":"Switch to day mode"); });
 }
-/* ⚠️ ONE DELEGATED LISTENER, not one per switch found at load. The account
-   panel's Settings view draws its Night Mode switch AFTER load, and a
-   per-element binding would leave that copy dead (2026-09-10). */
 document.addEventListener("click",function(e){
   if(!e.target.closest("[data-mode-toggle]")) return;
   var next=nsMode()==="light"?"dark":"light";
@@ -1154,22 +1116,15 @@ document.addEventListener("click",function(e){
   nsPaintMode();
 });
 nsPaintMode();
-
-/* ── phone sheets: a STACK, not a pile ───────────────────────────────────
-   Levels move together. Opening a child slides the level above it out to the
-   left while the child comes in from the right; Back reverses it. A stack of
-   ids is the whole state, so any depth unwinds correctly. */
 var subStack=[];
 function nsRender(){
   document.querySelectorAll("[data-subpanel]").forEach(function(p){
     var id=p.getAttribute("data-subpanel");
     var i=subStack.indexOf(id);
     p.classList.toggle("open", i>=0);
-    /* every level except the top one has moved off to the left */
     p.classList.toggle("exit", i>=0 && i<subStack.length-1);
     p.setAttribute("aria-hidden", i>=0 ? "false" : "true");
   });
-  /* the drawer is level zero, so it leaves the moment any sheet is up */
   document.body.classList.toggle("sub-open", subStack.length>0);
 }
 function nsOpenSub(id){
@@ -1190,27 +1145,14 @@ document.querySelectorAll("[data-sub]").forEach(function(b){
 document.querySelectorAll("[data-sub-back]").forEach(function(b){
   b.addEventListener("click", nsBack);
 });
-
-/* ── ONE mega panel ──────────────────────────────────────────────────────
-   Stays open while the pointer moves along the bar; only the contents
-   cross-fade and the height eases. Closing is on a timer that any tab or the
-   panel cancels, because the pointer crosses dead space on the way down and a
-   hard mouseleave kills the menu mid-reach. */
 var panel=document.getElementById("megapanel");
 var tabEls=[].slice.call(document.querySelectorAll(".mg-top[data-menu]"));
 var onTab=document.querySelector(".mg-top.on");
 var closeTimer=null,current=null;
-
 function nsMark(el){
   document.querySelectorAll(".mg-top.mg-live").forEach(function(t){ t.classList.remove("mg-live"); });
   if(el) el.classList.add("mg-live");
 }
-/* ONE height for every section, measured from the tallest.
-   Paul, 2026-08-26: "the dropdown for games is shorter in height than the
-   rest and its noticable." Animating height per section also meant the first
-   hover measured BEFORE the promo image had loaded and the panel jumped a
-   moment later - the glitch that cleared itself on reload. A fixed height
-   removes both: nothing resizes, so nothing can resize wrongly. */
 var panelH=0;
 function nsMeasure(){
   if(!panel) return;
@@ -1249,7 +1191,6 @@ function nsHide(){
 }
 function nsLater(){ clearTimeout(closeTimer); closeTimer=setTimeout(nsHide,220); }
 function nsKeep(){ clearTimeout(closeTimer); }
-
 if(panel){
   nav.classList.add("js-nav");
   nsMark(onTab);
@@ -1257,7 +1198,6 @@ if(panel){
     tabEls.forEach(function(t){
       t.addEventListener("mouseenter",function(){ nsShow(t.getAttribute("data-menu")); });
       t.addEventListener("focus",function(){ nsShow(t.getAttribute("data-menu")); });
-      /* the label drives the panel; it is not a click-through */
       t.addEventListener("click",function(e){ e.preventDefault(); });
     });
     var tabsBox=document.querySelector(".tabs");
@@ -1266,42 +1206,24 @@ if(panel){
     panel.addEventListener("mouseleave",nsLater);
     addEventListener("keydown",function(e){ if(e.key==="Escape") nsHide(); });
     addEventListener("resize",function(){ panelH=0; nsMeasure(); });
-    /* the promo images decide the height, so re-measure as each one lands */
     panel.querySelectorAll("img").forEach(function(im){
       if(!im.complete) im.addEventListener("load",function(){ panelH=0; nsMeasure(); });
     });
     addEventListener("load",function(){ panelH=0; nsMeasure(); });
   }
 }
-
-/* ── THE CART DRAWER ──────────────────────────────────────────────────────
-   NSAccount comes from ns-account.js, loaded just above this by navScript.
-   ⚠️ EVERY ENTRY POINT IS GUARDED. A page can be opened before that script
-   parses, or with it blocked outright, and a throw here would take the nav
-   and the mega menu down with it. */
 var cdrawer=document.getElementById("cdrawer"),cscrim=document.getElementById("cscrim"),
     cdBody=document.getElementById("cdBody"),cdTotal=document.getElementById("cdTotal"),
     cdN=document.getElementById("cdN"),cartn=document.getElementById("cartn"),
     cdClose=document.getElementById("cdClose");
-
-/* 🚨 A REAL PRICE, NEVER THE WORD "Free". Paul, 2026-09-07: "subtotal should
-   not say free but $0 having an actual price." Kept identical to the cart
-   page's money() - one cart must not show two money formats depending on
-   whether you are looking at the drawer or the page. */
 function nsMoney(c){ return "$" + ((c||0)/100).toFixed(2); }
-
 function nsCartOpen(o){
   if(!cdrawer) return;
-  /* ⚠️ NO-OP IF ALREADY IN THAT STATE. nsLockScroll counts, and opening an
-     already-open drawer would take a second lock that nothing releases. */
   if(document.body.classList.contains("cart-open")===o) return;
   document.body.classList.toggle("cart-open",o);
   cdrawer.setAttribute("aria-hidden",!o);
   nsLockScroll(o);
 }
-
-/* The badge is the only part that paints on EVERY page. It reads localStorage
-   and nothing else, so it is instant and needs no network. */
 function nsCartBadge(){
   if(!cartn||!window.NSAccount) return;
   var n=NSAccount.cart().length;
@@ -1309,10 +1231,6 @@ function nsCartBadge(){
   cartn.hidden = n===0;
   if(cdN) cdN.textContent=n;
 }
-
-/* 🚨 TITLES AND PRICES COME FROM THE DATABASE, NEVER FROM THE CART. The cart
-   holds slugs. Only the thumbnail is taken from the local hint, because a
-   wrong picture is a cosmetic bug and a wrong price is a refund. */
 function nsCartPaint(){
   if(!cdBody||!window.NSAccount) return;
   nsCartBadge();
@@ -1325,8 +1243,6 @@ function nsCartPaint(){
   cdBody.innerHTML="<p class='cd-empty'>Loading&hellip;</p>";
   NSAccount.priceList(items).then(function(rows){
     if(!rows.length){
-      /* Offline, or a slug that is no longer for sale. Say so rather than
-         showing an empty drawer that looks like the add failed. */
       cdBody.innerHTML="<p class='cd-empty'>Could not load your cart just now. "+
         "It is still saved &mdash; try again in a moment.</p>";
       return;
@@ -1340,10 +1256,6 @@ function nsCartPaint(){
             :"<span class='cd-th cd-noth' aria-hidden='true'></span>")+
         "<div class='cd-info'><b>"+r.title+"</b>"+
         "<span class='cd-price'>"+nsMoney(r.price_cents)+"</span></div>"+
-        /* 🚨 QUANTITY BOX OVER REMOVE, the way the reference stacks them.
-           A BOX, NOT AN INPUT: a download is bought once, so a stepper here
-           would be a way to pay twice for the same PDF. Same reasoning as the
-           cart page - see .ck-qbox in ns.css. */
         "<div class='cd-qty'><span class='cd-qbox'>1</span>"+
         "<button class='cd-rm' type='button' data-rm='"+r.slug+"'>Remove</button></div></div>";
     });
@@ -1354,16 +1266,7 @@ function nsCartPaint(){
     });
   });
 }
-
 if(cdrawer){
-  /* 🚨 THE CART ICON OPENS THE DRAWER. Paul, 2026-09-07: "our right drawer
-     doesnt popout when you press the cart." It was a plain link to /cart/,
-     which worked but made the drawer reachable only by adding something.
-     ⚠️ MODIFIED CLICKS ARE LEFT ALONE. Ctrl-click, middle-click and shift-click
-     must still open the cart page in a tab or window - swallowing those breaks
-     an ordinary browser habit, and the href is right there for them to use.
-     It opens even on an empty cart: "Nothing in your cart yet" is an answer,
-     and a control that does nothing reads as broken. */
   var cartLink=document.getElementById("cartLink");
   if(cartLink) cartLink.addEventListener("click",function(e){
     if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return;
@@ -1372,33 +1275,20 @@ if(cdrawer){
     nsCartOpen(true);
   });
   cscrim.onclick=cdClose.onclick=function(){ nsCartOpen(false); };
-  /* Escape closes it. A fixed overlay with no keyboard exit is a trap. */
   addEventListener("keydown",function(e){
     if(e.key==="Escape"&&document.body.classList.contains("cart-open")) nsCartOpen(false);
   });
-  /* ns-account.js fires this on every add, remove and clear. The drawer OPENS
-     only on an add - a remove repaints it where it already is, and clearing it
-     at checkout must not pop it back up on the confirmation page. */
   document.addEventListener("ns:cart",function(e){
     nsCartPaint();
     if(e.detail&&e.detail.added) nsCartOpen(true);
   });
   nsCartBadge();
 }
-
-/* ── THE ACCOUNT PANEL ─────────────────────────────────────────────────────
-   Four views in one panel, like the Lizzie Peirce account: main, orders, one
-   order, profile. BACK steps up one level; CLOSE and Escape shut it.
-   ⚠️ NO BACKTICKS HERE, this is inside a template literal. */
 var adrawer=document.getElementById("adrawer"),ascrim=document.getElementById("ascrim"),
     adClose=document.getElementById("adClose"),acctLink=document.getElementById("acctLink");
 var AD_ITEMS={"manuscript-alphabet":{"th":"/worksheets/english/manuscript-alphabet/thumb.jpg","open":"/worksheets/english/manuscript-alphabet/print/"},"cursive-alphabet":{"th":"/worksheets/english/cursive-alphabet/thumb.jpg","open":"/worksheets/english/cursive-alphabet/print/"},"multiplication-drill-100":{"th":"/worksheets/maths/multiplication-drill-100/thumb.jpg","open":"/worksheets/maths/multiplication-drill-100/print/"},"division-drill-100":{"th":"/worksheets/maths/division-drill-100/thumb.jpg","open":"/worksheets/maths/division-drill-100/print/"},"lewis-and-clark":{"th":"/worksheets/history/lewis-and-clark/thumb.jpg","open":"/worksheets/history/lewis-and-clark/print/"},"thirteen-colonies":{"th":"/worksheets/history/thirteen-colonies/thumb.jpg","open":"/worksheets/history/thirteen-colonies/print/"},"boston-tea-party":{"th":"","open":"/worksheets/history/boston-tea-party/print/"},"animal-cell":{"th":"/worksheets/science/animal-cell/thumb.jpg","open":"/worksheets/science/animal-cell/"},"plant-cell":{"th":"/worksheets/science/plant-cell/thumb.jpg","open":"/worksheets/science/plant-cell/"},"us-history-semester-1":{"th":"/worksheets/history/us-history-semester-1/thumb.jpg","open":"/worksheets/history/us-history-semester-1/"},"complete-subjects-and-predicates":{"th":"/worksheets/english/complete-subjects-and-predicates/thumb.jpg","open":"/worksheets/english/complete-subjects-and-predicates/print/"},"weekly-spelling-test":{"th":"/worksheets/english/weekly-spelling-test/thumb.jpg","open":"/worksheets/english/weekly-spelling-test/print/"},"spelling-flashcards":{"th":"/worksheets/english/spelling-flashcards/thumb.jpg","open":"/worksheets/english/spelling-flashcards/print/"},"newtons-laws-of-motion":{"th":"/worksheets/science/newtons-laws-of-motion/thumb.jpg","open":"/worksheets/science/newtons-laws-of-motion/print/"}};
 var AD_WORKER="https://nexstudents-media.nexedgetech.workers.dev";
 var adUser=null,adOrders=null,adLoading=false;
-/* The views draw into a HOST: {body, h, back, x, up, view, save}. Today the
-   drawer is the only host (the /account/ card that was a second one is gone,
-   see panel=account below). Nothing inside a view uses an id, so a second host
-   could be added without two elements sharing one. */
 var adHosts=[];
 function adHostOf(root){
   return {root:root,body:root.querySelector(".ad-body"),h:root.querySelector(".ad-h"),
@@ -1406,11 +1296,9 @@ function adHostOf(root){
           xLabel:root.querySelector(".ad-x")?root.querySelector(".ad-x").textContent:"",
           up:null,view:"main",save:null};
 }
-
 function adEsc(s){ var d=document.createElement("div"); d.textContent=s==null?"":String(s); return d.innerHTML; }
 function adDate(w,long){
   var d=new Date(w); if(isNaN(d)) return "";
-  /* [] = the reader's own locale. */
   return d.toLocaleDateString([],long?{month:"short",day:"numeric",year:"numeric"}:{month:"short",day:"numeric"});
 }
 function adOpen(o){
@@ -1420,9 +1308,6 @@ function adOpen(o){
   adrawer.setAttribute("aria-hidden",!o);
   nsLockScroll(o);
 }
-/* One order = one order number (migration 012). Rows from before that migration
-   has run carry none, so they fall back to the minute they were bought, which
-   is how the account page grouped them. Newest first, as my_downloads sends. */
 function adGroup(rows){
   var list=[],seen={};
   rows.forEach(function(r){
@@ -1433,15 +1318,8 @@ function adGroup(rows){
   return list;
 }
 function adTitle(o){ return o.no!=null?"Order #"+o.no:"Order"; }
-/* 🚨 THE TOP-RIGHT BUTTON BECOMES SAVE ONCE A PROFILE FIELD CHANGES. Paul,
-   2026-09-10: "on the profile where you have close it needs to have a save",
-   then of the reference: "after you change your details it says save then it
-   switches to close." Its own label otherwise: CLOSE in the drawer, nothing on
-   the /account/ page (a page has nothing to close). */
 function adFrame(H,title,up,view){
   H.h.textContent=title; H.up=up||null; H.back.hidden=!up; H.view=view; H.save=null;
-  /* Every view opens on the host's own label. Profile swaps it for SAVE only
-     once a field is changed - see dirty() in adProfile. */
   if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
   H.body.scrollTop=0;
 }
@@ -1450,13 +1328,7 @@ function adMain(H){
   var md=(adUser&&adUser.user_metadata)||{};
   var last=adOrders&&adOrders.length?"Last order "+(adOrders[0].no!=null?"#"+adOrders[0].no+" ":"")+"is completed":
            (adOrders?"No orders yet":"Loading…");
-  /* 🚨 THE ORDER IS PAUL'S. 2026-09-10: "i want the Hi, Username still but in
-     order I want Manage Profiles first then orders, the settings, then
-     account, then Sign out." */
-  /* 🧒 THE PROFILE STRIP, like the top of Netflix's account menu (Paul,
-     2026-09-10: "maybe at the top like add profile box"). The parent's own
-     box, then Add Profile. Student boxes join between them when step 4 lands;
-     until then Add Profile opens Manage Profiles, which says they are coming. */
+  
   var who=md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
   H.body.innerHTML="<div class='ad-hi'><h3>"+(md.first_name?"Hi, "+adEsc(md.first_name):"Hi there")+"</h3></div>"+
     "<div class='ad-pro'>"+
@@ -1468,22 +1340,15 @@ function adMain(H){
     "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
     "<button class='ad-row' type='button' data-go='account'><b>Account</b><span>"+
       adEsc(adUser&&adUser.email||"")+"</span></button>"+
-    /* Paul: "maybe just put Sign Out instead" of "Sign out of NexStudents". */
     "<button class='ad-signout' type='button' data-out>Sign Out</button>";
   if(typeof nsPaintMode==="function") nsPaintMode();
 }
-/* 👨‍👩‍👧 MANAGE PROFILES - the Netflix-style student profiles (ROADMAP step 4)
-   will live here. Paul: "i thought about putting it also in the side panel."
-   🚨 NOT BUILT YET, AND THE VIEW SAYS SO. A row that opens nothing is a dead
-   button; a row that opens an honest "coming" note is not. */
 function adProfiles(H){
   adFrame(H,"Manage Profiles",adMain,"profiles");
   H.body.innerHTML="<p class='ad-empty'>Student profiles are on the way. Each student in your "+
     "home will get their own profile under this account, so their lessons and progress stay "+
     "separate, with a parent PIN for the grown-up settings.</p>";
 }
-/* ⚙️ SETTINGS. Night Mode today - the same data-mode-toggle switch as the
-   drawer and the footer, so all three stay in step. */
 function adSettings(H){
   adFrame(H,"Settings",adMain,"settings");
   H.body.innerHTML="<p class='ad-cap'>Display</p>"+
@@ -1515,8 +1380,6 @@ function adOrder(H,i){
   var items=o.rows.map(function(r){
     var it=AD_ITEMS[r.product]||{};
     var paid=(r.amount_cents||0)>0;
-    /* Paid: the Worker, with this row's own token. Free: the printable page,
-       where Print and Download live. Same two routes as the order page. */
     var href=paid?AD_WORKER+"/download?t="+encodeURIComponent(r.token):(it.open||"");
     return "<div class='ad-item'><div class='ad-item-t'><b>"+adEsc(r.title||r.product)+"</b>"+
       "<span>"+nsMoney(r.amount_cents)+"</span></div><span class='ad-q'>Qty: 1</span>"+
@@ -1532,8 +1395,6 @@ function adOrder(H,i){
     "<div class='ad-kv'><span>Tax</span><span>"+nsMoney(0)+"</span></div>"+
     "<div class='ad-kv ad-tot'><span>Total</span><span>"+nsMoney(o.total)+"</span></div>";
 }
-/* ACCOUNT: name, email, password. Was "Profile" until Paul's 2026-09-10
-   order, where Manage Profiles means the students. */
 function adProfile(H){
   adFrame(H,"Account",adMain,"account");
   var md=(adUser&&adUser.user_metadata)||{};
@@ -1541,13 +1402,6 @@ function adProfile(H){
     "<p class='ad-cap'>Name</p>"+
     "<label class='ad-kv'><span>First</span><input class='ad-in' data-f='first' autocomplete='given-name' value='"+adEsc(md.first_name||"")+"'></label>"+
     "<label class='ad-kv'><span>Last</span><input class='ad-in' data-f='last' autocomplete='family-name' value='"+adEsc(md.last_name||"")+"'></label>"+
-    /* 🚨 EMAIL AND PASSWORD ARE ROWS YOU PRESS, with a chevron, like the
-       Lizzie Peirce profile. Paul, 2026-09-10: "i cant change the email and
-       password. we can also verify the email like on lizzie website. password
-       will open the box to update password like the reset does by email."
-       Email -> a box for the new address; SAVE emails a confirm link to it and
-       nothing changes until it is pressed. VERIFIED shows once confirmed.
-       Password -> the same New / Re-type pair the reset screen uses. */
     "<p class='ad-cap'>Email</p>"+
     "<button class='ad-kv ad-go' type='button' data-open='em'><span>Email</span><span class='ad-dim'>"+
       adEsc(adUser&&adUser.email||"")+
@@ -1568,8 +1422,6 @@ function adProfile(H){
   var q=function(s){ return H.body.querySelector(s); };
   var msg=q(".ad-msg"),first=q("[data-f=first]"),lastIn=q("[data-f=last]"),
       em=q("[data-f=em]"),pw1=q("[data-f=pw1]"),pw2=q("[data-f=pw2]");
-  /* A row opens its box; pressing it again closes it and forgets what was
-     typed there, so a half-typed password cannot ride along with a name save. */
   H.body.querySelectorAll("[data-open]").forEach(function(row){
     row.onclick=function(){
       var box=q("[data-box="+row.getAttribute("data-open")+"]");
@@ -1580,11 +1432,6 @@ function adProfile(H){
       else box.querySelectorAll("input").forEach(function(i){ i.value=""; });
     };
   });
-  /* ONE SAVE, in the header: the name if it changed, and the new password if
-     one was typed. Enter in a field does the same. Nothing saves on its own.
-     Paul: "its after you change your details it says save then it switches to
-     close." So Profile opens on CLOSE, the first change turns it into SAVE, and
-     a good save turns it back (on the page, where there is no CLOSE, it hides). */
   function saved(){
     H.save=null;
     if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
@@ -1630,8 +1477,6 @@ function adProfile(H){
     i.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); if(H.save) H.save(); } });
   });
 }
-/* Repaint whichever hosts are showing something the new data changes. A host
-   the reader has moved into (an order, their profile) is left where it is. */
 function adRefresh(){
   adHosts.forEach(function(H){
     if(H.view==="main") adMain(H); else if(H.view==="orders") adList(H);
@@ -1647,7 +1492,6 @@ function adLoad(){
 function adWire(H){
   adHosts.push(H);
   H.back.onclick=function(){ if(H.up) H.up(H); };
-  /* Save on Profile; otherwise the drawer's CLOSE. */
   if(H.x) H.x.onclick=function(){ if(H.save) H.save(); else if(H===adD) adOpen(false); };
   H.body.addEventListener("click",function(e){
     if(e.target.closest("[data-out]")){ NSAccount.signOut(); location.reload(); return; }
@@ -1663,22 +1507,11 @@ function adWire(H){
 }
 var adD=adrawer?adHostOf(adrawer):null;
 if(adD) adWire(adD);
-
-/* 🚨 THE PANEL IS THE ACCOUNT. THERE IS NO SIGNED-IN ACCOUNT PAGE. Paul,
-   2026-09-10: "there is still this card in the middle and it doesnt need to be
-   here since we have its own panel in the account in the top right." Like the
-   Lizzie Peirce /account, which is her home page with the panel open: a
-   signed-in visit to /account/ is sent to /?panel=account, and this opens it.
-   The query is stripped straight away so a reload or a shared link does not
-   keep reopening it. */
 if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&/[?&]panel=account\b/.test(location.search)){
   history.replaceState(null,"",location.pathname+location.hash);
   adMain(adD); adLoad(); adOpen(true);
 }
-
 if(adrawer&&acctLink){
-  /* Signed out: the icon stays a plain link to the sign-in page. Signed in: it
-     opens the panel. Modified clicks are left alone, as on the cart icon. */
   acctLink.addEventListener("click",function(e){
     if(!window.NSAccount||!NSAccount.isSignedIn()) return;
     if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return;
@@ -1692,7 +1525,6 @@ if(adrawer&&acctLink){
     if(e.key==="Escape"&&document.body.classList.contains("acct-open")) adOpen(false);
   });
 }
-
 })();
 </script>
 <!-- /ns:nav-script -->
