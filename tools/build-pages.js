@@ -269,21 +269,21 @@ const PLANNED = [
      on the covers. See the titles rule in BEHAVIOR.md.
      ⚠️ WHEN ONE IS BUILT: delete its line here, give the lesson file
      `thumb: true`, and keep the folder - the thumb.jpg is already in it. */
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 3",  title: "Roads, Bridges, and the Roman Army",
+  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L3",  title: "Roads, Bridges, and the Roman Army",
     thumb: "/lessons/history/roads-and-the-roman-army/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 4",  title: "Conquest, Provinces, and City Life",
+  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L4",  title: "Conquest, Provinces, and City Life",
     thumb: "/lessons/history/conquest-and-city-life/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 5",  title: "Class, Slavery, and Daily Life in Rome",
+  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L5",  title: "Class, Slavery, and Daily Life in Rome",
     thumb: "/lessons/history/class-and-daily-life/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 6",  title: "Judea Under Roman Rule",
+  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L6",  title: "Judea Under Roman Rule",
     thumb: "/lessons/history/judea-under-rome/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 7",  title: "Jesus and the First Christians",
+  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L7",  title: "Jesus and the First Christians",
     thumb: "/lessons/history/jesus-and-the-first-christians/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 8",  title: "Paul, Persecution, and a Church That Spread",
+  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L8",  title: "Paul, Persecution, and a Church That Spread",
     thumb: "/lessons/history/paul-and-the-early-church/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 9",  title: "Crisis, Reform, and the Fall of the West",
+  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L9",  title: "Crisis, Reform, and the Fall of the West",
     thumb: "/lessons/history/fall-of-the-west/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 10", title: "Unit 1 Review: Rome and the Early Church",
+  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L10", title: "Unit 1 Review: Rome and the Early Church",
     thumb: "/lessons/history/unit-1-review/thumb.jpg" },
   /* 🚨 SCIENCE UNIT 1 REVIEW — THE COVER EXISTS, THE LESSON DOES NOT.
      Paul drew it 2026-09-01 and asked for the file to be parked ahead of the
@@ -294,7 +294,7 @@ const PLANNED = [
      ⚠️ WHEN THE REVIEW IS BUILT: delete this line, and add the lesson to
      lessons.js with `seq` n:5 and `thumb: true`. The thumb.jpg is already at
      the path below. Leaving this line in as well would show the review twice. */
-  { kind: "lesson", subject: "Science", grade: 7, unit: "Unit 1 &middot; Lesson Review",
+  { kind: "lesson", subject: "Science", grade: 7, unit: "U1 &middot; Review",
     title: "Unit 1 Lesson Review", thumb: "/lessons/science/unit-1-review/thumb.jpg" },
 ];
 
@@ -613,12 +613,29 @@ const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
    book's unit number, so keying it off the display number would silently unlink every
    built lesson on any shelf that does not start at unit 1 - the cards would all go
    back to "Not built yet". Keep the two apart. */
+/* 🚨 ONE LABEL SHAPE FOR EVERY CARD ON THE SITE: U1-L1. Paul, 2026-09-11:
+   "I want to see more like U1-L1, U1-L2 ... this will be the standard on the site."
+   Before this the four pagers printed four different shapes on four shelves -
+   history "1-3", maths and science "Lesson 1-3", English "Unit 1 &middot; Lesson 3" -
+   and the lesson pages printed a fifth. The pair is the ONLY thing that varies,
+   so it is built in one place and every pager calls it.
+   ⚠️ A Glencoe CHAPTER is our unit. "Lesson 5-3" already means chapter 5,
+   lesson 3, so it becomes U5-L3 and nothing is said twice - the objection that
+   kept maths on its own shape ("Unit 5 &middot; Lesson 5-3 says five twice") does
+   not apply to this form.
+   ⚠️ Anything with no lesson number keeps its words - an English craft lesson
+   is "U1 &middot; Revising Strategies", because inventing a number the book does
+   not use is worse than a longer label. */
+const uL = (unit, lesson) => "U" + unit + "-L" + lesson;
+/* "1-3" and "5-3" arrive already paired from the units files. */
+const uLPair = (pair) => "U" + String(pair).replace("-", "-L");
+
 const leifPager = (grade) => UNITS
   .filter((u) => grade == null || sameGrade(u.grade, grade))
   .map((u, idx) => ({
     n: idx + 1, bookN: u.n, name: u.name,
     items: u.lessons.map((title, i) => ({
-      label: "Unit " + (idx + 1) + " &middot; Lesson " + (i + 1),
+      label: uL(idx + 1, i + 1),
       title, slug: BUILT[u.n + ":" + (i + 1)] || null,
     })),
   }));
@@ -658,7 +675,7 @@ const mathsPager = (course) => course.units
        identifies that the student knows the material after the unit ... basically like
        a test." Filtering to kind === "lesson" would hide every one of them. */
     items: u.items.filter((i) => i.kind === "lesson" || i.kind === "review").map((i) => ({
-      label: (i.kind === "review" ? "Review " : "Lesson ") + i.label,
+      label: uLPair(i.label),
       title: i.title, slug: i.slug || null,
     })),
   }))
@@ -678,7 +695,7 @@ const sciencePager = (course) => course.units
        identifies that the student knows the material after the unit ... basically like
        a test." Filtering to kind === "lesson" would hide every one of them. */
     items: u.items.filter((i) => i.kind === "lesson" || i.kind === "review").map((i) => ({
-      label: (i.kind === "review" ? "Review " : "Lesson ") + i.label,
+      label: uLPair(i.label),
       /* 🚨 `title` is OURS or it is nothing. The book's wording lives in `book`
          and is a build note, exactly like `page`. Paul, 2026-09-04: "we agree
          not use the titles because of copyright", and the names were ours by
@@ -702,7 +719,7 @@ const historyPager = (course, grade) => course.units
     n: u.n,
     name: u.title,
     items: u.items.map((i) => ({
-      label: i.label,
+      label: uLPair(i.label),
       /* Ours or Coming Soon. Never Leif's wording, never McDougal's.
          Both live on the item as build notes and neither is rendered. */
       title: i.title || "Coming Soon", slug: i.slug || null,
@@ -733,10 +750,12 @@ const englishPager = (course) => course.units
          ⚠️ A craft lesson has NO number in the book. Houghton Mifflin runs them
          between the numbered ones as "Revising Strategies", so that is what the
          card says rather than inventing a number the book does not use. */
-      var num = l.n ? " &middot; Lesson " + l.n
-              : l.craft ? " &middot; Revising Strategies" : "";
+      /* A chapter keeps its own letter rather than being dropped - Harcourt nests
+         unit > chapter > lesson and the chapter is how the right spread is found. */
+      var stem = "U" + u.n + (chapterN ? "-C" + chapterN : "");
       items.push({
-        label: "Unit " + u.n + (chapterN ? " &middot; Chapter " + chapterN : "") + num,
+        label: l.n ? stem + "-L" + l.n
+             : l.craft ? stem + " &middot; Revising Strategies" : stem,
         title: l.title, slug: l.slug || null,
       });
     };

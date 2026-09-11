@@ -6,7 +6,7 @@ module.exports = {
   id: "science/science-you-use-every-day",
   slug: "science-you-use-every-day",
   title: "Science You Use Every Day",
-  unit: "Life Science &middot; Unit 1 &middot; Lesson 4",
+  unit: "Life Science &middot; U1-L4",
   seq: { unit: 1, unitTitle: "Life and How We Study It", n: 4 },
   shelf: { grades: [7], subject: "Science",
     thumb: true,   /* Paul's art, 2026-08-31. Source PNG on his Desktop; see Lesson 1. */
@@ -17,7 +17,7 @@ module.exports = {
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
-  eyebrow: ["Science", "Unit 1 &middot; Lesson 4", "Life Science"],
+  eyebrow: ["Science", "U1-L4", "Life Science"],
   dek: "You used a dozen scientific discoveries before breakfast without noticing one of them. Every one of them also handed somebody a decision.",
   scripture: {
     ref: "Micah 6:8",

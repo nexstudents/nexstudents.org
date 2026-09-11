@@ -6,7 +6,7 @@ module.exports = {
   id: "maths/long-division-remainders",
   slug: "long-division-remainders",
   title: "Long Division With Remainders",
-  unit: "Foundations &middot; Unit 0 &middot; Lesson 2",
+  unit: "Foundations &middot; U0-L2",
   /* Grade 4 only. Paul, 2026-08-30: don't shelve the same lesson to two
      grades - a 5th grade version needs its own 2-digit-divisor content, not
      this same problem set relisted. See the note in build-math.js's check()

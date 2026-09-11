@@ -467,7 +467,7 @@ const SHEETS = [
     "Black and white, one page, and a PDF to print again",
   ],
   price: "$0", buy: null, art: false, thumb: true,
-  eyebrow: "The Sentence &middot; Unit 1 &middot; Lesson 2",
+  eyebrow: "The Sentence &middot; U1-L2",
   noteA: "Draw one straight line down between the complete subject and the complete predicate.",
   noteB: "One half of each sentence is underlined. Write whether it is the complete subject or the complete predicate.",
   /* 🚨 PART C IS THE POINT OF THE SHEET. The page can already ask him to find a

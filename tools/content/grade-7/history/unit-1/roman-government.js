@@ -7,7 +7,7 @@ module.exports = {
   id: "history/roman-government",
   slug: "roman-government",
   title: "Roman Government and Citizenship",
-  unit: "Ancient Rome &middot; Unit 1 &middot; Lesson 2",
+  unit: "Ancient Rome &middot; U1-L2",
   shelf: { grades: [7], subject: "History",
     /* Paul's ChatGPT-composed cover, made 2026-09-11, square at 1254px so it
        also serves as the og:image (ROADMAP 54 asks for covers at 1200px+).
@@ -22,7 +22,7 @@ module.exports = {
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
-  eyebrow: ["History", "Unit 1 &middot; Lesson 2", "Ancient Rome"],
+  eyebrow: ["History", "U1-L2", "Ancient Rome"],
   dek: "Rome ran on offices, laws and paperwork. That sounds dull until you notice how much of it we still use.",
   scripture: {
     ref: "Romans 13:1",

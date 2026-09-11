@@ -6,7 +6,7 @@ module.exports = {
   id: "science/what-makes-something-alive",
   slug: "what-makes-something-alive",
   title: "What Makes Something Alive",
-  unit: "Life Science &middot; Unit 1 &middot; Lesson 1",
+  unit: "Life Science &middot; U1-L1",
   /* 🚨 `seq` IS THE MODULE ORDER, and it is the only thing that says which
      lesson follows which. The `unit` string above is a LABEL - it is rendered,
      never parsed. Ordering off a display string is how a rename silently
@@ -29,7 +29,7 @@ module.exports = {
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
-  eyebrow: ["Science", "Unit 1 &middot; Lesson 1", "Life Science"],
+  eyebrow: ["Science", "U1-L1", "Life Science"],
   dek: "A stream moves, a dog moves, and a tree hardly moves at all. Only some of them are alive, and saying why is harder than it sounds.",
   scripture: {
     ref: "Genesis 2:7",

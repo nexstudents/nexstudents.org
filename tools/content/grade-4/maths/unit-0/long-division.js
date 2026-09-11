@@ -6,7 +6,7 @@ module.exports = {
   id: "maths/long-division",
   slug: "long-division",
   title: "Long Division",
-  unit: "Foundations &middot; Unit 0 &middot; Lesson 1",
+  unit: "Foundations &middot; U0-L1",
   /* Math starts in grade 6 on purpose: the foundations unit is the catch-up
      set that grade 7 leans on. See tools/curriculum/. */
   shelf: { grades: [4], subject: "Math",

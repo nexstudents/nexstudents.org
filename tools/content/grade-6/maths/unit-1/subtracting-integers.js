@@ -7,8 +7,8 @@ module.exports = {
   id: "maths/subtracting-integers",
   slug: "subtracting-integers",
   title: "Subtracting Integers",
-  unit: "Integers &middot; Unit 1 &middot; Lesson 2",
-  eyebrow: ["Math", "Unit 1 &middot; Lesson 2", "Integers"],
+  unit: "Integers &middot; U1-L2",
+  eyebrow: ["Math", "U1-L2", "Integers"],
   dek: "No new arithmetic. Turn every subtraction into an addition, then use the rules you already have.",
   /* ⚠️ GRADE 6, not 7, and the reasoning is worth keeping because the
      standard disagrees.

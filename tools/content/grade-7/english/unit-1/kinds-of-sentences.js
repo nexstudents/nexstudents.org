@@ -6,7 +6,7 @@ module.exports = {
   id: "english/kinds-of-sentences",
   slug: "kinds-of-sentences",
   title: "Kinds of Sentences",
-  unit: "English &middot; Unit 1 &middot; Lesson 1-1",
+  unit: "English &middot; U1-L1",
   /* Houghton Mifflin puts this first in Unit 1, The Sentence, at page 32.
      `seq` is the order; the `unit` string above is a label and is never parsed. */
   seq: { unit: 1, unitTitle: "The Sentence", n: 1 },
@@ -18,7 +18,7 @@ module.exports = {
       "Four vocabulary cards, each with a check question",
       "Ten questions, including the command that ends in an exclamation point",
     ] },
-  eyebrow: ["English", "Unit 1 &middot; Lesson 1-1", "The Sentence"],
+  eyebrow: ["English", "U1-L1", "The Sentence"],
   dek: "A statement, a question, a command and a shout all look like sentences. Only their job tells you which is which.",
   scripture: {
     ref: "Proverbs 25:11",

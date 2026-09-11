@@ -6,7 +6,7 @@ module.exports = {
   id: "english/writing-good-sentences",
   slug: "writing-good-sentences",
   title: "Writing Good Sentences",
-  unit: "English &middot; Unit 1 &middot; Lesson 1-2",
+  unit: "English &middot; U1-L2",
   /* Houghton Mifflin's craft page right after Kinds of Sentences, book pages
      35-36. `seq` is the order; the `unit` string above is a label and is
      never parsed. */
@@ -19,7 +19,7 @@ module.exports = {
       "Three vocabulary cards, each with a check question",
       "Ten questions on revising sentences, not just naming them",
     ] },
-  eyebrow: ["English", "Unit 1 &middot; Lesson 1-2", "The Sentence"],
+  eyebrow: ["English", "U1-L2", "The Sentence"],
   dek: "A statement, a question, a command, and a shout are only useful if you know when to use each one. This lesson is about making your own sentences work harder.",
   scripture: {
     ref: "Proverbs 16:24",

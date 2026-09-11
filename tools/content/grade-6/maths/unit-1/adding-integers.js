@@ -7,8 +7,8 @@ module.exports = {
   id: "maths/adding-integers",
   slug: "adding-integers",
   title: "Adding Integers",
-  unit: "Integers &middot; Unit 1 &middot; Lesson 1",
-  eyebrow: ["Math", "Unit 1 &middot; Lesson 1", "Integers"],
+  unit: "Integers &middot; U1-L1",
+  eyebrow: ["Math", "U1-L1", "Integers"],
   dek: "Two rules cover every addition. Which one you use depends on whether the signs match.",
   /* ⚠️ GRADE 6, not 7, and the reasoning is worth keeping because the
      standard disagrees.

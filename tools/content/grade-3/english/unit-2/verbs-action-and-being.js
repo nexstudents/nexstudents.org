@@ -13,11 +13,11 @@ module.exports = {
      page 122 of 599, after sentences, subjects, predicates and nouns —
      lesson 28 of 108. See `english-units.js`, which is the authority on
      where anything in this course sits. Change both together or not at all. */
-  unit: "Action and Linking Verbs &middot; Unit 2 &middot; Chapter 10",
+  unit: "Action and Linking Verbs &middot; U2-C10",
   /* ⚠️ `eyebrow` is DEAD. No generator reads it — the shelf card's label comes
      from `unit` above (build-pages.js oneCard). Kept only so it is not silently
      lost; say the word and it goes. */
-  eyebrow: ["English", "Unit 2 &middot; Chapter 10", "Action and Linking Verbs"],
+  eyebrow: ["English", "U2-C10", "Action and Linking Verbs"],
   dek: "Every sentence has an engine. Find the engine and the rest of the sentence tells you what it is doing.",
   shelf: { grades: [3], subject: "English", thumb: true,
     blurb: "Every sentence has an engine. Find it with a test that works even when nothing happens.",

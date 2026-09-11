@@ -7,7 +7,7 @@ module.exports = {
   id: "history/republic-to-empire",
   slug: "republic-to-empire",
   title: "From Republic to Empire",
-  unit: "Ancient Rome &middot; Unit 1 &middot; Lesson 1",
+  unit: "Ancient Rome &middot; U1-L1",
   /* `shelf` is what the site needs to put a card on a shelf. It lives here,
      beside the lesson, so a lesson is added in ONE file. It used to be a
      second hand-written entry in build-pages.js, which meant every lesson was
@@ -27,7 +27,7 @@ module.exports = {
       "Five questions, four with the answer hidden in the text",
       "A printable answer sheet with a parent signature line",
     ] },
-  eyebrow: ["History", "Unit 1 &middot; Lesson 1", "Ancient Rome"],
+  eyebrow: ["History", "U1-L1", "Ancient Rome"],
   dek: "Rome spent five hundred years refusing to have a king. Then it got one, and almost nobody noticed the day it happened.",
   scripture: {
     ref: "Daniel 2:21",

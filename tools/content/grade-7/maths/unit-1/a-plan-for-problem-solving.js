@@ -32,7 +32,7 @@ module.exports = {
   id: "maths/a-plan-for-problem-solving",
   slug: "a-plan-for-problem-solving",
   title: "A Plan for Problem Solving",
-  unit: "Math &middot; Chapter 1 &middot; Lesson 1-1",
+  unit: "Math &middot; U1-L1",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 1 },
   shelf: { grades: [7], subject: "Math",
     blurb: "Four steps that work on any problem, including the ones nobody sets you.",
@@ -42,7 +42,7 @@ module.exports = {
       "An estimate you have to commit to before the page will let you calculate",
       "Fourteen questions, including one that can't be looked up",
     ] },
-  eyebrow: ["Math", "Chapter 1 &middot; Lesson 1-1", "Tools for Problem Solving"],
+  eyebrow: ["Math", "U1-L1", "Tools for Problem Solving"],
   dek: "Anyone can do the arithmetic once someone hands them the sum. The hard part is working out what the sum is.",
   scripture: {
     ref: "Proverbs 14:15",

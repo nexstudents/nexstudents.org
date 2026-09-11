@@ -15,7 +15,7 @@ module.exports = {
   id: "english/complete-subjects-and-predicates",
   slug: "complete-subjects-and-predicates",
   title: "Complete Subjects and Predicates",
-  unit: "The Sentence · Unit 1 · Lesson 2",
+  unit: "The Sentence · U1-L2",
   eyebrow: "English",
   dek: "Every sentence has two halves. One says who or what it is about, the other says something about it. Finding the line between them is the whole skill.",
 
