@@ -1,26 +1,30 @@
 {
-  "_comment": "The REAL queue. Shape and all fields: review-queue.example.json. Nothing fabricated goes in here - a made-up entry is indistinguishable from real work when Paul opens the page.",
-
-  "batch": "Carried over from 2026-09-11",
+  "_comment": [
+    "THE REAL QUEUE. Shape and all fields: review-queue.example.json.",
+    "",
+    "🚨 ONLY PUT SOMETHING HERE IF IT BLOCKS WORK PAUL ASKED FOR.",
+    "On 2026-09-11 the first version of this file carried a question about",
+    "complete-subjects-and-predicates - a FINISHED lesson he never asked me to",
+    "audit. He opened the page and reasonably asked what he was looking at.",
+    "A queue full of things I noticed is the same failure as asking mid-batch;",
+    "it just looks tidier. An observation about finished work goes in the",
+    "ROADMAP, not in front of him."
+  ],
+  "batch": "Nothing built yet — the queue is ready for the first batch",
   "generated": "2026-09-11",
-  "budget": "No lessons built this batch. Tooling only.",
-
+  "budget": "Tooling only this session. No lessons built.",
   "done": [],
-
   "needs": [
     {
-      "decision": "Which world should the examples come from?",
-      "title": "complete-subjects-and-predicates — live now with three",
-      "note": "The objective and the mechanic are both right. But the story is a hardware store, Part A is baseball, and Part B is chess. A twelve year old holds all three in one sitting. Found by the first gather packet, 2026-09-11. ROADMAP 60.",
-      "options": ["Hardware store", "Baseball", "Chess", "Something else"],
-      "kind": "page",
-      "href": "/lessons/english/complete-subjects-and-predicates/"
-    },
-    {
-      "decision": "What do we call Grade 7 maths and Grade 7 English?",
-      "title": "Card labels — every other shelf names its course",
-      "note": "History reads 'World History · U1-L1' and science reads 'Life Science · U1-L1'. Maths and English print the bare U1-L1 because there is no settled name. 'Glencoe Course 2' is a publisher's label, not a course. I did not invent one.",
-      "options": ["Pre-Algebra", "Math 7", "Grammar & Writing", "Something else"],
+      "decision": "What should Grade 7 maths and English be called on their cards?",
+      "title": "Every other shelf names its course; these two don't",
+      "note": "The book is Glencoe, Mathematics: Applications and Connections, COURSE 2 (1998). Course 2 is just Glencoe’s name for grade 7 and means nothing to a parent. It is NOT a pre-algebra book: one chapter of fourteen is An Introduction to Algebra, the rest is decimals, fractions, statistics, geometry, area, ratio and percent, probability, functions. Glencoe sold a separate Pre-Algebra title. Calling this Pre-Algebra would promise the algebra track and not deliver it.",
+      "options": [
+        "Math 7 (accurate, plain)",
+        "Middle School Math",
+        "Pre-Algebra (NOT what the book is)",
+        "Leave them bare"
+      ],
       "kind": "page",
       "href": "/grade-7/maths/lessons/"
     }
