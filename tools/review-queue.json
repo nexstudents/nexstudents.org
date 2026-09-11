@@ -10,9 +10,20 @@
     "it just looks tidier. An observation about finished work goes in the",
     "ROADMAP, not in front of him."
   ],
-  "batch": "Nothing waiting — ready for the first lesson batch",
+  "batch": "Ready for the first lesson batch",
   "generated": "2026-09-11",
   "budget": "Tooling only this session. Every open question answered.",
   "done": [],
-  "needs": []
+  "needs": [
+    {
+      "decision": "Test me: tap any option or type your own.",
+      "title": "Proving the phone answer path works",
+      "note": "Whatever you pick gets written into review-queue.json on the PC, so I read it next session without you telling me. Tap one and it should say Saved.",
+      "options": [
+        "Works",
+        "Buttons too small",
+        "Something else"
+      ]
+    }
+  ]
 }

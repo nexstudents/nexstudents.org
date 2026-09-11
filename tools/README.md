@@ -57,8 +57,13 @@ needs him now.
   `tools/review-queue.example.json`. Two arrays, `done` and `needs`, and nothing else.
 - **`decision` is the headline and must be answerable** — "One lesson or two?", not a paragraph
   about the page. Add `options` and he can reply in one word.
-- **`kind:"page"` frames it live at phone AND desktop width.** A question about a picture cannot
-  be answered in text, which is the whole reason this is a page.
+- 🚨 **OPTIONS ONLY. NO IFRAMES, NO SITE.** Paul, 2026-09-11: *"you don.t need to show me the
+  site in the review page. you can just give me options and I.ll tell you or click what works
+  best."* The first version framed live pages, which forced this server to serve the whole site
+  — and a URL without /review/ landed him on NexStudents. It serves ONE page now.
+- 🚨 **HE TAPS AN OPTION AND IT IS WRITTEN BACK** into `review-queue.json`, which is committed.
+  An answer given from his phone survives to the next session without him repeating it. Every
+  question also takes free text, because the right answer is often none of mine.
 - ⚠️ **It must be SERVED, never opened from disk.** The pages it frames link `/assets/...`
   root-absolute, which under `file://` resolves to the drive root and silently loads nothing —
   the same trap that shipped three history PDFs in Times New Roman.

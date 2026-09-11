@@ -1,36 +1,38 @@
 #!/usr/bin/env node
 /* ─────────────────────────────────────────────────────────────────────────
-   build-review.js — the end-of-batch review queue, as a page Paul can look at.
+   build-review.js — the end-of-batch review queue. Questions, and his answers.
 
        node tools/build-review.js .          build review/index.html
-       node tools/build-review.js . --serve  build it and serve it, print the URL
+       node tools/build-review.js . --serve  serve it on Tailscale + loopback
 
    🚨 WHY THIS EXISTS. Paul, 2026-09-11, and he called it the most important
    part: "don't sprinkle 'please check this' through coding chatter. Collect
-   everything that needs my judgment into one end-of-batch review queue ... For
-   visuals or interactives, put it on the local server as a review page. I want
-   to come back to 'what's done' and 'what needs me now', not reconstruct the
-   session."
+   everything that needs my judgment into one end-of-batch review queue ... I
+   want to come back to 'what's done' and 'what needs me now', not reconstruct
+   the session."
 
-   He is juggling a newborn, Kolten and video editing. A question buried in a
-   build log is a question he has to go find.
+   🚨 IT ASKS, AND IT TAKES THE ANSWER BACK. He taps an option on his phone and
+   it is written into review-queue.json. Next session reads the answers. That is
+   what makes it hands-off: he answers without typing anything to me, and
+   nothing is lost between sessions.
+   "you can just give me options and I'll tell you or click what works best ...
+   or I can write my own response" — so every question takes a free-text reply
+   as well as its options, because the right answer is often none of mine.
 
-   🚨 A QUESTION ABOUT A PICTURE CANNOT BE ANSWERED IN TEXT. That is the whole
-   reason this is a page and not a markdown file: each item SHOWS the thing,
-   live, at phone and desktop width.
+   ❌ NO IFRAMES, NO SITE. The first version framed live pages, which meant this
+   server had to serve the whole site - and a URL without /review/ landed him on
+   NexStudents itself: "I just seen my students website and not your review."
+   He then asked for options only. So it serves ONE page and nothing else, which
+   is simpler AND safer.
 
-   ⚠️ NEVER DEPLOYED. `review/` is in .gitignore, so it cannot reach the repo
-   and Pages cannot serve it. It is a workbench. It also carries a noindex, so
-   that if it ever does escape, it does not get indexed.
-
-   ⚠️ GENERATED FROM `tools/review-queue.json`, never hand-written — or it goes
-   stale the first time a lesson ships without being added, which is the failure
-   the nav, the footer and the grade picker each had here.
+   ⚠️ NEVER DEPLOYED. `review/` is gitignored; check-links skips it.
+   ⚠️ Generated from tools/review-queue.json, never hand-written.
    ───────────────────────────────────────────────────────────────────────── */
 'use strict';
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const os = require('os');
 
 const ROOT = process.argv[2] || '.';
 const SERVE = process.argv.includes('--serve');
@@ -42,67 +44,32 @@ const esc = s => String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-if (!fs.existsSync(QUEUE)) {
-    console.error(`FAIL: ${path.relative(ROOT, QUEUE)} does not exist.\n` +
-        `      The batch writes it. See the shape in tools/review-queue.example.json`);
-    process.exit(1);
-}
-const q = JSON.parse(fs.readFileSync(QUEUE, 'utf8'));
-const done = Array.isArray(q.done) ? q.done : [];
-const needs = Array.isArray(q.needs) ? q.needs : [];
+const readQueue = () => JSON.parse(fs.readFileSync(QUEUE, 'utf8'));
 
-/* ── one item that needs him ──────────────────────────────────────────────
-   The DECISION is the headline. The background is one line under it, at most.
-   Everything else he already has: the session log, the roadmap, the commits. */
-function needItem(n, i) {
-    const kind = n.kind || (n.src ? 'image' : n.href ? 'page' : 'text');
-    let shown = '';
+function render(q) {
+    const done = Array.isArray(q.done) ? q.done : [];
+    const needs = Array.isArray(q.needs) ? q.needs : [];
+    const open = needs.filter(n => !n.answer);
+    const answered = needs.filter(n => n.answer);
 
-    if (kind === 'page' && n.href) {
-        /* Both widths, because "does it fit on a phone" is the question that
-           cost an entire evening on 2026-09-11 and text cannot answer it. */
-        shown = `<div class="views">
-        <figure><figcaption>Phone · 390</figcaption>
-          <iframe src="${esc(n.href)}" width="390" height="620" loading="lazy"
-                  title="${esc(n.title)} at phone width"></iframe></figure>
-        <figure class="wide"><figcaption>Desktop</figcaption>
-          <iframe src="${esc(n.href)}" width="1100" height="620" loading="lazy"
-                  title="${esc(n.title)} at desktop width"></iframe></figure>
-      </div>
-      <p class="open"><a href="${esc(n.href)}" target="_blank">Open it full size &rarr;</a></p>`;
-    } else if (kind === 'image' && n.src) {
-        shown = `<div class="shot"><img src="${esc(n.src)}" alt="${esc(n.title)}" loading="lazy"></div>`;
-    } else if (n.code) {
-        shown = `<pre class="code">${esc(n.code)}</pre>`;
-    }
-
-    /* Options make a decision answerable in one word instead of a paragraph. */
-    const opts = Array.isArray(n.options) && n.options.length
-        ? `<ul class="opts">${n.options.map(o => `<li>${esc(o)}</li>`).join('')}</ul>` : '';
-
-    return `<section class="need" id="n${i + 1}">
+    const question = (n, i) => `<section class="q" data-i="${i}">
       <p class="tag">Needs you</p>
       <h3>${esc(n.decision || n.title)}</h3>
       ${n.title && n.decision ? `<p class="where">${esc(n.title)}</p>` : ''}
       ${n.note ? `<p class="note">${esc(n.note)}</p>` : ''}
-      ${opts}
-      ${shown}
+      <div class="opts">
+        ${(n.options || []).map(o =>
+            `<button type="button" class="opt" data-i="${i}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}
+      </div>
+      <div class="own">
+        <input type="text" placeholder="or write your own answer" data-i="${i}" autocomplete="off">
+        <button type="button" class="send" data-i="${i}">Send</button>
+      </div>
     </section>`;
-}
 
-const doneRows = done.map(d => `<li>
-      <b>${esc(d.label || '')}</b> ${esc(d.title)}
-      ${d.href ? `<a href="${esc(d.href)}" target="_blank">look</a>` : ''}
-      ${d.note ? `<span class="dnote">${esc(d.note)}</span>` : ''}
-    </li>`).join('\n    ');
+    const answeredRow = n => `<li><b>${esc(n.answer)}</b> ${esc(n.decision || n.title)}</li>`;
 
-/* 🚨 An empty queue is the BEST result and should look like it - one line, not
-   an empty section with a heading standing over nothing. */
-const needsBlock = needs.length
-    ? needs.map(needItem).join('\n    ')
-    : `<p class="allclear">Nothing needs you. ${done.length} built, all checks green.</p>`;
-
-const html = `<!doctype html>
+    return `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -112,125 +79,160 @@ const html = `<!doctype html>
   :root{color-scheme:dark}
   *{box-sizing:border-box}
   body{margin:0;background:#0f1216;color:#f1f3f5;
-    font:15px/1.55 "Segoe UI",system-ui,sans-serif}
-  .wrap{max-width:1180px;margin:0 auto;padding:26px 18px 70px}
-  header{border-bottom:1px solid #262c34;padding-bottom:16px;margin-bottom:26px}
-  h1{margin:0 0 4px;font-size:1.5rem;letter-spacing:-.02em}
-  .sub{margin:0;color:#98a1ab;font-size:.85rem}
-  h2{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:#98a1ab;
-    margin:34px 0 12px}
-  ul.done{list-style:none;margin:0;padding:0}
-  ul.done li{padding:8px 0;border-bottom:1px solid #1c2128;font-size:.92rem}
-  ul.done b{color:#4ade80;font-weight:700;margin-right:8px;font-size:.78rem;
-    letter-spacing:.04em}
-  ul.done a{color:#98a1ab;margin-left:8px;font-size:.8rem}
-  .dnote{color:#98a1ab;font-size:.8rem;margin-left:8px}
+    font:16px/1.55 "Segoe UI",system-ui,sans-serif}
+  .wrap{max-width:640px;margin:0 auto;padding:24px 16px 70px}
+  header{border-bottom:1px solid #262c34;padding-bottom:14px;margin-bottom:22px}
+  h1{margin:0 0 4px;font-size:1.35rem;letter-spacing:-.02em}
+  .sub{margin:0;color:#98a1ab;font-size:.84rem}
+  h2{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#98a1ab;
+    margin:30px 0 12px}
+  .q{background:#161a1f;border:1px solid #262c34;border-radius:12px;
+    padding:16px 16px 14px;margin:0 0 16px}
+  .tag{margin:0 0 6px;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+    color:#facc15;font-weight:800}
+  .q h3{margin:0 0 6px;font-size:1.1rem;letter-spacing:-.01em;line-height:1.3}
+  .where{margin:0 0 8px;color:#98a1ab;font-size:.82rem}
+  .note{margin:0 0 12px;color:#c8ced5;font-size:.9rem}
+  /* 🚨 TAP TARGETS, NOT LINKS. He answers these on a phone, one-handed,
+     often holding a baby. 44px minimum and full width when it wraps. */
+  .opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .opt{flex:1 1 auto;min-height:46px;min-width:130px;padding:10px 14px;
+    background:#1d232b;color:#f1f3f5;border:1px solid #323a45;border-radius:9px;
+    font:inherit;font-size:.92rem;cursor:pointer;text-align:left}
+  .opt:active{background:#27313f}
+  @media(hover:hover){ .opt:hover{border-color:#4ade80;color:#4ade80} }
+  .own{display:flex;gap:8px}
+  .own input{flex:1;min-height:46px;padding:10px 12px;background:#0f1216;
+    color:#f1f3f5;border:1px solid #323a45;border-radius:9px;font:inherit;font-size:.92rem}
+  .send{min-height:46px;padding:10px 18px;background:#4ade80;color:#052e16;
+    border:0;border-radius:9px;font:inherit;font-weight:800;cursor:pointer}
   .allclear{background:#132018;border:1px solid #1f3b28;color:#4ade80;
     border-radius:10px;padding:14px 16px;margin:0;font-weight:600}
-  .need{background:#161a1f;border:1px solid #262c34;border-radius:12px;
-    padding:18px 18px 14px;margin:0 0 18px}
-  .tag{margin:0 0 6px;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
-    color:#facc15;font-weight:800}
-  .need h3{margin:0 0 6px;font-size:1.12rem;letter-spacing:-.01em;line-height:1.3}
-  .where{margin:0 0 8px;color:#98a1ab;font-size:.82rem}
-  .note{margin:0 0 10px;color:#c8ced5;font-size:.9rem}
-  .opts{margin:0 0 12px;padding-left:18px;color:#c8ced5;font-size:.9rem}
-  .opts li{margin-bottom:3px}
-  .views{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
-  figure{margin:0}
-  figcaption{color:#98a1ab;font-size:.66rem;letter-spacing:.1em;
-    text-transform:uppercase;margin-bottom:6px}
-  iframe{border:1px solid #262c34;border-radius:8px;background:#0f1216;max-width:100%}
-  .wide{flex:1;min-width:320px}
-  .wide iframe{width:100%}
-  .shot img{max-width:100%;border:1px solid #262c34;border-radius:8px;display:block}
-  .code{background:#0b0e11;border:1px solid #262c34;border-radius:8px;padding:12px;
-    overflow-x:auto;font-size:.82rem;color:#c8ced5;margin:0}
-  .open{margin:10px 0 0;font-size:.82rem}
-  .open a{color:#4ade80}
-  footer{margin-top:44px;color:#5d6874;font-size:.76rem;border-top:1px solid #1c2128;
+  ul{list-style:none;margin:0;padding:0}
+  ul li{padding:8px 0;border-bottom:1px solid #1c2128;font-size:.9rem}
+  ul b{color:#4ade80;font-weight:700;margin-right:8px}
+  .dnote{color:#98a1ab;font-size:.8rem;margin-left:8px}
+  footer{margin-top:40px;color:#5d6874;font-size:.76rem;border-top:1px solid #1c2128;
     padding-top:14px}
+  .saved{position:fixed;left:0;right:0;bottom:0;background:#4ade80;color:#052e16;
+    text-align:center;padding:12px;font-weight:800;transform:translateY(100%);
+    transition:transform .18s ease}
+  .saved.on{transform:none}
 </style></head>
 <body><div class="wrap">
 <header>
   <h1>${esc(q.batch || 'Review')}</h1>
-  <p class="sub">${done.length} done &middot; ${needs.length} need${needs.length === 1 ? 's' : ''} you${
+  <p class="sub">${done.length} done &middot; ${open.length} need${open.length === 1 ? 's' : ''} you${
     q.generated ? ' &middot; ' + esc(q.generated) : ''}</p>
 </header>
 
 <h2>What needs you now</h2>
-${needsBlock}
+${open.length ? open.map((n) => question(n, needs.indexOf(n))).join('\n    ')
+    : `<p class="allclear">Nothing needs you. ${done.length} built, all checks green.</p>`}
+
+${answered.length ? `<h2>Answered</h2>\n<ul>${answered.map(answeredRow).join('')}</ul>` : ''}
 
 <h2>What&rsquo;s done</h2>
-${done.length ? `<ul class="done">\n    ${doneRows}\n  </ul>` : '<p class="sub">Nothing built this batch.</p>'}
+${done.length ? `<ul>${done.map(d => `<li><b>${esc(d.label || '')}</b>${esc(d.title)}${
+    d.note ? `<span class="dnote">${esc(d.note)}</span>` : ''}</li>`).join('')}</ul>`
+    : '<p class="sub">Nothing built this batch.</p>'}
 
-<footer>Generated by <code>tools/build-review.js</code> from
-<code>tools/review-queue.json</code>. Local only &mdash; never deployed.
-${esc(q.budget || '')}</footer>
-</div></body></html>`;
+<footer>${esc(q.budget || '')} Local only, never deployed.</footer>
+</div>
+<div class="saved" id="saved">Saved</div>
+<script>
+(function(){
+  var flash = document.getElementById("saved");
+  function send(i, v){
+    if (!v) return;
+    fetch("/answer", { method:"POST", headers:{"content-type":"application/json"},
+      body: JSON.stringify({ i: i, answer: v }) })
+      .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+      .then(function(){
+        flash.textContent = "Saved: " + v;
+        flash.classList.add("on");
+        setTimeout(function(){ location.reload(); }, 700);
+      })
+      .catch(function(){ flash.textContent = "Could not save"; flash.classList.add("on"); });
+  }
+  document.addEventListener("click", function(e){
+    var o = e.target.closest(".opt");
+    if (o) { send(+o.dataset.i, o.dataset.v); return; }
+    var s = e.target.closest(".send");
+    if (s) {
+      var box = document.querySelector('input[data-i="' + s.dataset.i + '"]');
+      send(+s.dataset.i, box && box.value.trim());
+    }
+  });
+  /* Enter sends, because a phone keyboard's go key is right there. */
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Enter" && e.target.matches("input[data-i]")) {
+      send(+e.target.dataset.i, e.target.value.trim());
+    }
+  });
+})();
+</script>
+</body></html>`;
+}
 
-fs.mkdirSync(OUTDIR, { recursive: true });
-fs.writeFileSync(OUT, html, 'utf8');
-console.log(`review: ${done.length} done, ${needs.length} needing Paul -> ${path.relative(ROOT, OUT)}`);
+function build() {
+    const q = readQueue();
+    fs.mkdirSync(OUTDIR, { recursive: true });
+    fs.writeFileSync(OUT, render(q), 'utf8');
+    const open = (q.needs || []).filter(n => !n.answer).length;
+    console.log(`review: ${(q.done || []).length} done, ${open} needing Paul -> ${path.relative(ROOT, OUT)}`);
+    return q;
+}
 
-/* ⚠️ It MUST be served, not opened from disk. Every page it frames links
-   /assets/... root-absolute, which under file:// resolves to the drive root and
-   silently loads nothing - the same trap that shipped three history PDFs in
-   Times New Roman. See CLAUDE.md. */
+build();
+
 if (SERVE) {
-    const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
-        '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp',
-        '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.json': 'application/json',
-        '.pdf': 'application/pdf', '.mp3': 'audio/mpeg' };
     const srv = http.createServer((req, res) => {
-        let p = decodeURIComponent(req.url.split('?')[0]);
-        /* 🚨 THE ROOT REDIRECTS TO THE REVIEW PAGE. Paul, 2026-09-11: "it's just
-           opening up the website from local host. I just seen my students
-           website and not your review."
-           This server HAS to serve the whole site root, or the iframes cannot
-           load /assets or the lesson pages they frame. But that means a URL
-           without /review/ lands on NexStudents itself, which is exactly what
-           happened on his phone. This server exists for one page; the root
-           belongs to that page. */
-        if (p === '/' || p === '/index.html') {
-            res.writeHead(302, { location: '/review/' });
-            res.end();
+        /* 🚨 HIS ANSWER GOES STRAIGHT INTO THE QUEUE FILE. That file is committed,
+           so an answer given from his phone survives to the next session without
+           him repeating it to me. */
+        if (req.method === 'POST' && req.url === '/answer') {
+            let body = '';
+            req.on('data', c => { body += c; if (body.length > 4096) req.destroy(); });
+            req.on('end', () => {
+                try {
+                    const { i, answer } = JSON.parse(body);
+                    const q = readQueue();
+                    if (!q.needs || !q.needs[i]) { res.writeHead(400).end('no such question'); return; }
+                    q.needs[i].answer = String(answer).slice(0, 300);
+                    q.needs[i].answeredAt = new Date().toISOString().slice(0, 16).replace('T', ' ');
+                    fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2), 'utf8');
+                    build();
+                    res.writeHead(200).end('ok');
+                    console.log(`  ANSWERED: ${q.needs[i].decision} -> ${q.needs[i].answer}`);
+                } catch (e) { res.writeHead(400).end('bad request'); }
+            });
             return;
         }
-        if (p.endsWith('/')) p += 'index.html';
-        /* ⚠️ RESOLVE BOTH SIDES. This compared a relative join against an
-           absolute root and 403'd every single request, including its own page.
-           The guard is real - it stops ../ escaping the site root - but it has
-           to compare like with like. */
-        const base = path.resolve(ROOT);
-        const f = path.resolve(base, '.' + p);
-        if (f !== base && !f.startsWith(base + path.sep)) { res.writeHead(403).end(); return; }
-        fs.readFile(f, (err, buf) => {
-            if (err) { res.writeHead(404).end('not found'); return; }
-            res.writeHead(200, { 'content-type': TYPES[path.extname(f).toLowerCase()] || 'application/octet-stream' });
-            res.end(buf);
-        });
+        /* One page. Everything else comes back to it — no site, nothing to get lost in. */
+        if (req.url.split('?')[0] !== '/review/index.html' && req.url.split('?')[0] !== '/review/') {
+            if (req.url === '/' || req.url === '/review' || req.url === '/index.html') {
+                res.writeHead(302, { location: '/review/' }); res.end(); return;
+            }
+            res.writeHead(404).end('this server serves the review page only');
+            return;
+        }
+        res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+        res.end(fs.readFileSync(OUT));
     });
-    /* 🚨 BIND TO TAILSCALE, NOT LOOPBACK. Paul, 2026-09-11: "I can't open this
-       link with tailscale from my phone." He reads this page from wherever he
-       is — settling the baby, editing video — and 127.0.0.1 is reachable only
-       from the machine itself, which is the one place he is not.
-       ⚠️ The Tailscale address, NOT 0.0.0.0. Binding to everything would put
-       an unfinished-work page with open questions on the local network too.
-       Tailscale is his own devices and nothing else. */
-    const os = require('os');
+
+    /* 🚨 TAILSCALE, BECAUSE HE READS THIS FROM HIS PHONE. Never 0.0.0.0 — that
+       would put it on the local network too. → [[feedback-remote-means-tailscale]] */
     const ts = Object.values(os.networkInterfaces()).flat()
         .find(n => n && n.family === 'IPv4' && n.address.startsWith('100.'));
     const hosts = ts ? [ts.address, '127.0.0.1'] : ['127.0.0.1'];
-
-    let up = 0;
-    hosts.forEach(h => {
-        const s = h === hosts[0] ? srv : http.createServer(srv.listeners('request')[0]);
+    const handler = srv.listeners('request')[0];
+    hosts.forEach((h, idx) => {
+        const s = idx === 0 ? srv : http.createServer(handler);
         s.listen(4321, h, () => {
-            up++;
-            console.log(`  http://${h}:4321/review/${h.startsWith('100.') ? '   <- from your phone, over Tailscale' : ''}`);
-            if (up === hosts.length) console.log('\n  ctrl-c to stop');
+            console.log(`  http://${h}:4321/${h.startsWith('100.') ? '   <- open this on your phone' : ''}`);
         }).on('error', e => console.log(`  (could not bind ${h}: ${e.code})`));
     });
     if (!ts) console.log('  ⚠️ no Tailscale address found — phone access will not work');
+    console.log('\n  answers are written straight into tools/review-queue.json. ctrl-c to stop');
 }
