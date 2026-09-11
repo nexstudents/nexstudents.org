@@ -1950,6 +1950,11 @@ body.cart-open .cdrawer{transform:none}
 .cd-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:18px 20px;border-bottom:1px solid var(--line);flex:none}
 .cd-h{margin:0;font-size:1.15rem;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+/* 🚨 A LESSON TEMPLATE STYLES EVERY BARE h2 (Cinzel, 13px, uppercase), and
+   both drawer titles are h2s, so on a lesson page they came out "ACCOUNT" and
+   "CART" in serif capitals. Found 2026-09-11. Same rule in lesson-nav.css. */
+.cd-h,.ad-h{font-family:"Archivo",system-ui,sans-serif;text-transform:none;padding:0;border:0}
+.cd-h{color:var(--fg)}.ad-h{color:var(--ad-fg)}
 .cd-n{min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:var(--a);
   color:var(--a-ink);font-size:.72rem;font-weight:800;line-height:21px;text-align:center}
 .cd-x{background:none;border:0;color:var(--dim);font-size:26px;line-height:1;
@@ -2055,6 +2060,64 @@ body.acct-open .adrawer{transform:none}
   font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .ad-link:hover{text-decoration:underline}
 .ad-msg{text-align:center}
+/* 🧒 STUDENT PROFILES + PIN, 2026-09-11 (ROADMAP 50). Still the twin rule:
+   this block is IDENTICAL in ns.css and lesson-nav.css. The six av-* colours all carry
+   white text at 5:1 or better; the parent keeps the red above, and red is not
+   offered to a student. .whop (the picker) and .nv-av (the nav icon) sit
+   OUTSIDE the panel, so they use literal colours, not --ad-* tokens. */
+.av-blue{background:#1565c0!important}.av-green{background:#2e7d32!important}
+.av-teal{background:#00796b!important}.av-purple{background:#6a1b9a!important}
+.av-orange{background:#b45309!important}.av-pink{background:#ad1457!important}
+.ad-pro-i{cursor:pointer}
+.ad-pro-i i{transition:box-shadow .15s}
+.ad-pro-i.is-me i{box-shadow:0 0 0 2px var(--ad-bg),0 0 0 4px var(--ad-fg)}
+.ad-pro-i:not(.is-me):not(.is-add):hover i{box-shadow:0 0 0 2px var(--ad-bg),0 0 0 4px var(--ad-dim)}
+.ad-lock{display:inline-block;vertical-align:-1px;margin-right:3px}
+.ad-mid{text-align:center}
+.ad-kidrow>i{width:42px;height:42px;border-radius:6px;display:grid;place-items:center;flex:none;
+  font-style:normal;font-weight:700;font-size:1.1rem;color:#fff}
+.ad-kidrow.is-add>i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line);font-weight:400;font-size:1.4rem}
+.ad-edit-av{padding:22px 0 6px;display:flex;justify-content:center}
+.ad-edit-av i{width:84px;height:84px;border-radius:10px;display:grid;place-items:center;font-style:normal;
+  font-size:2.3rem;font-weight:700;color:#fff}
+.ad-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0 4px}
+.ad-chips button{min-width:34px;height:36px;padding:0 6px;border-radius:6px;background:none;cursor:pointer;
+  border:1px solid var(--ad-line);color:var(--ad-fg);font:inherit;font-size:.86rem;font-weight:600}
+.ad-chips button[aria-pressed="true"]{background:var(--ad-fg);color:var(--ad-bg);border-color:var(--ad-fg)}
+.ad-sw{display:flex;flex-wrap:wrap;gap:12px;padding:10px 0 4px}
+.ad-sw button{width:36px;height:36px;border-radius:8px;border:0;cursor:pointer;padding:0}
+.ad-sw button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ad-bg),0 0 0 4px var(--ad-fg)}
+.ad-del.is-armed{color:#e5534b}
+.ad-pinbox{position:relative;display:flex;justify-content:center;gap:12px;margin:22px auto 0;width:max-content}
+.ad-pinbox span{width:48px;height:56px;border:1.5px solid var(--ad-line);border-radius:8px;display:grid;
+  place-items:center;transition:border-color .15s}
+.ad-pinbox span.is-on::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--ad-fg)}
+.ad-pinbox input:focus~span.is-cur,.ad-pinbox:focus-within span.is-cur{border-color:var(--ad-fg)}
+.ad-pinbox input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;
+  font-size:16px;cursor:pointer}
+.ad-pinbox.is-shake{animation:adShake .32s}
+@keyframes adShake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.ad-pinbox.is-shake{animation:none}}
+.nv-av{display:grid;place-items:center;width:24px;height:24px;border-radius:5px;color:#fff;
+  font:700 .8rem/1 "Archivo",system-ui,sans-serif}
+.whop{position:fixed;inset:0;z-index:120;background:#0a0b0d;color:#f1f3f5;display:grid;place-items:center;
+  padding:24px 16px;overflow-y:auto;opacity:0;transition:opacity .25s ease;font-family:"Archivo",system-ui,sans-serif}
+.whop.is-in{opacity:1}
+.whop-in{text-align:center;max-width:760px}
+.whop h2{margin:0 0 34px;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:600;letter-spacing:-.01em}
+.whop-row{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(16px,3vw,30px)}
+.whop-i{display:flex;flex-direction:column;align-items:center;gap:12px;width:clamp(96px,16vw,140px);
+  background:none;border:0;padding:0;color:#98a1ab;font:inherit;cursor:pointer}
+.whop-i i{width:100%;aspect-ratio:1;max-width:100%;border-radius:10px;display:grid;place-items:center;
+  font-style:normal;font-weight:700;font-size:clamp(2.4rem,6vw,3.6rem);color:#fff;background:#c62828;
+  box-shadow:0 0 0 0 #f1f3f5;transition:box-shadow .15s}
+.whop-i b{font-weight:500;font-size:1rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.whop-i:hover b,.whop-i:focus-visible b{color:#f1f3f5}
+.whop-i:hover i,.whop-i:focus-visible i{box-shadow:0 0 0 3px #f1f3f5}
+.whop-i:focus-visible{outline:none}
+.whop-manage{margin-top:44px;background:none;border:1px solid #98a1ab;color:#98a1ab;font:inherit;
+  font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:10px 22px;cursor:pointer}
+.whop-manage:hover,.whop-manage:focus-visible{color:#f1f3f5;border-color:#f1f3f5}
 .cd-row{display:flex;align-items:center;gap:13px;padding:15px 0;
   border-bottom:1px solid var(--line)}
 /* Quantity box stacked over Remove, matching the reference's drawer. */

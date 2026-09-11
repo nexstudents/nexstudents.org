@@ -147,7 +147,7 @@
   function logIn(email, password) {
     return authCall("/token?grant_type=password",
       { email: clean(email), password: String(password || "") }, "Could not log in.")
-      .then(function (d) { setSession(d); return d.user; });
+      .then(function (d) { write(PICK_KEY, true); write(WHO_KEY, "parent"); setSession(d); return d.user; });
   }
   function signUp(email, password, first, last) {
     /* redirect_to is where the CONFIRM link lands: /account/, which picks the
@@ -230,8 +230,89 @@
     });
   }
 
+  /* ── STUDENT PROFILES AND THE PIN (2026-09-11, migration 013) ─────────────
+     Paul: "should feel a bit like Netflix accounts ... a parent or teacher pin."
+     One login (the parent's), students as profiles under it, and the PIN
+     guarding the parent side. WHO is on the device is a per-device choice,
+     like Netflix's, so it lives here: ns:who = "parent" or a student id.
+     ⚠️ ns:who IS A HOUSEHOLD SETTING, NOT A PERMISSION. The session is the
+     parent's either way; the database never sees ns:who. Anything that must be
+     enforced against a child needs a server rule (ROADMAP 56/57).
+     ns:pickwho is set by a fresh sign-in, so the next page shows the
+     "Who's learning?" picker once. */
+  var WHO_KEY = "ns:who", PICK_KEY = "ns:pickwho";
+  function who() { return read(WHO_KEY, "parent"); }
+  function setWho(id) {
+    write(WHO_KEY, id || "parent");
+    document.dispatchEvent(new CustomEvent("ns:who", { detail: { who: id || "parent" } }));
+  }
+  function wantsPicker() { return !!session && read(PICK_KEY, false) === true; }
+  function pickerShown() { drop(PICK_KEY); }
+
+  function rest(method, path, body, fallback) {
+    return refreshIfNeeded().then(function (s) {
+      if (!s) throw new Error("Please sign in again.");
+      var h = headers(true);
+      if (method !== "GET") h["Prefer"] = "return=representation";
+      return fetch(REST + path, { method: method, headers: h, body: body == null ? undefined : JSON.stringify(body) })
+        .then(function (r) {
+          return r.text().then(function (t) {
+            var d = null; try { d = t ? JSON.parse(t) : null; } catch (e) {}
+            if (!r.ok) { var e2 = new Error(pinWords(d) || fallback); e2.raw = d; throw e2; }
+            return d;
+          });
+        });
+    });
+  }
+  /* Postgres raises in developer words. These are for a parent. */
+  function pinWords(d) {
+    var m = (d && (d.message || d.msg)) || "";
+    var lock = /pin locked until (\S+)/.exec(m);
+    if (lock) {
+      var mins = Math.max(1, Math.ceil((new Date(lock[1]) - Date.now()) / 60000));
+      return "Too many wrong tries. The PIN is locked for " + mins + " more minute" + (mins === 1 ? "" : "s") + ".";
+    }
+    if (/current pin is wrong/.test(m)) return "That's not your current PIN.";
+    if (/pin must be 4 digits/.test(m)) return "The PIN is 4 numbers.";
+    if (/students_name_len/.test(m)) return "Give the profile a name, 30 letters at most.";
+    return "";
+  }
+  var STUDENT_COLS = "id,name,grade,avatar,created_at";
+  function students() {
+    return rest("GET", "/students?select=" + STUDENT_COLS + "&order=created_at.asc", null, "Could not load profiles.")
+      .then(function (rows) {
+        rows = rows || [];
+        /* A profile deleted on another device must not stay the active one here. */
+        var w = who();
+        if (w !== "parent" && !rows.some(function (r) { return r.id === w; })) write(WHO_KEY, "parent");
+        return rows;
+      });
+  }
+  function addStudent(f) {
+    return rest("POST", "/students?select=" + STUDENT_COLS,
+      { name: String(f.name || "").trim(), grade: f.grade || null, avatar: f.avatar || "blue" },
+      "Could not add that profile.").then(function (d) { return d && d[0]; });
+  }
+  function updateStudent(id, f) {
+    return rest("PATCH", "/students?id=eq." + encodeURIComponent(id) + "&select=" + STUDENT_COLS,
+      { name: String(f.name || "").trim(), grade: f.grade || null, avatar: f.avatar || "blue" },
+      "Could not save that profile.").then(function (d) { return d && d[0]; });
+  }
+  /* 🚨 Deleting a profile deletes its progress too (on delete cascade). The
+     panel asks twice before calling this. */
+  function deleteStudent(id) {
+    return rest("DELETE", "/students?id=eq." + encodeURIComponent(id), null, "Could not delete that profile.")
+      .then(function () { if (who() === id) write(WHO_KEY, "parent"); return true; });
+  }
+  function hasPin() { return rest("POST", "/rpc/has_pin", {}, "Could not check the PIN."); }
+  function checkPin(pin) { return rest("POST", "/rpc/check_pin", { pin: String(pin || "") }, "Could not check the PIN."); }
+  function setPin(pin, old) {
+    return rest("POST", "/rpc/set_pin", { new_pin: String(pin || ""), old_pin: old == null ? null : String(old) },
+      "Could not save the PIN.");
+  }
+
   function signOut() {
-    session = null; drop(SESSION_KEY);
+    session = null; drop(SESSION_KEY); drop(WHO_KEY); drop(PICK_KEY);
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
   }
 
@@ -501,6 +582,9 @@
     logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, changeEmail: changeEmail,
     isRecovery: function () { return recovery; },
     signOut: signOut, getUser: getUser,
+    who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,
+    students: students, addStudent: addStudent, updateStudent: updateStudent, deleteStudent: deleteStudent,
+    hasPin: hasPin, checkPin: checkPin, setPin: setPin,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
     cartThumb: cartThumb, cartHref: cartHref,

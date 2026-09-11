@@ -45,8 +45,8 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <title>3rd Grade Spelling Flashcards | NexStudents</title>
 <meta name="description" content="Cut-out 3rd grade spelling flashcards, a sheet a week. Ten words, a bonus word, and a card naming the week.">
-<link rel="stylesheet" href="/assets/ns.css?v=11df0c7e">
-<link rel="stylesheet" href="/assets/worksheet.css?v=11df0c7e">
+<link rel="stylesheet" href="/assets/ns.css?v=2a62a3f3">
+<link rel="stylesheet" href="/assets/worksheet.css?v=2a62a3f3">
 </head>
 <body>
 
@@ -464,19 +464,59 @@ function adFrame(H,title,up,view){
   if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
   H.body.scrollTop=0;
 }
+var AD_AV=["blue","green","teal","purple","orange","pink"];
+var AD_GRADES=["K","1","2","3","4","5","6","7","8"];
+var adKids=null,adPin=null;
+var AD_LOCK="<svg class='ad-lock' viewBox='0 0 20 20' width='11' height='11' aria-hidden='true' fill='none' "+
+  "stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>"+
+  "<rect x='4' y='9' width='12' height='8' rx='1.6'/><path d='M7 9V6.5a3 3 0 0 1 6 0V9'/></svg>";
+function adKid(id){ return (adKids||[]).filter(function(k){ return k.id===id; })[0]||null; }
+var AD_PENDING={pending:true};
+function adActive(){
+  var w=window.NSAccount?NSAccount.who():"parent";
+  if(w==="parent") return null;
+  if(adKids===null) return AD_PENDING;
+  return adKid(w);
+}
+function adAv(name,av){
+  return "<i class='av-"+adEsc(av||"blue")+"' aria-hidden='true'>"+adEsc(String(name||"?").charAt(0).toUpperCase())+"</i>";
+}
+function adMe(){
+  var md=(adUser&&adUser.user_metadata)||{};
+  return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
+}
+function adStrip(kid){
+  var me=adMe();
+  return "<div class='ad-pro'>"+
+    "<button class='ad-pro-i"+(kid?"":" is-me")+"' type='button' data-who='parent' aria-label='"+
+      adEsc(me)+(adPin?", locked with a PIN":"")+"'><i aria-hidden='true'>"+adEsc(me.charAt(0).toUpperCase())+"</i>"+
+      "<b>"+(adPin?AD_LOCK:"")+adEsc(me)+"</b></button>"+
+    (adKids||[]).map(function(k){
+      return "<button class='ad-pro-i"+(kid&&kid.id===k.id?" is-me":"")+"' type='button' data-who='"+adEsc(k.id)+"'>"+
+        adAv(k.name,k.avatar)+"<b>"+adEsc(k.name)+"</b></button>";
+    }).join("")+
+    (kid?"":"<button class='ad-pro-i is-add' type='button' data-go='add'><i aria-hidden='true'>+</i><b>Add Profile</b></button>")+
+    "</div>";
+}
 function adMain(H){
   adFrame(H,"Account",null,"main");
+  var kid=adActive();
+  if(kid===AD_PENDING){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  if(kid){
+    H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(kid.name)+"</h3></div>"+adStrip(kid)+
+      "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
+      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(adPin?" and enter your PIN":"")+" to get back to the account.</p>";
+    if(typeof nsPaintMode==="function") nsPaintMode();
+    return;
+  }
   var md=(adUser&&adUser.user_metadata)||{};
   var last=adOrders&&adOrders.length?"Last order "+(adOrders[0].no!=null?"#"+adOrders[0].no+" ":"")+"is completed":
            (adOrders?"No orders yet":"Loading…");
-  
-  var who=md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
+  var n=adKids?adKids.length:-1;
+  var kidsLine=n<0?"Loading…":n===0?"Add a profile for each student":n+" student profile"+(n===1?"":"s");
   H.body.innerHTML="<div class='ad-hi'><h3>"+(md.first_name?"Hi, "+adEsc(md.first_name):"Hi there")+"</h3></div>"+
-    "<div class='ad-pro'>"+
-      "<span class='ad-pro-i is-me'><i aria-hidden='true'>"+adEsc(who.charAt(0).toUpperCase())+"</i><b>"+adEsc(who)+"</b></span>"+
-      "<button class='ad-pro-i is-add' type='button' data-go='profiles'><i aria-hidden='true'>+</i><b>Add Profile</b></button>"+
-    "</div>"+
-    "<button class='ad-row' type='button' data-go='profiles'><b>Manage Profiles</b><span>Student profiles, coming soon</span></button>"+
+    adStrip(null)+
+    "<button class='ad-row' type='button' data-go='profiles'><b>Manage Profiles</b><span>"+adEsc(kidsLine)+"</span></button>"+
     "<button class='ad-row' type='button' data-go='orders'><b>Orders</b><span>"+adEsc(last)+"</span></button>"+
     "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
     "<button class='ad-row' type='button' data-go='account'><b>Account</b><span>"+
@@ -484,11 +524,183 @@ function adMain(H){
     "<button class='ad-signout' type='button' data-out>Sign Out</button>";
   if(typeof nsPaintMode==="function") nsPaintMode();
 }
+function adSwitch(H,id){
+  var cur=NSAccount.who();
+  if(id===cur) return;
+  if(id==="parent"){
+    if(adPin) return adPinView(H,"unlock");
+    NSAccount.setWho("parent"); return adMain(H);
+  }
+  NSAccount.setWho(id); adMain(H);
+}
 function adProfiles(H){
   adFrame(H,"Manage Profiles",adMain,"profiles");
-  H.body.innerHTML="<p class='ad-empty'>Student profiles are on the way. Each student in your "+
-    "home will get their own profile under this account, so their lessons and progress stay "+
-    "separate, with a parent PIN for the grown-up settings.</p>";
+  if(adKids===null){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  H.body.innerHTML=
+    (adKids.length?"":"<p class='ad-empty'>Give each student their own profile, so their lessons and progress stay separate.</p>")+
+    adKids.map(function(k){
+      return "<button class='ad-ord ad-kidrow' type='button' data-go='edit' data-id='"+adEsc(k.id)+"'>"+adAv(k.name,k.avatar)+
+        "<span class='ad-ord-t'><b>"+adEsc(k.name)+"</b><span>"+(k.grade?(k.grade==="K"?"Kindergarten":"Grade "+adEsc(k.grade)):"No grade set")+"</span></span>"+
+        "<span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>";
+    }).join("")+
+    "<button class='ad-ord ad-kidrow is-add' type='button' data-go='add'><i aria-hidden='true'>+</i>"+
+      "<span class='ad-ord-t'><b>Add Profile</b></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
+    "<p class='ad-cap'>Parent/Teacher PIN</p>"+
+    "<button class='ad-kv ad-go' type='button' data-go='pin'><span>PIN</span><span class='ad-dim'>"+
+      (adPin?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
+    "<p class='ad-note'>Students need the PIN to get back to your profile, so Orders, Account and these settings stay yours.</p>";
+}
+function adEdit(H,kid){
+  adFrame(H,kid?"Edit Profile":"Add Profile",adProfiles,"edit");
+  var f={name:kid?kid.name:"",grade:kid?kid.grade||"":"",avatar:kid?kid.avatar||"blue":AD_AV[(adKids||[]).length%AD_AV.length]};
+  H.body.innerHTML=
+    "<div class='ad-hi ad-edit-av'>"+adAv(f.name||"?",f.avatar)+"</div>"+
+    "<p class='ad-cap'>Name</p>"+
+    "<label class='ad-kv'><span>Name</span><input class='ad-in' data-f='name' maxlength='30' autocomplete='off' value='"+adEsc(f.name)+"'></label>"+
+    "<p class='ad-cap'>Grade</p>"+
+    "<div class='ad-chips' role='group' aria-label='Grade'>"+AD_GRADES.map(function(g){
+      return "<button type='button' data-grade='"+g+"' aria-pressed='"+(f.grade===g)+"'>"+g+"</button>";
+    }).join("")+"</div>"+
+    "<p class='ad-cap'>Color</p>"+
+    "<div class='ad-sw' role='group' aria-label='Profile color'>"+AD_AV.map(function(a){
+      return "<button type='button' class='av-"+a+"' data-av='"+a+"' aria-label='"+a+"' aria-pressed='"+(f.avatar===a)+"'></button>";
+    }).join("")+"</div>"+
+    "<p class='ad-msg'></p>"+
+    (kid?"<button class='ad-signout ad-del' type='button' data-del>Delete Profile</button>":"");
+  var q=function(s){ return H.body.querySelector(s); };
+  var msg=q(".ad-msg"),nameIn=q("[data-f=name]"),big=q(".ad-edit-av");
+  function paintBig(){ big.innerHTML=adAv(nameIn.value.trim()||"?",f.avatar); }
+  function dirty(){ if(H.save) return; H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } }
+  nameIn.addEventListener("input",function(){ paintBig(); dirty(); });
+  nameIn.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); if(H.save) H.save(); } });
+  H.body.querySelectorAll("[data-grade]").forEach(function(b){
+    b.onclick=function(){
+      var g=b.getAttribute("data-grade"); f.grade=f.grade===g?"":g;
+      H.body.querySelectorAll("[data-grade]").forEach(function(x){ x.setAttribute("aria-pressed",x.getAttribute("data-grade")===f.grade); });
+      dirty();
+    };
+  });
+  H.body.querySelectorAll("[data-av]").forEach(function(b){
+    b.onclick=function(){
+      f.avatar=b.getAttribute("data-av");
+      H.body.querySelectorAll("[data-av]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
+      paintBig(); dirty();
+    };
+  });
+  var busy=false;
+  var doSave=function(){
+    if(busy) return;
+    var name=nameIn.value.trim();
+    if(!name){ msg.textContent="Give the profile a name."; nameIn.focus(); return; }
+    busy=true; msg.textContent="Saving…";
+    var job=kid?NSAccount.updateStudent(kid.id,{name:name,grade:f.grade,avatar:f.avatar})
+               :NSAccount.addStudent({name:name,grade:f.grade,avatar:f.avatar});
+    job.then(function(row){
+      busy=false;
+      if(!row) throw new Error("Could not save that profile.");
+      if(kid) adKids=adKids.map(function(k){ return k.id===row.id?row:k; });
+      else adKids=(adKids||[]).concat([row]);
+      nsWhoIcon();
+      if(!kid&&!adPin) adPinView(H,"first",{name:row.name});
+      else adProfiles(H);
+    }).catch(function(e){ busy=false; msg.textContent=e.message||"Could not save that profile."; });
+  };
+  if(!kid){ H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } nameIn.focus(); }
+  var del=q("[data-del]"),armed=false;
+  if(del) del.onclick=function(){
+    if(!armed){ armed=true; del.textContent="Tap again to delete "+kid.name+" and their progress"; del.classList.add("is-armed"); return; }
+    del.textContent="Deleting…";
+    NSAccount.deleteStudent(kid.id).then(function(){
+      adKids=adKids.filter(function(k){ return k.id!==kid.id; });
+      nsWhoIcon(); adProfiles(H);
+    }).catch(function(e){ armed=false; del.classList.remove("is-armed"); del.textContent="Delete Profile"; msg.textContent=e.message; });
+  };
+}
+function adPinView(H,mode,ctx){
+  ctx=ctx||{};
+  var up=mode==="unlock"?adMain:adProfiles;
+  var steps=mode==="unlock"?["check"]:(mode==="change"&&adPin?["old","new","again"]:["new","again"]);
+  var i=0,vals={};
+  var WORDS={
+    check:"Enter your Parent/Teacher PIN to open the account.",
+    old:"Enter your current PIN.",
+    "new":mode==="first"?"Set a 4-number PIN. "+(ctx.name||"Your student")+" will need it to get back to your profile.":"Pick a new 4-number PIN.",
+    again:"Type the same PIN again."
+  };
+  function draw(note){
+    adFrame(H,mode==="unlock"?"Enter PIN":"Parent/Teacher PIN",up,"pin");
+    H.body.innerHTML="<p class='ad-empty ad-mid'>"+adEsc(WORDS[steps[i]])+"</p>"+
+      "<div class='ad-pinbox'><span></span><span></span><span></span><span></span>"+
+      "<input type='password' inputmode='numeric' pattern='[0-9]*' maxlength='4' autocomplete='off' aria-label='PIN'></div>"+
+      "<p class='ad-msg'>"+adEsc(note||"")+"</p>"+
+      (mode==="unlock"||steps[i]==="old"?"<button class='ad-link' type='button' data-forgot>Forgot PIN?</button>":"")+
+      (mode==="first"?"<button class='ad-link' type='button' data-skip>Not Now</button>":"");
+    var box=H.body.querySelector(".ad-pinbox"),inp=box.querySelector("input"),
+        dots=box.querySelectorAll("span"),msg=H.body.querySelector(".ad-msg");
+    function paint(){ dots.forEach(function(d,j){ d.classList.toggle("is-on",j<inp.value.length); d.classList.toggle("is-cur",j===inp.value.length); }); }
+    inp.addEventListener("input",function(){
+      inp.value=inp.value.replace(/[^0-9]/g,"").slice(0,4); paint();
+      if(inp.value.length===4) done(inp.value);
+    });
+    function wrong(t){ inp.value=""; paint(); msg.textContent=t; box.classList.remove("is-shake"); void box.offsetWidth; box.classList.add("is-shake"); inp.focus(); }
+    function done(v){
+      var step=steps[i];
+      if(step==="check"){
+        inp.disabled=true; msg.textContent="Checking…";
+        NSAccount.checkPin(v).then(function(ok){
+          inp.disabled=false;
+          if(ok===true){ NSAccount.setWho("parent"); nsWhoIcon(); adMain(H); }
+          else wrong("That PIN isn't right. Try again.");
+        }).catch(function(e){ inp.disabled=false; wrong(e.message); });
+        return;
+      }
+      if(step==="again"&&v!==vals["new"]){ i=steps.indexOf("new"); vals={old:vals.old}; draw("Those didn't match. Start the new PIN again."); return; }
+      vals[step]=v;
+      if(i<steps.length-1){ i++; draw(); return; }
+      inp.disabled=true; msg.textContent="Saving…";
+      NSAccount.setPin(vals["new"],vals.old==null?null:vals.old).then(function(){
+        adPin=true; adProfiles(H);
+      }).catch(function(e){
+        inp.disabled=false;
+        if(steps[0]==="old"){ i=0; vals={}; draw(e.message); } else wrong(e.message);
+      });
+    }
+    paint(); inp.focus();
+    var fg=H.body.querySelector("[data-forgot]"); if(fg) fg.onclick=function(){ adForgotPin(H); };
+    var sk=H.body.querySelector("[data-skip]"); if(sk) sk.onclick=function(){ adProfiles(H); };
+  }
+  draw();
+}
+function adForgotPin(H){
+  adFrame(H,"Forgot PIN",adMain,"pin");
+  var em=adUser&&adUser.email||"";
+  H.body.innerHTML="<p class='ad-empty ad-mid'>Sign in with your account password to pick a new PIN.</p>"+
+    "<div class='ad-kv'><span>Email</span><span>"+adEsc(em)+"</span></div>"+
+    "<label class='ad-kv'><span>Password</span><input class='ad-in' type='password' data-f='pw' autocomplete='current-password'></label>"+
+    "<p class='ad-msg'></p><button class='ad-link' type='button' data-go-pw>Continue</button>";
+  var pw=H.body.querySelector("[data-f=pw]"),msg=H.body.querySelector(".ad-msg");
+  function go(){
+    if(!pw.value){ msg.textContent="Type your password."; pw.focus(); return; }
+    msg.textContent="Checking…";
+    NSAccount.logIn(em,pw.value).then(function(){
+      NSAccount.pickerShown(); nsWhoIcon();
+      adPinView(H,"reset");
+    }).catch(function(e){ msg.textContent=e.message||"That password isn't right."; });
+  }
+  H.body.querySelector("[data-go-pw]").onclick=go;
+  pw.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); go(); } });
+  pw.focus();
+}
+var AD_ICON=acctLink?acctLink.innerHTML:"";
+function nsWhoIcon(){
+  if(!acctLink||!window.NSAccount) return;
+  var k=NSAccount.isSignedIn()?adActive():null;
+  if(k&&k!==AD_PENDING){
+    acctLink.innerHTML="<span class='nv-av av-"+adEsc(k.avatar||"blue")+"' aria-hidden='true'>"+adEsc(k.name.charAt(0).toUpperCase())+"</span>";
+    acctLink.setAttribute("aria-label","Account, "+k.name);
+  } else if(acctLink.innerHTML!==AD_ICON){
+    acctLink.innerHTML=AD_ICON; acctLink.setAttribute("aria-label","Account");
+  }
 }
 function adSettings(H){
   adFrame(H,"Settings",adMain,"settings");
@@ -621,14 +833,61 @@ function adProfile(H){
 function adRefresh(){
   adHosts.forEach(function(H){
     if(H.view==="main") adMain(H); else if(H.view==="orders") adList(H);
+    else if(H.view==="profiles") adProfiles(H);
   });
 }
 function adLoad(){
   if(adLoading) return; adLoading=true;
-  NSAccount.getUser().then(function(u){ adUser=u; adRefresh(); }).catch(function(){});
-  NSAccount.myDownloads().then(function(rows){ adOrders=adGroup(rows||[]); adRefresh(); })
-    .catch(function(){ adOrders=[]; adRefresh(); })
-    .then(function(){ adLoading=false; });
+  var a=NSAccount.getUser().then(function(u){ adUser=u; adRefresh(); }).catch(function(){});
+  var b=NSAccount.myDownloads().then(function(rows){ adOrders=adGroup(rows||[]); adRefresh(); })
+    .catch(function(){ adOrders=[]; adRefresh(); });
+  var c=NSAccount.students().then(function(k){ adKids=k||[]; adRefresh(); nsWhoIcon(); })
+    .catch(function(){ adKids=[]; adRefresh(); nsWhoIcon(); });
+  var d=NSAccount.hasPin().then(function(p){ adPin=p===true; adRefresh(); })
+    .catch(function(){ adPin=false; });
+  Promise.all([a,b,c,d]).then(function(){ adLoading=false; });
+}
+function nsWhoPicker(){
+  if(!window.NSAccount||!NSAccount.wantsPicker()) return;
+  NSAccount.pickerShown();
+  Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.hasPin().catch(function(){ return false; })]).then(function(r){
+    var kids=r[1]||[];
+    if(!kids.length) return;
+    adUser=adUser||r[0]; adKids=kids; adPin=r[2]===true;
+    var me=adMe();
+    var o=document.createElement("div");
+    o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
+    o.setAttribute("aria-labelledby","whopH");
+    o.innerHTML="<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
+      kids.map(function(k){
+        return "<button type='button' class='whop-i' data-who='"+adEsc(k.id)+"'>"+adAv(k.name,k.avatar)+"<b>"+adEsc(k.name)+"</b></button>";
+      }).join("")+
+      "<button type='button' class='whop-i is-parent' data-who='parent'><i aria-hidden='true'>"+adEsc(me.charAt(0).toUpperCase())+"</i>"+
+        "<b>"+adEsc(me)+"</b></button>"+
+      "</div><button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
+    document.body.appendChild(o);
+    nsLockScroll(true);
+    requestAnimationFrame(function(){ o.classList.add("is-in"); });
+    function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
+    o.addEventListener("click",function(e){
+      var b=e.target.closest("[data-who]");
+      if(b){
+        var id=b.getAttribute("data-who");
+        NSAccount.setWho(id); close();
+        if(id!=="parent") adOpen(false); else if(adD) adMain(adD);
+        return;
+      }
+      if(e.target.closest("[data-manage]")){
+        NSAccount.setWho("parent"); close();
+        if(adD){ adProfiles(adD); adLoad(); adOpen(true); }
+      }
+    });
+    addEventListener("keydown",function esc(e){
+      if(e.key!=="Escape"||!o.isConnected) return;
+      removeEventListener("keydown",esc); close();
+    });
+    var first=o.querySelector(".whop-i"); if(first) first.focus();
+  }).catch(function(){});
 }
 function adWire(H){
   adHosts.push(H);
@@ -636,10 +895,16 @@ function adWire(H){
   if(H.x) H.x.onclick=function(){ if(H.save) H.save(); else if(H===adD) adOpen(false); };
   H.body.addEventListener("click",function(e){
     if(e.target.closest("[data-out]")){ NSAccount.signOut(); location.reload(); return; }
+    var w=e.target.closest("[data-who]");
+    if(w){ adSwitch(H,w.getAttribute("data-who")); nsWhoIcon(); return; }
     var b=e.target.closest("[data-go]"); if(!b) return;
     var g=b.getAttribute("data-go");
+    if(g!=="settings"&&adActive()) return adMain(H);
     if(g==="orders") adList(H);
     else if(g==="profiles") adProfiles(H);
+    else if(g==="add") adEdit(H,null);
+    else if(g==="edit") adEdit(H,adKid(b.getAttribute("data-id")));
+    else if(g==="pin") adPinView(H,"change");
     else if(g==="settings") adSettings(H);
     else if(g==="account") adProfile(H);
     else if(g==="order") adOrder(H,+b.getAttribute("data-i"));
@@ -665,6 +930,12 @@ if(adrawer&&acctLink){
   addEventListener("keydown",function(e){
     if(e.key==="Escape"&&document.body.classList.contains("acct-open")) adOpen(false);
   });
+}
+if(window.NSAccount&&NSAccount.isSignedIn()){
+  nsWhoPicker();
+  if(NSAccount.who()!=="parent"&&adKids===null){
+    NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; nsWhoIcon(); }).catch(function(){});
+  }
 }
 })();
 </script>
