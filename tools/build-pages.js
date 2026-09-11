@@ -976,8 +976,12 @@ const peekScript = `<script>
 
     lock();
     dlg.showModal();
-    /* showModal can still nudge the scroll when it moves focus. Put it back. */
-    window.scrollTo(0, keptY);
+    /* showModal can still nudge the scroll when it moves focus. Put it back.
+       🚨 behavior:"instant" IS REQUIRED. ns.css sets scroll-behavior:smooth on
+       <html>, so a plain scrollTo ANIMATES back over ~300ms - which is exactly the
+       moving page Paul reported, only slower. Measured 659 -> 669 -> 687 across one
+       open and close before this. */
+    window.scrollTo({ top: keptY, left: 0, behavior: "instant" });
   }
 
   /* 🚨 THE PAGE JUMPED TO THE TOP WHEN THE WINDOW OPENED. Paul, 2026-09-11:
@@ -1004,7 +1008,7 @@ const peekScript = `<script>
   function unlock(){
     document.documentElement.style.overflow = "";
     document.documentElement.style.paddingRight = keptPad;
-    window.scrollTo(0, keptY);
+    window.scrollTo({ top: keptY, left: 0, behavior: "instant" });
   }
   /* One place to unlock: the close EVENT fires for the x, the backdrop and Esc
      alike. Unlocking beside each close() would miss Esc, which is native. */
