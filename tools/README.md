@@ -24,9 +24,23 @@ node tools/build-integers.js .
 node tools/build-pages.js .
 node tools/build-sitemap.js .
 
+node tools/split-lesson-engine.js       # THEN THESE TWO, IN THIS ORDER
+node tools/extract-lesson-assets.js
+
 node tools/check-nav-css.js .    # the shared nav is styled in BOTH stylesheets
 node tools/check-links.js .      # LAST OF ALL
 ```
+
+🚨 **THE TWO POST-STEPS ARE NOT OPTIONAL AND WERE MISSING FROM THIS LIST.**
+`build-lessons.js` writes every lesson page with the whole engine inlined.
+`split-lesson-engine.js` lifts the engine out per subject and
+`extract-lesson-assets.js` lifts out whatever is still byte-identical across
+pages. Skip them and the build "succeeds" while twelve lesson pages grow by
+~4,500 lines each — 2,050 KB of pages instead of 559 KB. Found 2026-09-11, when
+a rebuild for the history covers produced a 54,000-line diff out of a 15-line
+change. **Order matters: split first, extract second.** Extract only pulls out
+blocks shared by 2+ pages, and until the engine is split the data and the engine
+sit in one script that is unique to each page, so extract finds nothing.
 
 Order matters only in that `build-pages.js` reads `worksheets.js` for the
 shelf cards, so run it last.

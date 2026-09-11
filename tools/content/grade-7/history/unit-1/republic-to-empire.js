@@ -14,6 +14,12 @@ module.exports = {
      registered twice and the two could disagree. Worksheets never had that
      problem because their cards were always derived from worksheets.js. */
   shelf: { grades: [7], subject: "History",
+    /* Paul's ChatGPT-composed cover, made 2026-09-11, square at 1254px so it
+       also serves as the og:image (ROADMAP 54 asks for covers at 1200px+).
+       All ten Unit 1 covers came in one batch; the source PNGs live in his
+       DesktopSchool Lessons WorksheetsHistory Worksheetsth Grade Unit 1
+       Thumbnails folder. 🚨 The art is Paul's - do not restyle or regenerate it. */
+    thumb: true,
     blurb: "Republic to empire, read aloud, then five questions hidden in the text.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",

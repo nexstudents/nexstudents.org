@@ -40,6 +40,13 @@
    SHAPE
      { n, grade, title, items: [ { label, title, leif, mcdougal, kind, slug } ] }
      kind: "lesson"  a slot on the shelf   ·   "review"  a unit review
+     cover: an OPTIONAL parked thumb for an item that is NOT built yet. Paul made
+       all ten Unit 1 covers on 2026-09-11, eight of them ahead of their lessons,
+       exactly as the science Unit 1 Review cover landed on 2026-09-01.
+       🚨 A COVER IS NOT A LESSON. `slug` stays null, so the pager still renders a
+       slot, and a slot carries no <a> → [[feedback-never-assign-an-unbuilt-lesson]].
+       ⚠️ When the lesson is built: give it a `slug`, drop `cover`, and put
+       `thumb: true` on the lesson file - the thumb.jpg is already in that folder.
    ───────────────────────────────────────────────────────────────────────── */
 "use strict";
 
@@ -73,20 +80,28 @@ const WORLD = {
           leif: "U1 L2: Roman Government and Citizenship", mcdougal: "Ch2 (no matching section)",
           slug: "history/roman-government" },
         { label: "1-3", title: "Roads, Bridges, and the Roman Army", kind: "lesson",
+          cover: "/lessons/history/roads-and-the-roman-army/thumb.jpg",
           leif: "U1 L3: Engineering, Roads, and Military Power", mcdougal: "Ch2 §1" },
         { label: "1-4", title: "Conquest, Provinces, and City Life", kind: "lesson",
+          cover: "/lessons/history/conquest-and-city-life/thumb.jpg",
           leif: "U1 L4: Conquest, Provinces, and Urban Life", mcdougal: "Ch2 §1" },
         { label: "1-5", title: "Class, Slavery, and Daily Life in Rome", kind: "lesson",
+          cover: "/lessons/history/class-and-daily-life/thumb.jpg",
           leif: "U1 L5: Social Class, Slavery, and Daily Life", mcdougal: "Ch2 §1" },
         { label: "1-6", title: "Judea Under Roman Rule", kind: "lesson",
+          cover: "/lessons/history/judea-under-rome/thumb.jpg",
           leif: "U1 L6: Judea Under the Roman Order", mcdougal: null },
         { label: "1-7", title: "Jesus and the First Christians", kind: "lesson",
+          cover: "/lessons/history/jesus-and-the-first-christians/thumb.jpg",
           leif: "U1 L7: Jesus and the Early Church", mcdougal: null },
         { label: "1-8", title: "Paul, Persecution, and a Church That Spread", kind: "lesson",
+          cover: "/lessons/history/paul-and-the-early-church/thumb.jpg",
           leif: "U1 L8: Paul, Persecution, and the Early Church", mcdougal: null },
         { label: "1-9", title: "Crisis, Reform, and the Fall of the West", kind: "lesson",
+          cover: "/lessons/history/fall-of-the-west/thumb.jpg",
           leif: "U1 L9: Crisis and Reform in the Late Empire", mcdougal: "Ch2 §2" },
         { label: "1-10", title: "Unit 1 Review: Rome and the Early Church", kind: "review",
+          cover: "/lessons/history/unit-1-review/thumb.jpg",
           leif: "U1 L10: Review of Rome and Early Christianity", mcdougal: null },
       ],
     },

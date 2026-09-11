@@ -258,14 +258,33 @@ const gradeGrid = () => {
 /* The lessons named on the booklet's contents page but not built yet. Order is
    the booklet's order, so the shelf reads as the unit does. */
 const PLANNED = [
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 3",  title: "Engineering, Roads, and Military Power" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 4",  title: "Conquest, Provinces, and Daily Life" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 5",  title: "Social Class, Slavery, and Daily Life" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 6",  title: "Judea Under Rome" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 7",  title: "Jesus and the Early Church" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 8",  title: "Paul, Persecution, and the Early Church" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 9",  title: "Crisis and Reform in the Late Empire" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 10", title: "Review of Rome and Early Christianity" },
+  /* 🚨 THE EIGHT UNIT 1 COVERS LANDED 2026-09-11, THE LESSONS DID NOT.
+     Paul made all ten in one batch. Two belong to built lessons and ride on
+     `shelf.thumb`; these eight are parked at /lessons/history/<slug>/thumb.jpg
+     the same way the science Unit 1 Review cover was on 2026-09-01. A slot
+     carries no <a>, so none of them can be clicked into a page that is not
+     there → [[feedback-never-assign-an-unbuilt-lesson]].
+     ⚠️ TITLES ARE OURS, off history-units.js, not Leif's wording - these lines
+     used to carry the booklet's headings and so disagreed with the art painted
+     on the covers. See the titles rule in BEHAVIOR.md.
+     ⚠️ WHEN ONE IS BUILT: delete its line here, give the lesson file
+     `thumb: true`, and keep the folder - the thumb.jpg is already in it. */
+  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 3",  title: "Roads, Bridges, and the Roman Army",
+    thumb: "/lessons/history/roads-and-the-roman-army/thumb.jpg" },
+  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 4",  title: "Conquest, Provinces, and City Life",
+    thumb: "/lessons/history/conquest-and-city-life/thumb.jpg" },
+  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 5",  title: "Class, Slavery, and Daily Life in Rome",
+    thumb: "/lessons/history/class-and-daily-life/thumb.jpg" },
+  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 6",  title: "Judea Under Roman Rule",
+    thumb: "/lessons/history/judea-under-rome/thumb.jpg" },
+  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 7",  title: "Jesus and the First Christians",
+    thumb: "/lessons/history/jesus-and-the-first-christians/thumb.jpg" },
+  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 8",  title: "Paul, Persecution, and a Church That Spread",
+    thumb: "/lessons/history/paul-and-the-early-church/thumb.jpg" },
+  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 9",  title: "Crisis, Reform, and the Fall of the West",
+    thumb: "/lessons/history/fall-of-the-west/thumb.jpg" },
+  { kind: "lesson", subject: "History", grade: 7, unit: "Unit 1 &middot; Lesson 10", title: "Unit 1 Review: Rome and the Early Church",
+    thumb: "/lessons/history/unit-1-review/thumb.jpg" },
   /* 🚨 SCIENCE UNIT 1 REVIEW — THE COVER EXISTS, THE LESSON DOES NOT.
      Paul drew it 2026-09-01 and asked for the file to be parked ahead of the
      content. It is a SLOT, not a card: `.is-slot` renders no <a>, so this
@@ -687,6 +706,8 @@ const historyPager = (course, grade) => course.units
       /* Ours or Coming Soon. Never Leif's wording, never McDougal's.
          Both live on the item as build notes and neither is rendered. */
       title: i.title || "Coming Soon", slug: i.slug || null,
+      /* A parked cover for an item with no page yet. See `cover` in history-units.js. */
+      thumb: i.cover || null,
     })),
   }))
   .filter((u) => u.items.length);
@@ -739,7 +760,7 @@ const unitPager = (shelfKey, units, note) => {
   const panels = units.map((u) => {
     const cards = u.items.map((it) => {
       const L = it.slug ? LESSONS.find((x) => x.href.indexOf("/" + it.slug + "/") !== -1) : null;
-      return L ? oneCard(L, it.label) : slotCard(it.label, it.title, "Not built yet.");
+      return L ? oneCard(L, it.label) : slotCard(it.label, it.title, "Not built yet.", it.thumb);
     }).join("\n        ");
     const built = u.items.filter((it) => it.slug).length;
     return `<section class="unitpanel" data-unit="${u.n}" data-built="${built}" data-total="${u.items.length}" hidden>
