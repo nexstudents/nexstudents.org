@@ -729,6 +729,28 @@ body.acct-open .adrawer{transform:none}
 .ad-bday .ad-in{flex:none;width:2.6em;margin:0;text-align:center;border-bottom:1px solid var(--ad-line)}
 .ad-bday .ad-yyyy{width:3.6em}
 .ad-chips.is-center{justify-content:center}
+/* My Profile (2026-09-11): header, About Me list, named color tiles. */
+.ad-me{display:flex;align-items:center;gap:16px;padding:22px 0 18px;border-bottom:1px solid var(--ad-line)}
+.ad-me>i{width:64px;height:64px;border-radius:10px;display:grid;place-items:center;flex:none;
+  font-style:normal;font-size:1.8rem;font-weight:700;color:#fff;background:#c62828}
+.ad-me>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ad-me b{font-size:1.15rem;font-weight:700}
+.ad-me span{font-size:.82rem;color:var(--ad-dim)}
+.ad-about{margin:6px 0 0;display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.ad-about dt{font-size:.74rem;color:var(--ad-dim);padding-top:10px}
+.ad-about dd{margin:2px 0 0;padding-bottom:10px;border-bottom:1px solid var(--ad-line);font-size:.9rem;
+  overflow-wrap:anywhere;white-space:pre-line}
+.ad-ta{display:block;width:100%;margin:8px 0 0;padding:10px;border:1px solid var(--ad-line);border-radius:6px;
+  resize:vertical;font:inherit;font-size:.9rem;line-height:1.45}
+.ad-ta:focus{outline:none;border-color:var(--ad-fg)}
+.ad-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:10px 0 4px}
+.ad-tiles button{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden;cursor:pointer;
+  border:1px solid var(--ad-line);border-radius:8px;background:none;color:var(--ad-fg);font:inherit;position:relative}
+.ad-tiles i{display:block;height:34px}
+.ad-tiles b{font-size:.74rem;font-weight:600;padding:6px 4px;text-align:center}
+.ad-tiles button[aria-pressed="true"]{border-color:var(--ad-fg);box-shadow:0 0 0 1px var(--ad-fg)}
+.ad-tiles button[aria-pressed="true"]::after{content:"\2713";position:absolute;top:4px;right:6px;
+  color:#fff;font-size:.8rem;font-weight:700}
 .ad-row[disabled]{opacity:.45;cursor:default}
 .ad-row[disabled]:hover b{text-decoration:none}
 .ad-pro-i i{transition:box-shadow .15s}

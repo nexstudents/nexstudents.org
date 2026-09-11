@@ -1084,7 +1084,11 @@ function adHostOf(root){
           up:null,view:"main",save:null};
 }
 
-function adEsc(s){ var d=document.createElement("div"); d.textContent=s==null?"":String(s); return d.innerHTML; }
+/* 🚨 QUOTES TOO. innerHTML escapes & < > but NOT quotes, and this lands inside
+   value='...' attributes: "I'm good at chess" or a last name like O'Brien cut
+   the attribute short and broke the box. Found 2026-09-11 writing About Me. */
+function adEsc(s){ var d=document.createElement("div"); d.textContent=s==null?"":String(s);
+  return d.innerHTML.replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
 function adDate(w,long){
   var d=new Date(w); if(isNaN(d)) return "";
   /* [] = the reader's own locale. */
@@ -1171,6 +1175,36 @@ function adMe(){
   return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
 }
 function adFull(){ return adOf("student").length>=AD_MAX.student&&adOf("parent").length>=AD_MAX.parent; }
+/* "7th Grade", "Kindergarten", or "" when no grade is set. */
+function adGradeWords(g){
+  if(!g) return "";
+  if(g==="K") return "Kindergarten";
+  var n=+g,s=n===1?"st":n===2?"nd":n===3?"rd":"th";
+  return n+s+" Grade";
+}
+/* 📅 THE SCHOOL YEAR IS WORKED OUT, NEVER TYPED. Paul, 2026-09-11: "it also
+   shows the school year which ours is 2026-2027." July onward is the next
+   year: Sept 2026 -> 2026-2027, Mar 2027 -> 2026-2027, Jul 2027 -> 2027-2028.
+   A typed year is one more thing on this site that goes stale in August. */
+function adSchoolYear(){
+  var d=new Date(),y=d.getFullYear(),start=d.getMonth()>=6?y:y-1;
+  return start+"-"+(start+1);
+}
+/* 📝 ABOUT ME, from the HomeschoolGrades student profile Paul walked through
+   (2026-09-11). Keys are fixed (migration 015); the labels are copy and can
+   change without one. "me" is the free-text box. */
+var AD_ABOUT=[["me","A little about me"],["color","Favorite color"],["food","Favorite food"],
+  ["animal","Favorite animal"],["subject","Favorite subject"],["game","Favorite game"],
+  ["grow_up","When I grow up I want to be"],["best_homeschool","Best thing about homeschooling"]];
+/* 🎨 NAMED COLOR TILES, like HG's Background Color: a real swatch, the name
+   under it, a tick on the chosen one. Replaced the small unlabeled squares,
+   which made a kid guess which was "Teal". */
+function adThemeTiles(cur){
+  return "<div class='ad-tiles' role='group' aria-label='Theme color'>"+AD_THEMES.map(function(t){
+    return "<button type='button' data-theme-k='"+t.k+"' aria-pressed='"+(cur===t.k)+"'>"+
+      "<i style='background:"+t.box+"' aria-hidden='true'></i><b>"+t.name+"</b></button>";
+  }).join("")+"</div>";
+}
 /* 🧒 THE PROFILE STRIP, like the top of Netflix's account menu (Paul,
    2026-09-10: "maybe at the top like add profile box"). Parents, then
    students, then the + square (parent side only, gone when both caps are
@@ -1222,6 +1256,7 @@ function adMain(H){
   if(!adParentSide(a)){
     var anyPin=adHasPin(null)||adOf("parent").some(function(p){ return adHasPin(p.id); });
     H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
+      "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me and your color</span></button>"+
       "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
       "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>";
     if(typeof nsPaintMode==="function") nsPaintMode();
@@ -1353,9 +1388,7 @@ function adEdit(H,row,kindIn){
       chips("grade",AD_GRADES.map(function(g){ return [g,g]; }),f.grade,"Grade level","is-center")
     :"")+
     "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc((adTheme(f.theme)||{}).name||"")+"</span></p>"+
-    "<div class='ad-sw' role='group' aria-label='Theme color'>"+AD_THEMES.map(function(t){
-      return "<button type='button' style='background:"+t.box+"' data-theme-k='"+t.k+"' aria-label='"+t.name+"' title='"+t.name+"' aria-pressed='"+(f.theme===t.k)+"'></button>";
-    }).join("")+"</div>"+
+    adThemeTiles(f.theme)+
     "<p class='ad-note'>Colors "+(f.name?adEsc(f.name)+"&#39;s":"their")+" profile box, the buttons and the menu bar while they&#39;re on.</p>"+
     (!isKid&&row?"<p class='ad-cap'>PIN</p><button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
       (adHasPin(row.id)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>":"")+
@@ -1600,6 +1633,75 @@ function nsWhoIcon(){
     acctLink.innerHTML=AD_ICON; acctLink.setAttribute("aria-label","Account");
   }
 }
+/* 👤 MY PROFILE - THE STUDENT'S OWN PAGE IN THE PANEL (2026-09-11). Modeled
+   on the HomeschoolGrades student profile Paul walked through: a header with
+   their box, name, grade and school year; About Me; Theme Color. Paul's call:
+   the STUDENT edits About Me and Theme Color; everything else is the
+   parent's (Manage Profiles). saveOwn() sends only those two fields.
+   ⚠️ The color saves the moment a tile is tapped, like HG's. It is a look,
+   not data, and the accent repaints at once so the choice is visible. */
+function adMyProfile(H){
+  var a=adActive();
+  if(!a||a===AD_PENDING||a.kind!=="student") return adMain(H);
+  adFrame(H,"My Profile",adMain,"myprofile");
+  var ab=a.about||{},filled=AD_ABOUT.filter(function(p){ return ab[p[0]]; }),gw=adGradeWords(a.grade);
+  H.body.innerHTML=
+    "<div class='ad-me'>"+adAv(a.name,a.theme)+"<div><b>"+adEsc(a.name)+"</b>"+
+      (gw?"<span>"+gw+"</span>":"")+"<span>School year "+adSchoolYear()+"</span></div></div>"+
+    "<p class='ad-cap'>About Me</p>"+
+    (filled.length?"<dl class='ad-about'>"+filled.map(function(p){
+      return "<dt>"+p[1]+"</dt><dd>"+adEsc(ab[p[0]])+"</dd>";
+    }).join("")+"</dl>":
+      "<p class='ad-note'>This part is all yours. Tell everyone a bit about you: what you like, what you&#39;re good at, what you want to be one day.</p>")+
+    "<button class='ad-link' type='button' data-about>"+(filled.length?"Edit My About Me":"Write My About Me")+"</button>"+
+    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc((adTheme(a.theme)||{}).name||"")+"</span></p>"+
+    "<p class='ad-note'>Your color for your box, the buttons and the menu bar. It only shows while you&#39;re on.</p>"+
+    adThemeTiles(a.theme)+
+    "<p class='ad-msg'></p>";
+  var msg=H.body.querySelector(".ad-msg");
+  H.body.querySelector("[data-about]").onclick=function(){ adAboutEdit(H,a); };
+  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
+    b.onclick=function(){
+      var k=b.getAttribute("data-theme-k"); if(k===a.theme) return;
+      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
+      H.body.querySelector("[data-tname]").textContent=(adTheme(k)||{}).name||"";
+      msg.textContent="Saving…";
+      NSAccount.saveOwn(a.id,{theme:k}).then(function(row){
+        if(!row) throw new Error("Could not save that.");
+        adKids=adKids.map(function(x){ return x.id===row.id?row:x; }); a=row;
+        H.body.querySelector(".ad-me i").outerHTML=adAv(row.name,row.theme);
+        nsWhoIcon(); msg.textContent="Saved.";
+      }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
+    };
+  });
+}
+/* ✏️ WRITING THE ABOUT ME. Every box is optional; an empty one is simply not
+   shown. SAVE in the header, the panel's rule: CLOSE until something changes. */
+function adAboutEdit(H,a){
+  adFrame(H,"About Me",adMyProfile,"about");
+  var ab=a.about||{};
+  H.body.innerHTML=AD_ABOUT.map(function(p){
+    /* adEsc() AT the attribute, not one line up: check-escape.js reads it there. */
+    return p[0]==="me"?
+      "<p class='ad-cap'>"+p[1]+"</p><textarea class='ad-in ad-ta' data-k='me' maxlength='600' rows='4'>"+adEsc(ab.me||"")+"</textarea>":
+      "<p class='ad-cap'>"+p[1]+"</p><input class='ad-in ad-box' data-k='"+p[0]+"' maxlength='60' autocomplete='off' value='"+adEsc(ab[p[0]]||"")+"'>";
+  }).join("")+"<p class='ad-msg'></p>";
+  var msg=H.body.querySelector(".ad-msg"),busy=false;
+  var doSave=function(){
+    if(busy) return; busy=true; msg.textContent="Saving…";
+    var out={};
+    H.body.querySelectorAll("[data-k]").forEach(function(i){ var v=i.value.trim(); if(v) out[i.getAttribute("data-k")]=v; });
+    NSAccount.saveOwn(a.id,{about:out}).then(function(row){
+      busy=false; if(!row) throw new Error("Could not save that.");
+      adKids=adKids.map(function(x){ return x.id===row.id?row:x; });
+      adMyProfile(H);
+    }).catch(function(e){ busy=false; msg.textContent=e.message||"Could not save that."; });
+  };
+  H.body.querySelectorAll("[data-k]").forEach(function(i){
+    i.addEventListener("input",function(){ if(H.save) return; H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } });
+  });
+  var first=H.body.querySelector("[data-k]"); if(first) first.focus();
+}
 /* ⚙️ SETTINGS. Night Mode today - the same data-mode-toggle switch as the
    drawer and the footer, so all three stay in step. */
 function adSettings(H){
@@ -1832,6 +1934,7 @@ function adWire(H){
     var g=b.getAttribute("data-go");
     /* 🚨 PARENT-SIDE VIEWS REFUSE A STUDENT. The student panel draws no row
        for them, but a stale view or a console click must not open one. */
+    if(g==="myprofile") return adMyProfile(H);
     if(g!=="settings"&&!adParentSide(adActive())) return adMain(H);
     if(g==="orders") adList(H);
     else if(g==="profiles") adProfiles(H);

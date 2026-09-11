@@ -278,13 +278,14 @@
     if (/profile limit: 10 students/.test(m)) return "An account can have up to 10 student profiles.";
     if (/profile limit: 2 parents/.test(m)) return "An account can have up to 2 parent profiles.";
     if (/birthday is in the future|students_birthday_ok/.test(m)) return "Check the birthday. It can't be in the future.";
+    if (/students_about_ok/.test(m)) return "That About Me is too long. Shorten an answer and try again.";
     return "";
   }
   /* 2026-09-11, migration 014: a profile row is a STUDENT or the SECOND PARENT
      (kind). The account holder is parent 1 and has no row. */
   /* `theme` is ONE of the eight lesson palettes and colours both the profile
      box and that profile's lessons. */
-  var STUDENT_COLS = "id,kind,name,grade,theme,birthday,gender,created_at";
+  var STUDENT_COLS = "id,kind,name,grade,theme,birthday,gender,about,created_at";
   function profileBody(f) {
     return { name: String(f.name || "").trim(), grade: f.grade || null, theme: f.theme || "ocean",
              birthday: f.birthday || null, gender: f.gender || null };
@@ -308,6 +309,15 @@
   function updateStudent(id, f) {
     return rest("PATCH", "/students?id=eq." + encodeURIComponent(id) + "&select=" + STUDENT_COLS, profileBody(f),
       "Could not save that profile.").then(function (d) { return d && d[0]; });
+  }
+  /* A student's OWN edits (migration 015): only the fields named here are
+     sent, so saving an About Me can never touch the parent-only settings. */
+  function saveOwn(id, f) {
+    var b = {};
+    if (f.about) b.about = f.about;
+    if (f.theme) b.theme = f.theme;
+    return rest("PATCH", "/students?id=eq." + encodeURIComponent(id) + "&select=" + STUDENT_COLS, b,
+      "Could not save that.").then(function (d) { return d && d[0]; });
   }
   /* 🚨 Deleting a profile deletes its progress too (on delete cascade). The
      panel asks twice before calling this. */
@@ -599,7 +609,7 @@
     isRecovery: function () { return recovery; },
     signOut: signOut, getUser: getUser,
     who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,
-    students: students, addStudent: addStudent, updateStudent: updateStudent, deleteStudent: deleteStudent,
+    students: students, addStudent: addStudent, updateStudent: updateStudent, deleteStudent: deleteStudent, saveOwn: saveOwn,
     pinMap: pinMap, checkPin: checkPin, setPin: setPin,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
