@@ -983,9 +983,10 @@ const peekScript = `<script>
        panel rather than show an empty grey square. */
     if (src) { img.src = src.getAttribute("src"); art.hidden = false; }
     else { img.removeAttribute("src"); art.hidden = true; }
-    /* The close sits ON the artwork and is white. With no artwork behind it that
-       is white on a light panel, so the class swaps it back to the text colour. */
-    dlg.classList.toggle("no-art", !src);
+    /* ❌ The no-art class was dropped 2026-09-11. The close used to be white,
+       sitting on the picture, and needed swapping when there was no picture. With
+       headroom above the art it is over the panel either way and takes --dim, which
+       reads on both themes - so there is nothing left to toggle. */
 
     eyeb.textContent = text(card, "em");
     ttl.textContent  = text(card, ".ctitle");

@@ -645,11 +645,15 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    copied from .drawer .x above — if that one changes, change this with it.
    ⚠️ It sits ON the artwork, so it carries a text-shadow rather than a plate.
    A circle behind it is exactly what was asked against. */
+/* ⚠️ IT SITS ON THE PANEL NOW, NOT ON THE ARTWORK. It was white with a text-shadow
+   because the picture used to run under it; with the headroom added above the art it
+   is over the panel, and white on the LIGHT theme.s panel is invisible. --dim reads
+   on both themes, which is also why the no-art special case is gone - there is only
+   one case now. */
 .peek .x{position:absolute;top:6px;right:10px;z-index:2;
-  background:none;border:0;color:#fff;font-size:26px;line-height:1;
-  cursor:pointer;padding:4px 8px;text-shadow:0 1px 6px rgba(0,0,0,.65)}
-.peek.no-art .x{color:var(--dim);text-shadow:none}
-@media(hover:hover){ .peek .x:hover{opacity:.78} }
+  background:none;border:0;color:var(--dim);font-size:26px;line-height:1;
+  cursor:pointer;padding:4px 8px}
+@media(hover:hover){ .peek .x:hover{color:var(--fg)} }
 .peek .x:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 
 /* Everything gets smaller on a phone; nothing gets dropped. The window carries the
