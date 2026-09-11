@@ -561,7 +561,13 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    because overriding position drops it. */
 .peek{position:fixed;inset:0;margin:auto;border:0;padding:0;background:var(--panel);color:var(--fg);
   border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.42);
-  width:min(400px,calc(100vw - 32px));max-width:none;
+  /* 🚨 NARROW ON PURPOSE. Paul, 2026-09-11: "you don't need to make it so wide. it
+     can be much smaller and still make the thumbnail square shape. the point is to
+     just still display the info without adjusting the card shape." The window's
+     width sets the artwork's size, so a wide window needs a tall square, which is
+     what forced the art to be capped and cropped in the first place. Narrow is what
+     lets the picture stay whole. */
+  width:min(330px,calc(100vw - 32px));max-width:none;
   /* 🚨 dvh, NOT vh, AND IT DOES NOT FILL THE SCREEN. Paul, 2026-09-11: "you are
      making this popup too large. it adds a scroll because I can't fit it it all on
      my phone. make it work for all mobile devices", then "it doesn't have to fill
@@ -583,13 +589,26 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    yield and scrolled the list instead; then both were 1, so they shrank together
    and the list still scrolled — measured 38px of overflow on a 375x553 phone and
    65px on a 320.
+   🚨 THE BOX IS SIZED FROM ITS HEIGHT, AND THAT IS WHAT KEEPS IT SQUARE. Paul,
+   2026-09-11: "you got the top of the thumbnail off for this new popup window."
+   He was right, and the cause was this rule: `width:100%` with a `max-height` cap
+   means that on any screen where the cap bites, the box is WIDER than it is tall —
+   no longer square — and `object-fit:cover` then eats the top and bottom of the
+   art. Every cover has its unit and lesson banner across the top, so that is the
+   first thing lost. Setting HEIGHT and letting `aspect-ratio` derive the width
+   keeps the box square at every size; it shrinks as a smaller square, centred, with
+   the panel showing either side.
+   ⚠️ `width:auto` is load-bearing. Any width here overrides aspect-ratio and the
+   crop comes straight back.
+   ⚠️ `contain`, not `cover`. With a square box and square art they are identical,
+   but contain cannot crop if either assumption ever slips.
    ⚠️ min-height:96px is the floor. Past that a picture stops being a picture, and
-   the body is allowed to scroll instead — a last resort, not the first to give.
-   ⚠️ object-fit:cover means shrinking CROPS rather than squashes Paul's art. */
-.peekart{flex:0 60 auto;width:100%;aspect-ratio:1/1;max-height:32dvh;min-height:96px;
+   the body is allowed to scroll instead — a last resort, not the first to give. */
+.peekart{flex:0 60 auto;aspect-ratio:1/1;height:min(300px,34dvh);width:auto;
+  max-width:100%;margin-inline:auto;min-height:96px;
   background:var(--panel-2);overflow:hidden}
 .peekart[hidden]{display:none}
-.peekart img{width:100%;height:100%;object-fit:cover;display:block}
+.peekart img{width:100%;height:100%;object-fit:contain;display:block}
 
 .peekbody{flex:0 1 auto;min-height:0;padding:17px 19px 17px;overflow-y:auto}
 .peekbody em{display:block;font-style:normal;font-size:.62rem;font-weight:700;
@@ -621,7 +640,7 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    same information it does on a desktop, which is the whole rule above. */
 @media(max-width:680px){
   .peek{max-height:min(560px,88dvh)}
-  .peekart{max-height:26dvh}
+  .peekart{height:min(250px,26dvh)}
   .peekbody{padding:14px 16px 14px}
   .peektitle{font-size:1.06rem;margin-bottom:6px}
   .peekblurb{font-size:.84rem;line-height:1.42;margin-bottom:10px}
@@ -632,9 +651,11 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 }
 /* A short screen — a small phone, or any phone in landscape. The art goes first,
    because a picture the reader has already seen on the card is worth less than the
-   list of what they are about to get. */
+   list of what they are about to get. It stays SQUARE as it goes, just smaller —
+   Paul, 2026-09-11: "I think you're just trying to stretch it through the screen
+   and you don't need to do that." Nothing here is sized to fill the viewport. */
 @media(max-height:620px){
-  .peekart{max-height:20dvh}
+  .peekart{height:min(180px,20dvh)}
   .peekbody{padding:12px 15px 12px}
   .peekblurb{margin-bottom:9px}
   .peekfoot{margin-top:10px;padding-top:9px}
