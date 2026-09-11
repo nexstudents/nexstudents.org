@@ -16,13 +16,16 @@
   "done": [],
   "needs": [
     {
-      "decision": "Test me: tap any option or type your own.",
+      "decision": "Test me: tap an option or type your own.",
       "title": "Proving the phone answer path works",
-      "note": "Whatever you pick gets written into review-queue.json on the PC, so I read it next session without you telling me. Tap one and it should say Saved.",
+      "note": "Whatever you pick is written into review-queue.json on the PC, so I read it next session without you telling me.",
       "options": [
         "Works",
         "Buttons too small",
         "Something else"
+      ],
+      "blocks": [
+        "Nothing - this one is just a test"
       ]
     }
   ]

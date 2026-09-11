@@ -57,6 +57,15 @@ function render(q) {
       <h3>${esc(n.decision || n.title)}</h3>
       ${n.title && n.decision ? `<p class="where">${esc(n.title)}</p>` : ''}
       ${n.note ? `<p class="note">${esc(n.note)}</p>` : ''}
+      ${/* 🚨 WHAT IS STUCK BEHIND THIS ANSWER. Paul, 2026-09-11: "so if you have a
+            question what to do about something I can actually see what still needs
+            done." The question on its own does not tell him the cost of leaving it.
+            "3 lessons parked" does, and it lets him triage: answer the one holding
+            up real work first and leave the rest for later. */
+        Array.isArray(n.blocks) && n.blocks.length
+          ? `<div class="blocks"><p class="blab">Waiting on this</p><ul>${
+              n.blocks.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`
+          : ''}
       <div class="opts">
         ${(n.options || []).map(o =>
             `<button type="button" class="opt" data-i="${i}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}
@@ -93,6 +102,12 @@ function render(q) {
   .q h3{margin:0 0 6px;font-size:1.1rem;letter-spacing:-.01em;line-height:1.3}
   .where{margin:0 0 8px;color:#98a1ab;font-size:.82rem}
   .note{margin:0 0 12px;color:#c8ced5;font-size:.9rem}
+  /* What is stuck behind the answer. Amber, because it is a cost, not a detail. */
+  .blocks{border-left:2px solid #facc15;padding:2px 0 2px 12px;margin:0 0 14px}
+  .blab{margin:0 0 3px;font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+    color:#facc15;font-weight:800}
+  .blocks ul{margin:0;padding:0}
+  .blocks li{border:0;padding:1px 0;color:#c8ced5;font-size:.86rem}
   /* 🚨 TAP TARGETS, NOT LINKS. He answers these on a phone, one-handed,
      often holding a baby. 44px minimum and full width when it wraps. */
   .opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
