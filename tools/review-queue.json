@@ -10,23 +10,9 @@
     "it just looks tidier. An observation about finished work goes in the",
     "ROADMAP, not in front of him."
   ],
-  "batch": "Nothing built yet — the queue is ready for the first batch",
+  "batch": "Nothing waiting — ready for the first lesson batch",
   "generated": "2026-09-11",
-  "budget": "Tooling only this session. No lessons built.",
+  "budget": "Tooling only this session. Every open question answered.",
   "done": [],
-  "needs": [
-    {
-      "decision": "What should Grade 7 English be called on its cards?",
-      "title": "Maths is now Math 7. English is the last one without a course name.",
-      "note": "History reads World History, science reads Life Science, maths now reads Math 7. Grade 7 English prints the bare U1-L1. The book is Houghton Mifflin English, which is a publisher title rather than a course name. Unit 1 is called The Sentence, so the units already name themselves - the course does not.",
-      "options": [
-        "English 7",
-        "Grammar & Writing",
-        "Language Arts 7",
-        "Leave it bare - the units name themselves"
-      ],
-      "kind": "page",
-      "href": "/grade-7/english/lessons/"
-    }
-  ]
+  "needs": []
 }

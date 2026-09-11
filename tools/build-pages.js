@@ -1548,7 +1548,12 @@ const COURSE_SHELVES = [
     units: () => historyPager(WORLD, 7) },  /* medieval onward */
   { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
   { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
-  { grade: 7, subject: "English", units: () => englishPager(GRADE7) },
+  /* Paul chose "English 7" on 2026-09-11. The book is Houghton Mifflin English,
+     which is a publisher title rather than a course name, so there was nothing to
+     take from it — and the units already name themselves ("The Sentence"), which
+     made leaving it bare a real option. He picked the plain one, matching Math 7. */
+  { grade: 7, subject: "English", course: "English 7",
+    units: () => englishPager(GRADE7) },
   /* Grade 7 maths, Glencoe Course 2 - 14 chapters, structure only for now. Paul,
      2026-09-03: "for now i just want the strcuture". */
   /* 🚨 "Math 7", NOT "Pre-Algebra". Paul picked it on 2026-09-11 after asking what
