@@ -6,7 +6,7 @@ module.exports = {
   id: "maths/estimation-using-patterns",
   slug: "estimation-using-patterns",
   title: "Estimation Strategy: Using Patterns",
-  unit: "Math &middot; U1-L3",
+  unit: "Math 7 &middot; U1-L3",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 3 },
   shelf: { grades: [7], subject: "Math",
     blurb: "One easy multiplication or division fact, stretched into an estimate for a much bigger one.",
@@ -16,7 +16,7 @@ module.exports = {
       "Ub Iwerks and the 14,400 pictures he drew for Steamboat Willie",
       "Twelve questions, from small facts to genuinely large numbers",
     ] },
-  eyebrow: ["Math", "U1-L3", "Tools for Problem Solving"],
+  eyebrow: ["Math 7", "U1-L3", "Tools for Problem Solving"],
   dek: "Once you know one small multiplication fact, patterns let you estimate huge ones in your head.",
 
   ground: {

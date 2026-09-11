@@ -16,17 +16,17 @@
   "done": [],
   "needs": [
     {
-      "decision": "What should Grade 7 maths and English be called on their cards?",
-      "title": "Every other shelf names its course; these two don't",
-      "note": "The book is Glencoe, Mathematics: Applications and Connections, COURSE 2 (1998). Course 2 is just Glencoe’s name for grade 7 and means nothing to a parent. It is NOT a pre-algebra book: one chapter of fourteen is An Introduction to Algebra, the rest is decimals, fractions, statistics, geometry, area, ratio and percent, probability, functions. Glencoe sold a separate Pre-Algebra title. Calling this Pre-Algebra would promise the algebra track and not deliver it.",
+      "decision": "What should Grade 7 English be called on its cards?",
+      "title": "Maths is now Math 7. English is the last one without a course name.",
+      "note": "History reads World History, science reads Life Science, maths now reads Math 7. Grade 7 English prints the bare U1-L1. The book is Houghton Mifflin English, which is a publisher title rather than a course name. Unit 1 is called The Sentence, so the units already name themselves - the course does not.",
       "options": [
-        "Math 7 (accurate, plain)",
-        "Middle School Math",
-        "Pre-Algebra (NOT what the book is)",
-        "Leave them bare"
+        "English 7",
+        "Grammar & Writing",
+        "Language Arts 7",
+        "Leave it bare - the units name themselves"
       ],
       "kind": "page",
-      "href": "/grade-7/maths/lessons/"
+      "href": "/grade-7/english/lessons/"
     }
   ]
 }

@@ -6,7 +6,7 @@ module.exports = {
   id: "maths/determine-reasonable-answers",
   slug: "determine-reasonable-answers",
   title: "Problem-Solving Strategy: Determine Reasonable Answers",
-  unit: "Math &middot; U1-L4",
+  unit: "Math 7 &middot; U1-L4",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 4 },
   shelf: { grades: [7], subject: "Math",
     blurb: "A calculator can be wrong. Estimating first is how you catch it.",
@@ -16,7 +16,7 @@ module.exports = {
       "A grocery trip where rounding decides how much cash to bring",
       "Twelve questions built to catch the same kind of mistake a calculator can't",
     ] },
-  eyebrow: ["Math", "U1-L4", "Tools for Problem Solving"],
+  eyebrow: ["Math 7", "U1-L4", "Tools for Problem Solving"],
   dek: "A calculator gives you an answer instantly. It won't tell you if that answer is wrong.",
 
   ground: {

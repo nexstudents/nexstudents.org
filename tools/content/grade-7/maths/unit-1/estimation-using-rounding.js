@@ -6,7 +6,7 @@ module.exports = {
   id: "maths/estimation-using-rounding",
   slug: "estimation-using-rounding",
   title: "Estimation Strategy: Using Rounding",
-  unit: "Math &middot; U1-L2",
+  unit: "Math 7 &middot; U1-L2",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 2 },
   shelf: { grades: [7], subject: "Math",
     blurb: "Rounding turns a messy sum into a fast, close-enough answer you can trust.",
@@ -16,7 +16,7 @@ module.exports = {
       "A grocery receipt checked for a cashier's mistake",
       "Twelve questions, including one straight off the book's own exercises",
     ] },
-  eyebrow: ["Math", "U1-L2", "Tools for Problem Solving"],
+  eyebrow: ["Math 7", "U1-L2", "Tools for Problem Solving"],
   dek: "You don't always need the exact answer. You need one close enough to plan with, and you need it fast.",
 
   ground: {

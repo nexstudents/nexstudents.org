@@ -1551,7 +1551,15 @@ const COURSE_SHELVES = [
   { grade: 7, subject: "English", units: () => englishPager(GRADE7) },
   /* Grade 7 maths, Glencoe Course 2 - 14 chapters, structure only for now. Paul,
      2026-09-03: "for now i just want the strcuture". */
-  { grade: 7, subject: "Math",   units: () => mathsPager(COURSE2) },
+  /* 🚨 "Math 7", NOT "Pre-Algebra". Paul picked it on 2026-09-11 after asking what
+     the book calls itself. Glencoe's own name is "Course 2", which means nothing to
+     a parent — and it is NOT a pre-algebra book: one chapter of fourteen is An
+     Introduction to Algebra, the rest is decimals, fractions, statistics, geometry,
+     area, ratio and percent, probability and functions. Glencoe sold a SEPARATE
+     Pre-Algebra title. Naming this one Pre-Algebra would promise the algebra track
+     and not deliver it, to the exact person who picks a course by its name. */
+  { grade: 7, subject: "Math",   course: "Math 7",
+    units: () => mathsPager(COURSE2) },
   /* Grade 7 science, Merrill Life Science 1994 — 28 chapters, 106 sections.
      Chapter 1 is the only complete one: all four of its sections are built, in
      Paul's own words. Added 2026-09-04, the day science stopped being the one
