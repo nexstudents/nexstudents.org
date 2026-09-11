@@ -1346,10 +1346,11 @@ function adEdit(H,row,kindIn){
       "</span></div>"+
       "<p class='ad-cap'>Male or Female <em class='ad-opt'>Optional</em></p>"+
       /* Centred - Paul, 2026-09-11: "that male and female choice if you can
-         center it." Only this row; grade and color stay left. */
+         center it", then "center also the grade level k-8". The color row
+         was not named and stays left. */
       chips("gender",[["male","Male"],["female","Female"]],f.gender,"Male or female","is-center")+
       "<p class='ad-cap'>Grade Level</p>"+
-      chips("grade",AD_GRADES.map(function(g){ return [g,g]; }),f.grade,"Grade level")
+      chips("grade",AD_GRADES.map(function(g){ return [g,g]; }),f.grade,"Grade level","is-center")
     :"")+
     "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc((adTheme(f.theme)||{}).name||"")+"</span></p>"+
     "<div class='ad-sw' role='group' aria-label='Theme color'>"+AD_THEMES.map(function(t){
@@ -1388,6 +1389,34 @@ function adEdit(H,row,kindIn){
       q("[data-tname]").textContent=(adTheme(f.theme)||{}).name||"";
       paintBig(); dirty();
     };
+  });
+  /* 🎂 THE BIRTHDAY BOXES MOVE ON THEIR OWN. Paul, 2026-09-11: "make it so it
+     tabs over automatically i have to click the next row just to put day and
+     year. then also backspace needs to remove each section."
+     - A box that is FULL moves to the next: 2 digits, or 1 digit that cannot
+       start a 2-digit value (month 2-9, day 4-9). A typed "/" also moves on.
+     - Backspace in an EMPTY box goes back one and removes its last digit, so
+       holding it down clears the whole date without a click. */
+  var BD=["mm","dd","yy"].map(function(k){ return q("[data-f="+k+"]"); }).filter(Boolean);
+  BD.forEach(function(inp,n){
+    var next=BD[n+1],prev=BD[n-1];
+    function full(v){
+      if(n===2) return false;
+      return v.length>=2||(v.length===1&&+v>(n===0?1:3));
+    }
+    inp.addEventListener("input",function(){
+      if(next&&full(inp.value)){ next.focus(); next.select(); }
+    });
+    inp.addEventListener("keydown",function(e){
+      if((e.key==="/"||e.key==="-"||e.key===".")&&next){ e.preventDefault(); if(inp.value) { next.focus(); next.select(); } return; }
+      if(e.key==="Backspace"&&!inp.value&&prev){
+        e.preventDefault();
+        prev.focus();
+        prev.value=prev.value.slice(0,-1);
+        prev.dispatchEvent(new Event("input",{bubbles:true}));
+        var L=prev.value.length; try{ prev.setSelectionRange(L,L); }catch(x){}
+      }
+    });
   });
   var pinRow=q("[data-pin]");
   if(pinRow) pinRow.onclick=function(){ adPinView(H,"change",{key:row.id,name:row.name}); };
