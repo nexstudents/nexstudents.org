@@ -550,9 +550,16 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    ⚠️ A <dialog> is display:none until it opens, so the layout goes under [open]
    rather than on the element. Setting it unconditionally makes a closed dialog
    take up space on the page.
-   ⚠️ position:relative is load-bearing: the × is absolutely positioned and
-   would otherwise hang off the viewport, not off the window. */
-.peek{position:relative;border:0;padding:0;background:var(--panel);color:var(--fg);
+   🚨 position:FIXED, NEVER relative. A modal <dialog> is position:fixed in the UA
+   sheet, which is what pins it to the VIEWPORT. It was set to relative here to give
+   the × something to hang off, and that put the window in normal page flow at the
+   end of <body> - so opening it from halfway down the page showed only its bottom
+   half with the artwork cut off above. Paul, 2026-09-11: "when I opened it while I
+   was down the page it stayed at the top and I only saw the bottom half."
+   A fixed element is a containing block for its absolute children too, so the ×
+   still hangs off the window. inset:0 + margin:auto is the UA centring, restated
+   because overriding position drops it. */
+.peek{position:fixed;inset:0;margin:auto;border:0;padding:0;background:var(--panel);color:var(--fg);
   border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.42);
   width:min(460px,calc(100vw - 32px));max-width:none;max-height:calc(100vh - 48px);
   overflow:hidden}
