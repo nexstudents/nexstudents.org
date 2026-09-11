@@ -208,6 +208,28 @@
     });
   }
 
+  /* CHANGE EMAIL (2026-09-10). Paul: "i cant change the email ... we can also
+     verify the email like on lizzie website." Supabase does not switch the
+     address here: it emails a confirm link (the NexStudents "email change"
+     template) and the account keeps the OLD address until that link is
+     pressed. The link lands on /account/, which opens the account panel.
+     ⚠️ With Supabase's "secure email change" on, the OLD address gets a link
+     too and both must be pressed. The panel's message says to check the inbox,
+     not which one, so it stays true either way. */
+  function changeEmail(email) {
+    return refreshIfNeeded().then(function (s) {
+      if (!s) throw new Error("Please sign in again.");
+      return fetch(AUTH + "/user?redirect_to=" + encodeURIComponent(location.origin + "/account/"),
+        { method: "PUT", headers: headers(true), body: JSON.stringify({ email: clean(email) }) })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (d) {
+            if (!r.ok) throw new Error(friendly(d, "Could not change the email."));
+            return d;
+          });
+        });
+    });
+  }
+
   function signOut() {
     session = null; drop(SESSION_KEY);
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
@@ -313,18 +335,25 @@
         throw new Error("Paid items need checkout: " +
                         paid.map(function (r) { return r.title; }).join(", "));
       }
+      /* ⚠️ ONE AT A TIME, NOT Promise.all. Migration 012 numbers orders with a
+         trigger: a free row joins the order its email opened a moment ago. Rows
+         written in parallel cannot see each other yet, so one cart would come
+         out as several order numbers. */
       return refreshIfNeeded().then(function () {
-        return Promise.all(items.map(function (slug) {
-          return fetch(REST + "/rpc/checkout_free", {
-            method: "POST", headers: headers(true),
-            body: JSON.stringify({ p_slug: slug, p_email: email })
-          }).then(function (r) {
-            if (!r.ok) return r.json().then(function (e) {
-              throw new Error(e.message || ("Could not check out " + slug));
-            });
-            return r.json();
+        var out = [];
+        return items.reduce(function (chain, slug) {
+          return chain.then(function () {
+            return fetch(REST + "/rpc/checkout_free", {
+              method: "POST", headers: headers(true),
+              body: JSON.stringify({ p_slug: slug, p_email: email })
+            }).then(function (r) {
+              if (!r.ok) return r.json().then(function (e) {
+                throw new Error(e.message || ("Could not check out " + slug));
+              });
+              return r.json();
+            }).then(function (row) { out.push(row); });
           });
-        }));
+        }, Promise.resolve()).then(function () { return out; });
       });
     }).then(function (rows) {
       if (only) only.forEach(function (s) { cartRemove(s); }); else cartClear();
@@ -469,7 +498,7 @@
   window.NSAccount = {
     isAdmin: isAdmin, adminMode: adminMode, viewAs: viewAs, adminFile: adminFile,
     owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
-    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile,
+    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, changeEmail: changeEmail,
     isRecovery: function () { return recovery; },
     signOut: signOut, getUser: getUser,
     isSignedIn: function () { return !!session; },

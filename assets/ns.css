@@ -1759,6 +1759,102 @@ body.cart-open .cdrawer{transform:none}
    put, so Check Out never scrolls out of reach on a long cart. */
 .cd-body{flex:1;overflow-y:auto;padding:6px 20px}
 .cd-empty{color:var(--dim);font-size:.92rem;padding:22px 0}
+
+/* 👤 THE ACCOUNT PANEL, 2026-09-10, to the Lizzie Peirce account panel. The
+   frame is markup in nav.js; the views are drawn by navScript.
+   🚨 TWIN OF lesson-nav.css. Everything below the token line is IDENTICAL in
+   both files; only the four --ad-* tokens differ (ns.css names here, --nv-*
+   there). Change one, change the other, same session. */
+.adrawer{--ad-bg:var(--panel);--ad-fg:var(--fg);--ad-dim:var(--dim);--ad-line:var(--line)}
+.ascrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:80;opacity:0;
+  visibility:hidden;transition:opacity .3s ease,visibility .3s}
+body.acct-open .ascrim{opacity:1;visibility:visible}
+.adrawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);z-index:81;
+  background:var(--ad-bg);color:var(--ad-fg);border-left:1px solid var(--ad-line);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .34s cubic-bezier(.22,.61,.36,1)}
+body.acct-open .adrawer{transform:none}
+.adrawer .hidden,.adrawer [hidden]{display:none!important}
+.ad-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;
+  padding:16px 18px;border-bottom:1px solid var(--ad-line);flex:none}
+.ad-h{grid-column:2;margin:0;font-size:1rem;font-weight:600;letter-spacing:0;text-align:center;max-width:none}
+.ad-back,.ad-x{background:none;border:0;padding:4px 0;color:var(--ad-fg);cursor:pointer;
+  font:inherit;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.ad-back{grid-column:1;justify-self:start;display:flex;align-items:center;gap:4px}
+.ad-x{grid-column:3;justify-self:end}
+.ad-back:hover,.ad-x:hover{text-decoration:underline}
+.ad-body{flex:1;overflow-y:auto;padding:4px 18px 24px}
+.ad-empty,.ad-msg{color:var(--ad-dim);font-size:.9rem;line-height:1.5;padding:18px 0 0;margin:0}
+.ad-hi{text-align:center;padding:26px 0 22px}
+.ad-hi h3{margin:0;font-size:1.45rem;font-weight:600;letter-spacing:-.01em}
+.ad-out{background:none;border:0;color:var(--ad-dim);font:inherit;font-size:.78rem;cursor:pointer;
+  padding:4px 0;margin-top:2px}
+.ad-out:hover{color:var(--ad-fg);text-decoration:underline}
+.ad-row{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;padding:20px 0;
+  background:none;border:0;border-bottom:1px solid var(--ad-line);color:var(--ad-fg);
+  font:inherit;cursor:pointer;text-align:center}
+.ad-row b{font-size:1.02rem;font-weight:600}
+.ad-row span{font-size:.8rem;color:var(--ad-dim)}
+.ad-row:hover b{text-decoration:underline}
+.ad-pro{display:flex;justify-content:center;flex-wrap:wrap;gap:18px;padding:0 0 22px;
+  border-bottom:1px solid var(--ad-line)}
+.ad-pro-i{display:flex;flex-direction:column;align-items:center;gap:7px;width:72px;background:none;
+  border:0;padding:0;color:var(--ad-fg);font:inherit}
+.ad-pro-i i{width:56px;height:56px;border-radius:8px;display:grid;place-items:center;font-style:normal;
+  font-size:1.5rem;font-weight:700;background:#c62828;color:#fff}
+.ad-pro-i b{font-size:.78rem;font-weight:600;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ad-pro-i.is-add{cursor:pointer}
+.ad-pro-i.is-add i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line);font-weight:400;font-size:1.8rem}
+.ad-pro-i.is-add b{color:var(--ad-dim)}
+.ad-pro-i.is-add:hover i{border-color:var(--ad-fg);color:var(--ad-fg)}
+.ad-hi+.ad-pro{margin-top:-8px}
+.ad-signout{display:block;width:100%;margin-top:26px;padding:12px 0;background:none;border:0;
+  color:var(--ad-dim);font:inherit;font-size:.86rem;cursor:pointer;text-align:center}
+.ad-signout:hover{color:var(--ad-fg);text-decoration:underline}
+.ad-kv .mswitch{margin:0}
+.ad-go{width:100%;background:none;border:0;border-bottom:1px solid var(--ad-line);color:var(--ad-fg);
+  font:inherit;font-size:.88rem;cursor:pointer;text-align:left}
+.ad-go>span:last-child{display:flex;align-items:center;gap:8px;min-width:0}
+.ad-go i{font-style:normal;font-size:1.2rem;line-height:1;color:var(--ad-dim);transition:transform .2s}
+.ad-go.is-open i{transform:rotate(90deg)}
+.ad-go:hover>span:first-child{text-decoration:underline}
+.ad-ok{font-style:normal;font-size:.64rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:#2e7d4f;border:1px solid currentColor;border-radius:999px;padding:2px 7px}
+.ad-note{margin:8px 0 0;font-size:.8rem;line-height:1.45;color:var(--ad-dim)}
+.ad-ord{display:flex;align-items:center;gap:12px;width:100%;padding:18px 0;background:none;border:0;
+  border-bottom:1px solid var(--ad-line);color:var(--ad-fg);font:inherit;cursor:pointer;text-align:left}
+.ad-ord-t{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.ad-ord-t b{font-size:.92rem;font-weight:600}
+.ad-ord-t>span:not(.ad-ths){font-size:.78rem;color:var(--ad-dim)}
+.ad-ths{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.ad-ths img,.ad-ths i{width:42px;height:42px;border-radius:4px;object-fit:cover;display:block;
+  background:var(--ad-line)}
+.ad-chev{color:var(--ad-dim);font-size:1.4rem;line-height:1}
+.ad-ord:hover b{text-decoration:underline}
+.ad-cap{margin:22px 0 4px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ad-dim)}
+.ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 0;
+  border-bottom:1px solid var(--ad-line);font-size:.88rem}
+.ad-kv>span:last-child{color:var(--ad-dim);text-align:right}
+.ad-tot>span{color:var(--ad-fg)!important;font-weight:700}
+.ad-dim{color:var(--ad-dim)}
+.ad-item{padding:14px 0 0;border-bottom:1px solid var(--ad-line)}
+.ad-item-t{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.ad-item-t b{font-size:.95rem;font-weight:600}
+.ad-item-t span{font-size:.82rem;color:var(--ad-dim);flex:none}
+.ad-q{display:block;font-size:.78rem;color:var(--ad-dim);margin-top:3px}
+.ad-dl{display:flex;justify-content:space-between;align-items:center;margin:10px 0 0 24px;
+  padding:12px 0;border-top:1px solid var(--ad-line);color:var(--ad-fg);text-decoration:none;font-size:.86rem}
+.ad-dl span{color:var(--ad-dim);font-size:1.2rem;line-height:1}
+.ad-dl:hover{text-decoration:underline}
+.ad-in{flex:1;min-width:0;background:none;border:0;color:var(--ad-fg);font:inherit;font-size:.88rem;
+  text-align:left;padding:2px 0;margin-left:24px}
+.ad-in:focus{outline:none;border-bottom:1px solid var(--ad-fg)}
+.ad-box{display:block;width:100%;margin:10px 0 0;padding:10px 0;border-bottom:1px solid var(--ad-line)}
+.ad-link{display:block;margin:20px auto 0;background:none;border:0;color:var(--ad-fg);cursor:pointer;
+  font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.ad-link:hover{text-decoration:underline}
+.ad-msg{text-align:center}
 .cd-row{display:flex;align-items:center;gap:13px;padding:15px 0;
   border-bottom:1px solid var(--line)}
 /* Quantity box stacked over Remove, matching the reference's drawer. */
@@ -1826,8 +1922,13 @@ body.cart-open .cdrawer{transform:none}
    matter what align-items says - the grid was centring a box whose contents
    were already offset inside it. As a block it has no baseline to sit on and
    the grid centres it properly. Sized up with the label, 15 -> 17. */
+/* ⬆️ AND 2px UP, 6px CLOSER. Paul, 2026-09-10: "see how its down further
+   than the check out text? bring the icon up and to the right a bit." The
+   boxes were centred to the pixel (both mids 777) - the lock's INK sits low in
+   its 20-unit box and "Check Out" has no descenders, so its ink sits high in
+   its line box. The eye compares ink, not boxes. Gap was 17px. */
 .cd-acts .btn svg{display:block;width:17px;height:17px;justify-self:end;
-  align-self:center;margin-right:8px}
+  align-self:center;margin-right:2px;transform:translateY(-2px)}
 /* Both labels are wrapped, so both sit in the centre column. */
 .cd-acts .btn span{grid-column:2}
 
@@ -1845,7 +1946,7 @@ body.cart-open .cdrawer{transform:none}
   .cd-foot{padding-left:14px;padding-right:14px}
   .cd-acts{gap:7px}
   .cd-acts .btn{padding-inline:6px;font-size:.9rem}
-  .cd-acts .btn svg{margin-right:5px}
+  .cd-acts .btn svg{margin-right:1px}
 }
 
 @media(max-width:940px){

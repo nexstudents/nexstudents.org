@@ -2574,35 +2574,11 @@ const SOON_PAGES = [
        Orders and Profile only: Stripe holds the cards and a download needs no
        address, so her Payment Methods and Address rows have nothing to hold.
        ⚠️ Native <details>: opens with a keyboard and with JavaScript off. -->
-  <div class="card auth-card hidden" id="signedIn">
-    <h2 id="hello" style="margin-bottom:4px">Hi</h2>
-    <p style="margin:0 0 18px"><button type="button" class="acct-out" id="signOut">Sign out</button></p>
-
-    <details class="acct-row" open>
-      <summary><b>Orders</b><span id="ordersSub">Loading&hellip;</span></summary>
-      <div id="owned"></div>
-    </details>
-
-    <details class="acct-row">
-      <summary><b>Profile</b><span id="whoami"></span></summary>
-      <p class="acct-h">Name</p>
-      <form id="pfForm" novalidate>
-        <div class="auth-row">
-          <input class="auth-in" type="text" id="pfFirst" autocomplete="given-name" placeholder="First name" aria-label="First name">
-          <input class="auth-in" type="text" id="pfLast" autocomplete="family-name" placeholder="Last name" aria-label="Last name">
-        </div>
-        <button class="btn authgo" type="submit">Save Name</button>
-      </form>
-      <p class="dim" id="pfMsg" style="font-size:.9rem;margin:10px 0 0"></p>
-      <p class="acct-h">Change Password</p>
-      <form id="pwForm" novalidate>
-        <input class="auth-in" type="password" id="pwNew" autocomplete="new-password" placeholder="New Password" aria-label="New password">
-        <input class="auth-in" type="password" id="pwNew2" autocomplete="new-password" placeholder="Re-type New Password" aria-label="Re-type new password">
-        <button class="btn authgo" type="submit">Save Password</button>
-      </form>
-      <p class="dim" id="pwMsg" style="font-size:.9rem;margin:10px 0 0"></p>
-    </details>
-  </div>
+  <!-- 🚨 NO SIGNED-IN CARD HERE. Paul, 2026-09-10: "there is still this card
+       in the middle and it doesnt need to be here since we have its own panel
+       in the account in the top right." Signed in, this page sends you to
+       /?panel=account and the side panel (nav.js) opens there. This page is
+       sign in, create account, forgot and reset only. -->
 
 </div></div>
 <script src="/assets/supabase-config.js"></script>
@@ -2610,82 +2586,18 @@ const SOON_PAGES = [
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
-  function show(inCard){
-    $("signedOut").classList.toggle("hidden", inCard);
-    $("signedIn").classList.toggle("hidden", !inCard);
-  }
-  /* ⚠️ The magic link lands back here with the session in the URL fragment.
-     ns-account.js captures it and strips it from the address bar before this
-     runs, so by now isSignedIn() is already true. */
-  /* 📥 ONE ROW PER THING OWNED: title, price, and the way back to it.
-     Paid -> the Worker download, with the row's own token.
-     Free -> the sheet's page, where Print and Download already live.
-     Prices read $0.00, never "free" - the same rule as the cart. */
-  var WORKER = "https://nexstudents-media.nexedgetech.workers.dev";
-  var HREF = ${JSON.stringify(SHEET_HREF)};
-  function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
-  function rowsHtml(rows){
-    return "<div class='dl-list'>" + rows.map(function(r){
-      var paid = r.amount_cents == null ? true : r.amount_cents > 0;
-      var go = paid
-        ? "<a class='btn dl-btn' href='" + WORKER + "/download?t=" + encodeURIComponent(r.token) + "'>Download</a>"
-        : (HREF[r.product] ? "<a class='btn ghost dl-btn' href='" + HREF[r.product] + "'>Open</a>" : "");
-      var price = r.amount_cents == null ? "" : "<span class='dim'>$" + (r.amount_cents/100).toFixed(2) + "</span>";
-      return "<div class='dl-row'><span class='dl-name'><b>" + esc(r.title || r.product) + "</b>" +
-             price + "</span>" + go + "</div>";
-    }).join("") + "</div>";
-  }
-  /* 📜 ORDER HISTORY, like the Lizzie Peirce account. Paul: "we are just going
-     to do order history page instead." Rows from my_downloads() are grouped
-     into ORDERS: everything bought in the same minute is one checkout (a
-     cart's rows are written within a second of each other). Newest first.
-     Each order: its date, how many items, its total, then every item with its
-     own Download or Open button. */
-  function money(c){ return "$" + ((c || 0) / 100).toFixed(2); }
-  function ordersHtml(rows){
-    var groups = [], seen = {};
-    rows.forEach(function(r){
-      var k = String(r.bought_at || "").slice(0, 16);
-      if (!seen[k]) { seen[k] = { when: r.bought_at, rows: [] }; groups.push(seen[k]); }
-      seen[k].rows.push(r);
-    });
-    return groups.map(function(g){
-      var total = g.rows.reduce(function(n, r){ return n + (r.amount_cents || 0); }, 0);
-      var d = new Date(g.when);
-      /* [] = the reader's own locale. Not the word the build refuses on sight. */
-      var date = isNaN(d) ? "" : d.toLocaleDateString([], { month: "long", day: "numeric", year: "numeric" });
-      return "<div class='ord'>" +
-        "<div class='ord-head'><b>" + esc(date) + "</b><span>" + g.rows.length +
-        (g.rows.length > 1 ? " items" : " item") + " &middot; " + money(total) + "</span></div>" +
-        rowsHtml(g.rows) + "</div>";
-    }).join("");
-  }
+  /* ⚠️ The confirm and reset links land back here with the session in the URL
+     fragment. ns-account.js captures it and strips it from the address bar
+     before this runs, so by now isSignedIn() is already true. */
+  /* 📜 Signed in, there is nothing to show here: Orders and Profile live in
+     the account panel (nav.js). A sign-in, a confirm link or a new password
+     all end up at /?panel=account, which opens it.
+     The reset link is the one exception: it lands with a real session and
+     must go to "choose a new password" first, or the reset never happens. */
   function paint(){
-    if(!window.NSAccount || !NSAccount.isSignedIn()){ show(false); return; }
-    show(true);
-    /* The reset link lands here with a real session. It must go straight to
-       "choose a new password", not the account, or the reset never happens. */
-    if (NSAccount.isRecovery && NSAccount.isRecovery()) { show(false); setMode("reset"); return; }
-    NSAccount.getUser().then(function(u){
-      var md = (u && u.user_metadata) || {};
-      $("hello").textContent = md.first_name ? "Hi, " + md.first_name : "Hi";
-      $("whoami").textContent = u && u.email ? u.email : "";
-      $("pfFirst").value = md.first_name || "";
-      $("pfLast").value = md.last_name || "";
-    });
-    /* my_downloads() (migration 008) returns titles and tokens for everything
-       this person owns, guest purchases with the same email included. */
-    NSAccount.myDownloads().then(function(rows){
-      if(!rows.length){
-        $("ordersSub").textContent = "No orders yet";
-        $("owned").innerHTML = "<p class='dim'>Nothing yet. Everything free on this site " +
-          "still goes through the cart, so it shows up here once you check out.</p>";
-        return;
-      }
-      $("owned").innerHTML = ordersHtml(rows);
-      var n = $("owned").querySelectorAll(".ord").length;
-      $("ordersSub").textContent = n + (n > 1 ? " orders" : " order");
-    });
+    if(!window.NSAccount || !NSAccount.isSignedIn()) return;
+    if (NSAccount.isRecovery && NSAccount.isRecovery()) { setMode("reset"); return; }
+    location.replace("/?panel=account");
   }
   $("siForm").onsubmit = function(e){
     e.preventDefault();
@@ -2737,7 +2649,6 @@ const SOON_PAGES = [
       }
     });
   };
-  $("signOut").onclick = function(){ NSAccount.signOut(); location.reload(); };
 
   /* ── THE FOUR MODES OF THE CARD ── one form, the fields and words change.
      Wording copied from the Lizzie Peirce reference: "Create Account",
@@ -2782,29 +2693,6 @@ const SOON_PAGES = [
     $("siGuest").classList.toggle("hidden", m !== "in" && m !== "up");
   }
   setMode("in");
-
-  /* Profile: the name, saved to the account's own metadata. */
-  $("pfForm").onsubmit = function(e){
-    e.preventDefault();
-    $("pfMsg").textContent = "Saving...";
-    NSAccount.updateProfile($("pfFirst").value, $("pfLast").value).then(function(){
-      $("pfMsg").textContent = "Saved.";
-      var f = $("pfFirst").value.trim();
-      $("hello").textContent = f ? "Hi, " + f : "Hi";
-    }).catch(function(err){ $("pfMsg").textContent = err.message; });
-  };
-  /* Change Password while signed in. */
-  $("pwForm").onsubmit = function(e){
-    e.preventDefault();
-    var a = $("pwNew").value, b = $("pwNew2").value;
-    if (a.length < 8) { $("pwMsg").textContent = "Pick a password with at least 8 characters."; return; }
-    if (a !== b) { $("pwMsg").textContent = "The two passwords do not match."; return; }
-    $("pwMsg").textContent = "Saving...";
-    NSAccount.newPassword(a).then(function(){
-      $("pwMsg").textContent = "Password changed.";
-      $("pwNew").value = ""; $("pwNew2").value = "";
-    }).catch(function(err){ $("pwMsg").textContent = err.message; });
-  };
 
   document.addEventListener("ns:auth", paint);
   paint();
@@ -3209,7 +3097,10 @@ const navEnd = newHome.indexOf("</nav>", na);
 if (navEnd < 0) { console.error("FAIL: home nav not closed"); process.exit(1); }
 let nb = navEnd + "</nav>".length;
 for (;;) {
-  const m = newHome.slice(nb).match(/^\s*<div class="cscrim"[\s\S]*?<\/aside>/);
+  /* ⚠️ EVERY overlay navMarkup emits after </nav> must be listed here. The
+     account panel (2026-09-10) was not, and the home page reached FIVE
+     #adrawer in five builds - the exact bug this loop was written for. */
+  const m = newHome.slice(nb).match(/^\s*<div class="(?:cscrim|ascrim)"[\s\S]*?<\/aside>/);
   if (!m) break;
   nb += m[0].length;
 }
@@ -3217,7 +3108,7 @@ newHome = newHome.slice(0, na) + navMarkup("h") + newHome.slice(nb);
 
 /* The guard that makes the fix above stick. One nav, one drawer, one scrim -
    counted on the real output rather than trusted. */
-for (const [id, want] of [["cdrawer", 1], ["cscrim", 1], ["cartn", 1], ["nav", 1]]) {
+for (const [id, want] of [["cdrawer", 1], ["cscrim", 1], ["adrawer", 1], ["ascrim", 1], ["cartn", 1], ["nav", 1]]) {
   const n = (newHome.match(new RegExp('id="' + id + '"', "g")) || []).length;
   if (n !== want) {
     console.error("FAIL: home page has " + n + ' element(s) with id="' + id +
