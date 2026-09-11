@@ -576,7 +576,7 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
      is showing - which is exactly the scroll he got. dvh is the live value.
      The 86% leaves the backdrop visible on every side, which is what says "this is
      a window over the page" rather than a new screen. */
-  max-height:min(600px,86dvh);
+  max-height:min(760px,86dvh);
   overflow:hidden}
 .peek[open]{display:flex;flex-direction:column}
 .peek::backdrop{background:rgba(0,0,0,.55)}
