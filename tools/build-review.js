@@ -184,6 +184,19 @@ if (SERVE) {
         '.pdf': 'application/pdf', '.mp3': 'audio/mpeg' };
     const srv = http.createServer((req, res) => {
         let p = decodeURIComponent(req.url.split('?')[0]);
+        /* 🚨 THE ROOT REDIRECTS TO THE REVIEW PAGE. Paul, 2026-09-11: "it's just
+           opening up the website from local host. I just seen my students
+           website and not your review."
+           This server HAS to serve the whole site root, or the iframes cannot
+           load /assets or the lesson pages they frame. But that means a URL
+           without /review/ lands on NexStudents itself, which is exactly what
+           happened on his phone. This server exists for one page; the root
+           belongs to that page. */
+        if (p === '/' || p === '/index.html') {
+            res.writeHead(302, { location: '/review/' });
+            res.end();
+            return;
+        }
         if (p.endsWith('/')) p += 'index.html';
         /* ⚠️ RESOLVE BOTH SIDES. This compared a relative join against an
            absolute root and 403'd every single request, including its own page.

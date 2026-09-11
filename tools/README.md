@@ -42,6 +42,10 @@ node tools/build-review.js . --serve  # build it and serve it on TAILSCALE + loo
 🚨 **IT SERVES ON TAILSCALE, NOT JUST LOOPBACK.** `http://100.91.145.95:4321/review/` reaches
 this PC from his phone. 127.0.0.1 is reachable only from the machine itself, which is the one
 place he is not — he reads this while settling the baby or editing video.
+⚠️ **The bare root redirects to `/review/`.** The server has to serve the whole site root or
+the iframes cannot load `/assets` and the lesson pages — which meant a URL without `/review/`
+landed on NexStudents itself. It did, on his phone. This server exists for one page, so the root
+belongs to that page.
 ⚠️ **The Tailscale address, never 0.0.0.0.** Binding to everything would put a page of
 unfinished work and open questions on the local network too.
 
