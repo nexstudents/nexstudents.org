@@ -185,15 +185,39 @@ if (SERVE) {
     const srv = http.createServer((req, res) => {
         let p = decodeURIComponent(req.url.split('?')[0]);
         if (p.endsWith('/')) p += 'index.html';
-        const f = path.join(ROOT, p);
-        if (!f.startsWith(path.resolve(ROOT))) { res.writeHead(403).end(); return; }
+        /* ⚠️ RESOLVE BOTH SIDES. This compared a relative join against an
+           absolute root and 403'd every single request, including its own page.
+           The guard is real - it stops ../ escaping the site root - but it has
+           to compare like with like. */
+        const base = path.resolve(ROOT);
+        const f = path.resolve(base, '.' + p);
+        if (f !== base && !f.startsWith(base + path.sep)) { res.writeHead(403).end(); return; }
         fs.readFile(f, (err, buf) => {
             if (err) { res.writeHead(404).end('not found'); return; }
             res.writeHead(200, { 'content-type': TYPES[path.extname(f).toLowerCase()] || 'application/octet-stream' });
             res.end(buf);
         });
     });
-    srv.listen(4321, '127.0.0.1', () => {
-        console.log('\n  open this:  http://127.0.0.1:4321/review/\n  ctrl-c to stop');
+    /* 🚨 BIND TO TAILSCALE, NOT LOOPBACK. Paul, 2026-09-11: "I can't open this
+       link with tailscale from my phone." He reads this page from wherever he
+       is — settling the baby, editing video — and 127.0.0.1 is reachable only
+       from the machine itself, which is the one place he is not.
+       ⚠️ The Tailscale address, NOT 0.0.0.0. Binding to everything would put
+       an unfinished-work page with open questions on the local network too.
+       Tailscale is his own devices and nothing else. */
+    const os = require('os');
+    const ts = Object.values(os.networkInterfaces()).flat()
+        .find(n => n && n.family === 'IPv4' && n.address.startsWith('100.'));
+    const hosts = ts ? [ts.address, '127.0.0.1'] : ['127.0.0.1'];
+
+    let up = 0;
+    hosts.forEach(h => {
+        const s = h === hosts[0] ? srv : http.createServer(srv.listeners('request')[0]);
+        s.listen(4321, h, () => {
+            up++;
+            console.log(`  http://${h}:4321/review/${h.startsWith('100.') ? '   <- from your phone, over Tailscale' : ''}`);
+            if (up === hosts.length) console.log('\n  ctrl-c to stop');
+        }).on('error', e => console.log(`  (could not bind ${h}: ${e.code})`));
     });
+    if (!ts) console.log('  ⚠️ no Tailscale address found — phone access will not work');
 }

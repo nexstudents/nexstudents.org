@@ -36,8 +36,14 @@ node tools/check-links.js .      # LAST OF ALL
 
 ```
 node tools/build-review.js .          # build review/index.html from tools/review-queue.json
-node tools/build-review.js . --serve  # build it and serve it at 127.0.0.1:4321/review/
+node tools/build-review.js . --serve  # build it and serve it on TAILSCALE + loopback
 ```
+
+🚨 **IT SERVES ON TAILSCALE, NOT JUST LOOPBACK.** `http://100.91.145.95:4321/review/` reaches
+this PC from his phone. 127.0.0.1 is reachable only from the machine itself, which is the one
+place he is not — he reads this while settling the baby or editing video.
+⚠️ **The Tailscale address, never 0.0.0.0.** Binding to everything would put a page of
+unfinished work and open questions on the local network too.
 
 🚨 **NEVER ask Paul a question mid-batch.** Everything needing his judgement goes in the queue
 and the batch keeps moving. He comes back from video editing to ONE page: what is done, and what
