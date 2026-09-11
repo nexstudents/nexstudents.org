@@ -17,7 +17,7 @@ module.exports = {
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
-  eyebrow: ["Science", "U1-L4", "Life Science"],
+  eyebrow: ["Life Science", "U1-L4", "Life Science"],
   dek: "You used a dozen scientific discoveries before breakfast without noticing one of them. Every one of them also handed somebody a decision.",
   scripture: {
     ref: "Micah 6:8",

@@ -506,10 +506,16 @@ const group = (heading, note, cards) => `<h2 class="h2s" style="margin:0 0 4px">
   ${cards}`;
 
 
-/* Compact cards, several to a row. The short line always shows; a native
-   <details> lists what the item actually contains. No JS, keyboard accessible.
-   The card is a div rather than an anchor - a disclosure control cannot
-   legally sit inside a link. */
+/* Compact cards, several to a row. The short line always shows; "What's Inside"
+   opens ONE centred window (see peekScript) with the cover shown large and the
+   full contents listed.
+   🚨 IT USED TO BE A NATIVE <details> AND THAT IS WHY IT CHANGED. Paul,
+   2026-09-11: "if I expand the content on the cards it expands all the cards next
+   to it ... I like what it does only it causes all the cards to move." A card is a
+   grid item, so growing one stretches every card in its row. A window cannot.
+   ⚠️ The <ul> STAYS IN THE CARD, hidden. It is the data the window reads, so
+   the contents live in one place and cannot drift from the card they belong to.
+   The card is a div rather than an anchor - a button cannot legally sit inside a link. */
 /* 🚨 ONE constant, because this label appears on every unbuilt slot on the
    site. Paul, 2026-09-03: "one thing you can do on these templates is say
    coming soon." It was "Being Built", which claims work is underway on that
@@ -532,10 +538,10 @@ const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}"
           <span class="cblurb">${l.blurb}</span>
         </span>
       </a>
-      ${(l.contains && l.contains.length) ? `<details class="cmore">
-        <summary>What's inside</summary>
-        <ul>${l.contains.map(c => "<li>" + c + "</li>").join("")}</ul>
-      </details>` : ""}
+      ${(l.contains && l.contains.length) ? `<div class="cmore">
+        <button class="cpeek" type="button">What's Inside</button>
+        <ul hidden>${l.contains.map(c => "<li>" + c + "</li>").join("")}</ul>
+      </div>` : ""}
       <div class="cmeta">
         <span>${l.meta}</span>
         <u class="${(l.price || "$0") === "$0" ? "free" : "paid"}">${l.price || "$0"}</u>
@@ -574,7 +580,8 @@ const lessonCards = (list, showSubject, slots) => {
     ${real}
     ${empty}
   </div>
-  ${progressScript}`;
+  ${progressScript}
+  ${peekScript}`;
 };
 
 /* ── the unit pager ──────────────────────────────────────────────────────
@@ -627,6 +634,8 @@ const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
    is "U1 &middot; Revising Strategies", because inventing a number the book does
    not use is worse than a longer label. */
 const uL = (unit, lesson) => "U" + unit + "-L" + lesson;
+/* A course name in front of the pair, when the shelf has one. */
+const named = (course, label) => (course ? course + " &middot; " + label : label);
 /* "1-3" and "5-3" arrive already paired from the units files. */
 const uLPair = (pair) => "U" + String(pair).replace("-", "-L");
 
@@ -807,7 +816,8 @@ const unitPager = (shelfKey, units, note) => {
     ${note ? '<p class="unitnote">' + note + "</p>" : ""}
   </div>
   ${pagerScript(units)}
-  ${progressScript}`;
+  ${progressScript}
+  ${peekScript}`;
 };
 
 /* 🚨 STEPS BY INDEX, NOT BY UNIT NUMBER. It used to do
@@ -886,6 +896,93 @@ const pagerScript = (units) => `<script>
     }
     var dot = e.target.closest(".unitdot");
     if (dot) showIdx(idxOf(parseInt(dot.dataset.go, 10)));
+  });
+})();
+<\/script>`;
+
+/* 🚨 THE CARD WINDOW. Paul, 2026-09-11, on the old <details>: "I'm wondering about
+   a fix for this because I like what it does only it causes all the cards to move.
+   I just thought of an idea maybe like a mobile popup window showing the details
+   instead. on the PC it will be a similar window both centered on the screen ... it
+   can even show the display art closer with everything it covers."
+   ONE window, centred, the same on phone and desktop. It reads the card it was
+   opened from, so there is no second copy of the contents to drift.
+   ⚠️ BUILT IN JS, NOT EMITTED AS HTML. Both call sites below print this script,
+   and two dialogs with one id on a page is a bug waiting to happen. The guard makes
+   the second copy a no-op instead.
+   ⚠️ <dialog>.showModal() is doing real work: Esc closes, focus is trapped, the
+   rest of the page goes inert, and ::backdrop dims it. Hand-rolling that is how a
+   modal ends up unreachable by keyboard. CSS + vanilla JS, no library.
+   🚨 THE CLOSE IS A BARE ×, NO CIRCLE. Paul: "it also needs a x to escape icon in
+   the top right but don't draw a circle around it. just the x itself the same size
+   as the side menu." So it copies .drawer .x exactly - 26px, no background, no
+   border. If the drawer's X ever changes size, change this with it. */
+const peekScript = `<script>
+(function(){
+  if (window.__nsPeek) return;
+  window.__nsPeek = 1;
+
+  var dlg = document.createElement("dialog");
+  dlg.className = "peek";
+  dlg.innerHTML =
+    '<button class="x" type="button" aria-label="Close" data-peekclose>&times;</button>' +
+    '<div class="peekart"><img alt="" decoding="async"></div>' +
+    '<div class="peekbody"><em></em><b class="peektitle"></b><p class="peekblurb"></p>' +
+    '<ul class="peeklist"></ul><div class="peekfoot"></div></div>';
+  document.body.appendChild(dlg);
+
+  var art  = dlg.querySelector(".peekart"),   img  = dlg.querySelector("img"),
+      eyeb = dlg.querySelector("em"),         ttl  = dlg.querySelector(".peektitle"),
+      blrb = dlg.querySelector(".peekblurb"), list = dlg.querySelector(".peeklist"),
+      foot = dlg.querySelector(".peekfoot");
+
+  function text(card, sel){ var n = card.querySelector(sel); return n ? n.textContent : ""; }
+
+  function open(card){
+    var src = card.querySelector(".cthumb img");
+    /* No art is a real case - most slots and the older lessons have none. Hide the
+       panel rather than show an empty grey square. */
+    if (src) { img.src = src.getAttribute("src"); art.hidden = false; }
+    else { img.removeAttribute("src"); art.hidden = true; }
+    /* The close sits ON the artwork and is white. With no artwork behind it that
+       is white on a light panel, so the class swaps it back to the text colour. */
+    dlg.classList.toggle("no-art", !src);
+
+    eyeb.textContent = text(card, "em");
+    ttl.textContent  = text(card, ".ctitle");
+    blrb.textContent = text(card, ".cblurb");
+
+    list.innerHTML = "";
+    var items = card.querySelectorAll(".cmore li");
+    for (var i = 0; i < items.length; i++){
+      var li = document.createElement("li");
+      li.textContent = items[i].textContent;
+      list.appendChild(li);
+    }
+
+    /* The price, and the way in. A slot has no link, so it gets no button - the
+       window must never become the click into a page that does not exist. */
+    foot.innerHTML = "";
+    var meta = card.querySelector(".cmeta");
+    if (meta) foot.appendChild(meta.cloneNode(true));
+    var link = card.querySelector(".clink");
+    if (link) {
+      var go = document.createElement("a");
+      go.className = "btn peekgo";
+      go.href = link.getAttribute("href");
+      go.textContent = "Open";
+      foot.appendChild(go);
+    }
+
+    dlg.showModal();
+  }
+
+  document.addEventListener("click", function(e){
+    var b = e.target.closest(".cpeek");
+    if (b) { var c = b.closest(".card"); if (c) open(c); return; }
+    if (e.target.closest("[data-peekclose]")) { dlg.close(); return; }
+    /* A backdrop click lands on the dialog itself, never on one of its children. */
+    if (e.target === dlg) dlg.close();
   });
 })();
 <\/script>`;
@@ -1259,6 +1356,10 @@ const gradeLessons = (g) => {
   if (g === 7) {
     const others = list.filter((l) => l.subject !== "History");
     const mine = leifPager(g);
+    /* Same course, so the same name as the grade+subject shelf gives it. This
+       branch does not go through COURSE_SHELVES, which is the long-standing
+       split noted above - name it here until the two call sites are merged. */
+    mine.forEach(u => u.items.forEach(i => { i.label = named("World History", i.label); }));
     return `<div class="band"><div class="wrap">${
       unitPager("g" + g + "-lessons", mine, pagerNote("History", mine))}</div></div>` +
       (others.length ? `<div class="band"><div class="wrap">
@@ -1306,6 +1407,17 @@ const sheetsIn   = (g, sub) => sheetsByGrade(g).filter(w => w.subject === sub);
    of dumping every card on one shelf. Add a grade by adding a line, never by
    editing the pager. ⚠️ `sameGrade` — grades arrive as both strings and
    numbers, see the note further up this file. */
+/* 🚨 `course` NAMES THE COURSE ON EVERY CARD: "World History · U1-L1". Paul,
+   2026-09-11: "we can drop the grade and just name the lesson type." The grade is
+   NOT in the label on purpose - his first idea was "7th World History U1-L1" and
+   the grade is already the heading of the page you are reading. What the grade
+   cannot do is tell two courses apart on /history/lessons/, where every grade sits
+   on ONE shelf and grade 8 US History will collide with grade 7 World History at
+   U1-L1 exactly. The course name is what separates them.
+   ⚠️ IT IS OPTIONAL, AND TWO SHELVES DELIBERATELY HAVE NONE. English and maths
+   have no settled course name - "Glencoe Course 2" is a publisher label, not a
+   course - and Paul has not picked one. A shelf with no `course` prints the bare
+   U1-L1 it printed before. Do not invent a name to fill the gap. */
 const COURSE_SHELVES = [
   /* 🚨 HISTORY MOVED OFF leif-units.js ON 2026-09-04 and onto OUR plan.
      Paul: "we're kind of merging did you together ... into our own lesson plan",
@@ -1320,7 +1432,8 @@ const COURSE_SHELVES = [
      — against the one-grade rule (Paul, 2026-08-30: "it only needs to be in one
      place"). Removed 2026-09-08. Every history unit is grade 7; if a grade 6 shelf
      is ever wanted again, give its units grade 6 rather than re-adding a mapping. */
-  { grade: 7, subject: "History", units: () => historyPager(WORLD, 7) },  /* medieval onward */
+  { grade: 7, subject: "History", course: "World History",
+    units: () => historyPager(WORLD, 7) },  /* medieval onward */
   { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
   { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
   { grade: 7, subject: "English", units: () => englishPager(GRADE7) },
@@ -1331,7 +1444,8 @@ const COURSE_SHELVES = [
      Chapter 1 is the only complete one: all four of its sections are built, in
      Paul's own words. Added 2026-09-04, the day science stopped being the one
      subject whose lessons had no course behind them. */
-  { grade: 7, subject: "Science", units: () => sciencePager(LIFE) },
+  { grade: 7, subject: "Science", course: "Life Science",
+    units: () => sciencePager(LIFE) },
 ];
 
 const courseFor = (g, sub) =>
@@ -1377,6 +1491,9 @@ const gradeSubjectLessons = (g, sub) => {
        note on /grade-7/lessons/ instead, so it never appeared. Two call sites build a
        unit pager for a grade; a shelf-level explanation has to be on both. */
     const us = course.units();
+    /* The course name is a property of the SHELF, not of the pager, so it is
+       applied here rather than inside five separate pagers. */
+    if (course.course) us.forEach(u => u.items.forEach(i => { i.label = named(course.course, i.label); }));
     const first = us.length ? Number(us[0].n) : 1;
     return `<div class="band"><div class="wrap">${
       unitPager("g" + g + "-" + gslug(sub) + "-lessons", us, pagerNote(sub, us))}</div></div>`;

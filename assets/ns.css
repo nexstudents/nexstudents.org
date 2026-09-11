@@ -523,17 +523,79 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .clink{display:flex;flex-direction:column;color:inherit;text-decoration:none;flex:1}
 .clink:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
 
-/* what's inside — native disclosure, no JS */
+/* what's inside — opens the centred window below.
+   🚨 IT WAS A NATIVE <details> AND THAT IS THE BUG IT FIXED. Paul, 2026-09-11:
+   "if I expand the content on the cards it expands all the cards next to it ... I
+   like what it does only it causes all the cards to move." A card is a grid item,
+   so opening one stretched its whole row. The trigger keeps the old look on
+   purpose - same border, same size, same + - only what it opens has changed. */
 .cmore{border-top:1px solid var(--line);font-size:.74rem}
-.cmore summary{list-style:none;cursor:pointer;padding:8px 13px;color:var(--dim);
+.cmore ul{display:none}
+.cpeek{width:100%;background:none;border:0;font:inherit;text-align:left;
+  cursor:pointer;padding:8px 13px;color:var(--dim);
   font-weight:700;letter-spacing:.03em;display:flex;align-items:center;gap:6px}
-.cmore summary::-webkit-details-marker{display:none}
-.cmore summary:before{content:"+";font-weight:800;font-size:.9rem;line-height:1;color:var(--a)}
-.cmore[open] summary:before{content:"\2212"}
-@media(hover:hover){ .cmore summary:hover{color:var(--fg)} }
-.cmore summary:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
-.cmore ul{margin:0;padding:0 13px 11px 28px;color:var(--dim);line-height:1.5}
-.cmore li{margin-bottom:5px}
+.cpeek:before{content:"+";font-weight:800;font-size:.9rem;line-height:1;color:var(--a)}
+@media(hover:hover){ .cpeek:hover{color:var(--fg)} }
+.cpeek:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
+
+/* ── THE CARD WINDOW ─────────────────────────────────────────────────────────
+   One <dialog>, built once per page by peekScript and filled from whichever card
+   was clicked. Centred on every screen — Paul asked for the same window on the
+   phone and the PC, not a sheet on one and a modal on the other.
+   🚨 ONE COLUMN AT EVERY WIDTH: art on top, then the name, then the same
+   information the card already carried. Paul, 2026-09-11: "it doesn't have to
+   change much it could just be the same information but just with the artwork at
+   the top and the lesson name." A two-column desktop version was drafted and cut
+   before it shipped — it was a redesign, and he did not ask for one.
+   ⚠️ A <dialog> is display:none until it opens, so the layout goes under [open]
+   rather than on the element. Setting it unconditionally makes a closed dialog
+   take up space on the page.
+   ⚠️ position:relative is load-bearing: the × is absolutely positioned and
+   would otherwise hang off the viewport, not off the window. */
+.peek{position:relative;border:0;padding:0;background:var(--panel);color:var(--fg);
+  border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.42);
+  width:min(460px,calc(100vw - 32px));max-width:none;max-height:calc(100vh - 48px);
+  overflow:hidden}
+.peek[open]{display:flex;flex-direction:column}
+.peek::backdrop{background:rgba(0,0,0,.55)}
+
+/* The cover, bigger than the card shows it — "it can even show the display art
+   closer". Square, because that is the shape Paul makes the art in. */
+.peekart{flex:none;width:100%;aspect-ratio:1/1;max-height:42vh;
+  background:var(--panel-2);overflow:hidden}
+.peekart[hidden]{display:none}
+.peekart img{width:100%;height:100%;object-fit:cover;display:block}
+
+.peekbody{flex:1;min-height:0;padding:20px 22px 20px;overflow-y:auto}
+.peekbody em{display:block;font-style:normal;font-size:.62rem;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.peektitle{display:block;font-size:1.22rem;font-weight:800;letter-spacing:-.02em;
+  line-height:1.18;margin-bottom:9px}
+.peekblurb{margin:0 0 15px;color:var(--dim);line-height:1.55;font-size:.9rem}
+.peeklist{margin:0;padding:0 0 0 20px;color:var(--dim);line-height:1.55;font-size:.86rem}
+.peeklist li{margin-bottom:6px}
+.peekfoot{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  flex-wrap:wrap;margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
+/* The card's own price block is cloned in, so it arrives with .cmeta's rules. */
+.peekfoot .cmeta{padding:0;border:0;margin:0}
+.peekgo{flex:none}
+
+/* 🚨 A BARE ×, NO CIRCLE, THE SIZE OF THE SIDE MENU'S. Paul: "don't draw a circle
+   around it. just the x itself the same size as the side menu." These values are
+   copied from .drawer .x above — if that one changes, change this with it.
+   ⚠️ It sits ON the artwork, so it carries a text-shadow rather than a plate.
+   A circle behind it is exactly what was asked against. */
+.peek .x{position:absolute;top:6px;right:10px;z-index:2;
+  background:none;border:0;color:#fff;font-size:26px;line-height:1;
+  cursor:pointer;padding:4px 8px;text-shadow:0 1px 6px rgba(0,0,0,.65)}
+.peek.no-art .x{color:var(--dim);text-shadow:none}
+@media(hover:hover){ .peek .x:hover{opacity:.78} }
+.peek .x:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+
+@media(max-width:680px){
+  .peekbody{padding:18px 17px 17px}
+  .peektitle{font-size:1.12rem}
+}
 
 .cthumb{display:block;aspect-ratio:1/1;background:var(--panel-2);overflow:hidden;flex:none}
 /* `center top` was there to save the top of a portrait thumb from the crop.

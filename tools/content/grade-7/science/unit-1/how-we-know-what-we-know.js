@@ -20,7 +20,7 @@ module.exports = {
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
-  eyebrow: ["Science", "U1-L3", "Life Science"],
+  eyebrow: ["Life Science", "U1-L3", "Life Science"],
   dek: "Most people think science is a body of facts to memorise. It is closer to a set of rules for arguing honestly about what is true.",
   scripture: {
     ref: "Proverbs 25:2",

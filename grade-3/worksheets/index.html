@@ -48,7 +48,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=dcc3ffb2">
+<link rel="stylesheet" href="/assets/ns.css?v=708720b4">
 <script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
 </head>
 <body>
@@ -129,10 +129,10 @@
           <span class="cblurb">A blank weekly spelling test. Ten words out of ten, one bonus word worth one extra.</span>
         </span>
       </a>
-      <details class="cmore">
-        <summary>What's inside</summary>
-        <ul><li>Ten numbered lines, scored out of ten</li><li>A bonus word in its own box, scored out of one</li><li>Name, date and week number across the top</li><li>Notes space for the parent, and a one-page PDF</li></ul>
-      </details>
+      <div class="cmore">
+        <button class="cpeek" type="button">What's Inside</button>
+        <ul hidden><li>Ten numbered lines, scored out of ten</li><li>A bonus word in its own box, scored out of one</li><li>Name, date and week number across the top</li><li>Notes space for the parent, and a one-page PDF</li></ul>
+      </div>
       <div class="cmeta">
         <span>Print or Download</span>
         <u class="free">$0</u>
@@ -149,10 +149,10 @@
           <span class="cblurb">Cut-out 3rd grade spelling flashcards, a sheet a week. Ten words, a bonus word, and a card naming the week.</span>
         </span>
       </a>
-      <details class="cmore">
-        <summary>What's inside</summary>
-        <ul><li>36 weeks, one printable sheet each</li><li>Twelve cards a sheet: ten words, one bonus, one label card</li><li>The label card names the week, so a cut stack stays together</li><li>One PDF holding all 36 weeks</li></ul>
-      </details>
+      <div class="cmore">
+        <button class="cpeek" type="button">What's Inside</button>
+        <ul hidden><li>36 weeks, one printable sheet each</li><li>Twelve cards a sheet: ten words, one bonus, one label card</li><li>The label card names the week, so a cut stack stays together</li><li>One PDF holding all 36 weeks</li></ul>
+      </div>
       <div class="cmeta">
         <span>Print or Download</span>
         <u class="free">$0</u>
@@ -269,6 +269,75 @@
       var s = c.querySelector(".tick-score");
       if (s) s.textContent = "Start here";
     }
+  });
+})();
+</script>
+  <script>
+(function(){
+  if (window.__nsPeek) return;
+  window.__nsPeek = 1;
+
+  var dlg = document.createElement("dialog");
+  dlg.className = "peek";
+  dlg.innerHTML =
+    '<button class="x" type="button" aria-label="Close" data-peekclose>&times;</button>' +
+    '<div class="peekart"><img alt="" decoding="async"></div>' +
+    '<div class="peekbody"><em></em><b class="peektitle"></b><p class="peekblurb"></p>' +
+    '<ul class="peeklist"></ul><div class="peekfoot"></div></div>';
+  document.body.appendChild(dlg);
+
+  var art  = dlg.querySelector(".peekart"),   img  = dlg.querySelector("img"),
+      eyeb = dlg.querySelector("em"),         ttl  = dlg.querySelector(".peektitle"),
+      blrb = dlg.querySelector(".peekblurb"), list = dlg.querySelector(".peeklist"),
+      foot = dlg.querySelector(".peekfoot");
+
+  function text(card, sel){ var n = card.querySelector(sel); return n ? n.textContent : ""; }
+
+  function open(card){
+    var src = card.querySelector(".cthumb img");
+    /* No art is a real case - most slots and the older lessons have none. Hide the
+       panel rather than show an empty grey square. */
+    if (src) { img.src = src.getAttribute("src"); art.hidden = false; }
+    else { img.removeAttribute("src"); art.hidden = true; }
+    /* The close sits ON the artwork and is white. With no artwork behind it that
+       is white on a light panel, so the class swaps it back to the text colour. */
+    dlg.classList.toggle("no-art", !src);
+
+    eyeb.textContent = text(card, "em");
+    ttl.textContent  = text(card, ".ctitle");
+    blrb.textContent = text(card, ".cblurb");
+
+    list.innerHTML = "";
+    var items = card.querySelectorAll(".cmore li");
+    for (var i = 0; i < items.length; i++){
+      var li = document.createElement("li");
+      li.textContent = items[i].textContent;
+      list.appendChild(li);
+    }
+
+    /* The price, and the way in. A slot has no link, so it gets no button - the
+       window must never become the click into a page that does not exist. */
+    foot.innerHTML = "";
+    var meta = card.querySelector(".cmeta");
+    if (meta) foot.appendChild(meta.cloneNode(true));
+    var link = card.querySelector(".clink");
+    if (link) {
+      var go = document.createElement("a");
+      go.className = "btn peekgo";
+      go.href = link.getAttribute("href");
+      go.textContent = "Open";
+      foot.appendChild(go);
+    }
+
+    dlg.showModal();
+  }
+
+  document.addEventListener("click", function(e){
+    var b = e.target.closest(".cpeek");
+    if (b) { var c = b.closest(".card"); if (c) open(c); return; }
+    if (e.target.closest("[data-peekclose]")) { dlg.close(); return; }
+    /* A backdrop click lands on the dialog itself, never on one of its children. */
+    if (e.target === dlg) dlg.close();
   });
 })();
 </script>

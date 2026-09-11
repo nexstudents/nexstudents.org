@@ -21,7 +21,7 @@ module.exports = {
       "Day 1: four questions with the answer findable in the text",
       "Day 2: a vocabulary check and a printable answer sheet",
     ] },
-  eyebrow: ["Science", "U1-L2", "Life Science"],
+  eyebrow: ["Life Science", "U1-L2", "Life Science"],
   dek: "For hundreds of years people thought meat made maggots. Finding out it did not took two scientists, two hundred years, and one very oddly shaped bottle.",
   scripture: {
     ref: "Genesis 1:11",
