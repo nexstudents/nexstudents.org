@@ -695,6 +695,19 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .cmeta u.free{color:var(--free)}
 .cmeta u.paid{color:var(--paid)}
 
+/* 🚨 A LESSON SAYS LOCKED OR UNLOCKED WHERE A WORKSHEET SAYS A PRICE. Paul,
+   2026-09-11: "remove the price on them because they're not going to be individual
+   per lesson. the whole unit or grade will have a price. what you can do is have a
+   lock on them instead", then "the lesson is locked or unlocked."
+   Smaller than the price it replaces, because a padlock plus a word is wider than
+   "$0" and the row has a fixed height it must not break.
+   ⚠️ `currentColor` on the SVG stroke is what lets one icon serve both states. */
+.cmeta u.gate{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;
+  letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.cmeta u.gate svg{width:13px;height:13px;flex:none;display:block}
+.cmeta u.gate.is-open{color:var(--free)}
+.cmeta u.gate.is-shut{color:var(--dim)}
+
 /* blank slot: clearly a placeholder, never mistaken for a real card */
 .card.is-slot{border-style:dashed;opacity:.42}
 .card.is-slot .cthumb{background:

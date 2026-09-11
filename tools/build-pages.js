@@ -405,6 +405,11 @@ const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {
       title: L.title,
       blurb: L.shelf.blurb || L.dek,
       meta: L.shelf.meta || "Interactive",
+      /* 🚨 `kind` is what stops a lesson card printing a price. See gateTag above. */
+      kind: "lesson",
+      /* Set by ROADMAP 42/53 when units get prices. Nothing sets it today, so every
+         lesson reads Unlocked - which is true, they are all free and public. */
+      locked: L.shelf.locked === true,
       price: L.shelf.price || "$0",
       /* Same shape worksheets already use below: the lesson says it HAS art,
          the path is derived, so a card and its picture cannot disagree. A
@@ -463,6 +468,9 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
      promise the page does not keep, because nothing downloads until it is
      bought. This hit the Semester 1 bundle too, from the day it went up. */
   meta: (w.price || "$0") === "$0" ? "Print or Download" : "Buy to Download",
+  /* A sheet IS sold on its own, so it keeps its price. Explicit, so the lesson
+     branch in oneCard can never catch a worksheet by accident. */
+  kind: "sheet",
   price: w.price,
 }));
 
@@ -524,6 +532,31 @@ const group = (heading, note, cards) => `<h2 class="h2s" style="margin:0 0 4px">
    without the false claim. Title Case, per the UI-label rule. */
 const SLOT_LABEL = "Coming Soon";
 
+/* 🚨 A LESSON CARD SHOWS LOCKED OR UNLOCKED, NEVER A PRICE. Paul, 2026-09-11:
+   "remove the price on them because they're not going to be individual per lesson.
+   the whole unit or grade will have a price. what you can do is have a lock on them
+   instead", then "the lesson is locked or unlocked."
+   A $0 on every lesson card was making a claim about a thing that is not sold on
+   its own, and it would have become WRONG the day a unit got a price - every
+   lesson inside a paid unit would still have read $0.
+   ⚠️ WORKSHEETS KEEP THEIR PRICES. A sheet IS sold on its own; that is the store.
+   The branch is on `kind`, so the two cannot be confused.
+   ⚠️ `locked` is the hook for ROADMAP 42/53, the owned-SCOPES access levels. Nothing
+   sets it yet, so every lesson reads Unlocked today, which is true - they are all
+   free and public. When a unit gets a price, that is what flips this.
+   🚨 NOT THE SAME THING AS `.card.is-locked`. That is the module soft-lock, which is
+   about ORDER - finish lesson 1 and lesson 2 opens - and lives in localStorage. This
+   is about ACCESS. A lesson can be unlocked to buy and still be next in sequence.
+   Keep the two names apart. */
+const LOCK_SHUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" ' +
+  'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>';
+const LOCK_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" ' +
+  'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7a4 4 0 0 1 7.9-.6"/></svg>';
+const gateTag = (locked) => locked
+  ? '<u class="gate is-shut">' + LOCK_SHUT + 'Locked</u>'
+  : '<u class="gate is-open">' + LOCK_OPEN + 'Unlocked</u>';
 /* One card. Shared by the flat shelves and the unit pager so they cannot
    drift apart. `eyebrow` is whatever label suits that shelf. */
 const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}" data-lesson="${l.id}"${
@@ -544,7 +577,8 @@ const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}"
       </div>` : ""}
       <div class="cmeta">
         <span>${l.meta}</span>
-        <u class="${(l.price || "$0") === "$0" ? "free" : "paid"}">${l.price || "$0"}</u>
+        ${l.kind === "lesson" ? gateTag(l.locked) :
+          `<u class="${(l.price || "$0") === "$0" ? "free" : "paid"}">${l.price || "$0"}</u>`}
       </div>
       <span class="tick-score"></span>
     </div>`;
