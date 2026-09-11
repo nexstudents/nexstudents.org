@@ -1143,8 +1143,41 @@
       foot.appendChild(go);
     }
 
+    lock();
     dlg.showModal();
+    /* showModal can still nudge the scroll when it moves focus. Put it back. */
+    window.scrollTo(0, keptY);
   }
+
+  /* 🚨 THE PAGE JUMPED TO THE TOP WHEN THE WINDOW OPENED. Paul, 2026-09-11:
+     "I opened it and it did move the page so make sure to fix that." The whole
+     point of this window is that nothing behind it moves, so this was the same
+     complaint the <details> caused, wearing a different hat.
+     Two separate movements, and both need handling:
+       1. showModal() scrolls, because it moves focus into a dialog that sits at
+          the end of <body>. keptY is read BEFORE the call and restored after.
+       2. Hiding the scrollbar reflows the page narrower, which slides the whole
+          layout sideways under the backdrop. paddingRight replaces exactly the
+          width the scrollbar was taking.
+     ⚠️ overflow:hidden on <html> KEEPS scrollTop, which is why the page is not
+     also pinned with position:fixed - that technique zeroes the scroll and needs
+     restoring, and it breaks position:sticky on the nav. */
+  var keptY = 0, keptPad = "";
+  function lock(){
+    keptY = window.scrollY;
+    var bar = window.innerWidth - document.documentElement.clientWidth;
+    keptPad = document.documentElement.style.paddingRight;
+    document.documentElement.style.overflow = "hidden";
+    if (bar > 0) document.documentElement.style.paddingRight = bar + "px";
+  }
+  function unlock(){
+    document.documentElement.style.overflow = "";
+    document.documentElement.style.paddingRight = keptPad;
+    window.scrollTo(0, keptY);
+  }
+  /* One place to unlock: the close EVENT fires for the x, the backdrop and Esc
+     alike. Unlocking beside each close() would miss Esc, which is native. */
+  dlg.addEventListener("close", unlock);
 
   document.addEventListener("click", function(e){
     var b = e.target.closest(".cpeek");
