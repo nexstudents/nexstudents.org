@@ -561,19 +561,32 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    because overriding position drops it. */
 .peek{position:fixed;inset:0;margin:auto;border:0;padding:0;background:var(--panel);color:var(--fg);
   border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.42);
-  width:min(460px,calc(100vw - 32px));max-width:none;max-height:calc(100vh - 48px);
+  width:min(400px,calc(100vw - 32px));max-width:none;
+  /* 🚨 dvh, NOT vh, AND IT DOES NOT FILL THE SCREEN. Paul, 2026-09-11: "you are
+     making this popup too large. it adds a scroll because I can't fit it it all on
+     my phone. make it work for all mobile devices", then "it doesn't have to fill
+     the screen." On a phone 100vh is the viewport with the URL bar RETRACTED, so a
+     window sized to it is taller than what is actually on screen the moment the bar
+     is showing - which is exactly the scroll he got. dvh is the live value.
+     The 86% leaves the backdrop visible on every side, which is what says "this is
+     a window over the page" rather than a new screen. */
+  max-height:min(600px,86dvh);
   overflow:hidden}
 .peek[open]{display:flex;flex-direction:column}
 .peek::backdrop{background:rgba(0,0,0,.55)}
 
 /* The cover, bigger than the card shows it — "it can even show the display art
    closer". Square, because that is the shape Paul makes the art in. */
-.peekart{flex:none;width:100%;aspect-ratio:1/1;max-height:42vh;
+/* 🚨 flex-SHRINK, not flex:none. The art is the biggest thing in here and the only
+   part that can give, so on a short screen it shrinks and the words stay whole.
+   flex:none made it the last thing to yield and the list scrolled instead.
+   ⚠️ object-fit:cover means shrinking CROPS rather than squashes Paul's art. */
+.peekart{flex:0 1 auto;width:100%;aspect-ratio:1/1;max-height:32dvh;min-height:0;
   background:var(--panel-2);overflow:hidden}
 .peekart[hidden]{display:none}
 .peekart img{width:100%;height:100%;object-fit:cover;display:block}
 
-.peekbody{flex:1;min-height:0;padding:20px 22px 20px;overflow-y:auto}
+.peekbody{flex:0 1 auto;min-height:0;padding:17px 19px 17px;overflow-y:auto}
 .peekbody em{display:block;font-style:normal;font-size:.62rem;font-weight:700;
   letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
 .peektitle{display:block;font-size:1.22rem;font-weight:800;letter-spacing:-.02em;
@@ -599,9 +612,23 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 @media(hover:hover){ .peek .x:hover{opacity:.78} }
 .peek .x:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 
+/* Everything gets smaller on a phone; nothing gets dropped. The window carries the
+   same information it does on a desktop, which is the whole rule above. */
 @media(max-width:680px){
-  .peekbody{padding:18px 17px 17px}
-  .peektitle{font-size:1.12rem}
+  .peek{max-height:min(560px,84dvh)}
+  .peekart{max-height:28dvh}
+  .peekbody{padding:15px 16px 15px}
+  .peektitle{font-size:1.06rem;margin-bottom:7px}
+  .peekblurb{font-size:.85rem;line-height:1.45;margin-bottom:12px}
+  .peeklist{font-size:.82rem;line-height:1.45}
+  .peeklist li{margin-bottom:5px}
+  .peekfoot{margin-top:14px;padding-top:12px}
+}
+/* A short screen in landscape, or a small phone: the art goes first, because a
+   picture the reader has already seen on the card is worth less than the list. */
+@media(max-height:560px){
+  .peekart{max-height:22dvh}
+  .peekbody{padding:14px 16px 14px}
 }
 
 .cthumb{display:block;aspect-ratio:1/1;background:var(--panel-2);overflow:hidden;flex:none}
