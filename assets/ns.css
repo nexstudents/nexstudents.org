@@ -523,7 +523,7 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .clink{display:flex;flex-direction:column;color:inherit;text-decoration:none;flex:1}
 .clink:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
 
-/* what's inside — opens the centred window below.
+/* More Info — opens the centred window below.
    🚨 IT WAS A NATIVE <details> AND THAT IS THE BUG IT FIXED. Paul, 2026-09-11:
    "if I expand the content on the cards it expands all the cards next to it ... I
    like what it does only it causes all the cards to move." A card is a grid item,

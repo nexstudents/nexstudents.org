@@ -506,7 +506,7 @@ const group = (heading, note, cards) => `<h2 class="h2s" style="margin:0 0 4px">
   ${cards}`;
 
 
-/* Compact cards, several to a row. The short line always shows; "What's Inside"
+/* Compact cards, several to a row. The short line always shows; "More Info"
    opens ONE centred window (see peekScript) with the cover shown large and the
    full contents listed.
    🚨 IT USED TO BE A NATIVE <details> AND THAT IS WHY IT CHANGED. Paul,
@@ -539,7 +539,7 @@ const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}"
         </span>
       </a>
       ${(l.contains && l.contains.length) ? `<div class="cmore">
-        <button class="cpeek" type="button">What's Inside</button>
+        <button class="cpeek" type="button">More Info</button>
         <ul hidden>${l.contains.map(c => "<li>" + c + "</li>").join("")}</ul>
       </div>` : ""}
       <div class="cmeta">
