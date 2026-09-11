@@ -1086,11 +1086,11 @@ const progressScript = `<script>
       c.classList.add("is-part");
       var ps = c.querySelector(".tick-score");
       if (ps) ps.textContent = pr.done + " of " + pr.total + " answered";
-      var pb = document.createElement("span");
-      pb.className = "cbar";
-      pb.innerHTML = '<i style="width:' + Math.round(pr.done / pr.total * 100) + '%"></i>';
-      var body = c.querySelector(".cbody");
-      if (body) body.appendChild(pb);
+      /* 🚨 NO GREEN BAR. Paul, 2026-09-11: "you can get rid of the progress green
+         bar on it too and just leave the how many out of how many questions are
+         completed." The line says 1 of 5 answered, which is the same fact stated
+         exactly, and the bar was a second element drawn into .cbody that changed
+         the card's height as soon as a lesson was started. */
       return;
     }
 
