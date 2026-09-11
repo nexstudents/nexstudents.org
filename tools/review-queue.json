@@ -16,17 +16,18 @@
   "done": [],
   "needs": [
     {
-      "decision": "Test me: tap an option or type your own.",
-      "title": "Proving the phone answer path works",
-      "note": "Whatever you pick is written into review-queue.json on the PC, so I read it next session without you telling me.",
+      "decision": "Does this read better than the buttons did?",
+      "title": "A / B / C, and the box at the bottom for anything else",
+      "note": "Tap a letter, or type your own. Then try Send me something at the bottom - that lands in the same file and I read it next session.",
       "options": [
-        "Works",
-        "Buttons too small",
-        "Something else"
+        "Yes, this works",
+        "Still too big",
+        "Make the letters smaller"
       ],
       "blocks": [
-        "Nothing - this one is just a test"
+        "Nothing - the layout is the only thing being tested"
       ]
     }
-  ]
+  ],
+  "messages": []
 }

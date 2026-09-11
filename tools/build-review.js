@@ -66,12 +66,20 @@ function render(q) {
           ? `<div class="blocks"><p class="blab">Waiting on this</p><ul>${
               n.blocks.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div>`
           : ''}
-      <div class="opts">
-        ${(n.options || []).map(o =>
-            `<button type="button" class="opt" data-i="${i}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}
-      </div>
+      ${/* 🚨 A B C D, NOT BUTTONS. Paul, 2026-09-11: "the buttons are kind of big and
+            I was looking at more like a multiple choice a b c d or write your own
+            response. we already kind of do this in chat with 1 2 3 4."
+            So it reads like the chat he is used to: a lettered list he scans, not a
+            wall of tap targets. The whole ROW is the target, so it is still easy to
+            hit one-handed - the letter is the label, not the button. */
+        (n.options || []).length ? `<ol class="opts">
+        ${n.options.map((o, k) =>
+            `<li><button type="button" class="opt" data-i="${i}" data-v="${esc(o)}"
+              ><b>${'ABCDEFGH'[k]}</b><span>${esc(o)}</span></button></li>`).join('\n        ')}
+      </ol>` : ''}
       <div class="own">
-        <input type="text" placeholder="or write your own answer" data-i="${i}" autocomplete="off">
+        <input type="text" placeholder="${(n.options || []).length ? 'or write your own' : 'your answer'}"
+               data-i="${i}" autocomplete="off">
         <button type="button" class="send" data-i="${i}">Send</button>
       </div>
     </section>`;
@@ -108,14 +116,19 @@ function render(q) {
     color:#facc15;font-weight:800}
   .blocks ul{margin:0;padding:0}
   .blocks li{border:0;padding:1px 0;color:#c8ced5;font-size:.86rem}
-  /* 🚨 TAP TARGETS, NOT LINKS. He answers these on a phone, one-handed,
-     often holding a baby. 44px minimum and full width when it wraps. */
-  .opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-  .opt{flex:1 1 auto;min-height:46px;min-width:130px;padding:10px 14px;
-    background:#1d232b;color:#f1f3f5;border:1px solid #323a45;border-radius:9px;
-    font:inherit;font-size:.92rem;cursor:pointer;text-align:left}
-  .opt:active{background:#27313f}
-  @media(hover:hover){ .opt:hover{border-color:#4ade80;color:#4ade80} }
+  /* 🚨 A LETTERED LIST, NOT A ROW OF BUTTONS. It should read the way 1/2/3/4 reads
+     in chat. The ROW is the tap target so it is still one-handed, but the letter
+     carries the weight and the whole thing is quiet enough to scan. */
+  .opts{list-style:none;margin:0 0 12px;padding:0;border-top:1px solid #262c34}
+  .opts li{border-bottom:1px solid #262c34;padding:0}
+  .opt{display:flex;align-items:center;gap:12px;width:100%;min-height:40px;
+    padding:8px 2px;background:none;border:0;color:#f1f3f5;font:inherit;
+    font-size:.94rem;text-align:left;cursor:pointer}
+  .opt b{flex:none;width:22px;height:22px;border-radius:5px;background:#252c35;
+    color:#98a1ab;font-size:.7rem;font-weight:800;display:grid;place-items:center}
+  .opt:active{background:#1b2129}
+  @media(hover:hover){ .opt:hover b{background:#4ade80;color:#052e16}
+                       .opt:hover span{color:#4ade80} }
   .own{display:flex;gap:8px}
   .own input{flex:1;min-height:46px;padding:10px 12px;background:#0f1216;
     color:#f1f3f5;border:1px solid #323a45;border-radius:9px;font:inherit;font-size:.92rem}
@@ -129,6 +142,14 @@ function render(q) {
   .dnote{color:#98a1ab;font-size:.8rem;margin-left:8px}
   footer{margin-top:40px;color:#5d6874;font-size:.76rem;border-top:1px solid #1c2128;
     padding-top:14px}
+  .msg{display:flex;flex-direction:column;gap:8px}
+  .msg textarea{width:100%;padding:11px 12px;background:#0f1216;color:#f1f3f5;
+    border:1px solid #323a45;border-radius:9px;font:inherit;font-size:.92rem;resize:vertical}
+  .msg button{align-self:flex-start;min-height:42px;padding:9px 18px;background:#4ade80;
+    color:#052e16;border:0;border-radius:9px;font:inherit;font-weight:800;cursor:pointer}
+  .msgs{margin:14px 0 0}
+  .msgs li{border-bottom:1px solid #1c2128;padding:8px 0;color:#c8ced5;font-size:.88rem}
+  .when{display:block;color:#5d6874;font-size:.68rem;letter-spacing:.08em;margin-bottom:2px}
   .saved{position:fixed;left:0;right:0;bottom:0;background:#4ade80;color:#052e16;
     text-align:center;padding:12px;font-weight:800;transform:translateY(100%);
     transition:transform .18s ease}
@@ -151,6 +172,20 @@ ${answered.length ? `<h2>Answered</h2>\n<ul>${answered.map(answeredRow).join('')
 ${done.length ? `<ul>${done.map(d => `<li><b>${esc(d.label || '')}</b>${esc(d.title)}${
     d.note ? `<span class="dnote">${esc(d.note)}</span>` : ''}</li>`).join('')}</ul>`
     : '<p class="sub">Nothing built this batch.</p>'}
+
+${/* 🚨 HE CAN SEND ME SOMETHING, not only answer what I asked. Paul, 2026-09-11:
+      "I wonder since I'm viewing from my phone sometimes if I can also reply back
+      on this forum and you can pull it from my phone too?"
+      Yes - anything typed here lands in review-queue.json and I read it next
+      session. It is the other direction of the same wire, and it means an idea he
+      has while away from the PC does not have to wait for him to be at it. */''}
+<h2>Send me something</h2>
+<div class="msg">
+  <textarea id="note" rows="3" placeholder="Anything — an idea, a correction, what to work on next."></textarea>
+  <button type="button" id="sendnote">Send to Claude</button>
+</div>
+${(q.messages || []).length ? `<ul class="msgs">${q.messages.slice().reverse().map(m =>
+    `<li><span class="when">${esc(m.at)}</span>${esc(m.text)}</li>`).join('')}</ul>` : ''}
 
 <footer>${esc(q.budget || '')} Local only, never deployed.</footer>
 </div>
@@ -180,6 +215,18 @@ ${done.length ? `<ul>${done.map(d => `<li><b>${esc(d.label || '')}</b>${esc(d.ti
     }
   });
   /* Enter sends, because a phone keyboard's go key is right there. */
+  var noteBtn = document.getElementById("sendnote");
+  if (noteBtn) noteBtn.addEventListener("click", function(){
+    var box = document.getElementById("note");
+    var v = box.value.trim();
+    if (!v) return;
+    fetch("/note", { method:"POST", headers:{"content-type":"application/json"},
+      body: JSON.stringify({ text: v }) })
+      .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+      .then(function(){ box.value=""; flash.textContent="Sent to Claude";
+        flash.classList.add("on"); setTimeout(function(){ location.reload(); }, 700); })
+      .catch(function(){ flash.textContent="Could not send"; flash.classList.add("on"); });
+  });
   document.addEventListener("keydown", function(e){
     if (e.key === "Enter" && e.target.matches("input[data-i]")) {
       send(+e.target.dataset.i, e.target.value.trim());
@@ -221,6 +268,24 @@ if (SERVE) {
                     res.writeHead(200).end('ok');
                     console.log(`  ANSWERED: ${q.needs[i].decision} -> ${q.needs[i].answer}`);
                 } catch (e) { res.writeHead(400).end('bad request'); }
+            });
+            return;
+        }
+        if (req.method === "POST" && req.url === "/note") {
+            let body = "";
+            req.on("data", ch => { body += ch; if (body.length > 8192) req.destroy(); });
+            req.on("end", () => {
+                try {
+                    const { text } = JSON.parse(body);
+                    const q = readQueue();
+                    q.messages = q.messages || [];
+                    q.messages.push({ at: new Date().toISOString().slice(0,16).replace("T"," "),
+                                      text: String(text).slice(0, 2000) });
+                    fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2), "utf8");
+                    build();
+                    res.writeHead(200).end("ok");
+                    console.log("  NOTE FROM PAUL: " + q.messages[q.messages.length-1].text);
+                } catch (e) { res.writeHead(400).end("bad request"); }
             });
             return;
         }
