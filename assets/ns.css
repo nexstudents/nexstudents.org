@@ -586,7 +586,9 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
      The 86% leaves the backdrop visible on every side, which is what says "this is
      a window over the page" rather than a new screen. */
   max-height:min(760px,86dvh);
-  overflow:hidden}
+  /* auto, not hidden: the body no longer scrolls, so this is the only safety net
+     left. In every real case nothing scrolls at all. */
+  overflow:auto}
 .peek[open]{display:flex;flex-direction:column}
 .peek::backdrop{background:rgba(0,0,0,.55)}
 
@@ -626,7 +628,18 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .peekart[hidden]{display:none}
 .peekart img{width:100%;height:100%;object-fit:contain;display:block}
 
-.peekbody{flex:0 1 auto;min-height:0;padding:17px 19px 17px;overflow-y:auto}
+/* 🚨 flex:none — THE WORDS ARE NEVER COMPRESSED, SO THEY NEVER SCROLL. Paul,
+   2026-09-11: "I have a pop-up open of the life science and you still have like a
+   scroll bar on the side. I really don.t like the scroll bar things especially in
+   pop-ups." It was `flex:0 1 auto`, and even with the art on a shrink factor of 60
+   the body still lost 2-3px to flex rounding — enough for a scrollbar, on all four
+   science lessons. Measured: body wanted 451px and was given 449.
+   With flex:none the body takes exactly its content height and the art is the only
+   thing that gives. No arithmetic to round.
+   ⚠️ The LAST-RESORT scroll moved to the dialog itself (see .peek). If a lesson ever
+   has so much text that even a 96px picture leaves no room, the window scrolls rather
+   than CLIPPING the text, which is what overflow:hidden here would have done. */
+.peekbody{flex:none;padding:17px 19px 17px}
 .peekbody em{display:block;font-style:normal;font-size:.62rem;font-weight:700;
   letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
 .peektitle{display:block;font-size:1.22rem;font-weight:800;letter-spacing:-.02em;
