@@ -687,6 +687,26 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    list of what they are about to get. It stays SQUARE as it goes, just smaller —
    Paul, 2026-09-11: "I think you're just trying to stretch it through the screen
    and you don't need to do that." Nothing here is sized to fill the viewport. */
+/* 🚨 A PHONE HELD SIDEWAYS: COMPACT, DO NOT SCROLL. Paul, 2026-09-11: "if there.s
+   too much info where we have to cause a scroll then we can just compact the info."
+   At 740x360 the window has about 300px of height and the list alone wanted 200 more
+   than there was. Three things go, in order of what the reader loses least:
+     1. THE PICTURE. They just looked at it on the card they clicked.
+     2. THE BLURB. It is the same sentence, also on that card.
+     3. The list goes two-up, because a sideways phone is WIDE - the one thing this
+        shape has plenty of.
+   ⚠️ The CONTENTS never go. That is the thing the window exists to show.
+   ⚠️ Keyed on orientation AND height so it cannot catch a small desktop window. */
+@media(max-height:460px) and (orientation:landscape){
+  .peek{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 24px)}
+  .peekart{display:none}
+  .peekblurb{display:none}
+  .peekbody{padding:14px 18px 14px}
+  .peektitle{font-size:1rem;margin-bottom:5px}
+  .peeklist{columns:2;column-gap:20px;font-size:.78rem;line-height:1.38}
+  .peeklist li{margin-bottom:3px;break-inside:avoid}
+  .peekfoot{margin-top:10px;padding-top:8px}
+}
 @media(max-height:620px){
   .peekart{height:min(180px,20dvh)}
   .peekbody{padding:12px 15px 12px}
