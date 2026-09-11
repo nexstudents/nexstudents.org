@@ -1,0 +1,28 @@
+{
+  "_comment": "The REAL queue. Shape and all fields: review-queue.example.json. Nothing fabricated goes in here - a made-up entry is indistinguishable from real work when Paul opens the page.",
+
+  "batch": "Carried over from 2026-09-11",
+  "generated": "2026-09-11",
+  "budget": "No lessons built this batch. Tooling only.",
+
+  "done": [],
+
+  "needs": [
+    {
+      "decision": "Which world should the examples come from?",
+      "title": "complete-subjects-and-predicates — live now with three",
+      "note": "The objective and the mechanic are both right. But the story is a hardware store, Part A is baseball, and Part B is chess. A twelve year old holds all three in one sitting. Found by the first gather packet, 2026-09-11. ROADMAP 60.",
+      "options": ["Hardware store", "Baseball", "Chess", "Something else"],
+      "kind": "page",
+      "href": "/lessons/english/complete-subjects-and-predicates/"
+    },
+    {
+      "decision": "What do we call Grade 7 maths and Grade 7 English?",
+      "title": "Card labels — every other shelf names its course",
+      "note": "History reads 'World History · U1-L1' and science reads 'Life Science · U1-L1'. Maths and English print the bare U1-L1 because there is no settled name. 'Glencoe Course 2' is a publisher's label, not a course. I did not invent one.",
+      "options": ["Pre-Algebra", "Math 7", "Grammar & Writing", "Something else"],
+      "kind": "page",
+      "href": "/grade-7/maths/lessons/"
+    }
+  ]
+}

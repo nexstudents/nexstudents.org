@@ -1,0 +1,50 @@
+{
+  "_comment": [
+    "THE SHAPE build-review.js EXPECTS. Copy to review-queue.json and fill it from the batch.",
+    "Two arrays and nothing else: done, and needs. Not what I tried, not what I considered.",
+    "",
+    "DONE items: label, title, optional href to look at it, optional one-line note.",
+    "NEEDS items: 'decision' is the headline and must be answerable, not a description.",
+    "  kind: 'page'  -> href, shown live in an iframe at phone AND desktop width",
+    "  kind: 'image' -> src, shown inline (artwork, a screenshot in the scratchpad)",
+    "  kind: 'text'  -> optional code, for a snippet",
+    "  options: turns a decision into one word instead of a paragraph",
+    "",
+    "An EMPTY needs array is the best possible result and renders as one green line."
+  ],
+
+  "batch": "History U1 · L3-L6",
+  "generated": "2026-09-12",
+  "budget": "Roughly half the session used. Four more analysed and ready.",
+
+  "done": [
+    { "label": "U1-L3", "title": "Roads, Bridges, and the Roman Army",
+      "href": "/lessons/history/roads-and-the-roman-army/",
+      "note": "shelved, guards green" },
+    { "label": "U1-L4", "title": "Conquest, Provinces, and City Life",
+      "href": "/lessons/history/conquest-and-city-life/" }
+  ],
+
+  "needs": [
+    {
+      "decision": "One lesson or two?",
+      "title": "U1-L5 · Class, Slavery, and Daily Life in Rome",
+      "note": "The page teaches social class AND daily life. Splitting it makes two thin lessons; keeping it makes one long one.",
+      "options": ["Keep as one", "Split into two", "Leave it parked"],
+      "kind": "text"
+    },
+    {
+      "decision": "Does this fit on your phone?",
+      "title": "U1-L3 lesson page",
+      "kind": "page",
+      "href": "/lessons/history/roads-and-the-roman-army/"
+    },
+    {
+      "decision": "Which world should the examples come from?",
+      "title": "complete-subjects-and-predicates is live with three",
+      "note": "Hardware store in the story, baseball in Part A, chess in Part B. ROADMAP 60.",
+      "options": ["Hardware store", "Baseball", "Chess", "Something else"],
+      "kind": "text"
+    }
+  ]
+}

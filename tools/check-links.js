@@ -18,7 +18,14 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = process.argv[2] || ".";
-const SKIP = new Set([".git", "node_modules", "tools", "assets"]);
+/* 🚨 `review` IS SKIPPED ON PURPOSE, AND THAT IS SCOPING, NOT WEAKENING.
+   review/ is the end-of-batch queue built by build-review.js. It is gitignored,
+   never deployed, and it deliberately links to pages that DO NOT EXIST YET -
+   "does this one fit on a phone" is asked about a lesson mid-build. Checking it
+   would fail the build for doing its job.
+   ⚠️ The guard still covers every page that ships. If review/ ever becomes
+   something a visitor can reach, this line is wrong and so is the .gitignore. */
+const SKIP = new Set([".git", "node_modules", "tools", "assets", "review"]);
 
 const pages = [];
 (function walk(dir) {

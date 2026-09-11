@@ -32,6 +32,30 @@ node tools/check-contrast.js .   # every text colour, in BOTH themes
 node tools/check-links.js .      # LAST OF ALL
 ```
 
+## 📋 THE REVIEW QUEUE — how a batch ends
+
+```
+node tools/build-review.js .          # build review/index.html from tools/review-queue.json
+node tools/build-review.js . --serve  # build it and serve it at 127.0.0.1:4321/review/
+```
+
+🚨 **NEVER ask Paul a question mid-batch.** Everything needing his judgement goes in the queue
+and the batch keeps moving. He comes back from video editing to ONE page: what is done, and what
+needs him now.
+
+- **Write `tools/review-queue.json` as the batch runs.** Shape and every field:
+  `tools/review-queue.example.json`. Two arrays, `done` and `needs`, and nothing else.
+- **`decision` is the headline and must be answerable** — "One lesson or two?", not a paragraph
+  about the page. Add `options` and he can reply in one word.
+- **`kind:"page"` frames it live at phone AND desktop width.** A question about a picture cannot
+  be answered in text, which is the whole reason this is a page.
+- ⚠️ **It must be SERVED, never opened from disk.** The pages it frames link `/assets/...`
+  root-absolute, which under `file://` resolves to the drive root and silently loads nothing —
+  the same trap that shipped three history PDFs in Times New Roman.
+- ⚠️ **`review/` is gitignored and `check-links` skips it.** It links to pages mid-build on
+  purpose. The QUEUE JSON is committed, so the next session knows what is still pending.
+- ✅ **An empty `needs` is the best result** and renders as one green line.
+
 ## 🔭 THE CHECKS ARE "THE OTHER SIDE" — the perspectives that get forgotten
 
 Every check above exists because one perspective was looked at and its opposite was not.
