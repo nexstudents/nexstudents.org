@@ -46,13 +46,26 @@ const esc = s => String(s == null ? '' : s)
 
 const readQueue = () => JSON.parse(fs.readFileSync(QUEUE, 'utf8'));
 
+/* 🚨 A STABLE ID PER QUESTION, NOT AN ARRAY INDEX. Answers used to post by
+   position, so editing the queue while Paul had the page open made his next tap
+   land on whatever question moved into that slot. It happened on 2026-09-11: he
+   answered "Works" and it was written onto a question whose options did not even
+   include that word. The id is derived from the decision text, so it survives a
+   reorder and a rebuild, and a stale page gets REFUSED rather than misfiled. */
+function qid(n) {
+    let h = 0;
+    const str = String(n.decision || n.title || '');
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+    return 'q' + h.toString(36);
+}
+
 function render(q) {
     const done = Array.isArray(q.done) ? q.done : [];
     const needs = Array.isArray(q.needs) ? q.needs : [];
     const open = needs.filter(n => !n.answer);
     const answered = needs.filter(n => n.answer);
 
-    const question = (n, i) => `<section class="q" data-i="${i}">
+    const question = (n) => `<section class="q" data-i="${qid(n)}">
       <p class="tag">Needs you</p>
       <h3>${esc(n.decision || n.title)}</h3>
       ${n.title && n.decision ? `<p class="where">${esc(n.title)}</p>` : ''}
@@ -74,13 +87,13 @@ function render(q) {
             hit one-handed - the letter is the label, not the button. */
         (n.options || []).length ? `<ol class="opts">
         ${n.options.map((o, k) =>
-            `<li><button type="button" class="opt" data-i="${i}" data-v="${esc(o)}"
+            `<li><button type="button" class="opt" data-i="${qid(n)}" data-v="${esc(o)}"
               ><b>${'ABCDEFGH'[k]}</b><span>${esc(o)}</span></button></li>`).join('\n        ')}
       </ol>` : ''}
       <div class="own">
         <input type="text" placeholder="${(n.options || []).length ? 'or write your own' : 'your answer'}"
-               data-i="${i}" autocomplete="off">
-        <button type="button" class="send" data-i="${i}">Send</button>
+               data-i="${qid(n)}" autocomplete="off">
+        <button type="button" class="send" data-i="${qid(n)}">Send</button>
       </div>
     </section>`;
 
@@ -163,7 +176,7 @@ function render(q) {
 </header>
 
 <h2>What needs you now</h2>
-${open.length ? open.map((n) => question(n, needs.indexOf(n))).join('\n    ')
+${open.length ? open.map(question).join('\n    ')
     : `<p class="allclear">Nothing needs you. ${done.length} built, all checks green.</p>`}
 
 ${answered.length ? `<h2>Answered</h2>\n<ul>${answered.map(answeredRow).join('')}</ul>` : ''}
@@ -203,15 +216,15 @@ ${(q.messages || []).length ? `<ul class="msgs">${q.messages.slice().reverse().m
         flash.classList.add("on");
         setTimeout(function(){ location.reload(); }, 700);
       })
-      .catch(function(){ flash.textContent = "Could not save"; flash.classList.add("on"); });
+      .catch(function(){ flash.textContent = "That question changed - reload"; flash.classList.add("on"); });
   }
   document.addEventListener("click", function(e){
     var o = e.target.closest(".opt");
-    if (o) { send(+o.dataset.i, o.dataset.v); return; }
+    if (o) { send(o.dataset.i, o.dataset.v); return; }
     var s = e.target.closest(".send");
     if (s) {
       var box = document.querySelector('input[data-i="' + s.dataset.i + '"]');
-      send(+s.dataset.i, box && box.value.trim());
+      send(s.dataset.i, box && box.value.trim());
     }
   });
   /* Enter sends, because a phone keyboard's go key is right there. */
@@ -229,7 +242,7 @@ ${(q.messages || []).length ? `<ul class="msgs">${q.messages.slice().reverse().m
   });
   document.addEventListener("keydown", function(e){
     if (e.key === "Enter" && e.target.matches("input[data-i]")) {
-      send(+e.target.dataset.i, e.target.value.trim());
+      send(e.target.dataset.i, e.target.value.trim());
     }
   });
 })();
@@ -249,6 +262,10 @@ function build() {
 build();
 
 if (SERVE) {
+    /* ⚠️ The page is only useful if it is UP. Log and carry on rather than exit:
+       a dead port looks identical to a working one until he taps the link. */
+    process.on('uncaughtException', e => console.log('  survived: ' + e.message));
+
     const srv = http.createServer((req, res) => {
         /* 🚨 HIS ANSWER GOES STRAIGHT INTO THE QUEUE FILE. That file is committed,
            so an answer given from his phone survives to the next session without
@@ -260,14 +277,25 @@ if (SERVE) {
                 try {
                     const { i, answer } = JSON.parse(body);
                     const q = readQueue();
-                    if (!q.needs || !q.needs[i]) { res.writeHead(400).end('no such question'); return; }
-                    q.needs[i].answer = String(answer).slice(0, 300);
-                    q.needs[i].answeredAt = new Date().toISOString().slice(0, 16).replace('T', ' ');
+                    /* 🚨 Match by ID. A page opened before the queue changed sends an id
+                       that no longer exists, and the right answer is to REFUSE it - never
+                       to write his tap onto whatever question sits in that slot now. */
+                    const target = (q.needs || []).find(n => qid(n) === i);
+                    if (!target) {
+                        res.writeHead(409).end('that question is gone - reload the page');
+                        console.log('  REFUSED a stale answer for ' + i);
+                        return;
+                    }
+                    target.answer = String(answer).slice(0, 300);
+                    target.answeredAt = new Date().toISOString().slice(0, 16).replace('T', ' ');
                     fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2), 'utf8');
                     build();
                     res.writeHead(200).end('ok');
-                    console.log(`  ANSWERED: ${q.needs[i].decision} -> ${q.needs[i].answer}`);
-                } catch (e) { res.writeHead(400).end('bad request'); }
+                    console.log('  ANSWERED: ' + target.decision + ' -> ' + target.answer);
+                } catch (e) {
+                    console.log('  answer failed: ' + e.message);
+                    if (!res.headersSent) res.writeHead(400).end('bad request');
+                }
             });
             return;
         }
@@ -285,7 +313,10 @@ if (SERVE) {
                     build();
                     res.writeHead(200).end("ok");
                     console.log("  NOTE FROM PAUL: " + q.messages[q.messages.length-1].text);
-                } catch (e) { res.writeHead(400).end("bad request"); }
+                } catch (e) {
+                    console.log("  note failed: " + e.message);
+                    if (!res.headersSent) res.writeHead(400).end("bad request");
+                }
             });
             return;
         }

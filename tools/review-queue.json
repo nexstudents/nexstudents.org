@@ -1,31 +1,24 @@
 {
   "_comment": [
-    "THE REAL QUEUE. Shape and all fields: review-queue.example.json.",
-    "",
-    "🚨 ONLY PUT SOMETHING HERE IF IT BLOCKS WORK PAUL ASKED FOR.",
-    "On 2026-09-11 the first version of this file carried a question about",
-    "complete-subjects-and-predicates - a FINISHED lesson he never asked me to",
-    "audit. He opened the page and reasonably asked what he was looking at.",
-    "A queue full of things I noticed is the same failure as asking mid-batch;",
-    "it just looks tidier. An observation about finished work goes in the",
-    "ROADMAP, not in front of him."
+    "THE REAL QUEUE. Shape: review-queue.example.json.",
+    "🚨 ONLY things that block work Paul asked for. Not observations about finished work."
   ],
-  "batch": "Ready for the first lesson batch",
+  "batch": "Next session: student accounts (ROADMAP 50)",
   "generated": "2026-09-11",
-  "budget": "Tooling only this session. Every open question answered.",
+  "budget": "Tooling session. No lessons built - that was deliberate.",
   "done": [],
   "needs": [
     {
-      "decision": "Does this read better than the buttons did?",
-      "title": "A / B / C, and the box at the bottom for anything else",
-      "note": "Tap a letter, or type your own. Then try Send me something at the bottom - that lands in the same file and I read it next session.",
+      "decision": "Anything you want changed on this page before we use it for real?",
+      "title": "Last check before the student-accounts session",
+      "note": "Answers are tied to the question itself now, so editing the queue while you have this open can no longer misfile your tap - a stale page gets a reload prompt instead. The server also survives a bad request rather than dying.",
       "options": [
-        "Yes, this works",
-        "Still too big",
-        "Make the letters smaller"
+        "Good as is",
+        "Make it smaller still",
+        "Something else - I will type it"
       ],
       "blocks": [
-        "Nothing - the layout is the only thing being tested"
+        "Nothing - we start on student accounts next session either way"
       ]
     }
   ],
