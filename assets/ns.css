@@ -47,6 +47,12 @@
   --free:#4ade80;        /* free badge - the thing they came for */
   --paid:#ff5c33;        /* paid badge. the only warm colour on the page */
   --on-free:#052e16; --on-paid:#2b0a02;
+  /* 🚨 GRADE BANDS, PAUL'S ORDER: 90+ green, 80s ORANGE, 70s YELLOW, under 70 red.
+     That puts orange BELOW yellow, the opposite of most grade palettes, and it is
+     what he asked for twice. Do not reorder them without asking him.
+     --g-part is an unfinished lesson: yellow, meaning not done rather than a poor
+     mark. It is deliberately the same yellow as the 70s band. */
+  --g-a:#4ade80; --g-b:#fb923c; --g-c:#facc15; --g-f:#f87171; --g-part:#facc15;
   --ann-bg:#1c2126; --ann-fg:#eef1f4; --nav-bg:rgba(10,11,13,.92);
   --hero-glow:rgba(255,255,255,.05);
   --on-a-soft:rgba(10,11,13,.65);
@@ -93,6 +99,9 @@
   --free:#15803d;
   --paid:#c2410c;
   --on-free:#eafdf1; --on-paid:#fff3ee;
+  /* Darkened for a white ground. The dark values are 2:1 or worse on light and the
+     yellow in particular disappears completely. */
+  --g-a:#15803d; --g-b:#c2410c; --g-c:#a16207; --g-f:#b91c1c; --g-part:#a16207;
   --ann-bg:#2f3945; --ann-fg:#f4f6f8; --nav-bg:rgba(242,244,247,.92);
   --hero-glow:rgba(39,49,63,.06);
   --on-a-soft:rgba(255,255,255,.74);
@@ -604,8 +613,15 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    but contain cannot crop if either assumption ever slips.
    ⚠️ min-height:96px is the floor. Past that a picture stops being a picture, and
    the body is allowed to scroll instead — a last resort, not the first to give. */
+/* 🚨 HEADROOM ABOVE THE ART. Paul, 2026-09-11: "the thumbnail again you have it
+   bleeding it the top of the popup. itd better but I wanted some headroom space like
+   it's not just trying to be part of the top of the page." It sat flush to the
+   window's top edge, so it read as the window's header rather than a picture inside
+   it. margin-top gives it the same air the body already has at its sides.
+   ⚠️ It also gets a radius now. Flush to a rounded corner, a square image fights the
+   window's own shape; inset and rounded, it reads as a framed picture. */
 .peekart{flex:0 60 auto;aspect-ratio:1/1;height:min(300px,34dvh);width:auto;
-  max-width:100%;margin-inline:auto;min-height:96px;
+  max-width:100%;margin:18px auto 0;min-height:96px;border-radius:10px;
   background:var(--panel-2);overflow:hidden}
 .peekart[hidden]{display:none}
 .peekart img{width:100%;height:100%;object-fit:contain;display:block}
@@ -702,9 +718,10 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    Smaller than the price it replaces, because a padlock plus a word is wider than
    "$0" and the row has a fixed height it must not break.
    ⚠️ `currentColor` on the SVG stroke is what lets one icon serve both states. */
-.cmeta u.gate{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;
-  letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
-.cmeta u.gate svg{width:13px;height:13px;flex:none;display:block}
+.cmeta u.gate{display:inline-flex;align-items:center}
+/* 16px, because it now stands alone where "$0" used to. At 13px beside a word it
+   read as punctuation; on its own it has to be legible by itself. */
+.cmeta u.gate svg{width:16px;height:16px;flex:none;display:block}
 .cmeta u.gate.is-open{color:var(--free)}
 .cmeta u.gate.is-shut{color:var(--dim)}
 
@@ -741,7 +758,13 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    returns the moment a student finishes a lesson. */
 .card .tick-score{display:block;visibility:hidden;padding:0 13px 10px;margin-top:-4px;
   font-size:.66rem;font-weight:800;
-  letter-spacing:.05em;text-transform:uppercase;color:var(--free)}
+  letter-spacing:.05em;text-transform:uppercase;color:var(--g-a)}
+/* 🚨 THE GRADE BANDS. Set by gradeClass() in progressScript, never by hand. */
+.card .tick-score.g-a{color:var(--g-a)}
+.card .tick-score.g-b{color:var(--g-b)}
+.card .tick-score.g-c{color:var(--g-c)}
+.card .tick-score.g-f{color:var(--g-f)}
+.card .tick-score.g-part{color:var(--g-part)}
 .card .tick-score:empty:before{content:"\00a0"}
 .card.is-done .tick-score{visibility:visible}
 .tile em{font-style:normal;font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}

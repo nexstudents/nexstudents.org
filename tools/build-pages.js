@@ -554,9 +554,14 @@ const LOCK_SHUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const LOCK_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" ' +
   'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
   '<rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7a4 4 0 0 1 7.9-.6"/></svg>';
+/* 🚨 THE ICON IS THE WHOLE THING. NO WORD. Paul, 2026-09-11: "the word unlocked in
+   green doesn't fit and I really just wanted you to replace the price with a lock or
+   unlock item icon. we don't need a giant green text showing it."
+   ⚠️ The word still exists for a screen reader and on hover — it is the LABEL, not
+   the display. Dropping it entirely would leave a padlock that says nothing. */
 const gateTag = (locked) => locked
-  ? '<u class="gate is-shut">' + LOCK_SHUT + 'Locked</u>'
-  : '<u class="gate is-open">' + LOCK_OPEN + 'Unlocked</u>';
+  ? '<u class="gate is-shut" title="Locked" aria-label="Locked">' + LOCK_SHUT + '</u>'
+  : '<u class="gate is-open" title="Unlocked" aria-label="Unlocked">' + LOCK_OPEN + '</u>';
 /* One card. Shared by the flat shelves and the unit pager so they cannot
    drift apart. `eyebrow` is whatever label suits that shelf. */
 const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}" data-lesson="${l.id}"${
@@ -1064,6 +1069,23 @@ const progressScript = `<script>
 (function(){
   var cards = [].slice.call(document.querySelectorAll("[data-lesson]"));
 
+  /* 🚨 THE SCORE IS COLOURED BY THE GRADE. Paul, 2026-09-11: "the score should
+     reflect the grade. like 70 is yellow and 50 is red and 80 is orange and 90 and
+     above is green", and "if it's incomplete it should be yellow and if it's
+     completed it should be green."
+     ⚠️ HIS BANDS, NOT THE USUAL ONES. 80 is ORANGE and 70 is YELLOW here, which is
+     the other way round from most grade palettes. He wrote it that way twice; do not
+     "fix" it to the conventional order without asking him.
+     ⚠️ An unfinished lesson is yellow whatever its running percentage, because a
+     part-done score is not a grade yet and colouring it like one would tell a student
+     they are failing when they have simply not finished. */
+  function gradeClass(pct){
+    if (pct >= 90) return "g-a";
+    if (pct >= 80) return "g-b";
+    if (pct >= 70) return "g-c";
+    return "g-f";
+  }
+
   function read(k, id){ try { return JSON.parse(localStorage.getItem(k + id)); } catch(e){ return null; } }
 
   /* 🚨 A LESSON IS FINISHED IN FOUR DIFFERENT SHAPES, AND THE CARD MUST KNOW ALL
@@ -1104,12 +1126,18 @@ const progressScript = `<script>
          finishing them IS full marks, and saying "100%" without saying it was
          mastery would read as a test result it never was. */
       if (s){
-        if (d && typeof d.pct === "number")
-          s.textContent = "Completed \\u00b7 best " + d.score + "/" + d.total + " (" + d.pct + "%)";
-        else if (pr && pr.total > 0)
-          s.textContent = "Completed \\u00b7 " + pr.total + "/" + pr.total + " (100%) \\u00b7 practised to mastery";
-        else
+        if (d && typeof d.pct === "number"){
+          s.textContent = d.score + "/" + d.total + " Completed\\u00a0\\u00a0" + d.pct + "%";
+          s.className = "tick-score " + gradeClass(d.pct);
+        } else if (pr && pr.total > 0){
+          /* Retry-until-right, so finishing IS full marks - green, and it says
+             mastery rather than a bare 100% that would read as a test result. */
+          s.textContent = pr.total + "/" + pr.total + " Completed\\u00a0\\u00a0100%";
+          s.className = "tick-score g-a";
+        } else {
           s.textContent = "Completed";
+          s.className = "tick-score g-a";
+        }
       }
       var t = c.querySelector(".tick-done");
       if (t) t.setAttribute("title", "Completed");
@@ -1125,8 +1153,12 @@ const progressScript = `<script>
          "1 of 5 answered" before, which gave him neither shape.
          ⚠️ Two non-breaking spaces, because HTML collapses ordinary ones and the
          gap he typed is the separator; there is no middot in what he wrote. */
-      if (ps) ps.textContent = pr.done + "/" + pr.total + " Completed\\u00a0\\u00a0" +
-        Math.round(pr.done / pr.total * 100) + "%";
+      if (ps){
+        ps.textContent = pr.done + "/" + pr.total + " Completed\\u00a0\\u00a0" +
+          Math.round(pr.done / pr.total * 100) + "%";
+        /* Yellow means UNFINISHED, not a poor mark. See gradeClass above. */
+        ps.className = "tick-score g-part";
+      }
       /* 🚨 NO GREEN BAR. Paul, same message: "you can get rid of the progress green
          bar on it too and just leave the how many out of how many questions are
          completed." The line above states the same fact exactly, and the bar was a
