@@ -28,8 +28,28 @@ node tools/split-lesson-engine.js       # THEN THESE TWO, IN THIS ORDER
 node tools/extract-lesson-assets.js
 
 node tools/check-nav-css.js .    # the shared nav is styled in BOTH stylesheets
+node tools/check-contrast.js .   # every text colour, in BOTH themes
 node tools/check-links.js .      # LAST OF ALL
 ```
+
+## 🔭 THE CHECKS ARE "THE OTHER SIDE" — the perspectives that get forgotten
+
+Every check above exists because one perspective was looked at and its opposite was not.
+Paul, 2026-09-11: *"you create things you look at it and let's go on one side but you forgot
+to look at it on the other side."* The pattern is always the same, and it is always the
+**same side that gets forgotten** — which is what makes it scriptable instead of a habit.
+
+| Perspective | The side that gets forgotten | What looks at it |
+|---|---|---|
+| Dark / light | **light** — dark is the site default | `check-contrast.js` |
+| Site page / lesson page | **lesson** — it loads a different stylesheet | `check-nav-css.js` |
+| Screen / print | **print** — no check ever renders a page | read the PDF's own draw commands; see CLAUDE.md |
+| Built / shelved | **shelved** — a lesson can be live and unreachable | `check-shelves.js` |
+| Free / paid | **paid** — a paid file in a public repo | `check-links.js` |
+| One grade / another | **the second** — two call sites shelve by grade | `check-shelves.js` |
+
+⚠️ **A perspective with no check is a perspective that will be forgotten again.** When one of
+these costs an evening, the fix is a line in this table, not a resolution to be more careful.
 
 🚨 **THE TWO POST-STEPS ARE NOT OPTIONAL AND WERE MISSING FROM THIS LIST.**
 `build-lessons.js` writes every lesson page with the whole engine inlined.
