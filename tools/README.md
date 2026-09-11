@@ -32,44 +32,20 @@ node tools/check-contrast.js .   # every text colour, in BOTH themes
 node tools/check-links.js .      # LAST OF ALL
 ```
 
-## 📋 THE REVIEW QUEUE — how a batch ends
+## 📋 THE REVIEW QUEUE — MOVED TO Core_Memory, 2026-09-11
 
 ```
-node tools/build-review.js .          # build review/index.html from tools/review-queue.json
-node tools/build-review.js . --serve  # build it and serve it on TAILSCALE + loopback
+node tools/build-review.js --serve      # from Core_Memory, NOT from here
 ```
 
-🚨 **IT SERVES ON TAILSCALE, NOT JUST LOOPBACK.** `http://100.91.145.95:4321/review/` reaches
-this PC from his phone. 127.0.0.1 is reachable only from the machine itself, which is the one
-place he is not — he reads this while settling the baby or editing video.
-⚠️ **The bare root redirects to `/review/`.** The server has to serve the whole site root or
-the iframes cannot load `/assets` and the lesson pages — which meant a URL without `/review/`
-landed on NexStudents itself. It did, on his phone. This server exists for one page, so the root
-belongs to that page.
-⚠️ **The Tailscale address, never 0.0.0.0.** Binding to everything would put a page of
-unfinished work and open questions on the local network too.
+🚨 **It is not a NexStudents tool any more.** Paul widened it to cover every question I
+have, on any project: *"if you can give me all your questions this way it help me not miss
+them while you are trying to write code."* A queue buried in one site.s repo has nowhere to
+put a MyWika or a YouTube-script question, so it lives in `Core_Memory/tools/` with the queue
+at `Core_Memory/review-queue.json`, grouped by project.
 
-🚨 **NEVER ask Paul a question mid-batch.** Everything needing his judgement goes in the queue
-and the batch keeps moving. He comes back from video editing to ONE page: what is done, and what
-needs him now.
-
-- **Write `tools/review-queue.json` as the batch runs.** Shape and every field:
-  `tools/review-queue.example.json`. Two arrays, `done` and `needs`, and nothing else.
-- **`decision` is the headline and must be answerable** — "One lesson or two?", not a paragraph
-  about the page. Add `options` and he can reply in one word.
-- 🚨 **OPTIONS ONLY. NO IFRAMES, NO SITE.** Paul, 2026-09-11: *"you don.t need to show me the
-  site in the review page. you can just give me options and I.ll tell you or click what works
-  best."* The first version framed live pages, which forced this server to serve the whole site
-  — and a URL without /review/ landed him on NexStudents. It serves ONE page now.
-- 🚨 **HE TAPS AN OPTION AND IT IS WRITTEN BACK** into `review-queue.json`, which is committed.
-  An answer given from his phone survives to the next session without him repeating it. Every
-  question also takes free text, because the right answer is often none of mine.
-- ⚠️ **It must be SERVED, never opened from disk.** The pages it frames link `/assets/...`
-  root-absolute, which under `file://` resolves to the drive root and silently loads nothing —
-  the same trap that shipped three history PDFs in Times New Roman.
-- ⚠️ **`review/` is gitignored and `check-links` skips it.** It links to pages mid-build on
-  purpose. The QUEUE JSON is committed, so the next session knows what is still pending.
-- ✅ **An empty `needs` is the best result** and renders as one green line.
+⚠️ **Never ask him a question in chat.** It goes in the queue; chat gets one line and the
+Tailscale link. → `feedback-one-review-queue` and `feedback-remote-means-tailscale` in memory.
 
 ## 🔭 THE CHECKS ARE "THE OTHER SIDE" — the perspectives that get forgotten
 
