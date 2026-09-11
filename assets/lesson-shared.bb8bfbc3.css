@@ -315,7 +315,9 @@ table.signs tbody tr:nth-child(odd){background:var(--panel)}
   font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-faint, var(--dim));
 }
-.swatches{display:flex;gap:7px}
+/* Eight swatches since 2026-09-11 (Rose, Gold, Teal joined). They WRAP on a
+   narrow phone rather than push the row past the edge. */
+.swatches{display:flex;flex-wrap:wrap;gap:7px}
 /* `background-clip:padding-box` with a TRANSPARENT border meant the gradient
    stopped short and a 2px ring of the dark page showed through every swatch.
    Paul, 2026-08-26: "can you make the theme colors not have a black spare

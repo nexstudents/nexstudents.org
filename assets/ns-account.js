@@ -275,9 +275,20 @@
     if (/current pin is wrong/.test(m)) return "That's not your current PIN.";
     if (/pin must be 4 digits/.test(m)) return "The PIN is 4 numbers.";
     if (/students_name_len/.test(m)) return "Give the profile a name, 30 letters at most.";
+    if (/profile limit: 10 students/.test(m)) return "An account can have up to 10 student profiles.";
+    if (/profile limit: 2 parents/.test(m)) return "An account can have up to 2 parent profiles.";
+    if (/birthday is in the future|students_birthday_ok/.test(m)) return "Check the birthday. It can't be in the future.";
     return "";
   }
-  var STUDENT_COLS = "id,name,grade,avatar,created_at";
+  /* 2026-09-11, migration 014: a profile row is a STUDENT or the SECOND PARENT
+     (kind). The account holder is parent 1 and has no row. */
+  /* `theme` is ONE of the eight lesson palettes and colours both the profile
+     box and that profile's lessons. */
+  var STUDENT_COLS = "id,kind,name,grade,theme,birthday,gender,created_at";
+  function profileBody(f) {
+    return { name: String(f.name || "").trim(), grade: f.grade || null, theme: f.theme || "ocean",
+             birthday: f.birthday || null, gender: f.gender || null };
+  }
   function students() {
     return rest("GET", "/students?select=" + STUDENT_COLS + "&order=created_at.asc", null, "Could not load profiles.")
       .then(function (rows) {
@@ -289,13 +300,13 @@
       });
   }
   function addStudent(f) {
-    return rest("POST", "/students?select=" + STUDENT_COLS,
-      { name: String(f.name || "").trim(), grade: f.grade || null, avatar: f.avatar || "blue" },
+    var b = profileBody(f); b.kind = f.kind === "parent" ? "parent" : "student";
+    return rest("POST", "/students?select=" + STUDENT_COLS, b,
       "Could not add that profile.").then(function (d) { return d && d[0]; });
   }
+  /* kind is never sent on an update: the database refuses a change anyway. */
   function updateStudent(id, f) {
-    return rest("PATCH", "/students?id=eq." + encodeURIComponent(id) + "&select=" + STUDENT_COLS,
-      { name: String(f.name || "").trim(), grade: f.grade || null, avatar: f.avatar || "blue" },
+    return rest("PATCH", "/students?id=eq." + encodeURIComponent(id) + "&select=" + STUDENT_COLS, profileBody(f),
       "Could not save that profile.").then(function (d) { return d && d[0]; });
   }
   /* 🚨 Deleting a profile deletes its progress too (on delete cascade). The
@@ -304,15 +315,20 @@
     return rest("DELETE", "/students?id=eq." + encodeURIComponent(id), null, "Could not delete that profile.")
       .then(function () { if (who() === id) write(WHO_KEY, "parent"); return true; });
   }
-  function hasPin() { return rest("POST", "/rpc/has_pin", {}, "Could not check the PIN."); }
-  function checkPin(pin) { return rest("POST", "/rpc/check_pin", { pin: String(pin || "") }, "Could not check the PIN."); }
-  function setPin(pin, old) {
-    return rest("POST", "/rpc/set_pin", { new_pin: String(pin || ""), old_pin: old == null ? null : String(old) },
-      "Could not save the PIN.");
+  /* Each parent has their own PIN (migration 014). `profile` is the second
+     parent's row id, or null for the account holder. pinMap() answers which
+     parents have one: {owner: true, "<id>": true}. */
+  function pinMap() { return rest("POST", "/rpc/pin_map", {}, "Could not check the PIN."); }
+  function checkPin(pin, profile) {
+    return rest("POST", "/rpc/check_pin", { pin: String(pin || ""), profile: profile || null }, "Could not check the PIN.");
+  }
+  function setPin(pin, old, profile) {
+    return rest("POST", "/rpc/set_pin", { new_pin: String(pin || ""), old_pin: old == null ? null : String(old),
+      profile: profile || null }, "Could not save the PIN.");
   }
 
   function signOut() {
-    session = null; drop(SESSION_KEY); drop(WHO_KEY); drop(PICK_KEY);
+    session = null; drop(SESSION_KEY); drop(WHO_KEY); drop(PICK_KEY); drop("ns:accent");
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
   }
 
@@ -584,7 +600,7 @@
     signOut: signOut, getUser: getUser,
     who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,
     students: students, addStudent: addStudent, updateStudent: updateStudent, deleteStudent: deleteStudent,
-    hasPin: hasPin, checkPin: checkPin, setPin: setPin,
+    pinMap: pinMap, checkPin: checkPin, setPin: setPin,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
     cartThumb: cartThumb, cartHref: cartHref,

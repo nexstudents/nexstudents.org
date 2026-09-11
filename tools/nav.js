@@ -657,6 +657,26 @@ const accountDrawer = () =>
   '<div class="ad-body" id="adBody"></div>' +
   "</aside>";
 
+/* 🎨 THE EIGHT THEME COLORS, LIFTED FROM THE LESSON TEMPLATE, NEVER COPIED.
+   Paul, 2026-09-11: "i do want 8 differnt theme color types including the
+   graphite color we made", one shared set for the lessons AND the profile
+   boxes. A profile box is that theme's LIGHT accent (all eight carry white
+   text at 6:1 or better). Same rule the lesson generators follow for THEMES:
+   one source, read at build time, and the build fails if it cannot read it. */
+const AD_THEMES = (() => {
+  const fs = require("fs"), path = require("path");
+  const src = fs.readFileSync(path.join(__dirname, "lesson-template.html"), "utf8");
+  const out = [];
+  const re = /(\w+): \{ name:"([^"]+)",\s*light:\{[^}]*?accent:"(#[0-9A-Fa-f]{6})"/g;
+  let m;
+  while ((m = re.exec(src))) out.push({ k: m[1], name: m[2], box: m[3] });
+  if (out.length < 8) {
+    console.error("nav.js: expected 8 lesson THEMES in lesson-template.html, read " + out.length);
+    process.exit(1);
+  }
+  return out;
+})();
+
 /* slug -> the sheet's thumbnail and where a FREE one opens (its print/ page).
    Built from worksheets.js, the same list the sheets are rendered from, so the
    panel cannot point at a sheet that is not there. A paid item downloads
@@ -700,9 +720,14 @@ const modeSwitch = (extra) => '<button class="mswitch' + (extra ? " " + extra : 
 
 /* Runs BEFORE the body paints so a reader who chose light never sees the dark
    page flash first. Inlined in <head> by every generator. */
+/* Also paints the active profile's accent BEFORE first paint (2026-09-11):
+   ns:accent is a hex the account panel writes (nsApplyAccent). Checked as a
+   6-digit hex so a tampered value cannot inject CSS. */
 const modeBoot = () => "<scr" + "ipt>" +
-  '(function(){try{var m=localStorage.getItem("ns:mode");' +
-  'if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();' +
+  '(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");' +
+  'if(m==="light"||m==="dark")d.setAttribute("data-theme",m);' +
+  'var c=localStorage.getItem("ns:accent");' +
+  'if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();' +
   "</scr" + "ipt>";
 
 /* 🚨 WRAPPED IN AN IIFE, and it must stay that way.
@@ -1044,6 +1069,7 @@ if(cdrawer){
 var adrawer=document.getElementById("adrawer"),ascrim=document.getElementById("ascrim"),
     adClose=document.getElementById("adClose"),acctLink=document.getElementById("acctLink");
 var AD_ITEMS=${JSON.stringify(AD_ITEMS)};
+var AD_THEMES=${JSON.stringify(AD_THEMES)};
 var AD_WORKER="https://nexstudents-media.nexedgetech.workers.dev";
 var adUser=null,adOrders=null,adLoading=false;
 /* The views draw into a HOST: {body, h, back, x, up, view, save}. Today the
@@ -1103,19 +1129,31 @@ function adFrame(H,title,up,view){
      Settings; getting back to the parent profile (and so to Manage Profiles,
      Orders, Account, Sign Out) asks for the PIN. Students have no PIN.
    - A full-screen "Who's learning?" picker once after sign-in (nsWhoPicker).
+   Paul, later the same evening (migration 014):
+   - UP TO 2 PARENT PROFILES AND 10 STUDENTS. The account holder is parent 1
+     and has no row; parent 2 is a row with kind "parent". EACH PARENT HAS
+     THEIR OWN PIN. One + box that asks Parent or Student.
+   - Students get birthday (optional), male/female, grade and ONE Theme
+     Color from the eight lesson palettes, which colors their box AND their
+     lessons.
    🚨 WHO IS ACTIVE IS NSAccount.who(), PER DEVICE, AND IT IS NOT A PERMISSION.
-   The session is the parent's either way. See migration 013's header.
-   ⚠️ The parent's box keeps the old red; red is left OUT of the student
-   palette so a child's box can never be mistaken for the parent's. */
-var AD_AV=["blue","green","teal","purple","orange","pink"];
+   "parent" = the account holder, otherwise a row id. The session is the
+   account holder's either way. See migration 013's header.
+   ⚠️ The account holder's box keeps the old red; no theme is red, so a
+   child's box can never be mistaken for it. */
 var AD_GRADES=["K","1","2","3","4","5","6","7","8"];
-var adKids=null,adPin=null;
+var AD_MAX={student:10,parent:1};   /* ROWS. Parents = the account holder + 1 */
+var adKids=null,adPins=null;        /* adKids holds EVERY profile row, both kinds */
 var AD_LOCK="<svg class='ad-lock' viewBox='0 0 20 20' width='11' height='11' aria-hidden='true' fill='none' "+
   "stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>"+
   "<rect x='4' y='9' width='12' height='8' rx='1.6'/><path d='M7 9V6.5a3 3 0 0 1 6 0V9'/></svg>";
 function adKid(id){ return (adKids||[]).filter(function(k){ return k.id===id; })[0]||null; }
-/* null = the parent. PENDING while a student is set but the list has not
-   loaded, so the panel never flashes the parent rows at a child. */
+function adOf(kind){ return (adKids||[]).filter(function(k){ return k.kind===kind; }); }
+function adTheme(k){ return AD_THEMES.filter(function(t){ return t.k===k; })[0]||null; }
+/* A parent's PIN key: null for the account holder, else the parent row id. */
+function adHasPin(key){ return !!(adPins&&adPins[key||"owner"]); }
+/* null = the account holder. PENDING while a profile is set but the list has
+   not loaded, so the panel never flashes the parent rows at a child. */
 var AD_PENDING={pending:true};
 function adActive(){
   var w=window.NSAccount?NSAccount.who():"parent";
@@ -1123,52 +1161,83 @@ function adActive(){
   if(adKids===null) return AD_PENDING;
   return adKid(w);
 }
-function adAv(name,av){
-  return "<i class='av-"+adEsc(av||"blue")+"' aria-hidden='true'>"+adEsc(String(name||"?").charAt(0).toUpperCase())+"</i>";
+function adParentSide(a){ return a===null||(a&&a!==AD_PENDING&&a.kind==="parent"); }
+function adAv(name,theme){
+  var t=adTheme(theme);
+  return "<i"+(t?" style='background:"+t.box+"'":"")+" aria-hidden='true'>"+adEsc(String(name||"?").charAt(0).toUpperCase())+"</i>";
 }
 function adMe(){
   var md=(adUser&&adUser.user_metadata)||{};
   return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
 }
+function adFull(){ return adOf("student").length>=AD_MAX.student&&adOf("parent").length>=AD_MAX.parent; }
 /* 🧒 THE PROFILE STRIP, like the top of Netflix's account menu (Paul,
-   2026-09-10: "maybe at the top like add profile box"). Parent, then each
-   student, then Add Profile (parent side only). The active one has a ring. */
-function adStrip(kid){
+   2026-09-10: "maybe at the top like add profile box"). Parents, then
+   students, then the + square (parent side only, gone when both caps are
+   full). Paul: "we will just have an add box button like a square with a plus
+   sign in the middle" - so the + carries no label under it. */
+function adStrip(a){
   var me=adMe();
+  /* pinKey false = a student, never locked. ⚠️ Not the word for "no value":
+     build-worksheets fails any page containing it, as a broken-template net. */
+  function tile(id,name,theme,pinKey,on){
+    var lock=pinKey!==false&&adHasPin(pinKey);
+    return "<button class='ad-pro-i"+(on?" is-me":"")+"' type='button' data-who='"+adEsc(id)+"' aria-label='"+
+      adEsc(name)+(lock?", locked with a PIN":"")+"'>"+adAv(name,theme)+"<b>"+(lock?AD_LOCK:"")+adEsc(name)+"</b></button>";
+  }
   return "<div class='ad-pro'>"+
-    "<button class='ad-pro-i"+(kid?"":" is-me")+"' type='button' data-who='parent' aria-label='"+
-      adEsc(me)+(adPin?", locked with a PIN":"")+"'><i aria-hidden='true'>"+adEsc(me.charAt(0).toUpperCase())+"</i>"+
-      "<b>"+(adPin?AD_LOCK:"")+adEsc(me)+"</b></button>"+
-    (adKids||[]).map(function(k){
-      return "<button class='ad-pro-i"+(kid&&kid.id===k.id?" is-me":"")+"' type='button' data-who='"+adEsc(k.id)+"'>"+
-        adAv(k.name,k.avatar)+"<b>"+adEsc(k.name)+"</b></button>";
-    }).join("")+
-    (kid?"":"<button class='ad-pro-i is-add' type='button' data-go='add'><i aria-hidden='true'>+</i><b>Add Profile</b></button>")+
+    tile("parent",me,null,null,a===null)+
+    adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme,p.id,a&&a.id===p.id); }).join("")+
+    adOf("student").map(function(k){ return tile(k.id,k.name,k.theme,false,a&&a.id===k.id); }).join("")+
+    (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>+</i></button>":"")+
     "</div>";
+}
+/* Switch who is on. Their theme color follows as an ACCENT (buttons and nav
+   bar, Paul's pick), never as a repaint of the lesson: see nsApplyAccent.
+   ⚠️ The first version wrote ns:theme and turned a whole lesson teal. Paul:
+   "certain elements instead of the entire color of the site." The lesson
+   colour picker (ns:theme) is the student's own per-device choice again. */
+function adSetWho(id){
+  NSAccount.setWho(id);
+  nsWhoIcon();
+}
+/* html.has-me + --me on the live page, and ns:accent so modeBoot paints it
+   before first paint on the next page. Cleared for the account holder, a
+   visitor, and anyone signed out. */
+function nsApplyAccent(){
+  if(!window.NSAccount) return;
+  var a=NSAccount.isSignedIn()?adActive():null;
+  if(a===AD_PENDING) return;
+  var t=a?adTheme(a.theme):null,d=document.documentElement;
+  try{ if(t) localStorage.setItem("ns:accent",t.box); else localStorage.removeItem("ns:accent"); }catch(e){}
+  if(t){ d.style.setProperty("--me",t.box); d.classList.add("has-me"); }
+  else { d.style.removeProperty("--me"); d.classList.remove("has-me"); }
 }
 function adMain(H){
   adFrame(H,"Account",null,"main");
-  var kid=adActive();
-  if(kid===AD_PENDING){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
-  /* A STUDENT'S PANEL: the strip and Settings, nothing that belongs to the
+  var a=adActive();
+  if(a===AD_PENDING){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  /* A STUDENT'S PANEL: the strip and Settings, nothing that belongs to a
      parent. The note says how a grown-up gets back. */
-  if(kid){
-    H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(kid.name)+"</h3></div>"+adStrip(kid)+
+  if(!adParentSide(a)){
+    var anyPin=adHasPin(null)||adOf("parent").some(function(p){ return adHasPin(p.id); });
+    H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
       "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
-      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(adPin?" and enter your PIN":"")+" to get back to the account.</p>";
+      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>";
     if(typeof nsPaintMode==="function") nsPaintMode();
     return;
   }
   var md=(adUser&&adUser.user_metadata)||{};
+  var hiName=a?a.name:md.first_name;
   var last=adOrders&&adOrders.length?"Last order "+(adOrders[0].no!=null?"#"+adOrders[0].no+" ":"")+"is completed":
            (adOrders?"No orders yet":"Loading…");
-  var n=adKids?adKids.length:-1;
-  var kidsLine=n<0?"Loading…":n===0?"Add a profile for each student":n+" student profile"+(n===1?"":"s");
+  var ns=adKids?adOf("student").length:-1,np=adKids?adOf("parent").length+1:-1;
+  var kidsLine=ns<0?"Loading…":np+" parent"+(np===1?"":"s")+" · "+ns+" student"+(ns===1?"":"s");
   /* 🚨 THE ORDER IS PAUL'S. 2026-09-10: "i want the Hi, Username still but in
      order I want Manage Profiles first then orders, the settings, then
      account, then Sign out." */
-  H.body.innerHTML="<div class='ad-hi'><h3>"+(md.first_name?"Hi, "+adEsc(md.first_name):"Hi there")+"</h3></div>"+
-    adStrip(null)+
+  H.body.innerHTML="<div class='ad-hi'><h3>"+(hiName?"Hi, "+adEsc(hiName):"Hi there")+"</h3></div>"+
+    adStrip(a)+
     "<button class='ad-row' type='button' data-go='profiles'><b>Manage Profiles</b><span>"+adEsc(kidsLine)+"</span></button>"+
     "<button class='ad-row' type='button' data-go='orders'><b>Orders</b><span>"+adEsc(last)+"</span></button>"+
     "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
@@ -1178,107 +1247,217 @@ function adMain(H){
     "<button class='ad-signout' type='button' data-out>Sign Out</button>";
   if(typeof nsPaintMode==="function") nsPaintMode();
 }
-/* Tapping a box in the strip (or on the picker). Parent -> PIN first when one
-   is set and a student is the one asking. A student -> straight in. */
+/* Tapping a box in the strip. A PARENT box asks for THAT parent's PIN when it
+   has one, whoever is asking (each parent has their own, Paul's call). A
+   student box -> straight in. */
 function adSwitch(H,id){
-  var cur=NSAccount.who();
-  if(id===cur) return;
-  if(id==="parent"){
-    if(adPin) return adPinView(H,"unlock");
-    NSAccount.setWho("parent"); return adMain(H);
-  }
-  NSAccount.setWho(id); adMain(H);
+  if(id===NSAccount.who()) return;
+  var row=id==="parent"?null:adKid(id);
+  var isParent=id==="parent"||(row&&row.kind==="parent");
+  var key=id==="parent"?null:id;
+  if(isParent&&adHasPin(key)) return adPinView(H,"unlock",{key:key,name:row?row.name:adMe()});
+  adSetWho(id); adMain(H);
+}
+function adGradeLine(k){ return k.grade?(k.grade==="K"?"Kindergarten":"Grade "+adEsc(k.grade)):"No grade set"; }
+function adRow(go,id,avatar,title,sub){
+  return "<button class='ad-ord ad-kidrow' type='button' data-go='"+go+"'"+(id?" data-id='"+adEsc(id)+"'":"")+">"+avatar+
+    "<span class='ad-ord-t'><b>"+title+"</b><span>"+sub+"</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>";
 }
 /* 👨‍👩‍👧 MANAGE PROFILES. Paul: "i thought about putting it also in the side
-   panel." Each student opens its edit view; the PIN row sits under them. */
+   panel." Parents, then students, then Add Profile until both caps are full.
+   Each parent's PIN lives on that parent's own row. */
 function adProfiles(H){
   adFrame(H,"Manage Profiles",adMain,"profiles");
   if(adKids===null){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  var me=adMe(),kids=adOf("student");
+  function pinLine(key){ return adHasPin(key)?"PIN on":"No PIN"; }
   H.body.innerHTML=
-    (adKids.length?"":"<p class='ad-empty'>Give each student their own profile, so their lessons and progress stay separate.</p>")+
-    adKids.map(function(k){
-      return "<button class='ad-ord ad-kidrow' type='button' data-go='edit' data-id='"+adEsc(k.id)+"'>"+adAv(k.name,k.avatar)+
-        "<span class='ad-ord-t'><b>"+adEsc(k.name)+"</b><span>"+(k.grade?(k.grade==="K"?"Kindergarten":"Grade "+adEsc(k.grade)):"No grade set")+"</span></span>"+
-        "<span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>";
-    }).join("")+
-    "<button class='ad-ord ad-kidrow is-add' type='button' data-go='add'><i aria-hidden='true'>+</i>"+
-      "<span class='ad-ord-t'><b>Add Profile</b></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
-    "<p class='ad-cap'>Parent/Teacher PIN</p>"+
-    "<button class='ad-kv ad-go' type='button' data-go='pin'><span>PIN</span><span class='ad-dim'>"+
-      (adPin?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
-    "<p class='ad-note'>Students need the PIN to get back to your profile, so Orders, Account and these settings stay yours.</p>";
+    "<p class='ad-cap'>Parents · "+(adOf("parent").length+1)+" of 2</p>"+
+    adRow("owner",null,adAv(me,null),adEsc(me),"Account holder · "+pinLine(null))+
+    adOf("parent").map(function(p){ return adRow("edit",p.id,adAv(p.name,p.theme),adEsc(p.name),"Parent · "+pinLine(p.id)); }).join("")+
+    "<p class='ad-cap'>Students · "+kids.length+" of 10</p>"+
+    (kids.length?"":"<p class='ad-note'>Give each student their own profile, so their lessons and progress stay separate.</p>")+
+    kids.map(function(k){ return adRow("edit",k.id,adAv(k.name,k.theme),adEsc(k.name),adGradeLine(k)); }).join("")+
+    (adFull()?"<p class='ad-note'>This account is full: 2 parents and 10 students.</p>":
+      "<button class='ad-ord ad-kidrow is-add' type='button' data-go='add'><i aria-hidden='true'>+</i>"+
+      "<span class='ad-ord-t'><b>Add Profile</b></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>")+
+    "<p class='ad-note'>Each parent can set their own PIN. Students need it to open that parent's profile, so Orders, Account and these settings stay with the grown-ups.</p>";
 }
-/* ADD / EDIT ONE STUDENT. Name, grade, colour. SAVE in the header, like
-   Account: CLOSE until something changes (a new profile starts on SAVE). */
-function adEdit(H,kid){
-  adFrame(H,kid?"Edit Profile":"Add Profile",adProfiles,"edit");
-  var f={name:kid?kid.name:"",grade:kid?kid.grade||"":"",avatar:kid?kid.avatar||"blue":AD_AV[(adKids||[]).length%AD_AV.length]};
+/* THE + BOX asks which kind (Paul picked that). A kind that is full says so
+   and cannot be pressed. */
+function adAddPick(H){
+  adFrame(H,"Add Profile",adProfiles,"add");
+  var np=adOf("parent").length,ns=adOf("student").length;
+  function opt(kind,label,used,max){
+    var full=used>=max;
+    return "<button class='ad-row' type='button' data-kind='"+kind+"'"+(full?" disabled":"")+"><b>"+label+"</b><span>"+
+      (full?"Full":(used+(kind==="parent"?1:0))+" of "+(kind==="parent"?2:10)+" used")+"</span></button>";
+  }
+  H.body.innerHTML="<p class='ad-empty ad-mid'>Who is this profile for?</p>"+
+    opt("parent","Parent",np,AD_MAX.parent)+opt("student","Student",ns,AD_MAX.student);
+  H.body.querySelectorAll("[data-kind]").forEach(function(b){
+    b.onclick=function(){ if(!b.disabled) adEdit(H,null,b.getAttribute("data-kind")); };
+  });
+}
+/* THE ACCOUNT HOLDER'S ROW: their name and email live under Account, so this
+   is only their PIN. */
+function adOwner(H){
+  adFrame(H,adMe(),adProfiles,"owner");
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),null)+"</div>"+
+    "<p class='ad-cap'>PIN</p>"+
+    "<button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
+      (adHasPin(null)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
+    "<p class='ad-note'>Your name, email and password are under Account.</p>";
+  H.body.querySelector("[data-pin]").onclick=function(){ adPinView(H,"change",{key:null,name:adMe()}); };
+}
+/* ADD / EDIT ONE PROFILE. SAVE in the header, like Account: CLOSE until
+   something changes (a new profile starts on SAVE).
+     student  Name · Birthday (optional) · Male/Female (optional) · Grade · Theme Color
+     parent   Name · Theme Color · their own PIN
+   Paul on the birthday: "they can choose not to add the age and it should be
+   an optional feature." Male/Female is optional the same way; tapping the
+   chosen one again clears it, like the grade chips.
+   ⚠️ The birthday is three number boxes, MM DD YYYY, not <input type=date>:
+   that one opens the phone's own picker, which Paul has rejected before for
+   the voice dropdown. */
+function adEdit(H,row,kindIn){
+  var kind=row?row.kind:kindIn;
+  var isKid=kind==="student";
+  adFrame(H,row?"Edit Profile":(isKid?"Add Student":"Add Parent"),row?adProfiles:adAddPick,"edit");
+  var used=(adKids||[]).map(function(k){ return k.theme; });
+  var fresh=AD_THEMES.filter(function(t){ return used.indexOf(t.k)<0; })[0]||AD_THEMES[0];
+  var bd=row&&row.birthday?String(row.birthday).split("-"):["","",""];
+  var f={name:row?row.name:"",grade:row?row.grade||"":"",theme:row?row.theme:fresh.k,gender:row?row.gender||"":""};
+  function chips(attr,list,cur,label,cls){
+    return "<div class='ad-chips"+(cls?" "+cls:"")+"' role='group' aria-label='"+label+"'>"+list.map(function(g){
+      return "<button type='button' data-"+attr+"='"+g[0]+"' aria-pressed='"+(cur===g[0])+"'>"+g[1]+"</button>";
+    }).join("")+"</div>";
+  }
   H.body.innerHTML=
-    "<div class='ad-hi ad-edit-av'>"+adAv(f.name||"?",f.avatar)+"</div>"+
+    "<div class='ad-hi ad-edit-av'>"+adAv(f.name||"?",f.theme)+"</div>"+
     "<p class='ad-cap'>Name</p>"+
     "<label class='ad-kv'><span>Name</span><input class='ad-in' data-f='name' maxlength='30' autocomplete='off' value='"+adEsc(f.name)+"'></label>"+
-    "<p class='ad-cap'>Grade</p>"+
-    "<div class='ad-chips' role='group' aria-label='Grade'>"+AD_GRADES.map(function(g){
-      return "<button type='button' data-grade='"+g+"' aria-pressed='"+(f.grade===g)+"'>"+g+"</button>";
+    (isKid?
+      "<p class='ad-cap'>Birthday <em class='ad-opt'>Optional</em></p>"+
+      "<div class='ad-kv ad-bday'><span>Birthday</span><span>"+
+        "<input class='ad-in' data-f='mm' inputmode='numeric' maxlength='2' placeholder='MM' aria-label='Birth month' value='"+adEsc(bd[1]||"")+"'>/"+
+        "<input class='ad-in' data-f='dd' inputmode='numeric' maxlength='2' placeholder='DD' aria-label='Birth day' value='"+adEsc(bd[2]||"")+"'>/"+
+        "<input class='ad-in ad-yyyy' data-f='yy' inputmode='numeric' maxlength='4' placeholder='YYYY' aria-label='Birth year' value='"+adEsc(bd[0]||"")+"'>"+
+      "</span></div>"+
+      "<p class='ad-cap'>Male or Female <em class='ad-opt'>Optional</em></p>"+
+      /* Centred - Paul, 2026-09-11: "that male and female choice if you can
+         center it." Only this row; grade and color stay left. */
+      chips("gender",[["male","Male"],["female","Female"]],f.gender,"Male or female","is-center")+
+      "<p class='ad-cap'>Grade Level</p>"+
+      chips("grade",AD_GRADES.map(function(g){ return [g,g]; }),f.grade,"Grade level")
+    :"")+
+    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc((adTheme(f.theme)||{}).name||"")+"</span></p>"+
+    "<div class='ad-sw' role='group' aria-label='Theme color'>"+AD_THEMES.map(function(t){
+      return "<button type='button' style='background:"+t.box+"' data-theme-k='"+t.k+"' aria-label='"+t.name+"' title='"+t.name+"' aria-pressed='"+(f.theme===t.k)+"'></button>";
     }).join("")+"</div>"+
-    "<p class='ad-cap'>Color</p>"+
-    "<div class='ad-sw' role='group' aria-label='Profile color'>"+AD_AV.map(function(a){
-      return "<button type='button' class='av-"+a+"' data-av='"+a+"' aria-label='"+a+"' aria-pressed='"+(f.avatar===a)+"'></button>";
-    }).join("")+"</div>"+
+    "<p class='ad-note'>Colors "+(f.name?adEsc(f.name)+"&#39;s":"their")+" profile box, the buttons and the menu bar while they&#39;re on.</p>"+
+    (!isKid&&row?"<p class='ad-cap'>PIN</p><button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
+      (adHasPin(row.id)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>":"")+
     "<p class='ad-msg'></p>"+
-    (kid?"<button class='ad-signout ad-del' type='button' data-del>Delete Profile</button>":"");
+    (row?"<button class='ad-signout ad-del' type='button' data-del>"+(isKid?"Remove Student":"Remove Parent")+"</button>":"");
   var q=function(s){ return H.body.querySelector(s); };
   var msg=q(".ad-msg"),nameIn=q("[data-f=name]"),big=q(".ad-edit-av");
-  function paintBig(){ big.innerHTML=adAv(nameIn.value.trim()||"?",f.avatar); }
+  function paintBig(){ big.innerHTML=adAv(nameIn.value.trim()||"?",f.theme); }
   function dirty(){ if(H.save) return; H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } }
-  nameIn.addEventListener("input",function(){ paintBig(); dirty(); });
-  nameIn.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); if(H.save) H.save(); } });
-  H.body.querySelectorAll("[data-grade]").forEach(function(b){
-    b.onclick=function(){
-      var g=b.getAttribute("data-grade"); f.grade=f.grade===g?"":g;
-      H.body.querySelectorAll("[data-grade]").forEach(function(x){ x.setAttribute("aria-pressed",x.getAttribute("data-grade")===f.grade); });
-      dirty();
-    };
+  H.body.querySelectorAll(".ad-in").forEach(function(i){
+    i.addEventListener("input",function(){
+      if(i!==nameIn) i.value=i.value.replace(/[^0-9]/g,"");
+      paintBig(); dirty();
+    });
+    i.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); if(H.save) H.save(); } });
   });
-  H.body.querySelectorAll("[data-av]").forEach(function(b){
+  function chipGroup(attr,field){
+    H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
+      b.onclick=function(){
+        var v=b.getAttribute("data-"+attr); f[field]=f[field]===v?"":v;
+        H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x.getAttribute("data-"+attr)===f[field]); });
+        dirty();
+      };
+    });
+  }
+  chipGroup("grade","grade"); chipGroup("gender","gender");
+  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
     b.onclick=function(){
-      f.avatar=b.getAttribute("data-av");
-      H.body.querySelectorAll("[data-av]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
+      f.theme=b.getAttribute("data-theme-k");
+      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
+      q("[data-tname]").textContent=(adTheme(f.theme)||{}).name||"";
       paintBig(); dirty();
     };
   });
+  var pinRow=q("[data-pin]");
+  if(pinRow) pinRow.onclick=function(){ adPinView(H,"change",{key:row.id,name:row.name}); };
+  /* "" when left blank, the ISO date when whole, null when half filled in. */
+  function birthday(){
+    if(!isKid) return "";
+    var m=q("[data-f=mm]").value,d=q("[data-f=dd]").value,y=q("[data-f=yy]").value;
+    if(!m&&!d&&!y) return "";
+    if(!m||!d||y.length!==4) return null;
+    var iso=y+"-"+("0"+m).slice(-2)+"-"+("0"+d).slice(-2),dt=new Date(iso+"T00:00:00");
+    if(isNaN(dt)||dt.getDate()!==+d||dt.getMonth()+1!==+m) return null;
+    return iso;
+  }
   var busy=false;
   var doSave=function(){
     if(busy) return;
-    var name=nameIn.value.trim();
+    var name=nameIn.value.trim(),b=birthday();
     if(!name){ msg.textContent="Give the profile a name."; nameIn.focus(); return; }
+    if(b===null){ msg.textContent="Finish the birthday as MM / DD / YYYY, or leave it blank."; return; }
+    if(b&&new Date(b+"T00:00:00")>new Date()){ msg.textContent="Check the birthday. It can't be in the future."; return; }
     busy=true; msg.textContent="Saving…";
-    var job=kid?NSAccount.updateStudent(kid.id,{name:name,grade:f.grade,avatar:f.avatar})
-               :NSAccount.addStudent({name:name,grade:f.grade,avatar:f.avatar});
-    job.then(function(row){
+    var body={name:name,theme:f.theme,grade:isKid?f.grade:null,gender:isKid?f.gender:null,birthday:b||null,kind:kind};
+    var job=row?NSAccount.updateStudent(row.id,body):NSAccount.addStudent(body);
+    job.then(function(saved){
       busy=false;
-      if(!row) throw new Error("Could not save that profile.");
-      if(kid) adKids=adKids.map(function(k){ return k.id===row.id?row:k; });
-      else adKids=(adKids||[]).concat([row]);
-      nsWhoIcon();
-      /* The FIRST student is the moment a PIN starts to matter, so it is
-         offered straight away. "Not Now" is allowed - it is the parent's call. */
-      if(!kid&&!adPin) adPinView(H,"first",{name:row.name});
+      if(!saved) throw new Error("Could not save that profile.");
+      var firstKid=!row&&isKid&&adOf("student").length===0;
+      if(row) adKids=adKids.map(function(k){ return k.id===saved.id?saved:k; });
+      else adKids=(adKids||[]).concat([saved]);
+      /* The profile that is ON right now changed its theme: carry it. */
+      if(row&&NSAccount.who()===row.id) adSetWho(row.id); else nsWhoIcon();
+      /* A NEW PARENT is offered their own PIN straight away. The FIRST student
+         is the moment the account holder's PIN starts to matter. Both have a
+         Not Now - it is the grown-up's call. */
+      if(!row&&!isKid) adPinView(H,"first",{key:saved.id,name:saved.name,forParent:true});
+      else if(firstKid&&!adHasPin(null)) adPinView(H,"first",{key:null,name:adMe(),kid:saved.name});
       else adProfiles(H);
     }).catch(function(e){ busy=false; msg.textContent=e.message||"Could not save that profile."; });
   };
-  if(!kid){ H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } nameIn.focus(); }
-  /* 🚨 DELETE ASKS TWICE, IN THE PANEL. It takes the student's progress with
-     it (on delete cascade), and a browser confirm() box would freeze the page
-     for anything automated and looks nothing like the rest of the panel. */
-  var del=q("[data-del]"),armed=false;
-  if(del) del.onclick=function(){
-    if(!armed){ armed=true; del.textContent="Tap again to delete "+kid.name+" and their progress"; del.classList.add("is-armed"); return; }
-    del.textContent="Deleting…";
-    NSAccount.deleteStudent(kid.id).then(function(){
-      adKids=adKids.filter(function(k){ return k.id!==kid.id; });
+  if(!row){ H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } nameIn.focus(); }
+  var del=q("[data-del]");
+  if(del) del.onclick=function(){ adRemove(H,row); };
+}
+/* 🗑️ REMOVE A PROFILE: ITS OWN WARNING SCREEN. Paul, 2026-09-11: "you need a
+   way to remove a student so you can deactivate their account and it gives a
+   warning it will wipe their progress." A student's progress goes with the
+   row (on delete cascade), so the warning says so in plain words before the
+   red button is even on screen.
+   ⚠️ Never a browser confirm(): it freezes the page for anything automated
+   and looks nothing like the rest of the panel. */
+function adRemove(H,row){
+  var isKid=row.kind==="student",n=adEsc(row.name);
+  adFrame(H,isKid?"Remove Student":"Remove Parent",function(){ adEdit(H,row); },"remove");
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(row.name,row.theme)+"</div>"+
+    "<div class='ad-warn'><b>This can&#39;t be undone.</b>"+
+    (isKid?"<p>Removing "+n+" deletes their profile and <strong>wipes all of their progress</strong>: every lesson they&#39;ve finished and every score.</p>":
+           "<p>Removing "+n+" deletes their profile and their PIN.</p>")+
+    "<p>Your orders and downloads are not affected.</p></div>"+
+    "<p class='ad-msg'></p>"+
+    "<button class='ad-danger' type='button' data-yes>Remove "+n+"</button>"+
+    "<button class='ad-link' type='button' data-no>Cancel</button>";
+  var msg=H.body.querySelector(".ad-msg"),yes=H.body.querySelector("[data-yes]");
+  H.body.querySelector("[data-no]").onclick=function(){ adEdit(H,row); };
+  yes.onclick=function(){
+    yes.disabled=true; yes.textContent="Removing…";
+    NSAccount.deleteStudent(row.id).then(function(){
+      adKids=adKids.filter(function(k){ return k.id!==row.id; });
+      if(adPins) delete adPins[row.id];
       nsWhoIcon(); adProfiles(H);
-    }).catch(function(e){ armed=false; del.classList.remove("is-armed"); del.textContent="Delete Profile"; msg.textContent=e.message; });
+    }).catch(function(e){ yes.disabled=false; yes.textContent="Remove "+row.name; msg.textContent=e.message; });
   };
 }
 /* 🔢 THE PIN PAD. Four boxes over one real input, so a phone shows its number
@@ -1291,13 +1470,18 @@ function adEdit(H,kid){
    the SERVER (migration 013), not here. */
 function adPinView(H,mode,ctx){
   ctx=ctx||{};
+  /* ctx.key = WHICH parent: null for the account holder, else their row id.
+     ctx.name = that parent's name, so the words say whose PIN it is. */
+  var key=ctx.key||null,who=ctx.name||"your";
   var up=mode==="unlock"?adMain:adProfiles;
-  var steps=mode==="unlock"?["check"]:(mode==="change"&&adPin?["old","new","again"]:["new","again"]);
+  var steps=mode==="unlock"?["check"]:(mode==="change"&&adHasPin(key)?["old","new","again"]:["new","again"]);
   var i=0,vals={};
   var WORDS={
-    check:"Enter your Parent/Teacher PIN to open the account.",
-    old:"Enter your current PIN.",
-    "new":mode==="first"?"Set a 4-number PIN. "+(ctx.name||"Your student")+" will need it to get back to your profile.":"Pick a new 4-number PIN.",
+    check:"Enter "+who+"'s PIN to open their profile.",
+    old:"Enter "+who+"'s current PIN.",
+    "new":mode==="first"?(ctx.forParent?"Set a 4-number PIN for "+who+". Students will need it to open "+who+"'s profile.":
+      "Set a 4-number PIN for "+who+". "+(ctx.kid||"Your student")+" will need it to get back to your profile."):
+      "Pick a new 4-number PIN for "+who+".",
     again:"Type the same PIN again."
   };
   function draw(note){
@@ -1320,9 +1504,9 @@ function adPinView(H,mode,ctx){
       var step=steps[i];
       if(step==="check"){
         inp.disabled=true; msg.textContent="Checking…";
-        NSAccount.checkPin(v).then(function(ok){
+        NSAccount.checkPin(v,key).then(function(ok){
           inp.disabled=false;
-          if(ok===true){ NSAccount.setWho("parent"); nsWhoIcon(); adMain(H); }
+          if(ok===true){ adSetWho(key||"parent"); adMain(H); }
           else wrong("That PIN isn't right. Try again.");
         }).catch(function(e){ inp.disabled=false; wrong(e.message); });
         return;
@@ -1331,15 +1515,15 @@ function adPinView(H,mode,ctx){
       vals[step]=v;
       if(i<steps.length-1){ i++; draw(); return; }
       inp.disabled=true; msg.textContent="Saving…";
-      NSAccount.setPin(vals["new"],vals.old==null?null:vals.old).then(function(){
-        adPin=true; adProfiles(H);
+      NSAccount.setPin(vals["new"],vals.old==null?null:vals.old,key).then(function(){
+        adPins=adPins||{}; adPins[key||"owner"]=true; adProfiles(H);
       }).catch(function(e){
         inp.disabled=false;
         if(steps[0]==="old"){ i=0; vals={}; draw(e.message); } else wrong(e.message);
       });
     }
     paint(); inp.focus();
-    var fg=H.body.querySelector("[data-forgot]"); if(fg) fg.onclick=function(){ adForgotPin(H); };
+    var fg=H.body.querySelector("[data-forgot]"); if(fg) fg.onclick=function(){ adForgotPin(H,ctx); };
     var sk=H.body.querySelector("[data-skip]"); if(sk) sk.onclick=function(){ adProfiles(H); };
   }
   draw();
@@ -1348,10 +1532,13 @@ function adPinView(H,mode,ctx){
    PASSWORD, then pick a new PIN. set_pin() accepts a new PIN without the old
    one only when the login token says a password sign-in happened in the last
    ten minutes, so this signs in again rather than trusting the page. */
-function adForgotPin(H){
+function adForgotPin(H,ctx){
   adFrame(H,"Forgot PIN",adMain,"pin");
   var em=adUser&&adUser.email||"";
-  H.body.innerHTML="<p class='ad-empty ad-mid'>Sign in with your account password to pick a new PIN.</p>"+
+  /* The ACCOUNT password resets either parent's PIN: whoever holds the
+     password holds the account (migration 014, set_pin). */
+  H.body.innerHTML="<p class='ad-empty ad-mid'>Sign in with the account password to pick a new PIN"+
+    (ctx&&ctx.name?" for "+adEsc(ctx.name):"")+".</p>"+
     "<div class='ad-kv'><span>Email</span><span>"+adEsc(em)+"</span></div>"+
     "<label class='ad-kv'><span>Password</span><input class='ad-in' type='password' data-f='pw' autocomplete='current-password'></label>"+
     "<p class='ad-msg'></p><button class='ad-link' type='button' data-go-pw>Continue</button>";
@@ -1361,7 +1548,7 @@ function adForgotPin(H){
     msg.textContent="Checking…";
     NSAccount.logIn(em,pw.value).then(function(){
       NSAccount.pickerShown(); nsWhoIcon();
-      adPinView(H,"reset");
+      adPinView(H,"reset",ctx);
     }).catch(function(e){ msg.textContent=e.message||"That password isn't right."; });
   }
   H.body.querySelector("[data-go-pw]").onclick=go;
@@ -1373,10 +1560,12 @@ function adForgotPin(H){
    own coloured box. */
 var AD_ICON=acctLink?acctLink.innerHTML:"";
 function nsWhoIcon(){
+  nsApplyAccent();
   if(!acctLink||!window.NSAccount) return;
   var k=NSAccount.isSignedIn()?adActive():null;
   if(k&&k!==AD_PENDING){
-    acctLink.innerHTML="<span class='nv-av av-"+adEsc(k.avatar||"blue")+"' aria-hidden='true'>"+adEsc(k.name.charAt(0).toUpperCase())+"</span>";
+    var t=adTheme(k.theme);
+    acctLink.innerHTML="<span class='nv-av'"+(t?" style='background:"+t.box+"'":"")+" aria-hidden='true'>"+adEsc(k.name.charAt(0).toUpperCase())+"</span>";
     acctLink.setAttribute("aria-label","Account, "+k.name);
   } else if(acctLink.innerHTML!==AD_ICON){
     acctLink.innerHTML=AD_ICON; acctLink.setAttribute("aria-label","Account");
@@ -1545,36 +1734,36 @@ function adLoad(){
     .catch(function(){ adOrders=[]; adRefresh(); });
   var c=NSAccount.students().then(function(k){ adKids=k||[]; adRefresh(); nsWhoIcon(); })
     .catch(function(){ adKids=[]; adRefresh(); nsWhoIcon(); });
-  var d=NSAccount.hasPin().then(function(p){ adPin=p===true; adRefresh(); })
-    .catch(function(){ adPin=false; });
+  var d=NSAccount.pinMap().then(function(p){ adPins=p||{}; adRefresh(); })
+    .catch(function(){ adPins={}; });
   Promise.all([a,b,c,d]).then(function(){ adLoading=false; });
 }
 /* ── "WHO'S LEARNING?" (2026-09-11) ─────────────────────────────────────────
    Paul picked it: a full-screen picker once after sign-in, like Netflix's
-   "Who's watching?". Shown only when the account HAS students; an account
-   with none goes straight on. Whoever is here just typed the password, so
-   choosing the parent needs no PIN at this point.
+   "Who's watching?". Shown only when there is more than one profile to pick;
+   an account holder on their own goes straight on. Parents first, then
+   students. Whoever is here just typed the PASSWORD, which can reset any PIN,
+   so no tile asks for one here and none carries a padlock.
    Built in JS, once, the same way the card window is: nothing to render for a
    static page that does not know who is signed in. */
 function nsWhoPicker(){
   if(!window.NSAccount||!NSAccount.wantsPicker()) return;
   NSAccount.pickerShown();
-  Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.hasPin().catch(function(){ return false; })]).then(function(r){
-    var kids=r[1]||[];
-    if(!kids.length) return;
-    adUser=adUser||r[0]; adKids=kids; adPin=r[2]===true;
+  Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
+    var rows=r[1]||[];
+    if(!rows.length) return;
+    adUser=adUser||r[0]; adKids=rows; adPins=r[2]||{};
     var me=adMe();
+    function tile(id,name,theme){
+      return "<button type='button' class='whop-i' data-who='"+adEsc(id)+"'>"+adAv(name,theme)+"<b>"+adEsc(name)+"</b></button>";
+    }
     var o=document.createElement("div");
     o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
     o.setAttribute("aria-labelledby","whopH");
     o.innerHTML="<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
-      kids.map(function(k){
-        return "<button type='button' class='whop-i' data-who='"+adEsc(k.id)+"'>"+adAv(k.name,k.avatar)+"<b>"+adEsc(k.name)+"</b></button>";
-      }).join("")+
-      "<button type='button' class='whop-i is-parent' data-who='parent'><i aria-hidden='true'>"+adEsc(me.charAt(0).toUpperCase())+"</i>"+
-        /* No padlock here: the picker only follows a password sign-in, so
-           this tile never asks for the PIN and a lock would say it does. */
-        "<b>"+adEsc(me)+"</b></button>"+
+      tile("parent",me,null)+
+      adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
+      adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("")+
       "</div><button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
     document.body.appendChild(o);
     nsLockScroll(true);
@@ -1584,13 +1773,13 @@ function nsWhoPicker(){
       var b=e.target.closest("[data-who]");
       if(b){
         var id=b.getAttribute("data-who");
-        NSAccount.setWho(id); close();
+        adSetWho(id); close();
         /* A student has no use for the account panel a sign-in opens. */
-        if(id!=="parent") adOpen(false); else if(adD) adMain(adD);
+        if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
         return;
       }
       if(e.target.closest("[data-manage]")){
-        NSAccount.setWho("parent"); close();
+        adSetWho("parent"); close();
         if(adD){ adProfiles(adD); adLoad(); adOpen(true); }
       }
     });
@@ -1614,12 +1803,12 @@ function adWire(H){
     var g=b.getAttribute("data-go");
     /* 🚨 PARENT-SIDE VIEWS REFUSE A STUDENT. The student panel draws no row
        for them, but a stale view or a console click must not open one. */
-    if(g!=="settings"&&adActive()) return adMain(H);
+    if(g!=="settings"&&!adParentSide(adActive())) return adMain(H);
     if(g==="orders") adList(H);
     else if(g==="profiles") adProfiles(H);
-    else if(g==="add") adEdit(H,null);
+    else if(g==="add") adAddPick(H);
+    else if(g==="owner") adOwner(H);
     else if(g==="edit") adEdit(H,adKid(b.getAttribute("data-id")));
-    else if(g==="pin") adPinView(H,"change");
     else if(g==="settings") adSettings(H);
     else if(g==="account") adProfile(H);
     else if(g==="order") adOrder(H,+b.getAttribute("data-i"));

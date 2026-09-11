@@ -41,13 +41,13 @@
   ]
 }
 </script>
-<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
+<script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <link rel="stylesheet" href="/assets/ns.css">
-<link rel="stylesheet" href="/assets/lesson-nav.css?v=b5a78146">
-<link rel="stylesheet" href="/assets/lesson-shared.fe287ce4.css">
+<link rel="stylesheet" href="/assets/lesson-nav.css?v=dbd27b55">
+<link rel="stylesheet" href="/assets/lesson-shared.7268b52a.css">
 </head>
 <body>
 
@@ -224,9 +224,9 @@ var BAKED_CAPS = [{"text":"We're dividing 564 by 3. The 3 goes outside the brack
 var SPEC = {"count":5,"digits":3,"divisors":[3,4,5,6,7,8,9],"allowZeroDigit":false};
 var LESSON_ID = "maths/long-division";
 </script>
-<script src="/assets/lesson-engine-maths-4.06c0f051.js"></script>
+<script src="/assets/lesson-engine-maths-4.bf061870.js"></script>
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/ns-account.js"></script>
-<script src="/assets/lesson-shared.ff5d7445.js"></script>
+<script src="/assets/lesson-shared.e4aa6ff7.js"></script>
 </body>
 </html>

@@ -39,7 +39,7 @@
   ]
 }
 </script>
-<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
+<script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
@@ -49,7 +49,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/lesson-shared.977696a1.css">
-<link rel="stylesheet" href="/assets/lesson-nav.css?v=b5a78146">
+<link rel="stylesheet" href="/assets/lesson-nav.css?v=dbd27b55">
 <style>
   /* The site nav reads six variables of its own; map them onto this page's
      palette so the nav re-themes with the lesson. */
@@ -115,7 +115,7 @@
 <div class="ascrim" id="ascrim"></div><aside class="adrawer" id="adrawer" aria-hidden="true" aria-label="Account"><div class="ad-top"><button class="ad-back" id="adBack" type="button" hidden><svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4 6.5 10l6 6"/></svg><span>Back</span></button><h2 class="ad-h" id="adH">Account</h2><button class="ad-x" id="adClose" type="button">Close</button></div><div class="ad-body" id="adBody"></div></aside>
 
   <div class="ns-back"><a href="/grade-7/maths/lessons/">&larr; 7th Grade Math</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.8054c5f0.css">
+<link rel="stylesheet" href="/assets/lesson-shared.6d9e1975.css">
 
 <div class="wrap">
 
@@ -615,10 +615,10 @@ var QUESTIONS = [
 var LESSON_TITLE = "Estimation Strategy: Using Patterns";
 var LESSON_UNIT  = "Math 7 · U1-L3";
 </script>
-<script src="/assets/lesson-engine-english-1.a32a4024.js"></script>
+<script src="/assets/lesson-engine-english-1.7e29d958.js"></script>
 
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/ns-account.js"></script>
-<script src="/assets/lesson-shared.ff5d7445.js"></script>
+<script src="/assets/lesson-shared.e4aa6ff7.js"></script>
 </body>
 </html>

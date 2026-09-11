@@ -41,12 +41,12 @@
   ]
 }
 </script>
-<script>(function(){try{var m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")document.documentElement.setAttribute("data-theme",m);}catch(e){}})();</script>
+<script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <link rel="stylesheet" href="/assets/ns.css">
-<link rel="stylesheet" href="/assets/lesson-nav.css?v=b5a78146">
+<link rel="stylesheet" href="/assets/lesson-nav.css?v=dbd27b55">
 <style>
 .wrapx{max-width:900px;margin:0 auto;padding:0 20px}
 .ns-back{padding:18px 0}
@@ -318,7 +318,9 @@ h1{margin:0 0 6px}
   font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-faint, var(--dim));
 }
-.swatches{display:flex;gap:7px}
+/* Eight swatches since 2026-09-11 (Rose, Gold, Teal joined). They WRAP on a
+   narrow phone rather than push the row past the edge. */
+.swatches{display:flex;flex-wrap:wrap;gap:7px}
 /* `background-clip:padding-box` with a TRANSPARENT border meant the gradient
    stopped short and a 2px ring of the dark page showed through every swatch.
    Paul, 2026-08-26: "can you make the theme colors not have a black spare
@@ -1315,7 +1317,45 @@ var THEMES = {
     dark:{  ground:"#131417",surface:"#1B1D21",s2:"#25272D",ink:"#E4E5E9",inkSoft:"#989BA4",inkFaint:"#70737C",rule:"#2F323A",
             accent:"#8CA5CC",accentInk:"#AFC1DE",accentSoft:"rgba(140,165,204,.16)",onAccent:"#0F1013",
             ctlBg:"#222630",ctlInk:"#E0E3EA",ctlBorder:"#414755",tickNow:"#5C79A6",tickDone:"rgba(140,165,204,.28)",
-            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } }
+            brass:"#D6BC66",band:"rgba(214,188,102,.28)",word:"rgba(214,188,102,.59)" } },
+
+  /* 🎨 ROSE, GOLD, TEAL - added 2026-09-11 so there are EIGHT. Paul: "i do want
+     8 differnt theme color types including the graphite color we made", one
+     set shared by the lessons and the student profile boxes (the box is the
+     LIGHT accent, which is why every light accent here is deep enough for
+     white text). Built on the same recipe as the five above and contrast-
+     checked against them. ⚠️ Gold's reading highlight is BLUE on purpose: a
+     gold highlight on a gold page is invisible. ⚠️ Adding a ninth means the
+     theme list in migration 014's students_theme_ok grows in the same change. */
+  rose: { name:"Rose",
+    light:{ ground:"#F0E6EB",surface:"#F9F2F5",s2:"#E5D5DD",ink:"#241520",inkSoft:"#5E4655",inkFaint:"#8C7381",rule:"#D6C2CC",
+            accent:"#9A2A5E",accentInk:"#6E1D43",accentSoft:"rgba(154,42,94,.12)",onAccent:"#F9F2F5",
+            ctlBg:"#82234F",ctlInk:"#F7ECF1",ctlBorder:"#621A3B",tickNow:"#621A3B",tickDone:"rgba(154,42,94,.30)",
+            brass:"#7A6214",band:"rgba(150,122,26,.38)",word:"rgba(150,122,26,.68)" },
+    dark:{  ground:"#1B0F15",surface:"#26161E",s2:"#321E28",ink:"#F0E1E8",inkSoft:"#B0939F",inkFaint:"#86707B",rule:"#422A36",
+            accent:"#E683B1",accentInk:"#F0A9CA",accentSoft:"rgba(230,131,177,.16)",onAccent:"#160A10",
+            ctlBg:"#2E1B24",ctlInk:"#F0E2E8",ctlBorder:"#5A3848",tickNow:"#BC5A88",tickDone:"rgba(230,131,177,.28)",
+            brass:"#DCBB63",band:"rgba(220,187,99,.28)",word:"rgba(220,187,99,.59)" } },
+
+  gold: { name:"Gold",
+    light:{ ground:"#EFEBE0",surface:"#F8F5EC",s2:"#E3DCC8",ink:"#221C0E",inkSoft:"#5A513C",inkFaint:"#877D66",rule:"#D4CAB0",
+            accent:"#6F5100",accentInk:"#503B00",accentSoft:"rgba(111,81,0,.12)",onAccent:"#F8F5EC",
+            ctlBg:"#604600",ctlInk:"#F7F1E1",ctlBorder:"#4A3600",tickNow:"#4A3600",tickDone:"rgba(111,81,0,.30)",
+            brass:"#1F5E80",band:"rgba(31,94,128,.26)",word:"rgba(31,94,128,.5)" },
+    dark:{  ground:"#17130A",surface:"#211B0F",s2:"#2C2415",ink:"#EEE6D2",inkSoft:"#ADA084",inkFaint:"#837760",rule:"#3B311D",
+            accent:"#E0B84A",accentInk:"#EDCD78",accentSoft:"rgba(224,184,74,.16)",onAccent:"#141005",
+            ctlBg:"#2A2314",ctlInk:"#EEE5D0",ctlBorder:"#54462A",tickNow:"#B38E2C",tickDone:"rgba(224,184,74,.28)",
+            brass:"#8CC5E6",band:"rgba(89,180,220,.26)",word:"rgba(89,180,220,.55)" } },
+
+  teal: { name:"Teal",
+    light:{ ground:"#E3EDEC",surface:"#F0F7F6",s2:"#D1E1DF",ink:"#0F1F1E",inkSoft:"#3F5553",inkFaint:"#728886",rule:"#BACFCC",
+            accent:"#0C625D",accentInk:"#084441",accentSoft:"rgba(12,98,93,.12)",onAccent:"#F0F7F6",
+            ctlBg:"#0A5450",ctlInk:"#E7F3F2",ctlBorder:"#073F3C",tickNow:"#073F3C",tickDone:"rgba(12,98,93,.30)",
+            brass:"#8A6410",band:"rgba(196,132,24,.38)",word:"rgba(196,132,24,.68)" },
+    dark:{  ground:"#0A1817",surface:"#102322",s2:"#172F2D",ink:"#DDECEA",inkSoft:"#8AA6A3",inkFaint:"#637D7A",rule:"#213D3A",
+            accent:"#4FC7BE",accentInk:"#85DCD5",accentSoft:"rgba(79,199,190,.16)",onAccent:"#071312",
+            ctlBg:"#132C2A",ctlInk:"#D8EAE8",ctlBorder:"#2C5451",tickNow:"#33968F",tickDone:"rgba(79,199,190,.28)",
+            brass:"#E0B65C",band:"rgba(224,182,92,.3)",word:"rgba(224,182,92,.62)" } }
 };
 
 var VAR_MAP = {
@@ -3814,6 +3854,6 @@ render();
 
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/ns-account.js"></script>
-<script src="/assets/lesson-shared.ff5d7445.js"></script>
+<script src="/assets/lesson-shared.e4aa6ff7.js"></script>
 </body>
 </html>
