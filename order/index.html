@@ -18,7 +18,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=3e232923">
+<link rel="stylesheet" href="/assets/ns.css?v=cac9bcaa">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 </head>
 <body>
@@ -867,21 +867,22 @@ function adSettings(H){
         "<i style='background:rgb("+h.rgb+")' aria-hidden='true'></i><b>"+h.name+"</b></button>";
     }).join("")+"</div>";
   function hlName(k){ var h=AD_HL.filter(function(x){ return x.k===k; })[0]; return h?h.name:"Default"; }
-  H.body.innerHTML="<p class='ad-cap'>Display</p>"+
-    "<div class='ad-kv'><span>Light or Dark</span>"+
-    "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
-    "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
-    "<span data-mode-label>Night Mode</span></button></div>"+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
-    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
-    adThemeTiles(themeCur,a===null)+
+  H.body.innerHTML=
     "<p class='ad-cap'>Reading Voice</p>"+
     "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use this device&#39;s own voice.</p>"+
     chips("voice",AD_VOICE,"Reading voice")+
     "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
+    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
+    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
+    adThemeTiles(themeCur,a===null)+
     "<p class='ad-cap'>Reading Highlight · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span></p>"+
     "<p class='ad-note'>The color that marks the words as a lesson is read aloud.</p>"+
     hlTiles+
+    "<p class='ad-cap'>Display</p>"+
+    "<div class='ad-kv'><span>Light or Dark</span>"+
+    "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
+    "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
+    "<span data-mode-label>Night Mode</span></button></div>"+
     "<p class='ad-msg'></p>";
   if(typeof nsPaintMode==="function") nsPaintMode();
   var msg=H.body.querySelector(".ad-msg");

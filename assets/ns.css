@@ -2039,8 +2039,13 @@ body.acct-open .adrawer{transform:none}
   background:var(--ad-line)}
 .ad-chev{color:var(--ad-dim);font-size:1.4rem;line-height:1}
 .ad-ord:hover b{text-decoration:underline}
-.ad-cap{margin:22px 0 4px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ad-dim)}
+/* Section titles in the panel match the Terms page headings: bright, 800,
+   capitals, .06em. Paul, 2026-09-11: "the title for these text need to be
+   more brighter similar to the copyright page." They were dim 10.5px. 13px,
+   not the page's 14px, to sit in a 420px panel. "Optional" stays dim. */
+.ad-cap{margin:24px 0 6px;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ad-fg)}
+.ad-cap .ad-opt{color:var(--ad-dim)}
 .ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 0;
   border-bottom:1px solid var(--ad-line);font-size:.88rem}
 .ad-kv>span:last-child{color:var(--ad-dim);text-align:right}

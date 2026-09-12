@@ -1776,22 +1776,25 @@ function adSettings(H){
         "<i style='background:rgb("+h.rgb+")' aria-hidden='true'></i><b>"+h.name+"</b></button>";
     }).join("")+"</div>";
   function hlName(k){ var h=AD_HL.filter(function(x){ return x.k===k; })[0]; return h?h.name:"Default"; }
-  /* "Light or Dark", not "Theme": Theme Color is a different setting now. */
-  H.body.innerHTML="<p class='ad-cap'>Display</p>"+
-    "<div class='ad-kv'><span>Light or Dark</span>"+
-    "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
-    "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
-    "<span data-mode-label>Night Mode</span></button></div>"+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
-    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
-    adThemeTiles(themeCur,a===null)+
+  /* 🚨 THE ORDER IS PAUL'S (2026-09-11): "reading voice should be first,
+     reading speed next then the theme color options." Display comes last.
+     "Light or Dark", not "Theme": Theme Color is a different setting. */
+  H.body.innerHTML=
     "<p class='ad-cap'>Reading Voice</p>"+
     "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use this device&#39;s own voice.</p>"+
     chips("voice",AD_VOICE,"Reading voice")+
     "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
+    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
+    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
+    adThemeTiles(themeCur,a===null)+
     "<p class='ad-cap'>Reading Highlight · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span></p>"+
     "<p class='ad-note'>The color that marks the words as a lesson is read aloud.</p>"+
     hlTiles+
+    "<p class='ad-cap'>Display</p>"+
+    "<div class='ad-kv'><span>Light or Dark</span>"+
+    "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
+    "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
+    "<span data-mode-label>Night Mode</span></button></div>"+
     /* ❌ NO "LESSON COLORS" ROW. Removed 2026-09-11: once every palette shared
        a neutral background it only moved a lesson's small accents, which is
        the Theme Color's job. Paul: "i dont think we need a lesson color." */
