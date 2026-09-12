@@ -42,7 +42,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=fe434ad5">
+<link rel="stylesheet" href="/assets/ns.css?v=3471e99c">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 </head>
 <body>
@@ -190,8 +190,8 @@
 })();</script>
 </footer>
 
-<script src="/assets/supabase-config.js"></script>
-<script src="/assets/ns-account.js"></script>
+<script src="/assets/supabase-config.js?v=525295e0"></script>
+<script src="/assets/ns-account.js?v=14c6eafc"></script>
 <script>
 (function(){
 var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
@@ -1481,7 +1481,14 @@ function adProfile(H){
   });
   q("[data-delme]").onclick=function(){ adDeleteMe(H); };
 }
-function adDeleteMe(H){
+var AD_DELGO="ns:delgoogle";
+function adDelMark(){ try{ localStorage.setItem(AD_DELGO,String(Date.now())); }catch(e){} }
+function adDelTake(){
+  var t=null;
+  try{ t=localStorage.getItem(AD_DELGO); localStorage.removeItem(AD_DELGO); }catch(e){}
+  return !!t && (Date.now()-parseInt(t,10)) < 300000;
+}
+function adDeleteMe(H,confirmed){
   adFrame(H,"Delete Account",function(){ adProfile(H); },"delme");
   var em=adUser&&adUser.email||"";
   var kids=(adKids||[]).filter(function(k){ return k.kind==="student"; }).length;
@@ -1497,13 +1504,44 @@ function adDeleteMe(H){
     "<button class='ad-link' type='button' data-no>Cancel</button>";
   var pw=H.body.querySelector("[data-f=pw]"),msg=H.body.querySelector(".ad-msg"),yes=H.body.querySelector("[data-yes]");
   H.body.querySelector("[data-no]").onclick=function(){ adProfile(H); };
+  var promptEl=H.body.querySelector(".ad-empty.ad-mid"),
+      pwRow=H.body.querySelector("label.ad-kv"),
+      noPw=false;
+  function hidePwRow(){ noPw=true; pwRow.style.display="none"; }
+  if(confirmed){
+    promptEl.textContent="That confirmed it is you. This is the last step.";
+    hidePwRow();
+  } else if(NSAccount.identities){
+    NSAccount.identities().then(function(list){
+      if(!H.body.contains(yes)) return;
+      if(!list.length) return;
+      if(list.indexOf("email")>=0) return;
+      var which=list.indexOf("facebook")>=0?"facebook":"google";
+      var nice=which==="facebook"?"Facebook":"Google";
+      promptEl.textContent="Confirm with "+nice+" to delete the account.";
+      hidePwRow();
+      yes.textContent="Continue with "+nice;
+      yes.onclick=function(){
+        yes.disabled=true; yes.textContent="Taking you to "+nice+"…";
+        adDelMark();
+        NSAccount.signInWith(which,"/account/");
+      };
+    });
+  }
   function go(){
+    if(confirmed||noPw){
+      yes.disabled=true; yes.textContent="Deleting…"; msg.textContent="";
+      NSAccount.pickerShown();
+      return NSAccount.deleteAccount().then(done).catch(fail);
+    }
     if(!pw.value){ msg.textContent="Type your password."; pw.focus(); return; }
     yes.disabled=true; yes.textContent="Deleting…"; msg.textContent="";
     NSAccount.logIn(em,pw.value).then(function(){
       NSAccount.pickerShown();
       return NSAccount.deleteAccount();
-    }).then(function(){
+    }).then(done).catch(fail);
+  }
+  function done(){
       adUser=null; adKids=null; adPins=null; adOrders=null;
       H.up=null; H.back.hidden=true;
       H.body.innerHTML="<p class='ad-empty ad-mid'><b>Your account is deleted.</b></p>"+
@@ -1512,14 +1550,14 @@ function adDeleteMe(H){
       H.body.querySelector("[data-done]").onclick=function(){ location.replace("/"); };
       if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
       nsWhoIcon();
-    }).catch(function(e){
-      yes.disabled=false; yes.textContent="Delete My Account";
-      msg.textContent=e.message||"That did not work. Try again.";
-    });
+  }
+  function fail(e){
+    yes.disabled=false; yes.textContent="Delete My Account";
+    msg.textContent=(e&&e.message)||"That did not work. Try again.";
   }
   yes.onclick=go;
   pw.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); go(); } });
-  pw.focus();
+  if(!noPw) pw.focus();
 }
 function adRefresh(){
   adHosts.forEach(function(H){
@@ -1552,7 +1590,8 @@ function nsWhoPicker(){
     var o=document.createElement("div");
     o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
     o.setAttribute("aria-labelledby","whopH");
-    o.innerHTML="<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
+    o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
+      "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
       tile("parent",me,adOwnerTheme())+
       adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("")+
@@ -1571,7 +1610,8 @@ function nsWhoPicker(){
       }
       if(e.target.closest("[data-manage]")){
         adSetWho("parent"); close();
-        if(adD){ adProfiles(adD); adLoad(); adOpen(true); }
+        if(location.pathname==="/"){ if(adD){ adProfiles(adD); adLoad(); adOpen(true); } }
+        else location.href="/?panel=profiles";
       }
     });
     addEventListener("keydown",function esc(e){
@@ -1609,9 +1649,20 @@ function adWire(H){
 }
 var adD=adrawer?adHostOf(adrawer):null;
 if(adD) adWire(adD);
-if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&/[?&]panel=account\b/.test(location.search)){
+var nsPanelWant=(function(){
+  var q=location.search;
+  if(q.indexOf("panel=profiles")>=0) return "profiles";
+  if(q.indexOf("panel=account")>=0) return "account";
+  return "";
+})();
+if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&nsPanelWant){
   history.replaceState(null,"",location.pathname+location.hash);
-  adMain(adD); adLoad(); adOpen(true);
+  if(nsPanelWant==="profiles") adProfiles(adD); else adMain(adD);
+  adLoad(); adOpen(true);
+}
+if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&adDelTake()){
+  NSAccount.pickerShown();
+  adLoad(); adOpen(true); adDeleteMe(adD,true);
 }
 if(adrawer&&acctLink){
   acctLink.addEventListener("click",function(e){

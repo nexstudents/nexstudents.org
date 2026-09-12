@@ -23,7 +23,7 @@ const CSS_V = require("crypto")
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
 const { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot, faviconTags,
-        footerMarkup, socialTags, breadcrumbLd, crumbTrail } = require("./nav.js");
+        footerMarkup, socialTags, breadcrumbLd, crumbTrail, assetV } = require("./nav.js");
 
 /* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
 const SITE = "https://nexstudents.org";
@@ -2808,7 +2808,12 @@ const SOON_PAGES = [
   { dir: "account", active: "p",
     title: "Your Account | NexStudents",
     desc: "Sign in with your email and password, or create a NexStudents account.",
-    crumb: "Account", h1: "Your Account.",
+    /* 🔑 "Login." not "Your Account." - Paul, 2026-09-12: "the your account title
+       at the top just needs to say Login. if you click create an account the big
+       text will say Sign Up." setMode() swaps it with the card underneath, so the
+       big heading and the card can never disagree about which form is on screen.
+       This static value is what ships in the HTML, so it must match mode "in". */
+    crumb: "Account", h1: "Login.",
     lead: "",
     body: `<div class="band"><div class="wrap" style="max-width:560px">
 
@@ -2842,8 +2847,47 @@ const SOON_PAGES = [
            Same markup as adPw() in nav.js, whose one click handler flips it. -->
       <span class="pw-wrap is-auth" id="siPassW"><input class="auth-in" type="password" id="siPass" autocomplete="current-password" placeholder="Password" aria-label="Password"><button class="pw-eye" type="button" aria-label="Show password" aria-pressed="false"><svg class="eye-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></span>
       <span class="pw-wrap is-auth hidden" id="siPass2W"><input class="auth-in" type="password" id="siPass2" autocomplete="new-password" placeholder="Confirm password" aria-label="Confirm password"><button class="pw-eye" type="button" aria-label="Show password" aria-pressed="false"><svg class="eye-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></span>
+      <!-- ☑️ REMEMBER ME. Paul, 2026-09-12: "we should also have the option to
+           remember password", then "link a checkmark box".
+           ⚠️ IT DOES NOT STORE A PASSWORD, and must never say that it does. The
+           browser's own password manager fills the field; this box decides how
+           long the SIGN-IN lasts - kept on this device, or dropped when the tab
+           closes. On a shared family machine that is the setting that matters.
+           A real <input type=checkbox> inside its <label>, so the words are the
+           hit target and a keyboard reaches it. -->
+      <label class="auth-rem" id="siRemW">
+        <input type="checkbox" id="siRem" checked>
+        <span>Keep Me Signed In</span>
+      </label>
       <button class="btn authgo" type="submit" id="siBtn">Sign In</button>
     </form>
+
+    <!-- 🔑 SIGN IN WITH GOOGLE OR FACEBOOK. Paul, 2026-09-11: "i would like the
+         option to maybe also login with google", and 2026-09-12 he picked B&H
+         Photo as the reference: small bold "or use", then a centred row of
+         SQUARES carrying only the provider logo.
+         ⚠️ The logos are the providers' own and are never recoloured or
+         restyled - that is a condition of using their sign-in at all, and it is
+         why these two squares ignore the site accent.
+         ⚠️ Icon-only, so the accessible name lives in aria-label. Without it
+         this row is two unlabelled buttons to a screen reader. -->
+    <div class="auth-or" id="siOr" aria-hidden="true">or use</div>
+    <div class="auth-prov" id="siProv">
+      <button class="prov-btn" type="button" data-prov="google" aria-label="Sign in with Google">
+        <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+          <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+          <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/>
+          <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/>
+          <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+        </svg>
+      </button>
+      <button class="prov-btn" type="button" data-prov="facebook" aria-label="Sign in with Facebook">
+        <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+          <path fill="#1877F2" d="M18 9a9 9 0 1 0-10.41 8.89v-6.29H5.31V9h2.28V7.02c0-2.25 1.34-3.5 3.4-3.5.98 0 2.01.18 2.01.18v2.21h-1.13c-1.12 0-1.47.7-1.47 1.41V9h2.5l-.4 2.6h-2.1v6.29A9 9 0 0 0 18 9z"/>
+          <path fill="#fff" d="M12.5 11.6l.4-2.6h-2.5V7.32c0-.71.35-1.41 1.47-1.41h1.13V3.7s-1.03-.18-2.01-.18c-2.06 0-3.4 1.25-3.4 3.5V9H5.31v2.6h2.28v6.29a9.08 9.08 0 0 0 2.81 0V11.6h2.1z"/>
+        </svg>
+      </button>
+    </div>
 
     <p class="dim" id="siMsg" style="font-size:.9rem;margin:14px 0 0"></p>
     <p class="authlinks" id="siLinks"></p>
@@ -2872,7 +2916,7 @@ const SOON_PAGES = [
 
 </div></div>
 <script src="/assets/supabase-config.js"></script>
-<script src="/assets/ns-account.js"></script>
+<script src="/assets/ns-account.js${assetV("ns-account.js")}"></script>
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
@@ -2889,6 +2933,42 @@ const SOON_PAGES = [
     if (NSAccount.isRecovery && NSAccount.isRecovery()) { setMode("reset"); return; }
     location.replace("/?panel=account");
   }
+  /* 🔑 Hands the browser to the provider. There is no .then() to write: this
+     call LEAVES the page, and the session comes back in the fragment on
+     /account/, where ns-account.js picks it up before anything here runs.
+     ⚠️ EVERY square is disabled, not just the one tapped. The redirect is not
+     instant on a phone, and two providers started at once is two half-finished
+     sign-ins. The message line says which one is happening, since the buttons
+     carry no text to change. */
+  /* 🚨 BACK FROM THE PROVIDER LEAVES THE PAGE FROZEN MID-HANDOFF (2026-09-12).
+     Paul: "if i hit the back button it grays out the google and the facebook and
+     still says Taking you to Facebook..." The browser's back/forward cache
+     restores this page EXACTLY as it was abandoned - both squares disabled, the
+     message still promising a trip that is over - and no script re-runs, so
+     nothing undoes it. The page is then permanently dead to a second attempt.
+     ⚠️ Fires on a normal load too, which is why the message is only cleared when
+     it is OUR handoff line. A provider error written by takeAuthError() must
+     survive this, and a blanket clear would eat it. */
+  addEventListener("pageshow", function(){
+    [].forEach.call($("siProv").querySelectorAll(".prov-btn"), function(x){ x.disabled = false; });
+    if ($("siMsg").textContent.indexOf("Taking you to ") === 0) $("siMsg").textContent = "";
+  });
+
+  $("siProv").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".prov-btn") : null;
+    if (!b || b.disabled) return;
+    var p = b.getAttribute("data-prov");
+    [].forEach.call($("siProv").querySelectorAll(".prov-btn"), function(x){ x.disabled = true; });
+    $("siMsg").textContent = "Taking you to " + (p === "facebook" ? "Facebook" : "Google") + "…";
+    NSAccount.signInWith(p, "/account/");
+  });
+
+  /* The box reflects what is stored, and saves the moment it is clicked - not
+     on submit. Someone who ticks it, then signs in with Google instead, still
+     gets the choice they made. */
+  $("siRem").checked = NSAccount.remembering();
+  $("siRem").onchange = function(){ NSAccount.setRemember($("siRem").checked); };
+
   $("siForm").onsubmit = function(e){
     e.preventDefault();
     /* \u26a0\ufe0f By id, never querySelector("button"): the first button in the form
@@ -2974,23 +3054,29 @@ const SOON_PAGES = [
   }
 
   /* ── THE FOUR MODES OF THE CARD ── one form, the fields and words change.
-     Wording copied from the Lizzie Peirce reference: "Create Account",
+     Wording follows the Lizzie Peirce reference, except that Paul asked for
+     "Create An Account" on 2026-09-12 - the link, the card heading and the
+     button all say it, so the control he clicks and the form he lands on cannot
+     use two different names for the same thing.
      "Create Password", "Re-type Password", "Already have an account? Sign in". */
   var mode = "in";
   var MODES = {
-    in:     { head: "Welcome to NexStudents", btn: "Sign In", names: false, pass: true,  pass2: false,
-              ph: "Password", links: [["Forgot Password?", "forgot"], ["Create Account", "up"]] },
-    up:     { head: "Create Account", btn: "Create Account", names: true, pass: true, pass2: true,
+    in:     { h1: "Login.", head: "Welcome to NexStudents", btn: "Sign In", names: false, pass: true,  pass2: false,
+              ph: "Password", links: [["Forgot Password?", "forgot"], ["Create An Account", "up"]] },
+    up:     { h1: "Sign Up.", head: "Create An Account", btn: "Create An Account", names: true, pass: true, pass2: true,
               ph: "Create Password", links: [["Already have an account? Sign In", "in"]] },
-    forgot: { head: "Reset Your Password", btn: "Send Reset Link", names: false, pass: false, pass2: false,
+    forgot: { h1: "Reset Password.", head: "Reset Your Password", btn: "Send Reset Link", names: false, pass: false, pass2: false,
               lede: "Type your email and we will send you a link to choose a new password.",
               links: [["Back to Sign In", "in"]] },
-    reset: { head: "Choose a New Password", btn: "Save New Password", names: false, pass: true, pass2: true,
+    reset: { h1: "New Password.", head: "Choose a New Password", btn: "Save New Password", names: false, pass: true, pass2: true,
               ph: "New Password", email: false, links: [] }
   };
   function setMode(m){
     mode = m;
     var c = MODES[m];
+    /* The BIG page heading tracks the mode too, not just the card. */
+    var ph = document.querySelector(".phead h1");
+    if (ph) ph.textContent = c.h1 || "Login.";
     $("siHead").textContent = c.head;
     $("siLede").textContent = c.lede || "";
     $("siLede").classList.toggle("hidden", !c.lede);
@@ -3017,8 +3103,35 @@ const SOON_PAGES = [
     $("siPass").value = ""; $("siPass2").value = "";
     /* The guest line only helps someone signing in or creating an account. */
     $("siGuest").classList.toggle("hidden", m !== "in" && m !== "up");
+    /* 🔑 The provider row belongs on Sign In and Create Account only. On
+       "forgot" there is nothing for it to do, and on "reset" the parent is
+       ALREADY signed in by the link in their email - offering it there would
+       sign them in again and drop the recovery session the new password needs. */
+    var gOn = (m === "in" || m === "up");
+    /* Keep Me Signed In belongs with a sign-in, not with a reset email. */
+    $("siRemW").classList.toggle("hidden", !gOn);
+    $("siOr").classList.toggle("hidden", !gOn);
+    $("siProv").classList.toggle("hidden", !gOn);
+    /* The squares carry no words, so the MODE rides in the accessible name:
+       "Sign in with Google" on the sign-in card, "Sign up with Google" on the
+       create card. Same trip either way - the provider decides new or returning,
+       not us - but the label should not say "sign in" on a Create Account page. */
+    [].forEach.call($("siProv").querySelectorAll(".prov-btn"), function(b){
+      var p = b.getAttribute("data-prov");
+      b.setAttribute("aria-label", (m === "up" ? "Sign up with " : "Sign in with ") +
+                                   (p === "facebook" ? "Facebook" : "Google"));
+      b.disabled = false;
+    });
   }
   setMode("in");
+  /* 🚨 AFTER setMode, NEVER BEFORE. setMode() blanks #siMsg as part of drawing a
+     mode, so a message written above this line is wiped before it is ever seen.
+     Cost one silent failure: the error was captured, the hash was cleared, the
+     markers were dropped, and the card said nothing. */
+  if (NSAccount.takeAuthError) {
+    var authErr = NSAccount.takeAuthError();
+    if (authErr) $("siMsg").textContent = authErr;
+  }
 
   document.addEventListener("ns:auth", paint);
   paint();
@@ -3112,7 +3225,7 @@ const SOON_PAGES = [
 </div></div>
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/stripe-config.js"></script>
-<script src="/assets/ns-account.js"></script>
+<script src="/assets/ns-account.js${assetV("ns-account.js")}"></script>
 <!-- Stripe.js is only ever loaded on THIS page, the one that takes a card.
      Its own docs require it from js.stripe.com, never self-hosted. -->
 <script async src="https://js.stripe.com/v3/"></script>

@@ -38,8 +38,18 @@
    there .word inherits --fg and .word b repeats --fg, so both halves match. The
    <b> stays in the markup because it is the brand's own capitalisation, not a
    styling hook. */
-.nv .word{font-weight:800;font-size:19px;letter-spacing:-.03em;color:var(--nv-fg)}
-.nv .word b{color:var(--nv-fg)}
+/* 🅰️ THE LESSON-PAGE TWIN OF ns.css's .word. Anton, caps, positive tracking,
+   same as the site bar and the picker - Paul, 2026-09-12: "add that font style
+   to the site top banner", and the bar is on lesson pages too.
+   🚨 check-nav-css PASSED WITH THIS WRONG. It checks that a class is styled in
+   BOTH sheets, not that the two agree, and .word was styled in both with
+   different values - so lesson pages would have kept Archivo while every other
+   page moved to Anton, with no warning. Change these two rules together.
+   🔴 RED, not --nv-fg. Paul, 2026-09-12: "make the text not white but red on
+   the site." A lesson palette must not recolour the brand, so this is literal. */
+.nv .word{font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;font-size:21px;
+  letter-spacing:.035em;text-transform:uppercase;color:#ff3131}
+.nv .word b{color:#ff3131;font-weight:inherit}
 .nv .tabs{display:flex;gap:20px}
 .nv .tabs a{font-size:14px;font-weight:500;color:var(--nv-dim);transition:color .18s}
 .nv .tabs a.on{color:var(--nv-fg)}
@@ -757,8 +767,13 @@ body.acct-open .adrawer{transform:none}
 /* In an .ad-kv row the wrap is the row's last span, which is dimmed. */
 .ad-kv .pw-eye{color:var(--ad-fg)}
 .pw-eye svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pw-eye .eye-off,.pw-eye.is-on .eye-on{display:none}
-.pw-eye.is-on .eye-off{display:block}
+/* 🚨 CLOSED EYE = HIDDEN, OPEN EYE = SHOWING. Paul, 2026-09-12: "hidden is the
+   eye closed not open and open shows the password." This was inverted since the
+   eye shipped: the default state (password masked) drew the OPEN eye, so the
+   icon described the state you would get by clicking rather than the state you
+   were in. The icon names the CURRENT state, like every other toggle. */
+.pw-eye .eye-on,.pw-eye.is-on .eye-off{display:none}
+.pw-eye.is-on .eye-on{display:block}
 .ad-link{display:block;margin:20px auto 0;background:none;border:0;color:var(--ad-fg);cursor:pointer;
   font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .ad-link:hover{text-decoration:underline}
@@ -907,16 +922,83 @@ html.has-me .mg-top::after{background:var(--me)}
   padding:24px 16px;overflow-y:auto;opacity:0;transition:opacity .25s ease;font-family:"Archivo",system-ui,sans-serif}
 .whop.is-in{opacity:1}
 .whop-in{text-align:center;max-width:760px}
+/* 🎬 The wordmark, top left, brand red - the Netflix placement Paul sent.
+   #ff3131 is sampled from assets/brand/logo.png, so it IS the logo's red.
+   ⚠️ .whop is display:grid/place-items:center, so a normal child would be
+   centred with everything else. Absolute takes it out of that flow.
+   ⚠️ TWINNED: byte-identical in ns.css and lesson-nav.css, or check-nav-css
+   fails the build. */
+/* 🅰️ ANTON, loaded ONLY for the picker wordmark. It is a heavy condensed
+   display face - the same category as the Monalyon Paul found - and it is
+   deliberately not used anywhere else on the site. 18.6 KB, OFL, self-hosted
+   beside Archivo with its licence in OFL-Anton.txt.
+   ⚠️ font-display:swap so the wordmark draws in Archivo and reflows to Anton
+   rather than leaving a hole. It is decoration, never a blocking load. */
+@font-face{font-family:'Anton';src:url('/assets/fonts/anton-latin.woff2') format('woff2');
+  font-weight:400;font-style:normal;font-display:swap}
+/* 🚨 THE OUTLINE IS DARK RED (#7a0f0f), NOT BLACK AND NOT WHITE. Paul picked
+   it off a five-way comparison on 2026-09-12. A black outline is invisible on
+   this page - the picker background IS #0a0b0d, so the first attempt drew an
+   outline nobody could see. White read as a poster. Dark red gives the letters
+   an edge and a little depth while staying one colour family.
+   🚨 paint-order:stroke fill IS THE WHOLE TRICK. A plain -webkit-text-stroke
+   paints the stroke ON TOP of the fill, eating into the letter from the inside
+   and making a heavy face look heavier and muddier. paint-order puts the stroke
+   BEHIND the fill, so the outline grows outward and the red stays full width.
+   ⚠️ Anton is a single weight (400 is its only cut) - do NOT ask for 900 here.
+   A browser that cannot find 900 synthesises a fake bold, which is exactly the
+   smeared look Paul was reacting to. */
+.whop-brand{position:absolute;top:clamp(22px,3.4vw,46px);left:clamp(16px,2.8vw,46px);
+  font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;
+  font-size:clamp(34px,4.9vw,60px);letter-spacing:.045em;
+  text-transform:uppercase;color:#ff3131;line-height:1;
+  -webkit-text-stroke:5px #4a0606;paint-order:stroke fill;
+  pointer-events:none;user-select:none}
+/* One weight across the whole word. The nav's wordmark splits Nex from a bolder
+   Students, but the reference logotype has no such split - it is one solid
+   run of caps - so the b carries no extra weight here. The markup keeps the
+   tag so the picker and the nav can share one string. */
+.whop-brand b{font-weight:inherit}
+/* 📱 PHONE: CENTRED AT THE TOP, not tucked in the corner - the Netflix mobile
+   layout Paul sent. Sized a little larger than theirs on purpose (his call),
+   which NEXSTUDENTS can carry because Anton is condensed: eleven letters in the
+   space their seven take.
+   ⚠️ left:0;right:0 with text-align:center is what centres an absolutely
+   positioned element. Setting left:50% and translating would work too but
+   breaks the moment the word changes length. */
+@media(max-width:640px){
+  .whop-brand{left:0;right:0;top:clamp(28px,7vw,40px);text-align:center;
+    font-size:clamp(30px,8.4vw,42px);-webkit-text-stroke-width:4px}
+}
 .whop h2{margin:0 0 34px;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:600;letter-spacing:-.01em}
 .whop-row{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(16px,3vw,30px)}
 .whop-i{display:flex;flex-direction:column;align-items:center;gap:12px;width:clamp(96px,16vw,140px);
   background:none;border:0;padding:0;color:#98a1ab;font:inherit;cursor:pointer}
-.whop-i i{width:100%;aspect-ratio:1;max-width:100%;border-radius:10px;display:grid;place-items:center;
-  font-style:normal;font-weight:700;font-size:clamp(2.4rem,6vw,3.6rem);color:#fff;background:#c62828;
-  box-shadow:0 0 0 0 #f1f3f5;transition:box-shadow .15s}
+/* 🎬 THE PICKER TILE, to the Netflix/HBO shape Paul named. At rest it is a
+   real card - a soft edge, a top sheen and a drop shadow - because a flat
+   colour square with a letter on it reads as a placeholder. The selected feel
+   comes on hover and focus: the edge goes white and the tile lifts.
+   ⚠️ overflow:hidden and the img rule are here for the CUSTOM AVATARS Paul is
+   making. An image drops in and is clipped to the same radius with no restyle;
+   the letter stays the fallback for a profile that has no picture yet.
+   ⚠️ TWINNED. This block is byte-identical in ns.css and lesson-nav.css, and
+   check-nav-css fails the build if a .whop class is styled in one only. */
+.whop-i i{width:100%;aspect-ratio:1;max-width:100%;border-radius:12px;display:grid;place-items:center;
+  overflow:hidden;font-style:normal;font-weight:700;font-size:clamp(2.4rem,6vw,3.6rem);
+  color:#fff;background:#c62828;border:2px solid rgba(241,243,245,.24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 6px 18px rgba(0,0,0,.45);
+  transition:transform .18s cubic-bezier(.2,.7,.3,1), border-color .18s, box-shadow .18s}
+.whop-i i img{width:100%;height:100%;object-fit:cover;display:block}
 .whop-i b{font-weight:500;font-size:1rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .whop-i:hover b,.whop-i:focus-visible b{color:#f1f3f5}
-.whop-i:hover i,.whop-i:focus-visible i{box-shadow:0 0 0 3px #f1f3f5}
+.whop-i:hover i,.whop-i:focus-visible i{border-color:#f1f3f5;transform:scale(1.06) translateY(-3px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.26), 0 14px 30px rgba(0,0,0,.55)}
+/* ⚠️ A lift is decoration. Someone who asked their machine for less motion
+   still needs to see which tile is selected, so the edge still goes white. */
+@media(prefers-reduced-motion: reduce){
+  .whop-i i{transition:border-color .18s}
+  .whop-i:hover i,.whop-i:focus-visible i{transform:none}
+}
 .whop-i:focus-visible{outline:none}
 .whop-manage{margin-top:44px;background:none;border:1px solid #98a1ab;color:#98a1ab;font:inherit;
   font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:10px 22px;cursor:pointer}

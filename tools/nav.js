@@ -773,9 +773,30 @@ const modeBoot = () => "<scr" + "ipt>" +
 const navScript = () => navScriptRaw()
   .replace(/\/\*[\s\S]*?\*\//g, "")
   .replace(/\n[ \t]*\n+/g, "\n");
+/* 🚨 THE TWO AUTH SCRIPTS HAD NO CACHE-BUSTER (2026-09-12). They were linked
+   bare on all 170 pages while every stylesheet on the site is hash-named or
+   carries ?v=. This is the SAME bug already written up for lesson-nav.css on
+   2026-09-09 - Pages caches hard, so a fix can be pushed, correct and live, and
+   still look unshipped because the browser is running yesterday's file.
+   It bit while testing the provider-error message: the message was right, the
+   build was right, and the browser kept the old ns-account.js.
+   🚨 THIS ONE IS WORSE THAN A STYLESHEET. ns-account.js holds sign-in, the
+   session and delete-my-account, and supabase-config.js holds the key that
+   CLAUDE.md already warns "silently stops sign-in working" when rotated. A
+   stale copy of either is a broken account, not a wrong colour.
+   ⚠️ Resolved from nav.js's own folder, NOT from a ROOT argument, because
+   navScript() is called with no arguments from four generators. */
+const assetV = (name) => {
+  const fs = require("fs"), path = require("path"), crypto = require("crypto");
+  try {
+    return "?v=" + crypto.createHash("sha1")
+      .update(fs.readFileSync(path.join(__dirname, "..", "assets", name)))
+      .digest("hex").slice(0, 8);
+  } catch (e) { return ""; }
+};
 const navScriptRaw = () =>
-  '<scr' + 'ipt src="/assets/supabase-config.js"></scr' + 'ipt>\n' +
-  '<scr' + 'ipt src="/assets/ns-account.js"></scr' + 'ipt>\n' +
+  '<scr' + 'ipt src="/assets/supabase-config.js' + assetV("supabase-config.js") + '"></scr' + 'ipt>\n' +
+  '<scr' + 'ipt src="/assets/ns-account.js' + assetV("ns-account.js") + '"></scr' + 'ipt>\n' +
   "<scr" + "ipt>\n" + "(function(){\n" + `
 var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
     scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
@@ -2523,7 +2544,22 @@ function adProfile(H){
    wiping a family's progress.
    Orders are kept, detached, and come back if the same email signs up again:
    Paul chose that "in case they reactivate it". */
-function adDeleteMe(H){
+/* A GOOGLE-ONLY ACCOUNT HAS NO PASSWORD TO TYPE (2026-09-12).
+   The server refuses delete_my_account unless the sign-in is FRESH, which for a
+   password account means calling logIn() a second time. A provider cannot do
+   that in place - it leaves the site - so the intent is written down, the
+   browser goes to Google or Facebook, and the panel reopens already confirmed.
+   SHORT FUSE, ON PURPOSE: the marker is good for five minutes and is dropped
+   the instant it is read. A stale flag here is a deleted account nobody asked
+   for. adDelTake() is called exactly once, on load. */
+var AD_DELGO="ns:delgoogle";
+function adDelMark(){ try{ localStorage.setItem(AD_DELGO,String(Date.now())); }catch(e){} }
+function adDelTake(){
+  var t=null;
+  try{ t=localStorage.getItem(AD_DELGO); localStorage.removeItem(AD_DELGO); }catch(e){}
+  return !!t && (Date.now()-parseInt(t,10)) < 300000;
+}
+function adDeleteMe(H,confirmed){
   adFrame(H,"Delete Account",function(){ adProfile(H); },"delme");
   var em=adUser&&adUser.email||"";
   var kids=(adKids||[]).filter(function(k){ return k.kind==="student"; }).length;
@@ -2539,13 +2575,70 @@ function adDeleteMe(H){
     "<button class='ad-link' type='button' data-no>Cancel</button>";
   var pw=H.body.querySelector("[data-f=pw]"),msg=H.body.querySelector(".ad-msg"),yes=H.body.querySelector("[data-yes]");
   H.body.querySelector("[data-no]").onclick=function(){ adProfile(H); };
+  /* Swap the password box for the provider when this account has no password.
+     Asked AFTER the panel is drawn, so the warning is on screen either way and
+     a slow answer never leaves the parent staring at nothing. */
+  var promptEl=H.body.querySelector(".ad-empty.ad-mid"),
+      pwRow=H.body.querySelector("label.ad-kv"),
+      noPw=false;
+  /* noPw is the LOGIC; the inline display is only the paint.
+     🚨 NEVER BRANCH ON A DOM PROPERTY TO DECIDE WHETHER A PASSWORD IS REQUIRED.
+     This used to read pwRow.hidden in go() and in the focus call, which ties a
+     security-shaped decision to whatever the stylesheet happens to do with an
+     attribute. A plain boolean cannot be changed by a CSS edit.
+     ⚠️ FOR THE RECORD, because the opposite was written here first and it was
+     wrong: the hidden attribute DOES hide this row. .ad-kv sets display:flex,
+     which looks like the [hidden] trap in CLAUDE.md, but both stylesheets carry
+     .adrawer [hidden] display:none !important (ns.css, lesson-nav.css) and that
+     wins. Measured with getComputedStyle before writing this. The inline display
+     is kept because it is immune to either sheet dropping that rule.
+     🚨 NO BACKTICKS IN THIS FILE, COMMENTS INCLUDED. This comment shipped with
+     them and broke the module outright - the trap is already in CLAUDE.md. */
+  function hidePwRow(){ noPw=true; pwRow.style.display="none"; }
+  if(confirmed){
+    promptEl.textContent="That confirmed it is you. This is the last step.";
+    hidePwRow();
+  } else if(NSAccount.identities){
+    NSAccount.identities().then(function(list){
+      if(!H.body.contains(yes)) return;
+      /* 🚨 AN EMPTY LIST MEANS "WE DO NOT KNOW", NOT "NO PASSWORD".
+         identities() answers [] for a network failure, a shape we did not
+         expect, or any throw - it catches and returns []. Treating that as
+         provider-only HID THE PASSWORD BOX FROM A PASSWORD USER and offered
+         them a Google sign-in they may not have, which on a flaky connection
+         locks a parent out of deleting their own account.
+         The password box is the path that always works, so it is what an
+         unknown answer must fall back to. Only a list we positively received,
+         that positively lacks "email", switches to the provider. */
+      if(!list.length) return;
+      if(list.indexOf("email")>=0) return;
+      var which=list.indexOf("facebook")>=0?"facebook":"google";
+      var nice=which==="facebook"?"Facebook":"Google";
+      promptEl.textContent="Confirm with "+nice+" to delete the account.";
+      hidePwRow();
+      yes.textContent="Continue with "+nice;
+      yes.onclick=function(){
+        yes.disabled=true; yes.textContent="Taking you to "+nice+"…";
+        adDelMark();
+        NSAccount.signInWith(which,"/account/");
+      };
+    });
+  }
   function go(){
+    /* Already re-authed by the provider, or never had a password. */
+    if(confirmed||noPw){
+      yes.disabled=true; yes.textContent="Deleting…"; msg.textContent="";
+      NSAccount.pickerShown();
+      return NSAccount.deleteAccount().then(done).catch(fail);
+    }
     if(!pw.value){ msg.textContent="Type your password."; pw.focus(); return; }
     yes.disabled=true; yes.textContent="Deleting…"; msg.textContent="";
     NSAccount.logIn(em,pw.value).then(function(){
       NSAccount.pickerShown();
       return NSAccount.deleteAccount();
-    }).then(function(){
+    }).then(done).catch(fail);
+  }
+  function done(){
       adUser=null; adKids=null; adPins=null; adOrders=null;
       /* No way back from here: the Account screen behind it has no account. */
       H.up=null; H.back.hidden=true;
@@ -2555,14 +2648,16 @@ function adDeleteMe(H){
       H.body.querySelector("[data-done]").onclick=function(){ location.replace("/"); };
       if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
       nsWhoIcon();
-    }).catch(function(e){
-      yes.disabled=false; yes.textContent="Delete My Account";
-      msg.textContent=e.message||"That did not work. Try again.";
-    });
+  }
+  function fail(e){
+    yes.disabled=false; yes.textContent="Delete My Account";
+    msg.textContent=(e&&e.message)||"That did not work. Try again.";
   }
   yes.onclick=go;
   pw.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); go(); } });
-  pw.focus();
+  /* Never focus a box that is not there - on the provider route the password
+     row is hidden, and focusing it scrolls the panel to nothing on a phone. */
+  if(!noPw) pw.focus();
 }
 /* Repaint whichever hosts are showing something the new data changes. A host
    the reader has moved into (an order, their profile) is left where it is. */
@@ -2605,7 +2700,16 @@ function nsWhoPicker(){
     var o=document.createElement("div");
     o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
     o.setAttribute("aria-labelledby","whopH");
-    o.innerHTML="<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
+    /* 🎬 THE WORDMARK, TOP LEFT, IN THE BRAND RED - the Netflix shape Paul sent.
+       #ff3131 is not a guess: it is the dominant red of assets/brand/logo.png,
+       sampled off the pixels (59,847 of them) so the word and the mark cannot
+       drift apart. The split Nex + bold Students is the site's own wordmark from
+       the nav; only the colour and the placement come from the reference.
+       ⚠️ aria-hidden: it is decoration here. The dialog is already labelled by
+       its heading, and a screen reader announcing the site name before the
+       question just delays the question. */
+    o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
+      "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
       tile("parent",me,adOwnerTheme())+
       adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("")+
@@ -2625,7 +2729,13 @@ function nsWhoPicker(){
       }
       if(e.target.closest("[data-manage]")){
         adSetWho("parent"); close();
-        if(adD){ adProfiles(adD); adLoad(); adOpen(true); }
+        /* 🚨 GO HOME, do not open over whatever page the picker landed on.
+           The picker shows after a sign-in on ANY page, so opening the panel in
+           place put Manage Profiles on top of a Roman history lesson. Already
+           on the home page, open in place - navigating there is a reload for
+           no reason. */
+        if(location.pathname==="/"){ if(adD){ adProfiles(adD); adLoad(); adOpen(true); } }
+        else location.href="/?panel=profiles";
       }
     });
     addEventListener("keydown",function esc(e){
@@ -2676,9 +2786,33 @@ if(adD) adWire(adD);
    signed-in visit to /account/ is sent to /?panel=account, and this opens it.
    The query is stripped straight away so a reload or a shared link does not
    keep reopening it. */
-if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&/[?&]panel=account\\b/.test(location.search)){
+var nsPanelWant=(function(){
+  var q=location.search;
+  if(q.indexOf("panel=profiles")>=0) return "profiles";
+  if(q.indexOf("panel=account")>=0) return "account";
+  return "";
+})();
+if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&nsPanelWant){
   history.replaceState(null,"",location.pathname+location.hash);
-  adMain(adD); adLoad(); adOpen(true);
+  /* panel=profiles lands straight on Manage Profiles. It exists because the
+     "Who's learning?" picker can appear on ANY page, and its Manage Profiles
+     button used to open the panel in place - over a lesson. Paul, 2026-09-12:
+     "when i slected manage profiles from that screen it opened a roman lesson
+     in the background instead of going to the home page." */
+  if(nsPanelWant==="profiles") adProfiles(adD); else adMain(adD);
+  adLoad(); adOpen(true);
+}
+
+/* BACK FROM THE PROVIDER, MID-DELETE (2026-09-12). The marker was written
+   seconds ago by the Delete Account panel, and the session that just landed in
+   the fragment IS the fresh sign-in the server wants. Reopen the panel already
+   confirmed, so the parent lands on the warning and one last button rather than
+   on a signed-in account page wondering whether it worked.
+   adDelTake() clears the marker as it reads it, so a reload does NOT put them
+   back here. */
+if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&adDelTake()){
+  NSAccount.pickerShown();
+  adLoad(); adOpen(true); adDeleteMe(adD,true);
 }
 
 if(adrawer&&acctLink){
@@ -2869,6 +3003,6 @@ function navCssTag(ROOT) {
   return '<link rel="stylesheet" href="/assets/lesson-nav.css?v=' + v + '">';
 }
 
-module.exports = { NAV, navCssTag, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
+module.exports = { NAV, navCssTag, assetV, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
                    megaPanel, navMarkup, navScript, modeSwitch, modeBoot, footerMarkup, FOOTER_COLS,
                    socialTags, breadcrumbLd, crumbTrail, lessonHead, SITE_ORIGIN };

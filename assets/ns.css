@@ -171,8 +171,19 @@ nav.stuck{border-bottom-color:var(--line)}
    is precisely the state lesson-nav.css was in when it rendered "Nex" grey and
    "Students" white. Saying it once here means the wordmark cannot come apart
    the next time something above it changes colour. */
-.word{font-weight:800;font-size:19px;letter-spacing:-.03em;color:var(--fg)}
-.word b{color:var(--fg)}
+/* 🅰️ THE NAV WORDMARK USES THE PICKER'S FACE (2026-09-12). Paul: "can you add
+   that font style to the site top banner." Anton, caps, positive tracking - the
+   same treatment as the "Who's learning?" screen, so the two read as one brand.
+   ⚠️ THE TRACKING FLIPS SIGN. Archivo ran -.03em, which is right for a tight
+   grotesque and wrong for a condensed display face - Anton's caps need air or
+   they knit together. Do not carry the negative value over.
+   🔴 RED, matching the mark beside it and the picker - Paul, 2026-09-12:
+   "make the text not white but red on the site." It is a LITERAL #ff3131, not a
+   theme token, because the wordmark is brand and must not change with the
+   palette. That is also why it is the logo red sampled from logo.png. */
+.word{font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;font-size:21px;
+  letter-spacing:.035em;text-transform:uppercase;color:#ff3131}
+.word b{color:#ff3131;font-weight:inherit}
 .tabs{display:flex;gap:20px}
 .tabs a{font-size:14px;font-weight:500;color:var(--dim);transition:color .18s}
 .tabs a.on{color:var(--fg)}
@@ -1158,8 +1169,18 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
    left unused; dead CSS that once ran is how a reverted design creeps back.
    ⚠️ Still ONE form and ONE endpoint underneath: both routes call
    NSAccount.signIn() with create_user:true. Only the words change. */
-.authgo{width:100%;display:flex;align-items:center;justify-content:center;
-  margin-top:12px;min-height:52px;font-size:1rem}
+/* ⚠️ 38px, DOWN FROM 52. Paul, 2026-09-12: "the sign in button doesnt need to be
+   that large", then "i want our sign in button smaller though" at 44. The
+   Lizzie Peirce card this one copies runs ~42px, so this sits just under the
+   reference rather than over it. The label drops to .95rem with it - a 1rem
+   word in a 38px button crowds the top and bottom edges. */
+/* ⚠️ `padding` MUST be restated. `.btn` sets its own vertical padding, which
+   adds to the box and made a min-height:38px button render 48px tall - the
+   min-height was never the thing deciding the size. Measure, do not assume the
+   property you set is the one in charge. */
+.authgo{width:100%;max-width:220px;margin-inline:auto;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:26px;min-height:38px;padding:0 18px;font-size:.95rem}
 /* Reset Link Sent: the button changes colour and stays pressed, like the
    Lizzie Peirce reference. Gray, Paul's call ("dont make the sent button
    green"); a mid gray with white text reads on both themes. */
@@ -1187,6 +1208,53 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .auth-note p{margin:0;color:var(--fg)}
 .auth-note .acct-out{display:block;margin-top:10px}
 .auth-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+/* ☑️ KEEP ME SIGNED IN (2026-09-12). Left-aligned under the fields, because it
+   belongs to the form rather than to the centred card - a centred checkbox
+   floating over centred text reads as a caption, not a control.
+   ⚠️ `accent-color` themes a REAL checkbox in one line. The alternative is
+   hiding the input and drawing a box, which is how a control stops being
+   reachable by a keyboard. */
+.auth-rem{display:flex;align-items:center;gap:9px;margin:16px 0 0;
+  text-align:left;font-size:.9rem;color:var(--dim);cursor:pointer;user-select:none}
+.auth-rem input{width:16px;height:16px;flex:none;margin:0;cursor:pointer;
+  accent-color:var(--fg)}
+.auth-rem input:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+@media(hover:hover){ .auth-rem:hover{color:var(--fg)} }
+
+/* ── "or use", then the provider square (2026-09-12) ───────────────────────
+   🚨 COPIED FROM B&H PHOTO, which Paul picked as the reference. Their sign-in
+   is: email, password, one full-width button, Create an Account, then small
+   bold "or use" and a centred ROW OF SQUARES carrying only the provider logo.
+   ⚠️ NO DIVIDER RULES. An earlier pass drew a line either side of the word,
+   which is the pattern everyone else uses and is not what he chose. */
+.auth-or{margin:22px 0 10px;text-align:center;
+  font-size:.82rem;font-weight:700;color:var(--dim)}
+/* 🚨 GOOGLE'S BUTTON, GOOGLE'S RULES. Their branding terms fix the wording, the
+   mark, and a neutral surface - so this one deliberately does NOT take
+   --accent like every other button on the site, and the SVG is never recoloured.
+   White face with a grey border is Google's light treatment; their dark
+   treatment is #131314 with a #8E918F border, which is what the dark block
+   below switches to. Height matches .authgo so the two read as a pair. */
+/* The squares themselves. B&H sets them ~44px, lightly rounded, thin border,
+   logo centred, with a small gap - and the row centred under the word.
+   ⚠️ DARK IS THE DEFAULT HERE, light is opt-in by the nav toggle, and this file
+   never reads prefers-color-scheme - so the dark face is the BASE rule and the
+   white one hangs off [data-theme=light]. Written the other way round, everyone
+   who never touched the toggle gets white slabs on a dark card.
+   ⚠️ The FACE is ours to theme; the LOGOS inside are not. No filter, no
+   opacity, no currentColor on the svg - both providers forbid it. */
+.auth-prov{display:flex;justify-content:center;gap:12px;margin:0 0 4px}
+.prov-btn{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;
+  padding:0;cursor:pointer;border-radius:6px;
+  background:var(--panel-2);border:1px solid var(--line)}
+.prov-btn svg{width:20px;height:20px;display:block}
+.prov-btn:disabled{opacity:.55;cursor:default}
+@media(hover:hover){ .prov-btn:hover:not(:disabled){border-color:var(--fg)} }
+.prov-btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+:root[data-theme="light"] .prov-btn{background:#fff;border-color:#d5d9de}
+@media(hover:hover){
+  :root[data-theme="light"] .prov-btn:hover:not(:disabled){border-color:#8b9199}
+}
 .authlinks{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:14px 0 0}
 .authlinks button{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:inherit;
   font-size:.88rem;color:var(--fg);text-decoration:underline;text-underline-offset:3px}
@@ -2118,8 +2186,13 @@ body.acct-open .adrawer{transform:none}
 /* In an .ad-kv row the wrap is the row's last span, which is dimmed. */
 .ad-kv .pw-eye{color:var(--ad-fg)}
 .pw-eye svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pw-eye .eye-off,.pw-eye.is-on .eye-on{display:none}
-.pw-eye.is-on .eye-off{display:block}
+/* 🚨 CLOSED EYE = HIDDEN, OPEN EYE = SHOWING. Paul, 2026-09-12: "hidden is the
+   eye closed not open and open shows the password." This was inverted since the
+   eye shipped: the default state (password masked) drew the OPEN eye, so the
+   icon described the state you would GET by clicking rather than the state you
+   were IN. The icon names the CURRENT state, like every other toggle. */
+.pw-eye .eye-on,.pw-eye.is-on .eye-off{display:none}
+.pw-eye.is-on .eye-on{display:block}
 .ad-link{display:block;margin:20px auto 0;background:none;border:0;color:var(--ad-fg);cursor:pointer;
   font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .ad-link:hover{text-decoration:underline}
@@ -2268,16 +2341,83 @@ html.has-me .mg-top::after{background:var(--me)}
   padding:24px 16px;overflow-y:auto;opacity:0;transition:opacity .25s ease;font-family:"Archivo",system-ui,sans-serif}
 .whop.is-in{opacity:1}
 .whop-in{text-align:center;max-width:760px}
+/* 🎬 The wordmark, top left, brand red - the Netflix placement Paul sent.
+   #ff3131 is sampled from assets/brand/logo.png, so it IS the logo's red.
+   ⚠️ .whop is display:grid/place-items:center, so a normal child would be
+   centred with everything else. Absolute takes it out of that flow.
+   ⚠️ TWINNED: byte-identical in ns.css and lesson-nav.css, or check-nav-css
+   fails the build. */
+/* 🅰️ ANTON, loaded ONLY for the picker wordmark. It is a heavy condensed
+   display face - the same category as the Monalyon Paul found - and it is
+   deliberately not used anywhere else on the site. 18.6 KB, OFL, self-hosted
+   beside Archivo with its licence in OFL-Anton.txt.
+   ⚠️ font-display:swap so the wordmark draws in Archivo and reflows to Anton
+   rather than leaving a hole. It is decoration, never a blocking load. */
+@font-face{font-family:'Anton';src:url('/assets/fonts/anton-latin.woff2') format('woff2');
+  font-weight:400;font-style:normal;font-display:swap}
+/* 🚨 THE OUTLINE IS DARK RED (#7a0f0f), NOT BLACK AND NOT WHITE. Paul picked
+   it off a five-way comparison on 2026-09-12. A black outline is invisible on
+   this page - the picker background IS #0a0b0d, so the first attempt drew an
+   outline nobody could see. White read as a poster. Dark red gives the letters
+   an edge and a little depth while staying one colour family.
+   🚨 paint-order:stroke fill IS THE WHOLE TRICK. A plain -webkit-text-stroke
+   paints the stroke ON TOP of the fill, eating into the letter from the inside
+   and making a heavy face look heavier and muddier. paint-order puts the stroke
+   BEHIND the fill, so the outline grows outward and the red stays full width.
+   ⚠️ Anton is a single weight (400 is its only cut) - do NOT ask for 900 here.
+   A browser that cannot find 900 synthesises a fake bold, which is exactly the
+   smeared look Paul was reacting to. */
+.whop-brand{position:absolute;top:clamp(22px,3.4vw,46px);left:clamp(16px,2.8vw,46px);
+  font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;
+  font-size:clamp(34px,4.9vw,60px);letter-spacing:.045em;
+  text-transform:uppercase;color:#ff3131;line-height:1;
+  -webkit-text-stroke:5px #4a0606;paint-order:stroke fill;
+  pointer-events:none;user-select:none}
+/* One weight across the whole word. The nav's wordmark splits Nex from a bolder
+   Students, but the reference logotype has no such split - it is one solid
+   run of caps - so the b carries no extra weight here. The markup keeps the
+   tag so the picker and the nav can share one string. */
+.whop-brand b{font-weight:inherit}
+/* 📱 PHONE: CENTRED AT THE TOP, not tucked in the corner - the Netflix mobile
+   layout Paul sent. Sized a little larger than theirs on purpose (his call),
+   which NEXSTUDENTS can carry because Anton is condensed: eleven letters in the
+   space their seven take.
+   ⚠️ left:0;right:0 with text-align:center is what centres an absolutely
+   positioned element. Setting left:50% and translating would work too but
+   breaks the moment the word changes length. */
+@media(max-width:640px){
+  .whop-brand{left:0;right:0;top:clamp(28px,7vw,40px);text-align:center;
+    font-size:clamp(30px,8.4vw,42px);-webkit-text-stroke-width:4px}
+}
 .whop h2{margin:0 0 34px;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:600;letter-spacing:-.01em}
 .whop-row{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(16px,3vw,30px)}
 .whop-i{display:flex;flex-direction:column;align-items:center;gap:12px;width:clamp(96px,16vw,140px);
   background:none;border:0;padding:0;color:#98a1ab;font:inherit;cursor:pointer}
-.whop-i i{width:100%;aspect-ratio:1;max-width:100%;border-radius:10px;display:grid;place-items:center;
-  font-style:normal;font-weight:700;font-size:clamp(2.4rem,6vw,3.6rem);color:#fff;background:#c62828;
-  box-shadow:0 0 0 0 #f1f3f5;transition:box-shadow .15s}
+/* 🎬 THE PICKER TILE, to the Netflix/HBO shape Paul named. At rest it is a
+   real card - a soft edge, a top sheen and a drop shadow - because a flat
+   colour square with a letter on it reads as a placeholder. The selected feel
+   comes on hover and focus: the edge goes white and the tile lifts.
+   ⚠️ overflow:hidden and the img rule are here for the CUSTOM AVATARS Paul is
+   making. An image drops in and is clipped to the same radius with no restyle;
+   the letter stays the fallback for a profile that has no picture yet.
+   ⚠️ TWINNED. This block is byte-identical in ns.css and lesson-nav.css, and
+   check-nav-css fails the build if a .whop class is styled in one only. */
+.whop-i i{width:100%;aspect-ratio:1;max-width:100%;border-radius:12px;display:grid;place-items:center;
+  overflow:hidden;font-style:normal;font-weight:700;font-size:clamp(2.4rem,6vw,3.6rem);
+  color:#fff;background:#c62828;border:2px solid rgba(241,243,245,.24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 6px 18px rgba(0,0,0,.45);
+  transition:transform .18s cubic-bezier(.2,.7,.3,1), border-color .18s, box-shadow .18s}
+.whop-i i img{width:100%;height:100%;object-fit:cover;display:block}
 .whop-i b{font-weight:500;font-size:1rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .whop-i:hover b,.whop-i:focus-visible b{color:#f1f3f5}
-.whop-i:hover i,.whop-i:focus-visible i{box-shadow:0 0 0 3px #f1f3f5}
+.whop-i:hover i,.whop-i:focus-visible i{border-color:#f1f3f5;transform:scale(1.06) translateY(-3px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.26), 0 14px 30px rgba(0,0,0,.55)}
+/* ⚠️ A lift is decoration. Someone who asked their machine for less motion
+   still needs to see which tile is selected, so the edge still goes white. */
+@media(prefers-reduced-motion: reduce){
+  .whop-i i{transition:border-color .18s}
+  .whop-i:hover i,.whop-i:focus-visible i{transform:none}
+}
 .whop-i:focus-visible{outline:none}
 .whop-manage{margin-top:44px;background:none;border:1px solid #98a1ab;color:#98a1ab;font:inherit;
   font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:10px 22px;cursor:pointer}

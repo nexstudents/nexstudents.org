@@ -34,6 +34,13 @@
      Storing the href when it goes into the cart is the cheapest way to know.
      Cosmetic, so a tampered value is a wrong link and nothing worse. */
   var HREF_KEY = "ns:carthrefs";
+  /* ⚠️ SET JUST BEFORE WE HAND THE BROWSER TO GOOGLE, READ WHEN IT COMES BACK.
+     The OAuth session lands in the fragment exactly like the confirm-email and
+     reset links do, so captureFromUrl() cannot tell the three apart on its own -
+     and only a real SIGN-IN should arm the "Who's learning?" picker. A flag we
+     wrote ourselves a moment earlier is the one tell that cannot be faked by a
+     link someone was sent. */
+  var OAUTH_KEY = "ns:oauthgo";
 
   /* ── storage helpers ──────────────────────────────────────────────────────
      ⚠️ Every localStorage call is wrapped. Private mode and "block site data"
@@ -49,8 +56,57 @@
   }
   function drop(key) { try { localStorage.removeItem(key); } catch (e) {} }
 
+  /* ── REMEMBER ME (2026-09-12) ─────────────────────────────────────────────
+     Paul asked for "the option to remember password". We never hold a password -
+     the browser's own password manager does that, and storing one ourselves
+     would be the single worst thing this file could do. What the checkbox
+     actually controls is HOW LONG THE SESSION LIVES:
+       ticked    localStorage    still signed in tomorrow, until they sign out
+       unticked  sessionStorage  gone when this tab closes
+     That is what "remember me" means on every site that is not lying about it,
+     and it is the setting that matters on a SHARED family computer - the whole
+     reason this site has child profiles at all.
+     ⚠️ The preference itself lives in localStorage, so the box comes back ticked
+     the way they left it even when the session was deliberately not kept. */
+  var REMEMBER_KEY = "ns:remember";
+  function remembering() { return read(REMEMBER_KEY, true) !== false; }
+  /* 🚨 RE-HOME THE LIVE SESSION AT ONCE, do not wait for the next token write.
+     Without this line, unticking the box while already signed in left the
+     session sitting in localStorage until refreshIfNeeded() happened to run -
+     up to an hour - so someone who unticked on a shared family computer and
+     closed the browser was still signed in. That is the one promise this
+     checkbox makes, and it was broken. Measured on the mock, 2026-09-12.
+     ⚠️ sessWrite() reads remembering(), so the preference must be stored FIRST
+     or the session is re-homed to the store it just came from. */
+  function setRemember(on) {
+    write(REMEMBER_KEY, !!on);
+    if (session) sessWrite(session);
+  }
+  function sessRead() {
+    var v = read(SESSION_KEY, null);
+    if (v) return v;
+    try { var t = sessionStorage.getItem(SESSION_KEY); return t ? JSON.parse(t) : null; }
+    catch (e) { return null; }
+  }
+  /* Written to ONE store and cleared from the other, every time. A session left
+     behind in localStorage after the box is unticked is the exact thing the
+     unticked box is promising will not happen. */
+  function sessWrite(v) {
+    if (remembering()) {
+      write(SESSION_KEY, v);
+      try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    } else {
+      try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(v)); } catch (e) {}
+      drop(SESSION_KEY);
+    }
+  }
+  function sessDrop() {
+    drop(SESSION_KEY);
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+  }
+
   /* ── session ────────────────────────────────────────────────────────────── */
-  var session = read(SESSION_KEY, null);
+  var session = sessRead();
 
   function headers(withAuth) {
     var h = { "apikey": CFG.publishableKey, "Content-Type": "application/json" };
@@ -71,8 +127,47 @@
      session is real but must go straight to "choose a new password", so it is
      flagged for the account page to act on. */
   var recovery = false;
+  /* 🚨 A PROVIDER CAN SEND BACK A REFUSAL, NOT A SESSION (2026-09-12). Tap
+     "Continue with Google", change your mind on Google's own consent screen, and
+     Supabase bounces you here with `#error=access_denied&error_description=...`
+     and no token. captureFromUrl() only ever looked for access_token, so that
+     landed the parent back on the sign-in card with NOTHING said - which reads
+     as a dead button rather than as a cancelled sign-in.
+     ⚠️ NOT every failure comes back this way. A provider that is switched off in
+     Supabase 400s at Supabase with a JSON body and never redirects at all, so
+     this cannot be the only thing standing between a parent and a blank page.
+     Tested 2026-09-12 with an allow-listed redirect and a disabled provider. */
+  var authError = "";
+  function takeAuthError() { var e = authError; authError = ""; return e; }
+  function captureError() {
+    if (!location.hash || location.hash.indexOf("error") < 0) return false;
+    var p = new URLSearchParams(location.hash.slice(1));
+    var code = p.get("error"), desc = p.get("error_description");
+    if (!code) return false;
+    /* 🚨 NEVER PRINT error_description. It is attacker-controllable: anyone can
+       send a link ending #error=x&error_description=<anything> and that text
+       would render inside our own sign-in card, in our styling, looking like us.
+       It cannot inject script (textContent, not innerHTML), but "Your account is
+       locked, call this number" on a real NexStudents page is the whole of a
+       phishing attack. OUR words for the codes we know, one generic line for the
+       rest, and the raw value only to the console for debugging. */
+    authError = code === "access_denied"
+      ? "That sign-in was cancelled. Try again, or use your email and password."
+      : "That sign-in did not finish. Try again, or use your email and password.";
+    if (desc) { try { console.warn("[ns-account] provider error:", code, desc); } catch (e) {} }
+    /* 🚨 BOTH MARKERS DIE WITH THE ATTEMPT. Left behind, `ns:oauthgo` would arm
+       the "Who's learning?" picker on whatever fragment sign-in came next, and
+       `ns:delgoogle` would reopen Delete Account as though the provider had
+       confirmed. The server still refuses that delete - it wants a fresh amr -
+       so this is a confusing screen rather than a hole, but it is one nobody
+       should ever be shown. */
+    drop(OAUTH_KEY);
+    drop("ns:delgoogle");
+    history.replaceState(null, "", location.pathname + location.search);
+    return true;
+  }
   function captureFromUrl() {
-    if (!location.hash || location.hash.indexOf("access_token") < 0) return false;
+    if (!location.hash || location.hash.indexOf("access_token") < 0) return captureError();
     var p = new URLSearchParams(location.hash.slice(1));
     var at = p.get("access_token"), rt = p.get("refresh_token");
     if (!at) return false;
@@ -82,14 +177,20 @@
       expires_at: Date.now() + (parseInt(p.get("expires_in"), 10) || 3600) * 1000
     };
     recovery = p.get("type") === "recovery";
-    write(SESSION_KEY, session);
+    sessWrite(session);
+    /* Back from Google. Same two keys logIn() writes, so the account page
+       behaves identically however the parent signed in. */
+    if (read(OAUTH_KEY, false) === true) {
+      drop(OAUTH_KEY);
+      if (!recovery) { write(PICK_KEY, true); write(WHO_KEY, "parent"); }
+    }
     history.replaceState(null, "", location.pathname + location.search);
     return true;
   }
   function setSession(d) {
     session = { access_token: d.access_token, refresh_token: d.refresh_token,
                 expires_at: Date.now() + (d.expires_in || 3600) * 1000 };
-    write(SESSION_KEY, session);
+    sessWrite(session);
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: d.user || null } }));
   }
   /* Supabase's own error words are written for developers. These are for a
@@ -129,7 +230,7 @@
         if (!d || !d.access_token) { signOut(); return null; }
         session = { access_token: d.access_token, refresh_token: d.refresh_token,
                     expires_at: Date.now() + (d.expires_in || 3600) * 1000 };
-        write(SESSION_KEY, session);
+        sessWrite(session);
         return session;
       }).catch(function () { return null; });
   }
@@ -148,6 +249,46 @@
     return authCall("/token?grant_type=password",
       { email: clean(email), password: String(password || "") }, "Could not log in.")
       .then(function (d) { write(PICK_KEY, true); write(WHO_KEY, "parent"); setSession(d); return d.user; });
+  }
+  /* ── CONTINUE WITH GOOGLE (2026-09-12) ────────────────────────────────────
+     Paul: "i would like the option to maybe also login with google."
+     This LEAVES the page. Supabase bounces the browser to Google, Google
+     bounces it to <project>.supabase.co/auth/v1/callback, and that lands back
+     here with the session in the fragment, where captureFromUrl() takes it.
+     🚨 Nothing secret is involved on this side. The client SECRET lives only in
+     Supabase › Auth › Providers, entered by Paul; the browser never sees it.
+     `next` is a path on this site, never a full URL - an open redirect here
+     would let a phishing link carry a real session off to someone else's
+     domain. Anything that is not a same-site path falls back to /account/. */
+  /* 🚨 ALLOW-LIST, NOT A PASS-THROUGH. `provider` reaches this from a data-
+     attribute in the page, so anything not named here is refused rather than
+     pasted into a URL we then send the browser to. Adding Apple later is one
+     word in this array plus its square in the markup. */
+  var PROVIDERS = ["google", "facebook"];
+  function providerUrl(provider, next) {
+    var path = typeof next === "string" && /^\/[^/\\]/.test(next) ? next : "/account/";
+    return AUTH + "/authorize?provider=" + encodeURIComponent(provider) +
+           "&redirect_to=" + encodeURIComponent(location.origin + path);
+  }
+  function signInWith(provider, next) {
+    var p = String(provider || "").toLowerCase();
+    if (PROVIDERS.indexOf(p) < 0) throw new Error("Unknown sign-in provider.");
+    write(OAUTH_KEY, true);
+    location.assign(providerUrl(p, next));
+  }
+  function signInWithGoogle(next) { return signInWith("google", next); }
+  /* Which ways can this account sign in? A Google-only account has no password,
+     so anything that re-checks a password (Delete Account, Turn PIN Off) has to
+     offer Google instead of a password box. Supabase lists these on the user as
+     `identities`, each with a `provider`. */
+  function identities() {
+    return getUser().then(function (u) {
+      var list = (u && Array.isArray(u.identities)) ? u.identities : [];
+      return list.map(function (i) { return i && i.provider; }).filter(Boolean);
+    }).catch(function () { return []; });
+  }
+  function hasPassword() {
+    return identities().then(function (p) { return p.indexOf("email") >= 0; });
   }
   function signUp(email, password, first, last) {
     /* redirect_to is where the CONFIRM link lands: /account/, which picks the
@@ -402,7 +543,7 @@
   }
 
   function signOut() {
-    session = null; drop(SESSION_KEY); drop(WHO_KEY); drop(PICK_KEY); drop("ns:accent"); drop("ns:meicon");
+    session = null; sessDrop(); drop(WHO_KEY); drop(PICK_KEY); drop("ns:accent"); drop("ns:meicon");
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
   }
 
@@ -692,6 +833,10 @@
     isAdmin: isAdmin, adminMode: adminMode, viewAs: viewAs, adminFile: adminFile,
     owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
     logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, saveMyTheme: saveMyTheme, saveMySettings: saveMySettings, changeEmail: changeEmail,
+    signInWith: signInWith, signInWithGoogle: signInWithGoogle, providers: PROVIDERS.slice(),
+    identities: identities, hasPassword: hasPassword,
+    remembering: remembering, setRemember: setRemember,
+    takeAuthError: takeAuthError,
     isRecovery: function () { return recovery; },
     signOut: signOut, getUser: getUser, deleteAccount: deleteAccount,
     who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,
