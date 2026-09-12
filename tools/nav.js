@@ -1262,10 +1262,145 @@ function adStrip(a){
    "certain elements instead of the entire color of the site." The lesson
    colour picker (ns:theme) is the student's own per-device choice again. */
 function adSetWho(id){
+  var from=NSAccount.who(),moving=from!==id&&NSAccount.isSignedIn();
+  /* 📈 Progress changes hands: the leaving profile's lesson records are
+     pushed (a student) and stashed (everyone), the arriving profile's stash
+     comes back at once, then a student's saved progress is pulled over it. */
+  if(moving) nsProgHandOff(from,id);
   NSAccount.setWho(id);
   /* Their reading settings come with them (migration 016). */
   nsApplySettings(adSettingsOf(id==="parent"?null:(adKid(id)||AD_PENDING)));
   nsWhoIcon();
+  if(moving) nsProgArrive(id);
+}
+
+/* ── 📈 PROGRESS FOLLOWS THE STUDENT (2026-09-11, migration 017) ────────────
+   Paul: "make sure the student's progress also matches." Until now progress
+   was per DEVICE (localStorage), so two children on one laptop overwrote each
+   other. The lesson pages are NOT changed: they keep writing
+     ns:done:<id>  {complete, score, total, pct}   history, science
+     ns:prog:<id>  {done, total, complete, ...}    maths, integers, English
+   and this layer moves those records to and from the student who is on.
+   🚨 NOTHING IS EVER DELETED BY A SWITCH. The leaving profile's records go
+   into ns:stash:<who> first. That matters on day one: Kolten's real progress
+   is in his browser today, and the first switch stashes it under "parent"
+   rather than losing it (moving it onto his profile is a parent button).
+   ⚠️ A PARENT IS NOT TRACKED (Paul's pick): their records stay in their
+   stash on the device and never reach the progress table. */
+var NS_PK=/^ns:(done|prog):(.+)$/;
+function nsProgSnap(){
+  var s={};
+  try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(NS_PK.test(k)) s[k]=localStorage.getItem(k); } }catch(e){}
+  return s;
+}
+function nsProgWrite(s){
+  Object.keys(nsProgSnap()).forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+  Object.keys(s||{}).forEach(function(k){ if(NS_PK.test(k)){ try{ localStorage.setItem(k,s[k]); }catch(e){} } });
+}
+function nsStashGet(who){ try{ return JSON.parse(localStorage.getItem("ns:stash:"+who))||{}; }catch(e){ return {}; } }
+function nsStashPut(who,s){ try{ localStorage.setItem("ns:stash:"+who,JSON.stringify(s)); }catch(e){} }
+function nsIsStudent(id){ var r=id&&id!=="parent"?adKid(id):null; return !!(r&&r.kind==="student"); }
+/* The same "finished" test the shelves use (progressScript in build-pages):
+   never done > 0 alone, that is started, not finished. */
+function nsFinished(d,pr){
+  if(d&&d.complete!==false) return true;
+  if(!pr) return false;
+  if(pr.complete===true) return true;
+  return typeof pr.done==="number"&&typeof pr.total==="number"&&pr.total>0&&pr.done>=pr.total;
+}
+/* localStorage records -> one progress row per lesson, detail kept verbatim. */
+function nsRowsFromSnap(studentId,s,only){
+  var by={};
+  Object.keys(s).forEach(function(k){
+    var m=NS_PK.exec(k); if(!m||(only&&!only[m[2]])) return;
+    by[m[2]]=by[m[2]]||{};
+    try{ by[m[2]][m[1]]=JSON.parse(s[k]); }catch(e){}
+  });
+  return Object.keys(by).map(function(id){
+    var d=by[id].done,p=by[id].prog,sc=null,tt=null;
+    if(d&&typeof d.score==="number"&&typeof d.total==="number"&&d.total>0){ tt=d.total; sc=Math.max(0,Math.min(d.score,d.total)); }
+    return {student_id:studentId,lesson_id:id,state:nsFinished(d,p)?"done":"part",detail:by[id],score:sc,total:tt,
+            updated_at:new Date().toISOString()};
+  });
+}
+function nsSnapFromRows(rows){
+  var s={};
+  (rows||[]).forEach(function(r){
+    var dt=r.detail||{};
+    if(dt.done) s["ns:done:"+r.lesson_id]=JSON.stringify(dt.done);
+    if(dt.prog) s["ns:prog:"+r.lesson_id]=JSON.stringify(dt.prog);
+  });
+  return s;
+}
+/* Send what changed since the last push for the student who is on. A lesson
+   whose records vanished (a lesson's own Start Over) is deleted, so it does
+   not come back on the next device. Fire-and-forget; keepalive lets it finish
+   while the page unloads. */
+function nsProgPush(){
+  var id=window.NSAccount&&NSAccount.who();
+  if(!NSAccount.isSignedIn()||!nsIsStudent(id)) return Promise.resolve();
+  var s=nsProgSnap(),last={};
+  try{ last=JSON.parse(localStorage.getItem("ns:pushed:"+id))||{}; }catch(e){}
+  var changed={},gone={};
+  Object.keys(s).forEach(function(k){ if(last[k]!==s[k]) changed[NS_PK.exec(k)[2]]=1; });
+  Object.keys(last).forEach(function(k){ var m=NS_PK.exec(k); if(m&&!(k in s)) gone[m[2]]=1; });
+  Object.keys(changed).forEach(function(l){ delete gone[l]; });
+  Object.keys(s).forEach(function(k){ var m=NS_PK.exec(k); if(m) delete gone[m[2]]; });
+  var jobs=[];
+  if(Object.keys(changed).length) jobs.push(NSAccount.upsertProgress(nsRowsFromSnap(id,s,changed)));
+  Object.keys(gone).forEach(function(l){ jobs.push(NSAccount.deleteProgress(id,l)); });
+  if(!jobs.length) return Promise.resolve();
+  return Promise.all(jobs).then(function(){ try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(s)); }catch(e){} })
+    .catch(function(){});
+}
+function nsProgHandOff(from,to){
+  nsProgPush();                     /* reads its snapshot synchronously, before the clear */
+  nsStashPut(from,nsProgSnap());
+  nsProgWrite(nsStashGet(to));
+}
+/* A shelf or a lesson painted its ticks from the OLD records at load, so a
+   page that shows progress reloads once for the new profile. */
+/* ⚠️ NO "\/" IN A REGEX HERE: this script is a template literal, which turns
+   "\/" into "/", so /^\/lessons\// shipped as /^/lessons// - a SyntaxError
+   that killed the whole panel on every page (2026-09-11). indexOf instead. */
+function nsProgRepaint(){
+  if(document.querySelector("[data-lesson]")||location.pathname.indexOf("/lessons/")===0) location.reload();
+}
+function nsProgArrive(id){
+  if(!nsIsStudent(id)){ nsProgRepaint(); return; }
+  NSAccount.progressRows(id).then(function(rows){
+    var server=nsSnapFromRows(rows),merged=Object.assign({},nsProgSnap(),server);
+    nsProgWrite(merged);
+    /* "Pushed" = what the server has; anything only the stash had goes up next. */
+    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); sessionStorage.setItem("ns:pulled:"+id,"1"); }catch(e){}
+    nsProgPush(); nsProgRepaint();
+  }).catch(function(){ nsProgRepaint(); });
+}
+/* On every page for a student: pull once per tab (another device may have
+   moved on), push on the way out. The pull reloads only if it changed a
+   record, and the session flag is set first so it can never loop. */
+function nsProgBoot(){
+  if(!window.NSAccount||!NSAccount.isSignedIn()) return;
+  var id=NSAccount.who();
+  function go(){
+    if(!nsIsStudent(id)) return;
+    var pulled=false; try{ pulled=sessionStorage.getItem("ns:pulled:"+id)==="1"; }catch(e){}
+    if(pulled){ nsProgPush(); return; }
+    try{ sessionStorage.setItem("ns:pulled:"+id,"1"); }catch(e){}
+    NSAccount.progressRows(id).then(function(rows){
+      var server=nsSnapFromRows(rows),local=nsProgSnap(),diff=false;
+      Object.keys(server).forEach(function(k){ if(local[k]!==server[k]) diff=true; });
+      if(diff){
+        nsProgWrite(Object.assign({},local,server));
+        try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
+        nsProgRepaint();
+      } else nsProgPush();
+    }).catch(function(){});
+  }
+  if(id!=="parent"&&adKids===null) NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; go(); }).catch(function(){});
+  else go();
+  addEventListener("pagehide",function(){ nsProgPush(); });
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") nsProgPush(); });
 }
 /* html.has-me + --me on the live page, and ns:accent so modeBoot paints it
    before first paint on the next page. Cleared for the account holder, a
@@ -2171,6 +2306,7 @@ document.addEventListener("ns:auth",function(){ nsWhoIcon(); });
    student already on this device (it needs the list to know their colour). */
 if(window.NSAccount&&NSAccount.isSignedIn()){
   nsWhoPicker();
+  nsProgBoot();
   if(NSAccount.who()!=="parent"&&adKids===null){
     NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; nsWhoIcon(); }).catch(function(){});
   } else if(NSAccount.who()==="parent"){

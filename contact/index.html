@@ -480,9 +480,111 @@ function adStrip(a){
     "</div>";
 }
 function adSetWho(id){
+  var from=NSAccount.who(),moving=from!==id&&NSAccount.isSignedIn();
+  if(moving) nsProgHandOff(from,id);
   NSAccount.setWho(id);
   nsApplySettings(adSettingsOf(id==="parent"?null:(adKid(id)||AD_PENDING)));
   nsWhoIcon();
+  if(moving) nsProgArrive(id);
+}
+var NS_PK=/^ns:(done|prog):(.+)$/;
+function nsProgSnap(){
+  var s={};
+  try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(NS_PK.test(k)) s[k]=localStorage.getItem(k); } }catch(e){}
+  return s;
+}
+function nsProgWrite(s){
+  Object.keys(nsProgSnap()).forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+  Object.keys(s||{}).forEach(function(k){ if(NS_PK.test(k)){ try{ localStorage.setItem(k,s[k]); }catch(e){} } });
+}
+function nsStashGet(who){ try{ return JSON.parse(localStorage.getItem("ns:stash:"+who))||{}; }catch(e){ return {}; } }
+function nsStashPut(who,s){ try{ localStorage.setItem("ns:stash:"+who,JSON.stringify(s)); }catch(e){} }
+function nsIsStudent(id){ var r=id&&id!=="parent"?adKid(id):null; return !!(r&&r.kind==="student"); }
+function nsFinished(d,pr){
+  if(d&&d.complete!==false) return true;
+  if(!pr) return false;
+  if(pr.complete===true) return true;
+  return typeof pr.done==="number"&&typeof pr.total==="number"&&pr.total>0&&pr.done>=pr.total;
+}
+function nsRowsFromSnap(studentId,s,only){
+  var by={};
+  Object.keys(s).forEach(function(k){
+    var m=NS_PK.exec(k); if(!m||(only&&!only[m[2]])) return;
+    by[m[2]]=by[m[2]]||{};
+    try{ by[m[2]][m[1]]=JSON.parse(s[k]); }catch(e){}
+  });
+  return Object.keys(by).map(function(id){
+    var d=by[id].done,p=by[id].prog,sc=null,tt=null;
+    if(d&&typeof d.score==="number"&&typeof d.total==="number"&&d.total>0){ tt=d.total; sc=Math.max(0,Math.min(d.score,d.total)); }
+    return {student_id:studentId,lesson_id:id,state:nsFinished(d,p)?"done":"part",detail:by[id],score:sc,total:tt,
+            updated_at:new Date().toISOString()};
+  });
+}
+function nsSnapFromRows(rows){
+  var s={};
+  (rows||[]).forEach(function(r){
+    var dt=r.detail||{};
+    if(dt.done) s["ns:done:"+r.lesson_id]=JSON.stringify(dt.done);
+    if(dt.prog) s["ns:prog:"+r.lesson_id]=JSON.stringify(dt.prog);
+  });
+  return s;
+}
+function nsProgPush(){
+  var id=window.NSAccount&&NSAccount.who();
+  if(!NSAccount.isSignedIn()||!nsIsStudent(id)) return Promise.resolve();
+  var s=nsProgSnap(),last={};
+  try{ last=JSON.parse(localStorage.getItem("ns:pushed:"+id))||{}; }catch(e){}
+  var changed={},gone={};
+  Object.keys(s).forEach(function(k){ if(last[k]!==s[k]) changed[NS_PK.exec(k)[2]]=1; });
+  Object.keys(last).forEach(function(k){ var m=NS_PK.exec(k); if(m&&!(k in s)) gone[m[2]]=1; });
+  Object.keys(changed).forEach(function(l){ delete gone[l]; });
+  Object.keys(s).forEach(function(k){ var m=NS_PK.exec(k); if(m) delete gone[m[2]]; });
+  var jobs=[];
+  if(Object.keys(changed).length) jobs.push(NSAccount.upsertProgress(nsRowsFromSnap(id,s,changed)));
+  Object.keys(gone).forEach(function(l){ jobs.push(NSAccount.deleteProgress(id,l)); });
+  if(!jobs.length) return Promise.resolve();
+  return Promise.all(jobs).then(function(){ try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(s)); }catch(e){} })
+    .catch(function(){});
+}
+function nsProgHandOff(from,to){
+  nsProgPush();                     
+  nsStashPut(from,nsProgSnap());
+  nsProgWrite(nsStashGet(to));
+}
+function nsProgRepaint(){
+  if(document.querySelector("[data-lesson]")||location.pathname.indexOf("/lessons/")===0) location.reload();
+}
+function nsProgArrive(id){
+  if(!nsIsStudent(id)){ nsProgRepaint(); return; }
+  NSAccount.progressRows(id).then(function(rows){
+    var server=nsSnapFromRows(rows),merged=Object.assign({},nsProgSnap(),server);
+    nsProgWrite(merged);
+    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); sessionStorage.setItem("ns:pulled:"+id,"1"); }catch(e){}
+    nsProgPush(); nsProgRepaint();
+  }).catch(function(){ nsProgRepaint(); });
+}
+function nsProgBoot(){
+  if(!window.NSAccount||!NSAccount.isSignedIn()) return;
+  var id=NSAccount.who();
+  function go(){
+    if(!nsIsStudent(id)) return;
+    var pulled=false; try{ pulled=sessionStorage.getItem("ns:pulled:"+id)==="1"; }catch(e){}
+    if(pulled){ nsProgPush(); return; }
+    try{ sessionStorage.setItem("ns:pulled:"+id,"1"); }catch(e){}
+    NSAccount.progressRows(id).then(function(rows){
+      var server=nsSnapFromRows(rows),local=nsProgSnap(),diff=false;
+      Object.keys(server).forEach(function(k){ if(local[k]!==server[k]) diff=true; });
+      if(diff){
+        nsProgWrite(Object.assign({},local,server));
+        try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
+        nsProgRepaint();
+      } else nsProgPush();
+    }).catch(function(){});
+  }
+  if(id!=="parent"&&adKids===null) NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; go(); }).catch(function(){});
+  else go();
+  addEventListener("pagehide",function(){ nsProgPush(); });
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") nsProgPush(); });
 }
 function nsApplyAccent(){
   if(!window.NSAccount) return;
@@ -1201,6 +1303,7 @@ if(adrawer&&acctLink){
 document.addEventListener("ns:auth",function(){ nsWhoIcon(); });
 if(window.NSAccount&&NSAccount.isSignedIn()){
   nsWhoPicker();
+  nsProgBoot();
   if(NSAccount.who()!=="parent"&&adKids===null){
     NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; nsWhoIcon(); }).catch(function(){});
   } else if(NSAccount.who()==="parent"){

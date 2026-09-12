@@ -341,6 +341,31 @@
     return rest("PATCH", "/students?id=eq." + encodeURIComponent(id) + "&select=" + STUDENT_COLS, b,
       "Could not save that.").then(function (d) { return d && d[0]; });
   }
+  /* ── PROGRESS PER STUDENT (2026-09-11, migration 017) ─────────────────────
+     Rows are {student_id, lesson_id, state, detail, score, total}. RLS ("own
+     progress") already limits every call to this account's own students.
+     upsert = PostgREST merge-duplicates on the (student_id, lesson_id) key. */
+  function progressRows(studentId) {
+    return rest("GET", "/progress?student_id=eq." + encodeURIComponent(studentId) +
+      "&select=lesson_id,state,detail,score,total,updated_at", null, "Could not load progress.")
+      .then(function (d) { return d || []; });
+  }
+  function upsertProgress(rows) {
+    if (!rows || !rows.length) return Promise.resolve([]);
+    return refreshIfNeeded().then(function (s) {
+      if (!s) throw new Error("Please sign in again.");
+      var h = headers(true); h["Prefer"] = "resolution=merge-duplicates,return=minimal";
+      return fetch(REST + "/progress?on_conflict=student_id,lesson_id", { method: "POST", headers: h,
+        body: JSON.stringify(rows), keepalive: true })
+        .then(function (r) { if (!r.ok) throw new Error("Could not save progress."); return rows; });
+    });
+  }
+  /* lessonId null = EVERY lesson for that student (the full reset). */
+  function deleteProgress(studentId, lessonId) {
+    return rest("DELETE", "/progress?student_id=eq." + encodeURIComponent(studentId) +
+      (lessonId ? "&lesson_id=eq." + encodeURIComponent(lessonId) : ""), null, "Could not reset that.")
+      .then(function () { return true; });
+  }
   /* 🚨 Deleting a profile deletes its progress too (on delete cascade). The
      panel asks twice before calling this. */
   function deleteStudent(id) {
@@ -632,6 +657,7 @@
     signOut: signOut, getUser: getUser,
     who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,
     students: students, addStudent: addStudent, updateStudent: updateStudent, deleteStudent: deleteStudent, saveOwn: saveOwn,
+    progressRows: progressRows, upsertProgress: upsertProgress, deleteProgress: deleteProgress,
     pinMap: pinMap, checkPin: checkPin, setPin: setPin,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,

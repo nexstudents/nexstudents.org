@@ -30,6 +30,7 @@ node tools/extract-lesson-assets.js
 node tools/check-nav-css.js .    # the shared nav is styled in BOTH stylesheets
 node tools/check-contrast.js .   # every text colour, in BOTH themes
 node tools/check-escape.js .     # account-panel text escaped for the attribute it lands in
+node tools/check-navscript.js .  # the nav/panel script every page ships actually PARSES
 node tools/check-links.js .      # LAST OF ALL
 ```
 
