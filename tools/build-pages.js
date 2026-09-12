@@ -3766,5 +3766,35 @@ for (const [from, to] of REDIRECTS) {
   redirects.push(from + " -> " + to);
 }
 
+/* 📈 THE COURSE MAP THE ACCOUNT PANEL'S PROGRESS VIEW READS (2026-09-11).
+   Paul: the parent sees "course progress and overall score and what unit they
+   are on next". The panel script (nav.js) cannot require this file, so the
+   same course outlines the shelves page through - COURSE_SHELVES, every unit,
+   every slot, built or not - are written here as /assets/courses.json.
+   Built slots carry the LESSON ID the progress table stores; unbuilt ones
+   carry null, so "next" can say a lesson is still being built. Lessons that
+   sit on no course (grade 3/4 skills) go in "other", so a finished one is
+   never invisible to the parent.
+   ⚠️ Derived, never hand-kept: it is rewritten on every build. */
+{
+  const lessonIdFor = (slug) => {
+    const L = slug ? LESSONS.find((x) => x.href.indexOf("/" + slug + "/") !== -1) : null;
+    return L ? L.id : null;
+  };
+  const ord = (g) => g === "K" ? "Kindergarten" : g + (g == 1 ? "st" : g == 2 ? "nd" : g == 3 ? "rd" : "th") + " Grade";
+  const courses = COURSE_SHELVES.map((c) => ({
+    name: c.course || (ord(String(c.grade)) + " " + c.subject),
+    grade: String(c.grade), subject: c.subject,
+    units: c.units().map((u) => ({ n: u.n, name: u.name,
+      items: u.items.map((it) => ({ label: it.label, title: it.title, id: lessonIdFor(it.slug) })) }))
+  }));
+  const inCourse = new Set();
+  courses.forEach((c) => c.units.forEach((u) => u.items.forEach((i) => { if (i.id) inCourse.add(i.id); })));
+  const other = LESSONS.filter((L) => !inCourse.has(L.id))
+    .map((L) => ({ id: L.id, title: L.title || L.id, grade: String(L.grade), subject: L.subject }));
+  fs.writeFileSync(path.join(ROOT, "assets", "courses.json"), JSON.stringify({ courses, other }), "utf8");
+  written.push("assets/courses.json (" + courses.length + " courses, " + inCourse.size + " built lessons, " + other.length + " other)");
+}
+
 console.log(JSON.stringify({ written, redirects, navEntries: NAV.length,
   liveGrades: liveGrades(), homePickerUpdated: newHome !== home }, null, 1));

@@ -48,7 +48,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=cbc9fee9">
+<link rel="stylesheet" href="/assets/ns.css?v=ec35fe48">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 </head>
 <body>
@@ -763,6 +763,8 @@ function adEdit(H,row,kindIn){
   }
   H.body.innerHTML=
     "<div class='ad-hi ad-edit-av'>"+adAv(f.name||"?",f.theme)+"</div>"+
+    (row&&isKid?"<button type='button' class='ad-ord ad-kidrow ad-progrow' data-prog><span class='ad-ord-t'><b>Progress</b>"+
+      "<span>Courses, overall score and what&#39;s next</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>":"")+
     "<p class='ad-cap'>Name</p>"+
     "<label class='ad-kv'><span>Name</span><input class='ad-in' data-f='name' maxlength='30' autocomplete='off' value='"+adEsc(f.name)+"'></label>"+
     (isKid?
@@ -823,6 +825,8 @@ function adEdit(H,row,kindIn){
       }
     });
   });
+  var progRow=q("[data-prog]");
+  if(progRow) progRow.onclick=function(){ adProgress(H,row); };
   var pinRow=q("[data-pin]");
   if(pinRow) pinRow.onclick=function(){ adPinView(H,"change",{key:row.id,name:row.name}); };
   function birthday(){
@@ -859,6 +863,172 @@ function adEdit(H,row,kindIn){
   if(!row){ H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } nameIn.focus(); }
   var del=q("[data-del]");
   if(del) del.onclick=function(){ adRemove(H,row); };
+}
+var adCourses=null;
+function adLoadCourses(){
+  if(adCourses) return Promise.resolve(adCourses);
+  return fetch("/assets/courses.json").then(function(r){ return r.json(); }).then(function(m){ adCourses=m; return m; });
+}
+function adProgMap(rows){
+  var by={};
+  (rows||[]).forEach(function(r){
+    by[r.lesson_id]={done:r.state==="done",pct:r.total?Math.round(r.score*100/r.total):null};
+  });
+  return by;
+}
+function adProgressFor(row){
+  return NSAccount.progressRows(row.id).then(function(rows){
+    var by=adProgMap(rows);
+    if(NSAccount.who()===row.id){
+      var local=adProgMap(nsRowsFromSnap(row.id,nsProgSnap()));
+      Object.keys(local).forEach(function(k){ by[k]=local[k]; });
+    }
+    return by;
+  });
+}
+function adProgTotals(by){
+  var done=0,pts=0,sum=0,n=0;
+  Object.keys(by).forEach(function(k){
+    var x=by[k]; if(!x.done) return;
+    done++; pts+=10;
+    if(x.pct!=null){ sum+=x.pct; n++; if(x.pct>=90) pts+=5; }
+  });
+  return {done:done,points:pts,avg:n?Math.round(sum/n):null};
+}
+function adCourseStats(c,by){
+  var items=[];
+  c.units.forEach(function(u){ u.items.forEach(function(it){ items.push(it); }); });
+  var built=items.filter(function(it){ return it.id; }),
+      done=built.filter(function(it){ return by[it.id]&&by[it.id].done; }),
+      scored=done.filter(function(it){ return by[it.id].pct!=null; }),
+      next=items.filter(function(it){ return !(it.id&&by[it.id]&&by[it.id].done); })[0]||null,
+      any=built.some(function(it){ return by[it.id]; });
+  return {built:built,done:done.length,avg:scored.length?Math.round(scored.reduce(function(s,it){ return s+by[it.id].pct; },0)/scored.length):null,
+          next:next,any:any};
+}
+function adCoursesFor(row,by,m){
+  var mine=m.courses.filter(function(c){
+    return (row.grade&&c.grade===String(row.grade))||adCourseStats(c,by).any;
+  });
+  return mine.length?mine:m.courses;
+}
+function adNextLine(s){
+  if(!s.next) return "Every lesson finished";
+  return "Next: "+adEsc(s.next.label)+" · "+adEsc(s.next.title)+(s.next.id?"":" (being built)");
+}
+function adStats(t){
+  return "<div class='ad-stats'>"+
+    "<div><b>"+t.done+"</b><span>Lessons Finished</span></div>"+
+    "<div><b>"+(t.avg==null?"N/A":t.avg+"%")+"</b><span>Overall Score</span></div>"+
+    "<div><b>"+t.points+"</b><span>Points</span></div></div>";
+}
+function nsProgForget(studentId,lessonId){
+  function strip(s){
+    Object.keys(s).forEach(function(k){ var m=NS_PK.exec(k); if(m&&(!lessonId||m[2]===lessonId)) delete s[k]; });
+    return s;
+  }
+  if(NSAccount.who()===studentId) nsProgWrite(strip(nsProgSnap()));
+  nsStashPut(studentId,strip(nsStashGet(studentId)));
+  try{
+    var p=JSON.parse(localStorage.getItem("ns:pushed:"+studentId))||{};
+    localStorage.setItem("ns:pushed:"+studentId,JSON.stringify(strip(p)));
+  }catch(e){}
+}
+function adProgress(H,row){
+  adFrame(H,"Progress",function(){ adEdit(H,row); },"progress");
+  H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>";
+  Promise.all([adLoadCourses(),adProgressFor(row)]).then(function(r){
+    var m=r[0],by=r[1],t=adProgTotals(by),gw=adGradeWords(row.grade);
+    var list=adCoursesFor(row,by,m);
+    var other=(m.other||[]).filter(function(o){ return by[o.id]; });
+    var stash=nsStashGet("parent"),stashN=Object.keys(adProgMap(nsRowsFromSnap(row.id,stash))).length;
+    function lessonRows(items){
+      return items.map(function(it){
+        var x=by[it.id],st=!x?"Not started":x.done?(x.pct!=null?"Done · "+x.pct+"%":"Done"):"In progress";
+        return "<div class='ad-lsn'><span><b>"+adEsc(it.label||"")+"</b> "+adEsc(it.title)+"</span><span class='ad-dim'>"+st+"</span>"+
+          (x?"<button type='button' class='ad-link ad-reset1' data-reset1='"+adEsc(it.id)+"'>Reset</button>":"")+"</div>";
+      }).join("");
+    }
+    H.body.innerHTML=
+      "<div class='ad-me'>"+adAv(row.name,row.theme)+"<div><b>"+adEsc(row.name)+"</b>"+
+        (gw?"<span>"+gw+"</span>":"")+"<span>School year "+adSchoolYear()+"</span></div></div>"+
+      adStats(t)+
+      adCap("Courses","","Each course lists the lessons done, the average score of the lessons that have one, and what comes next. Tap a course to see its lessons and reset one so it can be taken again.")+
+      list.map(function(c,i){
+        var s=adCourseStats(c,by);
+        var built=[];c.units.forEach(function(u){ u.items.forEach(function(it){ if(it.id) built.push(it); }); });
+        return "<button type='button' class='ad-ord ad-crs' data-crs='"+i+"'><span class='ad-ord-t'><b>"+adEsc(c.name)+"</b>"+
+          "<span>"+s.done+" of "+s.built.length+" lessons done"+(s.avg==null?"":" · "+s.avg+"%")+"</span>"+
+          "<span>"+adNextLine(s)+"</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
+          "<div class='ad-crsbody hidden' data-crsbody='"+i+"'>"+(built.length?lessonRows(built):"<p class='ad-note'>No lessons built for this course yet.</p>")+"</div>";
+      }).join("")+
+      (other.length?adCap("Other Lessons","","Lessons that are not part of a course yet.")+
+        lessonRows(other.map(function(o){ return {id:o.id,label:"",title:o.title}; })):"")+
+      (stashN?"<div class='ad-warn ad-move'><b>Progress from before profiles</b><p>This device has "+stashN+" lesson"+(stashN===1?"":"s")+
+        " of progress saved before profiles existed. If it is "+adEsc(row.name)+"&#39;s, move it onto their profile.</p>"+
+        "<button type='button' class='ad-link' data-move>Move It to "+adEsc(row.name)+"</button></div>":"")+
+      "<p class='ad-msg'></p>"+
+      "<button class='ad-signout ad-del' type='button' data-resetall>Reset All Progress</button>";
+    var msg=H.body.querySelector(".ad-msg");
+    H.body.querySelectorAll("[data-crs]").forEach(function(b){
+      b.onclick=function(){
+        var body=H.body.querySelector("[data-crsbody='"+b.getAttribute("data-crs")+"']");
+        var open=body.classList.contains("hidden"); body.classList.toggle("hidden",!open); b.classList.toggle("is-open",open);
+      };
+    });
+    H.body.querySelectorAll("[data-reset1]").forEach(function(b){
+      var armed=false;
+      b.onclick=function(){
+        var id=b.getAttribute("data-reset1");
+        if(!armed){ armed=true; b.textContent="Tap again to reset"; b.classList.add("is-armed"); return; }
+        b.textContent="Resetting…";
+        NSAccount.deleteProgress(row.id,id).then(function(){ nsProgForget(row.id,id); adProgress(H,row); })
+          .catch(function(e){ armed=false; b.textContent="Reset"; msg.textContent=e.message; });
+      };
+    });
+    var mv=H.body.querySelector("[data-move]");
+    if(mv) mv.onclick=function(){
+      mv.textContent="Moving…";
+      var rows=nsRowsFromSnap(row.id,stash);
+      NSAccount.upsertProgress(rows).then(function(){
+        nsStashPut("parent",{});
+        if(NSAccount.who()===row.id) nsProgWrite(Object.assign({},stash,nsProgSnap()));
+        adProgress(H,row);
+      }).catch(function(e){ mv.textContent="Move It to "+row.name; msg.textContent=e.message||"Could not move it."; });
+    };
+    H.body.querySelector("[data-resetall]").onclick=function(){ adResetAll(H,row,t); };
+  }).catch(function(){ H.body.innerHTML="<p class='ad-empty ad-mid'>Could not load progress. Try again in a moment.</p>"; });
+}
+function adResetAll(H,row,t){
+  var n=adEsc(row.name);
+  adFrame(H,"Reset Progress",function(){ adProgress(H,row); },"resetall");
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(row.name,row.theme)+"</div>"+
+    "<div class='ad-warn'><b>This can&#39;t be undone.</b>"+
+    "<p>Resetting wipes all of "+n+"&#39;s progress: "+t.done+" finished lesson"+(t.done===1?"":"s")+
+    ", every score, and the "+t.points+" points they earned.</p>"+
+    "<p>Their profile, About Me and settings stay.</p></div>"+
+    "<p class='ad-msg'></p>"+
+    "<button class='ad-danger' type='button' data-yes>Reset "+n+"&#39;s Progress</button>"+
+    "<button class='ad-link' type='button' data-no>Cancel</button>";
+  var msg=H.body.querySelector(".ad-msg"),yes=H.body.querySelector("[data-yes]");
+  H.body.querySelector("[data-no]").onclick=function(){ adProgress(H,row); };
+  yes.onclick=function(){
+    yes.disabled=true; yes.textContent="Resetting…";
+    NSAccount.deleteProgress(row.id,null).then(function(){ nsProgForget(row.id,null); adProgress(H,row); })
+      .catch(function(e){ yes.disabled=false; yes.textContent="Reset "+row.name+"'s Progress"; msg.textContent=e.message; });
+  };
+}
+function adMyProgress(H,row){
+  var box=H.body.querySelector("[data-myprog]"); if(!box) return;
+  Promise.all([adLoadCourses(),adProgressFor(row)]).then(function(r){
+    var m=r[0],by=r[1];
+    box.innerHTML=adStats(adProgTotals(by))+
+      adCoursesFor(row,by,m).map(function(c){
+        var s=adCourseStats(c,by);
+        var line="<b>"+adEsc(c.name)+"</b><span>"+adNextLine(s)+"</span>";
+        return s.next&&s.next.id?"<a class='ad-nextup' href='/lessons/"+adEsc(s.next.id)+"/'>"+line+"</a>":"<div class='ad-nextup'>"+line+"</div>";
+      }).join("");
+  }).catch(function(){ box.innerHTML="<p class='ad-note'>Progress could not load right now.</p>"; });
 }
 function adRemove(H,row){
   var isKid=row.kind==="student",n=adEsc(row.name);
@@ -992,6 +1162,8 @@ function adMyProfile(H){
   H.body.innerHTML=
     "<div class='ad-me'>"+adAv(a.name,a.theme)+"<div><b>"+adEsc(a.name)+"</b>"+
       (gw?"<span>"+gw+"</span>":"")+"<span>School year "+adSchoolYear()+"</span></div></div>"+
+    adCap("My Progress","","Lessons you have finished, the points they earned (10 each, 5 more for 90% or better), and what is next in each course. Tap one to go straight to it.")+
+    "<div data-myprog><p class='ad-note'>Loading…</p></div>"+
     "<p class='ad-cap'>About Me</p>"+
     (filled.length?"<dl class='ad-about'>"+filled.map(function(p){
       return "<dt>"+p[1]+"</dt><dd>"+adEsc(ab[p[0]])+"</dd>";
@@ -999,6 +1171,7 @@ function adMyProfile(H){
       "<p class='ad-note'>This part is all yours. Tell everyone a bit about you: what you like, what you&#39;re good at, what you want to be one day.</p>")+
     "<button class='ad-link' type='button' data-about>"+(filled.length?"Edit My About Me":"Write My About Me")+"</button>";
   H.body.querySelector("[data-about]").onclick=function(){ adAboutEdit(H,a); };
+  adMyProgress(H,a);
 }
 function adAboutEdit(H,a){
   adFrame(H,"About Me",adMyProfile,"about");
@@ -1186,6 +1359,8 @@ function adProfile(H){
   adFrame(H,"Account",adMain,"account");
   var md=(adUser&&adUser.user_metadata)||{};
   H.body.innerHTML=
+    adCap("Access Type","","What this account can open. Anything you buy unlocks it for every parent and student on the account. More ways to unlock lessons are coming soon.")+
+    "<div class='ad-kv'><span>Free</span><span><em class='ad-soon'>More Coming Soon</em></span></div>"+
     "<p class='ad-cap'>Name</p>"+
     "<label class='ad-kv'><span>First</span><input class='ad-in' data-f='first' autocomplete='given-name' value='"+adEsc(md.first_name||"")+"'></label>"+
     "<label class='ad-kv'><span>Last</span><input class='ad-in' data-f='last' autocomplete='family-name' value='"+adEsc(md.last_name||"")+"'></label>"+

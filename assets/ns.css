@@ -2105,6 +2105,28 @@ body.acct-open .adrawer{transform:none}
    because only the strip and the picker had a fallback. An inline theme
    colour still wins over this. */
 .ad-edit-av i,.ad-kidrow>i,.nv-av{background:#c62828}
+/* 📈 Progress views (2026-09-11): three stat boxes, a course row that opens its
+   lesson list, the student's "next up" links, the Access Type pill. */
+.ad-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 4px}
+.ad-stats>div{border:1px solid var(--ad-line);border-radius:8px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:3px}
+.ad-stats b{font-size:1.3rem;font-weight:800}
+.ad-stats span{font-size:.7rem;color:var(--ad-dim)}
+.ad-crs.is-open .ad-chev{transform:rotate(90deg)}
+.ad-crs .ad-chev{transition:transform .2s}
+.ad-crsbody{padding:2px 0 8px 10px;border-bottom:1px solid var(--ad-line)}
+.ad-lsn{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:9px 0;
+  border-bottom:1px solid var(--ad-line);font-size:.84rem}
+.ad-lsn:last-child{border-bottom:0}
+.ad-lsn>span:first-child{min-width:0;overflow-wrap:anywhere}
+.ad-lsn .ad-reset1{grid-column:1/-1;justify-self:start;margin:2px 0 0;font-size:.68rem}
+.ad-reset1.is-armed{color:var(--ad-red)}
+.ad-nextup{display:flex;flex-direction:column;gap:2px;padding:11px 0;border-bottom:1px solid var(--ad-line);
+  color:var(--ad-fg);text-decoration:none;font-size:.86rem}
+.ad-nextup span{font-size:.78rem;color:var(--ad-dim)}
+a.ad-nextup:hover b{text-decoration:underline}
+.ad-move{margin-top:20px}
+.ad-soon{font-style:normal;font-size:.64rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--ad-line);border-radius:999px;padding:3px 8px;color:var(--ad-dim)}
 /* My Profile (2026-09-11): header, About Me list, named color tiles. */
 .ad-me{display:flex;align-items:center;gap:16px;padding:22px 0 18px;border-bottom:1px solid var(--ad-line)}
 .ad-me>i{width:64px;height:64px;border-radius:10px;display:grid;place-items:center;flex:none;
