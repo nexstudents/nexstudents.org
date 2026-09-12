@@ -42,7 +42,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=e888f39a">
+<link rel="stylesheet" href="/assets/ns.css?v=cbc9fee9">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 </head>
 <body>
@@ -842,6 +842,16 @@ function adAboutEdit(H,a){
   });
   var first=H.body.querySelector("[data-k]"); if(first) first.focus();
 }
+var adTipTimer=null;
+function adTipsShow(H,btn){
+  clearTimeout(adTipTimer);
+  H.body.querySelectorAll(".ad-info").forEach(function(b){
+    var open=b===btn;
+    b.setAttribute("aria-expanded",open);
+    b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
+  });
+  if(btn) adTipTimer=setTimeout(function(){ adTipsShow(H,null); },4000);
+}
 function adCap(title,extra,info){
   if(!info) return "<p class='ad-cap'>"+title+(extra||"")+"</p>";
   return "<div class='ad-caprow'><p class='ad-cap'>"+title+(extra||"")+"</p>"+
@@ -1139,11 +1149,7 @@ function adWire(H){
   H.body.addEventListener("click",function(e){
     if(e.target.closest("[data-out]")){ NSAccount.signOut(); location.reload(); return; }
     var inf=e.target.closest(".ad-info");
-    H.body.querySelectorAll(".ad-info").forEach(function(b){
-      var open=b===inf&&b.getAttribute("aria-expanded")!=="true";
-      b.setAttribute("aria-expanded",open);
-      b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
-    });
+    adTipsShow(H,inf&&inf.getAttribute("aria-expanded")!=="true"?inf:null);
     if(inf) return;
     var w=e.target.closest("[data-who]");
     if(w){ adSwitch(H,w.getAttribute("data-who")); nsWhoIcon(); return; }

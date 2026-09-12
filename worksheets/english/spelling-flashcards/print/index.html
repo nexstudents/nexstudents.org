@@ -46,8 +46,8 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <title>3rd Grade Spelling Flashcards | NexStudents</title>
 <meta name="description" content="Cut-out 3rd grade spelling flashcards, a sheet a week. Ten words, a bonus word, and a card naming the week.">
-<link rel="stylesheet" href="/assets/ns.css?v=465766dc">
-<link rel="stylesheet" href="/assets/worksheet.css?v=465766dc">
+<link rel="stylesheet" href="/assets/ns.css?v=d584ce81">
+<link rel="stylesheet" href="/assets/worksheet.css?v=d584ce81">
 </head>
 <body>
 
@@ -1628,6 +1628,16 @@ function adAboutEdit(H,a){
   });
   var first=H.body.querySelector("[data-k]"); if(first) first.focus();
 }
+var adTipTimer=null;
+function adTipsShow(H,btn){
+  clearTimeout(adTipTimer);
+  H.body.querySelectorAll(".ad-info").forEach(function(b){
+    var open=b===btn;
+    b.setAttribute("aria-expanded",open);
+    b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
+  });
+  if(btn) adTipTimer=setTimeout(function(){ adTipsShow(H,null); },4000);
+}
 function adCap(title,extra,info){
   if(!info) return "<p class='ad-cap'>"+title+(extra||"")+"</p>";
   return "<div class='ad-caprow'><p class='ad-cap'>"+title+(extra||"")+"</p>"+
@@ -1925,11 +1935,7 @@ function adWire(H){
   H.body.addEventListener("click",function(e){
     if(e.target.closest("[data-out]")){ NSAccount.signOut(); location.reload(); return; }
     var inf=e.target.closest(".ad-info");
-    H.body.querySelectorAll(".ad-info").forEach(function(b){
-      var open=b===inf&&b.getAttribute("aria-expanded")!=="true";
-      b.setAttribute("aria-expanded",open);
-      b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
-    });
+    adTipsShow(H,inf&&inf.getAttribute("aria-expanded")!=="true"?inf:null);
     if(inf) return;
     var w=e.target.closest("[data-who]");
     if(w){ adSwitch(H,w.getAttribute("data-who")); nsWhoIcon(); return; }

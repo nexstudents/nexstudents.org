@@ -2052,7 +2052,10 @@ body.acct-open .adrawer{transform:none}
    inside the font shorthand and would drop the whole rule (CLAUDE.md). */
 .ad-caprow{display:flex;align-items:center;gap:10px;margin:24px 0 6px}
 .ad-caprow .ad-cap{margin:0 auto 0 0}
-.ad-infow{position:relative;flex:none;display:flex}
+/* 10px in from the panel edge: at the edge it was cut off on a phone.
+   Paul, 2026-09-11: "move it slightly to the left so it doesnt get cut off
+   on mobile devices." The box is anchored to it, so it moves in too. */
+.ad-infow{position:relative;flex:none;display:flex;margin-right:10px}
 .ad-info{width:18px;height:18px;border-radius:50%;border:0;padding:0;cursor:pointer;display:grid;place-items:center;
   background:rgba(127,127,127,.22);color:var(--ad-fg);font-family:inherit;font-size:.72rem;font-weight:700;
   line-height:1;opacity:.55;transition:opacity .2s}

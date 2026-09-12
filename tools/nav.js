@@ -1733,6 +1733,20 @@ function adAboutEdit(H,a){
    EVERY Settings section has one.
    ⚠️ NO BACKTICKS IN THIS SCRIPT, COMMENTS INCLUDED - it is a template
    literal. This comment broke the build once already on 2026-09-11. */
+/* Open one "?" box (or none) and close the rest. An open box FADES AWAY BY
+   ITSELF after 4 seconds - MyWika's showInfoTooltip does exactly that, and I
+   copied its look without its timer. Paul, 2026-09-11: "the info after you
+   press it doesnt fade away after awhile. it should vanish by itself." */
+var adTipTimer=null;
+function adTipsShow(H,btn){
+  clearTimeout(adTipTimer);
+  H.body.querySelectorAll(".ad-info").forEach(function(b){
+    var open=b===btn;
+    b.setAttribute("aria-expanded",open);
+    b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
+  });
+  if(btn) adTipTimer=setTimeout(function(){ adTipsShow(H,null); },4000);
+}
 function adCap(title,extra,info){
   if(!info) return "<p class='ad-cap'>"+title+(extra||"")+"</p>";
   return "<div class='ad-caprow'><p class='ad-cap'>"+title+(extra||"")+"</p>"+
@@ -2081,11 +2095,7 @@ function adWire(H){
     /* ❓ The "?" info boxes (adCap): a tap on one toggles it and closes the
        others; a tap anywhere else in the panel closes them all. */
     var inf=e.target.closest(".ad-info");
-    H.body.querySelectorAll(".ad-info").forEach(function(b){
-      var open=b===inf&&b.getAttribute("aria-expanded")!=="true";
-      b.setAttribute("aria-expanded",open);
-      b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
-    });
+    adTipsShow(H,inf&&inf.getAttribute("aria-expanded")!=="true"?inf:null);
     if(inf) return;
     var w=e.target.closest("[data-who]");
     if(w){ adSwitch(H,w.getAttribute("data-who")); nsWhoIcon(); return; }
