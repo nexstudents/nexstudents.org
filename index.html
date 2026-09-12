@@ -1119,6 +1119,8 @@ if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measureRail);
 
 
 
+
+
 <!-- ns:nav-script -->
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/ns-account.js"></script>
@@ -1407,12 +1409,13 @@ function adSchoolYear(){
 var AD_ABOUT=[["me","A little about me"],["color","Favorite color"],["food","Favorite food"],
   ["animal","Favorite animal"],["subject","Favorite subject"],["game","Favorite game"],
   ["grow_up","When I grow up I want to be"],["best_homeschool","Best thing about homeschooling"]];
-function adThemeTiles(cur,withDefault){
-  return "<div class='ad-tiles' role='group' aria-label='Theme color'>"+
-    (withDefault?"<button type='button' data-theme-k='' aria-pressed='"+(!cur)+"'>"+
+function adThemeTiles(cur,withDefault,attr){
+  attr=attr||"theme-k";
+  return "<div class='ad-tiles' role='group' aria-label='"+adEsc(attr==="theme-k"?"Theme color":"Lesson colors")+"'>"+
+    (withDefault?"<button type='button' data-"+attr+"='' aria-pressed='"+(!cur)+"'>"+
       "<i style='background:#c62828' aria-hidden='true'></i><b>Default</b></button>":"")+
     AD_THEMES.map(function(t){
-    return "<button type='button' data-theme-k='"+t.k+"' aria-pressed='"+(cur===t.k)+"'>"+
+    return "<button type='button' data-"+attr+"='"+t.k+"' aria-pressed='"+(cur===t.k)+"'>"+
       "<i style='background:"+t.box+"' aria-hidden='true'></i><b>"+t.name+"</b></button>";
   }).join("")+"</div>";
 }
@@ -1432,6 +1435,7 @@ function adStrip(a){
 }
 function adSetWho(id){
   NSAccount.setWho(id);
+  nsApplySettings(adSettingsOf(id==="parent"?null:(adKid(id)||AD_PENDING)));
   nsWhoIcon();
 }
 function nsApplyAccent(){
@@ -1843,14 +1847,74 @@ function adAboutEdit(H,a){
   });
   var first=H.body.querySelector("[data-k]"); if(first) first.focus();
 }
+var AD_VOICE=[["male","Male"],["female","Female"]];
+var AD_SPEED=[["0.7","Slow"],["0.85","Normal"],["1","Fast"]];
+function adSettingsOf(a){
+  if(a===null) return ((adUser&&adUser.user_metadata)||{}).settings||{};
+  return (a&&a!==AD_PENDING&&a.settings)||{};
+}
+function nsApplySettings(s){
+  s=s||{};
+  try{
+    if(s.voice) localStorage.setItem("ns:voice","__studio__:"+s.voice);
+    if(s.speed) localStorage.setItem("ns:speed",s.speed);
+    if(s.lesson) localStorage.setItem("ns:theme",s.lesson);
+  }catch(e){}
+  if(s.lesson&&typeof applyTheme==="function"&&window.THEMES&&window.THEMES[s.lesson]){
+    try{ window.themeKey=s.lesson; applyTheme(); }catch(e){}
+  }
+}
 function adSettings(H){
   adFrame(H,"Settings",adMain,"settings");
+  var a=adActive();
+  if(a===AD_PENDING){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  var s=adSettingsOf(a),dev={};
+  try{
+    dev.voice=(localStorage.getItem("ns:voice")||"").replace("__studio__:","");
+    dev.speed=localStorage.getItem("ns:speed")||"0.85";
+    dev.lesson=localStorage.getItem("ns:theme")||"graphite";
+  }catch(e){}
+  var cur={voice:s.voice||(dev.voice==="female"?"female":"male"),speed:s.speed||dev.speed||"0.85",lesson:s.lesson||dev.lesson||"graphite"};
+  function chips(attr,list,label){
+    return "<div class='ad-chips is-center' role='group' aria-label='"+label+"'>"+list.map(function(p){
+      return "<button type='button' data-"+attr+"='"+p[0]+"' aria-pressed='"+(cur[attr]===p[0])+"'>"+p[1]+"</button>";
+    }).join("")+"</div>";
+  }
   H.body.innerHTML="<p class='ad-cap'>Display</p>"+
-    "<div class='ad-kv'><span>Theme</span>"+
+    "<div class='ad-kv'><span>Light or Dark</span>"+
     "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
     "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
-    "<span data-mode-label>Night Mode</span></button></div>";
+    "<span data-mode-label>Night Mode</span></button></div>"+
+    "<p class='ad-cap'>Reading Voice</p>"+
+    "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use this device&#39;s own voice.</p>"+
+    chips("voice",AD_VOICE,"Reading voice")+
+    "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
+    "<p class='ad-cap'>Lesson Colors · <span data-lname>"+adEsc((adTheme(cur.lesson)||{}).name||"")+"</span></p>"+
+    "<p class='ad-note'>The colors every lesson opens in. Your Theme Color is separate.</p>"+
+    adThemeTiles(cur.lesson,false,"lesson")+
+    "<p class='ad-msg'></p>";
   if(typeof nsPaintMode==="function") nsPaintMode();
+  var msg=H.body.querySelector(".ad-msg");
+  function pick(attr,v,btn){
+    cur[attr]=v;
+    H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x===btn); });
+    if(attr==="lesson") H.body.querySelector("[data-lname]").textContent=(adTheme(v)||{}).name||"";
+    var next={voice:cur.voice,speed:cur.speed,lesson:cur.lesson};
+    nsApplySettings(next);
+    if(!NSAccount.isSignedIn()){ msg.textContent="Saved on this device."; return; }
+    msg.textContent="Saving…";
+    var job=a===null?NSAccount.saveMySettings(next):NSAccount.saveOwn(a.id,{settings:next});
+    job.then(function(r){
+      if(a===null){ if(r&&r.user_metadata) adUser=r; }
+      else if(r){ adKids=adKids.map(function(x){ return x.id===r.id?r:x; }); a=r; }
+      msg.textContent="Saved.";
+    }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
+  }
+  ["voice","speed","lesson"].forEach(function(attr){
+    H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
+      b.onclick=function(){ var v=b.getAttribute("data-"+attr); if(v!==cur[attr]) pick(attr,v,b); };
+    });
+  });
 }
 function adList(H){
   adFrame(H,"Orders",adMain,"orders");

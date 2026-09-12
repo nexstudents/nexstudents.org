@@ -197,11 +197,15 @@
      lives in their own user_metadata beside the name. Paul: "i think the
      parent needs a theme also." null = the default red box, no accent.
      ⚠️ Supabase MERGES `data` into user_metadata, so this leaves the name alone. */
-  function saveMyTheme(theme) {
+  function saveMyTheme(theme) { return saveMyMeta({ theme: theme || null }); }
+  /* Reading settings for the account holder (migration 016 keeps a student's
+     on their row). Same merge into user_metadata. */
+  function saveMySettings(settings) { return saveMyMeta({ settings: settings || {} }); }
+  function saveMyMeta(data) {
     return refreshIfNeeded().then(function (s) {
       if (!s) throw new Error("Please sign in again.");
       return fetch(AUTH + "/user", { method: "PUT", headers: headers(true),
-        body: JSON.stringify({ data: { theme: theme || null } }) })
+        body: JSON.stringify({ data: data }) })
         .then(function (r) {
           return r.json().catch(function () { return {}; }).then(function (d) {
             if (!r.ok) throw new Error(friendly(d, "Could not save your color."));
@@ -302,7 +306,7 @@
      (kind). The account holder is parent 1 and has no row. */
   /* `theme` is ONE of the eight lesson palettes and colours both the profile
      box and that profile's lessons. */
-  var STUDENT_COLS = "id,kind,name,grade,theme,birthday,gender,about,created_at";
+  var STUDENT_COLS = "id,kind,name,grade,theme,birthday,gender,about,settings,created_at";
   function profileBody(f) {
     return { name: String(f.name || "").trim(), grade: f.grade || null, theme: f.theme || "ocean",
              birthday: f.birthday || null, gender: f.gender || null };
@@ -333,6 +337,7 @@
     var b = {};
     if (f.about) b.about = f.about;
     if (f.theme) b.theme = f.theme;
+    if (f.settings) b.settings = f.settings;
     return rest("PATCH", "/students?id=eq." + encodeURIComponent(id) + "&select=" + STUDENT_COLS, b,
       "Could not save that.").then(function (d) { return d && d[0]; });
   }
@@ -622,7 +627,7 @@
   window.NSAccount = {
     isAdmin: isAdmin, adminMode: adminMode, viewAs: viewAs, adminFile: adminFile,
     owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
-    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, saveMyTheme: saveMyTheme, changeEmail: changeEmail,
+    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, saveMyTheme: saveMyTheme, saveMySettings: saveMySettings, changeEmail: changeEmail,
     isRecovery: function () { return recovery; },
     signOut: signOut, getUser: getUser,
     who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,

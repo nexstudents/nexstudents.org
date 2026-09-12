@@ -1202,12 +1202,13 @@ var AD_ABOUT=[["me","A little about me"],["color","Favorite color"],["food","Fav
 /* 🎨 NAMED COLOR TILES, like HG's Background Color: a real swatch, the name
    under it, a tick on the chosen one. Replaced the small unlabeled squares,
    which made a kid guess which was "Teal". */
-function adThemeTiles(cur,withDefault){
-  return "<div class='ad-tiles' role='group' aria-label='Theme color'>"+
-    (withDefault?"<button type='button' data-theme-k='' aria-pressed='"+(!cur)+"'>"+
+function adThemeTiles(cur,withDefault,attr){
+  attr=attr||"theme-k";
+  return "<div class='ad-tiles' role='group' aria-label='"+adEsc(attr==="theme-k"?"Theme color":"Lesson colors")+"'>"+
+    (withDefault?"<button type='button' data-"+attr+"='' aria-pressed='"+(!cur)+"'>"+
       "<i style='background:#c62828' aria-hidden='true'></i><b>Default</b></button>":"")+
     AD_THEMES.map(function(t){
-    return "<button type='button' data-theme-k='"+t.k+"' aria-pressed='"+(cur===t.k)+"'>"+
+    return "<button type='button' data-"+attr+"='"+t.k+"' aria-pressed='"+(cur===t.k)+"'>"+
       "<i style='background:"+t.box+"' aria-hidden='true'></i><b>"+t.name+"</b></button>";
   }).join("")+"</div>";
 }
@@ -1239,6 +1240,8 @@ function adStrip(a){
    colour picker (ns:theme) is the student's own per-device choice again. */
 function adSetWho(id){
   NSAccount.setWho(id);
+  /* Their reading settings come with them (migration 016). */
+  nsApplySettings(adSettingsOf(id==="parent"?null:(adKid(id)||AD_PENDING)));
   nsWhoIcon();
 }
 /* html.has-me + --me on the live page, and ns:accent so modeBoot paints it
@@ -1738,14 +1741,85 @@ function adAboutEdit(H,a){
 }
 /* ⚙️ SETTINGS. Night Mode today - the same data-mode-toggle switch as the
    drawer and the footer, so all three stay in step. */
+/* 📖 READING SETTINGS, PER PROFILE (2026-09-11, migration 016). Paul: "the
+   settings looks kind of barren", then "you pick for me". Picked the three
+   the lessons ALREADY read - ns:voice, ns:speed, ns:theme - so nothing in a
+   lesson had to change. Kept on the profile, they switch with whoever is on.
+   ⚠️ Lesson storage is RAW strings (lesson-template load/store), not JSON, so
+   these write localStorage directly, never through NSAccount's write().
+   ⚠️ Device voices ("d:<name>") differ per device and are not offered here;
+   a lesson without NexVoice falls back to the device's own voice. */
+var AD_VOICE=[["male","Male"],["female","Female"]];
+var AD_SPEED=[["0.7","Slow"],["0.85","Normal"],["1","Fast"]];
+function adSettingsOf(a){
+  if(a===null) return ((adUser&&adUser.user_metadata)||{}).settings||{};
+  return (a&&a!==AD_PENDING&&a.settings)||{};
+}
+function nsApplySettings(s){
+  s=s||{};
+  try{
+    if(s.voice) localStorage.setItem("ns:voice","__studio__:"+s.voice);
+    if(s.speed) localStorage.setItem("ns:speed",s.speed);
+    if(s.lesson) localStorage.setItem("ns:theme",s.lesson);
+  }catch(e){}
+  /* On a lesson page, repaint its colors now rather than on the next load. */
+  if(s.lesson&&typeof applyTheme==="function"&&window.THEMES&&window.THEMES[s.lesson]){
+    try{ window.themeKey=s.lesson; applyTheme(); }catch(e){}
+  }
+}
 function adSettings(H){
   adFrame(H,"Settings",adMain,"settings");
+  var a=adActive();
+  if(a===AD_PENDING){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  var s=adSettingsOf(a),dev={};
+  try{
+    dev.voice=(localStorage.getItem("ns:voice")||"").replace("__studio__:","");
+    dev.speed=localStorage.getItem("ns:speed")||"0.85";
+    dev.lesson=localStorage.getItem("ns:theme")||"graphite";
+  }catch(e){}
+  var cur={voice:s.voice||(dev.voice==="female"?"female":"male"),speed:s.speed||dev.speed||"0.85",lesson:s.lesson||dev.lesson||"graphite"};
+  function chips(attr,list,label){
+    return "<div class='ad-chips is-center' role='group' aria-label='"+label+"'>"+list.map(function(p){
+      return "<button type='button' data-"+attr+"='"+p[0]+"' aria-pressed='"+(cur[attr]===p[0])+"'>"+p[1]+"</button>";
+    }).join("")+"</div>";
+  }
+  /* "Light or Dark", not "Theme": Theme Color is a different setting now. */
   H.body.innerHTML="<p class='ad-cap'>Display</p>"+
-    "<div class='ad-kv'><span>Theme</span>"+
+    "<div class='ad-kv'><span>Light or Dark</span>"+
     "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
     "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
-    "<span data-mode-label>Night Mode</span></button></div>";
+    "<span data-mode-label>Night Mode</span></button></div>"+
+    "<p class='ad-cap'>Reading Voice</p>"+
+    "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use this device&#39;s own voice.</p>"+
+    chips("voice",AD_VOICE,"Reading voice")+
+    "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
+    "<p class='ad-cap'>Lesson Colors · <span data-lname>"+adEsc((adTheme(cur.lesson)||{}).name||"")+"</span></p>"+
+    "<p class='ad-note'>The colors every lesson opens in. Your Theme Color is separate.</p>"+
+    adThemeTiles(cur.lesson,false,"lesson")+
+    "<p class='ad-msg'></p>";
   if(typeof nsPaintMode==="function") nsPaintMode();
+  var msg=H.body.querySelector(".ad-msg");
+  function pick(attr,v,btn){
+    cur[attr]=v;
+    H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x===btn); });
+    if(attr==="lesson") H.body.querySelector("[data-lname]").textContent=(adTheme(v)||{}).name||"";
+    var next={voice:cur.voice,speed:cur.speed,lesson:cur.lesson};
+    nsApplySettings(next);
+    /* Signed out there is no profile to keep it on; the device still has it. */
+    if(!NSAccount.isSignedIn()){ msg.textContent="Saved on this device."; return; }
+    msg.textContent="Saving…";
+    var job=a===null?NSAccount.saveMySettings(next):NSAccount.saveOwn(a.id,{settings:next});
+    job.then(function(r){
+      if(a===null){ if(r&&r.user_metadata) adUser=r; }
+      else if(r){ adKids=adKids.map(function(x){ return x.id===r.id?r:x; }); a=r; }
+      msg.textContent="Saved.";
+    }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
+  }
+  ["voice","speed","lesson"].forEach(function(attr){
+    H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
+      b.onclick=function(){ var v=b.getAttribute("data-"+attr); if(v!==cur[attr]) pick(attr,v,b); };
+    });
+  });
 }
 function adList(H){
   adFrame(H,"Orders",adMain,"orders");
