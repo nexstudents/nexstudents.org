@@ -1773,11 +1773,29 @@ function adProgress(H,row){
       adCap("Courses","","Each course lists the lessons done, the average score of the lessons that have one, and what comes next. Tap a course to see its lessons and reset one so it can be taken again.")+
       list.map(function(c,i){
         var s=adCourseStats(c,by);
-        var built=[];c.units.forEach(function(u){ u.items.forEach(function(it){ if(it.id) built.push(it); }); });
+        /* 🗂️ COURSE > UNIT > LESSONS. Paul, 2026-09-11: "compact it into their
+           own units. so like Math U1 > then it shows all Unit 1 lessons inside
+           it ... perhaps a progress percentage of that unit completion."
+           The percentage counts EVERY lesson in the unit, built or not - that
+           is what "unit completion" means - so a unit whose review is still
+           being built cannot read 100% yet. Units with nothing built stay out
+           of the list rather than printing a row of zeros. */
+        var units=c.units.map(function(u,j){
+          var built=u.items.filter(function(it){ return it.id; });
+          if(!built.length) return "";
+          var done=built.filter(function(it){ return by[it.id]&&by[it.id].done; }).length,
+              pct=Math.round(done*100/u.items.length),left=u.items.length-built.length,key=i+"-"+j;
+          return "<button type='button' class='ad-unit' data-unit='"+key+"'><span class='ad-unit-t'><b>U"+adEsc(u.n)+
+            " · "+adEsc(u.name)+"</b><span>"+done+" of "+u.items.length+" lessons · "+pct+"%</span>"+
+            "<i class='ad-bar' aria-hidden='true'><i style='width:"+pct+"%'></i></i></span>"+
+            "<span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
+            "<div class='ad-unitbody hidden' data-unitbody='"+key+"'>"+lessonRows(built)+
+            (left?"<p class='ad-note'>"+left+" more lesson"+(left===1?"":"s")+" in this unit being built.</p>":"")+"</div>";
+        }).join("");
         return "<button type='button' class='ad-ord ad-crs' data-crs='"+i+"'><span class='ad-ord-t'><b>"+adEsc(c.name)+"</b>"+
           "<span>"+s.done+" of "+s.built.length+" lessons done"+(s.avg==null?"":" · "+s.avg+"%")+"</span>"+
           "<span>"+adNextLine(s)+"</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
-          "<div class='ad-crsbody hidden' data-crsbody='"+i+"'>"+(built.length?lessonRows(built):"<p class='ad-note'>No lessons built for this course yet.</p>")+"</div>";
+          "<div class='ad-crsbody hidden' data-crsbody='"+i+"'>"+(units||"<p class='ad-note'>No lessons built for this course yet.</p>")+"</div>";
       }).join("")+
       (other.length?adCap("Other Lessons","","Lessons that are not part of a course yet.")+
         lessonRows(other.map(function(o){ return {id:o.id,label:"",title:o.title}; })):"")+
@@ -1787,11 +1805,13 @@ function adProgress(H,row){
       "<p class='ad-msg'></p>"+
       "<button class='ad-signout ad-del' type='button' data-resetall>Reset All Progress</button>";
     var msg=H.body.querySelector(".ad-msg");
-    H.body.querySelectorAll("[data-crs]").forEach(function(b){
-      b.onclick=function(){
-        var body=H.body.querySelector("[data-crsbody='"+b.getAttribute("data-crs")+"']");
-        var open=body.classList.contains("hidden"); body.classList.toggle("hidden",!open); b.classList.toggle("is-open",open);
-      };
+    ["crs","unit"].forEach(function(kind){
+      H.body.querySelectorAll("[data-"+kind+"]").forEach(function(b){
+        b.onclick=function(){
+          var body=H.body.querySelector("[data-"+kind+"body='"+b.getAttribute("data-"+kind)+"']");
+          var open=body.classList.contains("hidden"); body.classList.toggle("hidden",!open); b.classList.toggle("is-open",open);
+        };
+      });
     });
     /* Reset ONE test: two taps, in place. The lesson can then be taken again. */
     H.body.querySelectorAll("[data-reset1]").forEach(function(b){

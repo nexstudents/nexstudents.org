@@ -48,7 +48,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=ec35fe48">
+<link rel="stylesheet" href="/assets/ns.css?v=4c087ad6">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 </head>
 <body>
@@ -896,11 +896,22 @@ function adProgress(H,row){
       adCap("Courses","","Each course lists the lessons done, the average score of the lessons that have one, and what comes next. Tap a course to see its lessons and reset one so it can be taken again.")+
       list.map(function(c,i){
         var s=adCourseStats(c,by);
-        var built=[];c.units.forEach(function(u){ u.items.forEach(function(it){ if(it.id) built.push(it); }); });
+        var units=c.units.map(function(u,j){
+          var built=u.items.filter(function(it){ return it.id; });
+          if(!built.length) return "";
+          var done=built.filter(function(it){ return by[it.id]&&by[it.id].done; }).length,
+              pct=Math.round(done*100/u.items.length),left=u.items.length-built.length,key=i+"-"+j;
+          return "<button type='button' class='ad-unit' data-unit='"+key+"'><span class='ad-unit-t'><b>U"+adEsc(u.n)+
+            " · "+adEsc(u.name)+"</b><span>"+done+" of "+u.items.length+" lessons · "+pct+"%</span>"+
+            "<i class='ad-bar' aria-hidden='true'><i style='width:"+pct+"%'></i></i></span>"+
+            "<span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
+            "<div class='ad-unitbody hidden' data-unitbody='"+key+"'>"+lessonRows(built)+
+            (left?"<p class='ad-note'>"+left+" more lesson"+(left===1?"":"s")+" in this unit being built.</p>":"")+"</div>";
+        }).join("");
         return "<button type='button' class='ad-ord ad-crs' data-crs='"+i+"'><span class='ad-ord-t'><b>"+adEsc(c.name)+"</b>"+
           "<span>"+s.done+" of "+s.built.length+" lessons done"+(s.avg==null?"":" · "+s.avg+"%")+"</span>"+
           "<span>"+adNextLine(s)+"</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
-          "<div class='ad-crsbody hidden' data-crsbody='"+i+"'>"+(built.length?lessonRows(built):"<p class='ad-note'>No lessons built for this course yet.</p>")+"</div>";
+          "<div class='ad-crsbody hidden' data-crsbody='"+i+"'>"+(units||"<p class='ad-note'>No lessons built for this course yet.</p>")+"</div>";
       }).join("")+
       (other.length?adCap("Other Lessons","","Lessons that are not part of a course yet.")+
         lessonRows(other.map(function(o){ return {id:o.id,label:"",title:o.title}; })):"")+
@@ -910,11 +921,13 @@ function adProgress(H,row){
       "<p class='ad-msg'></p>"+
       "<button class='ad-signout ad-del' type='button' data-resetall>Reset All Progress</button>";
     var msg=H.body.querySelector(".ad-msg");
-    H.body.querySelectorAll("[data-crs]").forEach(function(b){
-      b.onclick=function(){
-        var body=H.body.querySelector("[data-crsbody='"+b.getAttribute("data-crs")+"']");
-        var open=body.classList.contains("hidden"); body.classList.toggle("hidden",!open); b.classList.toggle("is-open",open);
-      };
+    ["crs","unit"].forEach(function(kind){
+      H.body.querySelectorAll("[data-"+kind+"]").forEach(function(b){
+        b.onclick=function(){
+          var body=H.body.querySelector("[data-"+kind+"body='"+b.getAttribute("data-"+kind)+"']");
+          var open=body.classList.contains("hidden"); body.classList.toggle("hidden",!open); b.classList.toggle("is-open",open);
+        };
+      });
     });
     H.body.querySelectorAll("[data-reset1]").forEach(function(b){
       var armed=false;
