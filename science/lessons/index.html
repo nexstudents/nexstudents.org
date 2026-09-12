@@ -1140,17 +1140,27 @@ function adForgotPin(H,ctx){
   pw.focus();
 }
 var AD_ICON=acctLink?acctLink.innerHTML:"";
+function adOwnerIconData(){
+  if(adUser){
+    var t=adTheme(adOwnerTheme()),d={l:adMe().charAt(0).toUpperCase(),c:t?t.box:"",n:adMe()};
+    try{ localStorage.setItem("ns:meicon",JSON.stringify(d)); }catch(e){}
+    return d;
+  }
+  try{ return JSON.parse(localStorage.getItem("ns:meicon"))||null; }catch(e){ return null; }
+}
 function nsWhoIcon(){
   nsApplyAccent();
   if(!acctLink||!window.NSAccount) return;
-  var k=NSAccount.isSignedIn()?adActive():null;
-  if(k&&k!==AD_PENDING){
-    var t=adTheme(k.theme);
-    acctLink.innerHTML="<span class='nv-av'"+(t?" style='background:"+t.box+"'":"")+" aria-hidden='true'>"+adEsc(k.name.charAt(0).toUpperCase())+"</span>";
-    acctLink.setAttribute("aria-label","Account, "+k.name);
-  } else if(acctLink.innerHTML!==AD_ICON){
-    acctLink.innerHTML=AD_ICON; acctLink.setAttribute("aria-label","Account");
+  if(!NSAccount.isSignedIn()){
+    if(acctLink.innerHTML!==AD_ICON){ acctLink.innerHTML=AD_ICON; acctLink.setAttribute("aria-label","Account"); }
+    return;
   }
+  var k=adActive(),l="",c="",n="";
+  if(k===AD_PENDING) return;
+  if(k){ var t=adTheme(k.theme); l=k.name.charAt(0).toUpperCase(); c=t?t.box:""; n=k.name; }
+  else { var o=adOwnerIconData(); if(!o) return; l=o.l; c=o.c; n=o.n; }
+  acctLink.innerHTML="<span class='nv-av'"+(c?" style='background:"+c+"'":"")+" aria-hidden='true'>"+adEsc(l)+"</span>";
+  acctLink.setAttribute("aria-label","Account, "+n);
 }
 function adMyProfile(H){
   var a=adActive();
@@ -1538,10 +1548,14 @@ if(adrawer&&acctLink){
     if(e.key==="Escape"&&document.body.classList.contains("acct-open")) adOpen(false);
   });
 }
+document.addEventListener("ns:auth",function(){ nsWhoIcon(); });
 if(window.NSAccount&&NSAccount.isSignedIn()){
   nsWhoPicker();
   if(NSAccount.who()!=="parent"&&adKids===null){
     NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; nsWhoIcon(); }).catch(function(){});
+  } else if(NSAccount.who()==="parent"){
+    nsWhoIcon();
+    try{ if(!localStorage.getItem("ns:meicon")) NSAccount.getUser().then(function(u){ if(u){ adUser=adUser||u; nsWhoIcon(); } }).catch(function(){}); }catch(e){}
   }
 }
 })();

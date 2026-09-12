@@ -360,7 +360,7 @@
   }
 
   function signOut() {
-    session = null; drop(SESSION_KEY); drop(WHO_KEY); drop(PICK_KEY); drop("ns:accent");
+    session = null; drop(SESSION_KEY); drop(WHO_KEY); drop(PICK_KEY); drop("ns:accent"); drop("ns:meicon");
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
   }
 

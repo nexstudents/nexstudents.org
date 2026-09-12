@@ -1649,17 +1649,34 @@ function adForgotPin(H,ctx){
    parent (or signed out) keeps the plain person icon; a student shows their
    own coloured box. */
 var AD_ICON=acctLink?acctLink.innerHTML:"";
+/* 🧒 THE NAV ICON SHOWS WHO IS ON - EVERYONE, THE ACCOUNT HOLDER TOO. Paul,
+   2026-09-11: "the profile icon needs to follow you to show you are logged
+   in. if i switch to parent mode the icon is just the human icon." The plain
+   person icon now means SIGNED OUT, and only that.
+   ⚠️ The account holder's letter and colour live in user_metadata, which is
+   not loaded on every page. So the last known pair is kept in ns:meicon and
+   drawn at once; a fresh getUser() corrects it when the panel loads. */
+function adOwnerIconData(){
+  if(adUser){
+    var t=adTheme(adOwnerTheme()),d={l:adMe().charAt(0).toUpperCase(),c:t?t.box:"",n:adMe()};
+    try{ localStorage.setItem("ns:meicon",JSON.stringify(d)); }catch(e){}
+    return d;
+  }
+  try{ return JSON.parse(localStorage.getItem("ns:meicon"))||null; }catch(e){ return null; }
+}
 function nsWhoIcon(){
   nsApplyAccent();
   if(!acctLink||!window.NSAccount) return;
-  var k=NSAccount.isSignedIn()?adActive():null;
-  if(k&&k!==AD_PENDING){
-    var t=adTheme(k.theme);
-    acctLink.innerHTML="<span class='nv-av'"+(t?" style='background:"+t.box+"'":"")+" aria-hidden='true'>"+adEsc(k.name.charAt(0).toUpperCase())+"</span>";
-    acctLink.setAttribute("aria-label","Account, "+k.name);
-  } else if(acctLink.innerHTML!==AD_ICON){
-    acctLink.innerHTML=AD_ICON; acctLink.setAttribute("aria-label","Account");
+  if(!NSAccount.isSignedIn()){
+    if(acctLink.innerHTML!==AD_ICON){ acctLink.innerHTML=AD_ICON; acctLink.setAttribute("aria-label","Account"); }
+    return;
   }
+  var k=adActive(),l="",c="",n="";
+  if(k===AD_PENDING) return;
+  if(k){ var t=adTheme(k.theme); l=k.name.charAt(0).toUpperCase(); c=t?t.box:""; n=k.name; }
+  else { var o=adOwnerIconData(); if(!o) return; l=o.l; c=o.c; n=o.n; }
+  acctLink.innerHTML="<span class='nv-av'"+(c?" style='background:"+c+"'":"")+" aria-hidden='true'>"+adEsc(l)+"</span>";
+  acctLink.setAttribute("aria-label","Account, "+n);
 }
 /* 👤 MY PROFILE - THE STUDENT'S OWN PAGE IN THE PANEL (2026-09-11). Modeled
    on the HomeschoolGrades student profile Paul walked through: a header with
@@ -2147,12 +2164,20 @@ if(adrawer&&acctLink){
     if(e.key==="Escape"&&document.body.classList.contains("acct-open")) adOpen(false);
   });
 }
+/* A sign-in or sign-out anywhere (ns-account.js fires ns:auth) redraws the
+   icon at once, so a signed-out page never keeps showing someone's box. */
+document.addEventListener("ns:auth",function(){ nsWhoIcon(); });
 /* On every page: the picker after a fresh sign-in, and the nav icon for a
    student already on this device (it needs the list to know their colour). */
 if(window.NSAccount&&NSAccount.isSignedIn()){
   nsWhoPicker();
   if(NSAccount.who()!=="parent"&&adKids===null){
     NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; nsWhoIcon(); }).catch(function(){});
+  } else if(NSAccount.who()==="parent"){
+    /* Draw the account holder's box from the cached pair at once, then fetch
+       the account once if there is no cache yet (first page after sign-in). */
+    nsWhoIcon();
+    try{ if(!localStorage.getItem("ns:meicon")) NSAccount.getUser().then(function(u){ if(u){ adUser=adUser||u; nsWhoIcon(); } }).catch(function(){}); }catch(e){}
   }
 }
 ` + "\n})();\n" + "</scr" + "ipt>";
