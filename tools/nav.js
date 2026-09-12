@@ -1175,6 +1175,9 @@ function adMe(){
   return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
 }
 function adFull(){ return adOf("student").length>=AD_MAX.student&&adOf("parent").length>=AD_MAX.parent; }
+/* The account holder's theme key, from their user_metadata (saveMyTheme).
+   null = the default red box and no accent. */
+function adOwnerTheme(){ var md=(adUser&&adUser.user_metadata)||{}; return md.theme||null; }
 /* "7th Grade", "Kindergarten", or "" when no grade is set. */
 function adGradeWords(g){
   if(!g) return "";
@@ -1199,8 +1202,11 @@ var AD_ABOUT=[["me","A little about me"],["color","Favorite color"],["food","Fav
 /* 🎨 NAMED COLOR TILES, like HG's Background Color: a real swatch, the name
    under it, a tick on the chosen one. Replaced the small unlabeled squares,
    which made a kid guess which was "Teal". */
-function adThemeTiles(cur){
-  return "<div class='ad-tiles' role='group' aria-label='Theme color'>"+AD_THEMES.map(function(t){
+function adThemeTiles(cur,withDefault){
+  return "<div class='ad-tiles' role='group' aria-label='Theme color'>"+
+    (withDefault?"<button type='button' data-theme-k='' aria-pressed='"+(!cur)+"'>"+
+      "<i style='background:#c62828' aria-hidden='true'></i><b>Default</b></button>":"")+
+    AD_THEMES.map(function(t){
     return "<button type='button' data-theme-k='"+t.k+"' aria-pressed='"+(cur===t.k)+"'>"+
       "<i style='background:"+t.box+"' aria-hidden='true'></i><b>"+t.name+"</b></button>";
   }).join("")+"</div>";
@@ -1220,7 +1226,7 @@ function adStrip(a){
       adEsc(name)+(lock?", locked with a PIN":"")+"'>"+adAv(name,theme)+"<b>"+(lock?AD_LOCK:"")+adEsc(name)+"</b></button>";
   }
   return "<div class='ad-pro'>"+
-    tile("parent",me,null,null,a===null)+
+    tile("parent",me,adOwnerTheme(),null,a===null)+
     adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme,p.id,a&&a.id===p.id); }).join("")+
     adOf("student").map(function(k){ return tile(k.id,k.name,k.theme,false,a&&a.id===k.id); }).join("")+
     (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>+</i></button>":"")+
@@ -1242,7 +1248,11 @@ function nsApplyAccent(){
   if(!window.NSAccount) return;
   var a=NSAccount.isSignedIn()?adActive():null;
   if(a===AD_PENDING) return;
-  var t=a?adTheme(a.theme):null,d=document.documentElement;
+  /* The account holder's theme is in user_metadata, which is not loaded on
+     every page. Until it is, leave whatever modeBoot painted from ns:accent
+     rather than wiping it for a frame. */
+  if(a===null&&NSAccount.isSignedIn()&&!adUser) return;
+  var t=a?adTheme(a.theme):adTheme(adOwnerTheme()),d=document.documentElement;
   try{ if(t) localStorage.setItem("ns:accent",t.box); else localStorage.removeItem("ns:accent"); }catch(e){}
   if(t){ d.style.setProperty("--me",t.box); d.classList.add("has-me"); }
   else { d.style.removeProperty("--me"); d.classList.remove("has-me"); }
@@ -1308,7 +1318,7 @@ function adProfiles(H){
   function pinLine(key){ return adHasPin(key)?"PIN on":"No PIN"; }
   H.body.innerHTML=
     "<p class='ad-cap'>Parents · "+(adOf("parent").length+1)+" of 2</p>"+
-    adRow("owner",null,adAv(me,null),adEsc(me),"Account holder · "+pinLine(null))+
+    adRow("owner",null,adAv(me,adOwnerTheme()),adEsc(me),"Account holder · "+pinLine(null))+
     adOf("parent").map(function(p){ return adRow("edit",p.id,adAv(p.name,p.theme),adEsc(p.name),"Parent · "+pinLine(p.id)); }).join("")+
     "<p class='ad-cap'>Students · "+kids.length+" of 10</p>"+
     (kids.length?"":"<p class='ad-note'>Give each student their own profile, so their lessons and progress stay separate.</p>")+
@@ -1334,16 +1344,40 @@ function adAddPick(H){
     b.onclick=function(){ if(!b.disabled) adEdit(H,null,b.getAttribute("data-kind")); };
   });
 }
-/* THE ACCOUNT HOLDER'S ROW: their name and email live under Account, so this
-   is only their PIN. */
+/* THE ACCOUNT HOLDER'S ROW: their Theme Color and their PIN. Name, email and
+   password live under Account.
+   🎨 Paul, 2026-09-11: "i think the parent needs a theme also." Same eight
+   tiles as everyone, plus DEFAULT (the red box, no accent) so choosing one is
+   never a one-way door. Saves on tap, into their user_metadata. */
 function adOwner(H){
   adFrame(H,adMe(),adProfiles,"owner");
-  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),null)+"</div>"+
+  var cur=adOwnerTheme();
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),cur)+"</div>"+
+    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(cur?(adTheme(cur)||{}).name:"Default")+"</span></p>"+
+    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
+    adThemeTiles(cur||"",true)+
+    "<p class='ad-msg'></p>"+
     "<p class='ad-cap'>PIN</p>"+
     "<button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
       (adHasPin(null)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
     "<p class='ad-note'>Your name, email and password are under Account.</p>";
   H.body.querySelector("[data-pin]").onclick=function(){ adPinView(H,"change",{key:null,name:adMe()}); };
+  var msg=H.body.querySelector(".ad-msg");
+  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
+    b.onclick=function(){
+      var k=b.getAttribute("data-theme-k")||null;
+      if(k===adOwnerTheme()) return;
+      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
+      H.body.querySelector("[data-tname]").textContent=k?(adTheme(k)||{}).name:"Default";
+      msg.textContent="Saving…";
+      NSAccount.saveMyTheme(k).then(function(u){
+        if(u&&u.user_metadata) adUser=u;
+        else if(adUser){ adUser.user_metadata=adUser.user_metadata||{}; adUser.user_metadata.theme=k; }
+        H.body.querySelector(".ad-edit-av").innerHTML=adAv(adMe(),k);
+        nsWhoIcon(); msg.textContent="Saved.";
+      }).catch(function(e){ msg.textContent=e.message||"Could not save your color."; });
+    };
+  });
 }
 /* ADD / EDIT ONE PROFILE. SAVE in the header, like Account: CLOSE until
    something changes (a new profile starts on SAVE).
@@ -1892,7 +1926,7 @@ function nsWhoPicker(){
     o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
     o.setAttribute("aria-labelledby","whopH");
     o.innerHTML="<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
-      tile("parent",me,null)+
+      tile("parent",me,adOwnerTheme())+
       adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("")+
       "</div><button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";

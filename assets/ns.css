@@ -2073,6 +2073,11 @@ body.acct-open .adrawer{transform:none}
 .ad-bday .ad-in{flex:none;width:2.6em;margin:0;text-align:center;border-bottom:1px solid var(--ad-line)}
 .ad-bday .ad-yyyy{width:3.6em}
 .ad-chips.is-center{justify-content:center}
+/* The account holder's DEFAULT box is red wherever a box is drawn. Picking
+   Default once left the big box and the Manage Profiles row see-through,
+   because only the strip and the picker had a fallback. An inline theme
+   colour still wins over this. */
+.ad-edit-av i,.ad-kidrow>i,.nv-av{background:#c62828}
 /* My Profile (2026-09-11): header, About Me list, named color tiles. */
 .ad-me{display:flex;align-items:center;gap:16px;padding:22px 0 18px;border-bottom:1px solid var(--ad-line)}
 .ad-me>i{width:64px;height:64px;border-radius:10px;display:grid;place-items:center;flex:none;

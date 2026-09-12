@@ -193,6 +193,23 @@
         });
     });
   }
+  /* The ACCOUNT HOLDER'S theme (2026-09-11). They have no profile row, so it
+     lives in their own user_metadata beside the name. Paul: "i think the
+     parent needs a theme also." null = the default red box, no accent.
+     ⚠️ Supabase MERGES `data` into user_metadata, so this leaves the name alone. */
+  function saveMyTheme(theme) {
+    return refreshIfNeeded().then(function (s) {
+      if (!s) throw new Error("Please sign in again.");
+      return fetch(AUTH + "/user", { method: "PUT", headers: headers(true),
+        body: JSON.stringify({ data: { theme: theme || null } }) })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (d) {
+            if (!r.ok) throw new Error(friendly(d, "Could not save your color."));
+            return d;
+          });
+        });
+    });
+  }
   function newPassword(password) {
     return refreshIfNeeded().then(function (s) {
       if (!s) throw new Error("That reset link has expired. Ask for a new one.");
@@ -605,7 +622,7 @@
   window.NSAccount = {
     isAdmin: isAdmin, adminMode: adminMode, viewAs: viewAs, adminFile: adminFile,
     owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
-    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, changeEmail: changeEmail,
+    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, saveMyTheme: saveMyTheme, changeEmail: changeEmail,
     isRecovery: function () { return recovery; },
     signOut: signOut, getUser: getUser,
     who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,

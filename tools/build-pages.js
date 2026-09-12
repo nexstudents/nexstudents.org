@@ -3425,8 +3425,20 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
 {
   const cssLink = newHome.match(/<link rel="stylesheet" href="\/assets\/ns\.css[^>]*>/);
   if (!cssLink) { console.error("FAIL: home has no ns.css link to anchor the mode boot"); process.exit(1); }
-  if (!newHome.includes('localStorage.getItem("ns:mode")')) {
-    newHome = newHome.replace(cssLink[0], cssLink[0] + "\n" + modeBoot());
+  /* 🚨 REPLACE THE BOOT EVERY BUILD, never "add it if missing". 2026-09-11:
+     modeBoot() learned the profile accent (ns:accent), every generated page got
+     it, and the home page kept the OLD boot forever because one was already
+     there - so the accent vanished on the home page until the panel opened.
+     The same stale-hand-kept-block trap as the cache-buster above. A function
+     replacement, because modeBoot() contains "$" and a string replacement
+     would read it as a pattern. */
+  const BOOT_RE = /<script>\(function\(\)\{try\{var [^<]*?localStorage\.getItem\("ns:mode"\)[^<]*?<\/script>/g;
+  const boots = newHome.match(BOOT_RE) || [];
+  if (boots.length > 1) { console.error("FAIL: home carries " + boots.length + " mode boots"); process.exit(1); }
+  if (boots.length) newHome = newHome.replace(BOOT_RE, () => modeBoot());
+  else newHome = newHome.replace(cssLink[0], () => cssLink[0] + "\n" + modeBoot());
+  if (!newHome.includes('localStorage.getItem("ns:accent")')) {
+    console.error("FAIL: the home page's mode boot does not carry the profile accent"); process.exit(1);
   }
   /* The favicon too. The home page is hand-written, so every <head> addition
      has to be spliced in here as well as put in the shell - the mode boot was
