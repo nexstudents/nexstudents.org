@@ -1938,12 +1938,12 @@ function nsApplySettings(s){
   try{
     if(s.voice) localStorage.setItem("ns:voice","__studio__:"+s.voice);
     if(s.speed) localStorage.setItem("ns:speed",s.speed);
-    if(s.lesson) localStorage.setItem("ns:theme",s.lesson);
+    
     if(s.highlight!=null){
       if(s.highlight) localStorage.setItem("ns:highlight",s.highlight); else localStorage.removeItem("ns:highlight");
     }
   }catch(e){}
-  if(s.lesson||s.highlight!=null){
+  if(s.highlight!=null){
     try{ document.dispatchEvent(new CustomEvent("ns:settings")); }catch(e){}
   }
 }
@@ -1987,18 +1987,14 @@ function adSettings(H){
     "<p class='ad-cap'>Reading Highlight · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span></p>"+
     "<p class='ad-note'>The color that marks the words as a lesson is read aloud.</p>"+
     hlTiles+
-    "<p class='ad-cap'>Lesson Colors · <span data-lname>"+adEsc((adTheme(cur.lesson)||{}).name||"")+"</span></p>"+
-    "<p class='ad-note'>The colors every lesson opens in. Your Theme Color is separate.</p>"+
-    adThemeTiles(cur.lesson,false,"lesson")+
     "<p class='ad-msg'></p>";
   if(typeof nsPaintMode==="function") nsPaintMode();
   var msg=H.body.querySelector(".ad-msg");
   function pick(attr,v,btn){
     cur[attr]=v;
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x===btn); });
-    if(attr==="lesson") H.body.querySelector("[data-lname]").textContent=(adTheme(v)||{}).name||"";
     if(attr==="highlight") H.body.querySelector("[data-hname]").textContent=hlName(v);
-    var next={voice:cur.voice,speed:cur.speed,lesson:cur.lesson,highlight:cur.highlight};
+    var next={voice:cur.voice,speed:cur.speed,highlight:cur.highlight};
     nsApplySettings(next);
     if(!NSAccount.isSignedIn()){ msg.textContent="Saved on this device."; return; }
     msg.textContent="Saving…";
@@ -2009,7 +2005,7 @@ function adSettings(H){
       msg.textContent="Saved.";
     }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
   }
-  ["voice","speed","lesson","highlight"].forEach(function(attr){
+  ["voice","speed","highlight"].forEach(function(attr){
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
       b.onclick=function(){ var v=b.getAttribute("data-"+attr); if(v!==cur[attr]) pick(attr,v,b); };
     });

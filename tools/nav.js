@@ -1732,7 +1732,9 @@ function nsApplySettings(s){
   try{
     if(s.voice) localStorage.setItem("ns:voice","__studio__:"+s.voice);
     if(s.speed) localStorage.setItem("ns:speed",s.speed);
-    if(s.lesson) localStorage.setItem("ns:theme",s.lesson);
+    /* ⚠️ s.lesson is IGNORED since Lesson Colors left Settings (2026-09-11). A
+       profile saved before then may still carry one; it must not overwrite the
+       lesson picker's own per-device choice. */
     /* highlight: a key, or "" for the palette's own gold. Absent = leave it. */
     if(s.highlight!=null){
       if(s.highlight) localStorage.setItem("ns:highlight",s.highlight); else localStorage.removeItem("ns:highlight");
@@ -1741,7 +1743,7 @@ function nsApplySettings(s){
   /* On a lesson page, repaint now rather than on the next load. The lesson
      engine keeps applyTheme PRIVATE (it is not on window - checked), so the
      panel announces the change and the lesson re-reads its own keys. */
-  if(s.lesson||s.highlight!=null){
+  if(s.highlight!=null){
     try{ document.dispatchEvent(new CustomEvent("ns:settings")); }catch(e){}
   }
 }
@@ -1790,18 +1792,17 @@ function adSettings(H){
     "<p class='ad-cap'>Reading Highlight · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span></p>"+
     "<p class='ad-note'>The color that marks the words as a lesson is read aloud.</p>"+
     hlTiles+
-    "<p class='ad-cap'>Lesson Colors · <span data-lname>"+adEsc((adTheme(cur.lesson)||{}).name||"")+"</span></p>"+
-    "<p class='ad-note'>The colors every lesson opens in. Your Theme Color is separate.</p>"+
-    adThemeTiles(cur.lesson,false,"lesson")+
+    /* ❌ NO "LESSON COLORS" ROW. Removed 2026-09-11: once every palette shared
+       a neutral background it only moved a lesson's small accents, which is
+       the Theme Color's job. Paul: "i dont think we need a lesson color." */
     "<p class='ad-msg'></p>";
   if(typeof nsPaintMode==="function") nsPaintMode();
   var msg=H.body.querySelector(".ad-msg");
   function pick(attr,v,btn){
     cur[attr]=v;
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x===btn); });
-    if(attr==="lesson") H.body.querySelector("[data-lname]").textContent=(adTheme(v)||{}).name||"";
     if(attr==="highlight") H.body.querySelector("[data-hname]").textContent=hlName(v);
-    var next={voice:cur.voice,speed:cur.speed,lesson:cur.lesson,highlight:cur.highlight};
+    var next={voice:cur.voice,speed:cur.speed,highlight:cur.highlight};
     nsApplySettings(next);
     /* Signed out there is no profile to keep it on; the device still has it. */
     if(!NSAccount.isSignedIn()){ msg.textContent="Saved on this device."; return; }
@@ -1813,7 +1814,7 @@ function adSettings(H){
       msg.textContent="Saved.";
     }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
   }
-  ["voice","speed","lesson","highlight"].forEach(function(attr){
+  ["voice","speed","highlight"].forEach(function(attr){
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
       b.onclick=function(){ var v=b.getAttribute("data-"+attr); if(v!==cur[attr]) pick(attr,v,b); };
     });
