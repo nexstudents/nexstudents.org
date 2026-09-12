@@ -45,8 +45,8 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <title>The Boston Tea Party | NexStudents</title>
 <meta name="description" content="Cheaper tea, an angry city, and why the price was never the point. Answer key included.">
-<link rel="stylesheet" href="/assets/ns.css?v=576ee118">
-<link rel="stylesheet" href="/assets/worksheet.css?v=576ee118">
+<link rel="stylesheet" href="/assets/ns.css?v=a1420360">
+<link rel="stylesheet" href="/assets/worksheet.css?v=a1420360">
 </head>
 <body>
 
@@ -429,6 +429,7 @@ var adrawer=document.getElementById("adrawer"),ascrim=document.getElementById("a
     adClose=document.getElementById("adClose"),acctLink=document.getElementById("acctLink");
 var AD_ITEMS={"manuscript-alphabet":{"th":"/worksheets/english/manuscript-alphabet/thumb.jpg","open":"/worksheets/english/manuscript-alphabet/print/"},"cursive-alphabet":{"th":"/worksheets/english/cursive-alphabet/thumb.jpg","open":"/worksheets/english/cursive-alphabet/print/"},"multiplication-drill-100":{"th":"/worksheets/maths/multiplication-drill-100/thumb.jpg","open":"/worksheets/maths/multiplication-drill-100/print/"},"division-drill-100":{"th":"/worksheets/maths/division-drill-100/thumb.jpg","open":"/worksheets/maths/division-drill-100/print/"},"lewis-and-clark":{"th":"/worksheets/history/lewis-and-clark/thumb.jpg","open":"/worksheets/history/lewis-and-clark/print/"},"thirteen-colonies":{"th":"/worksheets/history/thirteen-colonies/thumb.jpg","open":"/worksheets/history/thirteen-colonies/print/"},"boston-tea-party":{"th":"","open":"/worksheets/history/boston-tea-party/print/"},"animal-cell":{"th":"/worksheets/science/animal-cell/thumb.jpg","open":"/worksheets/science/animal-cell/"},"plant-cell":{"th":"/worksheets/science/plant-cell/thumb.jpg","open":"/worksheets/science/plant-cell/"},"us-history-semester-1":{"th":"/worksheets/history/us-history-semester-1/thumb.jpg","open":"/worksheets/history/us-history-semester-1/"},"complete-subjects-and-predicates":{"th":"/worksheets/english/complete-subjects-and-predicates/thumb.jpg","open":"/worksheets/english/complete-subjects-and-predicates/print/"},"weekly-spelling-test":{"th":"/worksheets/english/weekly-spelling-test/thumb.jpg","open":"/worksheets/english/weekly-spelling-test/print/"},"spelling-flashcards":{"th":"/worksheets/english/spelling-flashcards/thumb.jpg","open":"/worksheets/english/spelling-flashcards/print/"},"newtons-laws-of-motion":{"th":"/worksheets/science/newtons-laws-of-motion/thumb.jpg","open":"/worksheets/science/newtons-laws-of-motion/print/"}};
 var AD_THEMES=[{"k":"forest","name":"Forest","box":"#25664A"},{"k":"ocean","name":"Ocean","box":"#1F5E80"},{"k":"ember","name":"Ember","box":"#96441C"},{"k":"violet","name":"Violet","box":"#553093"},{"k":"graphite","name":"Graphite","box":"#3A4A63"},{"k":"rose","name":"Rose","box":"#9A2A5E"},{"k":"gold","name":"Gold","box":"#6F5100"},{"k":"teal","name":"Teal","box":"#0C625D"}];
+var AD_HL=[{"k":"green","name":"Green","rgb":"72,176,110"},{"k":"blue","name":"Blue","rgb":"86,160,222"},{"k":"pink","name":"Pink","rgb":"228,118,166"},{"k":"orange","name":"Orange","rgb":"232,146,62"},{"k":"purple","name":"Purple","rgb":"160,130,224"}];
 var AD_WORKER="https://nexstudents-media.nexedgetech.workers.dev";
 var adUser=null,adOrders=null,adLoading=false;
 var adHosts=[];
@@ -522,7 +523,8 @@ function adStrip(a){
   function tile(id,name,theme,pinKey,on){
     var lock=pinKey!==false&&adHasPin(pinKey);
     return "<button class='ad-pro-i"+(on?" is-me":"")+"' type='button' data-who='"+adEsc(id)+"' aria-label='"+
-      adEsc(name)+(lock?", locked with a PIN":"")+"'>"+adAv(name,theme)+"<b>"+(lock?AD_LOCK:"")+adEsc(name)+"</b></button>";
+      adEsc(name+(lock?", locked with a PIN":""))+"'>"+adAv(name,theme)+
+      (lock?"<span class='ad-lockb' aria-hidden='true'>"+AD_LOCK+"</span>":"")+"<b>"+adEsc(name)+"</b></button>";
   }
   return "<div class='ad-pro'>"+
     tile("parent",me,adOwnerTheme(),null,a===null)+
@@ -553,7 +555,7 @@ function adMain(H){
   if(!adParentSide(a)){
     var anyPin=adHasPin(null)||adOf("parent").some(function(p){ return adHasPin(p.id); });
     H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
-      "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me and your color</span></button>"+
+      "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me</span></button>"+
       "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
       "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>";
     if(typeof nsPaintMode==="function") nsPaintMode();
@@ -621,33 +623,12 @@ function adAddPick(H){
 }
 function adOwner(H){
   adFrame(H,adMe(),adProfiles,"owner");
-  var cur=adOwnerTheme();
-  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),cur)+"</div>"+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(cur?(adTheme(cur)||{}).name:"Default")+"</span></p>"+
-    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
-    adThemeTiles(cur||"",true)+
-    "<p class='ad-msg'></p>"+
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),adOwnerTheme())+"</div>"+
     "<p class='ad-cap'>PIN</p>"+
     "<button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
       (adHasPin(null)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
-    "<p class='ad-note'>Your name, email and password are under Account.</p>";
+    "<p class='ad-note'>Your name, email and password are under Account. Your color is in Settings.</p>";
   H.body.querySelector("[data-pin]").onclick=function(){ adPinView(H,"change",{key:null,name:adMe()}); };
-  var msg=H.body.querySelector(".ad-msg");
-  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
-    b.onclick=function(){
-      var k=b.getAttribute("data-theme-k")||null;
-      if(k===adOwnerTheme()) return;
-      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
-      H.body.querySelector("[data-tname]").textContent=k?(adTheme(k)||{}).name:"Default";
-      msg.textContent="Saving…";
-      NSAccount.saveMyTheme(k).then(function(u){
-        if(u&&u.user_metadata) adUser=u;
-        else if(adUser){ adUser.user_metadata=adUser.user_metadata||{}; adUser.user_metadata.theme=k; }
-        H.body.querySelector(".ad-edit-av").innerHTML=adAv(adMe(),k);
-        nsWhoIcon(); msg.textContent="Saved.";
-      }).catch(function(e){ msg.textContent=e.message||"Could not save your color."; });
-    };
-  });
 }
 function adEdit(H,row,kindIn){
   var kind=row?row.kind:kindIn;
@@ -678,9 +659,6 @@ function adEdit(H,row,kindIn){
       "<p class='ad-cap'>Grade Level</p>"+
       chips("grade",AD_GRADES.map(function(g){ return [g,g]; }),f.grade,"Grade level","is-center")
     :"")+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc((adTheme(f.theme)||{}).name||"")+"</span></p>"+
-    adThemeTiles(f.theme)+
-    "<p class='ad-note'>Colors "+(f.name?adEsc(f.name)+"&#39;s":"their")+" profile box, the buttons and the menu bar while they&#39;re on.</p>"+
     (!isKid&&row?"<p class='ad-cap'>PIN</p><button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
       (adHasPin(row.id)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>":"")+
     "<p class='ad-msg'></p>"+
@@ -706,14 +684,6 @@ function adEdit(H,row,kindIn){
     });
   }
   chipGroup("grade","grade"); chipGroup("gender","gender");
-  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
-    b.onclick=function(){
-      f.theme=b.getAttribute("data-theme-k");
-      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
-      q("[data-tname]").textContent=(adTheme(f.theme)||{}).name||"";
-      paintBig(); dirty();
-    };
-  });
   var BD=["mm","dd","yy"].map(function(k){ return q("[data-f="+k+"]"); }).filter(Boolean);
   BD.forEach(function(inp,n){
     var next=BD[n+1],prev=BD[n-1];
@@ -899,27 +869,8 @@ function adMyProfile(H){
       return "<dt>"+p[1]+"</dt><dd>"+adEsc(ab[p[0]])+"</dd>";
     }).join("")+"</dl>":
       "<p class='ad-note'>This part is all yours. Tell everyone a bit about you: what you like, what you&#39;re good at, what you want to be one day.</p>")+
-    "<button class='ad-link' type='button' data-about>"+(filled.length?"Edit My About Me":"Write My About Me")+"</button>"+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc((adTheme(a.theme)||{}).name||"")+"</span></p>"+
-    "<p class='ad-note'>Your color for your box, the buttons and the menu bar. It only shows while you&#39;re on.</p>"+
-    adThemeTiles(a.theme)+
-    "<p class='ad-msg'></p>";
-  var msg=H.body.querySelector(".ad-msg");
+    "<button class='ad-link' type='button' data-about>"+(filled.length?"Edit My About Me":"Write My About Me")+"</button>";
   H.body.querySelector("[data-about]").onclick=function(){ adAboutEdit(H,a); };
-  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
-    b.onclick=function(){
-      var k=b.getAttribute("data-theme-k"); if(k===a.theme) return;
-      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
-      H.body.querySelector("[data-tname]").textContent=(adTheme(k)||{}).name||"";
-      msg.textContent="Saving…";
-      NSAccount.saveOwn(a.id,{theme:k}).then(function(row){
-        if(!row) throw new Error("Could not save that.");
-        adKids=adKids.map(function(x){ return x.id===row.id?row:x; }); a=row;
-        H.body.querySelector(".ad-me i").outerHTML=adAv(row.name,row.theme);
-        nsWhoIcon(); msg.textContent="Saved.";
-      }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
-    };
-  });
 }
 function adAboutEdit(H,a){
   adFrame(H,"About Me",adMyProfile,"about");
@@ -957,9 +908,12 @@ function nsApplySettings(s){
     if(s.voice) localStorage.setItem("ns:voice","__studio__:"+s.voice);
     if(s.speed) localStorage.setItem("ns:speed",s.speed);
     if(s.lesson) localStorage.setItem("ns:theme",s.lesson);
+    if(s.highlight!=null){
+      if(s.highlight) localStorage.setItem("ns:highlight",s.highlight); else localStorage.removeItem("ns:highlight");
+    }
   }catch(e){}
-  if(s.lesson&&typeof applyTheme==="function"&&window.THEMES&&window.THEMES[s.lesson]){
-    try{ window.themeKey=s.lesson; applyTheme(); }catch(e){}
+  if(s.lesson||s.highlight!=null){
+    try{ document.dispatchEvent(new CustomEvent("ns:settings")); }catch(e){}
   }
 }
 function adSettings(H){
@@ -972,21 +926,36 @@ function adSettings(H){
     dev.speed=localStorage.getItem("ns:speed")||"0.85";
     dev.lesson=localStorage.getItem("ns:theme")||"graphite";
   }catch(e){}
-  var cur={voice:s.voice||(dev.voice==="female"?"female":"male"),speed:s.speed||dev.speed||"0.85",lesson:s.lesson||dev.lesson||"graphite"};
+  try{ dev.highlight=localStorage.getItem("ns:highlight")||""; }catch(e){}
+  var cur={voice:s.voice||(dev.voice==="female"?"female":"male"),speed:s.speed||dev.speed||"0.85",lesson:s.lesson||dev.lesson||"graphite",
+           highlight:s.highlight!=null?s.highlight:(dev.highlight||"")};
+  var themeCur=a===null?(adOwnerTheme()||""):(a&&a.theme)||"";
   function chips(attr,list,label){
     return "<div class='ad-chips is-center' role='group' aria-label='"+label+"'>"+list.map(function(p){
       return "<button type='button' data-"+attr+"='"+p[0]+"' aria-pressed='"+(cur[attr]===p[0])+"'>"+p[1]+"</button>";
     }).join("")+"</div>";
   }
+  var hlTiles="<div class='ad-tiles' role='group' aria-label='Reading highlight'>"+
+    [{k:"",name:"Default",rgb:"216,179,85"}].concat(AD_HL).map(function(h){
+      return "<button type='button' data-highlight='"+h.k+"' aria-pressed='"+(cur.highlight===h.k)+"'>"+
+        "<i style='background:rgb("+h.rgb+")' aria-hidden='true'></i><b>"+h.name+"</b></button>";
+    }).join("")+"</div>";
+  function hlName(k){ var h=AD_HL.filter(function(x){ return x.k===k; })[0]; return h?h.name:"Default"; }
   H.body.innerHTML="<p class='ad-cap'>Display</p>"+
     "<div class='ad-kv'><span>Light or Dark</span>"+
     "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
     "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
     "<span data-mode-label>Night Mode</span></button></div>"+
+    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
+    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
+    adThemeTiles(themeCur,a===null)+
     "<p class='ad-cap'>Reading Voice</p>"+
     "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use this device&#39;s own voice.</p>"+
     chips("voice",AD_VOICE,"Reading voice")+
     "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
+    "<p class='ad-cap'>Reading Highlight · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span></p>"+
+    "<p class='ad-note'>The color that marks the words as a lesson is read aloud.</p>"+
+    hlTiles+
     "<p class='ad-cap'>Lesson Colors · <span data-lname>"+adEsc((adTheme(cur.lesson)||{}).name||"")+"</span></p>"+
     "<p class='ad-note'>The colors every lesson opens in. Your Theme Color is separate.</p>"+
     adThemeTiles(cur.lesson,false,"lesson")+
@@ -997,7 +966,8 @@ function adSettings(H){
     cur[attr]=v;
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x===btn); });
     if(attr==="lesson") H.body.querySelector("[data-lname]").textContent=(adTheme(v)||{}).name||"";
-    var next={voice:cur.voice,speed:cur.speed,lesson:cur.lesson};
+    if(attr==="highlight") H.body.querySelector("[data-hname]").textContent=hlName(v);
+    var next={voice:cur.voice,speed:cur.speed,lesson:cur.lesson,highlight:cur.highlight};
     nsApplySettings(next);
     if(!NSAccount.isSignedIn()){ msg.textContent="Saved on this device."; return; }
     msg.textContent="Saving…";
@@ -1008,10 +978,29 @@ function adSettings(H){
       msg.textContent="Saved.";
     }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
   }
-  ["voice","speed","lesson"].forEach(function(attr){
+  ["voice","speed","lesson","highlight"].forEach(function(attr){
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
       b.onclick=function(){ var v=b.getAttribute("data-"+attr); if(v!==cur[attr]) pick(attr,v,b); };
     });
+  });
+  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
+    b.onclick=function(){
+      var k=b.getAttribute("data-theme-k")||"";
+      if(k===themeCur) return;
+      if(a!==null&&!k) return;
+      themeCur=k;
+      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
+      H.body.querySelector("[data-tname]").textContent=k?(adTheme(k)||{}).name:"Default";
+      msg.textContent="Saving…";
+      var job=a===null?NSAccount.saveMyTheme(k||null):NSAccount.saveOwn(a.id,{theme:k});
+      job.then(function(r){
+        if(a===null){
+          if(r&&r.user_metadata) adUser=r;
+          else if(adUser){ adUser.user_metadata=adUser.user_metadata||{}; adUser.user_metadata.theme=k||null; }
+        } else if(r){ adKids=adKids.map(function(x){ return x.id===r.id?r:x; }); a=r; }
+        nsWhoIcon(); msg.textContent="Saved.";
+      }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
+    };
   });
 }
 function adList(H){

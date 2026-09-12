@@ -677,6 +677,24 @@ const AD_THEMES = (() => {
   return out;
 })();
 
+/* 🖍️ THE READING HIGHLIGHT COLORS, lifted from lesson-template HIGHLIGHTS
+   the same way as AD_THEMES - one source, and the build fails if it cannot
+   read them. The panel's swatches and the lesson's highlight cannot drift. */
+const AD_HL = (() => {
+  const fs = require("fs"), path = require("path");
+  const src = fs.readFileSync(path.join(__dirname, "lesson-template.html"), "utf8");
+  const block = /var HIGHLIGHTS = \{([\s\S]*?)\};/.exec(src);
+  const out = [];
+  const re = /(\w+):\s*\{ name:"([^"]+)",\s*rgb:"([\d,]+)" \}/g;
+  let m;
+  while (block && (m = re.exec(block[1]))) out.push({ k: m[1], name: m[2], rgb: m[3] });
+  if (out.length < 5) {
+    console.error("nav.js: expected 5 reading HIGHLIGHTS in lesson-template.html, read " + out.length);
+    process.exit(1);
+  }
+  return out;
+})();
+
 /* slug -> the sheet's thumbnail and where a FREE one opens (its print/ page).
    Built from worksheets.js, the same list the sheets are rendered from, so the
    panel cannot point at a sheet that is not there. A paid item downloads
@@ -1070,6 +1088,7 @@ var adrawer=document.getElementById("adrawer"),ascrim=document.getElementById("a
     adClose=document.getElementById("adClose"),acctLink=document.getElementById("acctLink");
 var AD_ITEMS=${JSON.stringify(AD_ITEMS)};
 var AD_THEMES=${JSON.stringify(AD_THEMES)};
+var AD_HL=${JSON.stringify(AD_HL)};
 var AD_WORKER="https://nexstudents-media.nexedgetech.workers.dev";
 var adUser=null,adOrders=null,adLoading=false;
 /* The views draw into a HOST: {body, h, back, x, up, view, save}. Today the
@@ -1223,8 +1242,12 @@ function adStrip(a){
      build-worksheets fails any page containing it, as a broken-template net. */
   function tile(id,name,theme,pinKey,on){
     var lock=pinKey!==false&&adHasPin(pinKey);
+    /* The padlock sits on the BOX's corner, not in front of the name: beside
+       the name it pushed "Paul" 7px off the centre of his box (measured
+       2026-09-11, after Paul asked whether the names were centred). */
     return "<button class='ad-pro-i"+(on?" is-me":"")+"' type='button' data-who='"+adEsc(id)+"' aria-label='"+
-      adEsc(name)+(lock?", locked with a PIN":"")+"'>"+adAv(name,theme)+"<b>"+(lock?AD_LOCK:"")+adEsc(name)+"</b></button>";
+      adEsc(name+(lock?", locked with a PIN":""))+"'>"+adAv(name,theme)+
+      (lock?"<span class='ad-lockb' aria-hidden='true'>"+AD_LOCK+"</span>":"")+"<b>"+adEsc(name)+"</b></button>";
   }
   return "<div class='ad-pro'>"+
     tile("parent",me,adOwnerTheme(),null,a===null)+
@@ -1269,7 +1292,7 @@ function adMain(H){
   if(!adParentSide(a)){
     var anyPin=adHasPin(null)||adOf("parent").some(function(p){ return adHasPin(p.id); });
     H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
-      "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me and your color</span></button>"+
+      "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me</span></button>"+
       "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
       "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>";
     if(typeof nsPaintMode==="function") nsPaintMode();
@@ -1347,45 +1370,24 @@ function adAddPick(H){
     b.onclick=function(){ if(!b.disabled) adEdit(H,null,b.getAttribute("data-kind")); };
   });
 }
-/* THE ACCOUNT HOLDER'S ROW: their Theme Color and their PIN. Name, email and
-   password live under Account.
-   🎨 Paul, 2026-09-11: "i think the parent needs a theme also." Same eight
-   tiles as everyone, plus DEFAULT (the red box, no accent) so choosing one is
-   never a one-way door. Saves on tap, into their user_metadata. */
+/* THE ACCOUNT HOLDER'S ROW: their PIN. Name, email and password live under
+   Account; their Theme Color lives in Settings, like everyone's. */
 function adOwner(H){
   adFrame(H,adMe(),adProfiles,"owner");
-  var cur=adOwnerTheme();
-  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),cur)+"</div>"+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(cur?(adTheme(cur)||{}).name:"Default")+"</span></p>"+
-    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
-    adThemeTiles(cur||"",true)+
-    "<p class='ad-msg'></p>"+
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),adOwnerTheme())+"</div>"+
     "<p class='ad-cap'>PIN</p>"+
     "<button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
       (adHasPin(null)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
-    "<p class='ad-note'>Your name, email and password are under Account.</p>";
+    "<p class='ad-note'>Your name, email and password are under Account. Your color is in Settings.</p>";
   H.body.querySelector("[data-pin]").onclick=function(){ adPinView(H,"change",{key:null,name:adMe()}); };
-  var msg=H.body.querySelector(".ad-msg");
-  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
-    b.onclick=function(){
-      var k=b.getAttribute("data-theme-k")||null;
-      if(k===adOwnerTheme()) return;
-      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
-      H.body.querySelector("[data-tname]").textContent=k?(adTheme(k)||{}).name:"Default";
-      msg.textContent="Saving…";
-      NSAccount.saveMyTheme(k).then(function(u){
-        if(u&&u.user_metadata) adUser=u;
-        else if(adUser){ adUser.user_metadata=adUser.user_metadata||{}; adUser.user_metadata.theme=k; }
-        H.body.querySelector(".ad-edit-av").innerHTML=adAv(adMe(),k);
-        nsWhoIcon(); msg.textContent="Saved.";
-      }).catch(function(e){ msg.textContent=e.message||"Could not save your color."; });
-    };
-  });
 }
 /* ADD / EDIT ONE PROFILE. SAVE in the header, like Account: CLOSE until
    something changes (a new profile starts on SAVE).
-     student  Name · Birthday (optional) · Male/Female (optional) · Grade · Theme Color
-     parent   Name · Theme Color · their own PIN
+     student  Name · Birthday (optional) · Male/Female (optional) · Grade
+     parent   Name · their own PIN
+   🚨 NO THEME COLOR HERE: Settings only (Paul, 2026-09-11). A NEW profile is
+   given the first theme nobody on the account has yet, so its box is never
+   blank and two children rarely share a colour; they change it in Settings.
    Paul on the birthday: "they can choose not to add the age and it should be
    an optional feature." Male/Female is optional the same way; tapping the
    chosen one again clears it, like the grade chips.
@@ -1424,9 +1426,6 @@ function adEdit(H,row,kindIn){
       "<p class='ad-cap'>Grade Level</p>"+
       chips("grade",AD_GRADES.map(function(g){ return [g,g]; }),f.grade,"Grade level","is-center")
     :"")+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc((adTheme(f.theme)||{}).name||"")+"</span></p>"+
-    adThemeTiles(f.theme)+
-    "<p class='ad-note'>Colors "+(f.name?adEsc(f.name)+"&#39;s":"their")+" profile box, the buttons and the menu bar while they&#39;re on.</p>"+
     (!isKid&&row?"<p class='ad-cap'>PIN</p><button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
       (adHasPin(row.id)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>":"")+
     "<p class='ad-msg'></p>"+
@@ -1452,14 +1451,6 @@ function adEdit(H,row,kindIn){
     });
   }
   chipGroup("grade","grade"); chipGroup("gender","gender");
-  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
-    b.onclick=function(){
-      f.theme=b.getAttribute("data-theme-k");
-      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
-      q("[data-tname]").textContent=(adTheme(f.theme)||{}).name||"";
-      paintBig(); dirty();
-    };
-  });
   /* 🎂 THE BIRTHDAY BOXES MOVE ON THEIR OWN. Paul, 2026-09-11: "make it so it
      tabs over automatically i have to click the next row just to put day and
      year. then also backspace needs to remove each section."
@@ -1672,11 +1663,11 @@ function nsWhoIcon(){
 }
 /* 👤 MY PROFILE - THE STUDENT'S OWN PAGE IN THE PANEL (2026-09-11). Modeled
    on the HomeschoolGrades student profile Paul walked through: a header with
-   their box, name, grade and school year; About Me; Theme Color. Paul's call:
-   the STUDENT edits About Me and Theme Color; everything else is the
-   parent's (Manage Profiles). saveOwn() sends only those two fields.
-   ⚠️ The color saves the moment a tile is tapped, like HG's. It is a look,
-   not data, and the accent repaints at once so the choice is visible. */
+   their box, name, grade and school year, then About Me, which the STUDENT
+   writes. Everything else is the parent's (Manage Profiles).
+   🚨 THEME COLOR IS NOT HERE. It lives in Settings ONLY. Paul, 2026-09-11:
+   "if you are going to put a theme color in the settings and the profile i
+   think we just need it in the settings only." */
 function adMyProfile(H){
   var a=adActive();
   if(!a||a===AD_PENDING||a.kind!=="student") return adMain(H);
@@ -1690,27 +1681,8 @@ function adMyProfile(H){
       return "<dt>"+p[1]+"</dt><dd>"+adEsc(ab[p[0]])+"</dd>";
     }).join("")+"</dl>":
       "<p class='ad-note'>This part is all yours. Tell everyone a bit about you: what you like, what you&#39;re good at, what you want to be one day.</p>")+
-    "<button class='ad-link' type='button' data-about>"+(filled.length?"Edit My About Me":"Write My About Me")+"</button>"+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc((adTheme(a.theme)||{}).name||"")+"</span></p>"+
-    "<p class='ad-note'>Your color for your box, the buttons and the menu bar. It only shows while you&#39;re on.</p>"+
-    adThemeTiles(a.theme)+
-    "<p class='ad-msg'></p>";
-  var msg=H.body.querySelector(".ad-msg");
+    "<button class='ad-link' type='button' data-about>"+(filled.length?"Edit My About Me":"Write My About Me")+"</button>";
   H.body.querySelector("[data-about]").onclick=function(){ adAboutEdit(H,a); };
-  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
-    b.onclick=function(){
-      var k=b.getAttribute("data-theme-k"); if(k===a.theme) return;
-      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
-      H.body.querySelector("[data-tname]").textContent=(adTheme(k)||{}).name||"";
-      msg.textContent="Saving…";
-      NSAccount.saveOwn(a.id,{theme:k}).then(function(row){
-        if(!row) throw new Error("Could not save that.");
-        adKids=adKids.map(function(x){ return x.id===row.id?row:x; }); a=row;
-        H.body.querySelector(".ad-me i").outerHTML=adAv(row.name,row.theme);
-        nsWhoIcon(); msg.textContent="Saved.";
-      }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
-    };
-  });
 }
 /* ✏️ WRITING THE ABOUT ME. Every box is optional; an empty one is simply not
    shown. SAVE in the header, the panel's rule: CLOSE until something changes. */
@@ -1761,10 +1733,16 @@ function nsApplySettings(s){
     if(s.voice) localStorage.setItem("ns:voice","__studio__:"+s.voice);
     if(s.speed) localStorage.setItem("ns:speed",s.speed);
     if(s.lesson) localStorage.setItem("ns:theme",s.lesson);
+    /* highlight: a key, or "" for the palette's own gold. Absent = leave it. */
+    if(s.highlight!=null){
+      if(s.highlight) localStorage.setItem("ns:highlight",s.highlight); else localStorage.removeItem("ns:highlight");
+    }
   }catch(e){}
-  /* On a lesson page, repaint its colors now rather than on the next load. */
-  if(s.lesson&&typeof applyTheme==="function"&&window.THEMES&&window.THEMES[s.lesson]){
-    try{ window.themeKey=s.lesson; applyTheme(); }catch(e){}
+  /* On a lesson page, repaint now rather than on the next load. The lesson
+     engine keeps applyTheme PRIVATE (it is not on window - checked), so the
+     panel announces the change and the lesson re-reads its own keys. */
+  if(s.lesson||s.highlight!=null){
+    try{ document.dispatchEvent(new CustomEvent("ns:settings")); }catch(e){}
   }
 }
 function adSettings(H){
@@ -1777,22 +1755,41 @@ function adSettings(H){
     dev.speed=localStorage.getItem("ns:speed")||"0.85";
     dev.lesson=localStorage.getItem("ns:theme")||"graphite";
   }catch(e){}
-  var cur={voice:s.voice||(dev.voice==="female"?"female":"male"),speed:s.speed||dev.speed||"0.85",lesson:s.lesson||dev.lesson||"graphite"};
+  try{ dev.highlight=localStorage.getItem("ns:highlight")||""; }catch(e){}
+  var cur={voice:s.voice||(dev.voice==="female"?"female":"male"),speed:s.speed||dev.speed||"0.85",lesson:s.lesson||dev.lesson||"graphite",
+           highlight:s.highlight!=null?s.highlight:(dev.highlight||"")};
+  /* 🎨 THEME COLOR LIVES HERE, AND ONLY HERE. Paul, 2026-09-11: "we just need
+     it in the settings only." The account holder's is in user_metadata and
+     gets DEFAULT (the red box, no accent); a row's is on the row. */
+  var themeCur=a===null?(adOwnerTheme()||""):(a&&a.theme)||"";
   function chips(attr,list,label){
     return "<div class='ad-chips is-center' role='group' aria-label='"+label+"'>"+list.map(function(p){
       return "<button type='button' data-"+attr+"='"+p[0]+"' aria-pressed='"+(cur[attr]===p[0])+"'>"+p[1]+"</button>";
     }).join("")+"</div>";
   }
+  /* 🖍️ Reading Highlight swatches: Default (the palette's gold) + AD_HL. */
+  var hlTiles="<div class='ad-tiles' role='group' aria-label='Reading highlight'>"+
+    [{k:"",name:"Default",rgb:"216,179,85"}].concat(AD_HL).map(function(h){
+      return "<button type='button' data-highlight='"+h.k+"' aria-pressed='"+(cur.highlight===h.k)+"'>"+
+        "<i style='background:rgb("+h.rgb+")' aria-hidden='true'></i><b>"+h.name+"</b></button>";
+    }).join("")+"</div>";
+  function hlName(k){ var h=AD_HL.filter(function(x){ return x.k===k; })[0]; return h?h.name:"Default"; }
   /* "Light or Dark", not "Theme": Theme Color is a different setting now. */
   H.body.innerHTML="<p class='ad-cap'>Display</p>"+
     "<div class='ad-kv'><span>Light or Dark</span>"+
     "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
     "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
     "<span data-mode-label>Night Mode</span></button></div>"+
+    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
+    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
+    adThemeTiles(themeCur,a===null)+
     "<p class='ad-cap'>Reading Voice</p>"+
     "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use this device&#39;s own voice.</p>"+
     chips("voice",AD_VOICE,"Reading voice")+
     "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
+    "<p class='ad-cap'>Reading Highlight · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span></p>"+
+    "<p class='ad-note'>The color that marks the words as a lesson is read aloud.</p>"+
+    hlTiles+
     "<p class='ad-cap'>Lesson Colors · <span data-lname>"+adEsc((adTheme(cur.lesson)||{}).name||"")+"</span></p>"+
     "<p class='ad-note'>The colors every lesson opens in. Your Theme Color is separate.</p>"+
     adThemeTiles(cur.lesson,false,"lesson")+
@@ -1803,7 +1800,8 @@ function adSettings(H){
     cur[attr]=v;
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x===btn); });
     if(attr==="lesson") H.body.querySelector("[data-lname]").textContent=(adTheme(v)||{}).name||"";
-    var next={voice:cur.voice,speed:cur.speed,lesson:cur.lesson};
+    if(attr==="highlight") H.body.querySelector("[data-hname]").textContent=hlName(v);
+    var next={voice:cur.voice,speed:cur.speed,lesson:cur.lesson,highlight:cur.highlight};
     nsApplySettings(next);
     /* Signed out there is no profile to keep it on; the device still has it. */
     if(!NSAccount.isSignedIn()){ msg.textContent="Saved on this device."; return; }
@@ -1815,10 +1813,31 @@ function adSettings(H){
       msg.textContent="Saved.";
     }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
   }
-  ["voice","speed","lesson"].forEach(function(attr){
+  ["voice","speed","lesson","highlight"].forEach(function(attr){
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
       b.onclick=function(){ var v=b.getAttribute("data-"+attr); if(v!==cur[attr]) pick(attr,v,b); };
     });
+  });
+  /* Theme Color saves on its own path: the row's theme column, or the account
+     holder's user_metadata.theme. It then repaints the box, icon and accent. */
+  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
+    b.onclick=function(){
+      var k=b.getAttribute("data-theme-k")||"";
+      if(k===themeCur) return;
+      if(a!==null&&!k) return;
+      themeCur=k;
+      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
+      H.body.querySelector("[data-tname]").textContent=k?(adTheme(k)||{}).name:"Default";
+      msg.textContent="Saving…";
+      var job=a===null?NSAccount.saveMyTheme(k||null):NSAccount.saveOwn(a.id,{theme:k});
+      job.then(function(r){
+        if(a===null){
+          if(r&&r.user_metadata) adUser=r;
+          else if(adUser){ adUser.user_metadata=adUser.user_metadata||{}; adUser.user_metadata.theme=k||null; }
+        } else if(r){ adKids=adKids.map(function(x){ return x.id===r.id?r:x; }); a=r; }
+        nsWhoIcon(); msg.textContent="Saved.";
+      }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
+    };
   });
 }
 function adList(H){
