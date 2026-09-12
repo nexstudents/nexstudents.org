@@ -1,7 +1,7 @@
 -- ============================================================================
 -- 018 · Delete My Account, with the receipts kept (and Turn PIN Off, part 4)
 --
--- Paul, 2026-09-12: "i dont see a way to deactivate my account. there is no way
+-- Paul, 2026-09-11: "i dont see a way to deactivate my account. there is no way
 -- to remove it and this would help me test it and also allow users to remove
 -- themselves from the website."
 -- And on what happens to past orders: "yea i like number one in case they
@@ -16,7 +16,7 @@
 --   purchases         KEPT, account_id set to null, email kept
 --
 -- 🚨 BEFORE THIS MIGRATION purchases_account_id_fkey WAS "ON DELETE CASCADE"
--- (checked live 2026-09-12). Deleting any account would have wiped its orders,
+-- (checked live 2026-09-11). Deleting any account would have wiped its orders,
 -- which also wipes the Stripe-side trail we answer refund questions from.
 --
 -- ⚠️ WHY A DETACHED ORDER COMES BACK: it becomes exactly a guest purchase, an
@@ -73,7 +73,7 @@ revoke all on function public.delete_my_account() from public, anon;
 grant execute on function public.delete_my_account() to authenticated;
 
 -- ── 4. clear_pin(): TURN PIN OFF ────────────────────────────────────────────
--- Paul, 2026-09-12: "if you're going to say pin on then you maybe need an
+-- Paul, 2026-09-11: "if you're going to say pin on then you maybe need an
 -- option to turn pin off." Takes the CURRENT PIN, or a fresh password sign-in
 -- (the Forgot PIN route), exactly like set_pin().
 -- 🚨 A WRONG PIN RETURNS FALSE, IT DOES NOT RAISE. Raising would roll back the

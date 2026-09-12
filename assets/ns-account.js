@@ -163,7 +163,7 @@
              "in"      a session came back (confirmation off): signed in now
              "confirm" a new user, no session yet: check your email
              "exists"  the email already has an account
-           🚨 2026-09-12, Paul on his phone: "i made my account ... when i tried
+           🚨 2026-09-11, Paul on his phone: "i made my account ... when i tried
            my password after i created it, it didnt seem to work and i had to
            reset my password." His email already had an account from the
            email-link days. Supabase answers an EXISTING email with a fake
@@ -406,7 +406,7 @@
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
   }
 
-  /* 🗑️ DELETE MY ACCOUNT (2026-09-12, migration 018). Paul: "allow users to
+  /* 🗑️ DELETE MY ACCOUNT (2026-09-11, migration 018). Paul: "allow users to
      remove themselves from the website." The server deletes the sign-in, the
      profiles, the PINs and all progress; orders are KEPT, detached, and come
      back if the same email signs up again (Paul: "in case they reactivate it").

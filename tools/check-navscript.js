@@ -46,7 +46,7 @@ if (fails.length) {
   console.error("  Hint: inside the nav.js template literal, \\/ \\d \\s become / d s. Write \\\\/ or avoid the escape.");
   process.exit(1);
 }
-/* ── 2. EVERY PAGE SHIPS THE CURRENT ONE (2026-09-12) ─────────────────────
+/* ── 2. EVERY PAGE SHIPS THE CURRENT ONE (2026-09-11) ─────────────────────
    build-split.js was missing from the README's rebuild list, so its lesson
    kept a week-old account panel (no Delete Account, no password eye) while
    every other page had the new one, and every check passed. The README had

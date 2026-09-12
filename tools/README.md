@@ -22,7 +22,7 @@ node tools/build-math.js .
 node tools/build-english.js .
 node tools/build-integers.js .
 node tools/build-split.js .      # the split lessons (Complete Subjects...). Was MISSING from
-                                 # this list until 2026-09-12: that lesson shipped a week-old
+                                 # this list until 2026-09-11: that lesson shipped a week-old
                                  # account panel while every other page had the new one
 node tools/build-pages.js .
 node tools/build-sitemap.js .

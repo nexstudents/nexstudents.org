@@ -2549,7 +2549,7 @@ const pages = [
   /* Paired with /terms/. Same head treatment so the two read as a set. */
   { dir: "privacy", active: "", pclass: "termshead",
     title: "Privacy Policy | NexStudents",
-    desc: "What NexStudents collects, why, and how parents can request deletion. No accounts, no payments, nothing sold.",
+    desc: "What NexStudents collects, why, and how to delete it. Accounts are optional, students never sign up themselves, and nothing is sold.",
     crumb: "", h1: "Privacy Policy.",
     lead: "NexStudents is built for families and educators, so we believe privacy should be simple and easy to understand.",
     body: privacyBody() },
@@ -2825,7 +2825,7 @@ const SOON_PAGES = [
   <div class="card auth-card" id="signedOut">
     <h2 id="siHead">Welcome to NexStudents</h2>
     <p class="dim hidden" id="siLede" style="margin:0 0 6px"></p>
-    <!-- ✅ THE RESULT BOX. Paul, 2026-09-12, on his phone: "it also doesnt give
+    <!-- ✅ THE RESULT BOX. Paul, 2026-09-11, on his phone: "it also doesnt give
          me a notification that the account was created on the page. it needs
          some kind of verification that it was successful." The old answer was
          one small grey line under the button, easy to miss. This sits at the
@@ -2838,7 +2838,7 @@ const SOON_PAGES = [
         <input class="auth-in" type="text" id="siLast" autocomplete="family-name" placeholder="Last Name" aria-label="Last name">
       </div>
       <input class="auth-in" type="email" id="siEmail" autocomplete="email" placeholder="Email" aria-label="Email">
-      <!-- 👁️ The eye: Paul, 2026-09-12, "it needs a show hidden password icon".
+      <!-- 👁️ The eye: Paul, 2026-09-11, "it needs a show hidden password icon".
            Same markup as adPw() in nav.js, whose one click handler flips it. -->
       <span class="pw-wrap is-auth" id="siPassW"><input class="auth-in" type="password" id="siPass" autocomplete="current-password" placeholder="Password" aria-label="Password"><button class="pw-eye" type="button" aria-label="Show password" aria-pressed="false"><svg class="eye-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></span>
       <span class="pw-wrap is-auth hidden" id="siPass2W"><input class="auth-in" type="password" id="siPass2" autocomplete="new-password" placeholder="Confirm password" aria-label="Confirm password"><button class="pw-eye" type="button" aria-label="Show password" aria-pressed="false"><svg class="eye-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></span>

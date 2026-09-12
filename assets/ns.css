@@ -1178,7 +1178,7 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .auth-in::placeholder{color:var(--dim)}
 .auth-in:focus{outline:none;border-bottom-color:var(--fg)}
 /* ✅ The boxed result at the top of the card: account created, or that email
-   already has one. Paul, 2026-09-12: "it needs some kind of verification that
+   already has one. Paul, 2026-09-11: "it needs some kind of verification that
    it was successful." Neutral, not green: he turned green down for the sent
    button, and a box plus a bold line is what makes it impossible to miss. */
 .auth-note{margin:0 0 14px;padding:14px 16px;border:1px solid var(--fg);border-radius:8px;text-align:left;
@@ -2018,7 +2018,7 @@ body.acct-open .adrawer{transform:none}
   font-size:1.5rem;font-weight:700;background:#c62828;color:#fff}
 .ad-pro-i b{font-size:.78rem;font-weight:600;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ad-pro-i.is-add{cursor:pointer}
-/* ➕ THE PLUS IS AN SVG (AD_PLUS in nav.js). Paul, 2026-09-12: "the box to add
+/* ➕ THE PLUS IS AN SVG (AD_PLUS in nav.js). Paul, 2026-09-11: "the box to add
    a new account with the plus in the middle is not center in the box", and
    then "the plus looks too far to the right a bit" at a CSS-background plus,
    which snaps to whole pixels at browser zooms under 100%. The SVG fills a
@@ -2083,7 +2083,7 @@ body.acct-open .adrawer{transform:none}
 .ad-tip.is-on{visibility:visible;opacity:1}
 @media (prefers-reduced-motion:reduce){.ad-tip{transition:none}}
 /* ⚠️ 10px IN ON THE RIGHT, rows and chevrons alike, the same inset as the
-   "?" buttons. Paul, 2026-09-12: "those arrows and that pin not set option
+   "?" buttons. Paul, 2026-09-11: "those arrows and that pin not set option
    might be too far to the right." Flush, they sat on the panel's edge. */
 .ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 10px 12px 0;
   border-bottom:1px solid var(--ad-line);font-size:.88rem}
@@ -2103,7 +2103,7 @@ body.acct-open .adrawer{transform:none}
   text-align:left;padding:2px 0;margin-left:24px}
 .ad-in:focus{outline:none;border-bottom:1px solid var(--ad-fg)}
 .ad-box{display:block;width:100%;margin:10px 0 0;padding:10px 0;border-bottom:1px solid var(--ad-line)}
-/* 👁️ SHOW / HIDE PASSWORD (2026-09-12). The wrap takes the box's outer margin
+/* 👁️ SHOW / HIDE PASSWORD (2026-09-11). The wrap takes the box's outer margin
    so the eye can sit centred inside the box, over its right end. Twin of
    lesson-nav.css. is-auth = the /account/ sign-in card. */
 .pw-wrap{position:relative;display:block}

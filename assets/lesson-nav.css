@@ -665,7 +665,7 @@ body.acct-open .adrawer{transform:none}
   font-size:1.5rem;font-weight:700;background:#c62828;color:#fff}
 .ad-pro-i b{font-size:.78rem;font-weight:600;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ad-pro-i.is-add{cursor:pointer}
-/* ➕ THE PLUS IS AN SVG (AD_PLUS in nav.js, 2026-09-12). Twin of ns.css; see there. */
+/* ➕ THE PLUS IS AN SVG (AD_PLUS in nav.js, 2026-09-11). Twin of ns.css; see there. */
 .ad-pro-i.is-add i,.ad-kidrow.is-add>i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line)}
 .ad-pro-i.is-add svg,.ad-kidrow.is-add>i svg{width:42%;height:42%;display:block;fill:none;stroke:currentColor;
   stroke-width:1.6;stroke-linecap:round}
@@ -724,7 +724,7 @@ body.acct-open .adrawer{transform:none}
   background:var(--ad-bg);color:var(--ad-fg);font-size:.8rem;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.35)}
 .ad-tip.is-on{visibility:visible;opacity:1}
 @media (prefers-reduced-motion:reduce){.ad-tip{transition:none}}
-/* ⚠️ 10px in on the right, like the "?" buttons (2026-09-12). Twin of ns.css. */
+/* ⚠️ 10px in on the right, like the "?" buttons (2026-09-11). Twin of ns.css. */
 .ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 10px 12px 0;
   border-bottom:1px solid var(--ad-line);font-size:.88rem}
 .ad-kv>span:last-child{color:var(--ad-dim);text-align:right}
@@ -743,7 +743,7 @@ body.acct-open .adrawer{transform:none}
   text-align:left;padding:2px 0;margin-left:24px}
 .ad-in:focus{outline:none;border-bottom:1px solid var(--ad-fg)}
 .ad-box{display:block;width:100%;margin:10px 0 0;padding:10px 0;border-bottom:1px solid var(--ad-line)}
-/* 👁️ SHOW / HIDE PASSWORD (2026-09-12). The wrap takes the box's outer margin
+/* 👁️ SHOW / HIDE PASSWORD (2026-09-11). The wrap takes the box's outer margin
    so the eye can sit centred inside the box, over its right end. Twin of ns.css. */
 .pw-wrap{position:relative;display:block}
 .pw-wrap>input{margin:0;padding-right:40px}

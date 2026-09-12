@@ -1236,7 +1236,7 @@ function adThemeTiles(cur,withDefault,attr){
    students, then the + square (parent side only, gone when both caps are
    full). Paul: "we will just have an add box button like a square with a plus
    sign in the middle" - so the + carries no label under it. */
-/* ➕ THE PLUS IS AN SVG. Paul, 2026-09-12: "the plus looks too far to the right
+/* ➕ THE PLUS IS AN SVG. Paul, 2026-09-11: "the plus looks too far to the right
    a bit". A typed "+" sits wherever its font puts it; a CSS-background plus
    snaps to whole pixels and slid right at his 93% browser zoom. An SVG in a
    centred grid cell is drawn at the exact centre at any zoom, on any phone. */
@@ -1585,7 +1585,7 @@ function adAddPick(H){
    Account; their Theme Color lives in Settings, like everyone's. */
 /* 🔢 A PARENT'S PIN ROWS, for the account holder (adOwner) and the second
    parent (adEdit). PIN On/Not Set opens change or set; once one is on, Turn
-   PIN Off sits under it. Paul, 2026-09-12: "if you're going to say pin on
+   PIN Off sits under it. Paul, 2026-09-11: "if you're going to say pin on
    then you maybe need an option to turn pin off." */
 function adPinRows(key){
   return "<p class='ad-cap'>PIN</p>"+
@@ -2067,7 +2067,7 @@ function adPinView(H,mode,ctx){
   }
   draw();
 }
-/* 👁️ SHOW / HIDE PASSWORD. Paul, 2026-09-12: "it needs a show hidden password
+/* 👁️ SHOW / HIDE PASSWORD. Paul, 2026-09-11: "it needs a show hidden password
    icon and would be nice to hid and show it." Every password box in the panel
    is drawn by adPw(), with the eye inside the box on the right. One click
    handler for the whole page (below, at boot) flips whichever box it sits in,
@@ -2442,7 +2442,7 @@ function adProfile(H){
       adPw("box","class='ad-in ad-box' data-f='pw2' autocomplete='new-password' placeholder='Re-type New Password' aria-label='Re-type new password'")+
       "</div>"+
     "<p class='ad-msg'></p>"+
-    /* 🗑️ Paul, 2026-09-12: "allow users to remove themselves from the
+    /* 🗑️ Paul, 2026-09-11: "allow users to remove themselves from the
        website." Last on the page and red, like Remove Student, and only a door:
        the warning and the password are on the next screen. */
     "<button class='ad-signout ad-del' type='button' data-delme>Delete Account</button>";
