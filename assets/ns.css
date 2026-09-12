@@ -1177,6 +1177,15 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
   border:0;border-bottom:1px solid var(--line);border-radius:0;padding:13px 4px;margin:0 0 6px}
 .auth-in::placeholder{color:var(--dim)}
 .auth-in:focus{outline:none;border-bottom-color:var(--fg)}
+/* ✅ The boxed result at the top of the card: account created, or that email
+   already has one. Paul, 2026-09-12: "it needs some kind of verification that
+   it was successful." Neutral, not green: he turned green down for the sent
+   button, and a box plus a bold line is what makes it impossible to miss. */
+.auth-note{margin:0 0 14px;padding:14px 16px;border:1px solid var(--fg);border-radius:8px;text-align:left;
+  font-size:.92rem;line-height:1.5}
+.auth-note b{display:block;font-size:1rem;margin-bottom:4px}
+.auth-note p{margin:0;color:var(--fg)}
+.auth-note .acct-out{display:block;margin-top:10px}
 .auth-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
 .authlinks{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:14px 0 0}
 .authlinks button{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:inherit;
@@ -2009,7 +2018,15 @@ body.acct-open .adrawer{transform:none}
   font-size:1.5rem;font-weight:700;background:#c62828;color:#fff}
 .ad-pro-i b{font-size:.78rem;font-weight:600;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ad-pro-i.is-add{cursor:pointer}
-.ad-pro-i.is-add i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line);font-weight:400;font-size:1.8rem}
+/* ➕ THE PLUS IS AN SVG (AD_PLUS in nav.js). Paul, 2026-09-12: "the box to add
+   a new account with the plus in the middle is not center in the box", and
+   then "the plus looks too far to the right a bit" at a CSS-background plus,
+   which snaps to whole pixels at browser zooms under 100%. The SVG fills a
+   fixed share of the box and the box's grid centres it, so it sits dead
+   centre at any zoom. */
+.ad-pro-i.is-add i,.ad-kidrow.is-add>i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line)}
+.ad-pro-i.is-add svg,.ad-kidrow.is-add>i svg{width:42%;height:42%;display:block;fill:none;stroke:currentColor;
+  stroke-width:1.6;stroke-linecap:round}
 .ad-pro-i.is-add b{color:var(--ad-dim)}
 .ad-pro-i.is-add:hover i{border-color:var(--ad-fg);color:var(--ad-fg)}
 /* The strip sits a little BELOW "Hi, name". Paul, 2026-09-11: "the profile
@@ -2037,7 +2054,7 @@ body.acct-open .adrawer{transform:none}
 .ad-ths{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .ad-ths img,.ad-ths i{width:42px;height:42px;border-radius:4px;object-fit:cover;display:block;
   background:var(--ad-line)}
-.ad-chev{color:var(--ad-dim);font-size:1.4rem;line-height:1}
+.ad-chev{color:var(--ad-dim);font-size:1.4rem;line-height:1;margin-right:10px}
 .ad-ord:hover b{text-decoration:underline}
 /* Section titles in the panel match the Terms page headings: bright, 800,
    capitals, .06em. Paul, 2026-09-11: "the title for these text need to be
@@ -2065,7 +2082,10 @@ body.acct-open .adrawer{transform:none}
   background:var(--ad-bg);color:var(--ad-fg);font-size:.8rem;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.35)}
 .ad-tip.is-on{visibility:visible;opacity:1}
 @media (prefers-reduced-motion:reduce){.ad-tip{transition:none}}
-.ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 0;
+/* ⚠️ 10px IN ON THE RIGHT, rows and chevrons alike, the same inset as the
+   "?" buttons. Paul, 2026-09-12: "those arrows and that pin not set option
+   might be too far to the right." Flush, they sat on the panel's edge. */
+.ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 10px 12px 0;
   border-bottom:1px solid var(--ad-line);font-size:.88rem}
 .ad-kv>span:last-child{color:var(--ad-dim);text-align:right}
 .ad-tot>span{color:var(--ad-fg)!important;font-weight:700}
@@ -2083,6 +2103,23 @@ body.acct-open .adrawer{transform:none}
   text-align:left;padding:2px 0;margin-left:24px}
 .ad-in:focus{outline:none;border-bottom:1px solid var(--ad-fg)}
 .ad-box{display:block;width:100%;margin:10px 0 0;padding:10px 0;border-bottom:1px solid var(--ad-line)}
+/* 👁️ SHOW / HIDE PASSWORD (2026-09-12). The wrap takes the box's outer margin
+   so the eye can sit centred inside the box, over its right end. Twin of
+   lesson-nav.css. is-auth = the /account/ sign-in card. */
+.pw-wrap{position:relative;display:block}
+.pw-wrap>input{margin:0;padding-right:40px}
+.pw-wrap.is-auth{margin:0 0 6px}
+.pw-wrap.is-box{margin:10px 0 0}
+.pw-wrap.is-kv{flex:1;min-width:0;margin-left:24px}
+.pw-wrap.is-kv>input{display:block;width:100%}
+.pw-eye{position:absolute;top:0;right:0;bottom:0;width:38px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;padding:0;cursor:pointer;color:inherit;opacity:.6}
+.pw-eye:hover,.pw-eye.is-on{opacity:1}
+/* In an .ad-kv row the wrap is the row's last span, which is dimmed. */
+.ad-kv .pw-eye{color:var(--ad-fg)}
+.pw-eye svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pw-eye .eye-off,.pw-eye.is-on .eye-on{display:none}
+.pw-eye.is-on .eye-off{display:block}
 .ad-link{display:block;margin:20px auto 0;background:none;border:0;color:var(--ad-fg);cursor:pointer;
   font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .ad-link:hover{text-decoration:underline}
@@ -2175,7 +2212,7 @@ a.ad-nextup:hover b{text-decoration:underline}
 .ad-mid{text-align:center}
 .ad-kidrow>i{width:42px;height:42px;border-radius:6px;display:grid;place-items:center;flex:none;
   font-style:normal;font-weight:700;font-size:1.1rem;color:#fff}
-.ad-kidrow.is-add>i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line);font-weight:400;font-size:1.4rem}
+/* .ad-kidrow.is-add>i: drawn with the tile's plus, above. */
 .ad-edit-av{padding:22px 0 6px;display:flex;justify-content:center}
 .ad-edit-av i{width:84px;height:84px;border-radius:10px;display:grid;place-items:center;font-style:normal;
   font-size:2.3rem;font-weight:700;color:#fff}

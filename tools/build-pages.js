@@ -2825,6 +2825,12 @@ const SOON_PAGES = [
   <div class="card auth-card" id="signedOut">
     <h2 id="siHead">Welcome to NexStudents</h2>
     <p class="dim hidden" id="siLede" style="margin:0 0 6px"></p>
+    <!-- ✅ THE RESULT BOX. Paul, 2026-09-12, on his phone: "it also doesnt give
+         me a notification that the account was created on the page. it needs
+         some kind of verification that it was successful." The old answer was
+         one small grey line under the button, easy to miss. This sits at the
+         TOP of the card, boxed, with a bold first line. -->
+    <div class="auth-note hidden" id="siNote" role="status"></div>
 
     <form id="siForm" autocomplete="on" novalidate>
       <div class="auth-row hidden" id="siNames">
@@ -2832,8 +2838,10 @@ const SOON_PAGES = [
         <input class="auth-in" type="text" id="siLast" autocomplete="family-name" placeholder="Last Name" aria-label="Last name">
       </div>
       <input class="auth-in" type="email" id="siEmail" autocomplete="email" placeholder="Email" aria-label="Email">
-      <input class="auth-in" type="password" id="siPass" autocomplete="current-password" placeholder="Password" aria-label="Password">
-      <input class="auth-in hidden" type="password" id="siPass2" autocomplete="new-password" placeholder="Confirm password" aria-label="Confirm password">
+      <!-- 👁️ The eye: Paul, 2026-09-12, "it needs a show hidden password icon".
+           Same markup as adPw() in nav.js, whose one click handler flips it. -->
+      <span class="pw-wrap is-auth" id="siPassW"><input class="auth-in" type="password" id="siPass" autocomplete="current-password" placeholder="Password" aria-label="Password"><button class="pw-eye" type="button" aria-label="Show password" aria-pressed="false"><svg class="eye-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></span>
+      <span class="pw-wrap is-auth hidden" id="siPass2W"><input class="auth-in" type="password" id="siPass2" autocomplete="new-password" placeholder="Confirm password" aria-label="Confirm password"><button class="pw-eye" type="button" aria-label="Show password" aria-pressed="false"><svg class="eye-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></span>
       <button class="btn authgo" type="submit" id="siBtn">Sign In</button>
     </form>
 
@@ -2883,7 +2891,9 @@ const SOON_PAGES = [
   }
   $("siForm").onsubmit = function(e){
     e.preventDefault();
-    var btn = e.target.querySelector("button");
+    /* \u26a0\ufe0f By id, never querySelector("button"): the first button in the form
+       is now the password eye, which then got disabled and relabelled. */
+    var btn = $("siBtn");
     btn.disabled = true; $("siMsg").textContent = "Sending\u2026";
     var em = $("siEmail").value.trim(), pw = $("siPass").value, pw2 = $("siPass2").value;
     var msg = $("siMsg");
@@ -2898,12 +2908,22 @@ const SOON_PAGES = [
                         reset: "Saving your new password" }[mode] + "...";
 
     var job = mode === "in"     ? NSAccount.logIn(em, pw).then(function(){ msg.textContent = ""; paint(); })
-            : mode === "up"     ? NSAccount.signUp(em, pw, $("siFirst").value, $("siLast").value).then(function(signedIn){
-                                    if (signedIn) { msg.textContent = ""; paint(); return; }
-                                    /* The confirm email comes from NexStudents <accounts@nexstudents.org>. */
+            : mode === "up"     ? NSAccount.signUp(em, pw, $("siFirst").value, $("siLast").value).then(function(res){
+                                    if (res === "in") { msg.textContent = ""; paint(); return; }
                                     setMode("in");
-                                    $("siMsg").innerHTML = "<b>Check your email.</b> We sent a link to " +
-                                      "confirm your account. Press it, then sign in here.";
+                                    $("siEmail").value = em;
+                                    /* 🚨 "exists": the email already had an account, and
+                                       Supabase kept the OLD password (or none, for an
+                                       email-link-era account like Paul's). Say so, and
+                                       point at Forgot Password, which sets one. */
+                                    if (res === "exists") {
+                                      note("That email already has an account.",
+                                        "Sign in below. If you never set a password, or forgot it, press Forgot Password? to set one.");
+                                      return;
+                                    }
+                                    /* The confirm email comes from NexStudents <accounts@nexstudents.org>. */
+                                    note("Your account is created.",
+                                      "We sent a link to " + em + ". Press it to confirm your email, then sign in here.", true);
                                   })
             : mode === "forgot" ? NSAccount.forgot(em).then(function(){
                                     /* Like the Lizzie Peirce reference: the button itself
@@ -2932,6 +2952,27 @@ const SOON_PAGES = [
     });
   };
 
+  /* The boxed result at the top of the card. Built with textContent: the
+     email in it is whatever was typed, so it never goes through innerHTML.
+     resend adds Resend Verification Email, for a first email that never came. */
+  function note(title, text, resend){
+    var n = $("siNote"); n.textContent = "";
+    var b = document.createElement("b"); b.textContent = title; n.appendChild(b);
+    var p = document.createElement("p"); p.textContent = text; n.appendChild(p);
+    if (resend) {
+      var r = document.createElement("button");
+      r.type = "button"; r.className = "acct-out"; r.textContent = "Resend Verification Email";
+      r.onclick = function(){
+        r.disabled = true; r.textContent = "Sending...";
+        NSAccount.resendConfirm($("siEmail").value).then(function(){ r.textContent = "Sent. Check your email."; })
+          .catch(function(e){ r.disabled = false; r.textContent = "Resend Verification Email"; $("siMsg").textContent = e.message; });
+      };
+      n.appendChild(r);
+    }
+    n.classList.remove("hidden");
+    n.scrollIntoView({ block: "nearest" });
+  }
+
   /* ── THE FOUR MODES OF THE CARD ── one form, the fields and words change.
      Wording copied from the Lizzie Peirce reference: "Create Account",
      "Create Password", "Re-type Password", "Already have an account? Sign in". */
@@ -2955,8 +2996,11 @@ const SOON_PAGES = [
     $("siLede").classList.toggle("hidden", !c.lede);
     $("siNames").classList.toggle("hidden", !c.names);
     $("siEmail").classList.toggle("hidden", c.email === false);
-    $("siPass").classList.toggle("hidden", !c.pass);
-    $("siPass2").classList.toggle("hidden", !c.pass2);
+    /* The WRAPS hide, not the inputs, or the eye would stay on screen alone. */
+    $("siPassW").classList.toggle("hidden", !c.pass);
+    $("siPass2W").classList.toggle("hidden", !c.pass2);
+    [].forEach.call(document.querySelectorAll("#siForm .pw-eye.is-on"), function(b){ b.click(); });
+    $("siNote").classList.add("hidden");
     $("siPass").placeholder = c.ph || "Password";
     $("siPass").autocomplete = m === "in" ? "current-password" : "new-password";
     $("siPass2").placeholder = m === "reset" ? "Re-type New Password" : "Re-type Password";

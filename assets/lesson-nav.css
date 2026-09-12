@@ -665,7 +665,10 @@ body.acct-open .adrawer{transform:none}
   font-size:1.5rem;font-weight:700;background:#c62828;color:#fff}
 .ad-pro-i b{font-size:.78rem;font-weight:600;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ad-pro-i.is-add{cursor:pointer}
-.ad-pro-i.is-add i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line);font-weight:400;font-size:1.8rem}
+/* ➕ THE PLUS IS AN SVG (AD_PLUS in nav.js, 2026-09-12). Twin of ns.css; see there. */
+.ad-pro-i.is-add i,.ad-kidrow.is-add>i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line)}
+.ad-pro-i.is-add svg,.ad-kidrow.is-add>i svg{width:42%;height:42%;display:block;fill:none;stroke:currentColor;
+  stroke-width:1.6;stroke-linecap:round}
 .ad-pro-i.is-add b{color:var(--ad-dim)}
 .ad-pro-i.is-add:hover i{border-color:var(--ad-fg);color:var(--ad-fg)}
 /* The strip sits a little BELOW "Hi, name". Paul, 2026-09-11: "the profile
@@ -693,7 +696,7 @@ body.acct-open .adrawer{transform:none}
 .ad-ths{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .ad-ths img,.ad-ths i{width:42px;height:42px;border-radius:4px;object-fit:cover;display:block;
   background:var(--ad-line)}
-.ad-chev{color:var(--ad-dim);font-size:1.4rem;line-height:1}
+.ad-chev{color:var(--ad-dim);font-size:1.4rem;line-height:1;margin-right:10px}
 .ad-ord:hover b{text-decoration:underline}
 /* Section titles in the panel match the Terms page headings: bright, 800,
    capitals, .06em. Paul, 2026-09-11: "the title for these text need to be
@@ -721,7 +724,8 @@ body.acct-open .adrawer{transform:none}
   background:var(--ad-bg);color:var(--ad-fg);font-size:.8rem;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.35)}
 .ad-tip.is-on{visibility:visible;opacity:1}
 @media (prefers-reduced-motion:reduce){.ad-tip{transition:none}}
-.ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 0;
+/* ⚠️ 10px in on the right, like the "?" buttons (2026-09-12). Twin of ns.css. */
+.ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 10px 12px 0;
   border-bottom:1px solid var(--ad-line);font-size:.88rem}
 .ad-kv>span:last-child{color:var(--ad-dim);text-align:right}
 .ad-tot>span{color:var(--ad-fg)!important;font-weight:700}
@@ -739,6 +743,22 @@ body.acct-open .adrawer{transform:none}
   text-align:left;padding:2px 0;margin-left:24px}
 .ad-in:focus{outline:none;border-bottom:1px solid var(--ad-fg)}
 .ad-box{display:block;width:100%;margin:10px 0 0;padding:10px 0;border-bottom:1px solid var(--ad-line)}
+/* 👁️ SHOW / HIDE PASSWORD (2026-09-12). The wrap takes the box's outer margin
+   so the eye can sit centred inside the box, over its right end. Twin of ns.css. */
+.pw-wrap{position:relative;display:block}
+.pw-wrap>input{margin:0;padding-right:40px}
+.pw-wrap.is-auth{margin:0 0 6px}
+.pw-wrap.is-box{margin:10px 0 0}
+.pw-wrap.is-kv{flex:1;min-width:0;margin-left:24px}
+.pw-wrap.is-kv>input{display:block;width:100%}
+.pw-eye{position:absolute;top:0;right:0;bottom:0;width:38px;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;padding:0;cursor:pointer;color:inherit;opacity:.6}
+.pw-eye:hover,.pw-eye.is-on{opacity:1}
+/* In an .ad-kv row the wrap is the row's last span, which is dimmed. */
+.ad-kv .pw-eye{color:var(--ad-fg)}
+.pw-eye svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pw-eye .eye-off,.pw-eye.is-on .eye-on{display:none}
+.pw-eye.is-on .eye-off{display:block}
 .ad-link{display:block;margin:20px auto 0;background:none;border:0;color:var(--ad-fg);cursor:pointer;
   font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .ad-link:hover{text-decoration:underline}
@@ -831,7 +851,7 @@ a.ad-nextup:hover b{text-decoration:underline}
 .ad-mid{text-align:center}
 .ad-kidrow>i{width:42px;height:42px;border-radius:6px;display:grid;place-items:center;flex:none;
   font-style:normal;font-weight:700;font-size:1.1rem;color:#fff}
-.ad-kidrow.is-add>i{background:none;color:var(--ad-dim);border:1.5px dashed var(--ad-line);font-weight:400;font-size:1.4rem}
+/* .ad-kidrow.is-add>i: drawn with the tile's plus, above. */
 .ad-edit-av{padding:22px 0 6px;display:flex;justify-content:center}
 .ad-edit-av i{width:84px;height:84px;border-radius:10px;display:grid;place-items:center;font-style:normal;
   font-size:2.3rem;font-weight:700;color:#fff}

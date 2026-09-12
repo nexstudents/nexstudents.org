@@ -21,6 +21,9 @@ node tools/build-lessons.js . tools/lesson-template.html
 node tools/build-math.js .
 node tools/build-english.js .
 node tools/build-integers.js .
+node tools/build-split.js .      # the split lessons (Complete Subjects...). Was MISSING from
+                                 # this list until 2026-09-12: that lesson shipped a week-old
+                                 # account panel while every other page had the new one
 node tools/build-pages.js .
 node tools/build-sitemap.js .
 
@@ -30,7 +33,7 @@ node tools/extract-lesson-assets.js
 node tools/check-nav-css.js .    # the shared nav is styled in BOTH stylesheets
 node tools/check-contrast.js .   # every text colour, in BOTH themes
 node tools/check-escape.js .     # account-panel text escaped for the attribute it lands in
-node tools/check-navscript.js .  # the nav/panel script every page ships actually PARSES
+node tools/check-navscript.js .  # the nav/panel script PARSES, and every page ships the CURRENT one
 node tools/check-progress-merge.js . # the progress merge never loses or resurrects work
 node tools/check-pages-run.js .  # every lesson + key page RUNS in headless Chrome (~45s)
 node tools/check-links.js .      # LAST OF ALL

@@ -1236,6 +1236,11 @@ function adThemeTiles(cur,withDefault,attr){
    students, then the + square (parent side only, gone when both caps are
    full). Paul: "we will just have an add box button like a square with a plus
    sign in the middle" - so the + carries no label under it. */
+/* ➕ THE PLUS IS AN SVG. Paul, 2026-09-12: "the plus looks too far to the right
+   a bit". A typed "+" sits wherever its font puts it; a CSS-background plus
+   snaps to whole pixels and slid right at his 93% browser zoom. An SVG in a
+   centred grid cell is drawn at the exact centre at any zoom, on any phone. */
+var AD_PLUS="<svg viewBox='0 0 24 24'><path d='M12 4v16M4 12h16'/></svg>";
 function adStrip(a){
   var me=adMe();
   /* pinKey false = a student, never locked. ⚠️ Not the word for "no value":
@@ -1253,7 +1258,7 @@ function adStrip(a){
     tile("parent",me,adOwnerTheme(),null,a===null)+
     adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme,p.id,a&&a.id===p.id); }).join("")+
     adOf("student").map(function(k){ return tile(k.id,k.name,k.theme,false,a&&a.id===k.id); }).join("")+
-    (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>+</i></button>":"")+
+    (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>"+AD_PLUS+"</i></button>":"")+
     "</div>";
 }
 /* Switch who is on. Their theme color follows as an ACCENT (buttons and nav
@@ -1556,7 +1561,7 @@ function adProfiles(H){
     (kids.length?"":"<p class='ad-note'>Give each student their own profile, so their lessons and progress stay separate.</p>")+
     kids.map(function(k){ return adRow("edit",k.id,adAv(k.name,k.theme),adEsc(k.name),adGradeLine(k)); }).join("")+
     (adFull()?"<p class='ad-note'>This account is full: 2 parents and 10 students.</p>":
-      "<button class='ad-ord ad-kidrow is-add' type='button' data-go='add'><i aria-hidden='true'>+</i>"+
+      "<button class='ad-ord ad-kidrow is-add' type='button' data-go='add'><i aria-hidden='true'>"+AD_PLUS+"</i>"+
       "<span class='ad-ord-t'><b>Add Profile</b></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>")+
     "<p class='ad-note'>Each parent can set their own PIN. Students need it to open that parent's profile, so Orders, Account and these settings stay with the grown-ups.</p>";
 }
@@ -1578,14 +1583,28 @@ function adAddPick(H){
 }
 /* THE ACCOUNT HOLDER'S ROW: their PIN. Name, email and password live under
    Account; their Theme Color lives in Settings, like everyone's. */
+/* 🔢 A PARENT'S PIN ROWS, for the account holder (adOwner) and the second
+   parent (adEdit). PIN On/Not Set opens change or set; once one is on, Turn
+   PIN Off sits under it. Paul, 2026-09-12: "if you're going to say pin on
+   then you maybe need an option to turn pin off." */
+function adPinRows(key){
+  return "<p class='ad-cap'>PIN</p>"+
+    "<button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
+      (adHasPin(key)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
+    (adHasPin(key)?"<button class='ad-kv ad-go' type='button' data-pinoff><span>Turn PIN Off</span><span class='ad-dim'>"+
+      "<i aria-hidden='true'>&rsaquo;</i></span></button>":"");
+}
+function adPinWire(H,key,name){
+  var on=H.body.querySelector("[data-pin]"),off=H.body.querySelector("[data-pinoff]");
+  if(on) on.onclick=function(){ adPinView(H,"change",{key:key,name:name}); };
+  if(off) off.onclick=function(){ adPinView(H,"off",{key:key,name:name}); };
+}
 function adOwner(H){
   adFrame(H,adMe(),adProfiles,"owner");
   H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),adOwnerTheme())+"</div>"+
-    "<p class='ad-cap'>PIN</p>"+
-    "<button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
-      (adHasPin(null)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
+    adPinRows(null)+
     "<p class='ad-note'>Your name, email and password are under Account. Your color is in Settings.</p>";
-  H.body.querySelector("[data-pin]").onclick=function(){ adPinView(H,"change",{key:null,name:adMe()}); };
+  adPinWire(H,null,adMe());
 }
 /* ADD / EDIT ONE PROFILE. SAVE in the header, like Account: CLOSE until
    something changes (a new profile starts on SAVE).
@@ -1636,8 +1655,7 @@ function adEdit(H,row,kindIn){
       "<p class='ad-cap'>Grade Level</p>"+
       chips("grade",AD_GRADES.map(function(g){ return [g,g]; }),f.grade,"Grade level","is-center")
     :"")+
-    (!isKid&&row?"<p class='ad-cap'>PIN</p><button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
-      (adHasPin(row.id)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>":"")+
+    (!isKid&&row?adPinRows(row.id):"")+
     "<p class='ad-msg'></p>"+
     (row?"<button class='ad-signout ad-del' type='button' data-del>"+(isKid?"Remove Student":"Remove Parent")+"</button>":"");
   var q=function(s){ return H.body.querySelector(s); };
@@ -1691,8 +1709,7 @@ function adEdit(H,row,kindIn){
   });
   var progRow=q("[data-prog]");
   if(progRow) progRow.onclick=function(){ adProgress(H,row); };
-  var pinRow=q("[data-pin]");
-  if(pinRow) pinRow.onclick=function(){ adPinView(H,"change",{key:row.id,name:row.name}); };
+  if(row&&!isKid) adPinWire(H,row.id,row.name);
   /* "" when left blank, the ISO date when whole, null when half filled in. */
   function birthday(){
     if(!isKid) return "";
@@ -1985,18 +2002,19 @@ function adPinView(H,mode,ctx){
      ctx.name = that parent's name, so the words say whose PIN it is. */
   var key=ctx.key||null,who=ctx.name||"your";
   var up=mode==="unlock"?adMain:adProfiles;
-  var steps=mode==="unlock"?["check"]:(mode==="change"&&adHasPin(key)?["old","new","again"]:["new","again"]);
+  /* off = Turn PIN Off: one step, the current PIN, then clear_pin(). */
+  var steps=mode==="unlock"?["check"]:mode==="off"?["old"]:(mode==="change"&&adHasPin(key)?["old","new","again"]:["new","again"]);
   var i=0,vals={};
   var WORDS={
     check:"Enter "+who+"'s PIN to open their profile.",
-    old:"Enter "+who+"'s current PIN.",
+    old:mode==="off"?"Enter "+who+"'s current PIN to turn it off.":"Enter "+who+"'s current PIN.",
     "new":mode==="first"?(ctx.forParent?"Set a 4-number PIN for "+who+". Students will need it to open "+who+"'s profile.":
       "Set a 4-number PIN for "+who+". "+(ctx.kid||"Your student")+" will need it to get back to your profile."):
       "Pick a new 4-number PIN for "+who+".",
     again:"Type the same PIN again."
   };
   function draw(note){
-    adFrame(H,mode==="unlock"?"Enter PIN":"Parent/Teacher PIN",up,"pin");
+    adFrame(H,mode==="unlock"?"Enter PIN":mode==="off"?"Turn PIN Off":"Parent/Teacher PIN",up,"pin");
     H.body.innerHTML="<p class='ad-empty ad-mid'>"+adEsc(WORDS[steps[i]])+"</p>"+
       "<div class='ad-pinbox'><span></span><span></span><span></span><span></span>"+
       "<input type='password' inputmode='numeric' pattern='[0-9]*' maxlength='4' autocomplete='off' aria-label='PIN'></div>"+
@@ -2022,6 +2040,16 @@ function adPinView(H,mode,ctx){
         }).catch(function(e){ inp.disabled=false; wrong(e.message); });
         return;
       }
+      if(mode==="off"){
+        /* false = wrong PIN; the server counted it toward the five-try lock. */
+        inp.disabled=true; msg.textContent="Turning it off…";
+        NSAccount.clearPin(v,key).then(function(ok){
+          inp.disabled=false;
+          if(ok===true){ if(adPins) delete adPins[key||"owner"]; nsWhoIcon(); adProfiles(H); }
+          else wrong("That PIN isn't right. Try again.");
+        }).catch(function(e){ inp.disabled=false; wrong(e.message); });
+        return;
+      }
       if(step==="again"&&v!==vals["new"]){ i=steps.indexOf("new"); vals={old:vals.old}; draw("Those didn't match. Start the new PIN again."); return; }
       vals[step]=v;
       if(i<steps.length-1){ i++; draw(); return; }
@@ -2034,10 +2062,23 @@ function adPinView(H,mode,ctx){
       });
     }
     paint(); inp.focus();
-    var fg=H.body.querySelector("[data-forgot]"); if(fg) fg.onclick=function(){ adForgotPin(H,ctx); };
+    var fg=H.body.querySelector("[data-forgot]"); if(fg) fg.onclick=function(){ adForgotPin(H,mode==="off"?{key:ctx.key,name:ctx.name,off:true}:ctx); };
     var sk=H.body.querySelector("[data-skip]"); if(sk) sk.onclick=function(){ adProfiles(H); };
   }
   draw();
+}
+/* 👁️ SHOW / HIDE PASSWORD. Paul, 2026-09-12: "it needs a show hidden password
+   icon and would be nice to hid and show it." Every password box in the panel
+   is drawn by adPw(), with the eye inside the box on the right. One click
+   handler for the whole page (below, at boot) flips whichever box it sits in,
+   the /account/ sign-in card included. The PIN pad is NOT a password box and
+   gets no eye: its four dots are the point. */
+var AD_EYE="<svg class='eye-on' viewBox='0 0 24 24' aria-hidden='true'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3'/></svg>"+
+  "<svg class='eye-off' viewBox='0 0 24 24' aria-hidden='true'><path d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24'/><path d='M1 1l22 22'/></svg>";
+/* where: "kv" beside a label in an .ad-kv row, "box" a full-width box. */
+function adPw(where,attrs){
+  return "<span class='pw-wrap is-"+where+"'><input type='password' "+attrs+">"+
+    "<button class='pw-eye' type='button' aria-label='Show password' aria-pressed='false'>"+AD_EYE+"</button></span>";
 }
 /* FORGOT PIN? The Netflix route: prove it is the parent with the account
    PASSWORD, then pick a new PIN. set_pin() accepts a new PIN without the old
@@ -2048,10 +2089,10 @@ function adForgotPin(H,ctx){
   var em=adUser&&adUser.email||"";
   /* The ACCOUNT password resets either parent's PIN: whoever holds the
      password holds the account (migration 014, set_pin). */
-  H.body.innerHTML="<p class='ad-empty ad-mid'>Sign in with the account password to pick a new PIN"+
+  H.body.innerHTML="<p class='ad-empty ad-mid'>Sign in with the account password to "+(ctx&&ctx.off?"turn off the PIN":"pick a new PIN")+
     (ctx&&ctx.name?" for "+adEsc(ctx.name):"")+".</p>"+
     "<div class='ad-kv'><span>Email</span><span>"+adEsc(em)+"</span></div>"+
-    "<label class='ad-kv'><span>Password</span><input class='ad-in' type='password' data-f='pw' autocomplete='current-password'></label>"+
+    "<label class='ad-kv'><span>Password</span>"+adPw("kv","class='ad-in' data-f='pw' autocomplete='current-password'")+"</label>"+
     "<p class='ad-msg'></p><button class='ad-link' type='button' data-go-pw>Continue</button>";
   var pw=H.body.querySelector("[data-f=pw]"),msg=H.body.querySelector(".ad-msg");
   function go(){
@@ -2059,6 +2100,10 @@ function adForgotPin(H,ctx){
     msg.textContent="Checking…";
     NSAccount.logIn(em,pw.value).then(function(){
       NSAccount.pickerShown(); nsWhoIcon();
+      /* From Turn PIN Off: the fresh password is enough, so it goes off now. */
+      if(ctx&&ctx.off) return NSAccount.clearPin(null,ctx.key||null).then(function(){
+        if(adPins) delete adPins[ctx.key||"owner"]; adProfiles(H);
+      });
       adPinView(H,"reset",ctx);
     }).catch(function(e){ msg.textContent=e.message||"That password isn't right."; });
   }
@@ -2393,10 +2438,14 @@ function adProfile(H){
     "<button class='ad-kv ad-go' type='button' data-open='pw'><span>Password</span><span class='ad-dim'>"+
       "&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;<i aria-hidden='true'>&rsaquo;</i></span></button>"+
     "<div class='ad-open hidden' data-box='pw'>"+
-      "<input class='ad-in ad-box' type='password' data-f='pw1' autocomplete='new-password' placeholder='New Password' aria-label='New password'>"+
-      "<input class='ad-in ad-box' type='password' data-f='pw2' autocomplete='new-password' placeholder='Re-type New Password' aria-label='Re-type new password'>"+
+      adPw("box","class='ad-in ad-box' data-f='pw1' autocomplete='new-password' placeholder='New Password' aria-label='New password'")+
+      adPw("box","class='ad-in ad-box' data-f='pw2' autocomplete='new-password' placeholder='Re-type New Password' aria-label='Re-type new password'")+
       "</div>"+
-    "<p class='ad-msg'></p>";
+    "<p class='ad-msg'></p>"+
+    /* 🗑️ Paul, 2026-09-12: "allow users to remove themselves from the
+       website." Last on the page and red, like Remove Student, and only a door:
+       the warning and the password are on the next screen. */
+    "<button class='ad-signout ad-del' type='button' data-delme>Delete Account</button>";
   var q=function(s){ return H.body.querySelector(s); };
   var msg=q(".ad-msg"),first=q("[data-f=first]"),lastIn=q("[data-f=last]"),
       em=q("[data-f=em]"),pw1=q("[data-f=pw1]"),pw2=q("[data-f=pw2]");
@@ -2409,7 +2458,11 @@ function adProfile(H){
       box.classList.toggle("hidden",!opening);
       row.classList.toggle("is-open",opening);
       if(opening){ var i=box.querySelector("input"); if(i) i.focus(); }
-      else box.querySelectorAll("input").forEach(function(i){ i.value=""; });
+      else {
+        box.querySelectorAll("input").forEach(function(i){ i.value=""; });
+        /* Closing hides the password again, eye and all. */
+        box.querySelectorAll(".pw-eye.is-on").forEach(function(b){ b.click(); });
+      }
     };
   });
   /* ONE SAVE, in the header: the name if it changed, and the new password if
@@ -2461,6 +2514,55 @@ function adProfile(H){
     i.addEventListener("input",dirty);
     i.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); if(H.save) H.save(); } });
   });
+  q("[data-delme]").onclick=function(){ adDeleteMe(H); };
+}
+/* 🗑️ DELETE ACCOUNT: ITS OWN WARNING SCREEN, like Remove Student, plus the
+   PASSWORD. The server (migration 018) refuses unless the login is a password
+   sign-in from the last ten minutes, so this signs in again with what was
+   typed and only then deletes. A phone left unlocked is not one tap from
+   wiping a family's progress.
+   Orders are kept, detached, and come back if the same email signs up again:
+   Paul chose that "in case they reactivate it". */
+function adDeleteMe(H){
+  adFrame(H,"Delete Account",function(){ adProfile(H); },"delme");
+  var em=adUser&&adUser.email||"";
+  var kids=(adKids||[]).filter(function(k){ return k.kind==="student"; }).length;
+  H.body.innerHTML="<div class='ad-warn'><b>This can&#39;t be undone.</b>"+
+    "<p>Deleting your account ends your sign-in and <strong>wipes every profile on it</strong>"+
+    (kids?", including "+kids+" student"+(kids===1?"":"s")+" and all of their progress, scores and points":", with all progress, scores and points")+
+    ", and every PIN.</p>"+
+    "<p>Your past orders are kept. Sign up again with "+adEsc(em||"the same email")+" and they come back.</p></div>"+
+    "<p class='ad-empty ad-mid'>Type your password to delete the account.</p>"+
+    "<label class='ad-kv'><span>Password</span>"+adPw("kv","class='ad-in' data-f='pw' autocomplete='current-password'")+"</label>"+
+    "<p class='ad-msg'></p>"+
+    "<button class='ad-danger' type='button' data-yes>Delete My Account</button>"+
+    "<button class='ad-link' type='button' data-no>Cancel</button>";
+  var pw=H.body.querySelector("[data-f=pw]"),msg=H.body.querySelector(".ad-msg"),yes=H.body.querySelector("[data-yes]");
+  H.body.querySelector("[data-no]").onclick=function(){ adProfile(H); };
+  function go(){
+    if(!pw.value){ msg.textContent="Type your password."; pw.focus(); return; }
+    yes.disabled=true; yes.textContent="Deleting…"; msg.textContent="";
+    NSAccount.logIn(em,pw.value).then(function(){
+      NSAccount.pickerShown();
+      return NSAccount.deleteAccount();
+    }).then(function(){
+      adUser=null; adKids=null; adPins=null; adOrders=null;
+      /* No way back from here: the Account screen behind it has no account. */
+      H.up=null; H.back.hidden=true;
+      H.body.innerHTML="<p class='ad-empty ad-mid'><b>Your account is deleted.</b></p>"+
+        "<p class='ad-note ad-mid'>Thank you for learning with us. Everything on this device is cleared too.</p>"+
+        "<button class='ad-link' type='button' data-done>Done</button>";
+      H.body.querySelector("[data-done]").onclick=function(){ location.replace("/"); };
+      if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
+      nsWhoIcon();
+    }).catch(function(e){
+      yes.disabled=false; yes.textContent="Delete My Account";
+      msg.textContent=e.message||"That did not work. Try again.";
+    });
+  }
+  yes.onclick=go;
+  pw.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); go(); } });
+  pw.focus();
 }
 /* Repaint whichever hosts are showing something the new data changes. A host
    the reader has moved into (an order, their profile) is left where it is. */
@@ -2598,6 +2700,20 @@ if(adrawer&&acctLink){
 /* A sign-in or sign-out anywhere (ns-account.js fires ns:auth) redraws the
    icon at once, so a signed-out page never keeps showing someone's box. */
 document.addEventListener("ns:auth",function(){ nsWhoIcon(); });
+/* 👁️ The eye in every password box (adPw, and the /account/ card). pointerdown
+   is held so the tap does not blur the box and drop a phone's keyboard. */
+document.addEventListener("pointerdown",function(e){
+  if(e.target&&e.target.closest&&e.target.closest(".pw-eye")) e.preventDefault();
+});
+document.addEventListener("click",function(e){
+  var b=e.target&&e.target.closest?e.target.closest(".pw-eye"):null; if(!b) return;
+  var i=b.parentNode.querySelector("input"); if(!i) return;
+  var show=i.type==="password";
+  i.type=show?"text":"password";
+  b.classList.toggle("is-on",show);
+  b.setAttribute("aria-pressed",show?"true":"false");
+  b.setAttribute("aria-label",show?"Hide password":"Show password");
+});
 /* On every page: the picker after a fresh sign-in, and the nav icon for a
    student already on this device (it needs the list to know their colour). */
 if(window.NSAccount&&NSAccount.isSignedIn()){

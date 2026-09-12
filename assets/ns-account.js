@@ -159,12 +159,22 @@
         data: { first_name: String(first || "").trim(), last_name: String(last || "").trim() } },
       "Could not make the account.")
       .then(function (d) {
-        /* With email confirmation on there is no session yet, only a user.
-           ⚠️ Supabase answers an EXISTING email the same way on purpose, so a
-           stranger cannot test which emails have accounts. The page says the
-           same thing either way: check your email. */
-        if (d && d.access_token) setSession(d);
-        return !!(d && d.access_token);
+        /* Three answers, as a word the page switches on:
+             "in"      a session came back (confirmation off): signed in now
+             "confirm" a new user, no session yet: check your email
+             "exists"  the email already has an account
+           🚨 2026-09-12, Paul on his phone: "i made my account ... when i tried
+           my password after i created it, it didnt seem to work and i had to
+           reset my password." His email already had an account from the
+           email-link days. Supabase answers an EXISTING email with a fake
+           success on purpose and SETS NO PASSWORD, so the page said "check your
+           email" and the password he typed was thrown away. The tell is an
+           EMPTY identities list. Every store says "that email already has an
+           account", so this one does too. */
+        if (d && d.access_token) { setSession(d); return "in"; }
+        var u = (d && d.user) || d || {};
+        if (Array.isArray(u.identities) && u.identities.length === 0) return "exists";
+        return "confirm";
       });
   }
   /* Resend the confirm-your-email link. Paul, 2026-09-10: "she also has an
@@ -300,6 +310,7 @@
     if (/profile limit: 2 parents/.test(m)) return "An account can have up to 2 parent profiles.";
     if (/birthday is in the future|students_birthday_ok/.test(m)) return "Check the birthday. It can't be in the future.";
     if (/students_about_ok/.test(m)) return "That About Me is too long. Shorten an answer and try again.";
+    if (/sign in again to delete/.test(m)) return "Type your password again, then press Delete.";
     return "";
   }
   /* 2026-09-11, migration 014: a profile row is a STUDENT or the SECOND PARENT
@@ -383,10 +394,38 @@
     return rest("POST", "/rpc/set_pin", { new_pin: String(pin || ""), old_pin: old == null ? null : String(old),
       profile: profile || null }, "Could not save the PIN.");
   }
+  /* TURN PIN OFF (migration 018). true = off; false = wrong PIN (the server
+     counted the miss). With a fresh password sign-in, old may be null. */
+  function clearPin(old, profile) {
+    return rest("POST", "/rpc/clear_pin", { old_pin: old == null ? null : String(old), profile: profile || null },
+      "Could not turn the PIN off.");
+  }
 
   function signOut() {
     session = null; drop(SESSION_KEY); drop(WHO_KEY); drop(PICK_KEY); drop("ns:accent"); drop("ns:meicon");
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
+  }
+
+  /* 🗑️ DELETE MY ACCOUNT (2026-09-12, migration 018). Paul: "allow users to
+     remove themselves from the website." The server deletes the sign-in, the
+     profiles, the PINs and all progress; orders are KEPT, detached, and come
+     back if the same email signs up again (Paul: "in case they reactivate it").
+     🚨 The server refuses unless the login is a FRESH password sign-in, so the
+     panel calls logIn() with the typed password first, then this.
+     This device forgets the family too: every lesson mark and stash. */
+  function deleteAccount() {
+    return rest("POST", "/rpc/delete_my_account", {}, "Could not delete the account.").then(function () {
+      try {
+        var gone = [];
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i) || "";
+          if (/^ns:(done|prog|stash|pushed):/.test(k)) gone.push(k);
+        }
+        gone.forEach(function (k) { localStorage.removeItem(k); });
+      } catch (e) {}
+      signOut();
+      return true;
+    });
   }
 
   function getUser() {
@@ -654,11 +693,11 @@
     owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
     logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, saveMyTheme: saveMyTheme, saveMySettings: saveMySettings, changeEmail: changeEmail,
     isRecovery: function () { return recovery; },
-    signOut: signOut, getUser: getUser,
+    signOut: signOut, getUser: getUser, deleteAccount: deleteAccount,
     who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,
     students: students, addStudent: addStudent, updateStudent: updateStudent, deleteStudent: deleteStudent, saveOwn: saveOwn,
     progressRows: progressRows, upsertProgress: upsertProgress, deleteProgress: deleteProgress,
-    pinMap: pinMap, checkPin: checkPin, setPin: setPin,
+    pinMap: pinMap, checkPin: checkPin, setPin: setPin, clearPin: clearPin,
     isSignedIn: function () { return !!session; },
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
     cartThumb: cartThumb, cartHref: cartHref,
