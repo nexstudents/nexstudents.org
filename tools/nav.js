@@ -1781,7 +1781,7 @@ function adSettings(H){
      "Light or Dark", not "Theme": Theme Color is a different setting. */
   H.body.innerHTML=
     "<p class='ad-cap'>Reading Voice</p>"+
-    "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use this device&#39;s own voice.</p>"+
+    "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use your device&#39;s default voice.</p>"+
     chips("voice",AD_VOICE,"Reading voice")+
     "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
     "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
