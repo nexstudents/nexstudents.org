@@ -3,15 +3,31 @@
 "use strict";
 
 
-document.getElementById("turnnote").textContent += SPEC.allowRemainder
-  ? " Some of these leave a remainder. Write what's left over in the box up top."
-  : " None of these have a remainder.";
+/* 🚨 The player speaks SENTENCES; the demo draws ROWS. Both come from CAPS,
+   so the narration and the drawing cannot fall out of step - the same
+   arrangement the long division bracket uses.
+
+   🚨 TWO PARTS, NOT ONE. Paul, 2026-08-30: "i told you that you need to
+   seperate the question part as a seperate paragraph." The first version
+   handed the player one flat list, so the four lines about the questions ran
+   straight on from the worked example as more of the same paragraph - and I
+   had then bolted a second copy of them underneath as their own block, so the
+   same text appeared twice on the page. Splitting PARTS is the fix: the
+   player renders the second part under its own heading and reads straight
+   into it, and there is only one copy.
+   ⚠️ No empty strings in `s` - a blank is a paragraph break to the player and
+   must never enter the sentence list, or every later clip plays one late. */
+var TODO_FROM = CAPS.findIndex(function(c){ return c.todo; });
+if (TODO_FROM < 0) TODO_FROM = CAPS.length;
+var PARTS = [
+  { title: "", s: CAPS.slice(0, TODO_FROM).map(function(c){ return c.text; }) },
+  { title: "What The Questions Ask", s: CAPS.slice(TODO_FROM).map(function(c){ return c.text; }) },
+];
 
 /* ── colours ───────────────────────────────────────────────────────────────
-   The same five palettes the history lessons use, spliced in from
-   lesson-template.html at build time so there is one source of truth, and
-   stored under the same ns:theme key so a choice made in one lesson is
-   already made in the other.
+   The same five palettes every other lesson type uses, spliced in from
+   lesson-template.html at build time, stored under the same ns:theme key so a
+   colour picked in a history lesson is already picked here.
    ------------------------------------------------------------------------ */
 function load(k, d){ try { var v = localStorage.getItem("ns:" + k); return v === null ? d : v; } catch (e){ return d; } }
 function store(k, v){ try { localStorage.setItem("ns:" + k, v); } catch (e){} }
@@ -108,7 +124,8 @@ var THEMES = {
 };
 
 /* ns.css names its variables differently from the history template, so the
-   same palette is mapped onto the names this page actually uses. */
+   palette is mapped onto the names this page actually uses. Same map as
+   math/template.html. */
 var VAR_MAP = {
   ground:"--bg", surface:"--panel", s2:"--boxfill", ink:"--fg",
   inkSoft:"--dim", inkFaint:"--boxline", rule:"--line",
@@ -131,10 +148,9 @@ function applyTheme(){
     b.setAttribute("aria-pressed", b.getAttribute("data-t") === themeKey ? "true" : "false");
   });
 }
-/* 🚨 MATHS DOES NOT BUILD SWATCHES. The player builds them. This page had its
-   own row as well, which is why ten colour dots appeared instead of five once
-   the shared player arrived. What maths still owns is the MAPPING - it uses
-   ns.css variable names - so it hands that to the player as a hook. */
+/* 🚨 THIS PAGE DOES NOT BUILD SWATCHES. The player builds them. What this
+   page owns is the MAPPING, handed to the player as a hook - same split as
+   maths, and the reason maths once rendered ten colour dots instead of five. */
 window.nsOnTheme = function(k){ themeKey = k; applyTheme(); };
 applyTheme();
 if (window.matchMedia){
@@ -144,217 +160,9 @@ if (window.matchMedia){
 new MutationObserver(applyTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
 document.body.style.background = "var(--bg)";
 
-/* ── where the problems come from ──────────────────────────────────────────
-   Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
-   doesn't help improve." The set is rolled from SPEC, seeded by the date, so
-   it holds still all day and changes tomorrow. New problems reseeds by hand.
-   ------------------------------------------------------------------------ */
-function rng(seed){                       /* mulberry32, small and repeatable */
-  var a = seed >>> 0;
-  return function(){
-    a = (a + 0x6D2B79F5) >>> 0;
-    var t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-function seedFromString(s){
-  var h = 2166136261;
-  for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h >>> 0;
-}
-function today(){
-  var d = new Date();
-  return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-}
-
-/* One problem. Pick the ANSWER first, then multiply back to get the dividend.
-   That keeps the quotient filling the top row exactly, which is the only case
-   the bracket layout is built for - remainder or not. SPEC.allowRemainder
-   adds a nonzero leftover on top of that same dividend. */
-function makeProblem(rand){
-  for (var tries = 0; tries < 500; tries++){
-    var divisor = SPEC.divisors[Math.floor(rand() * SPEC.divisors.length)];
-    var lo = Math.pow(10, SPEC.digits - 1), hi = Math.pow(10, SPEC.digits) - 1;
-    var quotient = lo + Math.floor(rand() * (hi - lo + 1));
-    if (!SPEC.allowZeroDigit && String(quotient).indexOf("0") >= 0) continue;
-    var remainder = SPEC.allowRemainder ? 1 + Math.floor(rand() * (divisor - 1)) : 0;
-    var dividend = quotient * divisor + remainder;
-    if (String(dividend).length !== SPEC.digits) continue;   /* must fill the top row */
-    if (String(Math.floor(dividend / divisor)).length !== SPEC.digits) continue;
-    return { dividend: dividend, divisor: divisor };
-  }
-  return SPEC.allowRemainder ? { dividend: 587, divisor: 3 } : { dividend: 852, divisor: 4 };
-}
-function makeSet(seedStr){
-  var rand = rng(seedFromString(LESSON_ID + "|" + seedStr));
-  var out = [], seen = {};
-  var guard = 0;
-  while (out.length < SPEC.count && guard++ < 2000){
-    var p = makeProblem(rand);
-    var k = p.dividend + "/" + p.divisor;
-    if (seen[k]) continue;                  /* never the same one twice on a page */
-    seen[k] = true;
-    out.push(p);
-  }
-  return out;
-}
-
-/* ── the arithmetic, one entry per step ────────────────────────────────── */
-function solve(dividend, divisor){
-  var d = String(dividend).split("").map(Number), r = 0, steps = [];
-  for (var i = 0; i < d.length; i++){
-    var cur = r * 10 + d[i];
-    var q = Math.floor(cur / divisor);
-    var prod = q * divisor;
-    var diff = cur - prod;
-    steps.push({ i: i, cur: cur, q: q, prod: prod, diff: diff, bring: d[i + 1] });
-    r = diff;
-  }
-  return { digits: d, divisor: divisor, dividend: dividend, steps: steps,
-           quotient: steps.map(function(s){ return s.q; }).join(""), remainder: r };
-}
-
-/* Column 0 holds the divisor, so dividend digit i sits in column i + 1.
-   withRem adds two more columns at the end of the TOP row only - "R" then
-   the remainder digit - so the final answer reads "195 R 2" next to the
-   quotient once it is known. Off (the default) leaves the no-remainder
-   lesson's grid exactly as it was. */
-function build(host, S, withRem){
-  host.innerHTML = "";
-  var n = S.digits.length, remCols = withRem ? 2 : 0;
-  var cols = n + 2 + remCols, rows = 2 + S.steps.length * 2;
-  host.style.gridTemplateColumns = "repeat(" + cols + ", 2.1em)";
-  var cells = {};
-  for (var r = 0; r < rows; r++){
-    for (var c = 0; c < cols; c++){
-      var el = document.createElement("div");
-      el.className = "cell";
-      host.appendChild(el);
-      cells[r + ":" + c] = el;
-    }
-  }
-  var at = function(r, c){ return cells[r + ":" + c]; };
-  at(1, 0).textContent = S.divisor;
-  for (var i = 0; i < n; i++){
-    var cell = at(1, i + 1);
-    cell.textContent = S.digits[i];
-    cell.classList.add(i === 0 ? "brk" : "bar");
-  }
-  var remCell = null;
-  if (withRem){
-    at(0, n + 1).textContent = "R";
-    at(0, n + 1).classList.add("remlabel");
-    remCell = at(0, n + 2);
-  }
-  return { at: at, cols: cols, rows: rows, remCell: remCell };
-}
-
-/* Right-align a written number so its last digit lands under this step's digit. */
-function slots(g, row, value, step, opts){
-  var s = String(value), out = [];
-  var end = step.i + 1, start = end - s.length + 1;
-  for (var k = 0; k < s.length; k++){
-    var c = g.at(row, start + k);
-    out.push({ cell: c, want: Number(s[k]) });
-    if (opts && opts.under) c.classList.add("under");
-  }
-  if (opts && opts.minus && start - 1 >= 0) g.at(row, start - 1).textContent = "−";
-  return out;
-}
-
-/* ── what gets said, and what gets read on screen ─────────────────────── */
-function captions(S){
-  var out = [{ text: "We're dividing " + S.dividend + " by " + S.divisor + ". The " + S.divisor +
-                     " goes outside the bracket, and " + S.dividend + " sits underneath it." }];
-  S.steps.forEach(function(st, k){
-    out.push({ step: k, phase: "divide",
-      text: "Step " + (k + 1) + ". Divide. How many " + S.divisor + "s fit into " + st.cur +
-            "? " + st.q + ". Write that " + st.q + " on top." });
-    out.push({ step: k, phase: "multiply",
-      text: "Multiply. " + st.q + " times " + S.divisor + " is " + st.prod +
-            ". Write it underneath." });
-    out.push({ step: k, phase: "subtract",
-      text: "Subtract. " + st.cur + " minus " + st.prod + " is " + st.diff + "." });
-    if (st.bring !== undefined) out.push({ step: k, phase: "bring",
-      text: "Bring down the next digit, the " + st.bring + ". Now you've got " + (st.diff * 10 + st.bring) + "." });
-  });
-  if (S.remainder > 0){
-    out.push({ revealRemainder: true,
-               text: "Nothing left to bring down, and we've still got " + S.remainder +
-                     " sitting there after that last subtraction. That " + S.remainder + " is the remainder." });
-    out.push({ text: S.remainder + " is smaller than " + S.divisor + ", and that's how you know you're done. " +
-                     "If it were " + S.divisor + " or bigger, another " + S.divisor + " would still fit in." });
-    out.push({ text: "Read the top row: " + S.quotient + ", with " + S.remainder + " left over. So " +
-                     S.dividend + " divided by " + S.divisor + " is " + S.quotient + " with a remainder of " + S.remainder + "." });
-  } else {
-    out.push({ text: "Read the top row: " + S.quotient + ". So " + S.dividend + " divided by " +
-                     S.divisor + " is " + S.quotient + "." });
-  }
-  return out;
-}
-
-/* ── the worked example ───────────────────────────────────────────────── */
-var S = solve(DEMO.dividend, DEMO.divisor);
-/* ⚠️ The captions come from the BUILD now (tools/math-captions.js), not from
-   captions() running here. They have to be identical to the ones the audio was
-   generated from, and the only way to guarantee that is for both to come from
-   one place. The local captions() is still used as a fallback if the build did
-   not supply them. */
-var CAPS = (typeof BAKED_CAPS !== "undefined" && BAKED_CAPS && BAKED_CAPS.length)
-  ? BAKED_CAPS : captions(S);
-var demoHost = document.getElementById("demo");
-var posEl = document.getElementById("stepPos");
-var at = 0, playing = false, gen = 0;
-
 var synth = window.speechSynthesis;
 var supported = !!synth && typeof window.SpeechSynthesisUtterance === "function";
 if (!supported) document.getElementById("nospeech").classList.add("show");
-
-function write(g, row, value, step, opts){
-  slots(g, row, value, step, opts).forEach(function(s){ s.cell.textContent = s.want; });
-}
-
-function paintDemo(upto){
-  var g = build(demoHost, S, SPEC.allowRemainder);
-  for (var k = 0; k <= upto && k < CAPS.length; k++){
-    var c = CAPS[k];
-    if (c.revealRemainder && g.remCell){
-      g.remCell.textContent = S.remainder;
-      g.remCell.classList.add("remval");
-    }
-    if (c.step === undefined) continue;
-    var st = S.steps[c.step];
-    if (c.phase === "divide") g.at(0, st.i + 1).textContent = st.q;
-    if (c.phase === "multiply") write(g, 2 + c.step * 2, st.prod, st, { minus: true, under: true });
-    if (c.phase === "subtract") write(g, 3 + c.step * 2, st.diff, st, {});
-    if (c.phase === "bring"){
-      var cell = g.at(3 + c.step * 2, st.i + 2);
-      cell.textContent = st.bring;
-      if (k === upto) cell.classList.add("drop");
-    }
-  }
-  /* ⚠️ The position line belongs to the PLAYER now. Math used to own a
-     #stepPos of its own and write "Step 3 of 13" into it; with the shared
-     markup that element is gone and the variable resolved to the players own
-     #pos instead, so maths quietly overwrote "Sentence 3 of 13" on every
-     repaint. The player counts; maths just draws the grid. */
-}
-
-/* ── THE READING PLAYER ────────────────────────────────────────────────────
-   🚨 THIS IS THE HISTORY PLAYER, VERBATIM. Paul, 2026-08-29: "i want the exact
-   system from history into math. i like those markers you can select and jump
-   around we can use them for math too."
-
-   Math used to run its own narrator. It is gone. The captions are handed to
-   the shared engine as sentences, so maths gets the identical thing history
-   has: back and forward, the scrub bar you can click to jump to any step, the
-   same voices, the same key panel, the resume position and the keyboard.
-
-   The grid follows the reader through window.nsOnSentence - one hook in the
-   one engine - so the worked example and the narration can never fall out of
-   step with each other the way two separate players would. */
-var PARTS = [{ title: "", s: CAPS.map(function(c){ return c.text; }) }];
 
 /* Defaults for hosts that do not define these. See voice-player.js. */
 if (typeof ART === 'undefined')      { var ART = {}; }
@@ -522,8 +330,15 @@ function applyTheme(){
   }
   /* The profile's Reading Highlight, if one is picked, over the palette's gold.
      Read fresh each time so a change in the panel lands on the next repaint. */
-  var hl = HIGHLIGHTS[load("highlight", "")];
-  if (hl){
+  /* 🚨 GUARDED, AND IT HAS TO BE. On a maths, integers or English page this
+     function is spliced in by voice-player.js AFTER that page's own code, which
+     calls applyTheme() before these two vars are assigned (a var is hoisted
+     but empty until its line runs). Unguarded, HIGHLIGHTS[...] threw and the
+     whole lesson engine died: no problems drawn at all. Found 2026-09-11 by
+     actually doing a maths lesson, which Paul asked for. The later calls run
+     after the vars exist, so the highlight still lands. */
+  var hl = (typeof HIGHLIGHTS === "object" && HIGHLIGHTS) ? HIGHLIGHTS[load("highlight", "")] : null;
+  if (hl && typeof HL_ALPHA === "object" && HL_ALPHA){
     var al = HL_ALPHA[currentMode()];
     root.style.setProperty("--word", "rgba(" + hl.rgb + "," + al.word + ")");
     root.style.setProperty("--band", "rgba(" + hl.rgb + "," + al.band + ")");
@@ -2767,264 +2582,531 @@ scrub.addEventListener("keydown", function(e){
 
 
 
-/* Draw the division grid up to whichever step is being read. */
+/* ── the walkthrough ───────────────────────────────────────────────────────
+   paintDemo(i) draws the state at sentence i: which example is on screen, how
+   many of its rows have been revealed, and whether the number line has drawn
+   its jump. `ex`, `show` and `line` on each caption are what carry that, so
+   they are structure rather than decoration.
+   ------------------------------------------------------------------------ */
+var workEl = document.getElementById("work");
+var nlEl   = document.getElementById("nlwrap");
+
+function nlSvg(S, ring){
+  /* Range is derived from the numbers in play, padded so the jump is never
+     flush against an edge. */
+  var lo = Math.min(S.start, S.ans, 0), hi = Math.max(S.start, S.ans, 0);
+  var padN = Math.max(1, Math.round((hi - lo) * 0.18));
+  lo -= padN; hi += padN;
+  var W = 640, H = 96, pad = 26, span = hi - lo || 1;
+  function x(v){ return pad + ((v - lo) / span) * (W - pad * 2); }
+  var axisY = 62, out = [];
+  /* One tick per unit while that stays legible, otherwise only the numbers
+     that matter. A 120-wide range drawn per unit is a grey smear. */
+  var stepN = span > 40 ? Math.ceil(span / 20) : 1;
+  for (var v = Math.ceil(lo); v <= hi; v++){
+    var isZero = v === 0, keyN = (v === S.start || v === S.ans);
+    if (!isZero && !keyN && (v % stepN)) continue;
+    out.push('<line x1="' + x(v).toFixed(1) + '" y1="' + (axisY - (isZero ? 9 : 5)) +
+      '" x2="' + x(v).toFixed(1) + '" y2="' + (axisY + (isZero ? 9 : 5)) +
+      '" stroke="currentColor" stroke-width="' + (isZero ? 2 : 1) + '"/>');
+    if (isZero || keyN)
+      out.push('<text x="' + x(v).toFixed(1) + '" y="' + (axisY + 26) +
+        '" text-anchor="middle" font-size="12" fill="currentColor">' + v + "</text>");
+  }
+  /* Circles round the values being compared, so "further from zero" is a
+     thing you can SEE rather than a claim. Paul, 2026-08-30: "perhaps put a
+     circle around the -9 and the put one around 0 to show it in the walk
+     through as it is speaking." */
+  var rings = (ring || []).map(function(v){
+    return '<circle cx="' + x(v).toFixed(1) + '" cy="' + axisY + '" r="13" fill="none" ' +
+      'stroke="var(--a)" stroke-width="2" stroke-dasharray="3 3"/>';
+  }).join("");
+  /* The span being compared, drawn under the axis between the two circled
+     values, so the distance itself is visible. */
+  if ((ring || []).length === 2){
+    var rA = x(ring[0]), rB = x(ring[1]);
+    rings += '<line x1="' + Math.min(rA, rB).toFixed(1) + '" y1="' + (axisY + 34) +
+      '" x2="' + Math.max(rA, rB).toFixed(1) + '" y2="' + (axisY + 34) +
+      '" stroke="var(--a)" stroke-width="1.5" stroke-dasharray="2 3"/>';
+  }
+
+  var x1 = x(S.start), x2 = x(S.ans);
+  return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="number line from ' +
+    S.start + " to " + S.ans + '">' +
+    '<defs><marker id="nlar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" ' +
+      'markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--a)"/></marker></defs>' +
+    '<line x1="' + pad + '" y1="' + axisY + '" x2="' + (W - pad) + '" y2="' + axisY +
+      '" stroke="currentColor" stroke-width="1.5"/>' + out.join("") + rings +
+    '<path d="M ' + x1.toFixed(1) + " 30 L " + x2.toFixed(1) + ' 30" stroke="var(--a)" ' +
+      'stroke-width="2.5" fill="none" marker-end="url(#nlar)"/>' +
+    '<circle cx="' + x1.toFixed(1) + '" cy="' + axisY + '" r="4.5" fill="var(--a)"/>' +
+    '<text x="' + ((x1 + x2) / 2).toFixed(1) + '" y="20" text-anchor="middle" font-size="12.5" ' +
+      'fill="var(--a)">' + (S.move >= 0 ? "+" : "") + S.move + "</text></svg>";
+}
+
+/* 🚨 THE ROWS ARE BUILT ONCE PER EXAMPLE AND THEN ONLY TOGGLED.
+   The first version rebuilt every row on every paint and added the reveal
+   class inside requestAnimationFrame. That was wrong twice over: a rebuilt
+   element starts at its final style, so the fade could never actually run,
+   and rAF does not fire in a BACKGROUND TAB - a student who switched away and
+   came back found the walkthrough completely blank. Building once and
+   toggling a class fixes both, and needs no rAF at all. */
+var curEx = -1, rowEls = [];
+
+function buildRows(S){
+  workEl.innerHTML = "";
+  rowEls = S.rows.map(function(html, r){
+    var d = document.createElement("div");
+    d.className = "row" + (r === 1 && S.kind !== "subtract" ? " note" : "") +
+                  (r === S.rows.length - 1 ? " ans" : "");
+    /* The rows carry their own markup - the minus signs are wrapped in spans
+       by integer-captions.js so they can be highlighted. Generated here, not
+       user content, so innerHTML is safe. */
+    d.innerHTML = html;
+    workEl.appendChild(d);
+    return d;
+  });
+}
+
+function paintDemo(upto){
+  /* Walk forward to the latest caption belonging to an example. The closing
+     instructions carry no `ex`, so the last worked example stays on screen
+     behind the questions block. */
+  var ex = -1, show = 0, line = false, ring = null, hi = "";
+  for (var k = 0; k <= upto && k < CAPS.length; k++){
+    var c = CAPS[k];
+    if (c.ex === undefined) continue;
+    if (c.ex !== ex){ ex = c.ex; show = 0; line = false; ring = null; }
+    show = Math.max(show, c.show || 0);
+    if (c.line) line = true;
+    if (c.ring) ring = c.ring;
+    /* The highlight belongs to the sentence being read, not to everything
+       read so far, so it is taken from the LAST caption rather than merged. */
+    hi = (k === upto && c.hi) ? c.hi : (k === upto ? "" : hi);
+  }
+  if (ex < 0){ ex = 0; show = 0; line = false; }
+
+  var S = DEMO[ex];
+  if (ex !== curEx){ curEx = ex; buildRows(S); }
+  rowEls.forEach(function(d, r){ d.classList.toggle("on", r < show); });
+  workEl.className = "work" + (hi ? " hi-" + hi : "");
+
+  var key = (line ? "1" : "0") + "|" + ex + "|" + (ring ? ring.join(",") : "");
+  if (nlEl.getAttribute("data-key") !== key){
+    nlEl.setAttribute("data-key", key);
+    nlEl.innerHTML = line ? nlSvg(S, ring) : "";
+  }
+}
+
+/* One hook, one engine: the demo follows the reader. */
 window.nsOnSentence = function(i){ paintDemo(i); };
 paintDemo(0);
 
-/* The legend's four steps say nothing about the leftover number sitting at
-   the bottom of a remainder problem. Add a fifth only when this lesson's own
-   demo actually has one, so the no-remainder lesson's legend is unchanged. */
-if (S.remainder > 0){
-  var legendEl = document.querySelector(".legend");
-  if (legendEl){
-    var remSpan = document.createElement("span");
-    remSpan.innerHTML = "<b>Remainder</b> what's left over, always smaller than the divisor";
-    legendEl.appendChild(remSpan);
-  }
+/* ── where the problems come from ──────────────────────────────────────────
+   Not a list. Paul, 2026-08-26: "retesting yourself with the same questions
+   doesn't help improve." Rolled from SPEC and seeded by the date, so the set
+   holds still all day and changes tomorrow. New Problems reseeds by hand.
+   ------------------------------------------------------------------------ */
+function rng(seed){                       /* mulberry32, small and repeatable */
+  var a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function seedFromString(s){
+  var h = 2166136261;
+  for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function today(){
+  var d = new Date();
+  return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
 }
 
-/* ── the problems he fills in ─────────────────────────────────────────── */
+var SIGNS = { pp:[1,1], nn:[-1,-1], pn:[1,-1], np:[-1,1] };
+
+/* An answer of exactly 0 is a real case but a poor practice item: zero has no
+   sign, so it hides the exact mistake this page is trying to catch. Skipped
+   here and in build-integers.js by the same rule. */
+/* 🚨 EASY FIRST, AND IN THAT ORDER.
+   Paul, 2026-08-30: "you are doing double digit questions and it might be
+   easier to do single digit at first. spectrum does this", then the sharper
+   version - "your wlk through was only single digits so why would you make
+   the questions not the same?" He was right: the walkthrough demonstrates
+   -4 + (-9) and the first version then asked 41 + (-40). The first tier now
+   matches the walkthrough exactly, and the tiers are dealt IN ORDER so the
+   page gets harder as it goes rather than at random. */
+function magsFor(tier, side){
+  var round = side === "a" ? tier.aRound : tier.bRound;
+  if (round) return round.slice();
+  var max = side === "a" ? tier.aMax : tier.bMax, out = [];
+  for (var i = 1; i <= max; i++) out.push(i);
+  return out;
+}
+
+function makeProblem(rand, key, tier){
+  var s = SIGNS[key];
+  var As = magsFor(tier, "a"), Bs = magsFor(tier, "b");
+  for (var tries = 0; tries < 400; tries++){
+    var a = As[Math.floor(rand() * As.length)] * s[0];
+    var b = Bs[Math.floor(rand() * Bs.length)] * s[1];
+    var ans = SPEC.kind === "add" ? a + b : a - b;
+    if (ans === 0) continue;
+    return { a:a, b:b, ans:ans, mix:key, span:Math.max(Math.abs(a), Math.abs(ans)) };
+  }
+  return SPEC.kind === "add" ? { a:-9, b:4, ans:-5, mix:"np", span:9 }
+                             : { a:5, b:-3, ans:8, mix:"pn", span:8 };
+}
+
+/* 🚨 THE SIGN MIX IS DEALT, NOT DRAWN.
+   Picking each problem's sign combination at random looked fine and was not:
+   a real generated set came out with seven negative+positive and ONE
+   positive+negative, so a student could work the whole page and barely meet
+   one of the four cases the lesson teaches. Drawing 15 times from 4 buckets
+   clusters badly far more often than it feels like it should.
+   So the combinations are dealt round-robin first and then shuffled, which
+   makes the balance structural instead of probabilistic. Same reasoning as
+   the Part B guards in build-english.js, which refuse a set where one kind is
+   over 70% or three run together. */
+function mixOrder(rand){
+  var order = [];
+  for (var i = 0; i < SPEC.count; i++) order.push(SPEC.mix[i % SPEC.mix.length]);
+  /* Fisher-Yates on the seeded rng, so the deal is even but the sequence is
+     not the same four repeating down the page. */
+  for (var j = order.length - 1; j > 0; j--){
+    var k = Math.floor(rand() * (j + 1));
+    var t = order[j]; order[j] = order[k]; order[k] = t;
+  }
+  /* A shuffle can still leave a run of three the same, which reads as a
+     pattern and lets a student coast. Break any run by swapping the offender
+     with the next item that differs from its new neighbours. */
+  for (var m = 2; m < order.length; m++){
+    if (order[m] !== order[m - 1] || order[m] !== order[m - 2]) continue;
+    for (var n = m + 1; n < order.length; n++){
+      if (order[n] === order[m]) continue;
+      var swap = order[n]; order[n] = order[m]; order[m] = swap;
+      break;
+    }
+  }
+  return order;
+}
+
+function makeSet(seedStr){
+  var rand = rng(seedFromString(LESSON_ID + "|" + seedStr));
+  var order = mixOrder(rand);
+  /* One tier per slot, dealt in order: the eight single-digit ones first,
+     then the round tens, then the few harder. The SIGNS are shuffled within
+     that, so the page gets harder without becoming predictable. */
+  var tierOf = [];
+  SPEC.tiers.forEach(function(t){
+    for (var i = 0; i < t.n; i++) tierOf.push(t);
+  });
+  var out = [], seen = {};
+  for (var i = 0; i < order.length && i < tierOf.length; i++){
+    var p = null;
+    for (var tries = 0; tries < 80; tries++){
+      var c = makeProblem(rand, order[i], tierOf[i]);
+      var k = c.a + "|" + c.b;
+      if (seen[k]) continue;              /* never the same one twice on a page */
+      seen[k] = true; p = c; break;
+    }
+    if (p) out.push(p);
+  }
+  return out;
+}
+
+/* A negative number after an operator wears brackets, the way a workbook
+   writes it. Without them "8 + -3" reads as two operators in a row. */
+function term(n){ return n < 0 ? "(" + n + ")" : String(n); }
+
+/* ── the problems ──────────────────────────────────────────────────────── */
 var host = document.getElementById("problems");
-var solved = 0;
-var PROBLEMS = [];
-
-/* Two modes, the same bracket.
-   PRACTICE catches a wrong digit at the digit, which is how you build the
-   habit. TEST lets every wrong digit stand and marks the paper at the end,
-   which is how you find out you never really had it. Paul, 2026-08-26. */
+var solved = 0, PROBLEMS = [], BOXES = [];
 var MODE = "practice";
-var BOXES = [];                       /* every input on the page, in answer order */
 
-/* Test mode moves the cursor along for him but never judges the digit. Paul,
-   2026-08-26: "practice should lead you through all the boxes while test
-   doesn't lead you." Leading here means the cursor, not the answer. */
-function stepTo(from, dir){
-  var i = -1;
-  for (var k = 0; k < BOXES.length; k++){ if (BOXES[k].el === from){ i = k; break; } }
-  if (i < 0) return;
-  var next = BOXES[i + (dir || 1)];
-  if (!next) return;
-  next.el.focus();
-  if (next.el.parentElement.scrollIntoView) {
-    next.el.parentElement.scrollIntoView({ block: "center", behavior: "smooth" });
-  }
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt !== undefined) e.textContent = txt;
+  return e;
 }
 
-function renderSet(list, label){
-  PROBLEMS = list;
-  solved = 0;
-  BOXES = [];
-  host.innerHTML = "";
-  /* Check my work belongs to Test only. Practice already checks every digit. */
-  document.getElementById("check").hidden = MODE !== "test";
-  document.getElementById("modenote").textContent = MODE === "practice"
-    ? "A wrong digit clears itself and tells you which of the four steps you're on. The next digit drops down once you've finished the subtraction."
-    : "Nothing gets checked as you go. Fill in the whole bracket, wrong digits and all, then press Check my work. This is the one that tells you what you actually know.";
-  list.forEach(addProblem);
-  paintScore();
+/* Every answer box behaves the same way in both modes; only the CHECKING
+   differs. Practice marks the moment the right number is typed, which is why
+   there is no per-keystroke wrong marking: "-8" passes through "-" and "-"
+   is not an answer. A wrong answer is only called wrong on Enter or on
+   leaving the box. */
+function answerBox(want, ask, nudge, box, onSolved){
+  var inp = el("input", "ans");
+  inp.type = "text";
+  inp.inputMode = "text";        /* not numeric: the minus sign has to be typeable */
+  inp.autocomplete = "off";
+  inp.placeholder = "?";
+  inp.setAttribute("aria-label", ask);
+  var done = false;
+
+  function markRight(){
+    if (done) return;
+    done = true;
+    inp.classList.remove("bad", "wrong");
+    inp.classList.add("ok");
+    inp.disabled = true;
+    nudge.classList.remove("warn");
+    nudge.textContent = "";
+    onSolved();
+  }
+  function markWrong(){
+    if (done) return;
+    inp.classList.add("bad");
+    nudge.classList.add("warn");
+    nudge.textContent = ask;
+    setTimeout(function(){ inp.classList.remove("bad"); }, 320);
+  }
+
+  inp.addEventListener("input", function(){
+    var v = inp.value.replace(/[^0-9-]/g, "");
+    if (v.indexOf("-") > 0) v = v.replace(/-/g, "");   /* a minus only leads */
+    inp.value = v;
+    if (MODE !== "practice") return;
+    if (/^-?\d+$/.test(v) && Number(v) === want) markRight();
+  });
+  inp.addEventListener("keydown", function(e){
+    if (e.key !== "Enter" || MODE !== "practice") return;
+    e.preventDefault();
+    if (/^-?\d+$/.test(inp.value) && Number(inp.value) !== want) markWrong();
+  });
+  inp.addEventListener("blur", function(){
+    if (MODE !== "practice" || inp.value === "") return;
+    if (/^-?\d+$/.test(inp.value) && Number(inp.value) !== want) markWrong();
+  });
+
+  BOXES.push({ el: inp, want: want, box: box });
+  return inp;
+}
+
+/* A number line the student can click to answer. Range covers the numbers in
+   play with a little air; clicking snaps to the nearest whole number and
+   fills the answer box, which then runs through the same checking as typing.
+
+   🚨 EVERY PROBLEM GETS ONE. The first version hid the line whenever the span
+   passed 26 units, which meant the harder questions - the ones where seeing
+   it helps most - had none. Paul, 2026-08-30: "the larger digits dont have a
+   line to tap on. i get the point its a long line to add but perhaps you can
+   space them closer together with more tickes."
+
+   The fix is to hold the SPACING steady instead of the width. Every tick gets
+   at least MIN_PX, so a wide range simply makes a wide line and the wrapper
+   scrolls sideways - the ticks stay the same comfortable distance apart at
+   any range, rather than being squeezed into 3px each on a phone. */
+var PNL_MIN_PX = 11;      /* pixels per unit, before the line starts scrolling */
+var PNL_BASE_W = 620;
+
+function problemLine(P, setAnswer){
+  var lo = Math.min(P.a, P.ans, 0), hi = Math.max(P.a, P.ans, 0);
+  lo -= 2; hi += 2;
+  var span = hi - lo;
+
+  var H = 62, pad = 18, axisY = 30;
+  /* Wide enough to keep the ticks apart; never narrower than the panel. */
+  var W = Math.max(PNL_BASE_W, span * PNL_MIN_PX + pad * 2);
+  function x(v){ return pad + ((v - lo) / span) * (W - pad * 2); }
+
+  /* Label density follows the range so the numbers never collide, while a
+     tick still marks every single unit - which is what makes it clickable. */
+  var labelEvery = span <= 14 ? 1 : span <= 40 ? 5 : span <= 120 ? 10 : 25;
+  var parts = [];
+  for (var v = Math.ceil(lo); v <= hi; v++){
+    var zero = v === 0;
+    var major = zero || v % labelEvery === 0;
+    parts.push('<line x1="' + x(v).toFixed(1) + '" y1="' + (axisY - (zero ? 8 : major ? 6 : 4)) +
+      '" x2="' + x(v).toFixed(1) + '" y2="' + (axisY + (zero ? 8 : major ? 6 : 4)) +
+      '" stroke="currentColor" stroke-width="' + (zero ? 2 : 1) + '"/>');
+    if (major)
+      parts.push('<text x="' + x(v).toFixed(1) + '" y="' + (axisY + 22) +
+        '" text-anchor="middle" font-size="10" fill="currentColor">' + v + "</text>");
+  }
+
+  var wrap = document.createElement("div");
+  wrap.className = "pnl";
+  var svgStyle = W > PNL_BASE_W ? ' style="width:' + W + 'px;max-width:none"' : "";
+  wrap.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '"' + svgStyle + '>' +
+    '<line class="axis" x1="' + pad + '" y1="' + axisY + '" x2="' + (W - pad) + '" y2="' + axisY +
+      '" stroke="currentColor" stroke-width="1.5"/>' + parts.join("") +
+    '<circle class="pick" cx="0" cy="' + axisY + '" r="5" style="display:none"/>' +
+    '<rect class="hit" x="0" y="0" width="' + W + '" height="' + H + '"/></svg>';
+
+  var svg = wrap.querySelector("svg"), dot = wrap.querySelector(".pick");
+  function valueAt(clientX){
+    /* getBoundingClientRect is the RENDERED box, so it already accounts for
+       how far the wrapper has been scrolled sideways. */
+    var r = svg.getBoundingClientRect();
+    var vx = ((clientX - r.left) / r.width) * W;          /* into viewBox units */
+    return Math.round(lo + ((vx - pad) / (W - pad * 2)) * span);
+  }
+  wrap.addEventListener("click", function(e){
+    var v = valueAt(e.clientX);
+    if (v < lo || v > hi) return;
+    dot.setAttribute("cx", x(v).toFixed(1));
+    dot.style.display = "";
+    setAnswer(v);
+  });
+
+  /* A line that scrolls has to say so, or it looks truncated. */
+  wrap.setAttribute("data-wide", W > PNL_BASE_W ? "1" : "0");
+  return wrap;
 }
 
 function addProblem(P, pi){
-  var PS = solve(P.dividend, P.divisor);
-  var box = document.createElement("div");
-  box.className = "prob";
+  var box = el("div", "prob");
   box.setAttribute("data-i", pi);
-  box.innerHTML =
-    '<div class="probhead"><span class="probnum">Problem ' + (pi + 1) + '</span>' +
-    '<span class="tag">' + P.dividend + " ÷ " + P.divisor + '</span></div>' +
-    '<div class="gridwrap"><div class="dgrid"></div></div>' +
-    '<p class="nudge"></p>';
-  host.appendChild(box);
+  var head = el("div", "probhead");
+  head.appendChild(el("span", "probnum", "Problem " + (pi + 1)));
+  var tag = el("span", "tag", "");
+  head.appendChild(tag);
+  box.appendChild(head);
 
-  var g = build(box.querySelector(".dgrid"), PS, SPEC.allowRemainder);
-  var nudge = box.querySelector(".nudge");
-  var tag = box.querySelector(".tag");
-  var queue = [];
-
-  PS.steps.forEach(function(st, k){
-    queue.push({ cell: g.at(0, st.i + 1), want: st.q,
-      ask: "Divide. How many " + PS.divisor + "s fit into " + st.cur + "? Put it on top." });
-    slots(g, 2 + k * 2, st.prod, st, { minus: true, under: true }).forEach(function(s){
-      queue.push({ cell: s.cell, want: s.want,
-        ask: "Multiply. " + st.q + " times " + PS.divisor + ". Write it underneath." });
-    });
-    var isFinalRemainder = PS.remainder > 0 && st.bring === undefined;
-    slots(g, 3 + k * 2, st.diff, st, {}).forEach(function(s){
-      queue.push({ cell: s.cell, want: s.want,
-        ask: isFinalRemainder
-          ? "Subtract. " + st.cur + " minus " + st.prod + ". That's your remainder."
-          : "Subtract. " + st.cur + " minus " + st.prod + " is what?" });
-    });
-    if (st.bring !== undefined) queue.push({ bring: true, cell: g.at(3 + k * 2, st.i + 2), want: st.bring });
-  });
-
-  /* The remainder up top is TYPED, not filled in for him - Paul, 2026-08-30:
-     "they need to put the remainder at the top dont just automatically do it
-     for them." It is the last thing in the queue, because it is not known
-     until every step below it is done. */
-  if (SPEC.allowRemainder && g.remCell){
-    queue.push({ cell: g.remCell, want: PS.remainder,
-      ask: "Now write that remainder up here, next to your answer." });
-  }
-
-  queue.forEach(function(q){
-    /* In PRACTICE the bring-down is something to watch, so it drops in on its
-       own. In TEST he writes it himself: Paul, 2026-08-26, "they should write
-       both numbers not just the first one." */
-    if (q.bring && MODE === "practice") return;
-
-    var inp = document.createElement("input");
-    inp.type = "text";
-    inp.inputMode = "numeric";
-    inp.maxLength = 1;
-    inp.setAttribute("aria-label", "digit");
-    /* A space placeholder is what lets :placeholder-shown mean "still empty",
-       which is how an untouched box is faded without fading a typed digit. */
-    inp.placeholder = " ";
-    inp.disabled = MODE === "practice";
-    q.el = inp;
-    q.cell.appendChild(inp);
-
-    if (MODE === "test"){
-      BOXES.push({ el: inp, want: q.want, box: box, PS: PS, P: P });
-      /* Tap any box to go back and change it, and typing replaces what is
-         there rather than being swallowed by maxLength. */
-      inp.addEventListener("focus", function(){ inp.select(); });
-      inp.addEventListener("input", function(){
-        var v = inp.value.replace(/[^0-9]/g, "");
-        inp.value = v;
-        if (v !== "") stepTo(inp);      /* no marking, just move the cursor on */
-      });
-      inp.addEventListener("keydown", function(e){
-        if (e.key === "Backspace" && inp.value === "") stepTo(inp, -1);
-      });
-      return;
-    }
-    inp.addEventListener("input", function(){
-      var v = inp.value.replace(/[^0-9]/g, "");
-      inp.value = v;
-      if (v === "") return;
-      if (Number(v) === q.want){
-        /* Kill any pending wrong-answer wipe first. Without this, a wrong digit
-           followed quickly by the right one erased the right one 320ms later. */
-        clearTimeout(q.timer);
-        inp.classList.remove("bad");
-        inp.classList.add("ok");
-        inp.disabled = true;
-        nudge.classList.remove("warn");
-        advance();
-      } else {
-        inp.classList.add("bad");
-        nudge.classList.add("warn");
-        nudge.textContent = "Not that one. " + q.ask;
-        clearTimeout(q.timer);
-        q.timer = setTimeout(function(){
-          inp.classList.remove("bad");
-          if (!inp.classList.contains("ok")) inp.value = "";
-        }, 320);
-      }
-    });
-  });
-
-  var pos = 0;
-  function advance(){
-    pos++;
-    /* the bring-down is something to watch, not something to type */
-    while (pos < queue.length && queue[pos].bring){
-      queue[pos].cell.textContent = queue[pos].want;
-      queue[pos].cell.classList.add("drop");
-      pos++;
-    }
-    if (pos >= queue.length){ finish(); return; }
-    var q = queue[pos];
-    q.el.disabled = false;
-    q.el.focus();
-    /* On a phone the next box is often below the keyboard. Keep it on screen. */
-    if (q.cell.scrollIntoView) q.cell.scrollIntoView({ block: "center", behavior: "smooth" });
-    nudge.classList.remove("warn");
-    nudge.textContent = q.ask;
-  }
-
-  function finish(){
+  var nudge = el("p", "nudge", "");
+  var need = SPEC.kind === "subtract" ? 2 : 1;
+  var got = 0;
+  var ansInput = null;          /* the box holding the ANSWER, set below */
+  function onSolved(){
+    got++;
+    if (got < need) return;
     box.classList.add("solved");
     tag.classList.add("done");
-    var remTag = PS.remainder > 0 ? " with a remainder of " + PS.remainder : "";
-    tag.textContent = P.dividend + " ÷ " + P.divisor + " = " + PS.quotient + remTag;
+    tag.textContent = "Solved";
     nudge.classList.remove("warn");
-    nudge.textContent = PS.remainder > 0
-      ? "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " + " + PS.remainder + " = " + P.dividend + "."
-      : "That's it. Check it yourself: " + PS.quotient + " × " + P.divisor + " = " + P.dividend + ".";
+    nudge.textContent = SPEC.kind === "subtract"
+      ? "Right. " + P.a + " minus " + term(P.b) + " is the same as " + P.a + " plus " + term(-P.b) + "."
+      : "Right.";
     solved++;
     save();
     paintScore();
   }
 
-  if (MODE === "test"){
-    nudge.textContent = "";
-    return;
+  if (SPEC.kind === "subtract"){
+    /* Two boxes: the rewrite, then the answer. Keep, Change, Change is the
+       whole lesson, so the conversion is typed rather than assumed - and when
+       one of the two is wrong you can see WHICH half failed. */
+    box.appendChild(el("p", "steplab", "Keep, change, change. Then add."));
+    var r1 = el("div", "expr");
+    r1.appendChild(el("span", null, String(P.a)));
+    r1.appendChild(el("span", "op", "-"));
+    r1.appendChild(el("span", null, term(P.b)));
+    r1.appendChild(el("span", "op", "="));
+    r1.appendChild(el("span", null, String(P.a)));
+    r1.appendChild(el("span", "op", "+"));
+    r1.appendChild(answerBox(-P.b, "Change the sign of " + P.b + ". What does it become?", nudge, box, onSolved));
+    box.appendChild(r1);
+
+    var r2 = el("div", "expr");
+    r2.style.marginTop = "10px";
+    r2.appendChild(el("span", "op", "="));
+    ansInput = answerBox(P.ans, "Now add. Same signs add and keep the sign, different signs subtract.", nudge, box, onSolved);
+    r2.appendChild(ansInput);
+    box.appendChild(r2);
+  } else {
+    var r = el("div", "expr");
+    r.appendChild(el("span", null, String(P.a)));
+    r.appendChild(el("span", "op", "+"));
+    r.appendChild(el("span", null, term(P.b)));
+    r.appendChild(el("span", "op", "="));
+    ansInput = answerBox(P.ans, "Are the signs the same or different? Same signs add and keep the sign. Different signs subtract, and take the sign of the one further from zero.", nudge, box, onSolved);
+    r.appendChild(ansInput);
+    box.appendChild(r);
   }
-  queue[0].el.disabled = false;
-  nudge.textContent = queue[0].ask;
+
+  /* The clickable line answers the ANSWER box - on a subtraction that is the
+     second one, because the first is the rewrite and is not a place on the
+     number line. Setting .value and firing `input` runs the same checking
+     path as typing, so there is one place where an answer is judged. */
+  var line = problemLine(P, function(v){
+    if (ansInput.disabled) return;
+    ansInput.value = String(v);
+    ansInput.dispatchEvent(new Event("input", { bubbles: true }));
+    ansInput.focus();
+  });
+  if (line){
+    box.appendChild(line);
+    var hint = el("p", "pnl-note", "Click the line to answer, or type it above.");
+    box.appendChild(hint);
+  }
+
+  box.appendChild(nudge);
+  host.appendChild(box);
+}
+
+function renderSet(list){
+  PROBLEMS = list;
+  solved = 0;
+  BOXES = [];
+  host.innerHTML = "";
+  document.getElementById("check").hidden = MODE !== "test";
+  document.getElementById("modenote").textContent = MODE === "practice"
+    ? "A box turns green the moment you type the right number. Press Enter if you want to be told you are wrong."
+    : "Nothing gets checked as you go. Fill in every box, wrong answers and all, then press Check my work. This is the one that tells you what you actually know.";
+  list.forEach(addProblem);
+  paintScore();
 }
 
 /* ── marking the test ─────────────────────────────────────────────────── */
 function markTest(){
-  var right = 0, blank = 0;
-  var perBox = {};
+  var right = 0, blank = 0, perBox = {};
   BOXES.forEach(function(b){
-    var v = b.el.value.replace(/[^0-9]/g, "");
+    var v = b.el.value;
     b.el.classList.remove("ok", "wrong");
-    if (v === ""){ blank++; }
-    else if (Number(v) === b.want){ b.el.classList.add("ok"); right++; }
-    else { b.el.classList.add("wrong"); }
+    if (v === "") blank++;
+    else if (/^-?\d+$/.test(v) && Number(v) === b.want){ b.el.classList.add("ok"); right++; }
+    else b.el.classList.add("wrong");
     b.el.disabled = true;
     var key = b.box.getAttribute("data-i");
-    if (!perBox[key]) perBox[key] = { ok: true, box: b.box, PS: b.PS, P: b.P };
-    if (v === "" || Number(v) !== b.want) perBox[key].ok = false;
+    if (!perBox[key]) perBox[key] = { ok: true, box: b.box };
+    if (!(/^-?\d+$/.test(v) && Number(v) === b.want)) perBox[key].ok = false;
   });
 
   solved = 0;
   Object.keys(perBox).forEach(function(k){
     var r = perBox[k];
+    var P = PROBLEMS[Number(k)];
     var tag = r.box.querySelector(".tag");
     var nudge = r.box.querySelector(".nudge");
-    var remMark = r.PS.remainder > 0 ? " with a remainder of " + r.PS.remainder : "";
     if (r.ok){
       solved++;
       r.box.classList.add("solved");
       tag.classList.add("done");
-      tag.textContent = r.P.dividend + " ÷ " + r.P.divisor + " = " + r.PS.quotient + remMark;
+      tag.textContent = "Solved";
       nudge.classList.remove("warn");
-      nudge.textContent = "Right the whole way down.";
+      nudge.textContent = "Right.";
     } else {
       nudge.classList.add("warn");
-      nudge.textContent = "The answer is " + r.PS.quotient + remMark +
-        ". Every red digit is where it went wrong. Try that one again in Practice.";
+      nudge.textContent = SPEC.kind === "subtract"
+        ? "The rewrite is " + P.a + " + " + term(-P.b) + ", and the answer is " + P.ans + "."
+        : "The answer is " + P.ans + ". Check the signs first, then the digits.";
     }
   });
 
   document.getElementById("check").disabled = true;
   save();
-  var el = document.getElementById("scorebar");
-  el.innerHTML = "<b>" + solved + " of " + PROBLEMS.length + " problems fully right.</b>" +
+  var el2 = document.getElementById("scorebar");
+  el2.innerHTML = "<b>" + solved + " of " + PROBLEMS.length + " problems fully right.</b>" +
     '<p style="margin:6px 0 0;color:var(--dim)">' + right + " of " + BOXES.length +
-    " digits correct" + (blank ? ", " + blank + " left blank" : "") +
+    " boxes correct" + (blank ? ", " + blank + " left blank" : "") +
     ". Press New problems for another test.</p>";
 }
 
-/* Today's set, a button for a fresh one, and the two modes. */
-var currentSeed = today(), currentLabel = "Today's set";
-
-function reload(seed, label){
-  currentSeed = seed; currentLabel = label;
+var currentSeed = today();
+function reload(seed){
+  currentSeed = seed;
   document.getElementById("check").disabled = false;
-  renderSet(makeSet(seed), label);
+  renderSet(makeSet(seed));
 }
-
-reload(currentSeed, currentLabel);
+reload(currentSeed);
 
 document.getElementById("reroll").addEventListener("click", function(){
-  reload(String(Date.now()), "A fresh set");
+  reload(String(Date.now()));
   host.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 document.getElementById("check").addEventListener("click", markTest);
@@ -3038,7 +3120,7 @@ function setMode(m){
   pt.setAttribute("aria-selected", String(m === "practice"));
   tt.setAttribute("aria-selected", String(m === "test"));
   /* Same problems in both modes, so a test can be worked again in practice. */
-  reload(currentSeed, currentLabel);
+  reload(currentSeed);
 }
 document.getElementById("tabPractice").addEventListener("click", function(){ setMode("practice"); });
 document.getElementById("tabTest").addEventListener("click", function(){ setMode("test"); });
@@ -3064,12 +3146,12 @@ function save(){
     }));
   } catch (e) {}
 }
-/* The teacher's line and reset. Mirrors the history, English and integers
-   templates so all four read the same on the page and in a screenshot for
+/* The teacher's line and reset, in Teacher Notes. Mirrors the history and English
+   templates so all three read the same on the page and in a screenshot for
    HomeschoolGrades.
-   ⚠️ Retry-until-right by design — a wrong digit clears itself — so a finished
-   lesson IS full marks. Say "practised to mastery" rather than a bare 100% that
-   reads like a test result it never was. */
+   ⚠️ This lesson is retry-until-right by design (a wrong digit clears itself), so
+   a finished one IS full marks. Say "practised to mastery" rather than printing a
+   bare 100% that reads like a test result it never was. */
 function paintTeacherScore(){
   var line = document.getElementById("gscoreline");
   var btn  = document.getElementById("greset");
@@ -3119,13 +3201,13 @@ paintTeacherScore();
 
 function paintScore(){
   paintTeacherScore();
-  var el = document.getElementById("scorebar");
-  el.innerHTML = solved === PROBLEMS.length
+  var e = document.getElementById("scorebar");
+  e.innerHTML = solved === PROBLEMS.length
     ? "<b>All " + PROBLEMS.length + " solved.</b>" +
       '<p style="margin:6px 0 0;color:var(--dim)">Every one checked out. That\'s the lesson finished.</p>'
     : "<b>" + solved + " of " + PROBLEMS.length + " solved.</b>" +
-      '<p style="margin:6px 0 0;color:var(--dim)">Work down the boxes in order. ' +
-      "A wrong digit clears itself, so nothing's lost.</p>";
+      '<p style="margin:6px 0 0;color:var(--dim)">Look at the signs before the digits. ' +
+      "A wrong answer tells you which rule to check.</p>";
 }
 paintScore();
 

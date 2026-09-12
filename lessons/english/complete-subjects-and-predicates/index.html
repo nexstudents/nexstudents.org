@@ -1851,8 +1851,15 @@ function applyTheme(){
   }
   /* The profile's Reading Highlight, if one is picked, over the palette's gold.
      Read fresh each time so a change in the panel lands on the next repaint. */
-  var hl = HIGHLIGHTS[load("highlight", "")];
-  if (hl){
+  /* 🚨 GUARDED, AND IT HAS TO BE. On a maths, integers or English page this
+     function is spliced in by voice-player.js AFTER that page's own code, which
+     calls applyTheme() before these two vars are assigned (a var is hoisted
+     but empty until its line runs). Unguarded, HIGHLIGHTS[...] threw and the
+     whole lesson engine died: no problems drawn at all. Found 2026-09-11 by
+     actually doing a maths lesson, which Paul asked for. The later calls run
+     after the vars exist, so the highlight still lands. */
+  var hl = (typeof HIGHLIGHTS === "object" && HIGHLIGHTS) ? HIGHLIGHTS[load("highlight", "")] : null;
+  if (hl && typeof HL_ALPHA === "object" && HL_ALPHA){
     var al = HL_ALPHA[currentMode()];
     root.style.setProperty("--word", "rgba(" + hl.rgb + "," + al.word + ")");
     root.style.setProperty("--band", "rgba(" + hl.rgb + "," + al.band + ")");
@@ -4446,6 +4453,6 @@ if (!liftDefBox()) requestAnimationFrame(function(){ liftDefBox(); });
 
 <script src="/assets/supabase-config.js"></script>
 <script src="/assets/ns-account.js"></script>
-<script src="/assets/lesson-shared.f93260e7.js"></script>
+<script src="/assets/lesson-shared.72eae927.js"></script>
 </body>
 </html>

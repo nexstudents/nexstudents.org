@@ -1353,6 +1353,52 @@ function nsProgPush(){
   return Promise.all(jobs).then(function(){ try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(s)); }catch(e){} })
     .catch(function(){});
 }
+/* 🔀 MERGING THIS DEVICE'S RECORDS WITH THE ACCOUNT'S, LESSON BY LESSON.
+   Paul, 2026-09-11: "we need this solid and it doesnt break." The first
+   version did Object.assign(local, server), and walking it through real days
+   found two ways it lost work:
+   1. UNSENT WORK WAS OVERWRITTEN. A lesson finished while the push could not
+      get out (flaky signal, expired login) was replaced by the account's
+      older copy on the next load.
+   2. A RESET CAME BACK. The parent resets a test on the phone; the laptop
+      still has the old copy, which then looked "changed" and was pushed back.
+   The rule now, per lesson (its ns:done and ns:prog records together):
+     - DIRTY here (differs from what this device last sent) -> keep this
+       device's version... unless the account has it FINISHED and this device
+       has it unfinished: a finished lesson is never replaced by an unfinished
+       one (a reset is a DELETE, a separate deliberate act, so it is not
+       blocked by this).
+     - Not dirty -> the account wins, INCLUDING its absence: a lesson the
+       account no longer has was reset, so it goes here too. */
+function nsLessonsOf(s){
+  var by={};
+  Object.keys(s||{}).forEach(function(k){ var m=NS_PK.exec(k); if(m){ (by[m[2]]=by[m[2]]||{})[k]=s[k]; } });
+  return by;
+}
+function nsSame(a,b){
+  var ka=Object.keys(a||{}),kb=Object.keys(b||{});
+  if(ka.length!==kb.length) return false;
+  return ka.every(function(k){ return b[k]===a[k]; });
+}
+function nsDoneIn(recs){
+  var d=null,p=null;
+  Object.keys(recs||{}).forEach(function(k){
+    try{ if(k.indexOf("ns:done:")===0) d=JSON.parse(recs[k]); else p=JSON.parse(recs[k]); }catch(e){}
+  });
+  return nsFinished(d,p);
+}
+function nsMerge(local,server,pushed){
+  var L=nsLessonsOf(local),S=nsLessonsOf(server),P=nsLessonsOf(pushed),out={};
+  var ids={}; [L,S].forEach(function(o){ Object.keys(o).forEach(function(i){ ids[i]=1; }); });
+  Object.keys(ids).forEach(function(id){
+    var l=L[id],s=S[id],dirty=!!l&&!nsSame(l,P[id]),pick;
+    if(dirty) pick=(s&&nsDoneIn(s)&&!nsDoneIn(l))?s:l;
+    else pick=s||null;
+    if(pick) Object.keys(pick).forEach(function(k){ out[k]=pick[k]; });
+  });
+  return out;
+}
+function nsPushedGet(id){ try{ return JSON.parse(localStorage.getItem("ns:pushed:"+id))||{}; }catch(e){ return {}; } }
 function nsProgHandOff(from,to){
   nsProgPush();                     /* reads its snapshot synchronously, before the clear */
   nsStashPut(from,nsProgSnap());
@@ -1363,44 +1409,69 @@ function nsProgHandOff(from,to){
 /* ⚠️ NO "\/" IN A REGEX HERE: this script is a template literal, which turns
    "\/" into "/", so /^\/lessons\// shipped as /^/lessons// - a SyntaxError
    that killed the whole panel on every page (2026-09-11). indexOf instead. */
-function nsProgRepaint(){
-  if(document.querySelector("[data-lesson]")||location.pathname.indexOf("/lessons/")===0) location.reload();
+function nsProgRepaint(only){
+  var onLesson=location.pathname.indexOf("/lessons/")===0;
+  /* A profile SWITCH (no list) repaints any page that shows progress. A PULL
+     passes the lessons it changed, and only a page showing one of them
+     reloads - a student halfway through a lesson is not thrown back to the
+     top because a DIFFERENT lesson was reset on another device. */
+  if(only){
+    var hit=Object.keys(only).some(function(l){
+      return (onLesson&&location.pathname.indexOf("/lessons/"+l+"/")===0)||
+             document.querySelector("[data-lesson='"+l.replace(/'/g,"")+"']");
+    });
+    if(hit) location.reload();
+    return;
+  }
+  if(document.querySelector("[data-lesson]")||onLesson) location.reload();
+}
+function nsChanged(a,b){
+  var A=nsLessonsOf(a),B=nsLessonsOf(b),out={};
+  Object.keys(A).concat(Object.keys(B)).forEach(function(l){ if(!nsSame(A[l],B[l])) out[l]=1; });
+  return out;
 }
 function nsProgArrive(id){
   if(!nsIsStudent(id)){ nsProgRepaint(); return; }
   NSAccount.progressRows(id).then(function(rows){
-    var server=nsSnapFromRows(rows),merged=Object.assign({},nsProgSnap(),server);
+    var server=nsSnapFromRows(rows),merged=nsMerge(nsProgSnap(),server,nsPushedGet(id));
     nsProgWrite(merged);
-    /* "Pushed" = what the server has; anything only the stash had goes up next. */
-    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); sessionStorage.setItem("ns:pulled:"+id,"1"); }catch(e){}
+    /* "Pushed" = what the server has; anything kept from this device goes up next. */
+    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
     nsProgPush(); nsProgRepaint();
   }).catch(function(){ nsProgRepaint(); });
 }
-/* On every page for a student: pull once per tab (another device may have
-   moved on), push on the way out. The pull reloads only if it changed a
-   record, and the session flag is set first so it can never loop. */
+/* On every page for a student: pull (another device, or the parent's phone,
+   may have moved on or reset something), merge, push on the way out.
+   ⚠️ It used to pull ONCE PER TAB, so a reset made on the parent's phone did
+   not reach an open laptop tab until a new tab was opened. It pulls on every
+   page load now - one small request. The page reloads only if the merge
+   changed a record this page painted, and never twice within 8 seconds, so a
+   bad day on the network cannot turn into a reload loop. */
 function nsProgBoot(){
   if(!window.NSAccount||!NSAccount.isSignedIn()) return;
   var id=NSAccount.who();
   function go(){
     if(!nsIsStudent(id)) return;
-    var pulled=false; try{ pulled=sessionStorage.getItem("ns:pulled:"+id)==="1"; }catch(e){}
-    if(pulled){ nsProgPush(); return; }
-    try{ sessionStorage.setItem("ns:pulled:"+id,"1"); }catch(e){}
     NSAccount.progressRows(id).then(function(rows){
-      var server=nsSnapFromRows(rows),local=nsProgSnap(),diff=false;
-      Object.keys(server).forEach(function(k){ if(local[k]!==server[k]) diff=true; });
-      if(diff){
-        nsProgWrite(Object.assign({},local,server));
-        try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
-        nsProgRepaint();
-      } else nsProgPush();
-    }).catch(function(){});
+      var server=nsSnapFromRows(rows),local=nsProgSnap(),merged=nsMerge(local,server,nsPushedGet(id));
+      try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
+      if(nsSame(merged,local)){ nsProgPush(); return; }
+      nsProgWrite(merged); nsProgPush();
+      var last=0; try{ last=+sessionStorage.getItem("ns:reloaded:"+id)||0; }catch(e){}
+      if(Date.now()-last>8000){
+        try{ sessionStorage.setItem("ns:reloaded:"+id,String(Date.now())); }catch(e){}
+        nsProgRepaint(nsChanged(local,merged));
+      }
+    }).catch(function(){ nsProgPush(); });
   }
   if(id!=="parent"&&adKids===null) NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; go(); }).catch(function(){});
   else go();
+  /* Push on the way out AND every 45s while the page is open: pagehide alone
+     can lose the last save if the tab is killed. Nothing changed = no request.
+     A push that fails leaves ns:pushed untouched, so the next one retries. */
   addEventListener("pagehide",function(){ nsProgPush(); });
   document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") nsProgPush(); });
+  setInterval(function(){ if(document.visibilityState==="visible") nsProgPush(); },45000);
 }
 /* html.has-me + --me on the live page, and ns:accent so modeBoot paints it
    before first paint on the next page. Cleared for the account holder, a

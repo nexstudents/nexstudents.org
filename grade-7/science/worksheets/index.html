@@ -849,20 +849,63 @@ function nsProgPush(){
   return Promise.all(jobs).then(function(){ try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(s)); }catch(e){} })
     .catch(function(){});
 }
+function nsLessonsOf(s){
+  var by={};
+  Object.keys(s||{}).forEach(function(k){ var m=NS_PK.exec(k); if(m){ (by[m[2]]=by[m[2]]||{})[k]=s[k]; } });
+  return by;
+}
+function nsSame(a,b){
+  var ka=Object.keys(a||{}),kb=Object.keys(b||{});
+  if(ka.length!==kb.length) return false;
+  return ka.every(function(k){ return b[k]===a[k]; });
+}
+function nsDoneIn(recs){
+  var d=null,p=null;
+  Object.keys(recs||{}).forEach(function(k){
+    try{ if(k.indexOf("ns:done:")===0) d=JSON.parse(recs[k]); else p=JSON.parse(recs[k]); }catch(e){}
+  });
+  return nsFinished(d,p);
+}
+function nsMerge(local,server,pushed){
+  var L=nsLessonsOf(local),S=nsLessonsOf(server),P=nsLessonsOf(pushed),out={};
+  var ids={}; [L,S].forEach(function(o){ Object.keys(o).forEach(function(i){ ids[i]=1; }); });
+  Object.keys(ids).forEach(function(id){
+    var l=L[id],s=S[id],dirty=!!l&&!nsSame(l,P[id]),pick;
+    if(dirty) pick=(s&&nsDoneIn(s)&&!nsDoneIn(l))?s:l;
+    else pick=s||null;
+    if(pick) Object.keys(pick).forEach(function(k){ out[k]=pick[k]; });
+  });
+  return out;
+}
+function nsPushedGet(id){ try{ return JSON.parse(localStorage.getItem("ns:pushed:"+id))||{}; }catch(e){ return {}; } }
 function nsProgHandOff(from,to){
   nsProgPush();                     
   nsStashPut(from,nsProgSnap());
   nsProgWrite(nsStashGet(to));
 }
-function nsProgRepaint(){
-  if(document.querySelector("[data-lesson]")||location.pathname.indexOf("/lessons/")===0) location.reload();
+function nsProgRepaint(only){
+  var onLesson=location.pathname.indexOf("/lessons/")===0;
+  if(only){
+    var hit=Object.keys(only).some(function(l){
+      return (onLesson&&location.pathname.indexOf("/lessons/"+l+"/")===0)||
+             document.querySelector("[data-lesson='"+l.replace(/'/g,"")+"']");
+    });
+    if(hit) location.reload();
+    return;
+  }
+  if(document.querySelector("[data-lesson]")||onLesson) location.reload();
+}
+function nsChanged(a,b){
+  var A=nsLessonsOf(a),B=nsLessonsOf(b),out={};
+  Object.keys(A).concat(Object.keys(B)).forEach(function(l){ if(!nsSame(A[l],B[l])) out[l]=1; });
+  return out;
 }
 function nsProgArrive(id){
   if(!nsIsStudent(id)){ nsProgRepaint(); return; }
   NSAccount.progressRows(id).then(function(rows){
-    var server=nsSnapFromRows(rows),merged=Object.assign({},nsProgSnap(),server);
+    var server=nsSnapFromRows(rows),merged=nsMerge(nsProgSnap(),server,nsPushedGet(id));
     nsProgWrite(merged);
-    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); sessionStorage.setItem("ns:pulled:"+id,"1"); }catch(e){}
+    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
     nsProgPush(); nsProgRepaint();
   }).catch(function(){ nsProgRepaint(); });
 }
@@ -871,23 +914,23 @@ function nsProgBoot(){
   var id=NSAccount.who();
   function go(){
     if(!nsIsStudent(id)) return;
-    var pulled=false; try{ pulled=sessionStorage.getItem("ns:pulled:"+id)==="1"; }catch(e){}
-    if(pulled){ nsProgPush(); return; }
-    try{ sessionStorage.setItem("ns:pulled:"+id,"1"); }catch(e){}
     NSAccount.progressRows(id).then(function(rows){
-      var server=nsSnapFromRows(rows),local=nsProgSnap(),diff=false;
-      Object.keys(server).forEach(function(k){ if(local[k]!==server[k]) diff=true; });
-      if(diff){
-        nsProgWrite(Object.assign({},local,server));
-        try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
-        nsProgRepaint();
-      } else nsProgPush();
-    }).catch(function(){});
+      var server=nsSnapFromRows(rows),local=nsProgSnap(),merged=nsMerge(local,server,nsPushedGet(id));
+      try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
+      if(nsSame(merged,local)){ nsProgPush(); return; }
+      nsProgWrite(merged); nsProgPush();
+      var last=0; try{ last=+sessionStorage.getItem("ns:reloaded:"+id)||0; }catch(e){}
+      if(Date.now()-last>8000){
+        try{ sessionStorage.setItem("ns:reloaded:"+id,String(Date.now())); }catch(e){}
+        nsProgRepaint(nsChanged(local,merged));
+      }
+    }).catch(function(){ nsProgPush(); });
   }
   if(id!=="parent"&&adKids===null) NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; go(); }).catch(function(){});
   else go();
   addEventListener("pagehide",function(){ nsProgPush(); });
   document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") nsProgPush(); });
+  setInterval(function(){ if(document.visibilityState==="visible") nsProgPush(); },45000);
 }
 function nsApplyAccent(){
   if(!window.NSAccount) return;
