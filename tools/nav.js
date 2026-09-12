@@ -1721,6 +1721,25 @@ function adAboutEdit(H,a){
    these write localStorage directly, never through NSAccount's write().
    ⚠️ Device voices ("d:<name>") differ per device and are not offered here;
    a lesson without NexVoice falls back to the device's own voice. */
+/* ❓ A SECTION TITLE WITH ITS EXPLANATION TUCKED BEHIND A "?". Paul,
+   2026-09-11: "put that info also hidden in a ? icon for more info with a
+   fade info similar to mywika in the settings." Copied from MyWika's
+   .info-icon / .info-tooltip: a small round ? at the right end of the row,
+   the box fades in under it, and a tap anywhere else fades it out (the
+   toggle and the close live in adWire's one click listener).
+   The info text is trusted copy written in this file, never user text. No
+   info, no "?" - a question mark with nothing behind it is a dead control.
+   Paul, then: "do it with the more info in the settings in general" - so
+   EVERY Settings section has one.
+   ⚠️ NO BACKTICKS IN THIS SCRIPT, COMMENTS INCLUDED - it is a template
+   literal. This comment broke the build once already on 2026-09-11. */
+function adCap(title,extra,info){
+  if(!info) return "<p class='ad-cap'>"+title+(extra||"")+"</p>";
+  return "<div class='ad-caprow'><p class='ad-cap'>"+title+(extra||"")+"</p>"+
+    "<span class='ad-infow'><button class='ad-info' type='button' aria-expanded='false' aria-label='"+
+      adEsc("More about "+title)+"'>?</button>"+
+    "<span class='ad-tip' role='tooltip'>"+info+"</span></span></div>";
+}
 var AD_VOICE=[["male","Male"],["female","Female"]];
 var AD_SPEED=[["0.7","Slow"],["0.85","Normal"],["1","Fast"]];
 function adSettingsOf(a){
@@ -1780,17 +1799,17 @@ function adSettings(H){
      reading speed next then the theme color options." Display comes last.
      "Light or Dark", not "Theme": Theme Color is a different setting. */
   H.body.innerHTML=
-    "<p class='ad-cap'>Reading Voice</p>"+
-    "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use your device&#39;s default voice.</p>"+
+    adCap("Reading Voice","","The NexVoice that reads lessons aloud. Lessons without NexVoice use your device&#39;s default voice.")+
     chips("voice",AD_VOICE,"Reading voice")+
-    "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
-    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
+    adCap("Reading Speed","","How fast lessons are read aloud. Normal suits most readers; Slow helps with new or hard words.")+
+    chips("speed",AD_SPEED,"Reading speed")+
+    adCap("Theme Color"," · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span>",
+      "Your color for your box, the buttons and the menu bar while you&#39;re on.")+
     adThemeTiles(themeCur,a===null)+
-    "<p class='ad-cap'>Reading Highlight · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span></p>"+
-    "<p class='ad-note'>The color that marks the words as a lesson is read aloud.</p>"+
+    adCap("Reading Highlight"," · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span>",
+      "The color that marks the words as a lesson is read aloud.")+
     hlTiles+
-    "<p class='ad-cap'>Display</p>"+
+    adCap("Display","","Switches the whole site between a dark and a light look. It&#39;s kept on this device.")+
     "<div class='ad-kv'><span>Light or Dark</span>"+
     "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
     "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
@@ -2059,6 +2078,15 @@ function adWire(H){
   if(H.x) H.x.onclick=function(){ if(H.save) H.save(); else if(H===adD) adOpen(false); };
   H.body.addEventListener("click",function(e){
     if(e.target.closest("[data-out]")){ NSAccount.signOut(); location.reload(); return; }
+    /* ❓ The "?" info boxes (adCap): a tap on one toggles it and closes the
+       others; a tap anywhere else in the panel closes them all. */
+    var inf=e.target.closest(".ad-info");
+    H.body.querySelectorAll(".ad-info").forEach(function(b){
+      var open=b===inf&&b.getAttribute("aria-expanded")!=="true";
+      b.setAttribute("aria-expanded",open);
+      b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
+    });
+    if(inf) return;
     var w=e.target.closest("[data-who]");
     if(w){ adSwitch(H,w.getAttribute("data-who")); nsWhoIcon(); return; }
     var b=e.target.closest("[data-go]"); if(!b) return;

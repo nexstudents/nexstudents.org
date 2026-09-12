@@ -48,7 +48,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=cac9bcaa">
+<link rel="stylesheet" href="/assets/ns.css?v=e888f39a">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
 </head>
 <body>
@@ -2086,6 +2086,13 @@ function adAboutEdit(H,a){
   });
   var first=H.body.querySelector("[data-k]"); if(first) first.focus();
 }
+function adCap(title,extra,info){
+  if(!info) return "<p class='ad-cap'>"+title+(extra||"")+"</p>";
+  return "<div class='ad-caprow'><p class='ad-cap'>"+title+(extra||"")+"</p>"+
+    "<span class='ad-infow'><button class='ad-info' type='button' aria-expanded='false' aria-label='"+
+      adEsc("More about "+title)+"'>?</button>"+
+    "<span class='ad-tip' role='tooltip'>"+info+"</span></span></div>";
+}
 var AD_VOICE=[["male","Male"],["female","Female"]];
 var AD_SPEED=[["0.7","Slow"],["0.85","Normal"],["1","Fast"]];
 function adSettingsOf(a){
@@ -2132,17 +2139,17 @@ function adSettings(H){
     }).join("")+"</div>";
   function hlName(k){ var h=AD_HL.filter(function(x){ return x.k===k; })[0]; return h?h.name:"Default"; }
   H.body.innerHTML=
-    "<p class='ad-cap'>Reading Voice</p>"+
-    "<p class='ad-note'>The NexVoice that reads lessons aloud. Lessons without NexVoice use your device&#39;s default voice.</p>"+
+    adCap("Reading Voice","","The NexVoice that reads lessons aloud. Lessons without NexVoice use your device&#39;s default voice.")+
     chips("voice",AD_VOICE,"Reading voice")+
-    "<p class='ad-cap'>Reading Speed</p>"+chips("speed",AD_SPEED,"Reading speed")+
-    "<p class='ad-cap'>Theme Color · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span></p>"+
-    "<p class='ad-note'>Your color for your box, the buttons and the menu bar while you&#39;re on.</p>"+
+    adCap("Reading Speed","","How fast lessons are read aloud. Normal suits most readers; Slow helps with new or hard words.")+
+    chips("speed",AD_SPEED,"Reading speed")+
+    adCap("Theme Color"," · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span>",
+      "Your color for your box, the buttons and the menu bar while you&#39;re on.")+
     adThemeTiles(themeCur,a===null)+
-    "<p class='ad-cap'>Reading Highlight · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span></p>"+
-    "<p class='ad-note'>The color that marks the words as a lesson is read aloud.</p>"+
+    adCap("Reading Highlight"," · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span>",
+      "The color that marks the words as a lesson is read aloud.")+
     hlTiles+
-    "<p class='ad-cap'>Display</p>"+
+    adCap("Display","","Switches the whole site between a dark and a light look. It&#39;s kept on this device.")+
     "<div class='ad-kv'><span>Light or Dark</span>"+
     "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
     "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
@@ -2375,6 +2382,13 @@ function adWire(H){
   if(H.x) H.x.onclick=function(){ if(H.save) H.save(); else if(H===adD) adOpen(false); };
   H.body.addEventListener("click",function(e){
     if(e.target.closest("[data-out]")){ NSAccount.signOut(); location.reload(); return; }
+    var inf=e.target.closest(".ad-info");
+    H.body.querySelectorAll(".ad-info").forEach(function(b){
+      var open=b===inf&&b.getAttribute("aria-expanded")!=="true";
+      b.setAttribute("aria-expanded",open);
+      b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
+    });
+    if(inf) return;
     var w=e.target.closest("[data-who]");
     if(w){ adSwitch(H,w.getAttribute("data-who")); nsWhoIcon(); return; }
     var b=e.target.closest("[data-go]"); if(!b) return;

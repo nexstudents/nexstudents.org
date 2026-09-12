@@ -702,6 +702,22 @@ body.acct-open .adrawer{transform:none}
 .ad-cap{margin:24px 0 6px;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
   color:var(--ad-fg)}
 .ad-cap .ad-opt{color:var(--ad-dim)}
+/* ❓ The "?" info (adCap in nav.js), after MyWika's .info-icon/.info-tooltip:
+   18px round ?, faint at rest, the box fades in over .35s, right-aligned
+   under the ?, 220px. ⚠️ Font set LONGHAND: "inherit" is not a legal family
+   inside the font shorthand and would drop the whole rule (CLAUDE.md). */
+.ad-caprow{display:flex;align-items:center;gap:10px;margin:24px 0 6px}
+.ad-caprow .ad-cap{margin:0 auto 0 0}
+.ad-infow{position:relative;flex:none;display:flex}
+.ad-info{width:18px;height:18px;border-radius:50%;border:0;padding:0;cursor:pointer;display:grid;place-items:center;
+  background:rgba(127,127,127,.22);color:var(--ad-fg);font-family:inherit;font-size:.72rem;font-weight:700;
+  line-height:1;opacity:.55;transition:opacity .2s}
+.ad-info:hover,.ad-info[aria-expanded="true"]{opacity:.95}
+.ad-tip{position:absolute;right:0;top:calc(100% + 8px);width:220px;z-index:5;visibility:hidden;opacity:0;
+  transition:opacity .35s,visibility .35s;padding:10px 12px;border:1px solid var(--ad-line);border-radius:8px;
+  background:var(--ad-bg);color:var(--ad-fg);font-size:.8rem;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.ad-tip.is-on{visibility:visible;opacity:1}
+@media (prefers-reduced-motion:reduce){.ad-tip{transition:none}}
 .ad-kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 0;
   border-bottom:1px solid var(--ad-line);font-size:.88rem}
 .ad-kv>span:last-child{color:var(--ad-dim);text-align:right}
