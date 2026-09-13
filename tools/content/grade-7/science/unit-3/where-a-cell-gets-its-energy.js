@@ -206,12 +206,12 @@ module.exports = {
         "Glucose is broken down without any oxygen at all.",
         "Chlorophyll is turned into sugar."
       ], right: 0 },
-    { q: "How are photosynthesis and cellular respiration related?", find: [34, 35, 36],
+    { q: "How are photosynthesis and cellular respiration related?", find: [34, 35, 36, 37],
       hint: "Compare what each one uses with what the other one gives off.",
       choices: [
         "They are the same process under two names.",
         "Both of them give off oxygen.",
-        "They are close to opposites: one stores the energy and the other releases it.",
+        "They are close to opposites: one stores the energy and the other spends it.",
         "Neither one involves glucose."
       ], right: 2 },
     { q: "Why does a cell use fermentation instead of cellular respiration?", find: [39, 40, 41],
