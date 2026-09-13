@@ -17,6 +17,8 @@
 const LESSONS = [
   require('./content/grade-7/history/unit-1/republic-to-empire'),
   require('./content/grade-7/history/unit-1/roman-government'),
+  require('./content/grade-7/history/unit-1/roads-and-the-roman-army'),
+  require('./content/grade-7/history/unit-1/conquest-and-city-life'),
   require('./content/grade-7/science/unit-1/what-makes-something-alive'),
   require('./content/grade-7/science/unit-1/life-only-comes-from-life'),
   require('./content/grade-7/science/unit-1/how-we-know-what-we-know'),
@@ -24,6 +26,7 @@ const LESSONS = [
   require('./content/grade-7/science/unit-1/unit-1-review'),
   require('./content/grade-7/science/unit-2/cells-the-building-blocks-of-life'),
   require('./content/grade-7/science/unit-2/inside-a-cell-part-by-part'),
+  require('./content/grade-7/science/unit-2/from-cells-to-tissues-to-organs'),
   require('./content/grade-7/maths/unit-1/a-plan-for-problem-solving'),
   require('./content/grade-7/maths/unit-1/estimation-using-rounding'),
   require('./content/grade-7/maths/unit-1/estimation-using-patterns'),
