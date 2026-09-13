@@ -101,7 +101,7 @@ module.exports = {
     { title: "Things That Do Not", s: [
       "Now think about the trash you see along a roadside.",
       "",
-      "Aluminium cans, glass bottles and plastic bags are nonbiodegradable.",
+      "Aluminum cans, glass bottles and plastic bags are nonbiodegradable.",
       "They do not decompose, or they take so long that it makes no practical difference.",
       "",
       "Nothing returns those materials to the soil.",

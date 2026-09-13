@@ -54,7 +54,7 @@ module.exports = {
     ]
   },
 
-  /* The story, read aloud by the player. The colour-marked version of the same
+  /* The story, read aloud by the player. The color-marked version of the same
      story is rendered from `showcase` below, so the words exist once. */
   parts: [
     {
@@ -91,7 +91,7 @@ module.exports = {
     }
   ],
 
-  /* The same story, with the split marked, rendered in the lesson's two colours.
+  /* The same story, with the split marked, rendered in the lesson's two colors.
      ⚠️ These sentences must match the ones in `parts` exactly. The build compares
      them and fails if they drift, because two copies of a sentence is how a page
      ends up teaching one thing and reading another. */

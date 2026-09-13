@@ -66,7 +66,7 @@ module.exports = {
   /* ⚠️ THE RULE IS A REFERENCE CARD, NOT A SECOND LESSON.
      Paul, 2026-08-30: the long version was "over shadowing the walk through
      considering you have teacher notes and then the walk through", and he set
-     the division of labour: *"the teacher notes is the explaination for the
+     the division of labor: *"the teacher notes is the explaination for the
      techer to help and the walk through is for the student."* So the teaching
      happens once, in the walkthrough. This is the short thing you glance back
      at while working the questions - which is why it sits BELOW the

@@ -125,7 +125,7 @@ module.exports = {
       "",
       "A being verb tells what someone or something is or was, instead of telling what it does.",
       "",
-      "There are eight forms of the verb be. These are important words to recognise, because you will see them again and again in English.",
+      "There are eight forms of the verb be. These are important words to recognize, because you will see them again and again in English.",
       "",
       "Am. Is. Are. Was. Were. Be. Been. Being."
     ]},

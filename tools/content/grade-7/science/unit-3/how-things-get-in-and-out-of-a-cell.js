@@ -216,7 +216,7 @@ module.exports = {
         "It only allows water to pass."
       ], right: 0 },
     { q: "What is happening during diffusion?", find: [22, 24],
-      hint: "Think about which direction the vinegar smell travelled, and why it stopped spreading.",
+      hint: "Think about which direction the vinegar smell traveled, and why it stopped spreading.",
       choices: [
         "Molecules move from where they are less crowded to where they are more crowded.",
         "Molecules move from where they are crowded to where they are less crowded.",

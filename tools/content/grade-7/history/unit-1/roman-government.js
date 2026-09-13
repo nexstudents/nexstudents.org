@@ -53,8 +53,8 @@ module.exports = {
     { title: "The Law and the Forum", s: [
       "Roman law was written down, published, and applied by courts rather than decided by whoever was angriest.",
       "That idea, that a rule exists outside the ruler, is the piece the rest of the world kept.",
-      "The Forum was the open square at the centre of Rome where all of this happened in public.",
-      "Speeches, trials, elections, business and gossip all took place in the same few hundred metres.",
+      "The Forum was the open square at the center of Rome where all of this happened in public.",
+      "Speeches, trials, elections, business and gossip all took place in the same few hundred meters.",
       "Public life being visible was itself part of the system, because it is harder to bend a law in front of a crowd."
     ]},
     { title: "What the Emperors Kept", s: [
