@@ -102,11 +102,15 @@ const LIFE = {
       n: 3, page: 52, title: "How Cells Work", book: "Cell Processes", bookUnit: 1, bookUnitTitle: "Life",
       items: [
         { label: "3-1", title: "What Living Things Are Made Of", book: "Chemistry of Living Things", page: 54, kind: "lesson" },
-        { label: "3-2", title: "How Things Get In and Out of a Cell", book: "Cell Transport", page: 58, kind: "lesson" },
-        { label: "3-3", title: "Where a Cell Gets Its Energy", book: "Energy in Cells", page: 63, kind: "lesson" },
+        { label: "3-2", title: "How Things Get In and Out of a Cell", book: "Cell Transport", page: 58, kind: "lesson",
+          slug: "science/how-things-get-in-and-out-of-a-cell" },
+        { label: "3-3", title: "Where a Cell Gets Its Energy", book: "Energy in Cells", page: 63, kind: "lesson",
+          slug: "science/where-a-cell-gets-its-energy" },
         { label: "3-4", title: "What We Throw Away, and Where It Goes",
-          book: "Science and Society: Nondegradable Materials in Your Environment",
-          page: 66, kind: "lesson" },
+          /* ⚠️ TITLE CORRECTED 2026-09-13: the book says NONBIODEGRADABLE, not
+             "Nondegradable". Read off the spread, p66. */
+          book: "Science and Society: Nonbiodegradable Materials in Your Environment",
+          page: 66, kind: "lesson", slug: "science/what-we-throw-away" },
         { label: "PS", title: "Problem Solving: What Happened to the Salad?", page: 61, kind: "feature" },
         { label: "T", title: "Technology: Biodegradable Plastics", page: 65, kind: "feature" },
         { label: "3-1A", title: "Activity: Observing Osmosis", page: 62, kind: "activity" },
