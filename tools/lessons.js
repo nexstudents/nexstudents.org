@@ -27,6 +27,7 @@ const LESSONS = [
   require('./content/grade-7/maths/unit-1/estimation-using-patterns'),
   require('./content/grade-7/maths/unit-1/determine-reasonable-answers'),
   require('./content/grade-7/maths/unit-1/choose-the-method-of-computation'),
+  require('./content/grade-7/maths/unit-1/classify-information'),
   require('./content/grade-7/english/unit-1/kinds-of-sentences'),
   require('./content/grade-7/english/unit-1/writing-good-sentences'),
   require('./content/grade-7/science/unit-3/how-things-get-in-and-out-of-a-cell'),
