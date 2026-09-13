@@ -81,7 +81,8 @@ const LIFE = {
         { label: "FYB", title: "Flex Your Brain", page: 18, kind: "feature" },
         { label: "T", title: "Technology: Cockleburs and Space Shuttles", page: 19, kind: "feature" },
         { label: "1-1A", title: "Activity: Using a Scientific Method", page: 24, kind: "activity" },
-        { label: "1-5", title: "Unit 1 Review: What Life Is, and How We Study It", kind: "review" },
+        { label: "1-5", title: "Unit 1 Review: What Life Is, and How We Study It", kind: "review",
+          slug: "science/unit-1-review" },
       ],
     },
     {

@@ -67,8 +67,9 @@ const CYCLE = { Math: 7, Science: 8, English: 5, History: 5 };
    Each entry: { subject, unit, unitTitle, label, title, state }
    `state` is what EXISTS today, and it is the honest column:
      "built"    a real page under /lessons/
-     "paper"    Paul owns a printed page for it (Leif units 1-5)
-     "todo"     nothing exists yet */
+     "todo"     nothing exists yet
+   ⚠️ There is no "paper" state any more. Removed 2026-09-13 - see the History
+   flattener below for why. */
 
 const BUILT = new Set(require("./lessons.js").LESSONS
   ? require("./lessons.js").LESSONS.map((l) => l.id)
@@ -85,9 +86,23 @@ const flatten = {
   History: () => WORLD.units.flatMap((u) => u.items.map((i) => ({
     subject: "History", unit: u.n, unitTitle: u.title,
     label: i.label, title: i.title,
-    /* 🚨 A Leif reference means Paul can PRINT it today. That is the difference
-       between a lesson Kolten can do this week and one he cannot. */
-    state: i.slug ? "built" : (i.leif ? "paper" : "todo"),
+    /* 🚨 "paper" IS GONE, 2026-09-13. Paul: "we are not building paper pages.
+       we already talked about how leif the lion was not good. we are taking his
+       examples and building lessons on top of them along with the history book."
+
+       This used to read `i.leif ? "paper" : "todo"`, which treated a Leif
+       reference as a DELIVERABLE - 51 slots across the year said Kolten could
+       just be handed a printed page. That was wrong twice over:
+         · the Leif booklets carry the defect we already diagnosed, where a
+           vocabulary word is never defined in the story, only on a card
+           → [[project-kolten-history-build-system]]
+         · and it quietly excused 51 lessons from ever being built
+
+       ⚠️ `leif` STAYS ON THE DATA. It is a build NOTE - which booklet to draw
+       examples from - exactly like `page` on a Merrill or Glencoe row. It is a
+       SOURCE, not a state. History lessons are built from Leif's examples plus
+       McDougal, the same way the other four units already are. */
+    state: i.slug ? "built" : "todo",
   }))),
   English: () => GRADE7.units.flatMap((u) => (u.lessons || u.items || []).map((l, idx) => ({
     subject: "English", unit: u.n, unitTitle: u.name || u.title,

@@ -285,17 +285,8 @@ const PLANNED = [
     thumb: "/lessons/history/fall-of-the-west/thumb.jpg" },
   { kind: "lesson", subject: "History", grade: 7, unit: "U1-L10", title: "Unit 1 Review: Rome and the Early Church",
     thumb: "/lessons/history/unit-1-review/thumb.jpg" },
-  /* 🚨 SCIENCE UNIT 1 REVIEW — THE COVER EXISTS, THE LESSON DOES NOT.
-     Paul drew it 2026-09-01 and asked for the file to be parked ahead of the
-     content. It is a SLOT, not a card: `.is-slot` renders no <a>, so this
-     cover cannot be clicked into a page that is not there. A cover is not a
-     lesson, the same way a title is not a lesson
-     → [[feedback-never-assign-an-unbuilt-lesson]].
-     ⚠️ WHEN THE REVIEW IS BUILT: delete this line, and add the lesson to
-     lessons.js with `seq` n:5 and `thumb: true`. The thumb.jpg is already at
-     the path below. Leaving this line in as well would show the review twice. */
-  { kind: "lesson", subject: "Science", grade: 7, unit: "U1 &middot; Review",
-    title: "Unit 1 Lesson Review", thumb: "/lessons/science/unit-1-review/thumb.jpg" },
+  /* ✅ The Science Unit 1 Review SHIPPED 2026-09-13, so its PLANNED slot is gone.
+     Leaving it would show the card twice - once as a slot, once as the real lesson. */
 ];
 
 /* Grade 8 US history: the Colonies to Reconstruction sequence, thirty sheets
@@ -1839,7 +1830,11 @@ const prettyDate = (iso) => {
 
 const yearPlanBody = () => {
   const plan = YEAR.build();
-  const state = { built: 0, paper: 0, todo: 0 };
+  /* ⚠️ NO "paper" KEY, 2026-09-13. Paul: "we are not building paper pages ...
+     we are taking his examples and building lessons on top of them along with
+     the history book." A Leif reference is a SOURCE, not a deliverable
+     → year-plan.js. Leaving the key here would print "0 printable" forever. */
+  const state = { built: 0, todo: 0 };
   for (const w of plan.weeks) {
     if (w.kind !== "week") continue;
     for (const d of w.days) for (const sl of d.slots) state[sl.state]++;
@@ -1922,12 +1917,11 @@ const yearPlanBody = () => {
     <div class="plan-figs">
       <div class="plan-fig"><b>36</b><span>Teaching weeks</span></div>
       <div class="plan-fig"><b>${plan.schoolDays}</b><span>School days</span></div>
-      <div class="plan-fig"><b>${state.built + state.paper + state.todo}</b><span>Lessons</span></div>
+      <div class="plan-fig"><b>${state.built + state.todo}</b><span>Lessons</span></div>
       <div class="plan-fig"><b>3.0</b><span>Lessons a day</span></div>
     </div>
     <p class="plan-key">
       <span><i class="plan-pip p-built"></i>${state.built} built and ready</span>
-      <span><i class="plan-pip p-paper"></i>${state.paper} printable from the workbook</span>
       <span><i class="plan-pip p-todo"></i>${state.todo} still to write</span>
     </p>
     <p class="plan-note">This is the plan, not the build. Each row says what a student does;

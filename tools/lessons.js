@@ -21,6 +21,7 @@ const LESSONS = [
   require('./content/grade-7/science/unit-1/life-only-comes-from-life'),
   require('./content/grade-7/science/unit-1/how-we-know-what-we-know'),
   require('./content/grade-7/science/unit-1/science-you-use-every-day'),
+  require('./content/grade-7/science/unit-1/unit-1-review'),
   require('./content/grade-7/maths/unit-1/a-plan-for-problem-solving'),
   require('./content/grade-7/maths/unit-1/estimation-using-rounding'),
   require('./content/grade-7/maths/unit-1/estimation-using-patterns'),
