@@ -90,7 +90,9 @@ const LIFE = {
       items: [
         { label: "2-1", title: "Cells: The Building Blocks of Life", book: "Cells: The Units of Life", page: 30, kind: "lesson",
           slug: "science/cells-the-building-blocks-of-life" },
-        { label: "2-2", title: "Inside a Cell, Part by Part", book: "Cell Structure", page: 34, kind: "lesson" },
+        { label: "2-2", title: "Inside a Cell, Part by Part", book: "Cell Structure", page: 36, kind: "lesson",
+          /* ⚠️ page was 34; the spread is p36. 2-1 runs to p35. Read 2026-09-13. */
+          slug: "science/inside-a-cell-part-by-part" },
         { label: "2-3", title: "From Cells to Tissues to Organs", book: "Cell Organization", page: 44, kind: "lesson" },
         { label: "2-4", title: "Organ Transplants, and the Questions They Raise", book: "Science and Society: Organ Transplants", page: 46, kind: "lesson" },
         { label: "T", title: "Technology: A Touch of Diamonds", page: 33, kind: "feature" },
