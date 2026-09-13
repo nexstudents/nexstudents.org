@@ -166,13 +166,29 @@ const ONE_SENTENCE_EXEMPT = {
   "history/roman-government": "baked audio predates the hashes; splitting desyncs it",
 };
 
+/* 🚨 A TITLE'S FULL STOP IS NOT A SENTENCE END, 2026-09-13.
+   The Glencoe lesson opens "Ms. Meadows gave her class this problem." - one
+   sentence - and this guard failed it, because the pattern is a terminator, a
+   space and a capital, which "Ms. Meadows" matches exactly. Renaming the teacher
+   to dodge a guard would have been the wrong fix: Mr, Dr, St and an initial all
+   do the same thing, and the next lesson would hit it again.
+   ⚠️ Matched against the text ENDING AT THE FULL STOP, so "Mrs." is caught and a
+   word merely containing those letters is not. A lone capital covers initials
+   like "J. R. R. Tolkien". */
+const ABBR = /(?:^|[\s("'“‘])(?:Mr|Mrs|Ms|Dr|Prof|Rev|Fr|St|Mt|Ft|Jr|Sr|Capt|Sgt|Lt|Col|Gen|Sen|Gov|Rep|No|Fig|vs|etc|approx|[A-Z])\.$/;
+
 function checkOneSentence(L, where) {
   if (ONE_SENTENCE_EXEMPT[L.id]) return;
-  const split = /[.!?]["'”’]?\s+["'“‘]?[A-Z]/;
+  const split = /[.!?]["'”’]?\s+["'“‘]?[A-Z]/g;
   const look = (label, list) => (list || []).forEach((line, i) => {
     const t = String(line);
     if (!t.trim()) return;
-    const m = split.exec(t);
+    /* Walk every candidate break and keep the first that is not an abbreviation. */
+    split.lastIndex = 0;
+    let m = null, c;
+    while ((c = split.exec(t)) !== null) {
+      if (!ABBR.test(t.slice(0, c.index + 1))) { m = c; break; }
+    }
     if (!m) return;
     console.error("FAIL: " + where + ": " + label + " line " + i + " holds more than one sentence.\n" +
       "      Split it. One entry is one highlight, one audio clip and one line in\n" +

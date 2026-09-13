@@ -96,7 +96,7 @@ const COURSE2 = {
       L("1-2", "Estimation Strategy: Using Rounding", 8, "maths/estimation-using-rounding"),
       L("1-3", "Estimation Strategy: Using Patterns", 11, "maths/estimation-using-patterns"),
       L("1-4", "Problem-Solving Strategy: Determine Reasonable Answers", 14, "maths/determine-reasonable-answers"),
-      L("1-5", "Problem-Solving Strategy: Choose the Method of Computation", 17),
+      L("1-5", "Problem-Solving Strategy: Choose the Method of Computation", 17, "maths/choose-the-method-of-computation"),
       REV("Mid-Chapter Review", 19),
       L("1-6", "Problem-Solving Strategy: Classify Information", 20),
       DEC("Planning a Flower Garden", 22),
