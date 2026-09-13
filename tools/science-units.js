@@ -88,7 +88,8 @@ const LIFE = {
     {
       n: 2, page: 28, title: "Inside the Cell", book: "The Cell", bookUnit: 1, bookUnitTitle: "Life",
       items: [
-        { label: "2-1", title: "Cells: The Building Blocks of Life", book: "Cells: The Units of Life", page: 30, kind: "lesson" },
+        { label: "2-1", title: "Cells: The Building Blocks of Life", book: "Cells: The Units of Life", page: 30, kind: "lesson",
+          slug: "science/cells-the-building-blocks-of-life" },
         { label: "2-2", title: "Inside a Cell, Part by Part", book: "Cell Structure", page: 34, kind: "lesson" },
         { label: "2-3", title: "From Cells to Tissues to Organs", book: "Cell Organization", page: 44, kind: "lesson" },
         { label: "2-4", title: "Organ Transplants, and the Questions They Raise", book: "Science and Society: Organ Transplants", page: 46, kind: "lesson" },
