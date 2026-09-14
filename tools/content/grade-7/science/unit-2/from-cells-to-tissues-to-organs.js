@@ -172,7 +172,7 @@ module.exports = {
       "First the questions, {q} of them, and the answers are all above.",
       "Most of them give you a shape and ask what job it suggests.",
       "That is on purpose, because reasoning from shape is the real skill here.",
-      "Then the word cards, {v} of them, and the check underneath.",
+      "Then the check at the bottom, {v} questions on the word cards at the top of the page.",
       "Last, say the ladder out loud without looking.",
       "Cell, tissue, organ, organ system, organism.",
       "Then say it backwards.",

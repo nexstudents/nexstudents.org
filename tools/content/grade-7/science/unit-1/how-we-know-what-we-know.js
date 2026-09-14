@@ -182,9 +182,9 @@ module.exports = {
       "Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is the difference between a theory and a law.",
       "Read Theory Does Not Mean Guess again and look for what each one is FOR.",
-      "Then the word cards.",
+      "Then the vocabulary check, which sends you back to the cards at the top.",
       "Five words this time, and every one of them is explained somewhere in the story you just heard.",
-      "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
+      "Tap each card at the top to check yourself, then answer the vocabulary questions at the bottom.",
       "If you can say why a theory never turns into a law, you have understood the hardest idea in this lesson."
   ] },
   /* Paul's definitions, 2026-09-03. FIVE words - Observation is new; this lesson had four

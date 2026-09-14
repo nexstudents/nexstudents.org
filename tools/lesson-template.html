@@ -420,6 +420,35 @@ h2{
    it hidden behind the header. */
 .para{margin:0;scroll-margin-top:var(--stickytop,180px)}
 
+/* 🚨 EXAMPLES AND SCRIPTURE ARE SET APART FROM THE PROSE. Paul, 2026-09-14:
+   "the examples in the story need to show them seperate from the text so the
+   student can read it directly", and "i also want the bible verses just like the
+   examples to be spaced apart from the other text ... it shows its an example."
+   A blank line already made each one its own paragraph, but it still rendered in
+   the same serif at the same size as the sentence above it, so nothing on screen
+   said "this is the worked example" - it read as one more line of story.
+   ⚠️ THE PARAGRAPH CARRIES THE CLASS, NOT THE SENTENCE. `.sent` is the highlight
+   unit for the voice player and the answer hunt; styling it would fight the
+   reading band and move the text under the highlight. */
+.para.is-ex{
+  font-family:ui-monospace,"Cascadia Mono","Consolas",monospace;
+  font-size:1.02em;letter-spacing:.01em;
+  margin:6px 0;padding:10px 16px;
+  border-left:3px solid var(--verdigris);
+  background:var(--surface-2);border-radius:0 4px 4px 0;
+}
+.para.is-verse{
+  font-style:italic;
+  margin:6px 0;padding:10px 18px;
+  border-left:3px solid var(--rule);
+  color:var(--ink-soft);
+}
+/* ⚠️ The highlight band still has to read INSIDE both boxes. `--band` is tuned
+   against the page ground, and the example box sits on --surface-2, so the two
+   were close enough to lose the band entirely at some themes. Lifting the band's
+   own contrast here rather than changing --band keeps every other lesson alone. */
+.para.is-ex .sent.on,.para.is-verse .sent.on{box-shadow:0 0 0 2px var(--verdigris)}
+
 /* ---------- the explainer ----------
    Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
    to you ... use a visual way of explaining along with the text so the youth can
@@ -792,6 +821,23 @@ h2{
 .card .def{font-size:14px;line-height:1.55;color:var(--ink-soft);margin-top:7px;display:none}
 .card.open .def{display:block}
 .card.open .prompt{display:none}
+
+/* 🚨 THE FIND LINK APPEARS ONLY ON AN OPEN CARD. Showing it on a closed card
+   puts a second control on something whose whole job is "tap me to see the
+   meaning", and the student taps the wrong one. Read the definition first, then
+   go look at where it came from. */
+.cardfind{display:none;margin-top:9px;font-size:12.5px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--verdigris);
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.card.open .cardfind{display:inline-block}
+.cardfind:hover,.cardfind:focus-visible{color:var(--brass);outline:none}
+
+/* ⚠️ A DIFFERENT HIGHLIGHT FROM THE ANSWER HUNT'S `.shown`. The two mean
+   different things - "here is the answer you were hunting" against "here is
+   where this word is explained" - and a student who has done both would
+   otherwise be looking at one page with two identical bands and no way to tell
+   which was which. */
+.sent.wordshown{background:var(--band);box-shadow:inset 0 -2px 0 var(--verdigris)}
 /* 🚨 GREEN OUTLINE ONCE READ, and it stays after the card is closed again.
    Paul, 2026-09-04: "if you clicked on the vocab section they turn green outline
    too to show you read them." A parent scanning the row can see at a glance
@@ -1442,6 +1488,32 @@ body.player-hidden .scrub{margin:0}
        and removed outright when a lesson has none. -->
   <section id="worked" hidden></section>
 
+  <!-- 🚨 THE WORDS COME BEFORE THE QUESTIONS, ON EVERY LESSON. Paul, 2026-09-14:
+       "i really want the definations at the top before the part one and part 2 of
+       the questions for all lessons even these ones."
+       They used to sit inside Part Two, under the vocabulary check's own heading,
+       which meant a student could meet a word for the first time in a question
+       ABOUT that word. Choose the Method of Computation is the case that made it
+       obvious: its first vocabulary question asks what computation is, and the
+       story never uses the word once.
+       ⚠️ THE CARDS DIV KEPT ITS id. `cardsEl` is looked up by id and does not
+       care where the element sits, so moving it needed no script change. Do not
+       "tidy" it into a new id. -->
+  <div class="daysec" id="day0">
+    <div class="dayhead">
+      <div>
+        <p class="daytag">Before You Start</p>
+        <h2 class="section-head">The Words</h2>
+      </div>
+    </div>
+    <!-- ⚠️ THE COUNT IS WRITTEN BY SCRIPT, NEVER TYPED. The line this replaces
+         said "Four words from the reading" on every lesson and had been wrong
+         since the first lesson that carried five. Same stale-count class as the
+         day-one note and the deks. The fallback below carries no number. -->
+    <p class="section-note" id="wordsnote">The words this lesson uses. Tap a card to see what it means, then come back to them whenever a question uses one.</p>
+    <div class="cards" id="cards"></div>
+  </div>
+
   <div class="daysec" id="day1">
     <div class="dayhead">
       <div>
@@ -1465,8 +1537,13 @@ body.player-hidden .scrub{margin:0}
   <div class="daysec" id="day2">
     <div class="dayhead">
       <div>
+        <!-- ⚠️ "Vocabulary Check", not "The Words". The cards moved up to #day0
+             on 2026-09-14 and took that name with them; leaving it here gave the
+             page two sections with the identical heading. The inner
+             <h3>Vocabulary Check</h3> went at the same time - it was restating
+             the section it sits in. -->
         <p class="daytag">Part Two</p>
-        <h2 class="section-head">The Words</h2>
+        <h2 class="section-head">Vocabulary Check</h2>
       </div>
       <span class="dayprog" id="prog2">0 of 0</span>
     </div>
@@ -1477,9 +1554,10 @@ body.player-hidden .scrub{margin:0}
          fixing the todo block's day order; the answer feedback further down said it too.
          🚨 BOTH DAY NOTES ARE SHARED BY EVERY LESSON. Keep them true of any lesson:
          no book, no subject, no lesson number. -->
-    <p class="section-note">Four words from the reading. Tap a card to see what it means. Every one of them is also explained somewhere in the story.</p>
-    <div class="cards" id="cards"></div>
-    <h3 class="sub-head">Vocabulary Check</h3>
+    <!-- ⚠️ THE CARDS MOVED OUT OF HERE 2026-09-14, up to #day0 above Part One.
+         What is left is the CHECK. The old note also claimed every word was
+         explained somewhere in the story, which was not true of every lesson. -->
+    <p class="section-note" id="day2note">The word cards are at the top of this page. Look back at them as often as you need, then answer.</p>
     <div id="questions2"></div>
   </div>
 
@@ -2016,6 +2094,20 @@ PARTS.forEach(function(part){
       p.className = "para";
       return;
     }
+    /* 🚨 A LEADING [ex] OR [verse] MARKS THE PARAGRAPH AND IS STRIPPED HERE.
+       The marker never reaches the reader, never enters SENT, and never reaches
+       the voice: the text pushed below is the stripped text, so nsTextHash sees
+       exactly what bake-voice's sentencesOf sees.
+       ⚠️ THIS RULE LIVES IN TWO PLACES - here and tools/bake-voice.js. Strip in
+       one and not the other and every clip from that line on plays against the
+       wrong sentence, which is the same off-by-one the blank-line rule above
+       warns about. Change one, change both.
+       ⚠️ The class goes on the PARAGRAPH, so one marked line sets the whole
+       block - which is what a two-line scripture quote needs, the verse and its
+       reference together. */
+    if (text.indexOf("[ex] ") === 0) { p.classList.add("is-ex"); text = text.slice(5); }
+    else if (text.indexOf("[verse] ") === 0) { p.classList.add("is-verse"); text = text.slice(8); }
+
     var i = SENT.length;
     var span = document.createElement("span");
     span.className = "sent";
@@ -4131,8 +4223,58 @@ WORDS.forEach(function(pair){
     b.classList.toggle("open");
     b.classList.add("read");
   });
+
+  /* 🚨 A WORD CARD CAN SEND THE STUDENT TO THE SENTENCE THAT EXPLAINS IT.
+     Paul, 2026-09-14, asked for the cards to do what the questions already do.
+     The third entry on a word is a list of sentence indexes, validated at build
+     time by checkWordFinds(); a word without one gets no button, so this is
+     additive and no existing lesson breaks.
+     ⚠️ THE BUTTON IS INSIDE THE CARD, WHICH IS ITSELF A BUTTON. A click on it
+     would bubble up and toggle the card shut under the student's finger, so it
+     stops propagation. Nested interactive elements are invalid HTML, so this is
+     a <span role="button"> with a real keyboard handler, not a <button>. */
+  if (pair[2] && pair[2].length) {
+    var find = document.createElement("span");
+    find.className = "cardfind";
+    find.setAttribute("role", "button");
+    find.setAttribute("tabindex", "0");
+    find.textContent = "Find it in the story";
+    var go = function(ev){
+      ev.stopPropagation();
+      ev.preventDefault();
+      /* Only ONE word is shown at a time. Leaving the last one lit means the
+         story slowly fills with highlights and none of them means anything. */
+      SENT.forEach(function(s){ s.el.classList.remove("wordshown"); });
+      pair[2].forEach(function(k){ if (SENT[k]) SENT[k].el.classList.add("wordshown"); });
+      b.classList.add("read");
+      if (SENT[pair[2][0]]) nsReveal(SENT[pair[2][0]].el);
+    };
+    find.addEventListener("click", go);
+    find.addEventListener("keydown", function(ev){
+      if (ev.key === "Enter" || ev.key === " ") go(ev);
+    });
+    b.appendChild(find);
+  }
+
   cardsEl.appendChild(b);
 });
+
+/* 🚨 THE WORD COUNT IS DERIVED, THE SAME WAY THE QUESTION COUNT IS. The note
+   above these cards used to read "Four words from the reading" on every lesson
+   and had been wrong on every lesson carrying five or more - Unit 1 Review has
+   ten. Written from WORDS now, so it cannot go stale. Spelled out to ten,
+   digits past it, matching day1Note(). */
+(function wordsNote(){
+  var el = document.getElementById("wordsnote");
+  if (!el || !WORDS.length) return;
+  var words = ["", "One", "Two", "Three", "Four", "Five",
+               "Six", "Seven", "Eight", "Nine", "Ten"];
+  var n = WORDS.length;
+  var count = n <= 10 ? words[n] : String(n);
+  el.textContent = count + " word" + (n === 1 ? "" : "s") +
+    " this lesson uses. Tap a card to see what it means, then come back to " +
+    "them whenever a question uses one.";
+})();
 
 /* ---------- questions ---------- */
 var hunt = null;            // { qi, tries }

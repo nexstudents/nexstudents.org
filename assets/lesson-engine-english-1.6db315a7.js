@@ -327,6 +327,20 @@ PARTS.forEach(function(part){
       p.className = "para";
       return;
     }
+    /* 🚨 A LEADING [ex] OR [verse] MARKS THE PARAGRAPH AND IS STRIPPED HERE.
+       The marker never reaches the reader, never enters SENT, and never reaches
+       the voice: the text pushed below is the stripped text, so nsTextHash sees
+       exactly what bake-voice's sentencesOf sees.
+       ⚠️ THIS RULE LIVES IN TWO PLACES - here and tools/bake-voice.js. Strip in
+       one and not the other and every clip from that line on plays against the
+       wrong sentence, which is the same off-by-one the blank-line rule above
+       warns about. Change one, change both.
+       ⚠️ The class goes on the PARAGRAPH, so one marked line sets the whole
+       block - which is what a two-line scripture quote needs, the verse and its
+       reference together. */
+    if (text.indexOf("[ex] ") === 0) { p.classList.add("is-ex"); text = text.slice(5); }
+    else if (text.indexOf("[verse] ") === 0) { p.classList.add("is-verse"); text = text.slice(8); }
+
     var i = SENT.length;
     var span = document.createElement("span");
     span.className = "sent";
@@ -2442,8 +2456,58 @@ WORDS.forEach(function(pair){
     b.classList.toggle("open");
     b.classList.add("read");
   });
+
+  /* 🚨 A WORD CARD CAN SEND THE STUDENT TO THE SENTENCE THAT EXPLAINS IT.
+     Paul, 2026-09-14, asked for the cards to do what the questions already do.
+     The third entry on a word is a list of sentence indexes, validated at build
+     time by checkWordFinds(); a word without one gets no button, so this is
+     additive and no existing lesson breaks.
+     ⚠️ THE BUTTON IS INSIDE THE CARD, WHICH IS ITSELF A BUTTON. A click on it
+     would bubble up and toggle the card shut under the student's finger, so it
+     stops propagation. Nested interactive elements are invalid HTML, so this is
+     a <span role="button"> with a real keyboard handler, not a <button>. */
+  if (pair[2] && pair[2].length) {
+    var find = document.createElement("span");
+    find.className = "cardfind";
+    find.setAttribute("role", "button");
+    find.setAttribute("tabindex", "0");
+    find.textContent = "Find it in the story";
+    var go = function(ev){
+      ev.stopPropagation();
+      ev.preventDefault();
+      /* Only ONE word is shown at a time. Leaving the last one lit means the
+         story slowly fills with highlights and none of them means anything. */
+      SENT.forEach(function(s){ s.el.classList.remove("wordshown"); });
+      pair[2].forEach(function(k){ if (SENT[k]) SENT[k].el.classList.add("wordshown"); });
+      b.classList.add("read");
+      if (SENT[pair[2][0]]) nsReveal(SENT[pair[2][0]].el);
+    };
+    find.addEventListener("click", go);
+    find.addEventListener("keydown", function(ev){
+      if (ev.key === "Enter" || ev.key === " ") go(ev);
+    });
+    b.appendChild(find);
+  }
+
   cardsEl.appendChild(b);
 });
+
+/* 🚨 THE WORD COUNT IS DERIVED, THE SAME WAY THE QUESTION COUNT IS. The note
+   above these cards used to read "Four words from the reading" on every lesson
+   and had been wrong on every lesson carrying five or more - Unit 1 Review has
+   ten. Written from WORDS now, so it cannot go stale. Spelled out to ten,
+   digits past it, matching day1Note(). */
+(function wordsNote(){
+  var el = document.getElementById("wordsnote");
+  if (!el || !WORDS.length) return;
+  var words = ["", "One", "Two", "Three", "Four", "Five",
+               "Six", "Seven", "Eight", "Nine", "Ten"];
+  var n = WORDS.length;
+  var count = n <= 10 ? words[n] : String(n);
+  el.textContent = count + " word" + (n === 1 ? "" : "s") +
+    " this lesson uses. Tap a card to see what it means, then come back to " +
+    "them whenever a question uses one.";
+})();
 
 /* ---------- questions ---------- */
 var hunt = null;            // { qi, tries }

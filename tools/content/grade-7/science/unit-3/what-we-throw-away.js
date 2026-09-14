@@ -153,7 +153,7 @@ module.exports = {
       "First, the questions.",
       "{q} of them, and the answer to each one is in the reading above, not in your memory.",
       "If a question is hard, use the bar or the arrows to go back and read that part again.",
-      "Then the word cards, {v} of them, and the vocabulary check underneath.",
+      "Then the vocabulary check at the bottom, {v} questions on the word cards at the top of the page.",
       "Now the part that matters most, and it happens on paper.",
       "Some states have a deposit law on drink cans, where every empty can is worth five cents when you bring it back.",
       "It is one way of motivating people to keep roadsides free of litter.",

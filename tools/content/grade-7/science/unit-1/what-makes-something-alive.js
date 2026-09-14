@@ -147,9 +147,9 @@ module.exports = {
       "Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is the difference between a response and an adaptation.",
       "Read Adaptation again and look for which one is passed down and which one is decided in the moment.",
-      "Then the word cards.",
+      "Then the vocabulary check, which sends you back to the cards at the top.",
       "Five words, and every one of them is explained somewhere in the story you just heard.",
-      "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
+      "Tap each card at the top to check yourself, then answer the vocabulary questions at the bottom.",
       "If you can explain why a polar bear's fur is not a response, you have understood the hardest idea in this lesson."
   ] },
   /* Paul's definitions, 2026-09-03. FIVE words - Response is new; this lesson had four

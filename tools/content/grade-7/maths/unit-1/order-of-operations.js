@@ -2,13 +2,34 @@
    Grade 7 · maths · unit 1. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
-   🚨 THE PROSE IN `parts` IS A DRAFT, NOT PAUL'S VOICE. Built 2026-09-13.
-
    ⚠️ READING SHAPE, and this one is a JUDGEMENT CALL worth recording. Unlike
    1-1 to 1-6 this lesson does contain arithmetic, so it could argue for the
    bracket engine. It is built as a reading because the SKILL is knowing which
    operation happens first - a rule you apply, not work you show. The drilling
-   half belongs in a generator that does not exist yet → ROADMAP 37. */
+   half belongs in a generator that does not exist yet → ROADMAP 37.
+
+   ✅ THE PROSE IN `parts` IS PAUL'S, REBUILT FROM HIS DOC 2026-09-14.
+   Source: docs.google.com/document/d/1Wr2txzrQ6eTXM-tp2AdUxkiTRN59mg8rVxYjUpxFbTQ
+   A REWRITE, not an edit. What changed from my 2026-09-13 draft:
+     - THE YEARBOOK IS GONE. My draft used the book's rolls of film and two
+       calculators. Paul uses two STUDENTS disagreeing over 8 + 4 x 2, one
+       getting 24 and one getting 16. The method is the same - show the
+       disagreement, then the rule that settles it - but his version needs no
+       calculator and no props, so the argument is about the math alone.
+     - THE HIERARCHY IS TAUGHT AS THREE LEVELS, one section each, and every
+       level is shown twice: once on its own and once inside the final problem
+       that uses all three.
+     - 🚨 HIS OPENING PROBLEM RETURNS AT THE END. "Why This Matters" reruns
+       8 + 4 x 2 and names 16 as the answer. That is the lesson closing its own
+       loop and must not be trimmed as a repeat.
+     - THE BIBLICAL CONNECTION IS A TEACHER NOTE, NOT STUDENT PROSE. His doc
+       puts 1 Corinthians 14:33 and 14:40 under Teacher Notes, so it is in
+       `ground` and there is no [verse] block in the story. That is his call,
+       not an omission.
+   ⚠️ MY ADDITIONS ARE TWO SENTENCES, marked inline: definitions of EVALUATE and
+   MATH SENTENCE. Both have word cards, the questions use "Evaluate" as an
+   instruction four times, and neither word appeared anywhere in his prose.
+   → [[feedback-tweak-pauls-lesson-structure]] */
 'use strict';
 module.exports = {
   id: "maths/order-of-operations",
@@ -17,7 +38,9 @@ module.exports = {
   unit: "Math 7 &middot; U1-L7",
   seq: { unit: 1, unitTitle: "Tools for Problem Solving", n: 7 },
 
-  /* ── /teach-plan, 2026-09-13. Read off Glencoe Course 2 p24. ── */
+  /* ── /teach-plan, 2026-09-13, re-checked against Paul's rewrite 2026-09-14.
+        Glencoe Course 2 p24. The markers are still the book's; the METHOD line
+        below now describes his example, because his is what shipped. ── */
   plan: {
     objective: "Work out an expression in the right order, so it has only one possible value.",
     markers: [
@@ -25,288 +48,390 @@ module.exports = {
       "QUOTED, Words to Learn: order of operations",
       "QUOTED, the rule box: '1. Do all operations within grouping symbols first. 2. Do multiplication and division from left to right. 3. Do addition and subtraction from left to right.'",
       "QUOTED: 'To make sure that expressions like 2 x 36 + 3 x 24 have only one value, mathematicians have agreed on the following order of operations.'",
-      "QUOTED, Calculator Hint: 'To see whether your calculator follows the order of operations, enter 2 + 5 x 3. If your calculator displays 17, your calculator follows the order of operations.'",
     ],
-    method: "SHOW THE DISAGREEMENT FIRST, THEN THE RULE THAT SETTLES IT. The book does not open with the rule. It opens with two students typing the SAME keystrokes into two different calculators and getting 144 and 1800. Then it asks which is right - and the thing that decides it is the ESTIMATE they made before touching either calculator. The order of operations arrives as the fix for a real ambiguity the student has just watched happen, not as a rule to memorise.",
+    method: "SHOW THE DISAGREEMENT FIRST, THEN THE RULE THAT SETTLES IT. The lesson does not open with the hierarchy. It opens with two students working 8 + 4 x 2 and reaching 24 and 16, and then asks how the same problem can give two answers. The rule arrives as the fix for an ambiguity the student has just watched happen. 🚨 THE TWO EQUAL-LEVEL PAIRS ARE THE PART THAT ACTUALLY GETS TAUGHT WRONG. Paul writes it out twice in the negative - multiplication does NOT always come before division, addition does NOT automatically come before subtraction - because the acronym version of this rule teaches exactly that error.",
     exampleOnly: [
-      "the school yearbook, rolls of film, 36 and 24 exposures — WORLD: a middle school yearbook. One world.",
+      "8 + 4 x 2 and its bracketed variants, 24 / 6 x 2, 15 - 5 + 3, and 6 + 3 x (8 - 4) - WORLD: bare arithmetic, deliberately. This is the one lesson with no situation at all, because the subject IS the notation.",
+      "🚨 THE OPENING PROBLEM IS REUSED AT THE END ON PURPOSE. 8 + 4 x 2 opens the lesson as a disagreement and closes it as a settled answer. Cutting the second appearance as a duplicate removes the payoff.",
     ],
-    digitize: "The existing reading engine carries the teaching half well, because the lesson IS an argument. ⚠️ The drilling half - evaluate twenty expressions - needs the missing expressions generator (ROADMAP 37) and is not here. Flagged, not faked.",
+    digitize: "The existing reading engine carries the teaching half well, because the lesson IS an argument. Every worked line is marked [ex] so the arithmetic reads as arithmetic rather than as prose. ⚠️ The drilling half - evaluate twenty expressions - needs the missing expressions generator (ROADMAP 37) and is not here. Flagged, not faked.",
     unclear: "",
   },
 
   shelf: { grades: [7], subject: "Math",
-    blurb: "Two calculators, the same buttons, two different answers. Only one of them is right, and there is a rule for why.",
+    blurb: "Two students, one problem, two different answers. The order of operations is what settles the argument.",
     contains: [
-      "Two students who get 144 and 1800 from identical keystrokes",
-      "The estimate from Lesson 1-2 deciding which one is correct",
-      "The three rules, in the order they apply",
-      "A test you can run on your own calculator in five seconds",
+      "8 + 4 x 2 worked two ways, reaching 24 and 16",
+      "The three levels, one section each, with the parentheses moved to show what changes",
+      "Why multiplication does not always come before division",
+      "One problem that uses all three levels, walked through a level at a time",
     ] },
   eyebrow: ["Math 7", "U1-L7", "Tools for Problem Solving"],
-  dek: "If two people work out the same expression and get different answers, one of them is wrong. Deciding which is what this rule is for.",
+  dek: "If two people can work the same problem and get different answers, something is missing. This is the thing that was missing.",
 
   ground: {
     sections: [
       { h: "Lesson Goal", p: [
-        "Students will evaluate an expression using the order of operations, and understand that the rule exists to give an expression one value rather than several."
+        "Teach students why the order of operations exists before asking them to use it. The main idea is simple: if two people can look at the same math problem and get different answers because they worked in a different order, we have a problem. Mathematics needs an agreed order so the same problem has the same answer.",
+        "By the end of the lesson, students should understand this hierarchy: parentheses first, then multiplication and division from left to right, then addition and subtraction from left to right.",
+        "The goal is not simply to memorize those three lines. Students should understand why the hierarchy is needed and how to work through it."
       ]},
-      { h: "Key Concepts", p: [
-        "The order of operations: do everything inside grouping symbols first, then multiplication and division from left to right, then addition and subtraction from left to right.",
-        "Grouping symbols such as parentheses exist to CHANGE that order. They are not decoration."
+      { h: "Start With the Problem the Rule Solves", p: [
+        "Before explaining the order, show the student why we need one. Write 8 + 4 x 2, and tell the student that two students tried to solve the same problem.",
+        "The first simply started on the left: 8 + 4 is 12, then 12 x 2 is 24. The second did the multiplication first: 4 x 2 is 8, then 8 + 8 is 16.",
+        "Ask your student: how can the same math problem give us two different answers? That question gives you the reason for the entire lesson. Mathematicians use an agreed order so everyone knows what should happen first, and using that order the correct answer is 16, because multiplication comes before addition."
       ]},
       { h: "Where Students Get Stuck", p: [
-        "🚨 Reading rule 2 as “multiplication before division”. It is not. Multiplication and division rank equally and are done left to right, whichever comes first. The same trap is in rule 3 with addition and subtraction.",
-        "The other common slip is trusting a calculator. A simple four-function calculator often works strictly left to right and will confidently give the wrong answer, which is exactly what happens to Erick in the reading."
+        "🚨 Students may assume that every problem should simply be worked from left to right. The opening example shows why that does not work.",
+        "They may also think multiplication always comes before division, or addition always comes before subtraction. Keep returning to the hierarchy: parentheses first; multiplication and division are together, left to right; addition and subtraction are together, left to right."
       ]},
       { h: "Teaching Suggestion", p: [
-        "Do the calculator test from the book, for real, on whatever is in the house. Enter 2 + 5 x 3. A calculator that shows 17 follows the order of operations; one that shows 21 does not. Phone calculators and cheap desk calculators often disagree with each other, and seeing that is worth more than being told it.",
-        "This lesson leans on Lesson 1-2 and Lesson 1-5. The estimate is what catches the wrong answer, so if estimating is shaky, go back there first."
+        "Before the student calculates anything, ask what has to happen first. Have the student identify the first operation before solving it.",
+        "On 6 + 3 x (8 - 4), ask what has to happen first. There are parentheses, so begin there: 8 - 4 is 4. Now the problem is 6 + 3 x 4. Ask again. Multiplication comes before addition, so 3 x 4 is 12, and 6 + 12 is 18.",
+        "As you teach, keep asking the student why each step comes next. That turns the order of operations into a thinking process instead of a rule the student repeats from memory."
+      ]},
+      { h: "Biblical Connection", p: [
+        "The Bible repeatedly shows us that God values order rather than confusion. 1 Corinthians 14:33 says that God is not the author of confusion but of peace, and 1 Corinthians 14:40 says to let all things be done decently and in order.",
+        "These verses are speaking about order within the church, not giving us a rule for mathematics. But they remind us of something we can see throughout creation: we serve a God of order, not disorder. Mathematics helps us recognize and describe some of that order.",
+        "Numbers also appear repeatedly throughout Scripture. Numbers such as 3, 7, 12 and 40 occur again and again in biblical events and patterns. We do not need to invent hidden meanings for every number to recognize that Scripture regularly uses numbers, measurements, quantities, days, years, generations, distances and groups of people.",
+        "Math is not separate from God's creation. It is one of the tools we use to understand and describe the orderly world He made."
       ]},
       { h: "Key Vocabulary", vocab: true }
     ]
   },
 
   parts: [
-    { title: "Two Calculators, Two Answers", s: [
-      "Sarah and Erick work on the middle school yearbook.",
+    { title: "Why Does Order Matter?", s: [
+      "Two students are working on the same math problem.",
       "",
-      "Erick finds film in the supply cabinet.",
-      "There are 2 rolls with 36 exposures each, and 3 rolls with 24 exposures each.",
-      "How many photos can they take before they have to buy more film?",
+      "[ex] 8 + 4 x 2",
       "",
-      "Before working it out exactly, they estimate.",
-      "2 times 36 is close to 2 times 40, which is 80.",
-      "3 times 24 is close to 3 times 20, which is 60.",
-      "So the answer should be somewhere near 80 plus 60, or about 140 photos.",
+      "The first student starts on the left.",
       "",
-      "Then they each reach for a calculator to get the exact number.",
-      "They use different calculators.",
+      "[ex] 8 + 4 = 12",
+      "[ex] 12 x 2 = 24",
       "",
-      "Sarah's calculator gives 144.",
-      "Erick's calculator gives 1800.",
+      "He writes down 24.",
       "",
-      "Same numbers, same buttons, two answers."
+      "The second student looks at the same problem but does the multiplication first.",
+      "",
+      "[ex] 4 x 2 = 8",
+      "[ex] 8 + 8 = 16",
+      "",
+      "She writes down 16.",
+      "",
+      "Now we have a problem.",
+      "They started with the same numbers and the same operation signs, but they ended with two different answers.",
+      "They cannot both be correct.",
+      "",
+      "So how do we decide what happens first?",
+      "",
+      "That is why we have the order of operations.",
+      "Mathematicians use an agreed hierarchy that tells us which part of a math problem to handle first.",
+      "That way, two people who follow the same order should arrive at the same answer.",
+      /* ⚠️ MINE, two sentences. Both words carry a card, and four of his own
+         questions use "Evaluate" as the instruction, but neither word appears
+         anywhere in his prose. Placed where the lesson first has both to hand. */
+      "A math sentence is numbers and operations written together to say something, the way 8 + 4 x 2 does.",
+      "To evaluate one is to work through it and determine its value.",
+      "",
+      "For our problem, multiplication comes before addition.",
+      "",
+      "[ex] 4 x 2 = 8",
+      "[ex] 8 + 8 = 16",
+      "",
+      "The correct answer is 16."
     ]},
 
-    { title: "Which One Is Right?", s: [
-      "Stop and think about how you would settle this without being told.",
+    { title: "The Hierarchy", s: [
+      "Here is the order we will use.",
       "",
-      "Sarah reasons that 144 must be correct, because it is close to the estimate of 140.",
+      "[ex] First: parentheses",
+      "[ex] Second: multiplication and division, from left to right",
+      "[ex] Third: addition and subtraction, from left to right",
       "",
-      "That is the whole of Lesson 1-4 doing its job.",
-      "The estimate did not give the answer.",
-      "It caught the wrong one.",
+      "Think of it as three levels.",
+      "Finish the higher level before moving down to the next one.",
       "",
-      "So what went wrong inside Erick's calculator?",
-      "",
-      "It worked strictly left to right.",
-      "2 times 36 is 72.",
-      "Then it added 3, giving 75.",
-      "Then it multiplied by 24, giving 1800.",
-      "",
-      "It never did anything unreasonable.",
-      "It just made a different decision about what order to work in.",
-      "",
-      "And that is the real problem.",
-      "If an expression can be worked in more than one order, it has more than one value, and then it does not really mean anything at all."
+      "Let us work through each level so you can see why it matters."
     ]},
 
-    { title: "The Agreement", s: [
-      "To make sure an expression has only one value, mathematicians agreed on a fixed order.",
+    { title: "First: Parentheses", s: [
+      "Whenever you see parentheses, look inside them first.",
+      "It does not matter whether the parentheses are on the left, in the middle, or on the right.",
+      "If they are there, deal with what is inside them before moving on.",
       "",
-      "This is the order of operations.",
+      "Look at this one.",
       "",
-      "First, do all operations within grouping symbols.",
-      "Second, do multiplication and division in order from left to right.",
-      "Third, do addition and subtraction in order from left to right.",
+      "[ex] 8 + (4 x 2)",
       "",
-      "Read the second rule again, carefully.",
+      "The parentheses are on the right, but they still come first.",
       "",
-      "It does not say multiplication before division.",
-      "It says multiplication and division rank equally, and you work through them left to right in whatever order they appear.",
+      "[ex] 4 x 2 = 8",
+      "[ex] 8 + 8 = 16",
       "",
-      "The third rule works the same way for addition and subtraction.",
+      "Now look at what happens when we move the parentheses.",
       "",
-      "Almost everybody gets this wrong the first time, because the rule is usually taught as a list of four things in a fixed sequence."
+      "[ex] (8 + 4) x 2",
+      "",
+      "This time the parentheses tell us to add first.",
+      "",
+      "[ex] 8 + 4 = 12",
+      "[ex] 12 x 2 = 24",
+      "",
+      "Notice what happened.",
+      "We used the same numbers and the same addition and multiplication signs, but the parentheses changed what we were told to do first.",
+      "That changed the answer.",
+      "",
+      "That is the job of parentheses.",
+      "They tell you to do this part first."
     ]},
 
-    { title: "Doing It On Sarah's Sum", s: [
-      "Take the film problem and apply the rules.",
+    { title: "What If There Are Two Sets of Parentheses?", s: [
+      "Sometimes a math problem contains more than one group.",
       "",
-      "The expression is 2 times 36 plus 3 times 24.",
+      "[ex] (8 + 4) + (3 + 2)",
       "",
-      "There are no grouping symbols, so rule 1 has nothing to do.",
+      "Do not mix the two groups together.",
+      "Work through what is inside each set of parentheses.",
       "",
-      "Rule 2 says do the multiplication first, left to right.",
-      "2 times 36 is 72.",
-      "3 times 24 is 72.",
+      "[ex] 8 + 4 = 12",
+      "[ex] 3 + 2 = 5",
       "",
-      "Rule 3 says do the addition last.",
-      "72 plus 72 is 144.",
+      "Now the original problem has become 12 + 5.",
       "",
-      "Sarah was right, and her estimate of 140 was close enough to prove it."
+      "[ex] 12 + 5 = 17",
+      "",
+      "The answer is 17.",
+      "",
+      "Finish what is inside the parentheses first.",
+      "Then continue with the rest of the problem."
     ]},
 
-    { title: "What Parentheses Are For", s: [
-      "Grouping symbols, such as parentheses, are used to change the order of operations.",
+    { title: "Second: Multiplication and Division", s: [
+      "Once the parentheses are finished, the next level is multiplication and division.",
       "",
-      "That is their entire job.",
+      "Here is something important that is easy to misunderstand.",
+      "Multiplication does not always come before division.",
       "",
-      "Look at 5 plus 4 divided by 3.",
-      "Rule 2 comes before rule 3, so the division happens first.",
-      "4 divided by 3 is not a whole number, and the answer comes out awkward.",
+      "Multiplication and division are on the same level.",
+      "When both appear, work from left to right.",
       "",
-      "Now look at the same numbers written as an expression with 5 plus 4 inside parentheses, all divided by 3.",
-      "Rule 1 applies now.",
-      "Add 5 and 4 first, because they are inside the parentheses, which gives 9.",
-      "Then divide by 3, which gives 3.",
+      "[ex] 24 ÷ 6 x 2",
       "",
-      "Same three numbers, same three symbols, different answer.",
-      "The parentheses are what changed it."
+      "Start on the left.",
+      "The first operation you reach is division.",
+      "",
+      "[ex] 24 ÷ 6 = 4",
+      "[ex] 4 x 2 = 8",
+      "",
+      "The answer is 8.",
+      "",
+      "We did not jump ahead and multiply 6 x 2.",
+      "Division and multiplication are equal in the hierarchy, so we worked from left to right."
     ]},
 
-    { title: "Test Your Own Calculator", s: [
-      "Here is something you can do in five seconds.",
+    { title: "Third: Addition and Subtraction", s: [
+      "After multiplication and division are finished, move to addition and subtraction.",
       "",
-      "Find any calculator and enter 2 plus 5 times 3.",
+      "These two are also on the same level.",
+      "That means addition does not automatically come before subtraction.",
       "",
-      "If it shows 17, it follows the order of operations.",
-      "It did the multiplication first, getting 15, then added 2.",
+      "[ex] 15 - 5 + 3",
       "",
-      "If it shows 21, it does not.",
-      "It worked left to right, adding 2 and 5 to get 7, then multiplying by 3.",
+      "Start on the left.",
       "",
-      "Neither calculator is broken.",
-      "The cheaper one simply was not programmed with the agreement.",
+      "[ex] 15 - 5 = 10",
+      "[ex] 10 + 3 = 13",
       "",
-      "Try it on a phone and on a plain desk calculator and see whether they agree with each other.",
+      "The answer is 13.",
       "",
-      "This is also why Lesson 1-4 mattered.",
-      "A calculator will hand you a wrong answer with complete confidence, and an estimate is the only thing standing between you and believing it."
+      "We did the subtraction first because subtraction and addition are on the same level, and the subtraction appeared first as we moved from left to right."
+    ]},
+
+    { title: "Now Put the Hierarchy Together", s: [
+      "Let us work through a problem that uses all three levels.",
+      "",
+      "[ex] 6 + 3 x (8 - 4)",
+      "",
+      "Do not rush into calculating.",
+      "Look at the whole problem and ask what has to happen first.",
+      "",
+      "Check the hierarchy.",
+      "First comes parentheses.",
+      "",
+      "[ex] 8 - 4 = 4",
+      "",
+      "Now the problem becomes 6 + 3 x 4.",
+      "",
+      "Check the hierarchy again.",
+      "Second comes multiplication and division.",
+      "",
+      "[ex] 3 x 4 = 12",
+      "",
+      "Now the problem becomes 6 + 12.",
+      "",
+      "Check the hierarchy one more time.",
+      "Third comes addition and subtraction.",
+      "",
+      "[ex] 6 + 12 = 18",
+      "",
+      "The answer is 18.",
+      "",
+      "We did not guess which operation to use first.",
+      "We worked through the hierarchy one level at a time."
+    ]},
+
+    { title: "Why This Matters", s: [
+      "Remember where we started.",
+      "",
+      "[ex] 8 + 4 x 2",
+      "",
+      "One student got 24.",
+      "Another student got 16.",
+      "",
+      "The order of operations tells us that multiplication happens before addition, so the correct answer is 16.",
+      "",
+      "The rule is not there just to give you something else to memorize.",
+      "It solves a real problem.",
+      "It gives us an agreed way to read and solve the same math problem.",
+      "",
+      "When you see a problem with several operations, do not rush.",
+      "Look at the whole problem and ask what has to happen first.",
+      "Then work your way through the hierarchy."
     ]}
   ],
 
   words: [
-    ["Order of operations", "The agreed order for working out an expression: grouping symbols, then multiplication and division left to right, then addition and subtraction left to right."],
-    ["Expression", "A combination of numbers and operations, such as 2 times 36 plus 3 times 24."],
-    ["Evaluate", "To work out the single value of an expression."],
-    ["Grouping symbols", "Symbols such as parentheses, used to change the order in which operations are done."]
+    ["Order of Operations", "The agreed hierarchy that tells us which operations to do first.", 15],
+    ["Math Sentence", "Numbers and mathematical operations written together to communicate a mathematical idea or calculation.", 17],
+    ["Evaluate", "To work through a math problem and determine its value.", 18],
+    ["Parentheses", "Grouping symbols that tell you to handle what is inside them first.", [46, 47]]
   ],
 
-  findsAt: 68,
+  findsAt: 110,
   questions: [
-    { tag: "The Problem", q: "How did Sarah know that 144 was the correct answer and 1800 was not?",
-      find: [14],
-      hint: "She did something before touching a calculator at all.",
+    { tag: "Why the Rule Exists", q: "Why do we need an order of operations?",
+      find: [11, 12, 14, 16],
+      hint: "Look at what went wrong for the two students at the start.",
       choices: [
-        "Because it was close to the estimate she made first.",
-        "Because her calculator was more expensive.",
-        "Because 144 is an even number.",
-        "Because she worked it out a second time."
-      ], right: 0 },
-
-    { tag: "The Problem", q: "What did Erick's calculator actually do?",
-      find: [19],
-      hint: "It was not broken. It made a different decision.",
-      choices: [
-        "It multiplied everything together.",
-        "It worked strictly left to right.",
-        "It ignored the second roll of film.",
-        "It rounded the numbers first."
+        "To make math problems longer.",
+        "So the same math problem has one agreed answer.",
+        "Because multiplication is always more important.",
+        "So we can use more symbols."
       ], right: 1 },
 
-    { tag: "The Rule", q: "What comes FIRST in the order of operations?",
-      find: [29],
-      hint: "Before any multiplying or adding happens at all.",
+    { tag: "The Hierarchy", q: "What is first in the hierarchy?",
+      find: [24, 30],
+      hint: "Whatever is inside them gets handled before anything else.",
       choices: [
-        "Multiplication.",
         "Addition.",
-        "Everything inside grouping symbols.",
-        "Division."
+        "Multiplication.",
+        "Parentheses.",
+        "Subtraction."
       ], right: 2 },
 
-    { tag: "The Rule", q: "Does rule 2 mean you always do multiplication before division?",
-      find: [33, 34],
-      hint: "The reading says almost everybody gets this wrong the first time.",
+    { tag: "The Hierarchy", q: "What is second in the hierarchy?",
+      find: [25, 59, 62],
+      hint: "Two operations share this level, and neither one outranks the other.",
       choices: [
-        "Yes, multiplication always comes first.",
-        "Yes, unless there are parentheses.",
-        "Only when the numbers are large.",
-        "No. They rank equally and you work left to right."
-      ], right: 3 },
-
-    { tag: "Parentheses", q: "What are grouping symbols such as parentheses for?",
-      find: [46, 47],
-      hint: "The reading says it is their entire job.",
-      choices: [
-        "To change the order of operations.",
-        "To make an expression easier to read.",
-        "To show which numbers are most important.",
-        "To mark where an expression ends."
+        "Multiplication and division.",
+        "Addition and subtraction.",
+        "Addition only.",
+        "Division only."
       ], right: 0 },
 
-    { tag: "The Test", q: "You enter 2 plus 5 times 3 and the calculator shows 21. What does that tell you?",
-      find: [61],
-      hint: "17 means one thing. What does 21 mean?",
+    { tag: "The Hierarchy", q: "What is third in the hierarchy?",
+      find: [26, 72, 73],
+      hint: "The last level, and it also holds two operations of equal rank.",
       choices: [
-        "The calculator is broken.",
-        "It does not follow the order of operations, and worked left to right.",
-        "The batteries are low.",
-        "It followed the order of operations correctly."
+        "Parentheses.",
+        "Multiplication and division.",
+        "Addition and subtraction.",
+        "Multiplication only."
+      ], right: 2 },
+
+    { tag: "Evaluate It", q: "Evaluate 8 + 4 x 2.",
+      find: [19, 20, 21, 22],
+      hint: "This is the problem the two students disagreed about. Which one was right?",
+      choices: [
+        "24",
+        "16",
+        "20",
+        "12"
       ], right: 1 },
 
-    { tag: "The Big Idea", q: "Why did mathematicians agree on an order at all?",
-      find: [27],
-      hint: "Think about what happens to an expression that can be worked more than one way.",
+    { tag: "Evaluate It", q: "Evaluate 24 ÷ 6 x 2.",
+      find: [64, 67, 68, 69],
+      hint: "Both operations are on the same level, so the order you read in decides.",
       choices: [
-        "To make arithmetic faster.",
-        "To make calculators cheaper to build.",
-        "So an expression has only one value, instead of meaning several different things.",
-        "Because multiplication is more important than addition."
-      ], right: 2 }
+        "2",
+        "8",
+        "12",
+        "24"
+      ], right: 1 },
+
+    { tag: "Equal Levels", q: "Why is division done first in 24 ÷ 6 x 2?",
+      find: [62, 63, 71],
+      hint: "It is not because division outranks multiplication.",
+      choices: [
+        "Division is always more important than multiplication.",
+        "Division and multiplication have equal priority, and division appears first from the left.",
+        "Division is easier.",
+        "Multiplication must always be last."
+      ], right: 1 },
+
+    { tag: "All Three Levels", q: "Evaluate 6 + 3 x (8 - 4).",
+      find: [87, 91, 95, 96],
+      hint: "Three levels, one at a time, starting with what is inside the parentheses.",
+      choices: [
+        "18",
+        "24",
+        "36",
+        "12"
+      ], right: 0 }
   ],
 
   vocabQuestions: [
     { q: "What is the <i>order of operations</i>?",
       choices: [
-        "The agreed order for working out an expression.",
-        "The order you press buttons on a calculator.",
-        "A way of estimating an answer.",
-        "The order of the four-step plan."
+        "The agreed hierarchy that tells us which operations to do first.",
+        "The order the numbers were written.",
+        "A way to estimate.",
+        "The order you press calculator buttons."
       ], right: 0 },
-    { q: "What does it mean to <i>evaluate</i> an expression?",
+    { q: "What does it mean to <i>evaluate</i> a math problem?",
       choices: [
-        "To decide whether it is useful.",
-        "To work out its single value.",
-        "To round it to the nearest ten.",
-        "To rewrite it with parentheses."
+        "To guess the answer.",
+        "To work through it and determine its value.",
+        "To put everything in parentheses.",
+        "To rewrite the numbers."
       ], right: 1 },
-    { q: "What are <i>grouping symbols</i>?",
+    { q: "What do <i>parentheses</i> tell you?",
       choices: [
-        "Symbols that show multiplication.",
-        "Symbols that mark the end of a problem.",
-        "Symbols such as parentheses, used to change the order operations are done in.",
-        "Symbols used only in estimation."
-      ], right: 2 },
-    { q: "What is an <i>expression</i>?",
+        "Skip that part of the problem.",
+        "Do what is inside them first.",
+        "Multiply everything inside them.",
+        "Save that part for last."
+      ], right: 1 },
+    { q: "When multiplication and division both appear at the same level, what should you do?",
       choices: [
-        "The answer to a problem.",
-        "A question written in words.",
-        "A single number.",
-        "A combination of numbers and operations."
-      ], right: 3 }
+        "Always multiply first.",
+        "Always divide first.",
+        "Work from left to right.",
+        "Choose whichever looks easier."
+      ], right: 2 }
   ],
 
   todo: { title: "What To Do Now", s: [
-      "That is the reading done.",
-      "There are {q} questions below, and the answers are all in the reading above.",
-      "The one people miss is whether multiplication always comes before division.",
-      "Read The Agreement again before you answer that one.",
-      "Then the word cards, {v} of them, and the check underneath.",
-      "Last, go and find a calculator.",
-      "Enter 2 plus 5 times 3 and write down what it says.",
-      "Then do it on a different calculator, or a phone, and write that down too.",
-      "If the two disagree, you have just seen the exact problem this whole lesson exists to fix."
+      "That is the reading done, and this lesson has more arithmetic in it than the ones before it.",
+      "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words. {T} questions in all.",
+      "Some of them ask you to name a level in the hierarchy and some ask you to work a problem out.",
+      "Before you work any of them out, ask the question the lesson keeps asking: what has to happen first?",
+      "Check the hierarchy, do that level, then look again.",
+      "The one people get wrong is why division comes first in 24 divided by 6 times 2.",
+      "It is not because division outranks multiplication.",
+      "Read Second: Multiplication and Division again if that one is hard.",
+      "Last, the word cards at the top and the check at the bottom of the page."
   ] }
 };

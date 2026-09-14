@@ -203,7 +203,7 @@ module.exports = {
       "First the questions, {q} of them, and the answers are all above.",
       "The one people trip on is prokaryotic against eukaryotic.",
       "Read Two Kinds of Cell again and look for the single test.",
-      "Then the word cards, {v} of them.",
+      "Then the vocabulary check, {v} questions on the word cards at the top of the page.",
       "The book lists thirteen words for this section and you are being asked for eight, so do not panic about the ones that went by in passing.",
       "Last, on paper, and this is the part that makes it stick.",
       "Draw a plant cell and an animal cell side by side and label every part you can name without looking.",

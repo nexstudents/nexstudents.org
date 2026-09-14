@@ -188,9 +188,9 @@ module.exports = {
       "Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is why passive transport is free.",
       "Read Free Rides and Paid Rides again and look for what the molecules were doing before the cell got involved.",
-      "Then the word cards.",
+      "Then the vocabulary check, which sends you back to the cards at the top.",
       "Eight words this time, and every one of them is explained somewhere in the story you just heard.",
-      "Tap each card to check yourself, then answer the vocabulary questions underneath it.",
+      "Tap each card at the top to check yourself, then answer the vocabulary questions at the bottom.",
       "If you can say why the cell has to spend energy on active transport but not on diffusion, you have understood the hardest idea in this lesson."
   ] },
 

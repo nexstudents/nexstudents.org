@@ -737,7 +737,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "{Q} questions, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "{c} word cards at the top of the page, then {Q} questions, then {v} more questions about those words. {T} questions in all.",
       "Before those, work the two problems above to test yourself.",
       "Both make you build your guardrails before the calculation will open, and that's on purpose.",
       "For every question, ask which of the four steps it belongs to: Explore, Plan, Solve, or Examine.",

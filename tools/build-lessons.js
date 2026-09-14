@@ -331,6 +331,28 @@ function checkFinds(L) {
       }
     });
   });
+
+  /* 🚨 THE SAME CHECK FOR A WORD CARD'S THIRD ENTRY. A card that sends the
+     student to the wrong sentence is worse than one that sends him nowhere: he
+     reads a line that does not explain the word and concludes he misunderstood
+     it. Same range rule, same reason, and `findsAt` above already stops the
+     whole build the moment the story's sentence count moves. */
+  (L.words || []).forEach((w, i) => {
+    if (w[2] === undefined) return;
+    const list = Array.isArray(w[2]) ? w[2] : [w[2]];
+    if (!list.length) {
+      console.error("FAIL: " + L.id + ': word card "' + w[0] + '" has an empty find list.\n' +
+        "      Give it the sentence that explains the word, or leave the third entry off.");
+      process.exit(1);
+    }
+    list.forEach((k) => {
+      if (!Number.isInteger(k) || k < 0 || k >= n) {
+        console.error("FAIL: " + L.id + ': word card ' + (i + 1) + ' ("' + w[0] + '") has find index ' +
+          k + ", but the lesson has " + n + " sentences (0-" + (n - 1) + ").");
+        process.exit(1);
+      }
+    });
+  });
 }
 
 /* ── teacher notes ────────────────────────────────────────────────────────
@@ -721,8 +743,19 @@ function serialise(L) {
     '  { title: "' + esc(p.title) + '", s: ' + jsArr(p.s) +
     (p.box ? ", box: " + boxLiteral(p.box) : "") + ' }').join(",\n") + "\n];";
 
-  const words = "var WORDS = [\n" + L.words.map(([t, d]) =>
-    '  ["' + esc(t) + '", "' + esc(d) + '"]').join(",\n") + "\n];";
+  /* 🚨 A WORD MAY CARRY A THIRD ENTRY: WHERE IT IS EXPLAINED IN THE STORY.
+     Paul, 2026-09-14, asked for the word cards to do what the questions already
+     do - send the student to the sentence that explains the word. It is an index
+     into the same flat sentence list `find` uses, or an array of them, and it is
+     OPTIONAL: a word without one simply renders no Find button, so no existing
+     lesson has to change before it gains the feature.
+     ⚠️ checkWordFinds() below validates these against the same count `findsAt`
+     guards, for the same reason: rewrite the story and a stale index quietly
+     points at the wrong line. */
+  const words = "var WORDS = [\n" + L.words.map(([t, d, f]) =>
+    '  ["' + esc(t) + '", "' + esc(d) + '"' +
+    (f === undefined ? "" : ", " + JSON.stringify(Array.isArray(f) ? f : [f])) +
+    ']').join(",\n") + "\n];";
 
   const qs = buildQuestions(L);
   const questions = "var QUESTIONS = [\n" + qs.map((q) =>

@@ -183,9 +183,9 @@ module.exports = {
       "Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is what Pasteur's curved neck was for.",
       "Read Pasteur Solves the Mystery again and look for what the shape let IN and what it kept OUT.",
-      "Then the word cards.",
+      "Then the vocabulary check, which sends you back to the cards at the top.",
       "Four words, and every one of them is explained somewhere in the story you just heard.",
-      "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
+      "Tap each card at the top to check yourself, then answer the four vocabulary questions at the bottom.",
       "If you can explain why the neck had to stay open, you have understood the best experiment in this lesson."
   ] },
   /* ⚠️ VARIABLE was worded three different ways across Paul's three documents -

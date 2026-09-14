@@ -194,11 +194,11 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "{Q} questions about the lesson, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "{c} word cards at the top of the page, then {Q} questions about the lesson, then {v} more questions about those words. {T} questions in all.",
       "For each question, decide whether the sentence needs to vary its type or needs to be broken apart because it is stringy.",
       "The wording in the choices is close on purpose, so read each one slowly before you pick.",
-      "Do the word cards last.",
-      "Tap each card, then answer the question underneath it.",
+      "Read the word cards at the top of the page before you start.",
+      "Tap each card to see what it means, then answer the word questions at the bottom of the page.",
       "If you get stuck, go back to the section with that name and read its first line again."
   ] },
 };

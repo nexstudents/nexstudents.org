@@ -393,11 +393,11 @@ module.exports = {
          It used to say "ten" and "four" in two separate lines and never gave the
          total, so the student was told the job was ten. The count now comes from
          the lesson. See checkTodoCounts() in lesson-instructions.js. */
-      "{Q} questions about the story, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "{c} word cards at the top of the page, then {Q} questions about the story, then {v} more questions about those words. {T} questions in all.",
       "For each sentence, decide what it is doing: telling, asking, commanding, or shouting.",
       "The mark on the end is a clue, not the answer.",
-      "Do the word cards last.",
-      "Tap each card, then answer the question underneath it.",
+      "Read the word cards at the top of the page before you start.",
+      "Tap each card to see what it means, then answer the word questions at the bottom of the page.",
       "If you get stuck, go back to the section with that name and read its first line again."
   ] },
 };

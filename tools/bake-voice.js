@@ -117,7 +117,16 @@ function sentencesOf(parts) {
      never enters SENT there. Skip it here by the same rule or every clip after
      the first break plays against the wrong line. Both rules are "is it blank
      after trimming" - keep them identical. */
-  parts.forEach((p) => (p.s || []).forEach((t) => { if (String(t).trim()) out.push(t); }));
+  /* 🚨 STRIP [ex] AND [verse] EXACTLY AS THE PAGE DOES. They mark a paragraph as
+     a worked example or a scripture quote; the page removes the marker before the
+     sentence enters SENT, so the text baked here has to be the stripped text or
+     textHash will not match and every lesson silently drops to a device voice.
+     ⚠️ The twin of this lives in lesson-template.html. Change one, change both. */
+  const strip = (t) => t.indexOf("[ex] ") === 0 ? t.slice(5)
+                     : t.indexOf("[verse] ") === 0 ? t.slice(8) : t;
+  parts.forEach((p) => (p.s || []).forEach((t) => {
+    if (String(t).trim()) out.push(strip(String(t)));
+  }));
   return out;
 }
 

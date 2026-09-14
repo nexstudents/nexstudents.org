@@ -177,7 +177,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "{Q} questions about the lesson, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "{c} word cards at the top of the page, then {Q} questions about the lesson, then {v} more questions about those words. {T} questions in all.",
       "Before you answer, say the pattern out loud: the small fact first, then one more zero at a time.",
       "On a division question, check which number you rounded first.",
       "It should always be the divisor, not the dividend.",

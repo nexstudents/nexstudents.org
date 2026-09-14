@@ -177,7 +177,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "{Q} questions about the lesson, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "{c} word cards at the top of the page, then {Q} questions about the lesson, then {v} more questions about those words. {T} questions in all.",
       "For each question, build the estimate first, the same way Jordan's raise and Simone's division were checked above.",
       "If a calculator answer and your estimate don't agree, trust the estimate and look for where the calculation went wrong.",
       "The tuna and crackers question at the end isn't a trick.",

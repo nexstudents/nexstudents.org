@@ -180,9 +180,9 @@ module.exports = {
       "Use the bar or the arrows to go back to the part it came from and read it again.",
       "The one people trip on is the difference between science and technology.",
       "Read Science and Technology again and look for which one investigates and which one applies.",
-      "Then the word cards.",
+      "Then the vocabulary check, which sends you back to the cards at the top.",
       "Four words, and every one of them is explained somewhere in the story you just heard.",
-      "Tap each card to check yourself, then answer the four vocabulary questions underneath it.",
+      "Tap each card at the top to check yourself, then answer the four vocabulary questions at the bottom.",
       "This is the last lesson in the unit, so if you can say what ethics asks that science cannot, you have finished it properly."
   ] },
   /* Paul's definitions, 2026-09-03. Four words and four checks - a clean pair, unlike

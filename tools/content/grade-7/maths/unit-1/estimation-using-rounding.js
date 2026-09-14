@@ -184,7 +184,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "{Q} questions about the lesson, then {c} word cards with {v} more questions under them. {T} questions in all.",
+      "{c} word cards at the top of the page, then {Q} questions about the lesson, then {v} more questions about those words. {T} questions in all.",
       "For each question, round first and check your rounding against the rule before picking an answer.",
       "If a question about money trips you up, round every price to the nearest dollar before you add or compare.",
       "When you're stuck on which way a number rounds, look at the digit right next to the place you're rounding to.",
