@@ -65,7 +65,8 @@ module.exports = {
       "Long after the empire fell, later governments went back to Roman ideas about courts, contracts and citizenship and built on them."
     ]},
     { title: "What Scripture Says", s: [
-      "Romans 13:1 says that “there is no power but of God: the powers that be are ordained of God.”",
+      "[verse] Romans 13:1 says that “there is no power but of God: the powers that be are ordained of God.”",
+      "",
       "Paul wrote that about the Roman government, and he wrote it as a citizen of an empire whose system was deeply unequal.",
       "Scripture calls for respect toward lawful authority, and it also holds every authority answerable to God, which means order matters and justice matters more."
     ]}

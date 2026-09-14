@@ -141,7 +141,9 @@ module.exports = {
     }},
     { title: "Words Have a Purpose", s: [
       "God gave us the ability to communicate, and the words we choose matter.",
-      "Proverbs 25:11 says, “A word fitly spoken is like apples of gold in pictures of silver.”",
+      "",
+      "[verse] Proverbs 25:11 says, “A word fitly spoken is like apples of gold in pictures of silver.”",
+      "",
       "In other words, the right words used at the right time have value.",
       "",
       "The Bible itself contains statements, questions, commands, and powerful expressions of emotion.",
@@ -149,7 +151,9 @@ module.exports = {
       "",
       "Learning how sentences work helps us communicate our own thoughts clearly.",
       "Whether we are speaking to our family, answering a teacher, encouraging someone at church, or writing something important, we should think about what our words are meant to do.",
-      "As Colossians 4:6 says, “Let your speech be alway with grace.”",
+      "",
+      "[verse] As Colossians 4:6 says, “Let your speech be alway with grace.”",
+      "",
       "Good communication is not only about correct punctuation.",
       "It is also about using our words wisely."
     ]},

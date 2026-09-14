@@ -185,7 +185,7 @@ module.exports = {
     { title: "Where Were the Hearing?", s: [
       "1 Corinthians 12:17 asks a strange question.",
       "",
-      "“If the whole body were an eye, where were the hearing?”",
+      "[verse] “If the whole body were an eye, where were the hearing?”",
       "",
       "Paul is writing about people working together, and he reaches for a body to explain it, because a body is the clearest example anyone has of many different parts with one purpose.",
       "",

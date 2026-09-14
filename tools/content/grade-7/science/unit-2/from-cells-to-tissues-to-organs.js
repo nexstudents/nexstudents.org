@@ -152,7 +152,7 @@ module.exports = {
     ]},
 
     { title: "Many Members, One Body", s: [
-      "1 Corinthians 12:12 says that a body is one, and yet has many members, and that all those members are one body.",
+      "[verse] 1 Corinthians 12:12 says that a body is one, and yet has many members, and that all those members are one body.",
       "",
       "Paul wrote it about people, and the last lesson used the same chapter.",
       "",

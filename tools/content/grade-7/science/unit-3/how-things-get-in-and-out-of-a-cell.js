@@ -170,7 +170,7 @@ module.exports = {
       "None of that is decided by the cell thinking about it.",
       "It comes from how the membrane is built.",
       "",
-      "Psalm 139:14 says, “I will praise thee; for I am fearfully and wonderfully made.”",
+      "[verse] Psalm 139:14 says, “I will praise thee; for I am fearfully and wonderfully made.”",
       "",
       "David wrote that about the whole body, long before anybody knew a cell existed.",
       "It turns out to be true at a scale he could never have seen.",

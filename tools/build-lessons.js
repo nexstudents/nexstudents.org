@@ -420,10 +420,25 @@ function requireGround(L) {
    AROUND the quotes and are free prose; requiring those to be verbatim too would
    mean a box could only ever restate whole sentences, which is not a box, it is a
    paragraph. The QUOTES are the claim about the lesson; the gloss is not. */
+/* 🚨 A `when` IS QUOTED STORY TEXT, SO STRIP `[ex]` AND `[verse]` BEFORE MATCHING.
+   The markers are presentation: the reader never sees one and the voice never
+   says one. Marking a line that already carried a box or a visual otherwise
+   breaks the match and fails the build claiming the sentence is not in the
+   story, which it plainly is. Cost one failed build on 2026-09-14, on
+   kinds-of-sentences' Proverbs 25:11.
+   ⚠️ BOTH requireBoxes AND requireVisuals match this way. Anything else added
+   that compares a `when` against story text has to strip the same way. */
+const MARKERS = ["[ex] ", "[verse] "];
+const unmark = (s) => {
+  let t = String(s).trim();
+  MARKERS.forEach((m) => { if (t.indexOf(m) === 0) t = t.slice(m.length); });
+  return t.trim();
+};
+
 function requireBoxes(L) {
   const story = [];
   (L.parts || []).forEach((p) => (p.s || []).forEach((s) => {
-    if (String(s).trim()) story.push(String(s).trim());
+    if (String(s).trim()) story.push(unmark(s));
   }));
 
   (L.parts || []).forEach((p, i) => {
@@ -483,7 +498,7 @@ function requireVisuals(L) {
   if (!V) return;                       /* optional - most lessons have none */
   const story = [];
   (L.parts || []).forEach((p) => (p.s || []).forEach((s) => {
-    if (String(s).trim()) story.push(String(s).trim());
+    if (String(s).trim()) story.push(unmark(s));
   }));
 
   if (!Array.isArray(V) || !V.length) {
