@@ -442,6 +442,54 @@ const unmark = (s) => {
    anywhere. Checked here instead, against the same list the cards come from.
    ⚠️ Plural and possessive forms are allowed: the sentence may say "membranes"
    or "cell's" where the card says "membrane". Anything else fails the build. */
+/* 🚨 EVERY [ex] AND [verse] LINE GETS A FRAME IN THE VISUAL PANEL.
+   Paul, 2026-09-14: "anything that you're showing as an example you should put
+   in that visual panel ... so anything that you're trying to Mark as an
+   example." The markers already say which lines are examples, so the panel
+   should not need a second hand-written list saying the same thing.
+   A marked line the lesson has NOT written a frame for gets a text frame built
+   from the line itself: the example in the panel, the kind naming what it is.
+   ⚠️ A HAND-WRITTEN FRAME ALWAYS WINS. If the lesson already has a visual on
+   that sentence - usually a picture - it is left alone. This only fills gaps.
+   ⚠️ Generated frames are merged in READING ORDER, because requireVisuals
+   refuses a list that is out of order and the panel walks it forwards. */
+function frameMarkedLines(L) {
+  if (!L.parts) return;
+  const story = [];
+  (L.parts || []).forEach((p) => (p.s || []).forEach((t) => {
+    if (String(t).trim()) story.push(String(t));
+  }));
+
+  const have = new Set((L.visuals || []).map((v) => unmark(v.when)));
+  const made = [];
+  story.forEach((raw, i) => {
+    const isEx = raw.indexOf("[ex] ") === 0;
+    const isVerse = raw.indexOf("[verse] ") === 0;
+    if (!isEx && !isVerse) return;
+    const text = unmark(raw);
+    if (have.has(text)) return;                 /* the lesson wrote its own */
+    /* 🚨 SKIP A LINE THAT APPEARS TWICE. `when` matches by text, so a repeated
+       example - Order of Operations opens AND closes on "8 + 4 x 2" - would fire
+       the frame on whichever came first and requireVisuals refuses it outright.
+       A deliberate repeat is a real teaching device here, so the repeat wins and
+       the frame is skipped rather than the lesson being rewritten around it. */
+    if (story.filter((x) => unmark(x) === text).length > 1) return;
+    /* a scripture reference on its own line is the tail of the quote above it,
+       not a frame of its own - it would blank the verse the reader is on */
+    if (isVerse && text.length < 30 && /\d/.test(text)) return;
+    made.push({ at: i, when: text,
+      kind: isVerse ? "Scripture" : "Example",
+      body: text,
+      note: isVerse ? "" : "" });
+  });
+  if (!made.length) return;
+
+  const all = (L.visuals || []).map((v) => ({ at: story.findIndex((x) => unmark(x) === unmark(v.when)), v }))
+    .concat(made.map((m) => ({ at: m.at, v: { when: m.when, kind: m.kind, body: m.body, note: m.note } })));
+  all.sort((a, b) => a.at - b.at);
+  L.visuals = all.map((x) => x.v);
+}
+
 function checkGloss(L) {
   const norm = (x) => String(x).toLowerCase().replace(/[^a-z ]/g, "").trim();
   const cards = (L.words || []).map((w) => norm(w[0]));
@@ -784,6 +832,9 @@ function serialise(L) {
   checkGloss(L);
   requireGround(L);
   requireBoxes(L);
+  /* fill the panel from the markers BEFORE the guard runs, so the generated
+     frames are held to the same order and existence rules as hand-written ones */
+  frameMarkedLines(L);
   requireVisuals(L);
   requireWork(L);
   const work = "var WORK = " + workLiteral(L.work) + ";";

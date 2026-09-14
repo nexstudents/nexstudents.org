@@ -176,7 +176,7 @@ module.exports = {
     { title: "What a Plant Has That You Do Not", s: [
       "A plant cell has everything above, and two things you do not have.",
       "",
-      "A cell wall sits outside the cell membrane and it is stiff, which is a good part of why a tree can hold itself up while you need a skeleton to manage the same thing.",
+      "A {{cell wall}} sits outside the cell membrane and it is stiff, which is a good part of why a tree can hold itself up while you need a skeleton to manage the same thing.",
       "",
       "And a plant cell has chloroplasts.",
       "",
@@ -210,10 +210,18 @@ module.exports = {
      ⚠️ `when` quotes a story sentence exactly. requireVisuals() fails the build
      if it does not match, and it strips [ex]/[verse] before comparing. */
   visuals: [
-    { when: "A forklift is pulling pallets off a truck and stacking them in the racks, somebody at a desk has the paperwork for what is supposed to be on them, and somebody further down is wrapping a load so it does not come apart on the way out.",
+    { when: "Walk into a big warehouse, give it about thirty seconds, and you will not need anybody to explain the place to you.",
       kind: "A warehouse floor", pic: "/lessons/science/inside-a-cell-part-by-part/pics/warehouse-floor.jpg",
       picAlt: "A warehouse with tall racks of pallets, a forklift, and workers each doing a different job",
       note: "Thirty seconds in here and you know who does what." },
+    { when: "When Robert Hooke looked at cork and named what he saw cells, he was looking at empty rooms, because the cork was dead and whatever had been working in there was long gone.",
+      kind: "Hooke's cork", pic: "/lessons/science/inside-a-cell-part-by-part/pics/cork.jpg",
+      picAlt: "A slice of cork magnified, rows of empty box shaped chambers with thin dry walls",
+      note: "Empty rooms. This is what he named cells after." },
+    { when: "Before you learn anybody's job, learn the three things every one of these buildings has.",
+      kind: "Three things every cell has", pic: "/lessons/science/inside-a-cell-part-by-part/pics/animal-cell.jpg",
+      picAlt: "An animal cell, its outer membrane, the cytoplasm inside it and the nucleus",
+      note: "The wall, the floor, and the one in charge. All three are in here." },
     { when: "In a small operation the boss is out on the floor with everybody else, holding the clipboard, with no office and no door to knock on.",
       kind: "Boss on the floor", pic: "/lessons/science/inside-a-cell-part-by-part/pics/boss-on-floor.jpg",
       picAlt: "A supervisor with a clipboard standing among the workers, no office anywhere",
@@ -242,10 +250,18 @@ module.exports = {
       kind: "Where the power comes from", pic: "/lessons/science/inside-a-cell-part-by-part/pics/forklift-charging.jpg",
       picAlt: "A forklift plugged into a charger on a warehouse wall",
       note: "Cut this and everything else in the building stops." },
+    { when: "A cell wall sits outside the cell membrane and it is stiff, which is a good part of why a tree can hold itself up while you need a skeleton to manage the same thing.",
+      kind: "Cell wall", pic: "/lessons/science/inside-a-cell-part-by-part/pics/plant-cell.jpg",
+      picAlt: "Plant cells packed together, each inside a thick stiff wall",
+      note: "The thick edges are the walls. That is what a tree stands up with." },
     { when: "Chloroplasts are the green organelles where a plant catches sunlight and makes its own food.",
       kind: "Chloroplast", pic: "/lessons/science/inside-a-cell-part-by-part/pics/chloroplast.jpg",
       picAlt: "A chloroplast cut open, showing the green stacks inside",
       note: "Only plants have these. The green stacks catch the sunlight." },
+    { when: "Proverbs has a line about building a house that fits this lesson better than it has any business fitting.",
+      kind: "Chambers filled", pic: "/lessons/science/inside-a-cell-part-by-part/pics/warehouse-floor.jpg",
+      picAlt: "A warehouse floor with racks of pallets and workers at their jobs",
+      note: "Back where the lesson started. Rooms, with what belongs in them inside." },
   ],
 
   words: [
@@ -256,7 +272,8 @@ module.exports = {
     ["Prokaryotic", "A cell whose control center has no membrane around it, so its instructions float loose.", 15],
     ["Eukaryotic", "A cell whose nucleus has a membrane around it, like an office with walls.", 18],
     ["Mitochondria", "The organelles where the cell gets energy out of food.", 34],
-    ["Chloroplast", "The green organelle where a plant catches sunlight and makes its own food.", 41]
+    ["Chloroplast", "The green organelle where a plant catches sunlight and makes its own food.", 41],
+    ["Cell wall", "A stiff layer outside the cell membrane of a plant cell, which is what holds the plant up.", 39]
   ],
 
   findsAt: 49,

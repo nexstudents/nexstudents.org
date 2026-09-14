@@ -452,7 +452,19 @@ var ART = {
     '<circle cx="12" cy="10" r="3"/>', "A map pin"),
 };
 
-var VISUALS = [];
+var VISUALS = [
+  { at: 3, kind: "Scripture", body: "\"For which of you, intending to build a tower, sitteth not down first, and counteth the cost...\"" },
+  { at: 32, kind: "Example", body: "200 + 100 = 300" },
+  { at: 45, kind: "Example", body: "198 + 103 = 301" },
+  { at: 53, kind: "Example", body: "200 + 300 = 500" },
+  { at: 59, kind: "Example", body: "329 - 189 = 140" },
+  { at: 68, kind: "Example", body: "$1 x 4 = $4" },
+  { at: 73, kind: "Example", body: "$0.98 x 4 = $3.92" },
+  { at: 75, kind: "Example", body: "$5.00 - $3.92 = $1.08" },
+  { at: 87, kind: "Example", body: "250 + 350 = 600" },
+  { at: 90, kind: "Example", body: "247 + 354 = 601" },
+  { at: 102, kind: "Example", body: "100 divided by 10 is 10." }
+];
 
 /* The worked problems, or []. build-lessons.js rewrites this ONE line. */
 var WORK = [];

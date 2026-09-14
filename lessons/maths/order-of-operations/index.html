@@ -458,7 +458,25 @@ var ART = {
     '<circle cx="12" cy="10" r="3"/>', "A map pin"),
 };
 
-var VISUALS = [];
+var VISUALS = [
+  { at: 24, kind: "Example", body: "First: parentheses" },
+  { at: 25, kind: "Example", body: "Second: multiplication and division, from left to right" },
+  { at: 26, kind: "Example", body: "Third: addition and subtraction, from left to right" },
+  { at: 34, kind: "Example", body: "8 + (4 x 2)" },
+  { at: 39, kind: "Example", body: "(8 + 4) x 2" },
+  { at: 49, kind: "Example", body: "(8 + 4) + (3 + 2)" },
+  { at: 53, kind: "Example", body: "3 + 2 = 5" },
+  { at: 55, kind: "Example", body: "12 + 5 = 17" },
+  { at: 64, kind: "Example", body: "24 ÷ 6 x 2" },
+  { at: 67, kind: "Example", body: "24 ÷ 6 = 4" },
+  { at: 75, kind: "Example", body: "15 - 5 + 3" },
+  { at: 77, kind: "Example", body: "15 - 5 = 10" },
+  { at: 78, kind: "Example", body: "10 + 3 = 13" },
+  { at: 82, kind: "Example", body: "6 + 3 x (8 - 4)" },
+  { at: 87, kind: "Example", body: "8 - 4 = 4" },
+  { at: 91, kind: "Example", body: "3 x 4 = 12" },
+  { at: 95, kind: "Example", body: "6 + 12 = 18" }
+];
 
 /* The worked problems, or []. build-lessons.js rewrites this ONE line. */
 var WORK = [];
