@@ -68,7 +68,8 @@ module.exports = {
       "",
       "Redi had also demonstrated an important part of good science.",
       "He changed one variable while keeping other conditions similar.",
-      "Experiments designed this way help scientists determine what is actually causing a result."
+      "Experiments designed this way help scientists determine what is actually causing a result.",
+      "A test built that way, changing one factor while keeping everything else the same, is called a controlled experiment."
     ]},
     { title: "Pasteur Solves the Mystery", s: [
       "Scientists later discovered microorganisms, and some wondered whether these tiny living things might still appear spontaneously.",
@@ -196,10 +197,10 @@ module.exports = {
      The card has to agree with the vocabulary check or a student reasons his way to
      the wrong box, so the ANSWER KEY wording wins here and in Q7. */
   words: [
-    ["Spontaneous Generation", "The old belief that living things could naturally appear from nonliving material. Rags making mice, meat making maggots. Every careful test of it failed."],
-    ["Biogenesis", "The principle that living things come from other living things. What replaced spontaneous generation after Pasteur."],
-    ["Variable", "Something that can change or be measured during an experiment. Redi changed only the covering on the jars."],
-    ["Controlled Experiment", "A test designed to determine how changing one factor affects the result."]
+    ["Spontaneous Generation", "The old belief that living things could naturally appear from nonliving material. Rags making mice, meat making maggots. Every careful test of it failed.", 3],
+    ["Biogenesis", "The principle that living things come from other living things. What replaced spontaneous generation after Pasteur.", 28],
+    ["Variable", "Something that can change or be measured during an experiment. Redi changed only the covering on the jars.", 16],
+    ["Controlled Experiment", "A test designed to determine how changing one factor affects the result.", 18]
   ],
   /* Paul's questions, 2026-09-03. Every `find` was checked line by line against the
      rewritten story, not carried over. */
@@ -208,7 +209,7 @@ module.exports = {
      an index can stay in range and still be wrong: merging two sentences into one on
      2026-09-03 left question 4 pointing one line into the next paragraph, and the
      range check passed. See checkFinds() in build-lessons.js. */
-  findsAt: 55,
+  findsAt: 56,
   questions: [
     { q: "What did Redi's experiment with meat show?", find: [9, 10, 11, 13, 14],
       hint: "Compare the open jars with the ones the flies could not reach.",
@@ -218,7 +219,7 @@ module.exports = {
         "Maggots only grow inside sealed jars.",
         "Meat can produce living things."
       ], right: 1 },
-    { q: "Why was the curved neck on Pasteur's flask important?", find: [20, 21, 22],
+    { q: "Why was the curved neck on Pasteur's flask important?", find: [21, 22, 23],
       hint: "Think about what the shape let IN and what it kept OUT.",
       choices: [
         "It prevented all air from entering.",
@@ -226,7 +227,7 @@ module.exports = {
         "It allowed air inside while trapping dust and microorganisms.",
         "It kept the broth colder."
       ], right: 2 },
-    { q: "What does biogenesis mean?", find: [26, 27],
+    { q: "What does biogenesis mean?", find: [27, 28],
       hint: "It is the principle that replaced spontaneous generation.",
       choices: [
         "Life can appear from nonliving material.",
@@ -234,7 +235,7 @@ module.exports = {
         "Living things come from other living things.",
         "All organisms need sunlight."
       ], right: 2 },
-    { q: "Why did Pasteur's experiment not answer where the first life came from?", find: [35, 36, 37],
+    { q: "Why did Pasteur's experiment not answer where the first life came from?", find: [36, 37, 38],
       hint: "Look at what was already in the room before the experiment started.",
       choices: [
         "His microscope was not powerful enough.",

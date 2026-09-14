@@ -80,11 +80,12 @@ module.exports = {
       "The one to slow down on is who counted as Roman. The answer changes across the lesson, because Rome kept widening it. Go back to Who Counted as Roman and read it from the start."
   ] },
   words: [
-    ["Senate", "Rome's council of powerful men. It advised the leaders, argued about laws, and controlled the treasury."],
-    ["Citizenship", "The legal status that gave you rights: to vote, to make contracts, to use the courts, and not to be punished without a trial."],
-    ["Consul", "One of two officials elected each year to lead Rome and command its armies. Either could overrule the other."],
-    ["Law", "A written, published rule applied by courts, rather than whatever the ruler decided that day."]
+    ["Senate", "Rome's council of powerful men. It advised the leaders, argued about laws, and controlled the treasury.", 4],
+    ["Citizenship", "The legal status that gave you rights: to vote, to make contracts, to use the courts, and not to be punished without a trial.", 10],
+    ["Consul", "One of two officials elected each year to lead Rome and command its armies. Either could overrule the other.", 2],
+    ["Law", "A written, published rule applied by courts, rather than whatever the ruler decided that day.", 19]
   ],
+  findsAt: 28,
   questions: [
     { q: "What was the main idea about government in this lesson?", find: [1, 2],
       hint: "Look near the start, for what Rome actually ran on.",

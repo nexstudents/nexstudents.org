@@ -82,6 +82,7 @@ module.exports = {
       "",
       "And here is the useful part.",
       "Often the shape of a cell tells you something about the job it performs.",
+      "That job is the cell's function, and function is simply the job a cell or a part does.",
       "",
       "That is not a fact to memorize.",
       "It is a tool, and it means you can look at a cell you have never seen before and make a sensible guess about what it is for."
@@ -180,13 +181,13 @@ module.exports = {
   ] },
 
   words: [
-    ["Tissue", "A group of similar cells working together."],
-    ["Organ", "Different tissues working together as one structure."],
-    ["Organ system", "Organs working together."],
-    ["Function", "The job a cell or a part does."]
+    ["Tissue", "A group of similar cells working together.", 38],
+    ["Organ", "Different tissues working together as one structure.", 41],
+    ["Organ system", "Organs working together.", 45],
+    ["Function", "The job a cell or a part does.", 8]
   ],
 
-  findsAt: 56,
+  findsAt: 57,
   questions: [
     { q: "What does the shape of a cell usually tell you?",
       find: [7],
@@ -199,7 +200,7 @@ module.exports = {
       ], right: 0 },
 
     { q: "A cell is long and hollow with holes at each end. What is that shape good for?",
-      find: [16, 17],
+      find: [17, 18],
       hint: "Think about what a tube is for before thinking about biology at all.",
       choices: [
         "Storing waste.",
@@ -209,7 +210,7 @@ module.exports = {
       ], right: 1 },
 
     { q: "Why can a cell in a many-celled organism be so good at one job?",
-      find: [24, 25],
+      find: [25, 26],
       hint: "Compare it with a single-celled organism that has no one to depend on.",
       choices: [
         "Because it is larger than a one-celled organism.",
@@ -219,7 +220,7 @@ module.exports = {
       ], right: 2 },
 
     { q: "What is the difference between a tissue and an organ?",
-      find: [37, 39, 40],
+      find: [38, 40, 41],
       hint: "The reading points at one word and says it is what separates them.",
       choices: [
         "An organ is larger than a tissue.",
@@ -229,7 +230,7 @@ module.exports = {
       ], right: 3 },
 
     { q: "Why is the heart an organ rather than a tissue?",
-      find: [41],
+      find: [42],
       hint: "Count how many kinds of tissue are in it.",
       choices: [
         "Because it is muscle and nerve and blood vessels all at once, working as one thing.",
@@ -239,7 +240,7 @@ module.exports = {
       ], right: 0 },
 
     { q: "Put the ladder in order from smallest to largest.",
-      find: [46],
+      find: [47],
       hint: "Every rung is a group of the rung below it.",
       choices: [
         "Tissue, cell, organ system, organ, organism.",

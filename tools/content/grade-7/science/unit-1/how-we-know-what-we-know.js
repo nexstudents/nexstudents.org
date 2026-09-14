@@ -192,11 +192,11 @@ module.exports = {
      before. ⚠️ Only four have a check question on Day Two: Paul wrote none for Observation
      and one was NOT invented for him. build-lessons.js warns about the gap every build. */
   words: [
-    ["Observation", "Something noticed or measured about the natural world."],
-    ["Hypothesis", "A possible explanation or answer that can be tested using evidence."],
-    ["Control", "Something that provides a comparison in an experiment."],
-    ["Theory", "A broad explanation supported by a large amount of evidence and repeated testing."],
-    ["Law", "A description of a consistent pattern or relationship observed in nature."]
+    ["Observation", "Something noticed or measured about the natural world.", 10],
+    ["Hypothesis", "A possible explanation or answer that can be tested using evidence.", 20],
+    ["Control", "Something that provides a comparison in an experiment.", 29],
+    ["Theory", "A broad explanation supported by a large amount of evidence and repeated testing.", 40],
+    ["Law", "A description of a consistent pattern or relationship observed in nature.", 41]
   ],
   /* 🚨 findsAt = the story sentence count these `find` indexes were verified against.
      Change the story and the build stops until they are re-checked. See checkFinds(). */

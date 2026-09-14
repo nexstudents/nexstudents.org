@@ -128,9 +128,9 @@ module.exports = {
   ],
 
   words: [
-    ["Revise", "To revise means to look at a piece of writing again and change it to make it clearer or more interesting."],
-    ["Vary", "To vary means to use different types of something instead of repeating the same one over and over."],
-    ["Stringy Sentence", "A stringy sentence connects too many ideas with the word and, so it rambles on and is hard to follow."]
+    ["Revise", "To revise means to look at a piece of writing again and change it to make it clearer or more interesting.", 45],
+    ["Vary", "To vary means to use different types of something instead of repeating the same one over and over.", 25],
+    ["Stringy Sentence", "A stringy sentence connects too many ideas with the word and, so it rambles on and is hard to follow.", 26]
   ],
 
   vocabQuestions: [

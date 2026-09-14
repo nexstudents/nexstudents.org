@@ -48,6 +48,7 @@ module.exports = {
     { title: "Why A Calculator Can Be Wrong", s: [
       "A calculator is a fast, simple way to do the arithmetic.",
       "But hitting the wrong key, entering a number wrong, or doing the steps in the wrong order can all cause an error.",
+      "That is a calculator error, and notice that none of it is the calculator being wrong.",
       "The calculator has no way of knowing any of that happened.",
       "Being able to tell whether an answer is reasonable is its own skill, separate from doing the math.",
       "You can use estimation to check it.",
@@ -85,23 +86,23 @@ module.exports = {
   ],
 
   words: [
-    ["Reasonable", "Close enough to your estimate that the answer is probably right, not a mistake."],
-    ["Estimate", "A quick, rounded answer used to test whether a real answer makes sense."],
-    ["Calculator Error", "A wrong answer caused by hitting the wrong key, entering a number wrong, or doing steps out of order, not by the calculator itself being wrong."],
-    ["Check", "Comparing a real answer against your estimate to catch a mistake before it goes any further."]
+    ["Reasonable", "Close enough to your estimate that the answer is probably right, not a mistake.", 23],
+    ["Estimate", "A quick, rounded answer used to test whether a real answer makes sense.", 11],
+    ["Calculator Error", "A wrong answer caused by hitting the wrong key, entering a number wrong, or doing steps out of order, not by the calculator itself being wrong.", 6],
+    ["Check", "Comparing a real answer against your estimate to catch a mistake before it goes any further.", 9]
   ],
 
   /* 30 story sentences; the finds below were verified against that count. */
-  findsAt: 30,
+  findsAt: 31,
   questions: [
     { tag: "The Raise",
       q: "Jordan's calculator said his raise would add $42.00 a week. What does the estimate say?",
-      find: [14, 15],
+      find: [15, 16],
       choices: ["About $4 a week.", "About $40 a week.", "About $42 a week.", "About $400 a week."], right: 0 },
 
     { tag: "The Raise",
       q: "The estimate is about $4 and the calculator said $42.00. What should Jordan conclude?",
-      find: [16],
+      find: [17],
       choices: [
         "His calculator's answer is not reasonable.",
         "His calculator's answer is reasonable.",
@@ -121,7 +122,7 @@ module.exports = {
 
     { tag: "The Rule",
       q: "If your estimate and your calculator's answer are close, what does that tell you?",
-      find: [9],
+      find: [10],
       choices: [
         "The calculator's answer is probably right.",
         "The calculator's answer is definitely exact.",
@@ -131,7 +132,7 @@ module.exports = {
 
     { tag: "Simone's Division",
       q: "Simone's calculator gave 6.15 for 4,182 divided by 680. What estimate confirms it's reasonable?",
-      find: [19, 20, 21],
+      find: [20, 21, 22],
       choices: [
         "4,200 divided by 700 is about 6.",
         "4,182 divided by 6 is about 700.",
@@ -141,12 +142,12 @@ module.exports = {
 
     { tag: "Maya's Shopping",
       q: "Maya's total came to $24.06 for sunglasses, two rolls of film, and sunscreen. What's the rounded estimate?",
-      find: [27, 28],
+      find: [28, 29],
       choices: ["$24.", "$20.", "$28.", "$16."], right: 0 },
 
     { tag: "Maya's Shopping",
       q: "Since $24.06 is close to the $24 estimate, what can Maya conclude about the cashier's total?",
-      find: [29],
+      find: [30],
       choices: [
         "It's reasonable.",
         "It's a mistake.",

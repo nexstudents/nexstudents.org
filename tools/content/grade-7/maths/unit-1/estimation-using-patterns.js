@@ -90,10 +90,10 @@ module.exports = {
   ],
 
   words: [
-    ["Pattern", "A string of simple facts, like 3 times 5, 30 times 5, 300 times 5, that lets you multiply big rounded numbers in your head."],
-    ["Divisor", "The number you're dividing by. Round this one first when you estimate a quotient."],
-    ["Dividend", "The number being divided. Swap it for a nearby number that divides evenly once the divisor is rounded."],
-    ["Quotient", "The answer to a division problem, the thing a pattern helps you estimate quickly."]
+    ["Pattern", "A string of simple facts, like 3 times 5, 30 times 5, 300 times 5, that lets you multiply big rounded numbers in your head.", 5],
+    ["Divisor", "The number you're dividing by. Round this one first when you estimate a quotient.", 24],
+    ["Dividend", "The number being divided. Swap it for a nearby number that divides evenly once the divisor is rounded.", 24],
+    ["Quotient", "The answer to a division problem, the thing a pattern helps you estimate quickly.", 23]
   ],
 
   /* 38 story sentences; the finds below were verified against that count. */

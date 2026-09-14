@@ -166,10 +166,10 @@ module.exports = {
   ] },
 
   words: [
-    ["Biodegradable", "Able to break down easily in the environment."],
-    ["Nonbiodegradable", "Not able to break down in the environment, or taking so long that it makes no practical difference."],
-    ["Decompose", "To break down into the elements something was made of."],
-    ["Recycling", "Using materials over and over again by changing them into new products."]
+    ["Biodegradable", "Able to break down easily in the environment.", 14],
+    ["Nonbiodegradable", "Not able to break down in the environment, or taking so long that it makes no practical difference.", 17],
+    ["Decompose", "To break down into the elements something was made of.", 10],
+    ["Recycling", "Using materials over and over again by changing them into new products.", 29]
   ],
 
   findsAt: 46,

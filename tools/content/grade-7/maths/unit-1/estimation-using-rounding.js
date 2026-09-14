@@ -91,19 +91,20 @@ module.exports = {
       "Sometimes it makes more sense to round every number in a sum to the same kind of place value before you add.",
       "Take 1,836 plus 429 plus 213 plus 1,208.",
       "Round each one to its own greatest place: 2,000, 400, 200, and 1,000.",
+      "A number's greatest place value is its leftmost digit's place, the hundreds or the thousands, and it is what most numbers get rounded to first.",
       "Add those and you get 3,600, a solid estimate for the real sum."
     ]}
   ],
 
   words: [
-    ["Round", "To change a number to the nearest ten, hundred, or other place value, using the digit next door as the tiebreaker."],
-    ["Estimate", "A fast answer close enough to plan with, found by rounding before adding, subtracting, or checking."],
-    ["Reasonable", "Close enough to your estimate that the real answer probably isn't a mistake."],
-    ["Greatest Place Value", "The leftmost digit's place, such as the hundreds or thousands, which most numbers round to first."]
+    ["Round", "To change a number to the nearest ten, hundred, or other place value, using the digit next door as the tiebreaker.", 8],
+    ["Estimate", "A fast answer close enough to plan with, found by rounding before adding, subtracting, or checking.", 26],
+    ["Reasonable", "Close enough to your estimate that the real answer probably isn't a mistake.", 33],
+    ["Greatest Place Value", "The leftmost digit's place, such as the hundreds or thousands, which most numbers round to first.", 37]
   ],
 
   /* 38 story sentences; the finds below were verified against that count. */
-  findsAt: 38,
+  findsAt: 39,
   questions: [
     { tag: "Fund-Raising",
       q: "Mark needs to know about how much the committee has to raise. Why doesn't he need the exact total?",

@@ -163,10 +163,10 @@ module.exports = {
      better than the science lessons, where two cards had no check and the build
      had to warn. Nothing invented here. */
   words: [
-    ["Declarative", "A declarative sentence makes a statement and usually ends with a period."],
-    ["Interrogative", "An interrogative sentence asks a question and ends with a question mark."],
-    ["Imperative", "An imperative sentence gives a command, direction, instruction, or request. It usually ends with a period, but strong commands can end with an exclamation point."],
-    ["Exclamatory", "An exclamatory sentence expresses strong feeling and ends with an exclamation point."]
+    ["Declarative", "A declarative sentence makes a statement and usually ends with a period.", 8],
+    ["Interrogative", "An interrogative sentence asks a question and ends with a question mark.", 19],
+    ["Imperative", "An imperative sentence gives a command, direction, instruction, or request. It usually ends with a period, but strong commands can end with an exclamation point.", 25],
+    ["Exclamatory", "An exclamatory sentence expresses strong feeling and ends with an exclamation point.", 36]
   ],
 
   /* 🚨 PAUL WROTE THESE WITH TWO OPTIONS EACH AND ALL FOUR ANSWERS WERE "A".

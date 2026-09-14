@@ -159,11 +159,11 @@ module.exports = {
      ⚠️ Only four have a check question on Day Two: Paul wrote none for Response and one
      was NOT invented for him. build-lessons.js warns about the gap on every build. */
   words: [
-    ["Organism", "A living thing."],
-    ["Stimulus", "Something that causes an organism to react."],
-    ["Response", "The reaction an organism makes because of a stimulus."],
-    ["Homeostasis", "The ability to maintain relatively stable internal conditions."],
-    ["Adaptation", "An inherited characteristic that helps an organism survive in its environment."]
+    ["Organism", "A living thing.", 8],
+    ["Stimulus", "Something that causes an organism to react.", 22],
+    ["Response", "The reaction an organism makes because of a stimulus.", 25],
+    ["Homeostasis", "The ability to maintain relatively stable internal conditions.", 19],
+    ["Adaptation", "An inherited characteristic that helps an organism survive in its environment.", 29]
   ],
   /* 🚨 findsAt = the story sentence count these `find` indexes were verified against.
      Change the story and the build stops until they are re-checked. See checkFinds(). */

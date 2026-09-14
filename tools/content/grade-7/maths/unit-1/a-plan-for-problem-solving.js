@@ -635,10 +635,10 @@ module.exports = {
   ],
 
   words: [
-    ["Explore", "Step one: what do I know, and what am I trying to find?"],
-    ["Plan", "Step two: what math should I use, and about what should the answer be?"],
-    ["Estimate", "A rough range worked out before the real answer, so you know where it should land."],
-    ["Examine", "Step four: does my answer make sense? Check it against your estimate and work backwards."]
+    ["Explore", "Step one: what do I know, and what am I trying to find?", 18],
+    ["Plan", "Step two: what math should I use, and about what should the answer be?", 30],
+    ["Estimate", "A rough range worked out before the real answer, so you know where it should land.", 49],
+    ["Examine", "Step four: does my answer make sense? Check it against your estimate and work backwards.", 55]
   ],
 
   /* 🚨 EIGHT QUESTIONS, not sixteen. "Sixteen questions after two worked problems

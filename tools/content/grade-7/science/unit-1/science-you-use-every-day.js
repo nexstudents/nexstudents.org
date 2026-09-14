@@ -189,10 +189,10 @@ module.exports = {
      Lessons 1 and 3 where a card was left unchecked.
      ⚠️ US spelling, matching his story. The card used to say "Pasteurisation". */
   words: [
-    ["Pasteurization", "A process that uses heat to reduce harmful microorganisms in foods and drinks."],
-    ["Technology", "The application of knowledge to solve problems or accomplish tasks."],
-    ["Evidence", "Information gathered through observation, measurement, testing, or other reliable methods."],
-    ["Ethics", "Questions and principles concerning what is right and wrong."]
+    ["Pasteurization", "A process that uses heat to reduce harmful microorganisms in foods and drinks.", 7],
+    ["Technology", "The application of knowledge to solve problems or accomplish tasks.", 12],
+    ["Evidence", "Information gathered through observation, measurement, testing, or other reliable methods.", 25],
+    ["Ethics", "Questions and principles concerning what is right and wrong.", 40]
   ],
   /* 🚨 findsAt = the story sentence count these `find` indexes were verified against.
      Change the story and the build stops until they are re-checked. See checkFinds(). */

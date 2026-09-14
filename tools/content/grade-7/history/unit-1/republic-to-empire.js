@@ -86,11 +86,12 @@ module.exports = {
       "The hardest question in this one is why nobody stopped it. Rome kept its Senate, its elections and its offices, so from the outside almost nothing looked different. Read The Quiet Takeover again before you answer it."
   ] },
   words: [
-    ["Republic", "People vote for leaders to represent them. No king. Rome ran this way for about 500 years."],
-    ["Senate", "The council of powerful Romans who debated laws and advised the leaders. Something like a council of elders."],
-    ["Dictator", "In Rome, one man handed total power on purpose, for a short emergency. Caesar took it and never gave it back."],
-    ["Emperor", "One ruler with total power, for life, who passes that power to whoever comes next."]
+    ["Republic", "People vote for leaders to represent them. No king. Rome ran this way for about 500 years.", 3],
+    ["Senate", "The council of powerful Romans who debated laws and advised the leaders. Something like a council of elders.", 2],
+    ["Dictator", "In Rome, one man handed total power on purpose, for a short emergency. Caesar took it and never gave it back.", 14],
+    ["Emperor", "One ruler with total power, for life, who passes that power to whoever comes next.", 21]
   ],
+  findsAt: 29,
   questions: [
     { q: "What was the main historical development in this lesson?", find: [22, 26],
       hint: "Look for the sentence that says what Rome turned into.",
