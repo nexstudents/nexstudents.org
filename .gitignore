@@ -1,8 +1,8 @@
 
+# not one per repo. Kept ignored so a stray local build can never be committed.
+# review/ moved to Core_Memory on 2026-09-11 - one queue for every project,
 # scratch commit-message file (git -F cannot read an absolute path here:
 # the apostrophe in "Paul's PC2" breaks git.exe, so it is written locally)
 .commitmsg.tmp
-
-# review/ moved to Core_Memory on 2026-09-11 - one queue for every project,
-# not one per repo. Kept ignored so a stray local build can never be committed.
+animal-cell.html
 review/
