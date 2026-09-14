@@ -432,8 +432,41 @@ const MARKERS = ["[ex] ", "[verse] "];
 const unmark = (s) => {
   let t = String(s).trim();
   MARKERS.forEach((m) => { if (t.indexOf(m) === 0) t = t.slice(m.length); });
-  return t.trim();
+  /* {{term}} marks a tappable word; the braces are never part of the sentence */
+  return t.split("{{").join("").split("}}").join("").trim();
 };
+
+/* 🚨 A TAPPED WORD MUST HAVE A CARD BEHIND IT. {{term}} in the story opens the
+   definition from `words`, so a term with no matching card opens nothing at all
+   - a dotted underline that does nothing when a student taps it, with no error
+   anywhere. Checked here instead, against the same list the cards come from.
+   ⚠️ Plural and possessive forms are allowed: the sentence may say "membranes"
+   or "cell's" where the card says "membrane". Anything else fails the build. */
+function checkGloss(L) {
+  const norm = (x) => String(x).toLowerCase().replace(/[^a-z ]/g, "").trim();
+  const cards = (L.words || []).map((w) => norm(w[0]));
+  const bad = [];
+  (L.parts || []).forEach((p) => (p.s || []).forEach((line) => {
+    const text = String(line);
+    let at = 0;
+    while (true) {
+      const a = text.indexOf("{{", at);
+      if (a < 0) break;
+      const b = text.indexOf("}}", a);
+      if (b < 0) { bad.push("unclosed {{ in: " + text.slice(0, 60)); break; }
+      const term = norm(text.slice(a + 2, b));
+      const ok = cards.some((c) => c === term || c + "s" === term || c === term + "s");
+      if (!ok) bad.push('"' + text.slice(a + 2, b) + '" has no word card');
+      at = b + 2;
+    }
+  }));
+  if (bad.length) {
+    console.error("FAIL: " + L.id + ": a tappable word has nothing to show:");
+    bad.forEach((m) => console.error("      " + m));
+    console.error("      Add it to `words`, or take the braces off.");
+    process.exit(1);
+  }
+}
 
 function requireBoxes(L) {
   const story = [];
@@ -748,6 +781,7 @@ function serialise(L) {
   checkTodoCounts(L, L.id);
   checkOneSentence(L, L.id);
   checkFinds(L);
+  checkGloss(L);
   requireGround(L);
   requireBoxes(L);
   requireVisuals(L);

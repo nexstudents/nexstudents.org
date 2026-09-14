@@ -122,8 +122,15 @@ function sentencesOf(parts) {
      sentence enters SENT, so the text baked here has to be the stripped text or
      textHash will not match and every lesson silently drops to a device voice.
      ⚠️ The twin of this lives in lesson-template.html. Change one, change both. */
-  const strip = (t) => t.indexOf("[ex] ") === 0 ? t.slice(5)
-                     : t.indexOf("[verse] ") === 0 ? t.slice(8) : t;
+  /* 🚨 {{double braces}} COME OFF TOO. They mark a word the student can tap for
+     its meaning; the page strips them before the sentence enters SENT, so the
+     baked text has to match or textHash fails and the lesson drops to a device
+     voice. Third marker sharing this twin now - [ex], [verse], {{ }}. */
+  const strip = (t) => {
+    let x = t.indexOf("[ex] ") === 0 ? t.slice(5)
+          : t.indexOf("[verse] ") === 0 ? t.slice(8) : t;
+    return x.split("{{").join("").split("}}").join("");
+  };
   parts.forEach((p) => (p.s || []).forEach((t) => {
     if (String(t).trim()) out.push(strip(String(t)));
   }));
