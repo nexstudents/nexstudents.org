@@ -291,12 +291,29 @@ body.sub-open .drawer{transform:translateX(-100%)}
 
 /* Grades as tiles: three across, so nine years cost three rows not nine. */
 .dst-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}
+/* 🚨 THE GRADE TILES ARE WHITE ON EVERY PAGE AND IN EVERY THEME, and this file
+   had `background:none`, so on a lesson page they showed the dark drawer through
+   themselves and read as BLACK. Paul found it on his phone, 2026-09-15: go into a
+   lesson, open the side menu, pick a grade, and the K-8 blocks are black.
+
+   ⚠️ THIS IS THE ns.css / lesson-nav.css DRIFT AGAIN, and it is the fifth time.
+   Same markup from nav.js, two stylesheets, and only one of them had the fill.
+   check-nav-css.js did not catch it because it fails when a class is styled in
+   ONE sheet and says nothing when BOTH style it and disagree - which is exactly
+   this. The guard is extended in the same change.
+
+   ⚠️ These are NOT palette colours. ns.css sets --tile-bg:#ffffff in BOTH its
+   themes on purpose: a grade tile is white on a dark page and on a light one.
+   So they are their own three tokens rather than the six --nv-* ones, and a
+   template may override them without touching this file. */
 .dst{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
-  background:none;border:1px solid var(--nv-line);border-radius:var(--r,4px);
-  color:var(--nv-fg);font:inherit;cursor:pointer;padding:0}
+  background:var(--nv-tile-bg,#ffffff);border:1px solid var(--nv-line);border-radius:var(--r,4px);
+  color:var(--nv-tile-fg,#0a0b0d);font:inherit;cursor:pointer;padding:0}
 .dst b{font-size:clamp(1.1rem,5vw,1.5rem);font-weight:800;letter-spacing:-.03em}
 .dst:not(.soon):hover{border-color:var(--nv-accent)}
-.dst.soon{color:var(--nv-dim);opacity:.45;cursor:default}
+/* ⚠️ --nv-dim is tuned for text on the DARK drawer and disappears on a white
+   tile. A "coming soon" grade has to stay readable, so it takes its own. */
+.dst.soon{color:var(--nv-tile-dim,#6b7280);opacity:.45;cursor:default}
 
 /* The promo is the first thing to go when the screen is short. */
 @media(max-height:760px){ .menucol .mg-promo{display:none} }

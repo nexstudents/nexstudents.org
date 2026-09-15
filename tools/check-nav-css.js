@@ -209,6 +209,46 @@ function topLevelRule(css, sel) {
 }
 
 const drift = [];
+/* 🚨 ONE SHELL PAINTS IT, THE OTHER DOES NOT. A THIRD KIND OF DRIFT.
+   Paul, 2026-09-15, on his phone: go into a lesson, open the side menu, pick a
+   grade, and the K-8 blocks are BLACK. ns.css gave .dst `background:var(--tile-bg)`
+   and lesson-nav.css gave it `background:none`, so on a lesson page the tile
+   showed the dark drawer straight through itself.
+
+   Neither check above could see it. The class check passed because BOTH files
+   style .dst. MUST_MATCH could not be used either, because the two shells use
+   DIFFERENT tokens here on purpose - --tile-bg against --nv-tile-bg - so
+   comparing the token text would fail on a difference that is intended.
+
+   ⚠️ SO THIS ASKS ONLY ONE QUESTION: does each side paint a fill at all?
+   Not the same colour, not the same token. Just: is one of them transparent
+   while the other is not. That is the whole bug and nothing wider is safe. */
+const MUST_PAINT = [
+  ".dst",     /* the grade tiles in the drawer - black on lesson pages until 2026-09-15 */
+];
+
+const unpainted = [];
+MUST_PAINT.forEach((sel) => {
+  const pair = [["assets/ns.css", null], ["assets/lesson-nav.css", null]];
+  pair.forEach((p) => { p[1] = declOf(files[p[0]], sel, "background"); });
+  const paints = (v) => v !== null && v !== "" && !/^(none|transparent|rgba\(0, ?0, ?0, ?0\))$/i.test(v);
+  const a = paints(pair[0][1]), b = paints(pair[1][1]);
+  if (a !== b) unpainted.push({ sel: sel, a: pair[0][1], b: pair[1][1] });
+});
+
+if (unpainted.length) {
+  console.error("FAIL: one shell paints these and the other leaves them transparent.\n" +
+    "      Same markup, two stylesheets, and whatever is behind shows through on\n" +
+    "      one of them. This is how the grade tiles came out black inside a lesson.\n");
+  unpainted.forEach((u) => {
+    console.error("  " + u.sel + " { background }");
+    console.error("      assets/ns.css         : " + (u.a === null ? "(not declared)" : u.a));
+    console.error("      assets/lesson-nav.css : " + (u.b === null ? "(not declared)" : u.b));
+  });
+  console.error("\n      Give both a fill, or remove the class from MUST_PAINT with a reason.\n");
+  process.exit(1);
+}
+
 MUST_MATCH.forEach((m) => {
   m.props.forEach((prop) => {
     const a = declOf(files["assets/ns.css"], m.sel, prop);
