@@ -1164,12 +1164,17 @@ body{padding-bottom:var(--player-pad, 150px)}
 .playerhide input:focus-visible + .track{box-shadow:0 0 0 3px var(--verdigris-soft, var(--accent-soft))}
 @media (prefers-reduced-motion: reduce){ .playerhide .track, .playerhide .knob{transition:none} }
 
-body.player-hidden .pcontrols,
+/* 🚨 THE SWITCH ROW STAYS WHEN HIDDEN, OR THE PLAYER BURIES ITS OWN OFF-SWITCH
+   AND HIDING BECOMES A ONE-WAY DOOR. The comment saying so was already here on
+   2026-09-15 and the rule underneath it did the opposite: .pcontrols holds the
+   switch, and hiding the whole row took the switch with it. Nobody had noticed
+   because nothing ever added .player-hidden - the mode was written and never
+   wired up. So the row stays and everything INSIDE it goes except the switch. */
+body.player-hidden .pcontrols > *:not(.playerhide){display:none}
+body.player-hidden .pcontrols{min-height:0;padding:0;justify-content:flex-end}
 body.player-hidden .psettings,
 body.player-hidden .keyrow,
 body.player-hidden .nospeech{display:none}
-/* 🚨 the switch row stays when hidden, or the player buries its own
-   off-switch and hiding becomes a one-way door. */
 body.player-hidden .pmeta{display:none}
 body.player-hidden .phead{padding:2px 0}
 body.player-hidden .followchip{display:none}
@@ -1603,8 +1608,8 @@ body.player-hidden .scrub{margin:0}
 <div class="player" id="player">
     <div class="pcontrols">
       <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
-      <label class="playerhide" for="playerhide" title="Show or hide the settings" aria-label="Show or hide the settings">
-        <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the settings">
+      <label class="playerhide" for="playerhide" title="Show or hide the player" aria-label="Show or hide the player">
+        <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the player">
         <span class="track" aria-hidden="true"><span class="knob"></span></span>
       </label>
       <button class="btn" id="back" title="Back one sentence" aria-label="Back one sentence">
@@ -3785,8 +3790,11 @@ addEventListener("scroll", function(){
   function fit(){
     /* only meaningful while the bar is actually docked */
     var docked = getComputedStyle(P).position === "fixed";
+    /* ⚠️ THE COLLAPSED BAR IS STILL ON SCREEN. Reserving nothing for it let the
+       last lines of a lesson slide underneath the scrub. Measure it either way
+       and let the measurement be small when it is collapsed, which it is. */
     var hidden = document.body.classList.contains("player-hidden");
-    var pad = (docked && !hidden) ? Math.ceil(P.getBoundingClientRect().height) + 12 : 0;
+    var pad = docked ? Math.ceil(P.getBoundingClientRect().height) + (hidden ? 6 : 12) : 0;
     document.documentElement.style.setProperty("--player-pad", pad + "px");
   }
   fit();
@@ -3800,36 +3808,58 @@ addEventListener("scroll", function(){
   if (window.ResizeObserver) new ResizeObserver(fit).observe(P);
 })();
 
-(function settingsSwitch(){
-  var box = document.getElementById("playerhide");
-  var panel = document.getElementById("psettings");
-  if (!box || !panel) return;
+(function playerSwitch(){
+  /* 🚨 THE SLIDER HIDES THE PLAYER NOW, NOT THE SETTINGS ROW.
+     Paul, 2026-09-15, and it came from Kolten first: "i like it but it takes a
+     bit too much of the screen when reading. Kolten even said he would like to
+     hide it ... perhaps the slider on the bottom right instead of hiding the
+     settings it can hide the player itself but keep the scrub as a bottom bar
+     that always shows and they can drag back and forth."
 
-  /* The slider decides whether the Settings row exists on the bar. */
-  var shown = load("settingsrow", "0") === "1";
-  var keyRow = document.getElementById("keyrow");
-  var keyToggle = document.getElementById("keyToggle");
-  function paintRow(){
-    panel.hidden = !box.checked;
-    if (!box.checked){
-      /* Collapse on the way out, so switching it back on gives a closed row
+     The collapsed look already existed as body.player-hidden, written with the
+     scrub deliberately surviving - "what survives: the step bar. Still live,
+     still tappable, still moving." Nothing ever added the class, so the mode
+     had never once been seen. This wires it to the switch.
+
+     ⚠️ SETTINGS KEEPS ITS OWN ARROW. It is a <details> with a chevron and that
+     is untouched; it simply goes away with the rest of the player when the
+     switch is off, and comes back closed. */
+  var box = document.getElementById("playerhide");
+  if (!box) return;
+  var panel = document.getElementById("psettings");
+
+  /* Checked means SHOWING, and it defaults to showing, which is how the bar has
+     always looked. A child who hides it gets it to stay hidden. */
+  var shown = load("playershown", "1") === "1";
+
+  function paint(){
+    document.body.classList.toggle("player-hidden", !box.checked);
+    if (panel){
+      /* the old switch used to hide this outright; it never should again */
+      panel.hidden = false;
+      /* Collapse on the way out, so bringing the player back gives a closed row
          rather than one already sprawling open. */
-      panel.open = false;
+      if (!box.checked) panel.open = false;
+    }
+    if (!box.checked){
       /* ⚠️ The API panel lives OUTSIDE the settings row, so it has to be shut
          explicitly or it stays on the bar after everything else has gone. */
+      var keyRow = document.getElementById("keyrow");
+      var keyToggle = document.getElementById("keyToggle");
       if (keyRow) keyRow.classList.remove("show");
       if (keyToggle) keyToggle.setAttribute("aria-expanded", "false");
     }
   }
+
   box.checked = shown;
-  paintRow();
+  paint();
   box.addEventListener("change", function(){
-    paintRow();
-    store("settingsrow", box.checked ? "1" : "0");
+    paint();
+    store("playershown", box.checked ? "1" : "0");
   });
 
-  /* The arrow keeps its own job: expanding the row once it is there. */
-  panel.addEventListener("toggle", function(){
+  /* The arrow keeps its own job: expanding the settings row. */
+  if (panel) panel.addEventListener("toggle", function(){
     store("vsettings", panel.open ? "1" : "0");
   });
 })();

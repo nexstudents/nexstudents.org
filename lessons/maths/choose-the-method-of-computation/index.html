@@ -115,7 +115,7 @@
 <div class="ascrim" id="ascrim"></div><aside class="adrawer" id="adrawer" aria-hidden="true" aria-label="Account"><div class="ad-top"><button class="ad-back" id="adBack" type="button" hidden><svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4 6.5 10l6 6"/></svg><span>Back</span></button><h2 class="ad-h" id="adH">Account</h2><button class="ad-x" id="adClose" type="button">Close</button></div><div class="ad-body" id="adBody"></div></aside>
 
   <div class="ns-back"><a href="/grade-7/maths/lessons/">&larr; 7th Grade Math</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.697a10e7.css">
+<link rel="stylesheet" href="/assets/lesson-shared.59043f4e.css">
 
 <div class="wrap">
 
@@ -159,13 +159,22 @@
     </div>
   </details>
 
+  <!-- 🚨 THE SWITCH LIVES OUTSIDE THE PLAYER BOX. Paul, 2026-09-15: "the slider
+       can live above the footer outside of the box and follow down the page. it
+       doesnt not have to live in the same box footer. it will stay on that
+       current right side but move up and down along with the scrub."
+       It was inside .pcontrols, which meant collapsing that row either took the
+       switch with it or dropped it on top of the scrub. Out here it hangs off
+       --player-pad, the height the bar already publishes for itself, so it
+       rides up when the player grows and down when it shrinks with no second
+       measurement to keep in step. -->
+  <label class="playerhide" for="playerhide" title="Show or hide the player" aria-label="Show or hide the player">
+    <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the player">
+    <span class="track" aria-hidden="true"><span class="knob"></span></span>
+  </label>
   <div class="player" id="player">
     <div class="pcontrols">
       <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
-      <label class="playerhide" for="playerhide" title="Show or hide the settings" aria-label="Show or hide the settings">
-        <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the settings">
-        <span class="track" aria-hidden="true"><span class="knob"></span></span>
-      </label>
       <button class="btn" id="back" title="Back one sentence" aria-label="Back one sentence">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13 2.5v11L5.5 8 13 2.5zM4 2.5h1.6v11H4z"/></svg>
       </button>
@@ -2863,8 +2872,11 @@ addEventListener("scroll", function(){
   function fit(){
     /* only meaningful while the bar is actually docked */
     var docked = getComputedStyle(P).position === "fixed";
+    /* ⚠️ THE COLLAPSED BAR IS STILL ON SCREEN. Reserving nothing for it let the
+       last lines of a lesson slide underneath the scrub. Measure it either way
+       and let the measurement be small when it is collapsed, which it is. */
     var hidden = document.body.classList.contains("player-hidden");
-    var pad = (docked && !hidden) ? Math.ceil(P.getBoundingClientRect().height) + 12 : 0;
+    var pad = docked ? Math.ceil(P.getBoundingClientRect().height) + (hidden ? 6 : 12) : 0;
     document.documentElement.style.setProperty("--player-pad", pad + "px");
   }
   fit();
@@ -2878,36 +2890,58 @@ addEventListener("scroll", function(){
   if (window.ResizeObserver) new ResizeObserver(fit).observe(P);
 })();
 
-(function settingsSwitch(){
-  var box = document.getElementById("playerhide");
-  var panel = document.getElementById("psettings");
-  if (!box || !panel) return;
+(function playerSwitch(){
+  /* 🚨 THE SLIDER HIDES THE PLAYER NOW, NOT THE SETTINGS ROW.
+     Paul, 2026-09-15, and it came from Kolten first: "i like it but it takes a
+     bit too much of the screen when reading. Kolten even said he would like to
+     hide it ... perhaps the slider on the bottom right instead of hiding the
+     settings it can hide the player itself but keep the scrub as a bottom bar
+     that always shows and they can drag back and forth."
 
-  /* The slider decides whether the Settings row exists on the bar. */
-  var shown = load("settingsrow", "0") === "1";
-  var keyRow = document.getElementById("keyrow");
-  var keyToggle = document.getElementById("keyToggle");
-  function paintRow(){
-    panel.hidden = !box.checked;
-    if (!box.checked){
-      /* Collapse on the way out, so switching it back on gives a closed row
+     The collapsed look already existed as body.player-hidden, written with the
+     scrub deliberately surviving - "what survives: the step bar. Still live,
+     still tappable, still moving." Nothing ever added the class, so the mode
+     had never once been seen. This wires it to the switch.
+
+     ⚠️ SETTINGS KEEPS ITS OWN ARROW. It is a <details> with a chevron and that
+     is untouched; it simply goes away with the rest of the player when the
+     switch is off, and comes back closed. */
+  var box = document.getElementById("playerhide");
+  if (!box) return;
+  var panel = document.getElementById("psettings");
+
+  /* Checked means SHOWING, and it defaults to showing, which is how the bar has
+     always looked. A child who hides it gets it to stay hidden. */
+  var shown = load("playershown", "1") === "1";
+
+  function paint(){
+    document.body.classList.toggle("player-hidden", !box.checked);
+    if (panel){
+      /* the old switch used to hide this outright; it never should again */
+      panel.hidden = false;
+      /* Collapse on the way out, so bringing the player back gives a closed row
          rather than one already sprawling open. */
-      panel.open = false;
+      if (!box.checked) panel.open = false;
+    }
+    if (!box.checked){
       /* ⚠️ The API panel lives OUTSIDE the settings row, so it has to be shut
          explicitly or it stays on the bar after everything else has gone. */
+      var keyRow = document.getElementById("keyrow");
+      var keyToggle = document.getElementById("keyToggle");
       if (keyRow) keyRow.classList.remove("show");
       if (keyToggle) keyToggle.setAttribute("aria-expanded", "false");
     }
   }
+
   box.checked = shown;
-  paintRow();
+  paint();
   box.addEventListener("change", function(){
-    paintRow();
-    store("settingsrow", box.checked ? "1" : "0");
+    paint();
+    store("playershown", box.checked ? "1" : "0");
   });
 
-  /* The arrow keeps its own job: expanding the row once it is there. */
-  panel.addEventListener("toggle", function(){
+  /* The arrow keeps its own job: expanding the settings row. */
+  if (panel) panel.addEventListener("toggle", function(){
     store("vsettings", panel.open ? "1" : "0");
   });
 })();
