@@ -153,6 +153,11 @@ if (missing.length) {
 const MUST_MATCH = [
   { sel: ".nv", props: ["padding", "gap"] },
   { sel: ".navicons", props: ["margin-left"] },
+  /* 🚨 ADDED 2026-09-15. A grade tile is an <a>, and only ns.css turned the
+     underline off, so every grade number in a lesson drawer was underlined for
+     as long as the tiles have existed. Absent counts as a value here, which is
+     exactly what catches a rule one shell has and the other does not. */
+  { sel: "a.dst", props: ["text-decoration"] },
 ];
 
 /* 🚨 A MISSING DECLARATION IS DRIFT, NOT AN EXEMPTION. The first version of this

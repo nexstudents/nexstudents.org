@@ -309,6 +309,14 @@ body.sub-open .drawer{transform:translateX(-100%)}
 .dst{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
   background:var(--nv-tile-bg,#ffffff);border:1px solid var(--nv-line);border-radius:var(--r,4px);
   color:var(--nv-tile-fg,#0a0b0d);font:inherit;cursor:pointer;padding:0}
+/* 🚨 A GRADE TILE IS AN <a>, SO WITHOUT THIS THE BROWSER UNDERLINES THE NUMBER.
+   ns.css has had a.dst{text-decoration:none} all along and this file never did,
+   so every grade number in a lesson drawer has been underlined since the tiles
+   were built. Nobody saw it because the tile was transparent and the underline
+   sat on a dark ground; giving the tile its white fill on 2026-09-15 made it
+   obvious, and Paul spotted it within a minute. The bug is older than the fix
+   that revealed it. */
+a.dst{text-decoration:none}
 .dst b{font-size:clamp(1.1rem,5vw,1.5rem);font-weight:800;letter-spacing:-.03em}
 .dst:not(.soon):hover{border-color:var(--nv-accent)}
 /* ⚠️ --nv-dim is tuned for text on the DARK drawer and disappears on a white
