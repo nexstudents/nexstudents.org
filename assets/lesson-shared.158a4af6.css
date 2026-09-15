@@ -263,6 +263,60 @@ h1{
    the bar lays out exactly as it did before it existed. It becomes a real row
    only inside the phone media query. */
 .pfoot{display:contents}
+
+/* ── THE SETTINGS ROWS AND THEIR DIALOG ──────────────────────────────────
+   Paul, 2026-09-15: "right now on mobile i have the settings open and it takes
+   up a massive amount of screen ... if they press speed they get a mobile popup
+   of the speed to select instead of the box to show ... the box will be centered
+   on the screen ... this would shrink it all down removing the option for text
+   boxes." The same on a PC, because one centred box is easier to read than four
+   controls crammed onto a bar. */
+/* 🚨 A GRID, SO EVERY PILL IS THE SAME SIZE. Paul: "make all the pills the
+   same size." flex with flex:1 1 auto sized each one to its own text, so Speed
+   came out narrow and Voice API key wide. Equal columns cannot do that. */
+.setrows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:6px 0 2px}
+@media (min-width: 621px){ .setrows{grid-template-columns:repeat(4,minmax(0,1fr))} }
+.setbtn{
+  min-width:0;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;font:inherit;font-size:13px;cursor:pointer;
+  background:var(--surface-2, var(--boxfill));color:var(--ink, var(--fg));
+  border:1px solid var(--rule, var(--line));border-radius:6px;padding:5px 10px;min-height:32px;
+}
+.setbtn:hover{border-color:var(--verdigris, var(--a))}
+.setbtn .lbl{color:var(--ink-soft, var(--dim));white-space:nowrap}
+.setbtn .val{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 🚨 CENTRED, AND NOT DOCKED TO THE PLAYER. A settings box that grows out of the
+   bar is what was eating the screen; this one sits in the middle and the bar
+   stays the height it was. */
+dialog.pdlg{
+  border:1px solid var(--rule, var(--line));border-radius:10px;padding:0;
+  background:var(--surface, var(--panel));color:var(--ink, var(--fg));
+  width:min(420px, calc(100vw - 32px));max-height:min(80vh, 560px);
+  /* 🚨 CENTRE IT EXPLICITLY. A <dialog> defaults to margin:auto, which UA sheets
+     and an inherited margin can both defeat - it was drawing off-centre. Fixed
+     positioning with a translate cannot be argued with. */
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);margin:0;
+}
+dialog.pdlg::backdrop{background:rgba(0,0,0,.55)}
+.pdlg-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:13px 14px;border-bottom:1px solid var(--rule, var(--line));
+}
+.pdlg-head h3{margin:0;font-size:1rem;letter-spacing:.01em}
+.pdlg-x{
+  background:transparent;border:1px solid var(--rule, var(--line));border-radius:6px;
+  color:inherit;cursor:pointer;padding:5px;display:inline-flex;line-height:0;
+}
+.pdlg-x:hover{border-color:var(--verdigris, var(--a))}
+.pdlg-body{padding:14px;overflow:auto;max-height:calc(80vh - 58px)}
+/* inside the dialog the rows stack and take the full width */
+.pdlg-body .voicerow,.pdlg-body .themerow{display:block;margin:0 0 10px}
+.pdlg-body .voicerow label,.pdlg-body .themerow .lbl{display:block;margin:0 0 6px}
+.pdlg-body select.rate{width:100%}
+.pdlg-body .vsel{width:100%}
+.pdlg-body .keyrow{display:block}
+.pdlg-body .keytogglerow{display:none}   /* the row IS the disclosure now */
 .pmeta{
   order:2;display:flex;align-items:center;justify-content:center;
   gap:14px;flex-wrap:wrap;text-align:center;
@@ -1323,7 +1377,11 @@ body.player-hidden .scrub{margin:0;height:20px}
 .psettings[hidden]{display:none}
   .s{scroll-margin-top:16px;scroll-margin-bottom:150px}
   .pcontrols{gap:8px}
-  .pcontrols{min-height:40px;padding-bottom:12px}     /* lifts it clear of the bar */
+  /* ⚠️ 12px of dead space used to sit under these buttons and push them hard
+     against the top of the bar. Paul, 2026-09-15: "you have a big amount of it
+     tied too close to the top if the footer with dead space under it. you cound
+     bring it down and get rid of that extra dead space". */
+  .pcontrols{min-height:0;padding:2px 0 2px}
   .btn.primary{width:50px;min-width:50px;min-height:40px}
   /* 🚨 ID SELECTORS, SO THEY BEAT ANY CLASS RULE. This is why the back and
      forward buttons stayed 40px while the play button shrank to 32 and Paul saw
@@ -1343,7 +1401,11 @@ body.player-hidden .scrub{margin:0;height:20px}
      ⚠️ THE BUTTONS ARE NOT THE PLACE TO SAVE. A play button a child taps while
      reading keeps a real touch target; shaving that is how a control becomes
      annoying to hit. The saving comes from two nearly empty rows becoming one. */
-  .pfoot{display:flex;align-items:center;justify-content:center;gap:16px}
+  /* 🚨 ORDER 2, OR IT LANDS BETWEEN THE BUTTONS AND THE SCRUB. .scrub carries
+     order:1 and everything else defaults to 0, so this row rendered above the
+     scrub and read as dead space under the play button. Paul: "you still have
+     dead space for the play button ... under it." It was this row. */
+  .pfoot{display:flex;order:2;align-items:center;justify-content:center;gap:16px}
   .pfoot .pmeta{margin:0;flex:0 1 auto;min-width:0}
   .pfoot{flex-wrap:wrap}
   .pfoot .psettings{flex:0 0 auto}
@@ -1373,6 +1435,24 @@ body.player-hidden .scrub{margin:0;height:20px}
   .pcontrols .btn.primary{width:46px;min-width:46px;min-height:32px;height:32px}
   .pcontrols .btn.primary svg{width:15px;height:15px}
   .psettings > summary{padding:4px 0}
+
+  /* 🚨 ON A PHONE THE DIALOG IS A BOTTOM SHEET. Paul: "i want a mobile popup ui
+     on the actual mobile." A centred box is a desktop pattern; a phone expects
+     the panel to rise from the bottom edge, full width, with the corners rounded
+     at the top only and a grab bar. Same dialog, same controls, different shape. */
+  dialog.pdlg{
+    top:auto;bottom:0;left:0;transform:none;margin:0;
+    width:100vw;max-width:100vw;border-radius:14px 14px 0 0;
+    border-left:0;border-right:0;border-bottom:0;
+    max-height:min(78vh, 520px);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  /* the grab bar a phone user expects to see on a sheet */
+  .pdlg-head::before{
+    content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);
+    width:38px;height:4px;border-radius:999px;background:var(--rule, var(--line));
+  }
+  .pdlg-head{position:relative;padding-top:18px}
 
   .playerhide .track{width:34px;height:20px}
   .playerhide .knob{top:2px;left:2px;width:14px;height:14px}

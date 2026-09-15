@@ -115,7 +115,7 @@
 <div class="ascrim" id="ascrim"></div><aside class="adrawer" id="adrawer" aria-hidden="true" aria-label="Account"><div class="ad-top"><button class="ad-back" id="adBack" type="button" hidden><svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4 6.5 10l6 6"/></svg><span>Back</span></button><h2 class="ad-h" id="adH">Account</h2><button class="ad-x" id="adClose" type="button">Close</button></div><div class="ad-body" id="adBody"></div></aside>
 
   <div class="ns-back"><a href="/grade-7/maths/lessons/">&larr; 7th Grade Math</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.374bb192.css">
+<link rel="stylesheet" href="/assets/lesson-shared.158a4af6.css">
 
 <div class="wrap">
 
@@ -201,45 +201,73 @@
     </div>
     <details class="psettings" id="psettings">
       <summary><span>Settings</span><svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></summary>
-    <div class="voicerow" id="speedrow">
-      <label for="rate">Speed</label>
-      <select class="rate" id="rate" aria-label="Reading speed">
-        <option value="0.7">Slow</option>
-        <option value="0.85" selected>Normal</option>
-        <option value="1">Fast</option>
-      </select>
-    </div>
-    <div class="voicerow" id="voicerow">
-      <label for="voice">Voice</label>
-      <div class="vsel" id="vsel">
-        <button class="vsel-trigger" id="vselBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
-          <span id="vselLabel">Voice</span>
-          <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg>
-        </button>
-        <ul class="vsel-list" id="vselList" role="listbox" hidden></ul>
-      </div>
-      <select class="rate" id="voice" aria-label="Choose a reading voice" hidden></select>
-    </div>
-
-    <div class="keytogglerow">
-      <button class="linkbtn keydisclose" type="button" id="keyToggle" aria-expanded="false" aria-controls="keyrow">Use My Personal API (Voice) Key<svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></button>
-    </div>
-    <div class="keyrow" id="keyrow">
-      <p class="keydisc"><span aria-hidden="true">&#128274;</span><span><b>Stored on this device only.</b> Your key stays in this browser. It is never sent to NexStudents, never shared, and never leaves your machine except to the voice provider it belongs to.</span></p>
-      <label for="ttskey">Your API key</label>
-      <div class="keyfield">
-        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
-        <button class="btn" type="button" id="keySave">Save</button>
-        <button class="btn" type="button" id="keyClear">Clear</button>
-      </div>
-      <p class="keynote" id="keynote"><b>Where to get a key.</b> <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener">Google Cloud TTS</a> powers the built-in voices on this page and has a free monthly allowance. <a href="https://elevenlabs.io/" target="_blank" rel="noopener">ElevenLabs</a> is worth a look if you want a more natural voice and do not mind setting up an account.</p>
-    </div>
-    <div class="themerow" id="themerow">
-      <span class="lbl">Colors</span>
-      <div class="swatches" id="swatches"></div>
+    <!-- 🚨 FOUR BUTTONS, NOT FOUR OPEN CONTROLS. Paul, 2026-09-15: "right now on
+         mobile i have the settings open and it takes up a massive amount of
+         screen ... if they press speed they get a mobile popup of the speed to
+         select instead of the box to show ... this would shrink it all down
+         removing the option for text boxes."
+         Each row shows the CURRENT value and opens the shared dialog below. -->
+    <div class="setrows">
+      <button class="setbtn" type="button" data-dlg="speedrow"><span class="lbl">Speed</span><span class="val" id="valSpeed">Normal</span></button>
+      <button class="setbtn" type="button" data-dlg="voicerow"><span class="lbl">Voice</span><span class="val" id="valVoice">&mdash;</span></button>
+      <button class="setbtn" type="button" data-dlg="themerow"><span class="lbl">Colors</span><span class="val" id="valTheme">&mdash;</span></button>
+      <button class="setbtn" type="button" data-dlg="keyrow"><span class="lbl">Voice API key</span><span class="val" id="valKey">Not set</span></button>
     </div>
     </details>
     </div>
+
+    <!-- 🚨 ONE DIALOG, THE REAL CONTROLS MOVED INSIDE IT. Every id the engine
+         already reads - #rate, #voice, #vsel, #keyrow, #swatches - is the SAME
+         element, relocated. Rebuilding them as new markup would have meant
+         re-wiring every code path that touches them, and the <select> is
+         deliberately the state for the voice picker. -->
+    <dialog class="pdlg" id="pdlg">
+      <div class="pdlg-head">
+        <h3 id="pdlgTitle">Settings</h3>
+        <button class="pdlg-x" type="button" id="pdlgX" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+      </div>
+      <div class="pdlg-body">
+      <div class="voicerow" id="speedrow">
+        <label for="rate">Speed</label>
+        <select class="rate" id="rate" aria-label="Reading speed">
+          <option value="0.7">Slow</option>
+          <option value="0.85" selected>Normal</option>
+          <option value="1">Fast</option>
+        </select>
+      </div>
+      <div class="voicerow" id="voicerow">
+        <label for="voice">Voice</label>
+        <div class="vsel" id="vsel">
+          <button class="vsel-trigger" id="vselBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span id="vselLabel">Voice</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg>
+          </button>
+          <ul class="vsel-list" id="vselList" role="listbox" hidden></ul>
+        </div>
+        <select class="rate" id="voice" aria-label="Choose a reading voice" hidden></select>
+      </div>
+  
+      <div class="keytogglerow">
+        <button class="linkbtn keydisclose" type="button" id="keyToggle" aria-expanded="false" aria-controls="keyrow">Use My Personal API (Voice) Key<svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></button>
+      </div>
+      <div class="keyrow" id="keyrow">
+        <p class="keydisc"><span aria-hidden="true">&#128274;</span><span><b>Stored on this device only.</b> Your key stays in this browser. It is never sent to NexStudents, never shared, and never leaves your machine except to the voice provider it belongs to.</span></p>
+        <label for="ttskey">Your API key</label>
+        <div class="keyfield">
+          <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
+          <button class="btn" type="button" id="keySave">Save</button>
+          <button class="btn" type="button" id="keyClear">Clear</button>
+        </div>
+        <p class="keynote" id="keynote"><b>Where to get a key.</b> <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener">Google Cloud TTS</a> powers the built-in voices on this page and has a free monthly allowance. <a href="https://elevenlabs.io/" target="_blank" rel="noopener">ElevenLabs</a> is worth a look if you want a more natural voice and do not mind setting up an account.</p>
+      </div>
+      <div class="themerow" id="themerow">
+        <span class="lbl">Colors</span>
+        <div class="swatches" id="swatches"></div>
+      </div>
+      </div>
+    </dialog>
 
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
   </div>
@@ -2957,6 +2985,82 @@ addEventListener("scroll", function(){
   if (panel) panel.addEventListener("toggle", function(){
     store("vsettings", panel.open ? "1" : "0");
   });
+})();
+
+(function settingsDialog(){
+  /* 🚨 THE CONTROLS ARE THE ORIGINALS, MOVED. #rate, #voice, #vsel, #keyrow and
+     #swatches are the same elements the rest of this file already reads and
+     writes; the dialog only decides which of them is on screen. Rebuilding them
+     would have meant re-wiring every path that touches them, and the hidden
+     <select> is deliberately the state for the voice picker. */
+  var dlg = document.getElementById("pdlg");
+  if (!dlg || !dlg.showModal) return;          /* no <dialog>, leave it inline */
+  /* 🚨 MOVE IT TO THE BODY. It was authored next to .nospeech, which put it
+     INSIDE .player - a position:fixed box. A modal renders in the top layer so
+     it half worked, but it has no business being a child of the bar it controls. */
+  if (dlg.parentElement !== document.body) document.body.appendChild(dlg);
+  var body = dlg.querySelector(".pdlg-body");
+  var title = document.getElementById("pdlgTitle");
+  var TITLES = { speedrow:"Reading speed", voicerow:"Voice", themerow:"Colors", keyrow:"Voice API key" };
+
+  function show(which){
+    [].forEach.call(body.children, function(el){ el.hidden = (el.id !== which); });
+    /* .keyrow is hidden until .show, which used to come from the disclosure */
+    var kr = document.getElementById("keyrow");
+    if (kr) kr.classList.toggle("show", which === "keyrow");
+    title.textContent = TITLES[which] || "Settings";
+    dlg.showModal();
+  }
+
+  document.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".setbtn") : null;
+    if (b) { e.preventDefault(); show(b.getAttribute("data-dlg")); }
+  });
+  var x = document.getElementById("pdlgX");
+  if (x) x.addEventListener("click", function(){ dlg.close(); });
+  /* clicking the backdrop closes it: the dialog fills its own box, so a click
+     landing on the element itself is a click outside the content */
+  /* 🚨 TEST THE COORDINATES, NOT THE TARGET. e.target === dlg is the usual
+     backdrop trick and it closed the dialog on the very click that opened it:
+     showModal() puts the box under the pointer mid-click, so the same event
+     then reads as a backdrop hit. A rectangle test cannot do that. */
+  dlg.addEventListener("click", function(e){
+    if (!dlg.open) return;
+    var r = dlg.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+  });
+
+  /* ── keep the row labels showing the current value ── */
+  function txt(sel){ var o = sel && sel.options && sel.options[sel.selectedIndex]; return o ? o.textContent.trim() : ""; }
+  function paint(){
+    var rate = document.getElementById("rate");
+    var voice = document.getElementById("voice");
+    var vl = document.getElementById("vselLabel");
+    var set = function(id, v){ var e = document.getElementById(id); if (e && v) e.textContent = v; };
+    set("valSpeed", txt(rate));
+    set("valVoice", (vl && vl.textContent.trim()) || txt(voice));
+    set("valTheme", (load("theme","graphite") || "graphite").replace(/^./, function(c){ return c.toUpperCase(); }));
+    var k = ""; try { k = load("ttskey",""); } catch(e2){}
+    set("valKey", k ? "Set" : "Not set");
+  }
+  paint();
+  /* ⚠️ THE VOICE LIST ARRIVES LATE. Android does not populate getVoices() until
+     a user gesture and the baked manifest is fetched, so the first paint can run
+     before there is a voice name to show and the row reads "Voice". Repaint once
+     things have settled and again on load.
+     Paul would have seen "Voice: Voice" on the row. */
+  setTimeout(paint, 900); setTimeout(paint, 2500);
+  addEventListener("load", paint);
+  ["rate","voice"].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.addEventListener("change", paint);
+  });
+  /* the swatches and the voice list write elsewhere, so repaint on close too */
+  dlg.addEventListener("close", paint);
+  var sw = document.getElementById("swatches");
+  if (sw) sw.addEventListener("click", function(){ setTimeout(paint, 60); });
+  var vb = document.getElementById("vselList");
+  if (vb) vb.addEventListener("click", function(){ setTimeout(paint, 60); });
 })();
 
 (function followChip(){
