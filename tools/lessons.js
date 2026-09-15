@@ -19,6 +19,7 @@ const LESSONS = [
   require('./content/grade-7/history/unit-1/roman-government'),
   require('./content/grade-7/history/unit-1/roads-and-the-roman-army'),
   require('./content/grade-7/history/unit-1/conquest-and-city-life'),
+  require('./content/grade-7/history/unit-1/class-and-daily-life'),
   require('./content/grade-7/science/unit-1/what-makes-something-alive'),
   require('./content/grade-7/science/unit-1/life-only-comes-from-life'),
   require('./content/grade-7/science/unit-1/how-we-know-what-we-know'),

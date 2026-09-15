@@ -48,6 +48,10 @@ const BAD = [
   ['apologise', 'apologize'], ['analyse', 'analyze'], ['practise', 'practice'],
   ['metres', 'meters'], ['litres', 'liters'], ['centre', 'center'],
   ['theatre', 'theater'], ['defence', 'defense'], ['travelled', 'traveled'],
+  /* added 2026-09-15: the list had 'travelled' and not 'traveller', so a
+     British spelling shipped in a history lesson past a green check. When a
+     word gets in, add every form of it, not the one that bit. */
+  ['traveller', 'traveler'], ['travellers', 'travelers'], ['travelling', 'traveling'],
   ['cancelled', 'canceled'], ['whilst', 'while'],
 ];
 

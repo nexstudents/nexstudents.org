@@ -89,6 +89,7 @@ const WORLD = {
           slug: "history/conquest-and-city-life" },
         { label: "1-5", title: "Class, Slavery, and Daily Life in Rome", kind: "lesson",
           cover: "/lessons/history/class-and-daily-life/thumb.jpg",
+          slug: "history/class-and-daily-life",
           leif: "U1 L5: Social Class, Slavery, and Daily Life", mcdougal: "Ch2 §1" },
         { label: "1-6", title: "Judea Under Roman Rule", kind: "lesson",
           cover: "/lessons/history/judea-under-rome/thumb.jpg",
