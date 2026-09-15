@@ -900,6 +900,12 @@ if (!supported && !hasStudio() && !hasKey()){
     var btn = document.getElementById("vselBtn");
     var list = document.getElementById("vselList");
     if (!btn || !list) return;
+    /* 🚨 NEVER CLOSE IT INSIDE THE SETTINGS DIALOG. There the list is shown as a
+       plain block and its trigger is hidden, so closing it strands the student
+       with an empty popup and no way to reopen. The dialog's own close is what
+       dismisses it. */
+    var dlg = document.getElementById("pdlg");
+    if (dlg && dlg.open) return;
     list.hidden = true;
     btn.setAttribute("aria-expanded", "false");
   }
@@ -2122,6 +2128,16 @@ addEventListener("scroll", function(){
     /* .keyrow is hidden until .show, which used to come from the disclosure */
     var kr = document.getElementById("keyrow");
     if (kr) kr.classList.toggle("show", which === "keyrow");
+    /* 🚨 THE VOICE LIST HAS NO TRIGGER IN HERE, so nothing else would ever
+       unhide it and the popup would open empty. Its <li>s are rebuilt by
+       renderVsel whenever the voice list changes, so ask for a repaint too:
+       on a phone getVoices() is empty until a user gesture, and opening this
+       dialog is one. */
+    var vl = document.getElementById("vselList");
+    if (vl && which === "voicerow"){
+      if (window.nsRenderVsel) window.nsRenderVsel();
+      vl.hidden = false;
+    }
     title.textContent = TITLES[which] || "Settings";
     dlg.showModal();
   }

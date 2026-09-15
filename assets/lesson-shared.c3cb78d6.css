@@ -349,6 +349,24 @@ dialog.pdlg::backdrop{background:rgba(0,0,0,.55)}
 .pdlg-body .keydisc,.pdlg-body .keynote{text-align:left}
 .pdlg-body select.rate{width:100%}
 .pdlg-body .vsel{width:100%}
+/* 🚨 INSIDE A POPUP, THE POPUP IS THE PICKER. Paul, 2026-09-15: "i cant select
+   differnt voices ... even with a regualr popup it will not let me scroll up to
+   see more", and on the PC too. .vsel-list is position:absolute with
+   bottom:calc(100% + 6px) - it opens UPWARD, which was right when the picker
+   sat on a bar docked to the bottom of the screen. In a dialog whose body is
+   overflow:auto it opens up and OUT of the box, and the box clips it. There is
+   nothing to scroll to: it is drawn outside.
+   ⚠️ So do not "fix" this by raising a z-index or adding overflow:visible.
+   overflow:visible would break the dialog's own scrolling on a long voice list,
+   and z-index cannot rescue a child clipped by its scroll container. The list
+   becomes a plain block and the DIALOG scrolls. */
+.pdlg-body .vsel-trigger{display:none}
+.pdlg-body .vsel-list{
+  position:static;bottom:auto;max-height:none;box-shadow:none;margin:0;
+  background:transparent;color:inherit;border:0;padding:0;
+}
+.pdlg-body .vsel-list li{border:1px solid var(--rule, var(--line));margin:0 0 6px}
+.pdlg-body .vsel-list li:last-child{margin-bottom:0}
 .pdlg-body .keyrow{display:block}
 .pdlg-body .keytogglerow{display:none}   /* the row IS the disclosure now */
 .pmeta{
