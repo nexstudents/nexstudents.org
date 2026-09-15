@@ -95,12 +95,21 @@ const LIFE = {
           slug: "science/inside-a-cell-part-by-part" },
         { label: "2-3", title: "From Cells to Tissues to Organs", book: "Cell Organization", page: 44, kind: "lesson",
           slug: "science/from-cells-to-tissues-to-organs" },
-        { label: "2-4", title: "Organ Transplants, and the Questions They Raise", book: "Science and Society: Organ Transplants", page: 46, kind: "lesson" },
+        /* 🚨 A SLOT CAN CARRY ART BEFORE THE LESSON EXISTS. Paul drew all five
+           Unit 2 covers on 2026-09-14, and a cover often lands before the
+           lesson does - the same as the science Unit 1 Review on 2026-09-01.
+           ⚠️ A slot is still NOT A LINK, art or no art: `.is-slot` renders no
+           <a>, because the cover must not be clickable into a page that does
+           not exist. Delete the `thumb` here the day the lesson ships, since
+           `shelf: { thumb: true }` on the lesson then derives the same path. */
+        { label: "2-4", title: "Organ Transplants, and the Questions They Raise", book: "Science and Society: Organ Transplants", page: 46, kind: "lesson",
+          thumb: "/lessons/science/organ-transplants-and-the-questions-they-raise/thumb.jpg" },
         { label: "T", title: "Technology: A Touch of Diamonds", page: 33, kind: "feature" },
         { label: "PS", title: "Problem Solving: A Tale of a Tail", page: 40, kind: "feature" },
         { label: "2-1A", title: "Activity: Comparing Plant and Animal Cells", page: 43, kind: "activity" },
         { label: "2-2A", title: "Activity: Comparing Plant and Animal Tissues", page: 48, kind: "activity" },
-        { label: "2-5", title: "Unit 2 Review: Inside the Cell", kind: "review" },
+        { label: "2-5", title: "Unit 2 Review: Inside the Cell", kind: "review",
+          thumb: "/lessons/science/unit-2-review/thumb.jpg" },
       ],
     },
     {

@@ -8,7 +8,7 @@ module.exports = {
   title: "Inside a Cell, Part by Part",
   unit: "Life Science &middot; U2-L2",
   seq: { unit: 2, unitTitle: "Inside the Cell", n: 2 },
-  shelf: {
+  shelf: { thumb: true,
     grades: [7],
     subject: "Science",
     blurb: "Walk into a warehouse and you can read everyone's job in thirty seconds. A cell is the same building, shrunk to the size of a pin head.",

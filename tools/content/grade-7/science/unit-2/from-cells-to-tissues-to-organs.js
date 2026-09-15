@@ -32,7 +32,7 @@ module.exports = {
     unclear: "",
   },
 
-  shelf: { grades: [7], subject: "Science",
+  shelf: { thumb: true, grades: [7], subject: "Science",
     blurb: "Cells are not all alike, and the shape of one usually tells you what it is for. Then how they stack up into a whole body.",
     contains: [
       "A story-form reading, read aloud with the words highlighted",

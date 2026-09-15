@@ -48,7 +48,7 @@ module.exports = {
     unclear: "",
   },
 
-  shelf: { grades: [7], subject: "Science",
+  shelf: { thumb: true, grades: [7], subject: "Science",
     blurb: "Cells were inside every living thing long before anyone knew. This is the story of the tool that let us look.",
     contains: [
       "A brick wall that turns into bricks as you walk toward it",

@@ -744,6 +744,12 @@ const sciencePager = (course) => course.units
          honest: the number is the book's structure, which is fact, and the name
          is ours to write when the lesson is built. */
       title: i.title || "Coming Soon", slug: i.slug || null,
+      /* 🚨 CARRY THE COVER THROUGH. `unitPager` already passes a slot's thumb to
+         slotCard, but this adapter rebuilt each item from three fields and
+         dropped it, so art on an unbuilt lesson rendered an empty .cthumb and
+         looked like the file was missing. Paul drew all five Unit 2 covers on
+         2026-09-14 and two of those lessons do not exist yet. */
+      thumb: i.thumb || null,
     })),
   }))
   .filter((u) => u.items.length);
