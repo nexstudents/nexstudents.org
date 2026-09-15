@@ -2887,9 +2887,25 @@ function playClipFrom(mine, clip){
      not change when playbackRate does. */
   audioEl.playbackRate = Math.max(0.5, Math.min(2, rateVal() / 0.85));
 
+  /* 🚨 THE HIGHLIGHT RAN AHEAD OF THE VOICE. Paul, 2026-09-15, on the first
+     baked lesson: "the highlighted text is just a slightly bit faster than the
+     reading from the player and it jumps a but before the word is spoken."
+
+     Two causes, both pushing the same way:
+       · audioEl.currentTime reports the position being DECODED, not the sound
+         that has actually reached the speaker. Output latency is tens of
+         milliseconds on a wired device and much worse over Bluetooth.
+       · Google's SSML timepoint sits where the <mark> tag sits, at the START of
+         the word, which is a little before the word becomes audible.
+
+     ⚠️ WORD_LAG IS REAL-WORLD SECONDS, so it converts into media time by the
+     playback rate: at 1.5x, a tenth of a real second is 0.15 of media time.
+     Subtracting a flat number here would drift as soon as he changed speed. */
+  var WORD_LAG = 0.12;
+
   function tick(){
     if (mine !== gen || !audioEl) return;
-    var t = audioEl.currentTime, k = -1;
+    var t = audioEl.currentTime - WORD_LAG * (audioEl.playbackRate || 1), k = -1;
     for (var j = 0; j < marks.length; j++){
       if (marks[j] <= t) k = j; else break;
     }

@@ -6,3 +6,12 @@
 .commitmsg.tmp
 animal-cell.html
 review/
+
+# 🚨 BAKED AUDIO LIVES IN R2, NOT IN GIT (roadmap 27, done 2026-09-15).
+# Every clip is uploaded to the nexstudents-media bucket and served by the
+# Worker; voice.json carries a relative src plus the base, which is exactly
+# what bake-voice.js writes when the R2_* variables are set.
+# ⚠️ Git never forgets, so 268 clips baked before this rule are still in the
+# history and cannot be removed without rewriting it. This only stops it
+# growing. voice.json itself IS committed - it is small and the page needs it.
+lessons/**/voice/
