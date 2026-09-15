@@ -426,6 +426,66 @@ h2{
    it hidden behind the header. */
 .para{margin:0;scroll-margin-top:var(--stickytop,180px)}
 
+/* 🚨 A TAPPABLE WORD IN THE READING. Paul, 2026-09-14: "put an underline with
+   certain words in the story that are important to be clickable and it gives
+   more information on it."
+   ⚠️ A DOTTED UNDERLINE, NOT A LINK COLOUR. A coloured word inside a sentence
+   competes with the reading highlight and with the answer-hunt band, and a
+   struggling reader ends up looking at the colour rather than the line. The
+   underline says "there is more here" without pulling the eye off the sentence.
+   ⚠️ `text-underline-offset` keeps it clear of descenders; without it the dots
+   collide with every g and y and the word looks misspelled. */
+.gloss{
+  text-decoration:underline dotted var(--verdigris);
+  text-decoration-thickness:1.5px;
+  text-underline-offset:4px;
+  cursor:pointer;
+}
+.gloss:hover,.gloss:focus-visible{text-decoration-style:solid;outline:none}
+.gloss.opened{text-decoration-color:var(--brass)}
+
+/* The card itself. Sits under the sentence rather than floating over it, so it
+   never covers the line the student was reading. */
+.glossbox{
+  margin:10px 0 2px;padding:12px 16px;
+  border-left:3px solid var(--verdigris);
+  background:var(--surface-2);border-radius:0 4px 4px 0;
+  font-size:.92em;line-height:1.55;
+}
+.glossbox b{display:block;font-size:.8em;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--verdigris);margin-bottom:4px}
+.glossbox .gx{float:right;cursor:pointer;color:var(--ink-soft);font-size:1.1em;
+  line-height:1;padding:0 2px}
+
+/* 🚨 EXAMPLES AND SCRIPTURE ARE SET APART FROM THE PROSE. Paul, 2026-09-14:
+   "the examples in the story need to show them seperate from the text so the
+   student can read it directly", and "i also want the bible verses just like the
+   examples to be spaced apart from the other text ... it shows its an example."
+   A blank line already made each one its own paragraph, but it still rendered in
+   the same serif at the same size as the sentence above it, so nothing on screen
+   said "this is the worked example" - it read as one more line of story.
+   ⚠️ THE PARAGRAPH CARRIES THE CLASS, NOT THE SENTENCE. `.sent` is the highlight
+   unit for the voice player and the answer hunt; styling it would fight the
+   reading band and move the text under the highlight. */
+.para.is-ex{
+  font-family:ui-monospace,"Cascadia Mono","Consolas",monospace;
+  font-size:1.02em;letter-spacing:.01em;
+  margin:6px 0;padding:10px 16px;
+  border-left:3px solid var(--verdigris);
+  background:var(--surface-2);border-radius:0 4px 4px 0;
+}
+.para.is-verse{
+  font-style:italic;
+  margin:6px 0;padding:10px 18px;
+  border-left:3px solid var(--rule);
+  color:var(--ink-soft);
+}
+/* ⚠️ The highlight band still has to read INSIDE both boxes. `--band` is tuned
+   against the page ground, and the example box sits on --surface-2, so the two
+   were close enough to lose the band entirely at some themes. Lifting the band's
+   own contrast here rather than changing --band keeps every other lesson alone. */
+.para.is-ex .sent.on,.para.is-verse .sent.on{box-shadow:0 0 0 2px var(--verdigris)}
+
 /* ---------- the explainer ----------
    Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
    to you ... use a visual way of explaining along with the text so the youth can
@@ -594,11 +654,19 @@ h2{
   margin:10px 0 0;padding-top:8px;
   border-top:1px solid var(--rule, var(--line));
 }
+/* 🚨 THE WHOLE ROW IS THE TAP TARGET, NOT JUST THE WORDS. Paul, 2026-09-14:
+   "it's also hard to tap on if not pressed directly in the middle text of the
+   panel." It was a 12px text button with 4px of padding, so the hit area was the
+   glyphs themselves - fine with a mouse, close to unusable with a thumb.
+   ⚠️ 44px MINIMUM HEIGHT is the size a finger actually hits. Do not trim it back
+   for looks; the label stays small, only the target grew. */
 .dbox-x{
   font:inherit;font-size:12px;
   letter-spacing:.08em;text-transform:uppercase;
-  background:none;border:0;cursor:pointer;padding:4px 10px;border-radius:5px;
+  background:none;border:0;cursor:pointer;border-radius:5px;
   color:var(--ink-faint, var(--dim));
+  display:flex;align-items:center;justify-content:center;
+  width:100%;min-height:44px;padding:0 10px;
 }
 .dbox-x:hover{color:var(--ink)}
 .dbox-x:focus-visible{outline:2px solid var(--verdigris, var(--accent));outline-offset:2px}
@@ -917,11 +985,19 @@ h2{
   margin:10px 0 0;padding-top:8px;
   border-top:1px solid var(--rule, var(--line));
 }
+/* 🚨 THE WHOLE ROW IS THE TAP TARGET, NOT JUST THE WORDS. Paul, 2026-09-14:
+   "it's also hard to tap on if not pressed directly in the middle text of the
+   panel." It was a 12px text button with 4px of padding, so the hit area was the
+   glyphs themselves - fine with a mouse, close to unusable with a thumb.
+   ⚠️ 44px MINIMUM HEIGHT is the size a finger actually hits. Do not trim it back
+   for looks; the label stays small, only the target grew. */
 .dbox-x{
   font:inherit;font-size:12px;
   letter-spacing:.08em;text-transform:uppercase;
-  background:none;border:0;cursor:pointer;padding:4px 10px;border-radius:5px;
+  background:none;border:0;cursor:pointer;border-radius:5px;
   color:var(--ink-faint, var(--dim));
+  display:flex;align-items:center;justify-content:center;
+  width:100%;min-height:44px;padding:0 10px;
 }
 .dbox-x:hover{color:var(--ink)}
 .dbox-x:focus-visible{outline:2px solid var(--verdigris, var(--accent));outline-offset:2px}
@@ -2005,6 +2081,20 @@ PARTS.forEach(function(part){
       p.className = "para";
       return;
     }
+    /* 🚨 A LEADING [ex] OR [verse] MARKS THE PARAGRAPH AND IS STRIPPED HERE.
+       The marker never reaches the reader, never enters SENT, and never reaches
+       the voice: the text pushed below is the stripped text, so nsTextHash sees
+       exactly what bake-voice's sentencesOf sees.
+       ⚠️ THIS RULE LIVES IN TWO PLACES - here and tools/bake-voice.js. Strip in
+       one and not the other and every clip from that line on plays against the
+       wrong sentence, which is the same off-by-one the blank-line rule above
+       warns about. Change one, change both.
+       ⚠️ The class goes on the PARAGRAPH, so one marked line sets the whole
+       block - which is what a two-line scripture quote needs, the verse and its
+       reference together. */
+    if (text.indexOf("[ex] ") === 0) { p.classList.add("is-ex"); text = text.slice(5); }
+    else if (text.indexOf("[verse] ") === 0) { p.classList.add("is-verse"); text = text.slice(8); }
+
     var i = SENT.length;
     var span = document.createElement("span");
     span.className = "sent";
@@ -2013,11 +2103,63 @@ PARTS.forEach(function(part){
     // word spans with char offsets, so speech boundaries can light them up
     var offsets = [];
     var cursor = 0;
+    /* 🚨 {{double braces}} MARK A WORD THE STUDENT CAN TAP FOR ITS MEANING.
+       Paul, 2026-09-14: "put an underline with certain words in the story that
+       are important to be clickable and it gives more information on it."
+       The braces are stripped here, before the text reaches SENT, so the reader
+       never sees them, the voice never says them and nsTextHash never sees them.
+       ⚠️ TWINNED IN bake-voice.js, exactly like [ex] and [verse]. Strip in one
+       and not the other and every clip after the first marked word plays against
+       the wrong sentence.
+       🚨 IT HANGS OFF THE WORD SPANS THAT ALREADY EXIST for the voice highlight
+       rather than inserting its own markup. A second set of spans inside .sent
+       would break the character offsets the word-level highlight depends on. */
+    var glossAt = [];                       /* word indexes that open a card */
+    (function findGloss(){
+      var out = "", gi = 0, rest = text;
+      while (true) {
+        var a = rest.indexOf("{{");
+        if (a < 0) { out += rest; break; }
+        var b = rest.indexOf("}}", a);
+        if (b < 0) { out += rest; break; }
+        var before = rest.slice(0, a), term = rest.slice(a + 2, b);
+        out += before + term;
+        /* which word indexes does the term cover, counting spaces so far */
+        var startWord = (out.slice(0, out.length - term.length).split(" ").length) - 1;
+        for (var q = 0; q < term.split(" ").length; q++) glossAt.push(startWord + q);
+        rest = rest.slice(b + 2);
+        gi++;
+      }
+      text = out;
+    })();
+
     text.split(" ").forEach(function(w, k){
       if (k > 0) { span.appendChild(document.createTextNode(" ")); cursor += 1; }
       var ws = document.createElement("span");
       ws.className = "w";
-      ws.textContent = w;
+      if (glossAt.indexOf(k) === -1) {
+        ws.textContent = w;
+      } else {
+        /* 🚨 UNDERLINE THE WORD, NOT THE COMMA AFTER IT. The reader splits on
+           spaces, so a token is "cytoplasm," punctuation and all, and marking
+           the whole token drew the dotted line under the comma too - which reads
+           as a typo. The punctuation stays inside the SAME .w span so the voice
+           highlight and the character offsets are untouched; only an inner span
+           carries the underline. */
+        var core = w, tail = "", head = "";
+        while (core.length && ".,;:!?’\")]”".indexOf(core.charAt(core.length - 1)) !== -1) {
+          tail = core.charAt(core.length - 1) + tail; core = core.slice(0, -1);
+        }
+        while (core.length && "(\"[“".indexOf(core.charAt(0)) !== -1) {
+          head += core.charAt(0); core = core.slice(1);
+        }
+        var gw = document.createElement("span");
+        gw.className = "gloss";
+        gw.textContent = core;
+        if (head) ws.appendChild(document.createTextNode(head));
+        ws.appendChild(gw);
+        if (tail) ws.appendChild(document.createTextNode(tail));
+      }
       span.appendChild(ws);
       offsets.push({ el: ws, start: cursor, end: cursor + w.length });
       cursor += w.length;
@@ -3537,7 +3679,13 @@ function setDemoOpen(on, why){
   dbox.classList.toggle("is-shut", !on);
   dboxX.textContent = on ? "Close Visual Panel" : "Open Visual Panel";
   dboxX.setAttribute("aria-expanded", on ? "true" : "false");
-  store("demo", on ? "1" : "0");
+  /* 🚨 DO NOT STORE ON init. This wrote the preference every time a lesson
+     loaded, so while the panel defaulted OPEN it stamped "1" onto every device
+     that had ever opened a lesson - and changing the default afterwards then did
+     nothing for any of them, because they all had a stored choice. Only a real
+     press is a choice. Found 2026-09-14: the default was changed to closed and
+     the panel still came up open. */
+  if (why !== "init") store("demo", on ? "1" : "0");
   /* 🚨 REPAINT IMMEDIATELY. The highlight rules read demoOpen(), so without this
      the band or the lit word stays exactly as it was until the reader happens to
      move to the next sentence - which on a slow line is several seconds of the
@@ -3593,7 +3741,14 @@ if ((VISUALS.length || PANEL_SOON) && dbox){
   /* 🚨 Remembered per reader, and OPEN by default. It is the reason the lesson
      looks the way it does, so a student meeting the page for the first time has
      to see it working before he can decide he does not want it. */
-  setDemoOpen(load("demo", "1") !== "0", "init");
+  /* 🚨 CLOSED BY DEFAULT. Paul, 2026-09-14: "the visual panel has a bug and
+     should be closed by default not open by default." It used to default open,
+     which put a large empty frame between the lesson title and the first line of
+     the reading on every lesson that had no picture for sentence one - so the
+     student's first sight of the page was a blank box rather than the story.
+     ⚠️ A READER WHO OPENS IT STILL GETS IT BACK. The stored value wins; only the
+     ABSENCE of a choice now means closed. */
+  setDemoOpen(load("demo", "0") === "1", "init");
   measureSticky();
   paintDemo(0);
   dboxX.addEventListener("click", function(){ setDemoOpen(!demoOpen()); });
@@ -4101,6 +4256,88 @@ scrub.addEventListener("keydown", function(e){
   });
 })();
 
+/* ---------- tap a marked word, get its meaning ----------
+   🚨 THE DEFINITION COMES FROM `words`, NOT A SECOND LIST. One copy, so the card
+   at the top and the inline card can never drift.
+   ⚠️ ONE CARD OPEN AT A TIME. Several at once push the paragraph being read off
+   the screen, which is the thing the Visual Panel already has to be careful of.
+   ⚠️ Delegated off #story: the word spans are built in a loop, and a listener
+   per span would be hundreds of listeners for one behaviour. */
+(function inlineGlossary(){
+  var story = document.getElementById("story");
+  if (!story || typeof WORDS === "undefined") return;
+
+  function defOf(term){
+    var want = String(term).toLowerCase().replace(/[^a-z ]/g, "").trim();
+    for (var i = 0; i < WORDS.length; i++){
+      var w = String(WORDS[i][0]).toLowerCase().replace(/[^a-z ]/g, "").trim();
+      if (w === want || w + "s" === want || w === want + "s") return WORDS[i];
+    }
+    return null;
+  }
+  function closeBox(){
+    var open = story.querySelector(".glossbox");
+    if (open) open.parentNode.removeChild(open);
+    [].forEach.call(story.querySelectorAll(".gloss.opened"), function(w){
+      w.classList.remove("opened");
+    });
+  }
+
+  story.addEventListener("click", function(ev){
+    if (!ev.target.closest) return;
+    if (ev.target.closest(".glossbox")) {
+      if (ev.target.classList.contains("gx")) closeBox();
+      return;
+    }
+    var hit = ev.target.closest(".gloss");
+    if (!hit) return;
+
+    /* gather the whole marked run so "cell membrane" reads as one term */
+    var sent = hit.closest(".sent");
+    var all = [].slice.call(sent.querySelectorAll(".gloss"));
+    var at = all.indexOf(hit), run = [hit];
+    /* a run is adjacent .gloss spans, i.e. the words of one multi-word term */
+    for (var a = at - 1; a >= 0; a--) { if (all[a].parentNode.nextSibling && all[a].parentNode.nextSibling.nextSibling === run[0].parentNode) run.unshift(all[a]); else break; }
+    for (var b = at + 1; b < all.length; b++) { var last = run[run.length-1].parentNode; if (last.nextSibling && last.nextSibling.nextSibling === all[b].parentNode) run.push(all[b]); else break; }
+    var term = run.map(function(w){ return w.textContent; }).join(" ");
+
+    var pair = defOf(term);
+    if (!pair) return;                    /* the build guard should prevent this */
+
+    var already = story.querySelector(".glossbox");
+    var same = already && already.getAttribute("data-for") === term.toLowerCase();
+    closeBox();
+    if (same) return;                     /* tapping the same word shuts it again */
+
+    var el = document.createElement("div");
+    el.className = "glossbox";
+    el.setAttribute("data-for", term.toLowerCase());
+    var x = document.createElement("span");
+    x.className = "gx"; x.textContent = "×";
+    x.setAttribute("role", "button"); x.setAttribute("aria-label", "Close");
+    var name = document.createElement("b");
+    name.textContent = pair[0];
+    el.appendChild(x); el.appendChild(name);
+    el.appendChild(document.createTextNode(pair[1]));
+
+    var para = sent.closest(".para");
+    para.parentNode.insertBefore(el, para.nextSibling);
+    run.forEach(function(w){ w.classList.add("opened"); });
+  });
+
+  /* reachable and openable without a mouse */
+  [].forEach.call(story.querySelectorAll(".gloss"), function(w){
+    w.setAttribute("tabindex", "0");
+    w.setAttribute("role", "button");
+  });
+  story.addEventListener("keydown", function(ev){
+    if (ev.key !== "Enter" && ev.key !== " ") return;
+    if (!ev.target.closest || !ev.target.closest(".gloss")) return;
+    ev.preventDefault();
+    ev.target.closest(".gloss").click();
+  });
+})();
+
 
 </script>
 <script>
@@ -4374,7 +4611,7 @@ function paintTeacherScore(){
   line.textContent = done === 0
     ? (told ? "Nothing answered · " + told + " shown" : "Not started yet.")
     : done === TOTAL
-      ? "Completed · " + TOTAL + "/" + TOTAL + " (100%) · practised to mastery"
+      ? "Completed · " + TOTAL + "/" + TOTAL + " (100%) · practiced to mastery"
       : done + " of " + TOTAL + " answered · still in progress" + suffix;
   if (btn) { btn.hidden = (done === 0 && told === 0); return; }
   if (btn) btn.hidden = done === 0;

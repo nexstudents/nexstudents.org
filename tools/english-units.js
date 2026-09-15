@@ -504,7 +504,7 @@ const GRADE7 = {
       { title: "Writing Good Sentences", book: "Revising Strategies: Writing Good Sentences", page: 35, craft: true,
         slug: "english/writing-good-sentences" },
       { n: 2, title: "Complete Subjects and Complete Predicates", page: 37, slug: "english/complete-subjects-and-predicates" },
-      { n: 3, title: "Simple Subjects and Simple Predicates", page: 40 },
+      { n: 3, title: "Simple Subjects and Simple Predicates", page: 40, slug: "english/simple-subjects-and-simple-predicates" },
       { title: "Forming Compound Subjects and Predicates", book: "Revising Strategies: Forming Compound Subjects and Predicates", page: 43, craft: true },
       { n: 4, title: "Finding the Subject", page: 45 },
       { n: 5, title: "Conjunctions", page: 48 },

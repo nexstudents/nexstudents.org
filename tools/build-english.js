@@ -32,7 +32,7 @@ const { ENGLISH } = require("./english-lessons.js");
 const { navMarkup, navScript, modeBoot, faviconTags, lessonHead, navCssTag } = require("./nav.js");
 /* The closing instructions, and the guard that a lesson has some. Shared with
    history and maths so all three say the task the same way. */
-const { partsFor, requireTodo } = require("./lesson-instructions.js");
+const { partsFor, requireTodo, checkTodoCounts, checkOneSentence } = require("./lesson-instructions.js");
 /* 🚨 ONE PLAYER, EVERY LESSON TYPE. The reading voice is not re-implemented
    here; it is sliced out of lesson-template.html so English, maths, history
    and later science all run the identical engine. Paul, 2026-08-29: "i want
@@ -70,10 +70,22 @@ function themesBlock() {
    because they are inside words, not around them. */
 const bare = (w) => w.replace(/[^A-Za-z']/g, "").toLowerCase();
 
+/* 🚨 A DERIVED COUNT STILL HAS TO READ LIKE PROSE. The note said "Five done for
+   you" when it was typed; deriving it turned that into "5 done for you" on a
+   page nobody had otherwise touched. The count comes from the data either way -
+   this only decides how it is spelled. */
+const NUMWORD = ["zero","one","two","three","four","five","six","seven","eight","nine","ten",
+                 "eleven","twelve","thirteen","fourteen","fifteen","sixteen"];
+const numWord = (n) => (n < NUMWORD.length ? NUMWORD[n] : String(n));
+const Num = (n) => { const w = numWord(n); return w.charAt(0).toUpperCase() + w.slice(1); };
+
 /* ── the guard ──────────────────────────────────────────────────────────── */
 function verifyPractice(L) {
   L.practice.forEach((p, n) => {
     const where = L.slug + " practice[" + n + "]";
+    /* "word" is the honest name on a lesson that is not about verbs. One field,
+       two spellings, so the guard below still recomputes the index either way. */
+    if (!p.verb && p.word) p.verb = p.word;
     const words = p.sentence.split(" ");
 
     const hits = [];
@@ -161,10 +173,21 @@ function checkSort(L) {
    render as plain text with nothing marked, and look like an oversight rather
    than a bug. */
 function verifyExamples(L) {
-  L.examples.forEach(([sentence, verb, why], n) => {
+  L.examples.forEach((e, n) => {
     const where = L.slug + " examples[" + n + "]";
-    const hit = sentence.split(" ").findIndex((w) => bare(w) === bare(verb));
-    if (hit < 0) fail(where + ': "' + verb + '" does not appear in "' + sentence + '"');
+    /* The object shape marks TWO words and is checked on both of them. An
+       example whose marked word is not in its own sentence renders as plain
+       text with nothing lit, which reads as an oversight rather than a bug. */
+    const sentence = Array.isArray(e) ? e[0] : e.sentence;
+    const marks = Array.isArray(e) ? [e[1]] : [e.subject, e.predicate];
+    const why = Array.isArray(e) ? e[2] : e.why;
+    marks.forEach((m) => {
+      if (!m) fail(where + ": a two-colour example needs both a subject and a predicate");
+      if (sentence.split(" ").findIndex((w) => bare(w) === bare(m)) < 0)
+        fail(where + ': "' + m + '" does not appear in "' + sentence + '"');
+    });
+    if (!Array.isArray(e) && bare(e.subject) === bare(e.predicate))
+      fail(where + ": the subject and the predicate are the same word");
     if (!why || why.length < 20) fail(where + ": needs a real explanation");
   });
 }
@@ -178,6 +201,78 @@ function verifyGround(L) {
   }
   if (!Array.isArray(g.whenStuck) || g.whenStuck.length < 2)
     fail(L.slug + ': ground.whenStuck needs at least two things to actually SAY, not "review the material"');
+}
+
+/* ── THE CHOOSE PART ───────────────────────────────────────────────────────
+   The words are offered rather than hunted for, which makes a different set of
+   ways to be wrong:
+     · an option that is not in the sentence teaches him to compare buttons
+       instead of reading the line, which is the habit the find part undoes
+     · the right word missing from the options makes a correct answer
+       unreachable, and he would believe the page over himself
+     · all six asking for the same half teaches the position of the answer
+   Every one of those is silent on the page, so each is checked here. */
+const HALVES = ["subject", "predicate"];
+function verifyChoose(L) {
+  if (!L.choose) return;
+  if (L.choose.length < 4) fail(L.slug + ": a `choose` part needs at least four sentences");
+  L.choose.forEach((c, n) => {
+    const where = L.slug + " choose[" + n + "]";
+    if (HALVES.indexOf(c.ask) < 0)
+      fail(where + ': ask must be "subject" or "predicate", not "' + c.ask + '"');
+    if (!Array.isArray(c.options) || c.options.length < 3 || c.options.length > 5)
+      fail(where + ": needs three to five options. Two is a coin toss and six is a word search.");
+    const words = c.sentence.split(" ").map(bare);
+    if (words.indexOf(bare(c.word)) < 0)
+      fail(where + ': the answer "' + c.word + '" is not in "' + c.sentence + '"');
+    if (!c.options.some((o) => bare(o) === bare(c.word)))
+      fail(where + ': the answer "' + c.word + '" is not among its own options. ' +
+           "The right answer would be unreachable and he would believe the page over himself.");
+    c.options.forEach((o) => {
+      if (words.indexOf(bare(o)) < 0)
+        fail(where + ': option "' + o + '" is not a word in the sentence. Every option has to be ' +
+             "readable off the line, or he learns to compare buttons instead of reading.");
+    });
+    if (new Set(c.options.map(bare)).size !== c.options.length)
+      fail(where + ": the same word appears twice in the options");
+    if (!c.why || c.why.length < 25) fail(where + ": needs a real explanation");
+  });
+  HALVES.forEach((h) => {
+    if (!L.choose.some((c) => c.ask === h))
+      fail(L.slug + ": the choose part never asks for the " + h + ". It has to ask for both.");
+  });
+  let run = 1;
+  for (let i = 1; i < L.choose.length; i++) {
+    run = L.choose[i].ask === L.choose[i - 1].ask ? run + 1 : 1;
+    if (run > 2) fail(L.slug + ": three choose questions in a row ask for the " + L.choose[i].ask +
+                      ". He would learn the pattern instead of the words.");
+  }
+}
+
+/* ── THE MARKED-UP STORY ───────────────────────────────────────────────────
+   🚨 THE SAME RULE build-split.js USES, and for the same reason: the story is on
+   the page twice, once read aloud and once marked in colour, and two copies of a
+   sentence is how a page teaches one thing and reads another. So a showcase
+   sentence must appear VERBATIM in the story. */
+function verifyShowcase(L) {
+  if (!L.showcase) return;
+  const story = (L.parts || []).flatMap((pt) => pt.s || []).map((x) => String(x).trim());
+  L.showcase.forEach((sc, n) => {
+    const where = L.slug + " showcase[" + n + "]";
+    if (!story.includes(sc.sentence.trim()))
+      fail(where + ": this sentence is not in the story word for word.\n" +
+           "      The page would read one sentence aloud and colour a different one.\n" +
+           "        " + sc.sentence);
+    const words = sc.sentence.split(" ").map(bare);
+    ["subject", "predicate"].forEach((half) => {
+      if (!sc[half]) fail(where + ": needs a " + half);
+      if (words.indexOf(bare(sc[half])) < 0)
+        fail(where + ': the ' + half + ' "' + sc[half] + '" is not a word in its own sentence');
+    });
+    if (bare(sc.subject) === bare(sc.predicate))
+      fail(where + ": the subject and the predicate are the same word");
+    if (!sc.note || sc.note.length < 20) fail(where + ": needs a note saying how you could tell");
+  });
 }
 
 /* ── rendering ──────────────────────────────────────────────────────────── */
@@ -201,13 +296,83 @@ function partsHtml(parts) {
   ).join("\n");
 }
 
+/* Two shapes. The array is one underlined word, which is what a verbs lesson
+   needs. The object marks TWO words in the unit's own colours, for a lesson
+   whose answer is a pair. Never a third shape without a reason. */
+function markPair(sentence, subject, predicate) {
+  return sentence.split(" ").map((w) =>
+    bare(w) === bare(subject)   ? '<span class="subj">' + esc(w) + "</span>" :
+    bare(w) === bare(predicate) ? '<span class="pred">' + esc(w) + "</span>" : esc(w)).join(" ");
+}
 function examplesHtml(examples) {
-  return examples.map(([sentence, verb, why]) => {
-    const marked = sentence.split(" ").map((w) =>
-      bare(w) === bare(verb) ? "<u>" + esc(w) + "</u>" : esc(w)).join(" ");
+  return examples.map((e) => {
+    const marked = Array.isArray(e)
+      ? e[0].split(" ").map((w) => bare(w) === bare(e[1]) ? "<u>" + esc(w) + "</u>" : esc(w)).join(" ")
+      : markPair(e.sentence, e.subject, e.predicate);
+    const why = Array.isArray(e) ? e[2] : e.why;
     return '<div class="ex">\n  <p class="sent">' + marked + '</p>\n' +
            '  <p class="why">' + esc(why) + "</p>\n</div>";
   }).join("\n");
+}
+
+function showcaseHtml(L) {
+  if (!L.showcase) return "";
+  return '<h2 class="section-head">' + esc(L.showcaseHead || "The Story, Marked") + '</h2>\n' +
+    '<p class="sclegend">' + (L.showcaseNote ||
+      'The same sentences you just heard. <span class="subj">Green</span> is the simple subject and ' +
+      '<span class="pred">orange</span> is the simple predicate.') + '</p>\n' +
+    '<div class="showcase">' + L.showcase.map((sc) =>
+      '\n  <div class="sc">\n    <p class="sent">' + markPair(sc.sentence, sc.subject, sc.predicate) +
+      '</p>\n    <p class="why">' + esc(sc.note) + "</p>\n  </div>").join("") + "\n</div>";
+}
+
+/* 🚨 THE PARTS ARE EMITTED BY THE BUILD, NOT FIXED IN THE TEMPLATE, because
+   which two of the three shapes a lesson uses is a property of the lesson. A
+   lesson with a `choose` opens with it and closes on the unaided find; one
+   without keeps the original find-then-name pair. A part whose container is
+   absent renders nothing, so there is no empty heading to hide. */
+function partSections(L) {
+  const sec = (head, note, id) =>
+    '  <section class="wspart">\n    <h3 class="ws-head">' + esc(head) + '</h3>\n' +
+    '    <p class="ws-note">' + esc(note) + '</p>\n    <div id="' + id + '"></div>\n  </section>';
+  if (L.choose) {
+    return [
+      sec(L.headA || "Part A. Pick The Word.",
+          L.noteA || (Num(L.choose.length) + " sentences. The words are laid out for you. Tap the one the question asks for."),
+          "chooses"),
+      sec(L.headB || "Part B. Find It Yourself.",
+          L.noteB || (Num(L.practice.length) + " more sentences, and this time nothing is laid out. Tap the word in the line."),
+          "problems")
+    ].join("\n\n");
+  }
+  return [
+    sec(L.headA || "Part A. Find The Verb.",
+        L.noteA || (L.practice.length + " sentences. Click the verb in each one. A wrong click tells you why and lets you try again."),
+        "problems"),
+    sec(L.headB || "Part B. Action Or Being?",
+        L.noteB || (L.sort.length + " more sentences, and the verb is underlined for you. Decide whether it is an action verb or a being verb."),
+        "kinds")
+  ].join("\n\n");
+}
+
+/* Everything the page says out loud, defaulted to what the verbs lesson has
+   always said so that lesson renders byte for byte as before. */
+function labelsFor(L) {
+  const d = {
+    tagFind: "Click the verb", tagFindDone: "Found it",
+    tagKind: "Action or being", tagKindDone: "Got it",
+    tagChoose: "Pick the word", tagChooseDone: "Got it",
+    kindAKey: "action", kindBKey: "being",
+    kindA: "Action verb", kindB: "Being verb",
+    wrongKindA: "Not action. Try to film this sentence - if nothing happens that you could point a camera at, the verb is a being verb.",
+    wrongKindB: "Not being. The being verbs are am, is, are, was, were, be, been and being. This underlined word is not one of them, so something is happening.",
+    wrongFind: "Not that one. Put \u201CYesterday\u201D at the front and read it again \u2014 which word has to change shape?",
+    wrongSubject: "Not that one. Ask who or what the sentence is about, then say it in one word.",
+    wrongPredicate: "Not that one. Ask what the subject DOES. That word is the simple predicate.",
+    askPrefix: "Which word is the", askSubject: "simple subject", askPredicate: "simple predicate",
+    beingCheck: false
+  };
+  return Object.assign(d, L.labels || {});
 }
 
 const written = [];
@@ -215,17 +380,33 @@ for (const L of ENGLISH) {
   verifyGround(L);
   verifyExamples(L);
   verifyPractice(L);
-  checkSort(L);
+  /* ⚠️ A lesson that opens with `choose` does not have a naming part, so the
+     Part B guard would fail it for missing data it is not meant to carry. */
+  if (!L.choose) checkSort(L);
+  verifyChoose(L);
+  verifyShowcase(L);
+  /* 🚨 THESE THREE WERE IMPORTED AND NEVER CALLED. lesson-instructions.js says
+     requireTodo "FAILS THE BUILD on a lesson that does not carry one" and this
+     generator was the one place it did not, so an English lesson could ship
+     with no assignment at the end while history and maths could not. */
+  requireTodo(L, L.slug);
+  checkTodoCounts(L, L.slug);
+  checkOneSentence(L, L.slug);
 
   /* The page only ever needs the sentence, the index and the why. Shipping
      `verb` too would put the answer in plain sight in the page source. */
   const practiceForPage = L.practice.map((p) => ({
-    sentence: p.sentence, answer: p.answer, why: p.why
+    sentence: p.sentence, answer: p.answer, why: p.why, ask: p.ask
   }));
   /* Part B needs the kind in the page, because that IS the answer and the page
      has to check it. Nothing else about the item goes out. */
-  const sortForPage = L.sort.map((p) => ({
+  const sortForPage = (L.sort || []).map((p) => ({
     sentence: p.sentence, at: p.at, kind: p.kind, why: p.why
+  }));
+  /* The answer travels here because the page has to check it, but nothing else
+     about the item does. */
+  const chooseForPage = (L.choose || []).map((c) => ({
+    sentence: c.sentence, word: c.word, ask: c.ask, options: c.options, why: c.why
   }));
 
   let h = template
@@ -244,6 +425,12 @@ for (const L of ENGLISH) {
     .replace("__PLAYER_MARKUP__", player.playerMarkup)
     .replace("__PLAYER_JS__", player.playerScript)
     .replace("__EXAMPLES_HTML__", examplesHtml(L.examples))
+    /* 🚨 THIS LINE USED TO BE TYPED INTO THE TEMPLATE. It said "Five done for
+       you. The underlined word is the verb" on a lesson with four examples, no
+       underlining and nothing to do with verbs. A count and a mechanic both
+       hardcoded in a shared template is two lies waiting for the second lesson. */
+    .replace("__EXAMPLES_NOTE__", () => L.examplesNote ||
+      (Num(L.examples.length) + " done for you. The line under each one says how you could have known."))
     .replace("__PRACTICE_NOTE__", L.practiceNote ||
       /* ⚠️ Do not put a COUNT in here. It used to say "Ten sentences", and the
          moment the practice split into two parts that sentence was wrong on a
@@ -251,10 +438,10 @@ for (const L of ENGLISH) {
       "Two parts, like a worksheet. Part A asks which word is the verb. Part B asks what kind of verb it is. A wrong answer tells you why and lets you try again, so nothing here counts against you.")
     /* Each part states its OWN count, and it comes from the data rather than
        being typed, so it cannot drift when an item is added or removed. */
-    .replace("__NOTE_A__", L.noteA ||
-      (L.practice.length + " sentences. Click the verb in each one. A wrong click tells you why and lets you try again."))
-    .replace("__NOTE_B__", L.noteB ||
-      (L.sort.length + " more sentences, and the verb is underlined for you. Decide whether it is an action verb or a being verb."))
+    .replace("__PART_SECTIONS__", () => partSections(L))
+    .replace("__SHOWCASE_HTML__", () => showcaseHtml(L))
+    .replace("__CHOOSE__", () => JSON.stringify(chooseForPage))
+    .replace("__LABELS__", () => JSON.stringify(labelsFor(L)))
     .replace("__PARTS__", JSON.stringify(partsFor(L)))
     .replace("__PRACTICE__", JSON.stringify(practiceForPage))
     .replace("__SORT__", JSON.stringify(sortForPage))
@@ -275,8 +462,8 @@ for (const L of ENGLISH) {
 
   for (const slot of ["__TITLE__", "__DEK__", "__ID__", "__GROUND__", "__RULE_SHORT__",
                       "__RULE_LONG__", "__RULE_TEST__", "__PARTS_HTML__", "__EXAMPLES_HTML__",
-                      "__PRACTICE_NOTE__", "__NOTE_A__", "__NOTE_B__",
-                      "__PARTS__", "__PRACTICE__", "__SORT__", "__THEMES__",
+                      "__PRACTICE_NOTE__", "__PART_SECTIONS__", "__SHOWCASE_HTML__", "__EXAMPLES_NOTE__",
+                      "__PARTS__", "__PRACTICE__", "__SORT__", "__CHOOSE__", "__LABELS__", "__THEMES__",
                       "__PLAYER_CSS__", "__FIELD_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__",
                       "__CANONICAL__", "__MODEBOOT__", "__NAVCSS__", "__FAVICON__", "__NAV__", "__NAVSCRIPT__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);

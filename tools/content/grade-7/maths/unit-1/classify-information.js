@@ -9,7 +9,7 @@
    ✅ THE PROSE IN `parts` IS PAUL'S, REBUILT FROM HIS DOC 2026-09-14.
    Source: docs.google.com/document/d/1ciKSKSiOAUrgPUCcZnyQELB-lZD2Q3FbYslE1aA64kk
    A REWRITE, not an edit. What changed from my 2026-09-13 draft:
-     - 🚨 THE SEATING PUZZLE IS GONE. My draft used the book's theatre puzzle -
+     - 🚨 THE SEATING PUZZLE IS GONE. My draft used the book's theater puzzle -
        six adults, three occupations, three spouses. Paul replaced it with a
        youth-group van trip, and the replacement teaches something mine never
        did: "two adults will drive" is a TRUE FACT YOU DO NOT NEED. That is the

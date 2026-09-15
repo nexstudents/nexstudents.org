@@ -202,6 +202,11 @@ module.exports = {
       "Remember the shortcut. Action means DO. Being means IS.",
       "If you click the wrong word nothing bad happens. The page tells you why, so read that before you try again."
   ] },
+  /* ⚠️ KEPT WORD FOR WORD, 2026-09-15. This note used to be typed into the
+     template. It is now derived, and the general wording cannot mention the
+     underline or the verb, because the second English lesson has neither. This
+     lesson has both, so it says so itself rather than the template guessing. */
+  examplesNote: "Five done for you. The underlined word is the verb, and the line under it says how you could have known.",
   examples: [
     ["The mechanic tightened the bolt.", "tightened",
      "The mechanic is doing something, and you could watch it happen. Tightened is the verb, and it is an action verb."],

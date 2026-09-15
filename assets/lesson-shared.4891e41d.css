@@ -300,6 +300,37 @@ h2{
    it hidden behind the header. */
 .para{margin:0;scroll-margin-top:var(--stickytop,180px)}
 
+/* 🚨 A TAPPABLE WORD IN THE READING. Paul, 2026-09-14: "put an underline with
+   certain words in the story that are important to be clickable and it gives
+   more information on it."
+   ⚠️ A DOTTED UNDERLINE, NOT A LINK COLOUR. A coloured word inside a sentence
+   competes with the reading highlight and with the answer-hunt band, and a
+   struggling reader ends up looking at the colour rather than the line. The
+   underline says "there is more here" without pulling the eye off the sentence.
+   ⚠️ `text-underline-offset` keeps it clear of descenders; without it the dots
+   collide with every g and y and the word looks misspelled. */
+.gloss{
+  text-decoration:underline dotted var(--verdigris);
+  text-decoration-thickness:1.5px;
+  text-underline-offset:4px;
+  cursor:pointer;
+}
+.gloss:hover,.gloss:focus-visible{text-decoration-style:solid;outline:none}
+.gloss.opened{text-decoration-color:var(--brass)}
+
+/* The card itself. Sits under the sentence rather than floating over it, so it
+   never covers the line the student was reading. */
+.glossbox{
+  margin:10px 0 2px;padding:12px 16px;
+  border-left:3px solid var(--verdigris);
+  background:var(--surface-2);border-radius:0 4px 4px 0;
+  font-size:.92em;line-height:1.55;
+}
+.glossbox b{display:block;font-size:.8em;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--verdigris);margin-bottom:4px}
+.glossbox .gx{float:right;cursor:pointer;color:var(--ink-soft);font-size:1.1em;
+  line-height:1;padding:0 2px}
+
 /* 🚨 EXAMPLES AND SCRIPTURE ARE SET APART FROM THE PROSE. Paul, 2026-09-14:
    "the examples in the story need to show them seperate from the text so the
    student can read it directly", and "i also want the bible verses just like the
@@ -497,11 +528,19 @@ h2{
   margin:10px 0 0;padding-top:8px;
   border-top:1px solid var(--rule, var(--line));
 }
+/* 🚨 THE WHOLE ROW IS THE TAP TARGET, NOT JUST THE WORDS. Paul, 2026-09-14:
+   "it's also hard to tap on if not pressed directly in the middle text of the
+   panel." It was a 12px text button with 4px of padding, so the hit area was the
+   glyphs themselves - fine with a mouse, close to unusable with a thumb.
+   ⚠️ 44px MINIMUM HEIGHT is the size a finger actually hits. Do not trim it back
+   for looks; the label stays small, only the target grew. */
 .dbox-x{
   font:inherit;font-size:12px;
   letter-spacing:.08em;text-transform:uppercase;
-  background:none;border:0;cursor:pointer;padding:4px 10px;border-radius:5px;
+  background:none;border:0;cursor:pointer;border-radius:5px;
   color:var(--ink-faint, var(--dim));
+  display:flex;align-items:center;justify-content:center;
+  width:100%;min-height:44px;padding:0 10px;
 }
 .dbox-x:hover{color:var(--ink)}
 .dbox-x:focus-visible{outline:2px solid var(--verdigris, var(--accent));outline-offset:2px}

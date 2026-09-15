@@ -164,6 +164,15 @@ function checkTodoCounts(L, where) {
 const ONE_SENTENCE_EXEMPT = {
   "history/republic-to-empire": "baked audio predates the hashes; splitting desyncs it",
   "history/roman-government": "baked audio predates the hashes; splitting desyncs it",
+  /* 🚨 ADDED 2026-09-15, when build-english.js started calling this guard at all.
+     It had imported requireTodo and never run it, so no English lesson was ever
+     measured. Switching it on failed the one shipped English lesson with 23
+     multi-sentence lines in its parts and 4 in its todo - and it has baked audio
+     (voice.json + voice/), so splitting them desyncs every clip after the first.
+     ⚠️ NEW English lessons ARE measured. This is a named exemption for one file,
+     not a weakening of the rule. Remove it the day the lesson is re-split and
+     re-baked with GOOGLE_TTS_KEY set. */
+  "english/verbs-action-and-being": "23 multi-sentence lines against baked audio; re-split and re-bake to lift",
 };
 
 /* 🚨 A TITLE'S FULL STOP IS NOT A SENTENCE END, 2026-09-13.

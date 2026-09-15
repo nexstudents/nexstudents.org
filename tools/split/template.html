@@ -638,7 +638,7 @@ function paintTeacherScore(){
   line.textContent = done === 0
     ? (told ? "Nothing answered · " + told + " shown" : "Not started yet.")
     : done === TOTAL
-      ? "Completed · " + TOTAL + "/" + TOTAL + " (100%) · practised to mastery"
+      ? "Completed · " + TOTAL + "/" + TOTAL + " (100%) · practiced to mastery"
       : done + " of " + TOTAL + " answered · still in progress" + suffix;
   if (btn) { btn.hidden = (done === 0 && told === 0); return; }
   if (btn) btn.hidden = done === 0;

@@ -40,7 +40,7 @@ module.exports = {
   seq: { unit: 1, unitTitle: "Life and How We Study It", n: 5 },
 
   plan: {
-    objective: "Pull the four Unit 1 lessons back together, and practise telling what you observed apart from what you think caused it.",
+    objective: "Pull the four Unit 1 lessons back together, and practice telling what you observed apart from what you think caused it.",
     markers: [
       "QUOTED, Merrill chapter review headings: 'CHECKING CONCEPTS - Choose the word or phrase that completes the sentence.'",
       "QUOTED, Merrill: 'THINK AND WRITE CRITICALLY - Answer the following questions in your Journal using complete sentences.'",
@@ -71,7 +71,7 @@ module.exports = {
   ground: {
     sections: [
       { h: "Lesson Goal", p: [
-        "Bring the four Unit 1 lessons together and practise the distinction the unit was built on: what you observed is not the same as what you think caused it."
+        "Bring the four Unit 1 lessons together and practice the distinction the unit was built on: what you observed is not the same as what you think caused it."
       ]},
       { h: "Key Concepts", p: [
         "The scientific method is a procedure for testing a guess rather than trusting it: observe, ask, hypothesize, test, examine evidence, conclude.",

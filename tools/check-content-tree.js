@@ -46,7 +46,11 @@ for (const f of files) {
     const wantU = (unitDir.match(/^unit-(.+)$/) || [])[1];
     const gotG = String((l.shelf && l.shelf.grades && l.shelf.grades[0]) ?? '').toLowerCase();
     const rawU = String((l.seq && l.seq.unit) || l.unit || '');
-    const m = rawU.match(/Unit\s*(\d+)/i);
+    /* 🚨 TWO LABEL SHAPES, BOTH REAL. Maths and English write "Unit 1"; history and
+       science write the short form "World History &middot; U1-L4". This knew only the
+       first, so it failed four correctly-filed Rome lessons and left the whole check
+       red - which is how a real hit would have gone unnoticed. */
+    const m = rawU.match(/Unit\s*(\d+)/i) || rawU.match(/\bU(\d+)-[A-Z]/i);
     const gotU = m ? m[1] : (/^\d+$/.test(rawU) ? rawU : null);
     const [gotSubj, gotSlug] = String(l.id || '').split('/');
 

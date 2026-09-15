@@ -138,6 +138,44 @@ h1{margin:0 0 6px}
   padding:16px;margin:22px 0 40px}
 .scorebar b{font-size:1.25rem}
 
+/* ── TWO COLOURS, ONE MEANING ─────────────────────────────────────────────
+   🚨 LIFTED FROM split/template.html, never re-picked. Green is the subject and
+   orange is the predicate on every lesson in this unit, so the colour a student
+   learned in Complete Subjects and Predicates still means the same thing when
+   the target narrows to one word. Change one file, change both. */
+:root{--sj:rgba(60,200,150,.16);--sj-line:#3fc79a;--pd:rgba(230,140,90,.16);--pd-line:#e5906a}
+.subj{background:var(--sj);border-bottom:2px solid var(--sj-line);padding:1px 2px;border-radius:3px}
+.pred{background:var(--pd);border-bottom:2px solid var(--pd-line);padding:1px 2px;border-radius:3px}
+
+/* The marked-up story. The SAME sentences the player reads, shown again with
+   the two words lit, so the colour and the reading are one thing and not two. */
+.showcase{margin:0 0 6px}
+.sclegend{color:var(--dim);font-size:.9rem;margin:0 0 14px}
+.sclegend .subj,.sclegend .pred{font-weight:700}
+.sc{border-left:3px solid var(--line);padding:2px 0 2px 16px;margin:0 0 15px}
+.sc .sent{margin:0 0 5px;font-size:1.06rem;line-height:1.85}
+.sc .why{margin:0;color:var(--dim);font-size:.9rem;line-height:1.6;max-width:66ch}
+
+/* ── PART A WHEN THE WORDS ARE OFFERED ────────────────────────────────────
+   🚨 The tap-the-word part gives no help: every word in the line is a target.
+   That is right for a skill he has already met, and too steep for one he has
+   not. So a lesson may open with the words laid out as choices, and close with
+   the same job done unaided. Buttons lifted from lesson-template.html. */
+.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.choice{background:transparent;border:1px solid var(--line);border-radius:9px;
+  color:var(--fg);font:inherit;font-size:1.02rem;padding:9px 15px;cursor:pointer;
+  transition:background .12s,border-color .12s}
+.choice:hover:not(:disabled){border-color:var(--a)}
+.choice:disabled{cursor:default}
+.choice.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
+.choice.wrong{border-color:#e5484d;color:#e5484d}
+.choice.reveal{border-color:var(--free);color:var(--free);font-weight:700}
+/* The half being asked for, in its own colour, so the question carries its key. */
+.askfor{font-weight:700}
+.askfor.subject{color:var(--sj-line)}
+.askfor.predicate{color:var(--pd-line)}
+.cline{font-size:1.06rem;line-height:1.8;margin:0}
+
 @media print{
   .player,.themerow,.actions,.ns-back,.ground{display:none!important}
   .prob{break-inside:avoid;page-break-inside:avoid}
@@ -186,9 +224,10 @@ __NAV__
 
   __PLAYER_MARKUP__
   <div id="story"></div>
+  __SHOWCASE_HTML__
 
   <h2 class="section-head">Worked Examples</h2>
-  <p class="section-note">Five done for you. The underlined word is the verb, and the line under it says how you could have known.</p>
+  <p class="section-note">__EXAMPLES_NOTE__</p>
   <div id="examples">__EXAMPLES_HTML__</div>
 
   <h2 class="section-head">Your Turn</h2>
@@ -206,17 +245,7 @@ __NAV__
        in two different sections ... like a worksheet does."
        Part A asks WHICH WORD. Part B asks WHICH KIND. They are two different
        skills and running them together as one list of ten hid that. -->
-  <section class="wspart">
-    <h3 class="ws-head">Part A. Find The Verb.</h3>
-    <p class="ws-note">__NOTE_A__</p>
-    <div id="problems"></div>
-  </section>
-
-  <section class="wspart">
-    <h3 class="ws-head">Part B. Action Or Being?</h3>
-    <p class="ws-note">__NOTE_B__</p>
-    <div id="kinds"></div>
-  </section>
+  __PART_SECTIONS__
 
   <div class="scorebar" id="scorebar"></div>
 </div>
@@ -229,6 +258,13 @@ var LESSON_ID = "__ID__";
 var PARTS     = __PARTS__;
 var PRACTICE  = __PRACTICE__;   /* Part A - which word is the verb */
 var SORT      = __SORT__;       /* Part B - which KIND of verb it is */
+/* 🚨 A THIRD PART SHAPE: the words are OFFERED rather than hunted for. Empty on
+   a lesson that does not use it, and then nothing below it renders. */
+var CHOOSE    = __CHOOSE__;     /* a part with candidate words to pick from */
+/* Every label this page says out loud. They live in the data because this
+   template is no longer only about verbs: "Click the verb" is a lie on a lesson
+   about subjects, and a hardcoded string is not something a build can check. */
+var LABELS    = __LABELS__;
 
 __PLAYER_JS__
 /* ── practice ─────────────────────────────────────────────────────────────
@@ -240,6 +276,7 @@ var KEY = "prog:" + LESSON_ID;
 var state = {};
 try { state = JSON.parse(load(KEY, "{}")) || {}; } catch (e) { state = {}; }
 
+var cwrap = document.getElementById("chooses");
 var wrap  = document.getElementById("problems");
 var kwrap = document.getElementById("kinds");
 var bar   = document.getElementById("scorebar");
@@ -251,11 +288,15 @@ var bar   = document.getElementById("scorebar");
    same shape maths and integers already write, lets one rule on the card cover
    every lesson type. Found 2026-09-08, on lessons Kolten had actually finished. */
 function save(){
-  var a = 0, b = 0, i;
+  var a = 0, b = 0, c = 0, i;
   for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
   for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
-  state.done     = a + b;
-  state.total    = PRACTICE.length + SORT.length;
+  /* 🚨 "c" KEYS, NOT "a". The choose part and the find part ask different
+     questions about similar sentences, so sharing a prefix would mark one done
+     because the other was answered. Same reason a and b are prefixed. */
+  for (i = 0; i < CHOOSE.length; i++)   if (state["c" + i]) c++;
+  state.done     = a + b + c;
+  state.total    = PRACTICE.length + SORT.length + CHOOSE.length;
   state.complete = state.total > 0 && state.done === state.total;
   store(KEY, JSON.stringify(state));
 }
@@ -263,7 +304,83 @@ function save(){
 /* ⚠️ Part A and Part B are stored under PREFIXED keys, "a3" and "b3", not bare
    numbers. Two parts sharing one number would mark a Part B answer as a solved
    Part A sentence, and the score would count work nobody did. */
+/* One entry point. Each part draws only if its container is on the page, so a
+   lesson using two of the three shapes needs no flag to say which two. */
 function render(){
+  renderChoose();
+  renderFind();
+  renderKinds();
+  score();
+}
+
+/* ── THE CHOOSE PART. The words are laid out; pick the right one. ──────────
+   🚨 THE OPTIONS ARE ALWAYS WORDS FROM THE SENTENCE, never invented ones, and
+   the build refuses any that are not. An option that is not in the line teaches
+   him to scan the buttons instead of reading the sentence, which is the exact
+   habit the find part then has to undo. */
+function renderChoose(){
+  if (!cwrap) return;
+  cwrap.innerHTML = "";
+  CHOOSE.forEach(function(p, n){
+    var done = state["c" + n] === true;
+    var box = document.createElement("div");
+    box.className = "prob" + (done ? " solved" : "");
+
+    var head = document.createElement("div");
+    head.className = "probhead";
+    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
+      '<span class="tag' + (done ? " done" : "") + '">' +
+      (done ? LABELS.tagChooseDone : LABELS.tagChoose) + '</span>';
+    box.appendChild(head);
+
+    var line = document.createElement("p");
+    line.className = "cline";
+    line.textContent = p.sentence;
+    box.appendChild(line);
+
+    var ask = document.createElement("p");
+    ask.className = "cline";
+    ask.innerHTML = LABELS.askPrefix + ' <span class="askfor ' + p.ask + '">' +
+      (p.ask === "subject" ? LABELS.askSubject : LABELS.askPredicate) + '</span>?';
+    box.appendChild(ask);
+
+    var nudge = document.createElement("p");
+    nudge.className = "nudge";
+
+    var row = document.createElement("div");
+    row.className = "choices";
+    p.options.forEach(function(word){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "choice"; b.textContent = word;
+      if (done) {
+        b.disabled = true;
+        if (word === p.word) b.classList.add("ok");
+      } else {
+        b.onclick = function(){
+          if (word === p.word) {
+            state["c" + n] = true; save();
+            render();
+            var fresh = cwrap.children[n].querySelector(".nudge");
+            if (fresh) fresh.textContent = p.why;
+          } else {
+            /* A reason, never a buzzer. Paul's standing rule for this site. */
+            b.classList.add("wrong");
+            nudge.classList.add("warn");
+            nudge.textContent = p.ask === "subject" ? LABELS.wrongSubject : LABELS.wrongPredicate;
+          }
+        };
+      }
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+    if (done) { nudge.textContent = p.why; }
+    box.appendChild(nudge);
+    cwrap.appendChild(box);
+  });
+}
+
+function renderFind(){
+  if (!wrap) return;
   wrap.innerHTML = "";
   PRACTICE.forEach(function(p, n){
     var done = state["a" + n] === true;
@@ -273,8 +390,19 @@ function render(){
     var head = document.createElement("div");
     head.className = "probhead";
     head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Found it" : "Click the verb") + '</span>';
+      '<span class="tag' + (done ? " done" : "") + '">' + (done ? LABELS.tagFindDone : LABELS.tagFind) + '</span>';
     box.appendChild(head);
+
+    /* 🚨 WHEN A LESSON ALTERNATES WHAT IT ASKS FOR, THE ITEM HAS TO SAY WHICH.
+       Without this the student sees six sentences under one heading and has to
+       remember which half question four wanted. */
+    if (p.ask) {
+      var fask = document.createElement("p");
+      fask.className = "cline";
+      fask.innerHTML = LABELS.askPrefix + ' <span class="askfor ' + p.ask + '">' +
+        (p.ask === "subject" ? LABELS.askSubject : LABELS.askPredicate) + '</span>?';
+      box.appendChild(fask);
+    }
 
     var row = document.createElement("div");
     row.className = "words";
@@ -311,7 +439,6 @@ function render(){
     box.appendChild(nudge);
     wrap.appendChild(box);
   });
-  renderKinds();
 }
 
 /* ── PART B. Which kind of verb is it? ────────────────────────────────────
@@ -319,6 +446,7 @@ function render(){
    asking it again would test the same thing twice and hide the actual
    question, which is what that word DOES. */
 function renderKinds(){
+  if (!kwrap) return;
   kwrap.innerHTML = "";
   SORT.forEach(function(p, n){
     var done = state["b" + n] === true;
@@ -328,7 +456,7 @@ function renderKinds(){
     var head = document.createElement("div");
     head.className = "probhead";
     head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' + (done ? "Got it" : "Action or being") + '</span>';
+      '<span class="tag' + (done ? " done" : "") + '">' + (done ? LABELS.tagKindDone : LABELS.tagKind) + '</span>';
     box.appendChild(head);
 
     /* the sentence, with the verb underlined */
@@ -348,10 +476,10 @@ function renderKinds(){
 
     var pick = document.createElement("div");
     pick.className = "kpick";
-    ["action", "being"].forEach(function(kind){
+    [LABELS.kindAKey, LABELS.kindBKey].forEach(function(kind){
       var b = document.createElement("button");
       b.type = "button"; b.className = "kbtn";
-      b.textContent = kind === "action" ? "Action verb" : "Being verb";
+      b.textContent = kind === LABELS.kindAKey ? LABELS.kindA : LABELS.kindB;
       if (done) {
         b.disabled = true;
         if (kind === p.kind) b.classList.add("ok");
@@ -367,9 +495,7 @@ function renderKinds(){
             /* Same rule as Part A: a reason, never a buzzer. */
             b.classList.add("wrong");
             nudge.classList.add("warn");
-            nudge.textContent = kind === "action"
-              ? "Not action. Try to film this sentence - if nothing happens that you could point a camera at, the verb is a being verb."
-              : "Not being. The being verbs are am, is, are, was, were, be, been and being. This underlined word is not one of them, so something is happening.";
+            nudge.textContent = kind === LABELS.kindAKey ? LABELS.wrongKindA : LABELS.wrongKindB;
           }
         };
       }
@@ -380,12 +506,16 @@ function renderKinds(){
     box.appendChild(nudge);
     kwrap.appendChild(box);
   });
-  score();
 }
 
 /* A wrong answer gets a reason, not a buzzer. The two reasons cover the two
    mistakes this lesson is actually about. */
 function wrongWhy(word, p){
+  /* The being-verb trap is real on a verbs lesson and meaningless on any other,
+     so a lesson asks for it rather than every lesson inheriting it. */
+  /* The refusal follows the half being asked for, when the lesson alternates. */
+  if (p && p.ask) return p.ask === "subject" ? LABELS.wrongSubject : LABELS.wrongPredicate;
+  if (!LABELS.beingCheck) return LABELS.wrongFind;
   var clean = word.replace(/[^A-Za-z']/g, "").toLowerCase();
   var being = ["am","is","are","was","were","be","been","being"];
   if (being.indexOf(clean) >= 0)
@@ -396,17 +526,45 @@ function wrongWhy(word, p){
 /* One score across BOTH parts, and it says the split, because "8 / 16" hides
    whether he can find verbs and cannot name them, or the other way round.
    Paul's rule from the quizzes: show the score AND the percentage. */
+/* 🚨 THE SPLIT IS COUNTED OFF THE PARTS THAT ARE ON THE PAGE, not off two fixed
+   arrays. It used to read PRACTICE and SORT by name, so the first lesson to use
+   a third shape scored "1 / 6, Part A 1/6, Part B 0/0" - it showed the find part
+   under Part A's label, counted the choose part nowhere, and divided by half the
+   real total. A student who had answered two questions was told he had answered
+   one of six when he had answered two of twelve.
+   ⚠️ The label is the part's OWN heading, so the score and the worksheet cannot
+   disagree about which part is which. */
+function partsOnPage(){
+  var out = [];
+  if (CHOOSE.length)   out.push({ key: "c", n: CHOOSE.length });
+  if (PRACTICE.length) out.push({ key: "a", n: PRACTICE.length });
+  if (SORT.length)     out.push({ key: "b", n: SORT.length });
+  var heads = document.querySelectorAll(".wspart .ws-head");
+  for (var i = 0; i < out.length; i++) {
+    /* "Part A. Find The Verb." becomes "Part A" */
+    out[i].label = heads[i] ? heads[i].textContent.split(".")[0].trim() : "Part " + (i + 1);
+  }
+  return out;
+}
+
+function countDone(){
+  var parts = partsOnPage(), got = 0, all = 0, bits = [], i, j, n;
+  for (i = 0; i < parts.length; i++) {
+    n = 0;
+    for (j = 0; j < parts[i].n; j++) if (state[parts[i].key + j]) n++;
+    got += n; all += parts[i].n;
+    bits.push(parts[i].label + " " + n + "/" + parts[i].n);
+  }
+  return { got: got, all: all, bits: bits };
+}
+
 function score(){
   paintTeacherScore();          /* the teacher line moves with the student's */
-  var a = 0, b = 0, i;
-  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
-  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
-  var got = a + b, all = PRACTICE.length + SORT.length;
-  var pct = Math.round((got / all) * 100);
-  bar.innerHTML = "<b>" + got + " / " + all + "</b> · " + pct + "%" +
-    " <span class=\"tag\">Part A " + a + "/" + PRACTICE.length +
-    " · Part B " + b + "/" + SORT.length + "</span>" +
-    (got === all ? " — all of them. Write the score in your notes." : "");
+  var c = countDone();
+  var pct = c.all ? Math.round((c.got / c.all) * 100) : 0;
+  bar.innerHTML = "<b>" + c.got + " / " + c.all + "</b> \u00b7 " + pct + "%" +
+    " <span class=\"tag\">" + c.bits.join(" \u00b7 ") + "</span>" +
+    (c.all && c.got === c.all ? " \u2014 all of them. Write the score in your notes." : "");
 }
 
 /* The teacher's line and reset, in Teacher Notes. Mirrors the history template so
@@ -421,14 +579,12 @@ function paintTeacherScore(){
   var line = document.getElementById("gscoreline");
   var btn  = document.getElementById("greset");
   if (!line) return;
-  var total = PRACTICE.length + SORT.length, done = 0, i;
-  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) done++;
-  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) done++;
+  var c = countDone(), total = c.all, done = c.got;
   line.className = "gscore-line" + (done === 0 ? "" : done === total ? " good" : " part");
   line.textContent = done === 0
     ? "Not started yet."
     : done === total
-      ? "Completed · " + total + "/" + total + " (100%) · practised to mastery"
+      ? "Completed · " + total + "/" + total + " (100%) · practiced to mastery"
       : done + " of " + total + " answered · still in progress";
   if (btn) btn.hidden = done === 0;
 }
@@ -438,6 +594,23 @@ document.getElementById("greset").onclick = function(){
 };
 document.getElementById("reveal").onclick = function(){
   var i, j;
+  /* ⚠️ Reveal has to cover EVERY part on the page. It walked one list once, and
+     after the first split that silently left half the worksheet unanswered. */
+  if (cwrap) {
+    var cboxes = cwrap.children;
+    for (i = 0; i < CHOOSE.length; i++) {
+      if (state["c" + i]) continue;
+      var cb = cboxes[i].querySelectorAll(".choice");
+      for (j = 0; j < cb.length; j++) {
+        cb[j].disabled = true;
+        if (cb[j].textContent === CHOOSE[i].word) cb[j].classList.add("reveal");
+      }
+      var cnd = cboxes[i].querySelector(".nudge");
+      cnd.classList.remove("warn");
+      cnd.textContent = CHOOSE[i].why;
+    }
+  }
+  if (!wrap) return;
   var boxes = wrap.children;
   for (i = 0; i < PRACTICE.length; i++) {
     if (state["a" + i]) continue;
@@ -450,8 +623,7 @@ document.getElementById("reveal").onclick = function(){
     nd.classList.remove("warn");
     nd.textContent = PRACTICE[i].why;
   }
-  /* ⚠️ Reveal has to cover Part B too. It used to walk one list, and after the
-     split that silently left half the worksheet unanswered. */
+  if (!kwrap) return;
   var kboxes = kwrap.children;
   for (i = 0; i < SORT.length; i++) {
     if (state["b" + i]) continue;
