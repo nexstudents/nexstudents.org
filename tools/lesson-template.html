@@ -331,6 +331,10 @@ h1{
   display:flex;align-items:center;justify-content:center;
   gap:10px;flex-wrap:wrap;
 }
+/* 🚨 display:contents, so on a wide screen this wrapper is not a box at all and
+   the bar lays out exactly as it did before it existed. It becomes a real row
+   only inside the phone media query. */
+.pfoot{display:contents}
 .pmeta{
   order:2;display:flex;align-items:center;justify-content:center;
   gap:14px;flex-wrap:wrap;text-align:center;
@@ -1393,10 +1397,55 @@ body.player-hidden .scrub{margin:0;height:20px}
   .pcontrols{gap:8px}
   .pcontrols{min-height:40px;padding-bottom:12px}     /* lifts it clear of the bar */
   .btn.primary{width:50px;min-width:50px;min-height:40px}
-  #back, #fwd{min-height:40px;min-width:42px;padding:0 8px}
+  /* 🚨 ID SELECTORS, SO THEY BEAT ANY CLASS RULE. This is why the back and
+     forward buttons stayed 40px while the play button shrank to 32 and Paul saw
+     "the back and forther boxes are larger than the play now". Change the size
+     HERE; adding .pcontrols .btn rules below will not win against an id. */
+  #back, #fwd{min-height:32px;height:32px;min-width:38px;padding:0 8px}
   .scrub{margin-top:2px}
 
   /* the switch comes down with them, so the row stays balanced */
+  /* 🚨 COMPACT ON A PHONE. Paul, 2026-09-15: "on the mobile can you make the
+     reader more compact when its turned on. it still takes up alot of space
+     like about a good 1/4th." It was 152px of a 696px screen, 22 per cent.
+
+     Where it went: 52px of buttons, 26px of scrub, 24px for the sentence
+     counter, 30px for the Settings row, 18px of padding.
+
+     ⚠️ THE BUTTONS ARE NOT THE PLACE TO SAVE. A play button a child taps while
+     reading keeps a real touch target; shaving that is how a control becomes
+     annoying to hit. The saving comes from two nearly empty rows becoming one. */
+  .pfoot{display:flex;align-items:center;justify-content:center;gap:16px}
+  .pfoot .pmeta{margin:0;flex:0 1 auto;min-width:0}
+  .pfoot{flex-wrap:wrap}
+  .pfoot .psettings{flex:0 0 auto}
+  /* 🚨 OPEN, IT BREAKS OUT TO ITS OWN FULL-WIDTH ROW. Paul, 2026-09-15: the
+     settings boxes were "not centered they are too far to the right ... i think
+     because you moved the settings arrow". He was right: sharing a flex row with
+     the counter meant the OPEN panel was trapped in that narrow flex item and
+     its dropdowns sat under the summary instead of spanning the bar. Closed it
+     shares the row; open it takes a line of its own. */
+  .pfoot .psettings[open]{flex:1 0 100%;margin-top:4px}
+  /* the hint is instruction, and it is learned after the first lesson */
+  .phint{display:none}
+  .player{padding:6px 14px calc(8px + env(safe-area-inset-bottom, 0px))}
+  .scrub{margin-top:6px}
+  /* 12px of bottom padding under the buttons is slack on a phone. The buttons
+     themselves stay 40px - that is the touch target and it is not negotiable. */
+  /* Paul asked for these smaller on a phone. 40px was my caution, not a rule;
+     these stay comfortably tappable and buy back another row of reading. */
+  /* 🚨 ALL THREE BUTTONS ARE THE SAME HEIGHT. Paul, 2026-09-15: "the back and
+     forther boxes are larger than the play now." They were. .btn carries its own
+     min-height:40px and .btn.primary carries a different one, so shrinking the
+     padding moved the play button and left the other two exactly where they were.
+     ⚠️ Set the height on ALL THREE or they drift apart again. */
+  .pcontrols{padding-bottom:4px;justify-content:center;min-height:0}
+  .pcontrols .btn{padding:0 9px;min-height:32px;height:32px}
+  .pcontrols .btn svg{width:13px;height:13px}
+  .pcontrols .btn.primary{width:46px;min-width:46px;min-height:32px;height:32px}
+  .pcontrols .btn.primary svg{width:15px;height:15px}
+  .psettings > summary{padding:4px 0}
+
   .playerhide .track{width:34px;height:20px}
   .playerhide .knob{top:2px;left:2px;width:14px;height:14px}
   .playerhide input:checked + .track .knob{transform:translateX(14px)}
@@ -1456,6 +1505,11 @@ body.player-hidden .scrub{margin:0;height:20px}
       </button>
     </div>
     <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Jump to a sentence" aria-valuemin="1" aria-valuemax="26" aria-valuenow="1"></div>
+    <!-- 🚨 .pfoot IS display:contents ON DESKTOP, so it is not a box there at
+         all and nothing about the wide bar changes. On a phone it becomes one
+         row, putting the sentence counter and the Settings disclosure side by
+         side instead of each taking a whole line. -->
+    <div class="pfoot">
     <div class="pmeta">
       <span id="pos">Sentence 1 of 26</span>
       <span class="phint">Tap any sentence to start reading there</span>
@@ -1500,6 +1554,7 @@ body.player-hidden .scrub{margin:0;height:20px}
       <div class="swatches" id="swatches"></div>
     </div>
     </details>
+    </div>
 
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
   </div>

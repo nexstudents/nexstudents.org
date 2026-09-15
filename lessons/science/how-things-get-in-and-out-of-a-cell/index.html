@@ -115,7 +115,7 @@
 <div class="ascrim" id="ascrim"></div><aside class="adrawer" id="adrawer" aria-hidden="true" aria-label="Account"><div class="ad-top"><button class="ad-back" id="adBack" type="button" hidden><svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4 6.5 10l6 6"/></svg><span>Back</span></button><h2 class="ad-h" id="adH">Account</h2><button class="ad-x" id="adClose" type="button">Close</button></div><div class="ad-body" id="adBody"></div></aside>
 
   <div class="ns-back"><a href="/grade-7/science/lessons/">&larr; 7th Grade Science</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.59043f4e.css">
+<link rel="stylesheet" href="/assets/lesson-shared.374bb192.css">
 
 <div class="wrap">
 
@@ -178,6 +178,11 @@
       </button>
     </div>
     <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Jump to a sentence" aria-valuemin="1" aria-valuemax="26" aria-valuenow="1"></div>
+    <!-- 🚨 .pfoot IS display:contents ON DESKTOP, so it is not a box there at
+         all and nothing about the wide bar changes. On a phone it becomes one
+         row, putting the sentence counter and the Settings disclosure side by
+         side instead of each taking a whole line. -->
+    <div class="pfoot">
     <div class="pmeta">
       <span id="pos">Sentence 1 of 26</span>
       <span class="phint">Tap any sentence to start reading there</span>
@@ -222,6 +227,7 @@
       <div class="swatches" id="swatches"></div>
     </div>
     </details>
+    </div>
 
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
   </div>
