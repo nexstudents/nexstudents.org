@@ -410,9 +410,11 @@ dialog.pdlg::backdrop{background:rgba(0,0,0,.55)}
    them that line sits directly under the dialog header rule and reads as two. */
 /* ⚠️ THE CLASSES ARE NAMED HERE ON PURPOSE. `.pdlg-body > *` reads like it
    would do the job and does not: `*` is worth ZERO specificity, so that
-   selector ties with plain `.themerow` and loses on source order. */
-.pdlg-body > .voicerow,.pdlg-body > .keyrow,.pdlg-body > .themerow,
-.pdlg-body > .speedrow{border-top:0;padding-top:0;margin-top:0}
+   selector ties with plain `.themerow` and loses on source order.
+   ⚠️ The speed row needs no entry of its own: it is a div with class voicerow
+   and id speedrow, so .voicerow already covers it. A .speedrow selector would
+   match nothing. */
+.pdlg-body > .voicerow,.pdlg-body > .keyrow,.pdlg-body > .themerow{border-top:0;padding-top:0;margin-top:0}
 /* The key row draws itself as a tinted card, which was right on the bar and is
    a box inside a box here. The dialog IS the box. (.keyrow.show is two classes,
    so this needs three to beat it.) */
