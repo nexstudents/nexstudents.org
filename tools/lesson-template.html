@@ -383,6 +383,14 @@ dialog.pdlg::backdrop{background:rgba(0,0,0,.55)}
 .pdlg-x:hover{border-color:var(--verdigris, var(--a))}
 .pdlg-body{padding:14px;overflow:auto;max-height:calc(80vh - 58px)}
 /* inside the dialog the rows stack and take the full width */
+/* 🚨 [hidden] LOSES TO ANY CLASS RULE THAT SETS display. FOURTH TIME ON THIS
+   SITE, and it is written in CLAUDE.md: the UA sheet is one attribute selector
+   and .pdlg-body .voicerow is two classes, so display:block won and every
+   section showed at once however correctly the JS set hidden. Paul saw it:
+   "i open reading speed and its all together."
+   ⚠️ VERIFY A HIDE WITH getComputedStyle().display, NEVER el.hidden. Reading
+   the property told me it was hidden while it was plainly on screen. */
+.pdlg-body > [hidden]{display:none !important}
 .pdlg-body .voicerow,.pdlg-body .themerow{display:block;margin:0 0 10px}
 .pdlg-body .voicerow label,.pdlg-body .themerow .lbl{display:block;margin:0 0 6px}
 .pdlg-body select.rate{width:100%}
