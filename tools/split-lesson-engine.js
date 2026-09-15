@@ -153,8 +153,13 @@ for (const [sub, pages] of bySubject) {
         'typeof', 'map', 'join', 'filter', 'forEach', 'concat', 'slice', 'split', 'replace',
         'push', 'indexOf', 'test', 'match', 'trim', 'toString', 'parseInt', 'parseFloat',
         'scaleX', 'encodeURIComponent', 'decodeURIComponent']);
+    /* 🚨 SCAN CODE, NOT PROSE. Almost all of a data block is quoted English, and
+       the lesson prose says things like "6 + 3 x (8 - 4)". Read raw, that is a
+       call to an undefined `x` and the build stops on a page that is perfect.
+       So strip every string literal first and hunt for calls in what is left. */
+    const stripStrings = t => t.replace(/"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`/g, '""');
     for (let i = 0; i < pages.length; i++) {
-        const d = middles[i].join('\n');
+        const d = stripStrings(middles[i].join('\n'));
         const has = new Set();
         for (const m of d.matchAll(/^\s*(?:function\s+([A-Za-z_$][\w$]*)|var\s+([A-Za-z_$][\w$]*))/gm))
             has.add(m[1] || m[2]);

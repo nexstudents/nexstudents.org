@@ -337,6 +337,96 @@ h1{margin:0 0 6px}
   display:flex;align-items:center;justify-content:center;
   gap:10px;flex-wrap:wrap;
 }
+/* 🚨 display:contents, so on a wide screen this wrapper is not a box at all and
+   the bar lays out exactly as it did before it existed. It becomes a real row
+   only inside the phone media query. */
+.pfoot{display:contents}
+
+/* ── THE SETTINGS ROWS AND THEIR DIALOG ──────────────────────────────────
+   Paul, 2026-09-15: "right now on mobile i have the settings open and it takes
+   up a massive amount of screen ... if they press speed they get a mobile popup
+   of the speed to select instead of the box to show ... the box will be centered
+   on the screen ... this would shrink it all down removing the option for text
+   boxes." The same on a PC, because one centred box is easier to read than four
+   controls crammed onto a bar. */
+/* 🚨 A GRID, SO EVERY PILL IS THE SAME SIZE. Paul: "make all the pills the
+   same size." flex with flex:1 1 auto sized each one to its own text, so Speed
+   came out narrow and Voice API key wide. Equal columns cannot do that. */
+.setrows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:6px 0 2px}
+@media (min-width: 621px){ .setrows{grid-template-columns:repeat(4,minmax(0,1fr))} }
+.setbtn{
+  min-width:0;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;font:inherit;font-size:13px;cursor:pointer;
+  background:var(--surface-2, var(--boxfill));color:var(--ink, var(--fg));
+  border:1px solid var(--rule, var(--line));border-radius:6px;padding:5px 10px;min-height:32px;
+}
+.setbtn:hover{border-color:var(--verdigris, var(--a))}
+.setbtn .lbl{color:var(--ink-soft, var(--dim));white-space:nowrap}
+.setbtn .val{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 🚨 CENTRED, AND NOT DOCKED TO THE PLAYER. A settings box that grows out of the
+   bar is what was eating the screen; this one sits in the middle and the bar
+   stays the height it was. */
+dialog.pdlg{
+  border:1px solid var(--rule, var(--line));border-radius:10px;padding:0;
+  background:var(--surface, var(--panel));color:var(--ink, var(--fg));
+  width:min(420px, calc(100vw - 32px));max-height:min(80vh, 560px);
+  /* 🚨 CENTRE IT EXPLICITLY. A <dialog> defaults to margin:auto, which UA sheets
+     and an inherited margin can both defeat - it was drawing off-centre. Fixed
+     positioning with a translate cannot be argued with. */
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);margin:0;
+}
+dialog.pdlg::backdrop{background:rgba(0,0,0,.55)}
+.pdlg-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:13px 14px;border-bottom:1px solid var(--rule, var(--line));
+}
+.pdlg-head h3{margin:0;font-size:1rem;letter-spacing:.01em}
+.pdlg-x{
+  background:transparent;border:1px solid var(--rule, var(--line));border-radius:6px;
+  color:inherit;cursor:pointer;padding:5px;display:inline-flex;line-height:0;
+}
+.pdlg-x:hover{border-color:var(--verdigris, var(--a))}
+.pdlg-body{padding:14px;overflow:auto;max-height:calc(80vh - 58px)}
+/* inside the dialog the rows stack and take the full width */
+/* 🚨 [hidden] LOSES TO ANY CLASS RULE THAT SETS display. FOURTH TIME ON THIS
+   SITE, and it is written in CLAUDE.md: the UA sheet is one attribute selector
+   and .pdlg-body .voicerow is two classes, so display:block won and every
+   section showed at once however correctly the JS set hidden. Paul saw it:
+   "i open reading speed and its all together."
+   ⚠️ VERIFY A HIDE WITH getComputedStyle().display, NEVER el.hidden. Reading
+   the property told me it was hidden while it was plainly on screen. */
+.pdlg-body > [hidden]{display:none !important}
+.pdlg-body .voicerow,.pdlg-body .themerow{display:block;margin:0 0 10px}
+/* 🚨 EVERYTHING IN THE SHEET IS CENTRED. Paul: "look at the settings items they
+   are not centered look." The controls were already full width and centred, but
+   every LABEL sat hard left and the key field sat off to one side, so the box
+   read as ragged. One popup holds one setting, so there is no column to align
+   to and centre is the right answer on a phone and on a desktop alike. */
+.pdlg-body{text-align:center}
+/* 🚨 NO BORDER ON A ROW THAT IS ALONE IN A BOX. Paul: "also a double line here
+   on the color one." .voicerow, .keyrow and .themerow each carry a border-top
+   from when they were stacked separators on the bar. In a popup showing ONE of
+   them that line sits directly under the dialog header rule and reads as two. */
+/* ⚠️ THE CLASSES ARE NAMED HERE ON PURPOSE. `.pdlg-body > *` reads like it
+   would do the job and does not: `*` is worth ZERO specificity, so that
+   selector ties with plain `.themerow` and loses on source order. */
+.pdlg-body > .voicerow,.pdlg-body > .keyrow,.pdlg-body > .themerow,
+.pdlg-body > .speedrow{border-top:0;padding-top:0;margin-top:0}
+/* The key row draws itself as a tinted card, which was right on the bar and is
+   a box inside a box here. The dialog IS the box. (.keyrow.show is two classes,
+   so this needs three to beat it.) */
+.pdlg-body > .keyrow.show{margin:0;padding:0;background:none;border:0;max-width:none}
+.pdlg-body .voicerow label,.pdlg-body .themerow .lbl{display:block;margin:0 0 6px;text-align:center}
+.pdlg-body .swatches{justify-content:center}
+.pdlg-body .keyfield{justify-content:center;flex-wrap:wrap}
+.pdlg-body .keyfield input{flex:1 1 200px;min-width:0}
+/* the two explanatory paragraphs stay left: centred body text is hard to read */
+.pdlg-body .keydisc,.pdlg-body .keynote{text-align:left}
+.pdlg-body select.rate{width:100%}
+.pdlg-body .vsel{width:100%}
+.pdlg-body .keyrow{display:block}
+.pdlg-body .keytogglerow{display:none}   /* the row IS the disclosure now */
 .pmeta{
   order:2;display:flex;align-items:center;justify-content:center;
   gap:14px;flex-wrap:wrap;text-align:center;
@@ -1110,7 +1200,9 @@ body{padding-bottom:var(--player-pad, 150px)}
    inconsistency that makes a site feel unfinished. */
 .pcontrols{order:0;margin-top:0;position:relative;min-height:44px}
 /* pinned to the edges so the transport keeps the centre line to itself */
-.pcontrols .playerhide{position:absolute;right:2px;top:50%;transform:translateY(-50%);margin:0}
+/* ⚠️ THE SWITCH IS NO LONGER INSIDE .pcontrols (2026-09-15). This rule used to
+   pin it there absolutely, which is what dropped it onto the scrub the moment
+   that row collapsed. Kept as a note so it is not "restored" by mistake. */
 .pcontrols .followchip{position:absolute;left:2px;top:50%;transform:translateY(-50%)}
 .scrub{order:1}
 .pmeta{order:2}
@@ -1170,18 +1262,34 @@ body{padding-bottom:var(--player-pad, 150px)}
    switch, and hiding the whole row took the switch with it. Nobody had noticed
    because nothing ever added .player-hidden - the mode was written and never
    wired up. So the row stays and everything INSIDE it goes except the switch. */
-body.player-hidden .pcontrols > *:not(.playerhide){display:none}
-body.player-hidden .pcontrols{min-height:0;padding:0;justify-content:flex-end}
+/* 🚨 COLLAPSED IS A THIN SCRUB AND NOTHING ELSE.
+   Paul, 2026-09-15: "you had only the thin scub show before i like that when it
+   is turned off because it will hide the play button and make only a think srub
+   near the bottom show ... the silder is just the tool to show and hide the play
+   button." Audio keeps playing while it is collapsed; the switch hides the
+   controls, it does not stop the reading. */
+body.player-hidden .pcontrols,
+body.player-hidden .pmeta,
 body.player-hidden .psettings,
 body.player-hidden .keyrow,
-body.player-hidden .nospeech{display:none}
-body.player-hidden .pmeta{display:none}
-body.player-hidden .phead{padding:2px 0}
+body.player-hidden .nospeech,
 body.player-hidden .followchip{display:none}
-/* what survives: the step bar. Still live, still tappable, still moving. */
-body.player-hidden .player{padding-top:4px}
-body.player-hidden .phead{padding:0 0 4px}
-body.player-hidden .scrub{margin:0}
+body.player-hidden .player{padding:4px 14px calc(6px + env(safe-area-inset-bottom, 0px))}
+/* the only thing left to aim at, so it gets a slightly bigger target */
+body.player-hidden .scrub{margin:0;height:20px}
+
+/* 🚨 THE SWITCH FLOATS ABOVE THE BAR AND FOLLOWS IT.
+   --player-pad is the bar's own height plus a gap, already recomputed on resize,
+   on the settings disclosure, and by a ResizeObserver on the player. Hanging the
+   switch off it means there is ONE measurement, not two that can drift. */
+.playerhide{
+  position:fixed;right:14px;z-index:41;
+  bottom:calc(var(--player-pad, 60px) - 2px);
+  /* 🚨 NO TRANSITION ON THIS. Paul, 2026-09-15: "i can see it move and i rather
+     it not visually move but snap upward so it looks like it is part of the
+     expansion." A slide here reads as a second, separate thing chasing the bar;
+     snapping with it reads as one object changing size. */
+}
 @media (max-width: 620px){ .player{transition:transform .22s ease} }
 @media (prefers-reduced-motion: reduce){ .player, .playerhide{transition:none} }
 
@@ -1382,12 +1490,92 @@ body.player-hidden .scrub{margin:0}
 .psettings[hidden]{display:none}
   .s{scroll-margin-top:16px;scroll-margin-bottom:150px}
   .pcontrols{gap:8px}
-  .pcontrols{min-height:40px;padding-bottom:12px}     /* lifts it clear of the bar */
+  /* ⚠️ 12px of dead space used to sit under these buttons and push them hard
+     against the top of the bar. Paul, 2026-09-15: "you have a big amount of it
+     tied too close to the top if the footer with dead space under it. you cound
+     bring it down and get rid of that extra dead space". */
+  .pcontrols{min-height:0;padding:2px 0 2px}
   .btn.primary{width:50px;min-width:50px;min-height:40px}
-  #back, #fwd{min-height:40px;min-width:42px;padding:0 8px}
+  /* 🚨 ID SELECTORS, SO THEY BEAT ANY CLASS RULE. This is why the back and
+     forward buttons stayed 40px while the play button shrank to 32 and Paul saw
+     "the back and forther boxes are larger than the play now". Change the size
+     HERE; adding .pcontrols .btn rules below will not win against an id. */
+  #back, #fwd{min-height:32px;height:32px;min-width:38px;padding:0 8px}
   .scrub{margin-top:2px}
 
   /* the switch comes down with them, so the row stays balanced */
+  /* 🚨 COMPACT ON A PHONE. Paul, 2026-09-15: "on the mobile can you make the
+     reader more compact when its turned on. it still takes up alot of space
+     like about a good 1/4th." It was 152px of a 696px screen, 22 per cent.
+
+     Where it went: 52px of buttons, 26px of scrub, 24px for the sentence
+     counter, 30px for the Settings row, 18px of padding.
+
+     ⚠️ THE BUTTONS ARE NOT THE PLACE TO SAVE. A play button a child taps while
+     reading keeps a real touch target; shaving that is how a control becomes
+     annoying to hit. The saving comes from two nearly empty rows becoming one. */
+  /* 🚨 ORDER 2, OR IT LANDS BETWEEN THE BUTTONS AND THE SCRUB. .scrub carries
+     order:1 and everything else defaults to 0, so this row rendered above the
+     scrub and read as dead space under the play button. Paul: "you still have
+     dead space for the play button ... under it." It was this row. */
+  /* 🚨 THREE COLUMNS, SO SETTINGS IS DEAD CENTRE WHATEVER THE COUNTER SAYS.
+     Paul: "put the settings dropdown in the middle on mobile it moves when its
+     closed and i know its because you have the sentence couter text." He was
+     right: side by side in a flex row, "Sentence 9 of 86" and "Sentence 61 of
+     86" are different widths, so Settings slid every few sentences. The empty
+     third column balances the first and pins the middle one. */
+  .pfoot{display:grid;order:2;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+  .pfoot .pmeta{grid-column:1;justify-self:start}
+  .pfoot .psettings{grid-column:2;justify-self:center}
+  .pfoot .psettings[open]{grid-column:1 / -1;justify-self:stretch}
+  .pfoot .pmeta{margin:0;flex:0 1 auto;min-width:0}
+  .pfoot{flex-wrap:wrap}
+  .pfoot .psettings{flex:0 0 auto}
+  /* 🚨 OPEN, IT BREAKS OUT TO ITS OWN FULL-WIDTH ROW. Paul, 2026-09-15: the
+     settings boxes were "not centered they are too far to the right ... i think
+     because you moved the settings arrow". He was right: sharing a flex row with
+     the counter meant the OPEN panel was trapped in that narrow flex item and
+     its dropdowns sat under the summary instead of spanning the bar. Closed it
+     shares the row; open it takes a line of its own. */
+  .pfoot .psettings[open]{margin-top:4px}
+  /* the hint is instruction, and it is learned after the first lesson */
+  .phint{display:none}
+  .player{padding:6px 14px calc(8px + env(safe-area-inset-bottom, 0px))}
+  .scrub{margin-top:6px}
+  /* 12px of bottom padding under the buttons is slack on a phone. The buttons
+     themselves stay 40px - that is the touch target and it is not negotiable. */
+  /* Paul asked for these smaller on a phone. 40px was my caution, not a rule;
+     these stay comfortably tappable and buy back another row of reading. */
+  /* 🚨 ALL THREE BUTTONS ARE THE SAME HEIGHT. Paul, 2026-09-15: "the back and
+     forther boxes are larger than the play now." They were. .btn carries its own
+     min-height:40px and .btn.primary carries a different one, so shrinking the
+     padding moved the play button and left the other two exactly where they were.
+     ⚠️ Set the height on ALL THREE or they drift apart again. */
+  .pcontrols{padding-bottom:4px;justify-content:center;min-height:0}
+  .pcontrols .btn{padding:0 9px;min-height:32px;height:32px}
+  .pcontrols .btn svg{width:13px;height:13px}
+  .pcontrols .btn.primary{width:46px;min-width:46px;min-height:32px;height:32px}
+  .pcontrols .btn.primary svg{width:15px;height:15px}
+  .psettings > summary{padding:4px 0}
+
+  /* 🚨 ON A PHONE THE DIALOG IS A BOTTOM SHEET. Paul: "i want a mobile popup ui
+     on the actual mobile." A centred box is a desktop pattern; a phone expects
+     the panel to rise from the bottom edge, full width, with the corners rounded
+     at the top only and a grab bar. Same dialog, same controls, different shape. */
+  dialog.pdlg{
+    top:auto;bottom:0;left:0;transform:none;margin:0;
+    width:100vw;max-width:100vw;border-radius:14px 14px 0 0;
+    border-left:0;border-right:0;border-bottom:0;
+    max-height:min(78vh, 520px);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  /* the grab bar a phone user expects to see on a sheet */
+  .pdlg-head::before{
+    content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);
+    width:38px;height:4px;border-radius:999px;background:var(--rule, var(--line));
+  }
+  .pdlg-head{position:relative;padding-top:18px}
+
   .playerhide .track{width:34px;height:20px}
   .playerhide .knob{top:2px;left:2px;width:14px;height:14px}
   .playerhide input:checked + .track .knob{transform:translateX(14px)}
@@ -1608,10 +1796,6 @@ body.player-hidden .scrub{margin:0}
 <div class="player" id="player">
     <div class="pcontrols">
       <button class="followchip" id="followchip" type="button">&#8593; Jump back</button>
-      <label class="playerhide" for="playerhide" title="Show or hide the player" aria-label="Show or hide the player">
-        <input type="checkbox" id="playerhide" role="switch" aria-label="Show or hide the player">
-        <span class="track" aria-hidden="true"><span class="knob"></span></span>
-      </label>
       <button class="btn" id="back" title="Back one sentence" aria-label="Back one sentence">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13 2.5v11L5.5 8 13 2.5zM4 2.5h1.6v11H4z"/></svg>
       </button>
@@ -1621,50 +1805,84 @@ body.player-hidden .scrub{margin:0}
       </button>
     </div>
     <div class="scrub" id="scrub" role="slider" tabindex="0" aria-label="Jump to a sentence" aria-valuemin="1" aria-valuemax="26" aria-valuenow="1"></div>
+    <!-- 🚨 .pfoot IS display:contents ON DESKTOP, so it is not a box there at
+         all and nothing about the wide bar changes. On a phone it becomes one
+         row, putting the sentence counter and the Settings disclosure side by
+         side instead of each taking a whole line. -->
+    <div class="pfoot">
     <div class="pmeta">
       <span id="pos">Sentence 1 of 26</span>
       <span class="phint">Tap any sentence to start reading there</span>
     </div>
     <details class="psettings" id="psettings">
       <summary><span>Settings</span><svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></summary>
-    <div class="voicerow" id="speedrow">
-      <label for="rate">Speed</label>
-      <select class="rate" id="rate" aria-label="Reading speed">
-        <option value="0.7">Slow</option>
-        <option value="0.85" selected>Normal</option>
-        <option value="1">Fast</option>
-      </select>
-    </div>
-    <div class="voicerow" id="voicerow">
-      <label for="voice">Voice</label>
-      <div class="vsel" id="vsel">
-        <button class="vsel-trigger" id="vselBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
-          <span id="vselLabel">Voice</span>
-          <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg>
-        </button>
-        <ul class="vsel-list" id="vselList" role="listbox" hidden></ul>
-      </div>
-      <select class="rate" id="voice" aria-label="Choose a reading voice" hidden></select>
-    </div>
-
-    <div class="keytogglerow">
-      <button class="linkbtn keydisclose" type="button" id="keyToggle" aria-expanded="false" aria-controls="keyrow">Use My Personal API (Voice) Key<svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></button>
-    </div>
-    <div class="keyrow" id="keyrow">
-      <p class="keydisc"><span aria-hidden="true">&#128274;</span><span><b>Stored on this device only.</b> Your key stays in this browser. It is never sent to NexStudents, never shared, and never leaves your machine except to the voice provider it belongs to.</span></p>
-      <label for="ttskey">Your API key</label>
-      <div class="keyfield">
-        <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
-        <button class="btn" type="button" id="keySave">Save</button>
-        <button class="btn" type="button" id="keyClear">Clear</button>
-      </div>
-      <p class="keynote" id="keynote"><b>Where to get a key.</b> <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener">Google Cloud TTS</a> powers the built-in voices on this page and has a free monthly allowance. <a href="https://elevenlabs.io/" target="_blank" rel="noopener">ElevenLabs</a> is worth a look if you want a more natural voice and do not mind setting up an account.</p>
-    </div>
-    <div class="themerow" id="themerow">
-      <span class="lbl">Colors</span>
-      <div class="swatches" id="swatches"></div>
+    <!-- 🚨 FOUR BUTTONS, NOT FOUR OPEN CONTROLS. Paul, 2026-09-15: "right now on
+         mobile i have the settings open and it takes up a massive amount of
+         screen ... if they press speed they get a mobile popup of the speed to
+         select instead of the box to show ... this would shrink it all down
+         removing the option for text boxes."
+         Each row shows the CURRENT value and opens the shared dialog below. -->
+    <div class="setrows">
+      <button class="setbtn" type="button" data-dlg="speedrow"><span class="lbl">Speed</span><span class="val" id="valSpeed">Normal</span></button>
+      <button class="setbtn" type="button" data-dlg="voicerow"><span class="lbl">Voice</span><span class="val" id="valVoice">&mdash;</span></button>
+      <button class="setbtn" type="button" data-dlg="themerow"><span class="lbl">Colors</span><span class="val" id="valTheme">&mdash;</span></button>
+      <button class="setbtn" type="button" data-dlg="keyrow"><span class="lbl">Voice API key</span><span class="val" id="valKey">Not set</span></button>
     </div>
     </details>
+    </div>
+
+    <!-- 🚨 ONE DIALOG, THE REAL CONTROLS MOVED INSIDE IT. Every id the engine
+         already reads - #rate, #voice, #vsel, #keyrow, #swatches - is the SAME
+         element, relocated. Rebuilding them as new markup would have meant
+         re-wiring every code path that touches them, and the <select> is
+         deliberately the state for the voice picker. -->
+    <dialog class="pdlg" id="pdlg">
+      <div class="pdlg-head">
+        <h3 id="pdlgTitle">Settings</h3>
+        <button class="pdlg-x" type="button" id="pdlgX" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+      </div>
+      <div class="pdlg-body">
+      <div class="voicerow" id="speedrow">
+        <label for="rate">Speed</label>
+        <select class="rate" id="rate" aria-label="Reading speed">
+          <option value="0.7">Slow</option>
+          <option value="0.85" selected>Normal</option>
+          <option value="1">Fast</option>
+        </select>
+      </div>
+      <div class="voicerow" id="voicerow">
+        <label for="voice">Voice</label>
+        <div class="vsel" id="vsel">
+          <button class="vsel-trigger" id="vselBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span id="vselLabel">Voice</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg>
+          </button>
+          <ul class="vsel-list" id="vselList" role="listbox" hidden></ul>
+        </div>
+        <select class="rate" id="voice" aria-label="Choose a reading voice" hidden></select>
+      </div>
+  
+      <div class="keytogglerow">
+        <button class="linkbtn keydisclose" type="button" id="keyToggle" aria-expanded="false" aria-controls="keyrow">Use My Personal API (Voice) Key<svg class="chev" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.75 8 10.25l4.5-4.5"/></svg></button>
+      </div>
+      <div class="keyrow" id="keyrow">
+        <p class="keydisc"><span aria-hidden="true">&#128274;</span><span><b>Stored on this device only.</b> Your key stays in this browser. It is never sent to NexStudents, never shared, and never leaves your machine except to the voice provider it belongs to.</span></p>
+        <label for="ttskey">Your API key</label>
+        <div class="keyfield">
+          <input type="password" id="ttskey" placeholder="Paste your key" autocomplete="off" spellcheck="false">
+          <button class="btn" type="button" id="keySave">Save</button>
+          <button class="btn" type="button" id="keyClear">Clear</button>
+        </div>
+        <p class="keynote" id="keynote"><b>Where to get a key.</b> <a href="https://cloud.google.com/text-to-speech" target="_blank" rel="noopener">Google Cloud TTS</a> powers the built-in voices on this page and has a free monthly allowance. <a href="https://elevenlabs.io/" target="_blank" rel="noopener">ElevenLabs</a> is worth a look if you want a more natural voice and do not mind setting up an account.</p>
+      </div>
+      <div class="themerow" id="themerow">
+        <span class="lbl">Colors</span>
+        <div class="swatches" id="swatches"></div>
+      </div>
+      </div>
+    </dialog>
 
     <p class="nospeech" id="nospeech">Read-aloud is not available in this browser. Try Chrome or Safari.</p>
   </div>
@@ -3862,6 +4080,82 @@ addEventListener("scroll", function(){
   if (panel) panel.addEventListener("toggle", function(){
     store("vsettings", panel.open ? "1" : "0");
   });
+})();
+
+(function settingsDialog(){
+  /* 🚨 THE CONTROLS ARE THE ORIGINALS, MOVED. #rate, #voice, #vsel, #keyrow and
+     #swatches are the same elements the rest of this file already reads and
+     writes; the dialog only decides which of them is on screen. Rebuilding them
+     would have meant re-wiring every path that touches them, and the hidden
+     <select> is deliberately the state for the voice picker. */
+  var dlg = document.getElementById("pdlg");
+  if (!dlg || !dlg.showModal) return;          /* no <dialog>, leave it inline */
+  /* 🚨 MOVE IT TO THE BODY. It was authored next to .nospeech, which put it
+     INSIDE .player - a position:fixed box. A modal renders in the top layer so
+     it half worked, but it has no business being a child of the bar it controls. */
+  if (dlg.parentElement !== document.body) document.body.appendChild(dlg);
+  var body = dlg.querySelector(".pdlg-body");
+  var title = document.getElementById("pdlgTitle");
+  var TITLES = { speedrow:"Reading speed", voicerow:"Voice", themerow:"Colors", keyrow:"Voice API key" };
+
+  function show(which){
+    [].forEach.call(body.children, function(el){ el.hidden = (el.id !== which); });
+    /* .keyrow is hidden until .show, which used to come from the disclosure */
+    var kr = document.getElementById("keyrow");
+    if (kr) kr.classList.toggle("show", which === "keyrow");
+    title.textContent = TITLES[which] || "Settings";
+    dlg.showModal();
+  }
+
+  document.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".setbtn") : null;
+    if (b) { e.preventDefault(); show(b.getAttribute("data-dlg")); }
+  });
+  var x = document.getElementById("pdlgX");
+  if (x) x.addEventListener("click", function(){ dlg.close(); });
+  /* clicking the backdrop closes it: the dialog fills its own box, so a click
+     landing on the element itself is a click outside the content */
+  /* 🚨 TEST THE COORDINATES, NOT THE TARGET. e.target === dlg is the usual
+     backdrop trick and it closed the dialog on the very click that opened it:
+     showModal() puts the box under the pointer mid-click, so the same event
+     then reads as a backdrop hit. A rectangle test cannot do that. */
+  dlg.addEventListener("click", function(e){
+    if (!dlg.open) return;
+    var r = dlg.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+  });
+
+  /* ── keep the row labels showing the current value ── */
+  function txt(sel){ var o = sel && sel.options && sel.options[sel.selectedIndex]; return o ? o.textContent.trim() : ""; }
+  function paint(){
+    var rate = document.getElementById("rate");
+    var voice = document.getElementById("voice");
+    var vl = document.getElementById("vselLabel");
+    var set = function(id, v){ var e = document.getElementById(id); if (e && v) e.textContent = v; };
+    set("valSpeed", txt(rate));
+    set("valVoice", (vl && vl.textContent.trim()) || txt(voice));
+    set("valTheme", (load("theme","graphite") || "graphite").replace(/^./, function(c){ return c.toUpperCase(); }));
+    var k = ""; try { k = load("ttskey",""); } catch(e2){}
+    set("valKey", k ? "Set" : "Not set");
+  }
+  paint();
+  /* ⚠️ THE VOICE LIST ARRIVES LATE. Android does not populate getVoices() until
+     a user gesture and the baked manifest is fetched, so the first paint can run
+     before there is a voice name to show and the row reads "Voice". Repaint once
+     things have settled and again on load.
+     Paul would have seen "Voice: Voice" on the row. */
+  setTimeout(paint, 900); setTimeout(paint, 2500);
+  addEventListener("load", paint);
+  ["rate","voice"].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.addEventListener("change", paint);
+  });
+  /* the swatches and the voice list write elsewhere, so repaint on close too */
+  dlg.addEventListener("close", paint);
+  var sw = document.getElementById("swatches");
+  if (sw) sw.addEventListener("click", function(){ setTimeout(paint, 60); });
+  var vb = document.getElementById("vselList");
+  if (vb) vb.addEventListener("click", function(){ setTimeout(paint, 60); });
 })();
 
 (function followChip(){

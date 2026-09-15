@@ -676,6 +676,20 @@ PARTS.forEach(function(part){
       p.className = "para";
       return;
     }
+    /* 🚨 A LEADING [ex] OR [verse] MARKS THE PARAGRAPH AND IS STRIPPED HERE.
+       The marker never reaches the reader, never enters SENT, and never reaches
+       the voice: the text pushed below is the stripped text, so nsTextHash sees
+       exactly what bake-voice's sentencesOf sees.
+       ⚠️ THIS RULE LIVES IN TWO PLACES - here and tools/bake-voice.js. Strip in
+       one and not the other and every clip from that line on plays against the
+       wrong sentence, which is the same off-by-one the blank-line rule above
+       warns about. Change one, change both.
+       ⚠️ The class goes on the PARAGRAPH, so one marked line sets the whole
+       block - which is what a two-line scripture quote needs, the verse and its
+       reference together. */
+    if (text.indexOf("[ex] ") === 0) { p.classList.add("is-ex"); text = text.slice(5); }
+    else if (text.indexOf("[verse] ") === 0) { p.classList.add("is-verse"); text = text.slice(8); }
+
     var i = SENT.length;
     var span = document.createElement("span");
     span.className = "sent";
@@ -684,11 +698,63 @@ PARTS.forEach(function(part){
     // word spans with char offsets, so speech boundaries can light them up
     var offsets = [];
     var cursor = 0;
+    /* 🚨 {{double braces}} MARK A WORD THE STUDENT CAN TAP FOR ITS MEANING.
+       Paul, 2026-09-14: "put an underline with certain words in the story that
+       are important to be clickable and it gives more information on it."
+       The braces are stripped here, before the text reaches SENT, so the reader
+       never sees them, the voice never says them and nsTextHash never sees them.
+       ⚠️ TWINNED IN bake-voice.js, exactly like [ex] and [verse]. Strip in one
+       and not the other and every clip after the first marked word plays against
+       the wrong sentence.
+       🚨 IT HANGS OFF THE WORD SPANS THAT ALREADY EXIST for the voice highlight
+       rather than inserting its own markup. A second set of spans inside .sent
+       would break the character offsets the word-level highlight depends on. */
+    var glossAt = [];                       /* word indexes that open a card */
+    (function findGloss(){
+      var out = "", gi = 0, rest = text;
+      while (true) {
+        var a = rest.indexOf("{{");
+        if (a < 0) { out += rest; break; }
+        var b = rest.indexOf("}}", a);
+        if (b < 0) { out += rest; break; }
+        var before = rest.slice(0, a), term = rest.slice(a + 2, b);
+        out += before + term;
+        /* which word indexes does the term cover, counting spaces so far */
+        var startWord = (out.slice(0, out.length - term.length).split(" ").length) - 1;
+        for (var q = 0; q < term.split(" ").length; q++) glossAt.push(startWord + q);
+        rest = rest.slice(b + 2);
+        gi++;
+      }
+      text = out;
+    })();
+
     text.split(" ").forEach(function(w, k){
       if (k > 0) { span.appendChild(document.createTextNode(" ")); cursor += 1; }
       var ws = document.createElement("span");
       ws.className = "w";
-      ws.textContent = w;
+      if (glossAt.indexOf(k) === -1) {
+        ws.textContent = w;
+      } else {
+        /* 🚨 UNDERLINE THE WORD, NOT THE COMMA AFTER IT. The reader splits on
+           spaces, so a token is "cytoplasm," punctuation and all, and marking
+           the whole token drew the dotted line under the comma too - which reads
+           as a typo. The punctuation stays inside the SAME .w span so the voice
+           highlight and the character offsets are untouched; only an inner span
+           carries the underline. */
+        var core = w, tail = "", head = "";
+        while (core.length && ".,;:!?’\")]”".indexOf(core.charAt(core.length - 1)) !== -1) {
+          tail = core.charAt(core.length - 1) + tail; core = core.slice(0, -1);
+        }
+        while (core.length && "(\"[“".indexOf(core.charAt(0)) !== -1) {
+          head += core.charAt(0); core = core.slice(1);
+        }
+        var gw = document.createElement("span");
+        gw.className = "gloss";
+        gw.textContent = core;
+        if (head) ws.appendChild(document.createTextNode(head));
+        ws.appendChild(gw);
+        if (tail) ws.appendChild(document.createTextNode(tail));
+      }
       span.appendChild(ws);
       offsets.push({ el: ws, start: cursor, end: cursor + w.length });
       cursor += w.length;
@@ -2208,7 +2274,13 @@ function setDemoOpen(on, why){
   dbox.classList.toggle("is-shut", !on);
   dboxX.textContent = on ? "Close Visual Panel" : "Open Visual Panel";
   dboxX.setAttribute("aria-expanded", on ? "true" : "false");
-  store("demo", on ? "1" : "0");
+  /* 🚨 DO NOT STORE ON init. This wrote the preference every time a lesson
+     loaded, so while the panel defaulted OPEN it stamped "1" onto every device
+     that had ever opened a lesson - and changing the default afterwards then did
+     nothing for any of them, because they all had a stored choice. Only a real
+     press is a choice. Found 2026-09-14: the default was changed to closed and
+     the panel still came up open. */
+  if (why !== "init") store("demo", on ? "1" : "0");
   /* 🚨 REPAINT IMMEDIATELY. The highlight rules read demoOpen(), so without this
      the band or the lit word stays exactly as it was until the reader happens to
      move to the next sentence - which on a slow line is several seconds of the
@@ -2264,7 +2336,14 @@ if ((VISUALS.length || PANEL_SOON) && dbox){
   /* 🚨 Remembered per reader, and OPEN by default. It is the reason the lesson
      looks the way it does, so a student meeting the page for the first time has
      to see it working before he can decide he does not want it. */
-  setDemoOpen(load("demo", "1") !== "0", "init");
+  /* 🚨 CLOSED BY DEFAULT. Paul, 2026-09-14: "the visual panel has a bug and
+     should be closed by default not open by default." It used to default open,
+     which put a large empty frame between the lesson title and the first line of
+     the reading on every lesson that had no picture for sentence one - so the
+     student's first sight of the page was a blank box rather than the story.
+     ⚠️ A READER WHO OPENS IT STILL GETS IT BACK. The stored value wins; only the
+     ABSENCE of a choice now means closed. */
+  setDemoOpen(load("demo", "0") === "1", "init");
   measureSticky();
   paintDemo(0);
   dboxX.addEventListener("click", function(){ setDemoOpen(!demoOpen()); });
@@ -2301,8 +2380,11 @@ addEventListener("scroll", function(){
   function fit(){
     /* only meaningful while the bar is actually docked */
     var docked = getComputedStyle(P).position === "fixed";
+    /* ⚠️ THE COLLAPSED BAR IS STILL ON SCREEN. Reserving nothing for it let the
+       last lines of a lesson slide underneath the scrub. Measure it either way
+       and let the measurement be small when it is collapsed, which it is. */
     var hidden = document.body.classList.contains("player-hidden");
-    var pad = (docked && !hidden) ? Math.ceil(P.getBoundingClientRect().height) + 12 : 0;
+    var pad = docked ? Math.ceil(P.getBoundingClientRect().height) + (hidden ? 6 : 12) : 0;
     document.documentElement.style.setProperty("--player-pad", pad + "px");
   }
   fit();
@@ -2316,38 +2398,136 @@ addEventListener("scroll", function(){
   if (window.ResizeObserver) new ResizeObserver(fit).observe(P);
 })();
 
-(function settingsSwitch(){
-  var box = document.getElementById("playerhide");
-  var panel = document.getElementById("psettings");
-  if (!box || !panel) return;
+(function playerSwitch(){
+  /* 🚨 THE SLIDER HIDES THE PLAYER NOW, NOT THE SETTINGS ROW.
+     Paul, 2026-09-15, and it came from Kolten first: "i like it but it takes a
+     bit too much of the screen when reading. Kolten even said he would like to
+     hide it ... perhaps the slider on the bottom right instead of hiding the
+     settings it can hide the player itself but keep the scrub as a bottom bar
+     that always shows and they can drag back and forth."
 
-  /* The slider decides whether the Settings row exists on the bar. */
-  var shown = load("settingsrow", "0") === "1";
-  var keyRow = document.getElementById("keyrow");
-  var keyToggle = document.getElementById("keyToggle");
-  function paintRow(){
-    panel.hidden = !box.checked;
-    if (!box.checked){
-      /* Collapse on the way out, so switching it back on gives a closed row
+     The collapsed look already existed as body.player-hidden, written with the
+     scrub deliberately surviving - "what survives: the step bar. Still live,
+     still tappable, still moving." Nothing ever added the class, so the mode
+     had never once been seen. This wires it to the switch.
+
+     ⚠️ SETTINGS KEEPS ITS OWN ARROW. It is a <details> with a chevron and that
+     is untouched; it simply goes away with the rest of the player when the
+     switch is off, and comes back closed. */
+  var box = document.getElementById("playerhide");
+  if (!box) return;
+  var panel = document.getElementById("psettings");
+
+  /* Checked means SHOWING, and it defaults to showing, which is how the bar has
+     always looked. A child who hides it gets it to stay hidden. */
+  var shown = load("playershown", "1") === "1";
+
+  function paint(){
+    document.body.classList.toggle("player-hidden", !box.checked);
+    if (panel){
+      /* the old switch used to hide this outright; it never should again */
+      panel.hidden = false;
+      /* Collapse on the way out, so bringing the player back gives a closed row
          rather than one already sprawling open. */
-      panel.open = false;
+      if (!box.checked) panel.open = false;
+    }
+    if (!box.checked){
       /* ⚠️ The API panel lives OUTSIDE the settings row, so it has to be shut
          explicitly or it stays on the bar after everything else has gone. */
+      var keyRow = document.getElementById("keyrow");
+      var keyToggle = document.getElementById("keyToggle");
       if (keyRow) keyRow.classList.remove("show");
       if (keyToggle) keyToggle.setAttribute("aria-expanded", "false");
     }
   }
+
   box.checked = shown;
-  paintRow();
+  paint();
   box.addEventListener("change", function(){
-    paintRow();
-    store("settingsrow", box.checked ? "1" : "0");
+    paint();
+    store("playershown", box.checked ? "1" : "0");
   });
 
-  /* The arrow keeps its own job: expanding the row once it is there. */
-  panel.addEventListener("toggle", function(){
+  /* The arrow keeps its own job: expanding the settings row. */
+  if (panel) panel.addEventListener("toggle", function(){
     store("vsettings", panel.open ? "1" : "0");
   });
+})();
+
+(function settingsDialog(){
+  /* 🚨 THE CONTROLS ARE THE ORIGINALS, MOVED. #rate, #voice, #vsel, #keyrow and
+     #swatches are the same elements the rest of this file already reads and
+     writes; the dialog only decides which of them is on screen. Rebuilding them
+     would have meant re-wiring every path that touches them, and the hidden
+     <select> is deliberately the state for the voice picker. */
+  var dlg = document.getElementById("pdlg");
+  if (!dlg || !dlg.showModal) return;          /* no <dialog>, leave it inline */
+  /* 🚨 MOVE IT TO THE BODY. It was authored next to .nospeech, which put it
+     INSIDE .player - a position:fixed box. A modal renders in the top layer so
+     it half worked, but it has no business being a child of the bar it controls. */
+  if (dlg.parentElement !== document.body) document.body.appendChild(dlg);
+  var body = dlg.querySelector(".pdlg-body");
+  var title = document.getElementById("pdlgTitle");
+  var TITLES = { speedrow:"Reading speed", voicerow:"Voice", themerow:"Colors", keyrow:"Voice API key" };
+
+  function show(which){
+    [].forEach.call(body.children, function(el){ el.hidden = (el.id !== which); });
+    /* .keyrow is hidden until .show, which used to come from the disclosure */
+    var kr = document.getElementById("keyrow");
+    if (kr) kr.classList.toggle("show", which === "keyrow");
+    title.textContent = TITLES[which] || "Settings";
+    dlg.showModal();
+  }
+
+  document.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".setbtn") : null;
+    if (b) { e.preventDefault(); show(b.getAttribute("data-dlg")); }
+  });
+  var x = document.getElementById("pdlgX");
+  if (x) x.addEventListener("click", function(){ dlg.close(); });
+  /* clicking the backdrop closes it: the dialog fills its own box, so a click
+     landing on the element itself is a click outside the content */
+  /* 🚨 TEST THE COORDINATES, NOT THE TARGET. e.target === dlg is the usual
+     backdrop trick and it closed the dialog on the very click that opened it:
+     showModal() puts the box under the pointer mid-click, so the same event
+     then reads as a backdrop hit. A rectangle test cannot do that. */
+  dlg.addEventListener("click", function(e){
+    if (!dlg.open) return;
+    var r = dlg.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+  });
+
+  /* ── keep the row labels showing the current value ── */
+  function txt(sel){ var o = sel && sel.options && sel.options[sel.selectedIndex]; return o ? o.textContent.trim() : ""; }
+  function paint(){
+    var rate = document.getElementById("rate");
+    var voice = document.getElementById("voice");
+    var vl = document.getElementById("vselLabel");
+    var set = function(id, v){ var e = document.getElementById(id); if (e && v) e.textContent = v; };
+    set("valSpeed", txt(rate));
+    set("valVoice", (vl && vl.textContent.trim()) || txt(voice));
+    set("valTheme", (load("theme","graphite") || "graphite").replace(/^./, function(c){ return c.toUpperCase(); }));
+    var k = ""; try { k = load("ttskey",""); } catch(e2){}
+    set("valKey", k ? "Set" : "Not set");
+  }
+  paint();
+  /* ⚠️ THE VOICE LIST ARRIVES LATE. Android does not populate getVoices() until
+     a user gesture and the baked manifest is fetched, so the first paint can run
+     before there is a voice name to show and the row reads "Voice". Repaint once
+     things have settled and again on load.
+     Paul would have seen "Voice: Voice" on the row. */
+  setTimeout(paint, 900); setTimeout(paint, 2500);
+  addEventListener("load", paint);
+  ["rate","voice"].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.addEventListener("change", paint);
+  });
+  /* the swatches and the voice list write elsewhere, so repaint on close too */
+  dlg.addEventListener("close", paint);
+  var sw = document.getElementById("swatches");
+  if (sw) sw.addEventListener("click", function(){ setTimeout(paint, 60); });
+  var vb = document.getElementById("vselList");
+  if (vb) vb.addEventListener("click", function(){ setTimeout(paint, 60); });
 })();
 
 (function followChip(){
@@ -2473,9 +2653,25 @@ function playClipFrom(mine, clip){
      not change when playbackRate does. */
   audioEl.playbackRate = Math.max(0.5, Math.min(2, rateVal() / 0.85));
 
+  /* 🚨 THE HIGHLIGHT RAN AHEAD OF THE VOICE. Paul, 2026-09-15, on the first
+     baked lesson: "the highlighted text is just a slightly bit faster than the
+     reading from the player and it jumps a but before the word is spoken."
+
+     Two causes, both pushing the same way:
+       · audioEl.currentTime reports the position being DECODED, not the sound
+         that has actually reached the speaker. Output latency is tens of
+         milliseconds on a wired device and much worse over Bluetooth.
+       · Google's SSML timepoint sits where the <mark> tag sits, at the START of
+         the word, which is a little before the word becomes audible.
+
+     ⚠️ WORD_LAG IS REAL-WORLD SECONDS, so it converts into media time by the
+     playback rate: at 1.5x, a tenth of a real second is 0.15 of media time.
+     Subtracting a flat number here would drift as soon as he changed speed. */
+  var WORD_LAG = 0.12;
+
   function tick(){
     if (mine !== gen || !audioEl) return;
-    var t = audioEl.currentTime, k = -1;
+    var t = audioEl.currentTime - WORD_LAG * (audioEl.playbackRate || 1), k = -1;
     for (var j = 0; j < marks.length; j++){
       if (marks[j] <= t) k = j; else break;
     }
@@ -2769,6 +2965,88 @@ scrub.addEventListener("keydown", function(e){
     playing = true;
     resumeFollowing();
     speak(i);
+  });
+})();
+
+/* ---------- tap a marked word, get its meaning ----------
+   🚨 THE DEFINITION COMES FROM `words`, NOT A SECOND LIST. One copy, so the card
+   at the top and the inline card can never drift.
+   ⚠️ ONE CARD OPEN AT A TIME. Several at once push the paragraph being read off
+   the screen, which is the thing the Visual Panel already has to be careful of.
+   ⚠️ Delegated off #story: the word spans are built in a loop, and a listener
+   per span would be hundreds of listeners for one behaviour. */
+(function inlineGlossary(){
+  var story = document.getElementById("story");
+  if (!story || typeof WORDS === "undefined") return;
+
+  function defOf(term){
+    var want = String(term).toLowerCase().replace(/[^a-z ]/g, "").trim();
+    for (var i = 0; i < WORDS.length; i++){
+      var w = String(WORDS[i][0]).toLowerCase().replace(/[^a-z ]/g, "").trim();
+      if (w === want || w + "s" === want || w === want + "s") return WORDS[i];
+    }
+    return null;
+  }
+  function closeBox(){
+    var open = story.querySelector(".glossbox");
+    if (open) open.parentNode.removeChild(open);
+    [].forEach.call(story.querySelectorAll(".gloss.opened"), function(w){
+      w.classList.remove("opened");
+    });
+  }
+
+  story.addEventListener("click", function(ev){
+    if (!ev.target.closest) return;
+    if (ev.target.closest(".glossbox")) {
+      if (ev.target.classList.contains("gx")) closeBox();
+      return;
+    }
+    var hit = ev.target.closest(".gloss");
+    if (!hit) return;
+
+    /* gather the whole marked run so "cell membrane" reads as one term */
+    var sent = hit.closest(".sent");
+    var all = [].slice.call(sent.querySelectorAll(".gloss"));
+    var at = all.indexOf(hit), run = [hit];
+    /* a run is adjacent .gloss spans, i.e. the words of one multi-word term */
+    for (var a = at - 1; a >= 0; a--) { if (all[a].parentNode.nextSibling && all[a].parentNode.nextSibling.nextSibling === run[0].parentNode) run.unshift(all[a]); else break; }
+    for (var b = at + 1; b < all.length; b++) { var last = run[run.length-1].parentNode; if (last.nextSibling && last.nextSibling.nextSibling === all[b].parentNode) run.push(all[b]); else break; }
+    var term = run.map(function(w){ return w.textContent; }).join(" ");
+
+    var pair = defOf(term);
+    if (!pair) return;                    /* the build guard should prevent this */
+
+    var already = story.querySelector(".glossbox");
+    var same = already && already.getAttribute("data-for") === term.toLowerCase();
+    closeBox();
+    if (same) return;                     /* tapping the same word shuts it again */
+
+    var el = document.createElement("div");
+    el.className = "glossbox";
+    el.setAttribute("data-for", term.toLowerCase());
+    var x = document.createElement("span");
+    x.className = "gx"; x.textContent = "×";
+    x.setAttribute("role", "button"); x.setAttribute("aria-label", "Close");
+    var name = document.createElement("b");
+    name.textContent = pair[0];
+    el.appendChild(x); el.appendChild(name);
+    el.appendChild(document.createTextNode(pair[1]));
+
+    var para = sent.closest(".para");
+    para.parentNode.insertBefore(el, para.nextSibling);
+    run.forEach(function(w){ w.classList.add("opened"); });
+  });
+
+  /* reachable and openable without a mouse */
+  [].forEach.call(story.querySelectorAll(".gloss"), function(w){
+    w.setAttribute("tabindex", "0");
+    w.setAttribute("role", "button");
+  });
+  story.addEventListener("keydown", function(ev){
+    if (ev.key !== "Enter" && ev.key !== " ") return;
+    if (!ev.target.closest || !ev.target.closest(".gloss")) return;
+    ev.preventDefault();
+    ev.target.closest(".gloss").click();
   });
 })();
 
@@ -3105,7 +3383,7 @@ function paintTeacherScore(){
   line.textContent = done === 0
     ? "Not started yet."
     : done === total
-      ? "Completed · " + total + "/" + total + " (100%) · practised to mastery"
+      ? "Completed · " + total + "/" + total + " (100%) · practiced to mastery"
       : done + " of " + total + " solved · still in progress";
   if (btn) btn.hidden = done === 0;
 }

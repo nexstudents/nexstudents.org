@@ -1,127 +1,175 @@
 
-.wrapx{max-width:900px;margin:0 auto;padding:0 20px}
-.ns-back{padding:18px 0}
-.ns-back a{color:var(--dim);text-decoration:none;font-size:.9rem}
-.ns-back a:hover{color:var(--fg)}
-h1{margin:0 0 6px}
-.dek{color:var(--dim);max-width:60ch;margin:0 0 22px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 22px}
-/* ── Teacher Notes ────────────────────────────────────────────────────────────
-   The grade and the reset, behind a disclosure. A reset the student can reach is
-   a lesson that records nothing — he can un-finish work already done and the
-   shelf card then reads as never started. Added 2026-09-08; this template had no
-   teacher block at all, which is why a finished maths lesson had nowhere to show
-   its grade for HomeschoolGrades. Styles are local because this template does not
-   share the history one's stylesheet. */
-.ground{border:1px solid var(--line);border-radius:var(--r);margin:18px 0 4px;background:var(--panel)}
-/* 🚨 CENTRED, THE WAY THE HISTORY TEMPLATE DOES IT: 1fr auto 1fr with an empty
-   ::before as the left spacer, so the chevron on the right cannot pull the label
-   off centre. Flex with margin-left:auto centres nothing — the same trap listed in
-   CLAUDE.md under the five ways to get centring wrong.
-   ⚠️ The "For the teacher" eyebrow was removed 2026-09-08 at Paul's request. */
-.ground summary{cursor:pointer;padding:11px 14px;font-weight:600;font-size:.95rem;
-  list-style:none;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
-  text-align:center}
+:root{
+  --ground:#E7EDE4;
+  --surface:#F2F7EF;
+  --surface-2:#D8E2D2;
+  --ink:#152018;
+  --ink-soft:#48594D;
+  --ink-faint:#7B8C7F;
+  --rule:#C2CFBD;
+  --verdigris:#25664A;
+  --verdigris-ink:#174630;
+  --verdigris-soft:rgba(37,102,74,.12);
+  --porphyry:#8A2F3F;
+  --porphyry-soft:rgba(138,47,63,.10);
+  --brass:#7E6A16;
+  --band:rgba(158,138,40,.42);
+  --word:rgba(158,138,40,.85);
+  --on-accent:#F2F7EF;
+  --control-bg:#1F5A41;
+  --control-ink:#EDF4EA;
+  --control-border:#164630;
+  --tick-now:#14432E;
+  --tick-done:rgba(37,102,74,.30);
+  --shadow:0 1px 2px rgba(21,32,24,.07),0 8px 24px rgba(21,32,24,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1A13;
+    --surface:#14251A;
+    --surface-2:#1C3123;
+    --ink:#E2EBE2;
+    --ink-soft:#93A896;
+    --ink-faint:#6B8071;
+    --rule:#27402F;
+    --verdigris:#66C293;
+    --verdigris-ink:#93D9B2;
+    --verdigris-soft:rgba(102,194,147,.16);
+    --porphyry:#E08497;
+    --porphyry-soft:rgba(224,132,151,.16);
+    --brass:#D8B355;
+    --band:rgba(216,179,85,.42);
+    --word:rgba(216,179,85,.85);
+    --on-accent:#0B160F;
+    --control-bg:#17301F;
+    --control-ink:#DCEADF;
+    --control-border:#345A41;
+    --tick-now:#3F9B69;
+    --tick-done:rgba(102,194,147,.28);
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.32);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1A13;
+  --surface:#14251A;
+  --surface-2:#1C3123;
+  --ink:#E2EBE2;
+  --ink-soft:#93A896;
+  --ink-faint:#6B8071;
+  --rule:#27402F;
+  --verdigris:#66C293;
+  --verdigris-ink:#93D9B2;
+  --verdigris-soft:rgba(102,194,147,.16);
+  --porphyry:#E08497;
+  --porphyry-soft:rgba(224,132,151,.16);
+  --brass:#D8B355;
+  --band:rgba(216,179,85,.42);
+  --word:rgba(216,179,85,.85);
+  --on-accent:#0B160F;
+  --control-bg:#17301F;
+  --control-ink:#DCEADF;
+  --control-border:#345A41;
+  --tick-now:#3F9B69;
+  --tick-done:rgba(102,194,147,.28);
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.32);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:20px;
+  line-height:1.85;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:660px;margin:0 auto;padding:0 22px 96px}
+
+/* ---------- masthead ----------
+   🚨 CENTRED, LIKE EVERY OTHER PAGE ON THE SITE. Paul, 2026-09-04: "Kinds of
+   Sentences is not centered and also the A Statement, a question, a command i
+   would also like in the middle of the page."
+   The site pages centre their `.phead` and the lesson masthead never did, so a
+   lesson read as a different site the moment you arrived on one.
+   🚨 CENTRING TEXT IS NOT CENTRING THE BOX, and this masthead had BOTH of the
+   ways to get it wrong that are already written up in CLAUDE.md:
+     - `.dek` has a max-width, so text-align alone leaves a 52ch box hard left.
+       It needs margin-inline:auto.
+     - `.eyebrow` is a FLEX ROW, and a flex row packs its items left however the
+       text is aligned. It needs justify-content:center. */
+.mast{padding:44px 0 24px;border-bottom:1px solid var(--rule);text-align:center}
+.eyebrow{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;font-weight:600;line-height:1.4;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--verdigris);
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;
+}
+.eyebrow .dot{width:4px;height:4px;border-radius:50%;background:var(--ink-faint)}
+h1{
+  font-family:Cinzel,Georgia,serif;
+  font-weight:600;font-size:clamp(30px,7vw,44px);line-height:1.15;
+  letter-spacing:.01em;text-wrap:balance;
+  margin:14px 0 10px;
+}
+.dek{color:var(--ink-soft);font-size:17px;line-height:1.65;margin:0 auto;max-width:52ch}
+
+/* ---------- teacher notes ----------
+   🚨 STYLED ON THIS TEMPLATE'S OWN TOKENS (--surface, --rule, --ink-soft,
+   --verdigris), NOT the ns.css names. ns.css is not loaded on a lesson page, so
+   a --a or --dim here resolves to nothing and the panel renders unstyled. That
+   is exactly what went wrong on the unit strip; it is written down twice now.
+   The disclosure arrow points RIGHT closed and DOWN open, matching the integers
+   and English panels - Paul, 2026-08-30. */
+.ground{border:1px solid var(--rule);border-radius:10px;margin:14px 0 4px;
+  background:var(--surface);overflow:hidden}
+/* 🚨 THE TITLE IS CENTRED, and the chevron must not push it off centre.
+   Paul, 2026-09-04: "just call this box and center the title simply Teacher
+   Notes." A flex row with the arrow on margin-left:auto centres the text only
+   in the space LEFT OVER, which is not centred at all. So the row is a
+   1fr auto 1fr grid: an empty cell, the title, the chevron. The title sits on
+   the true centre line whatever the arrow does.
+   ⚠️ This is the same trap recorded in CLAUDE.md under the five ways to get
+   centring wrong: centring a GROUP is not centring the middle item. */
+.ground summary{cursor:pointer;padding:10px 17px;font-weight:700;font-size:15px;list-style:none;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  text-align:center;color:var(--ink)}
 .ground summary::before{content:""}
-.ground summary::after{content:"▸";justify-self:end;color:var(--dim);
+.ground summary::-webkit-details-marker{display:none}
+.ground summary::after{content:"\25B8";justify-self:end;color:var(--ink-faint);
   transition:transform .18s;display:inline-block}
 .ground[open] summary::after{transform:rotate(90deg)}
-.ground summary::-webkit-details-marker{display:none}
-.ground summary .who{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--dim);margin-right:9px}
-.ground .gbody{padding:0 14px 13px}
-.gscore{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0 2px}
-.gscore .gscore-line{margin:0;font-weight:600;font-size:14.5px;line-height:1.3}
+.ground summary:hover{color:var(--verdigris)}
+.ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-faint);font-weight:600}
+/* The score the parent sees first, at the top of the teacher box. */
+.gscore{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:11px 0 13px;margin-bottom:4px;border-bottom:1px solid var(--rule)}
+/* 🚨 SPECIFICITY: `.ground .gbody p` sets a 9px bottom margin and beats a bare
+   .gscore-line, so the score sat 4.5px above the button it is meant to line up
+   with. Measured on the live page, not guessed: line mid 439, button mid 444.
+   Scoped under .gscore so it wins, and the row centres properly. */
+.gscore .gscore-line{margin:0;font-weight:600;font-size:14.5px;color:var(--ink);line-height:1.3}
 .gscore .gscore-line.good{color:#1c7a4a}
+.gscore .gscore-line.part{color:var(--ink-soft, var(--ink))}
 .gscore .gscore-line.bad{color:#c0392b}
-.gscore .btn{margin-left:auto;font-size:12.5px;padding:6px 12px;background:transparent;
-  border:1px solid var(--line);border-radius:var(--r);color:var(--fg);cursor:pointer}
+.gscore .btn{margin-left:auto;font-size:12.5px;padding:6px 12px}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]) .gscore .gscore-line.good{color:#5fcf95}
+  :root:not([data-theme="light"]) .gscore .gscore-line.bad{color:#ff7a6b}
 }
 :root[data-theme="dark"] .gscore .gscore-line.good{color:#5fcf95}
-.section-head{margin:34px 0 4px;font-size:1.35rem}
-.section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
+:root[data-theme="dark"] .gscore .gscore-line.bad{color:#ff7a6b}
+.ground .gbody{padding:2px 17px 18px;border-top:1px solid var(--rule);
+  color:var(--ink-soft);font-size:15.5px}
+.ground h3{margin:17px 0 5px;font-size:.79rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--verdigris);font-weight:700}
+.ground p{margin:0 0 9px;line-height:1.62;max-width:68ch}
+.ground dl{margin:6px 0 0;max-width:68ch}
+.ground dt{font-weight:700;color:var(--ink);margin:9px 0 1px}
+.ground dd{margin:0;line-height:1.6}
 
-/* The reading player CSS comes from lesson-template.html via voice-player.js.
-   Math does not style the player - one player, one stylesheet. */
-/* ---- the division grid ---- */
-.gridwrap{overflow-x:auto;padding:6px 0}
-.dgrid{display:grid;gap:0;justify-content:start;
-  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.5rem;line-height:1}
-.cell{width:2.1em;height:2.1em;display:flex;align-items:center;justify-content:center;
-  position:relative;color:var(--fg)}
-.cell.brk{border-top:2px solid var(--fg);border-left:2px solid var(--fg);border-top-left-radius:10px}
-.cell.bar{border-top:2px solid var(--fg)}
-.cell.under{border-bottom:2px solid var(--fg)}
-.cell.drop{color:var(--a);animation:drop .35s ease}
-@keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
-/* The remainder, restated up top next to the quotient - "R 2" - once it is
-   known, not just left as an unlabeled number at the bottom of the work. */
-.cell.remlabel{color:var(--dim);font-weight:700;padding-left:.35em}
-.cell.remval{color:var(--free);font-weight:700}
-/* Only the box he is in should read as live. Paul, 2026-08-26: with every box
-   filled and outlined the page was noise. So a waiting box is a faint hairline,
-   and the focused one gets the fill and the accent ring. Both colours come from
-   the palette, never a white alpha, so a light theme still works. */
-.cell input{width:100%;height:100%;background:transparent;
-  border:1px solid var(--line);border-radius:7px;
-  color:var(--fg);font:inherit;text-align:center;padding:0;
-  transition:background .12s,border-color .12s,box-shadow .12s}
-/* An untouched box recedes; a typed digit stays at full strength. */
-.cell input:placeholder-shown{opacity:.4}
-.cell input:focus{outline:none;opacity:1;background:var(--boxfill);
-  border:2px solid var(--a);box-shadow:0 0 0 3px var(--accent-soft)}
-/* not his turn yet: barely there */
-.cell input:disabled{background:transparent;border-color:var(--line);
-  border-style:dashed;opacity:.45;color:var(--dim)}
-/* A marked digit is never faded, even though marking disables the box. */
-.cell input.ok{background:transparent;border-color:transparent;border-style:solid;
-  color:var(--free);font-weight:700;opacity:1}
-.cell input.wrong{background:transparent;border-color:#e5484d;border-style:solid;
-  color:#e5484d;font-weight:700;opacity:1}
-.cell input.bad{border-color:#e5484d;animation:shake .3s}
-@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-
-/* Fallbacks. applyTheme() overwrites all of these the moment it runs. */
-:root{--boxfill:rgba(255,255,255,.10);--boxline:rgba(255,255,255,.38);--accent-soft:rgba(255,255,255,.14)}
-
-/* The site nav reads six variables of its own (assets/lesson-nav.css). Mapping
-   them onto this page's palette means the nav re-themes with the lesson. */
-:root{--nv-bg:var(--panel);--nv-fg:var(--fg);--nv-dim:var(--dim);
-  --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
-/* NOTE: --pill belongs to ns.css and is a RADIUS (999px). Never map a colour
-   onto it here - that turned every pill in ns.css square on this page. */
-
-/* ---- practice / test tabs ---- */
-.tabs{display:flex;gap:6px;margin:0 0 12px}
-.tab{background:transparent;border:1px solid var(--line);border-radius:999px;
-  color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
-.tab:hover{color:var(--fg)}
-.tab.on{background:var(--accent-soft);border-color:var(--a);color:var(--fg);font-weight:700}
-
-/* The two actions read as buttons, not as tabs: same pill, filled. Side by
-   side on a phone, never stacked. Paul, 2026-08-26. */
-.actions{display:flex;flex-wrap:nowrap;gap:8px;margin:0 0 18px}
-.tab.act{flex:1 1 0;min-width:0;color:var(--fg);border-color:var(--boxline);
-  background:var(--boxfill);font-weight:600;white-space:nowrap;
-  padding:11px 10px;font-size:.88rem}
-.tab.act:hover{border-color:var(--a)}
-.tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
-
-/* ---- problems ---- */
-.prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:0 0 16px}
-.prob.solved{border-color:var(--free)}
-.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
-.probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
-.tag{font-size:.85rem;color:var(--dim)}
-.tag.done{color:var(--free);font-weight:700}
-.nudge{margin-top:10px;font-size:.9rem;color:var(--dim);min-height:1.4em}
-.nudge.warn{color:#e5484d}
-.scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:22px 0 40px}
-.scorebar b{font-size:1.25rem}
-.legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--dim);font-size:.86rem;margin-top:10px}
-.legend span b{color:var(--fg)}
 /* ---------- player ---------- */
 .player{
   /* Docked to the foot of the screen on every width. Paul, 2026-08-29:
@@ -211,6 +259,96 @@ h1{margin:0 0 6px}
   display:flex;align-items:center;justify-content:center;
   gap:10px;flex-wrap:wrap;
 }
+/* 🚨 display:contents, so on a wide screen this wrapper is not a box at all and
+   the bar lays out exactly as it did before it existed. It becomes a real row
+   only inside the phone media query. */
+.pfoot{display:contents}
+
+/* ── THE SETTINGS ROWS AND THEIR DIALOG ──────────────────────────────────
+   Paul, 2026-09-15: "right now on mobile i have the settings open and it takes
+   up a massive amount of screen ... if they press speed they get a mobile popup
+   of the speed to select instead of the box to show ... the box will be centered
+   on the screen ... this would shrink it all down removing the option for text
+   boxes." The same on a PC, because one centred box is easier to read than four
+   controls crammed onto a bar. */
+/* 🚨 A GRID, SO EVERY PILL IS THE SAME SIZE. Paul: "make all the pills the
+   same size." flex with flex:1 1 auto sized each one to its own text, so Speed
+   came out narrow and Voice API key wide. Equal columns cannot do that. */
+.setrows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:6px 0 2px}
+@media (min-width: 621px){ .setrows{grid-template-columns:repeat(4,minmax(0,1fr))} }
+.setbtn{
+  min-width:0;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;font:inherit;font-size:13px;cursor:pointer;
+  background:var(--surface-2, var(--boxfill));color:var(--ink, var(--fg));
+  border:1px solid var(--rule, var(--line));border-radius:6px;padding:5px 10px;min-height:32px;
+}
+.setbtn:hover{border-color:var(--verdigris, var(--a))}
+.setbtn .lbl{color:var(--ink-soft, var(--dim));white-space:nowrap}
+.setbtn .val{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 🚨 CENTRED, AND NOT DOCKED TO THE PLAYER. A settings box that grows out of the
+   bar is what was eating the screen; this one sits in the middle and the bar
+   stays the height it was. */
+dialog.pdlg{
+  border:1px solid var(--rule, var(--line));border-radius:10px;padding:0;
+  background:var(--surface, var(--panel));color:var(--ink, var(--fg));
+  width:min(420px, calc(100vw - 32px));max-height:min(80vh, 560px);
+  /* 🚨 CENTRE IT EXPLICITLY. A <dialog> defaults to margin:auto, which UA sheets
+     and an inherited margin can both defeat - it was drawing off-centre. Fixed
+     positioning with a translate cannot be argued with. */
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);margin:0;
+}
+dialog.pdlg::backdrop{background:rgba(0,0,0,.55)}
+.pdlg-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:13px 14px;border-bottom:1px solid var(--rule, var(--line));
+}
+.pdlg-head h3{margin:0;font-size:1rem;letter-spacing:.01em}
+.pdlg-x{
+  background:transparent;border:1px solid var(--rule, var(--line));border-radius:6px;
+  color:inherit;cursor:pointer;padding:5px;display:inline-flex;line-height:0;
+}
+.pdlg-x:hover{border-color:var(--verdigris, var(--a))}
+.pdlg-body{padding:14px;overflow:auto;max-height:calc(80vh - 58px)}
+/* inside the dialog the rows stack and take the full width */
+/* 🚨 [hidden] LOSES TO ANY CLASS RULE THAT SETS display. FOURTH TIME ON THIS
+   SITE, and it is written in CLAUDE.md: the UA sheet is one attribute selector
+   and .pdlg-body .voicerow is two classes, so display:block won and every
+   section showed at once however correctly the JS set hidden. Paul saw it:
+   "i open reading speed and its all together."
+   ⚠️ VERIFY A HIDE WITH getComputedStyle().display, NEVER el.hidden. Reading
+   the property told me it was hidden while it was plainly on screen. */
+.pdlg-body > [hidden]{display:none !important}
+.pdlg-body .voicerow,.pdlg-body .themerow{display:block;margin:0 0 10px}
+/* 🚨 EVERYTHING IN THE SHEET IS CENTRED. Paul: "look at the settings items they
+   are not centered look." The controls were already full width and centred, but
+   every LABEL sat hard left and the key field sat off to one side, so the box
+   read as ragged. One popup holds one setting, so there is no column to align
+   to and centre is the right answer on a phone and on a desktop alike. */
+.pdlg-body{text-align:center}
+/* 🚨 NO BORDER ON A ROW THAT IS ALONE IN A BOX. Paul: "also a double line here
+   on the color one." .voicerow, .keyrow and .themerow each carry a border-top
+   from when they were stacked separators on the bar. In a popup showing ONE of
+   them that line sits directly under the dialog header rule and reads as two. */
+/* ⚠️ THE CLASSES ARE NAMED HERE ON PURPOSE. `.pdlg-body > *` reads like it
+   would do the job and does not: `*` is worth ZERO specificity, so that
+   selector ties with plain `.themerow` and loses on source order. */
+.pdlg-body > .voicerow,.pdlg-body > .keyrow,.pdlg-body > .themerow,
+.pdlg-body > .speedrow{border-top:0;padding-top:0;margin-top:0}
+/* The key row draws itself as a tinted card, which was right on the bar and is
+   a box inside a box here. The dialog IS the box. (.keyrow.show is two classes,
+   so this needs three to beat it.) */
+.pdlg-body > .keyrow.show{margin:0;padding:0;background:none;border:0;max-width:none}
+.pdlg-body .voicerow label,.pdlg-body .themerow .lbl{display:block;margin:0 0 6px;text-align:center}
+.pdlg-body .swatches{justify-content:center}
+.pdlg-body .keyfield{justify-content:center;flex-wrap:wrap}
+.pdlg-body .keyfield input{flex:1 1 200px;min-width:0}
+/* the two explanatory paragraphs stay left: centred body text is hard to read */
+.pdlg-body .keydisc,.pdlg-body .keynote{text-align:left}
+.pdlg-body select.rate{width:100%}
+.pdlg-body .vsel{width:100%}
+.pdlg-body .keyrow{display:block}
+.pdlg-body .keytogglerow{display:none}   /* the row IS the disclosure now */
 .pmeta{
   order:2;display:flex;align-items:center;justify-content:center;
   gap:14px;flex-wrap:wrap;text-align:center;
@@ -690,6 +828,240 @@ h2{
 .sent.miss{background:var(--porphyry-soft);box-shadow:inset 0 -2px 0 var(--porphyry)}
 .sent.shown{background:var(--band);box-shadow:inset 0 -2px 0 var(--brass)}
 
+/* ---------- words ---------- */
+.dayhead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.dayprog{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-soft);
+  white-space:nowrap;
+}
+.dayprog.done{color:var(--verdigris);font-weight:700}
+.daybar{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden;margin:12px 0 4px}
+.daybar i{display:block;height:100%;width:0;background:var(--verdigris);
+  border-radius:2px;transition:width .35s var(--ease,ease)}
+.daysec{margin-top:54px;padding-top:26px;border-top:2px solid var(--rule)}
+.daytag{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--verdigris);margin:0 0 4px;
+}
+.sub-head{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint);margin:30px 0 14px;
+  padding-bottom:6px;border-bottom:1px solid var(--rule);
+}
+.daysec .section-head{margin-top:0}
+.section-head{
+  font-family:Cinzel,Georgia,serif;font-weight:600;
+  font-size:22px;letter-spacing:.03em;
+  margin:52px 0 6px;
+}
+.section-note{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 20px;
+}
+.cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.card{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;text-align:left;
+  background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+  padding:14px;cursor:pointer;color:var(--ink);
+  transition:border-color .15s,background .15s;
+}
+.card:hover{border-color:var(--verdigris)}
+.card:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.card .term{
+  font-family:Cinzel,Georgia,serif;font-size:16px;font-weight:600;
+  letter-spacing:.04em;display:block;
+}
+.card .prompt{font-size:12px;color:var(--verdigris);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.card .def{font-size:14px;line-height:1.55;color:var(--ink-soft);margin-top:7px;display:none}
+.card.open .def{display:block}
+.card.open .prompt{display:none}
+
+/* 🚨 THE FIND LINK APPEARS ONLY ON AN OPEN CARD. Showing it on a closed card
+   puts a second control on something whose whole job is "tap me to see the
+   meaning", and the student taps the wrong one. Read the definition first, then
+   go look at where it came from. */
+.cardfind{display:none;margin-top:9px;font-size:12.5px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--verdigris);
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.card.open .cardfind{display:inline-block}
+.cardfind:hover,.cardfind:focus-visible{color:var(--brass);outline:none}
+
+/* ⚠️ A DIFFERENT HIGHLIGHT FROM THE ANSWER HUNT'S `.shown`. The two mean
+   different things - "here is the answer you were hunting" against "here is
+   where this word is explained" - and a student who has done both would
+   otherwise be looking at one page with two identical bands and no way to tell
+   which was which. */
+.sent.wordshown{background:var(--band);box-shadow:inset 0 -2px 0 var(--verdigris)}
+/* 🚨 GREEN OUTLINE ONCE READ, and it stays after the card is closed again.
+   Paul, 2026-09-04: "if you clicked on the vocab section they turn green outline
+   too to show you read them." A parent scanning the row can see at a glance
+   which words the student actually opened.
+   ⚠️ LITERAL green, not a palette token, for the same reason the verdict box is:
+   read and unread must not change hue when a lesson theme changes. Same pair as
+   the correct verdict, so the page has one green and not two. */
+.card.read{border-color:#1c7a4a}
+.card.read:hover{border-color:#1c7a4a}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .card.read{border-color:#3f9d6d}
+  :root:not([data-theme="light"]) .card.read:hover{border-color:#5fcf95}
+}
+:root[data-theme="dark"] .card.read{border-color:#3f9d6d}
+:root[data-theme="dark"] .card.read:hover{border-color:#5fcf95}
+
+/* ---------- questions ---------- */
+.q{
+  background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+  padding:18px;margin-bottom:14px;
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+}
+.qnum{
+  font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--verdigris);
+}
+.qtext{font-family:"Source Serif 4",Georgia,serif;font-size:19px;line-height:1.5;margin:6px 0 14px}
+.stage{
+  font-size:13px;color:var(--ink-soft);line-height:1.6;
+  border-left:2px solid var(--rule);padding-left:12px;margin-bottom:12px;
+}
+.stage strong{color:var(--ink);font-weight:600}
+.route{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn.ghost{background:transparent;color:var(--verdigris);box-shadow:inset 0 0 0 1px var(--rule)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--verdigris);background:transparent}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{
+  font-family:inherit;font-size:15px;line-height:1.5;text-align:left;
+  background:var(--surface-2);color:var(--ink);
+  border:1px solid transparent;border-radius:3px;
+  padding:12px 14px;cursor:pointer;
+  transition:border-color .15s,background .15s;
+}
+.choice:hover:not(:disabled){border-color:var(--verdigris)}
+.choice:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.choice:disabled{cursor:default}
+.choice.right{background:var(--verdigris-soft);border-color:var(--verdigris);font-weight:600}
+.choice.wrong{background:var(--porphyry-soft);border-color:var(--porphyry)}
+/* 🚨 A BOX, AND PLAIN GREEN OR RED. Paul, 2026-09-04: "make the box and this
+   answer green text ... if wrong say incorrect making everything red."
+   It used to be bare text tinted with the lesson's own palette tokens -
+   --verdigris-ink and --porphyry - which are a blue-green and a purple-red.
+   They read as "the lesson's colours", not as right and wrong.
+   ⚠️ These are LITERAL colours on purpose, not palette tokens. Right and wrong
+   must not change hue when a student picks a different lesson theme, and both
+   pairs are chosen to hold their contrast on the light and dark grounds. */
+.verdict{
+  font-size:14px;line-height:1.6;margin-top:12px;display:none;
+  padding:10px 13px;border-radius:4px;border:1px solid transparent;
+}
+.verdict.show{display:block}
+.verdict.good{color:#1c7a4a;border-color:#1c7a4a;background:rgba(28,122,74,.10)}
+.verdict.bad{color:#c0392b;border-color:#c0392b;background:rgba(192,57,43,.10)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .verdict.good{color:#5fcf95;border-color:#3f9d6d;background:rgba(95,207,149,.12)}
+  :root:not([data-theme="light"]) .verdict.bad{color:#ff7a6b;border-color:#c9564a;background:rgba(255,122,107,.12)}
+}
+:root[data-theme="dark"] .verdict.good{color:#5fcf95;border-color:#3f9d6d;background:rgba(95,207,149,.12)}
+:root[data-theme="dark"] .verdict.bad{color:#ff7a6b;border-color:#c9564a;background:rgba(255,122,107,.12)}
+
+/* ---------- hunt banner ---------- */
+.hunt-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:var(--surface);border-top:1px solid var(--verdigris);
+  box-shadow:0 -6px 24px rgba(0,0,0,.12);
+  padding:13px 20px;
+  font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:14px;
+  display:none;align-items:center;gap:14px;
+}
+.hunt-bar.show{display:flex}
+.hunt-bar .label{flex:1;line-height:1.45;color:var(--ink)}
+.hunt-bar .label b{color:var(--verdigris);font-weight:600}
+
+/* ---------- score ---------- */
+.score{
+  border:1px solid var(--rule);border-top:3px solid var(--verdigris);
+  border-radius:4px;background:var(--surface);
+  padding:22px;margin-top:26px;text-align:center;
+  font-family:"IBM Plex Sans",system-ui,sans-serif;display:none;
+}
+.score.show{display:block}
+.score .big{
+  font-family:Cinzel,Georgia,serif;font-size:38px;font-weight:600;
+  font-variant-numeric:tabular-nums;line-height:1.1;
+}
+.score .pct{font-size:15px;color:var(--ink-soft);margin-top:4px}
+.score .split{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;
+}
+.score .split span{
+  display:flex;flex-direction:column;gap:2px;align-items:center;
+  border:1px solid var(--rule);border-radius:4px;padding:9px 16px;min-width:120px;
+}
+.score .split b{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--verdigris)}
+.score .split span{font-size:12px;color:var(--ink-soft)}
+.score .split i{font-style:normal;font-size:17px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.score .line{font-size:14px;color:var(--ink-soft);margin-top:14px;line-height:1.6}
+
+/* completion state */
+.status{
+  display:none;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-top:18px;padding:15px 18px;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+}
+.status.show{display:flex}
+.statusline{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
+.statusline .mark{
+  width:24px;height:24px;border-radius:50%;flex:none;
+  display:grid;place-items:center;
+  background:var(--verdigris);color:var(--on-accent);
+  font-size:14px;font-weight:700;line-height:1;
+}
+.status.partial .mark{background:var(--brass)}
+#statusText{font-size:14px;line-height:1.5;color:var(--ink)}
+#statusText b{font-weight:600}
+#statusText small{display:block;color:var(--ink-soft);font-size:12.5px;margin-top:2px}
+
+.done-note{
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:14px;line-height:1.65;color:var(--ink-soft);
+  border:1px dashed var(--rule);border-radius:4px;padding:16px;margin-top:22px;
+}
+.done-note b{color:var(--ink)}
+
+/* ---------- printable answer sheet ---------- */
+#sheet{display:none}
+@media print{
+  /* Only the answer sheet prints. The story, player and quiz UI are screen things. */
+  body>*{display:none!important}
+  #sheet{display:block!important;color:#000;background:#fff;font-family:"IBM Plex Sans",system-ui,sans-serif}
+  @page{margin:16mm}
+  #sheet h1{font-family:Cinzel,Georgia,serif;font-size:20pt;margin:0 0 2mm}
+  #sheet .sub{font-size:10pt;color:#444;margin:0 0 6mm}
+  #sheet .idline{display:flex;gap:10mm;flex-wrap:wrap;font-size:10pt;
+    border-top:1px solid #000;border-bottom:1px solid #000;padding:3mm 0;margin-bottom:6mm}
+  #sheet .idline b{font-weight:700}
+  #sheet .scorebox{float:right;border:2px solid #000;padding:3mm 6mm;text-align:center;margin-left:6mm}
+  #sheet .scorebox .n{font-size:20pt;font-weight:800;line-height:1}
+  #sheet .scorebox .p{font-size:9pt;color:#333}
+  #sheet ol{padding-left:6mm;margin:0}
+  #sheet li{margin-bottom:5mm;font-size:10.5pt;line-height:1.45;page-break-inside:avoid}
+  #sheet .q{font-weight:700;margin-bottom:1.5mm}
+  #sheet .a{padding-left:3mm;border-left:2px solid #666}
+  #sheet .a .mk{font-weight:800;margin-right:2mm}
+  #sheet .foot{margin-top:8mm;padding-top:3mm;border-top:1px solid #999;font-size:9pt;color:#444}
+  #sheet .sign{margin-top:10mm;font-size:10pt}
+  #sheet .sign span{display:inline-block;border-bottom:1px solid #000;width:60mm;margin-left:3mm}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+@media (max-width:420px){
+  body{font-size:19px}
+  .btn{padding:9px 10px}
+}
 
 /* ── FORM FIELDS ───────────────────────────────────────────────────────────
    🚨 A FIELD IS NOT A CONTROL, AND A FIELD IS PAPER. Paul, 2026-08-29: "the
@@ -747,7 +1119,9 @@ body{padding-bottom:var(--player-pad, 150px)}
    inconsistency that makes a site feel unfinished. */
 .pcontrols{order:0;margin-top:0;position:relative;min-height:44px}
 /* pinned to the edges so the transport keeps the centre line to itself */
-.pcontrols .playerhide{position:absolute;right:2px;top:50%;transform:translateY(-50%);margin:0}
+/* ⚠️ THE SWITCH IS NO LONGER INSIDE .pcontrols (2026-09-15). This rule used to
+   pin it there absolutely, which is what dropped it onto the scrub the moment
+   that row collapsed. Kept as a note so it is not "restored" by mistake. */
 .pcontrols .followchip{position:absolute;left:2px;top:50%;transform:translateY(-50%)}
 .scrub{order:1}
 .pmeta{order:2}
@@ -807,18 +1181,34 @@ body{padding-bottom:var(--player-pad, 150px)}
    switch, and hiding the whole row took the switch with it. Nobody had noticed
    because nothing ever added .player-hidden - the mode was written and never
    wired up. So the row stays and everything INSIDE it goes except the switch. */
-body.player-hidden .pcontrols > *:not(.playerhide){display:none}
-body.player-hidden .pcontrols{min-height:0;padding:0;justify-content:flex-end}
+/* 🚨 COLLAPSED IS A THIN SCRUB AND NOTHING ELSE.
+   Paul, 2026-09-15: "you had only the thin scub show before i like that when it
+   is turned off because it will hide the play button and make only a think srub
+   near the bottom show ... the silder is just the tool to show and hide the play
+   button." Audio keeps playing while it is collapsed; the switch hides the
+   controls, it does not stop the reading. */
+body.player-hidden .pcontrols,
+body.player-hidden .pmeta,
 body.player-hidden .psettings,
 body.player-hidden .keyrow,
-body.player-hidden .nospeech{display:none}
-body.player-hidden .pmeta{display:none}
-body.player-hidden .phead{padding:2px 0}
+body.player-hidden .nospeech,
 body.player-hidden .followchip{display:none}
-/* what survives: the step bar. Still live, still tappable, still moving. */
-body.player-hidden .player{padding-top:4px}
-body.player-hidden .phead{padding:0 0 4px}
-body.player-hidden .scrub{margin:0}
+body.player-hidden .player{padding:4px 14px calc(6px + env(safe-area-inset-bottom, 0px))}
+/* the only thing left to aim at, so it gets a slightly bigger target */
+body.player-hidden .scrub{margin:0;height:20px}
+
+/* 🚨 THE SWITCH FLOATS ABOVE THE BAR AND FOLLOWS IT.
+   --player-pad is the bar's own height plus a gap, already recomputed on resize,
+   on the settings disclosure, and by a ResizeObserver on the player. Hanging the
+   switch off it means there is ONE measurement, not two that can drift. */
+.playerhide{
+  position:fixed;right:14px;z-index:41;
+  bottom:calc(var(--player-pad, 60px) - 2px);
+  /* 🚨 NO TRANSITION ON THIS. Paul, 2026-09-15: "i can see it move and i rather
+     it not visually move but snap upward so it looks like it is part of the
+     expansion." A slide here reads as a second, separate thing chasing the bar;
+     snapping with it reads as one object changing size. */
+}
 @media (max-width: 620px){ .player{transition:transform .22s ease} }
 @media (prefers-reduced-motion: reduce){ .player, .playerhide{transition:none} }
 
@@ -1019,12 +1409,92 @@ body.player-hidden .scrub{margin:0}
 .psettings[hidden]{display:none}
   .s{scroll-margin-top:16px;scroll-margin-bottom:150px}
   .pcontrols{gap:8px}
-  .pcontrols{min-height:40px;padding-bottom:12px}     /* lifts it clear of the bar */
+  /* ⚠️ 12px of dead space used to sit under these buttons and push them hard
+     against the top of the bar. Paul, 2026-09-15: "you have a big amount of it
+     tied too close to the top if the footer with dead space under it. you cound
+     bring it down and get rid of that extra dead space". */
+  .pcontrols{min-height:0;padding:2px 0 2px}
   .btn.primary{width:50px;min-width:50px;min-height:40px}
-  #back, #fwd{min-height:40px;min-width:42px;padding:0 8px}
+  /* 🚨 ID SELECTORS, SO THEY BEAT ANY CLASS RULE. This is why the back and
+     forward buttons stayed 40px while the play button shrank to 32 and Paul saw
+     "the back and forther boxes are larger than the play now". Change the size
+     HERE; adding .pcontrols .btn rules below will not win against an id. */
+  #back, #fwd{min-height:32px;height:32px;min-width:38px;padding:0 8px}
   .scrub{margin-top:2px}
 
   /* the switch comes down with them, so the row stays balanced */
+  /* 🚨 COMPACT ON A PHONE. Paul, 2026-09-15: "on the mobile can you make the
+     reader more compact when its turned on. it still takes up alot of space
+     like about a good 1/4th." It was 152px of a 696px screen, 22 per cent.
+
+     Where it went: 52px of buttons, 26px of scrub, 24px for the sentence
+     counter, 30px for the Settings row, 18px of padding.
+
+     ⚠️ THE BUTTONS ARE NOT THE PLACE TO SAVE. A play button a child taps while
+     reading keeps a real touch target; shaving that is how a control becomes
+     annoying to hit. The saving comes from two nearly empty rows becoming one. */
+  /* 🚨 ORDER 2, OR IT LANDS BETWEEN THE BUTTONS AND THE SCRUB. .scrub carries
+     order:1 and everything else defaults to 0, so this row rendered above the
+     scrub and read as dead space under the play button. Paul: "you still have
+     dead space for the play button ... under it." It was this row. */
+  /* 🚨 THREE COLUMNS, SO SETTINGS IS DEAD CENTRE WHATEVER THE COUNTER SAYS.
+     Paul: "put the settings dropdown in the middle on mobile it moves when its
+     closed and i know its because you have the sentence couter text." He was
+     right: side by side in a flex row, "Sentence 9 of 86" and "Sentence 61 of
+     86" are different widths, so Settings slid every few sentences. The empty
+     third column balances the first and pins the middle one. */
+  .pfoot{display:grid;order:2;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+  .pfoot .pmeta{grid-column:1;justify-self:start}
+  .pfoot .psettings{grid-column:2;justify-self:center}
+  .pfoot .psettings[open]{grid-column:1 / -1;justify-self:stretch}
+  .pfoot .pmeta{margin:0;flex:0 1 auto;min-width:0}
+  .pfoot{flex-wrap:wrap}
+  .pfoot .psettings{flex:0 0 auto}
+  /* 🚨 OPEN, IT BREAKS OUT TO ITS OWN FULL-WIDTH ROW. Paul, 2026-09-15: the
+     settings boxes were "not centered they are too far to the right ... i think
+     because you moved the settings arrow". He was right: sharing a flex row with
+     the counter meant the OPEN panel was trapped in that narrow flex item and
+     its dropdowns sat under the summary instead of spanning the bar. Closed it
+     shares the row; open it takes a line of its own. */
+  .pfoot .psettings[open]{margin-top:4px}
+  /* the hint is instruction, and it is learned after the first lesson */
+  .phint{display:none}
+  .player{padding:6px 14px calc(8px + env(safe-area-inset-bottom, 0px))}
+  .scrub{margin-top:6px}
+  /* 12px of bottom padding under the buttons is slack on a phone. The buttons
+     themselves stay 40px - that is the touch target and it is not negotiable. */
+  /* Paul asked for these smaller on a phone. 40px was my caution, not a rule;
+     these stay comfortably tappable and buy back another row of reading. */
+  /* 🚨 ALL THREE BUTTONS ARE THE SAME HEIGHT. Paul, 2026-09-15: "the back and
+     forther boxes are larger than the play now." They were. .btn carries its own
+     min-height:40px and .btn.primary carries a different one, so shrinking the
+     padding moved the play button and left the other two exactly where they were.
+     ⚠️ Set the height on ALL THREE or they drift apart again. */
+  .pcontrols{padding-bottom:4px;justify-content:center;min-height:0}
+  .pcontrols .btn{padding:0 9px;min-height:32px;height:32px}
+  .pcontrols .btn svg{width:13px;height:13px}
+  .pcontrols .btn.primary{width:46px;min-width:46px;min-height:32px;height:32px}
+  .pcontrols .btn.primary svg{width:15px;height:15px}
+  .psettings > summary{padding:4px 0}
+
+  /* 🚨 ON A PHONE THE DIALOG IS A BOTTOM SHEET. Paul: "i want a mobile popup ui
+     on the actual mobile." A centred box is a desktop pattern; a phone expects
+     the panel to rise from the bottom edge, full width, with the corners rounded
+     at the top only and a grab bar. Same dialog, same controls, different shape. */
+  dialog.pdlg{
+    top:auto;bottom:0;left:0;transform:none;margin:0;
+    width:100vw;max-width:100vw;border-radius:14px 14px 0 0;
+    border-left:0;border-right:0;border-bottom:0;
+    max-height:min(78vh, 520px);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  /* the grab bar a phone user expects to see on a sheet */
+  .pdlg-head::before{
+    content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);
+    width:38px;height:4px;border-radius:999px;background:var(--rule, var(--line));
+  }
+  .pdlg-head{position:relative;padding-top:18px}
+
   .playerhide .track{width:34px;height:20px}
   .playerhide .knob{top:2px;left:2px;width:14px;height:14px}
   .playerhide input:checked + .track .knob{transform:translateX(14px)}
@@ -1039,4 +1509,3 @@ body.player-hidden .scrub{margin:0}
   .tick{border-radius:2px}
 
 }
-
