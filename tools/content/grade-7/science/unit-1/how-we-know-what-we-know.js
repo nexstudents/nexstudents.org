@@ -175,7 +175,7 @@ module.exports = {
      second, matching lesson-template.html's panel order. Lesson 2 shipped with them the wrong way round and Paul
      caught it on the page, not in the data. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done.",
+      "Science is a way of being careful, and you have just walked through the steps that make it careful rather than clever.",
       "Two things are left, and they both happen today.",
       "First, the questions.",
       "Four of them, and the answer to each one is in the reading above, not in your memory.",

@@ -424,7 +424,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and this lesson has more arithmetic in it than the ones before it.",
+      "Two people can work the same expression honestly and get different answers, which is exactly why the rule you just read exists.",
       "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words. {T} questions in all.",
       "Some of them ask you to name a level in the hierarchy and some ask you to work a problem out.",
       "Before you work any of them out, ask the question the lesson keeps asking: what has to happen first?",

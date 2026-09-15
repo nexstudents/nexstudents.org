@@ -72,7 +72,7 @@ module.exports = {
     ]}
   ],
   todo: { title: "What To Do Now", s: [
-      "That is the reading done. There are two things left, and both of them send you back into the story.",
+      "You have just watched Rome build a government out of distrust, splitting every job so that nobody could keep it.",
       "First the word cards, at the top of the page. {C} words from the lesson, and the meaning of each one is sitting in the sentences you just heard.",
       "Then {q} questions. The answer to every one of them is somewhere in the text above, not in your memory.",
       "If a question is hard, do not guess. Use the bar or the arrows to go back to the part it came from and read that part again.",

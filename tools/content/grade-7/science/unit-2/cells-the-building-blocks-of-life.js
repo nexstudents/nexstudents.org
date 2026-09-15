@@ -439,7 +439,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and this one is a story rather than a list.",
+      "For most of human history nobody knew cells were there; you have just read about the glass that finally showed them.",
       "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words. {T} questions in all.",
       "None of the questions ask you for a date, so do not go back trying to memorise the years.",
       "They ask what somebody saw and what it showed, which is a different thing.",

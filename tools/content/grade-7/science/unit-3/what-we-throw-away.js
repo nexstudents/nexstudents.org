@@ -149,7 +149,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and this lesson finishes differently from the last two.",
+      "Nothing really goes away; it goes somewhere, and you have just followed it there.",
       "First, the questions.",
       "{q} of them, and the answer to each one is in the reading above, not in your memory.",
       "If a question is hard, use the bar or the arrows to go back and read that part again.",

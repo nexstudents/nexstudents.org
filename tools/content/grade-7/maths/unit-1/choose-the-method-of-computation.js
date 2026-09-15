@@ -449,7 +449,7 @@ module.exports = {
      characters and it counts the "" paragraph breaks too, so the break that is
      legal in `parts` kills the build here. Cost one failed build 2026-09-14. */
   todo: { title: "Now Solve the Situation", s: [
-      "That is the reading done, and the questions are waiting.",
+      "Three ways to work a problem, and the skill you just read about is picking one before you start.",
       "For every one of them, pay attention to more than the numbers.",
       "Think about what the person actually needs to know.",
       "Ask yourself what the lesson asked: does the answer have to be exact, and could rounding make the problem easier?",

@@ -290,7 +290,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and the work now is the sorting, not the arithmetic.",
+      "A word problem hands you a pile of facts, and you have just been shown how to sort them before you touch the arithmetic.",
       "{c} word cards sit at the top of the page, then {Q} questions about the lesson, then {v} more questions about those words. {T} questions in all.",
       "Not one of them asks you to calculate anything.",
       "They ask what you would do first, which list a fact belongs on, and what you do once both lists are written.",

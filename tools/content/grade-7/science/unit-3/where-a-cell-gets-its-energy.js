@@ -165,7 +165,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "That is the reading done.",
+      "Everything alive is spending energy that a plant caught first, and you have just read how that catching and spending works.",
       "Two things are left, and they both happen today.",
       "First, the questions.",
       "Four of them, and the answer to each one is in the reading above, not in your memory.",

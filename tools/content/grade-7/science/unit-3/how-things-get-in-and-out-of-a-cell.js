@@ -180,7 +180,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "That is the reading done.",
+      "A cell has to let the right things in and keep the wrong things out, and the reading you just finished is how it manages that.",
       "Two things are left, and they both happen today.",
       "First, the questions.",
       "Four of them, and the answer to each one is in the reading above, not in your memory.",

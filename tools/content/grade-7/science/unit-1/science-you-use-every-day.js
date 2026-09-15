@@ -172,7 +172,7 @@ module.exports = {
      second, matching lesson-template.html's panel order. This block used to say word cards first, like Lessons 1 and 2
      did before Paul caught it on the page on 2026-09-03. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done.",
+      "You have been doing science without calling it that, and the reading you just finished puts names to the parts of it.",
       "Two things are left, and they both happen today.",
       "First, the questions.",
       "Four of them, and the answer to each one is in the reading above, not in your memory.",

@@ -178,7 +178,7 @@ module.exports = {
      ⚠️ It is the LAST thing the student hears, so it is the instruction that actually
      gets followed. Check it against the template whenever the day split changes. */
   todo: { title: "What To Do Now", s: [
-      "That is the reading done.",
+      "Three experiments, a hundred and fifty years apart, all asking the same stubborn question about where living things come from.",
       "Two things are left, and they both happen today.",
       "First, the questions.",
       "Four of them, and the answer to each one is in the reading above, not in your memory.",

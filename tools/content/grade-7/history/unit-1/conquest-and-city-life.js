@@ -496,7 +496,7 @@ module.exports = {
   ],
 
   todo: { title: "What To Do Now", s: [
-      "That is the reading done, and this lesson has three real trials in it.",
+      "Rome won the battle in the first line of that reading; everything after it was the harder problem of the next morning.",
       "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words. {T} questions in all.",
       "While you answer them, keep asking the question the lesson keeps asking: who has authority here?",
       "Ask it about a governor, about a town's own leaders, about Pilate, and about the commander holding Paul.",
