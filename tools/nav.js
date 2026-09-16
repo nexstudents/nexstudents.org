@@ -1904,14 +1904,26 @@ function adEdit(H,row,kindIn){
   if(kd) kd.onclick=function(){
     var want=kd.getAttribute("data-kind");
     adGuardPin(function(){
-      kd.disabled=true;
+      /* 🚨 LEAVE THE PIN SCREEN FIRST. Paul, 2026-09-16: "after I put in the PIN
+         to switch his account to a student account the pin menu stays open
+         after I enter it. it needs to just go to the settings menu."
+         The follow-on used to run while the PIN view was still on screen, and
+         the button it disabled and the .ad-msg it wrote to belonged to the
+         edit screen that had already been replaced - so a failure printed into
+         the PIN box and left it sitting there, and a success only cleared it
+         once the network came back.
+         The PIN has done its job the moment it is accepted. Go back, then do
+         the work, and report from there. */
+      adProfiles(H);
       NSAccount.setProfileKind(row.id,want).then(function(){
         adKids=null;                       /* the list is stale the moment this lands */
         adLoad(); adProfiles(H);
       }).catch(function(e){
-        kd.disabled=false;
-        var m=H.body.querySelector(".ad-msg");
-        if(m) m.textContent=e.message; else alert(e.message);
+        adProfiles(H);
+        var p=document.createElement("p");
+        p.className="ad-msg ad-mid";
+        p.textContent=e.message||"Could not change that profile.";
+        H.body.insertBefore(p,H.body.firstChild);
       });
     });
   };

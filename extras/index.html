@@ -940,14 +940,16 @@ function adEdit(H,row,kindIn){
   if(kd) kd.onclick=function(){
     var want=kd.getAttribute("data-kind");
     adGuardPin(function(){
-      kd.disabled=true;
+      adProfiles(H);
       NSAccount.setProfileKind(row.id,want).then(function(){
         adKids=null;                       
         adLoad(); adProfiles(H);
       }).catch(function(e){
-        kd.disabled=false;
-        var m=H.body.querySelector(".ad-msg");
-        if(m) m.textContent=e.message; else alert(e.message);
+        adProfiles(H);
+        var p=document.createElement("p");
+        p.className="ad-msg ad-mid";
+        p.textContent=e.message||"Could not change that profile.";
+        H.body.insertBefore(p,H.body.firstChild);
       });
     });
   };
