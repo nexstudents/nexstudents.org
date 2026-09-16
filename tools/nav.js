@@ -2733,7 +2733,59 @@ function nsWhoPicker(){
      Paul: "i dont see the who is learning show up when i login."
      ⚠️ Keep pickerShown() next to the line that appends the dialog. Moving it
      back up here to "clear state early" re-creates a bug with no symptom. */
+  /* 🚨 MOUNT THE COVER FIRST, FETCH SECOND. Paul, 2026-09-16, on his phone:
+     "for a breif moment i see the home page screen before the who is learning
+     page shows up." Everything below used to wait on three network calls, so
+     the reader watched the site paint and then get covered - on mobile data,
+     long enough to start reading the page they are about to lose.
+     The shell is the same markup with an empty row; the tiles drop in when the
+     profiles arrive. Nothing here needs the network.
+     ⚠️ FAIL OPEN. If the fetch dies or hangs the cover is REMOVED, because a
+     full-screen sheet with no way past it is far worse than the flash. And the
+     flag is still only spent once real tiles are on screen, so a failure
+     retries on the next page rather than being silently used up. */
+  var o=document.createElement("div");
+  o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
+  o.setAttribute("aria-labelledby","whopH");
+  o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
+    "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2>"+
+    "<div class='whop-row'></div>"+
+    "<button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
+  document.body.appendChild(o);
+  nsStartupSound(o);
+  nsLockScroll(true);
+  requestAnimationFrame(function(){ o.classList.add("is-in"); });
+  function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
+  var landed=false;
+  var giveUp=setTimeout(function(){ if(!landed) close(); },8000);
+  o.addEventListener("click",function(e){
+    var b=e.target.closest("[data-who]");
+    if(b){
+      var id=b.getAttribute("data-who");
+      adSetWho(id); close();
+      /* A student has no use for the account panel a sign-in opens. */
+      if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
+      return;
+    }
+    if(e.target.closest("[data-manage]")){
+      adSetWho("parent"); close();
+      /* 🚨 GO HOME, do not open over whatever page the picker landed on.
+         The picker shows after a sign-in on ANY page, so opening the panel in
+         place put Manage Profiles on top of a Roman history lesson. Already
+         on the home page, open in place - navigating there is a reload for
+         no reason. */
+      if(location.pathname==="/"){ if(adD){ adProfiles(adD); adLoad(); adOpen(true); } }
+      else location.href="/?panel=profiles";
+    }
+  });
+  addEventListener("keydown",function esc(e){
+    if(e.key!=="Escape"||!o.isConnected) return;
+    removeEventListener("keydown",esc); close();
+  });
+
   Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
+    landed=true; clearTimeout(giveUp);
+    if(!o.isConnected) return;   /* already dismissed or timed out */
     var rows=r[1]||[];
     /* 🚨 AN EMPTY PROFILE LIST IS NOT A REASON TO SKIP THIS SCREEN. There used
        to be an early return on a zero-length list here, so a brand new account
@@ -2754,56 +2806,19 @@ function nsWhoPicker(){
     function tile(id,name,theme){
       return "<button type='button' class='whop-i' data-who='"+adEsc(id)+"'>"+adAv(name,theme)+"<b>"+adEsc(name)+"</b></button>";
     }
-    var o=document.createElement("div");
-    o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
-    o.setAttribute("aria-labelledby","whopH");
-    /* 🎬 THE WORDMARK, TOP LEFT, IN THE BRAND RED - the Netflix shape Paul sent.
-       #ff3131 is not a guess: it is the dominant red of assets/brand/logo.png,
-       sampled off the pixels (59,847 of them) so the word and the mark cannot
-       drift apart. The split Nex + bold Students is the site's own wordmark from
-       the nav; only the colour and the placement come from the reference.
-       ⚠️ aria-hidden: it is decoration here. The dialog is already labelled by
-       its heading, and a screen reader announcing the site name before the
-       question just delays the question. */
-    o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
-      "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
+    /* 🎬 THE WORDMARK IS ALREADY ON SCREEN, top left, in the brand red - the
+       Netflix shape Paul sent. #ff3131 is not a guess: it is the dominant red
+       of assets/brand/logo.png, sampled off the pixels (59,847 of them) so the
+       word and the mark cannot drift apart. Only the tiles wait for the
+       network; the shell above does not. */
+    o.querySelector(".whop-row").innerHTML=
       tile("parent",me,adOwnerTheme())+
       adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
-      adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("")+
-      "</div><button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
-    document.body.appendChild(o);
-    /* It is on screen NOW, so now it counts as asked. See the note above. */
+      adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("");
+    /* Real tiles are on screen NOW, so now it counts as asked. See the note above. */
     NSAccount.pickerShown();
-    nsStartupSound(o);
-    nsLockScroll(true);
-    requestAnimationFrame(function(){ o.classList.add("is-in"); });
-    function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
-    o.addEventListener("click",function(e){
-      var b=e.target.closest("[data-who]");
-      if(b){
-        var id=b.getAttribute("data-who");
-        adSetWho(id); close();
-        /* A student has no use for the account panel a sign-in opens. */
-        if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
-        return;
-      }
-      if(e.target.closest("[data-manage]")){
-        adSetWho("parent"); close();
-        /* 🚨 GO HOME, do not open over whatever page the picker landed on.
-           The picker shows after a sign-in on ANY page, so opening the panel in
-           place put Manage Profiles on top of a Roman history lesson. Already
-           on the home page, open in place - navigating there is a reload for
-           no reason. */
-        if(location.pathname==="/"){ if(adD){ adProfiles(adD); adLoad(); adOpen(true); } }
-        else location.href="/?panel=profiles";
-      }
-    });
-    addEventListener("keydown",function esc(e){
-      if(e.key!=="Escape"||!o.isConnected) return;
-      removeEventListener("keydown",esc); close();
-    });
     var first=o.querySelector(".whop-i"); if(first) first.focus();
-  }).catch(function(){});
+  }).catch(function(){ clearTimeout(giveUp); close(); });
 }
 function adWire(H){
   adHosts.push(H);

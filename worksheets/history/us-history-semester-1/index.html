@@ -1595,48 +1595,55 @@ function nsStartupSound(scope){
 }
 function nsWhoPicker(){
   if(!window.NSAccount||!NSAccount.wantsPicker()) return;
+  
+  var o=document.createElement("div");
+  o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
+  o.setAttribute("aria-labelledby","whopH");
+  o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
+    "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2>"+
+    "<div class='whop-row'></div>"+
+    "<button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
+  document.body.appendChild(o);
+  nsStartupSound(o);
+  nsLockScroll(true);
+  requestAnimationFrame(function(){ o.classList.add("is-in"); });
+  function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
+  var landed=false;
+  var giveUp=setTimeout(function(){ if(!landed) close(); },8000);
+  o.addEventListener("click",function(e){
+    var b=e.target.closest("[data-who]");
+    if(b){
+      var id=b.getAttribute("data-who");
+      adSetWho(id); close();
+      if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
+      return;
+    }
+    if(e.target.closest("[data-manage]")){
+      adSetWho("parent"); close();
+      if(location.pathname==="/"){ if(adD){ adProfiles(adD); adLoad(); adOpen(true); } }
+      else location.href="/?panel=profiles";
+    }
+  });
+  addEventListener("keydown",function esc(e){
+    if(e.key!=="Escape"||!o.isConnected) return;
+    removeEventListener("keydown",esc); close();
+  });
   Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
+    landed=true; clearTimeout(giveUp);
+    if(!o.isConnected) return;   
     var rows=r[1]||[];
     adUser=adUser||r[0]; adKids=rows; adPins=r[2]||{};
     var me=adMe();
     function tile(id,name,theme){
       return "<button type='button' class='whop-i' data-who='"+adEsc(id)+"'>"+adAv(name,theme)+"<b>"+adEsc(name)+"</b></button>";
     }
-    var o=document.createElement("div");
-    o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
-    o.setAttribute("aria-labelledby","whopH");
-    o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
-      "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2><div class='whop-row'>"+
+    o.querySelector(".whop-row").innerHTML=
       tile("parent",me,adOwnerTheme())+
       adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
-      adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("")+
-      "</div><button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
-    document.body.appendChild(o);
+      adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("");
     NSAccount.pickerShown();
-    nsStartupSound(o);
-    nsLockScroll(true);
-    requestAnimationFrame(function(){ o.classList.add("is-in"); });
-    function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
-    o.addEventListener("click",function(e){
-      var b=e.target.closest("[data-who]");
-      if(b){
-        var id=b.getAttribute("data-who");
-        adSetWho(id); close();
-        if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
-        return;
-      }
-      if(e.target.closest("[data-manage]")){
-        adSetWho("parent"); close();
-        if(location.pathname==="/"){ if(adD){ adProfiles(adD); adLoad(); adOpen(true); } }
-        else location.href="/?panel=profiles";
-      }
-    });
-    addEventListener("keydown",function esc(e){
-      if(e.key!=="Escape"||!o.isConnected) return;
-      removeEventListener("keydown",esc); close();
-    });
     var first=o.querySelector(".whop-i"); if(first) first.focus();
-  }).catch(function(){});
+  }).catch(function(){ clearTimeout(giveUp); close(); });
 }
 function adWire(H){
   adHosts.push(H);
