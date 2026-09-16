@@ -2385,23 +2385,35 @@ html.whop-pre .whop{opacity:1;transition:none}
    the dark ground is there from the first frame, and the wordmark, question,
    tiles and Sign Out ease up into it.
    ⚠️ Never put a transition back on .whop itself. That is the flicker. */
-/* ⚠️ ANIMATIONS, NOT transitions keyed off .is-in. A transition needs the
-   script to add a class; if that ever fails the contents stay at opacity 0 and
-   the screen is blank and dark. An animation with fill:both starts itself, so
-   the worst case is no motion rather than no screen. */
-.whop-brand{animation:whopIn .22s ease both}
-.whop-in{animation:whopIn .22s ease .04s both}
-.whop-out{animation:whopIn .22s ease .10s both}
-/* The tiles arrive after the profile fetch, so they get their own small lift
-   rather than sitting inside a transition that already finished. */
-.whop-row .whop-i{animation:whopIn .24s ease both}
-.whop-row .whop-i:nth-child(2){animation-delay:.05s}
-.whop-row .whop-i:nth-child(3){animation-delay:.10s}
-.whop-row .whop-i:nth-child(n+4){animation-delay:.14s}
-@keyframes whopIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* 🚨 IT DROPS IN, AND IT REUSES ns-row-in. Paul, 2026-09-16: "if the elements
+   can drop in similar to the side window text does and the grades do ... I
+   mentioned drop down because I think that would be the best effect."
+   That motion already exists on this site - the drawer rows and the grade
+   tiles use ns-row-in, which he asked for on 2026-09-02. Reusing it means the
+   sign-in screen moves like the rest of the site instead of inventing a second
+   feel. The black ground never animates, so this reads as a fade up out of it.
+   ⚠️ ANIMATIONS, NOT transitions keyed off .is-in. A transition needs the
+   script to add a class; if that ever failed the contents would sit at
+   opacity 0 and the screen would be blank and dark. fill:both starts itself,
+   so the worst case is no motion rather than no screen.
+   🚨 DO NOT ALSO ANIMATE .whop-in. It is the PARENT of the heading, the tiles
+   and Manage Profiles - nesting two ns-row-in transforms compounds them, the
+   children start 18px up instead of 9 and drift as the parent settles. Same
+   trap as .dst-grid, written up above. Animate the pieces, never the box. */
+.whop-brand{animation:ns-row-in .3s both cubic-bezier(.22,.61,.36,1)}
+.whop-in > h2{animation:ns-row-in .3s .06s both cubic-bezier(.22,.61,.36,1)}
+.whop-manage{animation:ns-row-in .3s .30s both cubic-bezier(.22,.61,.36,1)}
+.whop-out{animation:ns-row-in .3s .36s both cubic-bezier(.22,.61,.36,1)}
+/* The tiles arrive after the profile fetch, so they animate themselves rather
+   than sitting inside a parent whose animation already finished. Same cascade
+   the grade tiles have. */
+.whop-row .whop-i{animation:ns-row-in .3s both cubic-bezier(.22,.61,.36,1)}
+.whop-row .whop-i:nth-child(1){animation-delay:.14s}
+.whop-row .whop-i:nth-child(2){animation-delay:.19s}
+.whop-row .whop-i:nth-child(3){animation-delay:.24s}
+.whop-row .whop-i:nth-child(n+4){animation-delay:.28s}
 @media (prefers-reduced-motion:reduce){
-  .whop-brand,.whop-in,.whop-out{opacity:1;transform:none;transition:none}
-  .whop-row .whop-i{animation:none}
+  .whop-brand,.whop-in > h2,.whop-manage,.whop-out,.whop-row .whop-i{animation:none}
 }
 .whop-in{text-align:center;max-width:760px}
 /* 🎬 The wordmark, top left, brand red - the Netflix placement Paul sent.
