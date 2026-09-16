@@ -810,16 +810,13 @@ function adEdit(H,row,kindIn){
     :"")+
     (!isKid&&row?adPinRows(row.id):"")+
     "<p class='ad-msg'></p>"+
+    
     (row?"<p class='ad-cap'>This profile</p>"+
-      "<div class='ad-kv'><span>Currently</span><span>"+
-        (row.is_holder?"Account holder &middot; ":"")+(isKid?"Student":"Parent")+"</span></div>"+
-      (row.is_holder
-        ? "<button class='ad-row' type='button' data-holder><b>Switch Account Holder</b>"+
-          "<span>Hand the account side to another parent</span></button>"
-        : "<button class='ad-row' type='button' data-kind='"+(isKid?"parent":"student")+"'><b>"+
-          (isKid?"Change to Parent Profile":"Change to Student Profile")+"</b><span>"+
-          (isKid?"Grown-up access to the account"
-                :"Their lessons and progress start being saved")+"</span></button>")
+      "<div class='ad-kv'><span>Currently</span><span>"+(isKid?"Student":"Parent")+"</span></div>"+
+      "<button class='ad-row' type='button' data-kind='"+(isKid?"parent":"student")+"'><b>"+
+      (isKid?"Change to Parent Profile":"Change to Student Profile")+"</b><span>"+
+      (isKid?"Grown-up access to the account"
+            :"Their lessons and progress start being saved")+"</span></button>"
       :"")+
     (row?"<button class='ad-signout ad-del' type='button' data-del>"+(isKid?"Remove Student":"Remove Parent")+"</button>":"");
   var q=function(s){ return H.body.querySelector(s); };
@@ -906,8 +903,6 @@ function adEdit(H,row,kindIn){
     if(!adHasPin(null)) return adPinView(H,"first",{key:null,name:adMe(),next:then});
     adPinView(H,"unlock",{key:null,name:adMe(),next:then});
   }
-  var sw=q("[data-holder]");
-  if(sw) sw.onclick=function(){ adGuardPin(function(){ adHolderPick(H,row); }); };
   var kd=q("[data-kind]");
   if(kd) kd.onclick=function(){
     var want=kd.getAttribute("data-kind");

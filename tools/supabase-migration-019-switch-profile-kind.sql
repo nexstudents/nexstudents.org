@@ -109,11 +109,12 @@ begin
   if acct <> auth.uid() then raise exception 'not your profile'; end if;
   if cur = p_kind then return; end if;
 
-  -- 🚨 THE HOLDER CANNOT BE DEMOTED IN PLACE. Hand the role over first. This is
-  --    also the order Paul described: switch the holder, THEN change the kind.
-  if holder and p_kind = 'student' then
-    raise exception 'switch the account holder before making this profile a student';
-  end if;
+  -- 🚨 NO is_holder CHECK. A ROW IS NEVER THE ACCOUNT HOLDER - the holder is the
+  --    auth user, and this table holds only the second parent and the children.
+  --    I added is_holder on the wrong assumption and its backfill flagged a
+  --    parent ROW, so this check then refused to demote a perfectly ordinary
+  --    parent: the exact demotion Paul needed after taking the account over.
+  --    ⚠️ is_holder is inert and should be dropped; nothing reads it now.
 
   -- The same caps profile_rules enforces on insert, re-checked for the move.
   select count(*) into n

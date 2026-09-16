@@ -1780,16 +1780,22 @@ function adEdit(H,row,kindIn){
        ⚠️ Order is forced by the server: the holder cannot be demoted in place,
        so Switch Account Holder comes first and Change Kind is disabled until
        this profile is not the holder. */
+    /* 🚨 A ROW IS NEVER THE ACCOUNT HOLDER. NEVER READ is_holder HERE.
+       The holder is the AUTH USER - adMe() reads user_metadata - and this table
+       holds only the second parent and the children. I added an is_holder
+       column on the wrong assumption and its backfill flagged a parent ROW, so
+       after Paul took the account over his son's profile still announced
+       "Account holder" and offered Switch instead of Change to Student. Paul:
+       "when I try to demote his account it still says ... he is still a parent
+       and account holder. this is a bug."
+       Switching lives on adOwner(), the holder's own screen. Here, every row
+       gets the one thing that applies to it: change what it is. */
     (row?"<p class='ad-cap'>This profile</p>"+
-      "<div class='ad-kv'><span>Currently</span><span>"+
-        (row.is_holder?"Account holder &middot; ":"")+(isKid?"Student":"Parent")+"</span></div>"+
-      (row.is_holder
-        ? "<button class='ad-row' type='button' data-holder><b>Switch Account Holder</b>"+
-          "<span>Hand the account side to another parent</span></button>"
-        : "<button class='ad-row' type='button' data-kind='"+(isKid?"parent":"student")+"'><b>"+
-          (isKid?"Change to Parent Profile":"Change to Student Profile")+"</b><span>"+
-          (isKid?"Grown-up access to the account"
-                :"Their lessons and progress start being saved")+"</span></button>")
+      "<div class='ad-kv'><span>Currently</span><span>"+(isKid?"Student":"Parent")+"</span></div>"+
+      "<button class='ad-row' type='button' data-kind='"+(isKid?"parent":"student")+"'><b>"+
+      (isKid?"Change to Parent Profile":"Change to Student Profile")+"</b><span>"+
+      (isKid?"Grown-up access to the account"
+            :"Their lessons and progress start being saved")+"</span></button>"
       :"")+
     (row?"<button class='ad-signout ad-del' type='button' data-del>"+(isKid?"Remove Student":"Remove Parent")+"</button>":"");
   var q=function(s){ return H.body.querySelector(s); };
@@ -1894,8 +1900,6 @@ function adEdit(H,row,kindIn){
     if(!adHasPin(null)) return adPinView(H,"first",{key:null,name:adMe(),next:then});
     adPinView(H,"unlock",{key:null,name:adMe(),next:then});
   }
-  var sw=q("[data-holder]");
-  if(sw) sw.onclick=function(){ adGuardPin(function(){ adHolderPick(H,row); }); };
   var kd=q("[data-kind]");
   if(kd) kd.onclick=function(){
     var want=kd.getAttribute("data-kind");
