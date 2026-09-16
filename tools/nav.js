@@ -2688,7 +2688,15 @@ function adLoad(){
    static page that does not know who is signed in. */
 function nsWhoPicker(){
   if(!window.NSAccount||!NSAccount.wantsPicker()) return;
-  NSAccount.pickerShown();
+  /* 🚨 SPEND THE SHOW-ONCE FLAG ONLY WHEN THE PICKER IS ACTUALLY ON SCREEN.
+     It used to be dropped HERE, before three network calls, so every way of
+     not reaching the screen still burned the one chance to ask: the profile
+     fetch failing, the account having no profiles yet, or the page navigating
+     while the promise was in flight. The reader then never saw the question and
+     nothing retried, because as far as storage was concerned it had been asked.
+     Paul: "i dont see the who is learning show up when i login."
+     ⚠️ Keep pickerShown() next to the line that appends the dialog. Moving it
+     back up here to "clear state early" re-creates a bug with no symptom. */
   Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
     var rows=r[1]||[];
     if(!rows.length) return;
@@ -2715,6 +2723,8 @@ function nsWhoPicker(){
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("")+
       "</div><button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
     document.body.appendChild(o);
+    /* It is on screen NOW, so now it counts as asked. See the note above. */
+    NSAccount.pickerShown();
     nsLockScroll(true);
     requestAnimationFrame(function(){ o.classList.add("is-in"); });
     function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }

@@ -1204,6 +1204,8 @@ if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measureRail);
 
 
 
+
+
 <!-- ns:nav-script -->
 <script src="/assets/supabase-config.js?v=525295e0"></script>
 <script src="/assets/ns-account.js?v=14c6eafc"></script>
@@ -2593,7 +2595,6 @@ function adLoad(){
 }
 function nsWhoPicker(){
   if(!window.NSAccount||!NSAccount.wantsPicker()) return;
-  NSAccount.pickerShown();
   Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
     var rows=r[1]||[];
     if(!rows.length) return;
@@ -2612,6 +2613,7 @@ function nsWhoPicker(){
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("")+
       "</div><button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
     document.body.appendChild(o);
+    NSAccount.pickerShown();
     nsLockScroll(true);
     requestAnimationFrame(function(){ o.classList.add("is-in"); });
     function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }

@@ -2987,6 +2987,13 @@ const SOON_PAGES = [
     msg.textContent = { in: "Signing in", up: "Creating your account", forgot: "Sending the reset link",
                         reset: "Saving your new password" }[mode] + "...";
 
+    /* ⚠️ DO NOT CALL nsWhoPicker() HERE. It looks like the right place and is
+       the opposite: paint() ends in location.replace("/?panel=account"), so
+       this page is already leaving. nsWhoPicker() spends the show-once flag the
+       moment it is called and only THEN loads the profiles, so calling it here
+       consumes the flag on a page that is about to be destroyed and the picker
+       never appears anywhere. Tried 2026-09-15, reverted the same hour.
+       The destination page runs it at load, which is the correct place. */
     var job = mode === "in"     ? NSAccount.logIn(em, pw).then(function(){ msg.textContent = ""; paint(); })
             : mode === "up"     ? NSAccount.signUp(em, pw, $("siFirst").value, $("siLast").value).then(function(res){
                                     if (res === "in") { msg.textContent = ""; paint(); return; }
