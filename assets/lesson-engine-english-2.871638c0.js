@@ -496,7 +496,22 @@ var TEXT_HASH = nsTextHash(SENT.map(function(s){ return s.text; }));
 var MEDIA_BASE = "";
 
 (function loadBakedVoice(){
-  fetch("voice.json", { cache: "force-cache" })
+  /* 🚨 NEVER force-cache THE MANIFEST. Paul, 2026-09-15: "is Conquest, Provinces,
+     and City Life have NexVoice? it doesnt show up on my phone while some other
+     history lessons do ... it shows up on PC but not phone."
+
+     force-cache returns the cached entry REGARDLESS OF STALENESS and only goes
+     to the network when there is nothing stored. So a phone that opened a
+     lesson BEFORE it was baked cached the 404, and force-cache kept handing
+     that 404 back forever - no NexVoice on that lesson, on that device, with no
+     way out. Lessons first opened after baking were fine, which is why it looked
+     random and why the PC never showed it.
+
+     The clips are the big files and they are immutable at their own URLs; this
+     manifest is a few KB and changes on every re-bake, so it is the one thing
+     here that must revalidate. no-cache still sends the If-None-Match and takes
+     a 304, so the cost is one small conditional request. */
+  fetch("voice.json", { cache: "no-cache" })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       var tr = (j && j.tracks) || [];
