@@ -1708,6 +1708,27 @@ function adEdit(H,row,kindIn){
     :"")+
     (!isKid&&row?adPinRows(row.id):"")+
     "<p class='ad-msg'></p>"+
+    /* 👑 WHAT THIS PROFILE IS, AND HOW TO CHANGE IT (migration 019). Paul,
+       2026-09-16: "I open his profile it says it currently account holder and
+       says parent. I want an option to switch account holder. then after I do
+       that it gives me an option to change to student profile or parent
+       profile. you have to verify with a pin to make the changes."
+       🚨 This is the screen that decides whether a child's work is recorded at
+       all - a parent profile pushes NO progress. It is not a label.
+       ⚠️ Order is forced by the server: the holder cannot be demoted in place,
+       so Switch Account Holder comes first and Change Kind is disabled until
+       this profile is not the holder. */
+    (row?"<p class='ad-cap'>This profile</p>"+
+      "<div class='ad-kv'><span>Currently</span><span>"+
+        (row.is_holder?"Account holder &middot; ":"")+(isKid?"Student":"Parent")+"</span></div>"+
+      (row.is_holder
+        ? "<button class='ad-row' type='button' data-holder><b>Switch Account Holder</b>"+
+          "<span>Hand the account side to another parent</span></button>"
+        : "<button class='ad-row' type='button' data-kind='"+(isKid?"parent":"student")+"'><b>"+
+          (isKid?"Change to Parent Profile":"Change to Student Profile")+"</b><span>"+
+          (isKid?"Grown-up access to the account"
+                :"Their lessons and progress start being saved")+"</span></button>")
+      :"")+
     (row?"<button class='ad-signout ad-del' type='button' data-del>"+(isKid?"Remove Student":"Remove Parent")+"</button>":"");
   var q=function(s){ return H.body.querySelector(s); };
   var msg=q(".ad-msg"),nameIn=q("[data-f=name]"),big=q(".ad-edit-av");
@@ -1800,6 +1821,63 @@ function adEdit(H,row,kindIn){
   if(!row){ H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } nameIn.focus(); }
   var del=q("[data-del]");
   if(del) del.onclick=function(){ adRemove(H,row); };
+
+  /* 🚨 PIN FIRST, AND MAKE ONE IF THERE IS NONE. Paul: "make it a must to have
+     a pin to switch and to set a pin first if you didn't create one already."
+     ⚠️ The PIN is the READER's gate, not the security - the server re-checks
+     ownership and every cap on its own. But it is the only thing standing
+     between a curious child and making themselves a parent, so it is required,
+     and an account with no PIN is sent to create one rather than waved through. */
+  function adGuardPin(then){
+    if(!adHasPin(null)) return adPinView(H,"first",{key:null,name:adMe(),next:then});
+    adPinView(H,"unlock",{key:null,name:adMe(),next:then});
+  }
+  var sw=q("[data-holder]");
+  if(sw) sw.onclick=function(){ adGuardPin(function(){ adHolderPick(H,row); }); };
+  var kd=q("[data-kind]");
+  if(kd) kd.onclick=function(){
+    var want=kd.getAttribute("data-kind");
+    adGuardPin(function(){
+      kd.disabled=true;
+      NSAccount.setProfileKind(row.id,want).then(function(){
+        adKids=null;                       /* the list is stale the moment this lands */
+        adLoad(); adProfiles(H);
+      }).catch(function(e){
+        kd.disabled=false;
+        var m=H.body.querySelector(".ad-msg");
+        if(m) m.textContent=e.message; else alert(e.message);
+      });
+    });
+  };
+}
+
+/* Which parent takes the account over. Only PARENT profiles can hold it - the
+   server refuses anything else - so a student is not offered here. Promote them
+   first, which is the other button on the screen they came from. */
+function adHolderPick(H,row){
+  adFrame(H,"Switch Account Holder",function(){ adEdit(H,row); },"holder");
+  var others=adOf("parent").filter(function(p){ return p.id!==row.id; });
+  if(!others.length){
+    H.body.innerHTML="<p class='ad-empty ad-mid'>There is no other parent profile to hand the account to."+
+      " Add one first, or change a student to a parent profile.</p>";
+    return;
+  }
+  H.body.innerHTML="<p class='ad-note ad-mid'>The account side moves to whoever you pick."+
+    " The email and password you sign in with do not change.</p>"+
+    others.map(function(p){
+      return "<button class='ad-row' type='button' data-take='"+adEsc(p.id)+"'><b>"+adEsc(p.name)+"</b>"+
+             "<span>Make this profile the account holder</span></button>";
+    }).join("")+"<p class='ad-msg'></p>";
+  H.body.onclick=function(e){
+    var b=e.target.closest("[data-take]"); if(!b) return;
+    b.disabled=true;
+    NSAccount.swapAccountHolder(b.getAttribute("data-take")).then(function(){
+      adKids=null; adLoad(); adProfiles(H);
+    }).catch(function(err){
+      b.disabled=false;
+      var m=H.body.querySelector(".ad-msg"); if(m) m.textContent=err.message;
+    });
+  };
 }
 /* ── 📈 THE PROGRESS VIEWS (2026-09-11, step 2) ────────────────────────────
    Paul: "it needs to show up in the students manage accounts page about
@@ -2086,7 +2164,15 @@ function adPinView(H,mode,ctx){
         inp.disabled=true; msg.textContent="Checking…";
         NSAccount.checkPin(v,key).then(function(ok){
           inp.disabled=false;
-          if(ok===true){ adSetWho(key||"parent"); adMain(H); }
+          if(ok===true){
+            /* 🚨 ctx.next IS A FOLLOW-ON, NOT A REDIRECT. The PIN gate is
+               reused now by Switch Account Holder and Change Kind (019), and
+               those must return to what the reader was doing rather than drop
+               them on the account screen. Without this the PIN was correct and
+               the action silently never happened. */
+            if(ctx.next){ ctx.next(); return; }
+            adSetWho(key||"parent"); adMain(H);
+          }
           else wrong("That PIN isn't right. Try again.");
         }).catch(function(e){ inp.disabled=false; wrong(e.message); });
         return;
@@ -2106,7 +2192,10 @@ function adPinView(H,mode,ctx){
       if(i<steps.length-1){ i++; draw(); return; }
       inp.disabled=true; msg.textContent="Saving…";
       NSAccount.setPin(vals["new"],vals.old==null?null:vals.old,key).then(function(){
-        adPins=adPins||{}; adPins[key||"owner"]=true; adProfiles(H);
+        adPins=adPins||{}; adPins[key||"owner"]=true;
+        /* A PIN just created to satisfy a gate carries straight on. */
+        if(ctx.next){ ctx.next(); return; }
+        adProfiles(H);
       }).catch(function(e){
         inp.disabled=false;
         if(steps[0]==="old"){ i=0; vals={}; draw(e.message); } else wrong(e.message);

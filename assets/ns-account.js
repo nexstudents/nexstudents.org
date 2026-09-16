@@ -524,6 +524,29 @@
     return rest("DELETE", "/students?id=eq." + encodeURIComponent(id), null, "Could not delete that profile.")
       .then(function () { if (who() === id) write(WHO_KEY, "parent"); return true; });
   }
+  /* ── CHANGING WHAT A PROFILE IS (migration 019) ───────────────────────────
+     🚨 A PARENT PROFILE RECORDS NO PROGRESS. nsProgPush() gives up unless the
+     active profile is kind = "student", so a child who ends up as a parent - or
+     as the account holder, which Paul's son did by signing up with his own
+     Gmail - has every lesson stay in his browser and reach no server. Changing
+     kind is what makes a child's schoolwork start existing.
+     ⚠️ Both are server functions that re-check every cap, refuse a profile on
+     another account, and refuse to leave an account with no parent. The panel
+     asks for the PIN first; that is a courtesy to the reader, NOT the security.
+     The server is the security. */
+  function setProfileKind(profile, kind) {
+    return rest("POST", "/rpc/set_profile_kind",
+      { p_profile: profile, p_kind: kind }, "Could not change that profile.")
+      .then(function () { return true; });
+  }
+  /* Hand the holder role to another PARENT profile. The LOGIN does not move -
+     that is changeEmail(). This moves who holds the account side. */
+  function swapAccountHolder(profile) {
+    return rest("POST", "/rpc/swap_account_holder",
+      { p_new_holder: profile }, "Could not switch the account holder.")
+      .then(function () { return true; });
+  }
+
   /* Each parent has their own PIN (migration 014). `profile` is the second
      parent's row id, or null for the account holder. pinMap() answers which
      parents have one: {owner: true, "<id>": true}. */
@@ -841,6 +864,7 @@
     signOut: signOut, getUser: getUser, deleteAccount: deleteAccount,
     who: who, setWho: setWho, wantsPicker: wantsPicker, pickerShown: pickerShown,
     students: students, addStudent: addStudent, updateStudent: updateStudent, deleteStudent: deleteStudent, saveOwn: saveOwn,
+    setProfileKind: setProfileKind, swapAccountHolder: swapAccountHolder,
     progressRows: progressRows, upsertProgress: upsertProgress, deleteProgress: deleteProgress,
     pinMap: pinMap, checkPin: checkPin, setPin: setPin, clearPin: clearPin,
     isSignedIn: function () { return !!session; },
