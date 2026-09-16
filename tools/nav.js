@@ -1652,10 +1652,72 @@ function adPinWire(H,key,name){
 }
 function adOwner(H){
   adFrame(H,adMe(),adProfiles,"owner");
+  var others=adOf("parent");
   H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),adOwnerTheme())+"</div>"+
     adPinRows(null)+
+    /* 👑 SWITCH ACCOUNT HOLDER lives HERE, on the holder's own screen, because
+       this is the only screen the holder has. Paul, 2026-09-16: "in his parent
+       profile and needs to have switch account holder and select another parent
+       ie Paul! ... after the switch it should have the option to demote Kolten
+       to student."
+       🚨 THE HOLDER IS THE AUTH USER, NOT A students ROW. adMe() reads
+       user_metadata; the table holds only the SECOND parent and the students.
+       So switching is a SWAP OF IDENTITY, not a row move: the holder's name and
+       colour go into the parent row, and that parent's go into the metadata.
+       The email and password never move - they belong to the login.
+       ⚠️ Afterwards the old holder IS an ordinary parent row, which is what
+       makes Change to Student work on them. That is the whole point.
+       ⚠️ PINs stay with the ROLE, not the person: pins are keyed by
+       profile_key, and the account holder's PIN guards the account side
+       whoever holds it. */
+    (others.length
+      ? "<button class='ad-row' type='button' data-swap><b>Switch Account Holder</b>"+
+        "<span>Hand the account to another parent</span></button>"
+      : "<p class='ad-note'>Add a second parent profile to be able to hand the account over.</p>")+
     "<p class='ad-note'>Your name, email and password are under Account. Your color is in Settings.</p>";
   adPinWire(H,null,adMe());
+  var sw=H.body.querySelector("[data-swap]");
+  if(sw) sw.onclick=function(){
+    /* PIN first, and make one if there is none - Paul: "make it a must to have
+       a pin to switch and to set a pin first if you didn't create one already." */
+    if(!adHasPin(null)) return adPinView(H,"first",{key:null,name:adMe(),next:function(){ adSwapHolder(H); }});
+    adPinView(H,"unlock",{key:null,name:adMe(),next:function(){ adSwapHolder(H); }});
+  };
+}
+
+/* Pick which parent takes the account over, then swap the two identities. */
+function adSwapHolder(H){
+  adFrame(H,"Switch Account Holder",function(){ adOwner(H); },"swap");
+  var others=adOf("parent");
+  H.body.innerHTML="<p class='ad-note ad-mid'>The account moves to whoever you pick."+
+    " The email and password you sign in with do not change.</p>"+
+    others.map(function(p){
+      return "<button class='ad-row' type='button' data-take='"+adEsc(p.id)+"'><b>"+adEsc(p.name)+"</b>"+
+             "<span>Make this profile the account holder</span></button>";
+    }).join("")+"<p class='ad-msg ad-mid'></p>";
+  H.body.onclick=function(e){
+    var b=e.target.closest("[data-take]"); if(!b) return;
+    var row=adKid(b.getAttribute("data-take")); if(!row) return;
+    var msg=H.body.querySelector(".ad-msg");
+    b.disabled=true; if(msg) msg.textContent="Switching…";
+    var md=(adUser&&adUser.user_metadata)||{};
+    var oldName=adMe(), oldTheme=md.theme||row.theme;
+    /* 🚨 THE ROW FIRST, THE METADATA SECOND. If the row write fails nothing has
+       changed; if the metadata write fails the row already carries the old
+       holder's name, which reads as a duplicate rather than as a lost person.
+       Neither order is atomic - two stores, no transaction - so it fails
+       towards something a parent can see and fix. */
+    NSAccount.updateStudent(row.id,{ name: oldName, theme: oldTheme })
+      .then(function(){ return NSAccount.saveMyMeta({ first_name: row.name, theme: row.theme }); })
+      .then(function(){
+        adUser=null; adKids=null;          /* both are stale now */
+        adLoad(); nsWhoIcon(); adProfiles(H);
+      })
+      .catch(function(err){
+        b.disabled=false;
+        if(msg) msg.textContent=err.message||"Could not switch the account holder.";
+      });
+  };
 }
 /* ADD / EDIT ONE PROFILE. SAVE in the header, like Account: CLOSE until
    something changes (a new profile starts on SAVE).

@@ -861,7 +861,7 @@
   window.NSAccount = {
     isAdmin: isAdmin, adminMode: adminMode, viewAs: viewAs, adminFile: adminFile,
     owned: owned, rememberOwned: rememberOwned, myDownloads: myDownloads,
-    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, saveMyTheme: saveMyTheme, saveMySettings: saveMySettings, changeEmail: changeEmail,
+    logIn: logIn, signUp: signUp, forgot: forgot, resendConfirm: resendConfirm, newPassword: newPassword, updateProfile: updateProfile, saveMyTheme: saveMyTheme, saveMySettings: saveMySettings, saveMyMeta: saveMyMeta, changeEmail: changeEmail,
     signInWith: signInWith, signInWithGoogle: signInWithGoogle, providers: PROVIDERS.slice(),
     identities: identities, hasPassword: hasPassword,
     remembering: remembering, setRemember: setRemember,

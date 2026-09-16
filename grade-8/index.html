@@ -276,7 +276,7 @@
 </footer>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
-<script src="/assets/ns-account.js?v=53a92b18"></script>
+<script src="/assets/ns-account.js?v=fe0de2b1"></script>
 <script>
 (function(){
 var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
@@ -837,10 +837,48 @@ function adPinWire(H,key,name){
 }
 function adOwner(H){
   adFrame(H,adMe(),adProfiles,"owner");
+  var others=adOf("parent");
   H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),adOwnerTheme())+"</div>"+
     adPinRows(null)+
+    (others.length
+      ? "<button class='ad-row' type='button' data-swap><b>Switch Account Holder</b>"+
+        "<span>Hand the account to another parent</span></button>"
+      : "<p class='ad-note'>Add a second parent profile to be able to hand the account over.</p>")+
     "<p class='ad-note'>Your name, email and password are under Account. Your color is in Settings.</p>";
   adPinWire(H,null,adMe());
+  var sw=H.body.querySelector("[data-swap]");
+  if(sw) sw.onclick=function(){
+    if(!adHasPin(null)) return adPinView(H,"first",{key:null,name:adMe(),next:function(){ adSwapHolder(H); }});
+    adPinView(H,"unlock",{key:null,name:adMe(),next:function(){ adSwapHolder(H); }});
+  };
+}
+function adSwapHolder(H){
+  adFrame(H,"Switch Account Holder",function(){ adOwner(H); },"swap");
+  var others=adOf("parent");
+  H.body.innerHTML="<p class='ad-note ad-mid'>The account moves to whoever you pick."+
+    " The email and password you sign in with do not change.</p>"+
+    others.map(function(p){
+      return "<button class='ad-row' type='button' data-take='"+adEsc(p.id)+"'><b>"+adEsc(p.name)+"</b>"+
+             "<span>Make this profile the account holder</span></button>";
+    }).join("")+"<p class='ad-msg ad-mid'></p>";
+  H.body.onclick=function(e){
+    var b=e.target.closest("[data-take]"); if(!b) return;
+    var row=adKid(b.getAttribute("data-take")); if(!row) return;
+    var msg=H.body.querySelector(".ad-msg");
+    b.disabled=true; if(msg) msg.textContent="Switching…";
+    var md=(adUser&&adUser.user_metadata)||{};
+    var oldName=adMe(), oldTheme=md.theme||row.theme;
+    NSAccount.updateStudent(row.id,{ name: oldName, theme: oldTheme })
+      .then(function(){ return NSAccount.saveMyMeta({ first_name: row.name, theme: row.theme }); })
+      .then(function(){
+        adUser=null; adKids=null;          
+        adLoad(); nsWhoIcon(); adProfiles(H);
+      })
+      .catch(function(err){
+        b.disabled=false;
+        if(msg) msg.textContent=err.message||"Could not switch the account holder.";
+      });
+  };
 }
 function adEdit(H,row,kindIn){
   var kind=row?row.kind:kindIn;

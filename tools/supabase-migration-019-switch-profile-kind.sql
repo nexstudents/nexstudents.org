@@ -125,14 +125,14 @@ begin
     raise exception 'profile limit: 2 parents';
   end if;
 
-  -- 🚨 AN ACCOUNT MUST NEVER END WITH NO GROWN-UP.
-  if cur = 'parent' then
-    select count(*) into parents
-      from public.students where account_id = acct and kind = 'parent';
-    if parents <= 1 then
-      raise exception 'an account needs at least one parent profile';
-    end if;
-  end if;
+  -- 🚨 NO "LAST PARENT" CHECK, AND THAT IS DELIBERATE. I wrote one and it was
+  --    wrong: THE ACCOUNT HOLDER IS THE AUTH USER, NOT A ROW IN THIS TABLE.
+  --    adMe() reads user_metadata; students holds only the SECOND parent and
+  --    the children. So counting parent rows sees one grown-up when there are
+  --    two, and refuses a demotion that is perfectly safe - which is exactly
+  --    what blocked Paul from demoting his son after the handover.
+  --    The holder always exists and cannot be demoted here, so there is always
+  --    an adult. Do not "restore" this check without re-reading adOwner().
 
   perform set_config('nexstudents.kind_change', 'on', true);   -- true = this tx only
   update public.students set kind = p_kind where id = p_profile;
