@@ -956,7 +956,12 @@ html.whop-pre::before{content:"";position:fixed;inset:0;z-index:119;background:#
 /* Mounted straight into a cover, so it must not fade the page back in. */
 html.whop-pre .whop{opacity:1;transition:none}
 .whop{position:fixed;inset:0;z-index:120;background:#0a0b0d;color:#f1f3f5;display:grid;place-items:center;
-  padding:24px 16px;overflow-y:auto;opacity:0;transition:opacity .25s ease;font-family:"Archivo",system-ui,sans-serif}
+  padding:24px 16px;overflow-y:auto;opacity:1;font-family:"Archivo",system-ui,sans-serif}
+/* 🚨 NO FADE. It used to mount at opacity:0 and ease in over 250ms, which
+   is 250ms of the site showing THROUGH the cover - Paul, 2026-09-16:
+   "there is still a flicker". A sign-in screen is not a modal over the
+   page, it is the first thing you see, so it is opaque from the start.
+   .is-in is kept as a no-op: the script still adds it. */
 .whop.is-in{opacity:1}
 /* 🚪 SIGN OUT on the picker, bottom right, phone and desktop alike.
    ⚠️ Inside .whop, which is display:grid/place-items:center, so it is taken
@@ -965,7 +970,7 @@ html.whop-pre .whop{opacity:1;transition:none}
    ⚠️ The safe-area inset matters: on a phone this sits exactly where the home
    indicator lives, and without it the button is half under the gesture bar. */
 .whop-out{
-  position:absolute;z-index:2;
+  position:fixed;z-index:121;
   right:calc(16px + env(safe-area-inset-right, 0px));
   bottom:calc(16px + env(safe-area-inset-bottom, 0px));
   display:inline-flex;align-items:center;gap:8px;
