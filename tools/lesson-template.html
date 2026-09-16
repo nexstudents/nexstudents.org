@@ -5067,6 +5067,36 @@ QUESTIONS.forEach(function(Q, qi){
   (Q.day === 2 ? qEl2 : qEl1).appendChild(card);
 });
 
+/* Bring back the answers he already gave, so coming back to a lesson shows the
+   page he left rather than a blank one. Runs right after the cards are built.
+   ⚠️ EVERY INDEX IS RANGE-CHECKED against the lesson as it stands today. A
+   rebuilt lesson can have fewer questions or fewer choices than the record was
+   written against, and a stale pick must be dropped rather than painted onto
+   whatever now sits at that index. Nothing else is assumed about the record:
+   an old one with no `a` simply restores nothing, exactly as before. */
+(function restoreAnswers(){
+  var rec = null;
+  try { rec = JSON.parse(load("prog:" + LESSON_ID, "null")); } catch (e){}
+  if (!rec || !rec.a || !rec.a.length) return;
+  var any = false;
+  rec.a.forEach(function(ci, i){
+    var Q = QUESTIONS[i];
+    if (ci === null || ci === undefined || !Q || !Q.choices) return;
+    if (ci < 0 || ci >= Q.choices.length) return;
+    answered[i] = ci;
+    paintAnswer(i, ci);
+    any = true;
+  });
+  (rec.h || []).forEach(function(v, i){ if (v && QUESTIONS[i]) hunted[i] = true; });
+  if (typeof rec.ff === "number") foundFirstTry = rec.ff;
+  if (!any) return;
+  paintProgress();
+  /* ⚠️ A day with NO questions has done === total === 0, which would show a
+     score on a lesson nobody has touched. Count the day only if it has any. */
+  var d1 = dayStats(1), d2 = dayStats(2);
+  if ((d1.total && d1.done === d1.total) || (d2.total && d2.done === d2.total)) showScore();
+})();
+
 function startHunt(qi){
   hunted[qi] = true;
   hunt = { qi: qi, tries: 0 };
@@ -5141,10 +5171,25 @@ storyEl.addEventListener("click", function(e){
 
 function answer(qi, ci){
   if (answered[qi] !== undefined) return;
+  answered[qi] = ci;
+  paintAnswer(qi, ci);
+  paintProgress();
+  saveProg();
+
+  // Show the running score as soon as EITHER day is finished, because the two
+  // days happen on different days and he should not have to wait until Day 2
+  // to see how Day 1 went.
+  var d1 = dayStats(1), d2 = dayStats(2);
+  if (d1.done === d1.total || d2.done === d2.total) showScore();
+}
+
+/* 🚨 PAINTING AN ANSWER IS SPLIT OUT OF GIVING ONE, so restoring a saved answer
+   draws EXACTLY what answering it drew. Two painters is how a reloaded page
+   starts looking different from the page the student left. */
+function paintAnswer(qi, ci){
   var Q = QUESTIONS[qi];
   var card = document.getElementById("q" + qi);
   var btns = card.querySelectorAll(".choice");
-  answered[qi] = ci;
 
   btns.forEach(function(b, k){
     b.disabled = true;
@@ -5175,22 +5220,31 @@ function answer(qi, ci){
     : (why
         ? "Incorrect. The right answer is marked above. " + why
         : "Incorrect. The right answer is marked above.");
+}
 
-  paintProgress();
+/* A light progress record on every answer, so the lesson card on the shelf knows
+   how far in he is without the lesson having to be finished first.
 
-  // A light progress record on every answer, so the lesson card on the shelf
-  // knows how far in he is without the lesson having to be finished first.
+   🚨 IT CARRIES THE ANSWERS THEMSELVES NOW. They used to live only in the
+   `answered` array, in memory, so a reload - or a phone dropping the tab out of
+   memory - wiped every answer while the shelf card still read "4 of 8 answered".
+   The student came back to a blank page with no way to see what he had done.
+   ⚠️ nsProgPush keeps `detail` VERBATIM, so writing them HERE is also what sends
+   them to the account: a parent can see from another device what has been
+   answered, and a cleared cache comes back on the next sign-in. Adding a field
+   to this record needs no change in nav.js. */
+function saveProg(){
   var d1p = dayStats(1), d2p = dayStats(2);
+  var picks = [], hunts = [];
+  QUESTIONS.forEach(function(Q, i){
+    picks[i] = answered[i] === undefined ? null : answered[i];
+    hunts[i] = !!hunted[i];
+  });
   store("prog:" + LESSON_ID, JSON.stringify({
     done: d1p.done + d2p.done, total: d1p.total + d2p.total,
-    d1: d1p.done, d1t: d1p.total, d2: d2p.done, d2t: d2p.total
+    d1: d1p.done, d1t: d1p.total, d2: d2p.done, d2t: d2p.total,
+    a: picks, h: hunts, ff: foundFirstTry
   }));
-
-  // Show the running score as soon as EITHER day is finished, because the two
-  // days happen on different days and he should not have to wait until Day 2
-  // to see how Day 1 went.
-  var d1 = dayStats(1), d2 = dayStats(2);
-  if (d1.done === d1.total || d2.done === d2.total) showScore();
 }
 
 function dayStats(day){

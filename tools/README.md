@@ -37,6 +37,7 @@ node tools/check-navscript.js .  # the nav/panel script PARSES, and every page s
 node tools/check-audio-unlock.js . # NexVoice still plays past sentence 1 ON A PHONE
 node tools/check-progress-merge.js . # the progress merge never loses or resurrects work
 node tools/check-pages-run.js .  # every lesson + key page RUNS in headless Chrome (~45s)
+node tools/check-answers-persist.js . # an answered question is still answered AFTER A RELOAD
 node tools/check-links.js .      # LAST OF ALL
 ```
 
