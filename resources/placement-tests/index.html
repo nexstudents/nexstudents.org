@@ -1594,6 +1594,23 @@ function adLoad(){
     .catch(function(){ adPins={}; });
   Promise.all([a,b,c,d]).then(function(){ adLoading=false; });
 }
+function nsStartupSound(scope){
+  try {
+    var a = new Audio("https://nexstudents-media.nexedgetech.workers.dev/ui/startup.mp3");
+    a.volume = 0.5;
+    var armed = true;
+    var once = function(){
+      if (!armed) return;
+      armed = false;
+      try { a.currentTime = 0; var q = a.play(); if (q && q.catch) q.catch(function(){}); } catch (e) {}
+    };
+    var p = a.play();
+    if (p && p.then) p.then(function(){ armed = false; }, function(){
+      if (scope) scope.addEventListener("pointerdown", once, { once: true });
+      document.addEventListener("pointerdown", once, { once: true });
+    });
+  } catch (e) {}
+}
 function nsWhoPicker(){
   if(!window.NSAccount||!NSAccount.wantsPicker()) return;
   Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
@@ -1615,6 +1632,7 @@ function nsWhoPicker(){
       "</div><button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
     document.body.appendChild(o);
     NSAccount.pickerShown();
+    nsStartupSound(o);
     nsLockScroll(true);
     requestAnimationFrame(function(){ o.classList.add("is-in"); });
     function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }

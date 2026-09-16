@@ -2980,45 +2980,11 @@ const SOON_PAGES = [
      gesture is spent and the play() is refused.
      ⚠️ Failure is ignored on purpose. A missing or blocked sound must never
      stop somebody signing in. */
-  var nsSnd = null;
-  /* ARM, at the tap. A phone grants playback to an ELEMENT, and only one a
-     gesture has touched. Signing in is a round trip to the server, so by the
-     time it succeeds the gesture is long spent - which is why the first version
-     of this, which simply played on success, would have been refused. Playing
-     and immediately pausing here is what buys the right to play it later. */
-  function nsStartupArm(){
-    try {
-      if (!nsSnd) {
-        nsSnd = new Audio("https://nexstudents-media.nexedgetech.workers.dev/ui/startup.mp3");
-        nsSnd.volume = 0.5;
-        nsSnd.preload = "auto";
-      }
-      var p = nsSnd.play();
-      if (p && p.then) p.then(function(){ nsSnd.pause(); nsSnd.currentTime = 0; },
-                              function(){});
-    } catch (e) {}
-  }
-  /* PLAY, on a real sign-in. Paul: "we need it to work for a successful login."
-     Resolves when the sound finishes so the caller can hold the redirect - the
-     account page leaves for /?panel=account the moment it paints, and a
-     navigation cuts the sound off mid-note.
-     ⚠️ Capped, and it resolves on failure too. Nobody waits on a sound to get
-     into their account. */
-  function nsStartupPlay(){
-    return new Promise(function(done){
-      var finished = false;
-      var fin = function(){ if (!finished) { finished = true; done(); } };
-      setTimeout(fin, 1600);
-      try {
-        if (!nsSnd) return fin();
-        nsSnd.currentTime = 0;
-        nsSnd.onended = fin;
-        var p = nsSnd.play();
-        if (p && p.catch) p.catch(fin);
-      } catch (e) { fin(); }
-    });
-  }
-
+  /* ⚠️ THE STARTUP SOUND IS NOT HERE ANY MORE. It lived on this form and
+     missed Google sign-in completely, which leaves the page and returns
+     through a redirect. It now fires where both paths meet - the "Who's
+     learning?" screen in nav.js. Do not add a second copy here: two sign-in
+     routes converging on one screen is the reason it works at all. */
   $("siForm").onsubmit = function(e){
     e.preventDefault();
     /* \u26a0\ufe0f By id, never querySelector("button"): the first button in the form
@@ -3037,11 +3003,6 @@ const SOON_PAGES = [
     msg.textContent = { in: "Signing in", up: "Creating your account", forgot: "Sending the reset link",
                         reset: "Saving your new password" }[mode] + "...";
 
-    /* Past every check, so this really is a sign-in attempt rather than a
-       mistyped email. ARM only - the sound itself waits for the sign-in to
-       actually succeed. This has to happen here, in the gesture. */
-    if (mode === "in") nsStartupArm();
-
     /* ⚠️ DO NOT CALL nsWhoPicker() HERE. It looks like the right place and is
        the opposite: paint() ends in location.replace("/?panel=account"), so
        this page is already leaving. nsWhoPicker() spends the show-once flag the
@@ -3050,11 +3011,8 @@ const SOON_PAGES = [
        never appears anywhere. Tried 2026-09-15, reverted the same hour.
        The destination page runs it at load, which is the correct place. */
     var job = mode === "in"     ? NSAccount.logIn(em, pw).then(function(){
-                                    /* Only here is the sign-in real. paint()
-                                       navigates, so the sound plays FIRST and
-                                       the redirect waits on it. */
                                     msg.textContent = "";
-                                    return nsStartupPlay().then(paint, paint);
+                                    paint();
                                   })
             : mode === "up"     ? NSAccount.signUp(em, pw, $("siFirst").value, $("siLast").value).then(function(res){
                                     if (res === "in") { msg.textContent = ""; paint(); return; }

@@ -2686,6 +2686,42 @@ function adLoad(){
    so no tile asks for one here and none carries a padlock.
    Built in JS, once, the same way the card window is: nothing to render for a
    static page that does not know who is signed in. */
+/* 🔊 THE STARTUP SOUND, ON THE SCREEN BOTH SIGN-INS SHARE.
+   Paul asked for it "when the login screen appears". It first went on the
+   password form's submit, which was wrong twice over: it missed Google
+   entirely - "I logged in with Google and I didn't get the sound" - because
+   that path LEAVES the page, goes to the provider and returns through a
+   redirect with no tap anywhere in it.
+
+   "Who's learning?" is the one screen both paths reach, so the sound belongs
+   here, which is also what he asked for in the first place.
+
+   🚨 A PAGE THAT LOADS FROM A REDIRECT HAS NO GESTURE, so play() may be
+   refused - always on a phone, and on a desktop until the browser decides the
+   site is worth trusting. That is not a bug to code around, it is the rule.
+   So: try it, and if it is refused, latch onto the very next tap, which is the
+   reader choosing their profile. Either way the sound lands on the way in.
+   ⚠️ Fails silently in every direction. A missing sound must never be the
+   reason somebody cannot get to their lessons. */
+function nsStartupSound(scope){
+  try {
+    var a = new Audio("https://nexstudents-media.nexedgetech.workers.dev/ui/startup.mp3");
+    a.volume = 0.5;
+    var armed = true;
+    var once = function(){
+      if (!armed) return;
+      armed = false;
+      try { a.currentTime = 0; var q = a.play(); if (q && q.catch) q.catch(function(){}); } catch (e) {}
+    };
+    var p = a.play();
+    if (p && p.then) p.then(function(){ armed = false; }, function(){
+      /* refused: the next tap on the picker is a real gesture */
+      if (scope) scope.addEventListener("pointerdown", once, { once: true });
+      document.addEventListener("pointerdown", once, { once: true });
+    });
+  } catch (e) {}
+}
+
 function nsWhoPicker(){
   if(!window.NSAccount||!NSAccount.wantsPicker()) return;
   /* 🚨 SPEND THE SHOW-ONCE FLAG ONLY WHEN THE PICKER IS ACTUALLY ON SCREEN.
@@ -2725,6 +2761,7 @@ function nsWhoPicker(){
     document.body.appendChild(o);
     /* It is on screen NOW, so now it counts as asked. See the note above. */
     NSAccount.pickerShown();
+    nsStartupSound(o);
     nsLockScroll(true);
     requestAnimationFrame(function(){ o.classList.add("is-in"); });
     function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
