@@ -1399,8 +1399,11 @@ function nsStartupSound(scope){
     });
   } catch (e) {}
 }
+function nsWhopPre(off){
+  try{ document.documentElement.classList[off?"remove":"add"]("whop-pre"); }catch(e){}
+}
 function nsWhoPicker(){
-  if(!window.NSAccount||!NSAccount.wantsPicker()) return;
+  if(!window.NSAccount||!NSAccount.wantsPicker()){ nsWhopPre(true); return; }
   
   var o=document.createElement("div");
   o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
@@ -1413,7 +1416,7 @@ function nsWhoPicker(){
   nsStartupSound(o);
   nsLockScroll(true);
   requestAnimationFrame(function(){ o.classList.add("is-in"); });
-  function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
+  function close(){ o.remove(); nsLockScroll(false); nsWhopPre(true); nsWhoIcon(); }
   var landed=false;
   var giveUp=setTimeout(function(){ if(!landed) close(); },8000);
   o.addEventListener("click",function(e){
@@ -1521,6 +1524,7 @@ document.addEventListener("click",function(e){
   b.setAttribute("aria-pressed",show?"true":"false");
   b.setAttribute("aria-label",show?"Hide password":"Show password");
 });
+if(!window.NSAccount||!NSAccount.isSignedIn()) nsWhopPre(true);
 if(window.NSAccount&&NSAccount.isSignedIn()){
   nsWhoPicker();
   nsProgBoot();

@@ -18,8 +18,8 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=3471e99c">
-<script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
+<link rel="stylesheet" href="/assets/ns.css?v=1a600f34">
+<script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
 
@@ -1549,8 +1549,11 @@ function nsStartupSound(scope){
     });
   } catch (e) {}
 }
+function nsWhopPre(off){
+  try{ document.documentElement.classList[off?"remove":"add"]("whop-pre"); }catch(e){}
+}
 function nsWhoPicker(){
-  if(!window.NSAccount||!NSAccount.wantsPicker()) return;
+  if(!window.NSAccount||!NSAccount.wantsPicker()){ nsWhopPre(true); return; }
   
   var o=document.createElement("div");
   o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
@@ -1563,7 +1566,7 @@ function nsWhoPicker(){
   nsStartupSound(o);
   nsLockScroll(true);
   requestAnimationFrame(function(){ o.classList.add("is-in"); });
-  function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
+  function close(){ o.remove(); nsLockScroll(false); nsWhopPre(true); nsWhoIcon(); }
   var landed=false;
   var giveUp=setTimeout(function(){ if(!landed) close(); },8000);
   o.addEventListener("click",function(e){
@@ -1671,6 +1674,7 @@ document.addEventListener("click",function(e){
   b.setAttribute("aria-pressed",show?"true":"false");
   b.setAttribute("aria-label",show?"Hide password":"Show password");
 });
+if(!window.NSAccount||!NSAccount.isSignedIn()) nsWhopPre(true);
 if(window.NSAccount&&NSAccount.isSignedIn()){
   nsWhoPicker();
   nsProgBoot();

@@ -741,11 +741,34 @@ const modeSwitch = (extra) => '<button class="mswitch' + (extra ? " " + extra : 
 /* Also paints the active profile's accent BEFORE first paint (2026-09-11):
    ns:accent is a hex the account panel writes (nsApplyAccent). Checked as a
    6-digit hex so a tampered value cannot inject CSS. */
+/* 🚨 THIS RUNS IN <head>, BEFORE THE FIRST PAINT. That is the whole point: a
+   theme applied after paint is a flash of the wrong colours, and the same is
+   true of the sign-in cover.
+
+   Paul, 2026-09-16, on his phone, twice: "for a breif moment i see the home
+   page screen before the who is learning page shows up", then "its better but
+   its still kind of there". Mounting the cover as early as the nav script runs
+   was not early enough - the browser has already painted by then.
+
+   So the DECISION is made here, from two synchronous localStorage reads, and
+   `html.whop-pre` paints a solid ground before any content exists. nav.js
+   removes the class once the real picker is mounted, or if it turns out not to
+   be showing one.
+   ⚠️ It cannot call NSAccount - that script has not loaded yet - so it reads
+   the raw keys. ns:session is only in localStorage when Remember Me is on;
+   sessionStorage is checked too, or the cover would be skipped for anyone who
+   unticked it.
+   ⚠️ FAIL OPEN, here as well as in nav.js: if nothing removes the class within
+   10s, this does. A cover with no picker behind it is a dead site. */
 const modeBoot = () => "<scr" + "ipt>" +
   '(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");' +
   'if(m==="light"||m==="dark")d.setAttribute("data-theme",m);' +
   'var c=localStorage.getItem("ns:accent");' +
-  'if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();' +
+  'if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}' +
+  'try{var want=localStorage.getItem("ns:pickwho")==="true",' +
+  'sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");' +
+  'if(want&&sess){d.classList.add("whop-pre");' +
+  'setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();' +
   "</scr" + "ipt>";
 
 /* 🚨 WRAPPED IN AN IIFE, and it must stay that way.
@@ -2722,8 +2745,14 @@ function nsStartupSound(scope){
   } catch (e) {}
 }
 
+/* Take the pre-paint cover down. modeBoot guessed from two storage keys, so
+   every path that ends without a picker on screen has to clear it. */
+function nsWhopPre(off){
+  try{ document.documentElement.classList[off?"remove":"add"]("whop-pre"); }catch(e){}
+}
+
 function nsWhoPicker(){
-  if(!window.NSAccount||!NSAccount.wantsPicker()) return;
+  if(!window.NSAccount||!NSAccount.wantsPicker()){ nsWhopPre(true); return; }
   /* 🚨 SPEND THE SHOW-ONCE FLAG ONLY WHEN THE PICKER IS ACTUALLY ON SCREEN.
      It used to be dropped HERE, before three network calls, so every way of
      not reaching the screen still burned the one chance to ask: the profile
@@ -2755,7 +2784,7 @@ function nsWhoPicker(){
   nsStartupSound(o);
   nsLockScroll(true);
   requestAnimationFrame(function(){ o.classList.add("is-in"); });
-  function close(){ o.remove(); nsLockScroll(false); nsWhoIcon(); }
+  function close(){ o.remove(); nsLockScroll(false); nsWhopPre(true); nsWhoIcon(); }
   var landed=false;
   var giveUp=setTimeout(function(){ if(!landed) close(); },8000);
   o.addEventListener("click",function(e){
@@ -2925,6 +2954,7 @@ document.addEventListener("click",function(e){
 });
 /* On every page: the picker after a fresh sign-in, and the nav icon for a
    student already on this device (it needs the list to know their colour). */
+if(!window.NSAccount||!NSAccount.isSignedIn()) nsWhopPre(true);
 if(window.NSAccount&&NSAccount.isSignedIn()){
   nsWhoPicker();
   nsProgBoot();

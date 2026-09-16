@@ -943,6 +943,18 @@ html.has-me .mg-top::after{background:var(--me)}
    seems it need to go up a bit to be centered." */
 .nv-av{display:grid;place-items:center;width:22px;height:22px;border-radius:5px;color:#fff;
   font:700 .76rem/1 "Archivo",system-ui,sans-serif;transform:translateY(-2px)}
+/* 🚨 THE PRE-PAINT COVER. modeBoot puts html.whop-pre on in <head>, before the
+   browser has drawn anything, so the sign-in cover is the FIRST thing painted
+   rather than something that lands on top of a page already on screen.
+   Paul: "its better but its still kind of there" - mounting it from the nav
+   script was still after first paint.
+   ⚠️ ::before on <html>, because <body> may not exist yet when this applies.
+   ⚠️ The real .whop sits at z-index 120 and covers this, so there is no flash
+   BETWEEN the two - the ground never changes colour.
+   ⚠️ #0a0b0d is .whop background, literally. Change one, change the other. */
+html.whop-pre::before{content:"";position:fixed;inset:0;z-index:119;background:#0a0b0d}
+/* Mounted straight into a cover, so it must not fade the page back in. */
+html.whop-pre .whop{opacity:1;transition:none}
 .whop{position:fixed;inset:0;z-index:120;background:#0a0b0d;color:#f1f3f5;display:grid;place-items:center;
   padding:24px 16px;overflow-y:auto;opacity:0;transition:opacity .25s ease;font-family:"Archivo",system-ui,sans-serif}
 .whop.is-in{opacity:1}

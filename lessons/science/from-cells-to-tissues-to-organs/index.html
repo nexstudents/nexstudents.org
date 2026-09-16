@@ -39,7 +39,7 @@
   ]
 }
 </script>
-<script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}})();</script>
+<script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
@@ -49,7 +49,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/lesson-shared.977696a1.css">
-<link rel="stylesheet" href="/assets/lesson-nav.css?v=a2494c97">
+<link rel="stylesheet" href="/assets/lesson-nav.css?v=91e0c123">
 <style>
   /* The site nav reads six variables of its own; map them onto this page's
      palette so the nav re-themes with the lesson. */
@@ -739,6 +739,6 @@ var LESSON_UNIT  = "Life Science · U2-L3";
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
 <script src="/assets/ns-account.js?v=14c6eafc"></script>
-<script src="/assets/lesson-shared.c4463172.js"></script>
+<script src="/assets/lesson-shared.020993a7.js"></script>
 </body>
 </html>
