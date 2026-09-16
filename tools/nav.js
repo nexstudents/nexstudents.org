@@ -1549,7 +1549,14 @@ function adMain(H){
     H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
       "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me</span></button>"+
       "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
-      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>";
+      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>"+
+      /* 🚨 A STUDENT CAN SIGN OUT. Paul, 2026-09-16: "I want all profiles to
+         have a logout and not have to switch to an adult just to logout."
+         Only the parent side had one, so a child on a shared device had to get
+         into a grown-up's account - past a PIN, if there was one - purely to
+         leave. That is backwards: signing out is the one thing that needs no
+         permission, and making it hard is what leaves accounts open. */
+      "<button class='ad-signout' type='button' data-out>Sign Out</button>";
     if(typeof nsPaintMode==="function") nsPaintMode();
     return;
   }
@@ -2829,6 +2836,22 @@ function nsWhoPicker(){
     var b=e.target.closest("[data-who]");
     if(b){
       var id=b.getAttribute("data-who");
+      /* 🚨 A PIN ON A PROFILE MUST BE ASKED FOR HERE TOO. Paul, 2026-09-16:
+         "if there is an active pin to join that account you need to login with
+         that pin." It was asked for in the account panel and NOT on this
+         screen, so the picker was a way straight into a parent account that had
+         one - the lock existed and the front door was open.
+         ⚠️ Routed through adPinView's own "unlock", which already calls
+         check_pin on the SERVER and only then adSetWho. Writing a second PIN
+         prompt here would be a second thing to keep correct, and the five-try
+         lock lives behind that one call. */
+      var pinKey=(id==="parent")?null:id;
+      var isKid=adKids&&adOf("student").some(function(k){ return k.id===id; });
+      if(!isKid&&adHasPin(pinKey)){
+        close();
+        if(adD){ adOpen(true); adPinView(adD,"unlock",{key:pinKey,name:b.textContent.trim()}); }
+        return;
+      }
       adSetWho(id); close();
       /* A student has no use for the account panel a sign-in opens. */
       if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
@@ -2898,7 +2921,15 @@ function nsWhoPicker(){
     nsWhopCascade(o);
     /* Real tiles are on screen NOW, so now it counts as asked. See the note above. */
     NSAccount.pickerShown();
-    var first=o.querySelector(".whop-i"); if(first) first.focus();
+    /* 🚨 DO NOT FOCUS THE FIRST TILE. Paul, 2026-09-16: "you have it highlighted
+       as the parent first with a white boarder around it. I want that removed."
+       That ring was :focus-visible, from focusing the first tile for keyboard
+       users - and the first tile is always the account holder, so it read as
+       "this one is chosen" on a screen whose whole question is which one.
+       Focus goes to the dialog instead: a keyboard still lands inside it and
+       Tab reaches the tiles, with nothing pre-selected. */
+    o.setAttribute("tabindex","-1");
+    o.focus({preventScroll:true});
   }).catch(function(){ clearTimeout(giveUp); close(); });
 }
 function adWire(H){

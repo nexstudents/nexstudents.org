@@ -1437,7 +1437,8 @@ function adMain(H){
     H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
       "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me</span></button>"+
       "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
-      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>";
+      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>"+
+      "<button class='ad-signout' type='button' data-out>Sign Out</button>";
     if(typeof nsPaintMode==="function") nsPaintMode();
     return;
   }
@@ -2396,6 +2397,13 @@ function nsWhoPicker(){
     var b=e.target.closest("[data-who]");
     if(b){
       var id=b.getAttribute("data-who");
+      var pinKey=(id==="parent")?null:id;
+      var isKid=adKids&&adOf("student").some(function(k){ return k.id===id; });
+      if(!isKid&&adHasPin(pinKey)){
+        close();
+        if(adD){ adOpen(true); adPinView(adD,"unlock",{key:pinKey,name:b.textContent.trim()}); }
+        return;
+      }
       adSetWho(id); close();
       if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
       return;
@@ -2433,7 +2441,8 @@ function nsWhoPicker(){
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("");
     nsWhopCascade(o);
     NSAccount.pickerShown();
-    var first=o.querySelector(".whop-i"); if(first) first.focus();
+    o.setAttribute("tabindex","-1");
+    o.focus({preventScroll:true});
   }).catch(function(){ clearTimeout(giveUp); close(); });
 }
 function adWire(H){
