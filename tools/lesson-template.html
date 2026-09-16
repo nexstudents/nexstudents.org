@@ -4407,6 +4407,36 @@ function playClip(mine){
   playClipFrom(mine, AUDIO.clips[idx]);
 }
 
+/* 🚨 THE ONE AUDIO ELEMENT FOR THE WHOLE LESSON. See the note in playClipFrom:
+   a phone grants permission to an ELEMENT, not to the page, so the element that
+   the first tap unlocked is the only one that may play later without a gesture.
+   Creating a second one throws that permission away.
+   ⚠️ playsInline matters on iOS, or the clip tries to go fullscreen. */
+var SHARED_AUDIO = null;
+function sharedAudio(){
+  if (!SHARED_AUDIO){
+    SHARED_AUDIO = new Audio();
+    SHARED_AUDIO.preload = "auto";
+    SHARED_AUDIO.playsInline = true;
+    SHARED_AUDIO.setAttribute("playsinline", "");
+  }
+  return SHARED_AUDIO;
+}
+
+/* Called from the play button, INSIDE the gesture, before anything async can
+   run. Loading a clip is a fetch away, and by the time it resolves the gesture
+   is long gone - so the element has to be touched here, while it still counts.
+   A play() on an empty element rejects harmlessly; what matters is that the
+   phone has now seen this element in a gesture. */
+function unlockAudio(){
+  try {
+    var a = sharedAudio();
+    var p = a.play();
+    if (p && p.catch) p.catch(function(){});
+    a.pause();
+  } catch (e) {}
+}
+
 /* 🚨 ONE PLACE RESOLVES A CLIP PATH — ROADMAP 27.
    Clips baked to R2 are stored RELATIVE ("lessons/x/voice/male/000.mp3") and
    voice.json carries `base`. Clips baked before R2 are absolute ("/lessons/...")
@@ -4426,7 +4456,27 @@ function playClipFrom(mine, clip){
   var s = SENT[idx];
   if (demoOpen()) resetSteps();
   var marks = clip.marks || [];
-  audioEl = new Audio(mediaUrl(clip.src));
+  /* 🚨 ONE ELEMENT, REUSED. NEVER `new Audio()` PER SENTENCE.
+     This is why NexVoice never played past the first line on a phone.
+
+     A phone lets an audio element play only when play() is called inside a user
+     gesture, OR when that same element was already unlocked by one. Sentence 1
+     was fine: it is created inside the tap on the play button. Sentence 2 is
+     created inside onended, with no gesture anywhere near it, so play() was
+     rejected and the catch below dropped to the device voice - for the whole
+     rest of the lesson. Desktop has no such rule, so it looked perfect here.
+
+     Paul, 2026-09-15: "i still cant get the nexvoice to play on mobile ... it
+     isnt the correct voice. i think its defaulting to my phone ai."
+
+     Reusing ONE element keeps the unlock the first tap earned. Changing .src on
+     an unlocked element does not need a fresh gesture. */
+  audioEl = sharedAudio();
+  audioEl.onended = null;
+  audioEl.oncanplay = null;
+  try { audioEl.pause(); } catch (e) {}
+  audioEl.src = mediaUrl(clip.src);
+  try { audioEl.currentTime = 0; } catch (e) {}
   /* 🚨 SPEED COMES FROM PLAYBACK, NOT FROM THE CLIP. Baked audio is generated
      once at natural speed, so Slow / Normal / Fast are applied here. 0.85 is
      what the picker calls "Normal", so dividing by it keeps Normal at exactly
@@ -4559,6 +4609,10 @@ function speak(i){
 }
 
 playBtn.addEventListener("click", function(){
+  /* 🚨 FIRST LINE IN THE HANDLER, ON PURPOSE. The gesture is spent the moment
+     anything async runs, so the audio element has to be touched here - before
+     the guard below, before speak(), before any clip is fetched. */
+  unlockAudio();
   if (!supported && !hasStudio()) return;
   if (playing){
     playing = false;
@@ -4577,11 +4631,13 @@ playBtn.addEventListener("click", function(){
    while PLAYING they handed off to speak(), which respected the stuck flag. */
 document.getElementById("back").addEventListener("click", function(){
   var t = Math.max(0, idx - 1);
+  unlockAudio();
   resumeFollowing();
   if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
 });
 document.getElementById("fwd").addEventListener("click", function(){
   var t = Math.min(SENT.length - 1, idx + 1);
+  unlockAudio();
   resumeFollowing();
   if (playing) speak(t); else { idx = t; paint(); nsEyeLine(SENT[idx].el); }
 });
@@ -4753,6 +4809,9 @@ scrub.addEventListener("keydown", function(e){
     if (!t) return;
     var i = parseInt(t.getAttribute("data-i"), 10);
     if (isNaN(i)) return;
+    /* Tapping a sentence starts the reading without the play button ever being
+       touched, so this is the gesture that has to do the unlocking. */
+    unlockAudio();
     playing = true;
     resumeFollowing();
     speak(i);
