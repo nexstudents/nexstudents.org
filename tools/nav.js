@@ -2735,7 +2735,20 @@ function nsWhoPicker(){
      back up here to "clear state early" re-creates a bug with no symptom. */
   Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
     var rows=r[1]||[];
-    if(!rows.length) return;
+    /* 🚨 AN EMPTY PROFILE LIST IS NOT A REASON TO SKIP THIS SCREEN. There used
+       to be an early return on a zero-length list here, so a brand new account
+       - which is every account until somebody adds a child - signed in and saw
+       nothing at all.
+       ⚠️ NO BACKTICKS IN THIS COMMENT. navScript is returned as a template
+       literal, so quoting code here with them ends the string and the build
+       dies on the next word. Written down in CLAUDE.md, and I did it anyway.
+       Paul, 2026-09-16, after three of them: "I tested two different emails
+       filamfilms@gmail.com and anubisgrey@gmail.com and I also cleared the
+       cache on my and no login screen detected."
+       The account holder's own tile does not come from that list, and Manage
+       Profiles is how the first child ever gets created, so with nothing in the
+       list there is still a screen worth showing - and it is the one moment the
+       parent is most likely to add one. */
     adUser=adUser||r[0]; adKids=rows; adPins=r[2]||{};
     var me=adMe();
     function tile(id,name,theme){

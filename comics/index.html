@@ -1652,7 +1652,6 @@ function nsWhoPicker(){
   if(!window.NSAccount||!NSAccount.wantsPicker()) return;
   Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
     var rows=r[1]||[];
-    if(!rows.length) return;
     adUser=adUser||r[0]; adKids=rows; adPins=r[2]||{};
     var me=adMe();
     function tile(id,name,theme){
