@@ -2377,6 +2377,32 @@ html.whop-pre .whop{opacity:1;transition:none}
 .whop-out:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
 .whop-out[disabled]{opacity:.6;cursor:default}
 @media (max-width:520px){ .whop-out{font-size:12.5px;padding:8px 13px 8px 11px} }
+/* 🚨 THE GROUND NEVER ANIMATES. THE CONTENTS DO.
+   The first version faded the whole .whop in from transparent, which is the
+   flicker Paul kept seeing - 250ms of the site showing through the cover.
+   Then it was opaque and hard-cut, and he asked for it "a bit more smoth".
+   Both are satisfied by animating what is ON the cover rather than the cover:
+   the dark ground is there from the first frame, and the wordmark, question,
+   tiles and Sign Out ease up into it.
+   ⚠️ Never put a transition back on .whop itself. That is the flicker. */
+/* ⚠️ ANIMATIONS, NOT transitions keyed off .is-in. A transition needs the
+   script to add a class; if that ever fails the contents stay at opacity 0 and
+   the screen is blank and dark. An animation with fill:both starts itself, so
+   the worst case is no motion rather than no screen. */
+.whop-brand{animation:whopIn .22s ease both}
+.whop-in{animation:whopIn .22s ease .04s both}
+.whop-out{animation:whopIn .22s ease .10s both}
+/* The tiles arrive after the profile fetch, so they get their own small lift
+   rather than sitting inside a transition that already finished. */
+.whop-row .whop-i{animation:whopIn .24s ease both}
+.whop-row .whop-i:nth-child(2){animation-delay:.05s}
+.whop-row .whop-i:nth-child(3){animation-delay:.10s}
+.whop-row .whop-i:nth-child(n+4){animation-delay:.14s}
+@keyframes whopIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .whop-brand,.whop-in,.whop-out{opacity:1;transform:none;transition:none}
+  .whop-row .whop-i{animation:none}
+}
 .whop-in{text-align:center;max-width:760px}
 /* 🎬 The wordmark, top left, brand red - the Netflix placement Paul sent.
    #ff3131 is sampled from assets/brand/logo.png, so it IS the logo's red.
