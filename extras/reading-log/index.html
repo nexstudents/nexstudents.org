@@ -48,7 +48,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=8cbc589c">
+<link rel="stylesheet" href="/assets/ns.css?v=0e469d6c">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -2424,6 +2424,15 @@ function nsStartupSound(scope){
     });
   } catch (e) {}
 }
+function nsWhopCascade(o){
+  try{
+    var els=[].slice.call(o.querySelectorAll(".whop-brand,.whop-in > h2,.whop-row .whop-i,.whop-manage,.whop-out"));
+    var seq=els.map(function(el){ return { el:el, top:el.getBoundingClientRect().top }; })
+               .sort(function(a,b){ return a.top-b.top; });
+    seq.forEach(function(p,i){ p.el.style.animationDelay=(i*0.03).toFixed(3)+"s"; });
+    o.classList.add("is-ready");
+  }catch(e){ o.classList.add("is-ready"); }
+}
 function nsWhopPre(off){
   try{ document.documentElement.classList[off?"remove":"add"]("whop-pre"); }catch(e){}
 }
@@ -2489,6 +2498,7 @@ function nsWhoPicker(){
       tile("parent",me,adOwnerTheme())+
       adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("");
+    nsWhopCascade(o);
     NSAccount.pickerShown();
     var first=o.querySelector(".whop-i"); if(first) first.focus();
   }).catch(function(){ clearTimeout(giveUp); close(); });

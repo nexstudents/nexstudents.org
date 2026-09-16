@@ -1006,20 +1006,32 @@ html.whop-pre .whop{opacity:1;transition:none}
    and Manage Profiles - nesting two ns-row-in transforms compounds them, the
    children start 18px up instead of 9 and drift as the parent settles. Same
    trap as .dst-grid, written up above. Animate the pieces, never the box. */
-.whop-brand{animation:ns-row-in .3s both cubic-bezier(.22,.61,.36,1)}
-.whop-in > h2{animation:ns-row-in .3s .06s both cubic-bezier(.22,.61,.36,1)}
-.whop-manage{animation:ns-row-in .3s .30s both cubic-bezier(.22,.61,.36,1)}
-.whop-out{animation:ns-row-in .3s .36s both cubic-bezier(.22,.61,.36,1)}
+/* 🚨 THE CASCADE WAITS FOR THE CARDS, and it is ordered by POSITION.
+   Paul, 2026-09-16: "all the elements need to drop in from top to bottom ...
+   First the Nexstudents text, then Who is learning?, then the profile cards,
+   then the manage profiles, then the admin ... and the sign out together. It
+   will look like it is cascading down."
+   The cards come from the network, so a fixed stagger cannot put them third -
+   they would land whenever the fetch did, after Manage Profiles had already
+   dropped. So nothing moves until the tiles are in, and nsWhopCascade() then
+   assigns the delays in order of each element s actual top edge. Position, not
+   a hardcoded list, so a phone that wraps the row still cascades correctly.
+   ⚠️ Everything starts at opacity 0 and .is-ready releases it. That IS a
+   dependency on the script, which is normally the thing to avoid - the cover
+   here is already script-driven end to end and it times out after 8s and
+   uncovers the site, so the failure mode is bounded. */
+.whop-brand,.whop-in > h2,.whop-manage,.whop-out,.whop-row .whop-i{opacity:0}
+.whop.is-ready .whop-brand,
+.whop.is-ready .whop-in > h2,
+.whop.is-ready .whop-manage,
+.whop.is-ready .whop-out,
+.whop.is-ready .whop-row .whop-i{animation:ns-row-in .3s both cubic-bezier(.22,.61,.36,1)}
 /* The tiles arrive after the profile fetch, so they animate themselves rather
    than sitting inside a parent whose animation already finished. Same cascade
    the grade tiles have. */
-.whop-row .whop-i{animation:ns-row-in .3s both cubic-bezier(.22,.61,.36,1)}
-.whop-row .whop-i:nth-child(1){animation-delay:.14s}
-.whop-row .whop-i:nth-child(2){animation-delay:.19s}
-.whop-row .whop-i:nth-child(3){animation-delay:.24s}
-.whop-row .whop-i:nth-child(n+4){animation-delay:.28s}
+
 @media (prefers-reduced-motion:reduce){
-  .whop-brand,.whop-in > h2,.whop-manage,.whop-out,.whop-row .whop-i{animation:none}
+  .whop-brand,.whop-in > h2,.whop-manage,.whop-out,.whop-row .whop-i{animation:none;opacity:1}
 }
 .whop-in{text-align:center;max-width:760px}
 /* 🎬 The wordmark, top left, brand red - the Netflix placement Paul sent.

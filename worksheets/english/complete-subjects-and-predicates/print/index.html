@@ -46,8 +46,8 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <title>Complete Subjects and Predicates | NexStudents</title>
 <meta name="description" content="The paper half of the lesson. Draw the dividing line, then say which half is which.">
-<link rel="stylesheet" href="/assets/ns.css?v=d648d9a0">
-<link rel="stylesheet" href="/assets/worksheet.css?v=d648d9a0">
+<link rel="stylesheet" href="/assets/ns.css?v=1c6c52dc">
+<link rel="stylesheet" href="/assets/worksheet.css?v=1c6c52dc">
 </head>
 <body>
 
@@ -1602,6 +1602,15 @@ function nsStartupSound(scope){
     });
   } catch (e) {}
 }
+function nsWhopCascade(o){
+  try{
+    var els=[].slice.call(o.querySelectorAll(".whop-brand,.whop-in > h2,.whop-row .whop-i,.whop-manage,.whop-out"));
+    var seq=els.map(function(el){ return { el:el, top:el.getBoundingClientRect().top }; })
+               .sort(function(a,b){ return a.top-b.top; });
+    seq.forEach(function(p,i){ p.el.style.animationDelay=(i*0.03).toFixed(3)+"s"; });
+    o.classList.add("is-ready");
+  }catch(e){ o.classList.add("is-ready"); }
+}
 function nsWhopPre(off){
   try{ document.documentElement.classList[off?"remove":"add"]("whop-pre"); }catch(e){}
 }
@@ -1667,6 +1676,7 @@ function nsWhoPicker(){
       tile("parent",me,adOwnerTheme())+
       adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("");
+    nsWhopCascade(o);
     NSAccount.pickerShown();
     var first=o.querySelector(".whop-i"); if(first) first.focus();
   }).catch(function(){ clearTimeout(giveUp); close(); });

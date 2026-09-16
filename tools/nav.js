@@ -2745,6 +2745,30 @@ function nsStartupSound(scope){
   } catch (e) {}
 }
 
+/* 🚨 ONE CASCADE, TOP TO BOTTOM, ORDERED BY WHERE THINGS ACTUALLY ARE.
+   Paul wanted the wordmark, then the question, then the cards, then Manage
+   Profiles, then Sign Out - "it will look like it's cascading down".
+   Sorting by getBoundingClientRect().top rather than hardcoding that list is
+   what keeps it true when the layout moves: a narrow phone wraps the card row
+   onto two lines, and a list would then drop the second line out of order.
+   ⚠️ Called only once the tiles are in the DOM. The cards arrive from the
+   network, so releasing the animation earlier would cascade past an empty row
+   and land them afterwards - which is the thing being fixed.
+   ⚠️ Read every rect BEFORE writing any style, or the first write forces a
+   reflow and each subsequent read pays for it. */
+function nsWhopCascade(o){
+  try{
+    var els=[].slice.call(o.querySelectorAll(".whop-brand,.whop-in > h2,.whop-row .whop-i,.whop-manage,.whop-out"));
+    var seq=els.map(function(el){ return { el:el, top:el.getBoundingClientRect().top }; })
+               .sort(function(a,b){ return a.top-b.top; });
+    /* 30ms apart, which is the grade tiles' step exactly - Paul: "I do like how
+       the grades pop in and I want to similar effect." Same keyframe, same
+       easing, same gap, so the two screens move as one family. */
+    seq.forEach(function(p,i){ p.el.style.animationDelay=(i*0.03).toFixed(3)+"s"; });
+    o.classList.add("is-ready");
+  }catch(e){ o.classList.add("is-ready"); }
+}
+
 /* Take the pre-paint cover down. modeBoot guessed from two storage keys, so
    every path that ends without a picker on screen has to clear it. */
 function nsWhopPre(off){
@@ -2869,6 +2893,9 @@ function nsWhoPicker(){
       tile("parent",me,adOwnerTheme())+
       adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
       adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("");
+    /* The tiles exist, so the whole screen can come down together now, in the
+       order the eye reads it. */
+    nsWhopCascade(o);
     /* Real tiles are on screen NOW, so now it counts as asked. See the note above. */
     NSAccount.pickerShown();
     var first=o.querySelector(".whop-i"); if(first) first.focus();
