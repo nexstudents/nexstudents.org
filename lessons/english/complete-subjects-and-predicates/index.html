@@ -2520,6 +2520,15 @@ var MEDIA_BASE = "";
          reads what is actually on screen. */
       if (j.textHash && TEXT_HASH && j.textHash !== TEXT_HASH){
         AUDIO = null;
+        /* 🚨 SAY WHICH OF THE TWO THINGS HAPPENED. The picker's fallback text
+           was "NexVoice - not available" for BOTH "never recorded" and this,
+           and they need opposite actions: one is us owing a bake, the other is
+           a reader holding a cached page. Paul, 2026-09-15: "it says NexVoice
+           is not available on mobile" while the PC was fine on the same lesson
+           - a stale page on the phone is exactly what this branch catches, and
+           the message sent us looking in the wrong place. */
+        window.__nsVoiceStale = true;
+        if (typeof window.nsRebuildVoices === "function") window.nsRebuildVoices();
         return;
       }
       tr = tr.filter(function(t){ return t.clips && t.clips.length === SENT.length; });
@@ -2732,7 +2741,9 @@ if (!supported && !hasStudio() && !hasKey()){
     } else {
       var nv = document.createElement("option");
       nv.value = "__studio__";
-      nv.textContent = "NexVoice — not available";
+      nv.textContent = window.__nsVoiceStale
+        ? "NexVoice — refresh this page"
+        : "NexVoice — not recorded yet";
       nv.disabled = true;
       voiceSel.appendChild(nv);
     }
