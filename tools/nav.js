@@ -2776,10 +2776,24 @@ function nsWhoPicker(){
   var o=document.createElement("div");
   o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
   o.setAttribute("aria-labelledby","whopH");
+  /* 🚪 SIGN OUT, BOTTOM RIGHT, both sizes. Paul, 2026-09-16: "can you add a
+     kogout svg icon to the screen bottom right to both phone and pc." It is the
+     one screen where the wrong account is obvious, so it is where a way out
+     belongs - otherwise the only escape from somebody else's profile list is
+     the browser back button.
+     ⚠️ It carries a visible word as well as the glyph. An icon alone at the
+     edge of a full-screen sheet reads as decoration, and this one signs you
+     out. */
   o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
     "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2>"+
     "<div class='whop-row'></div>"+
-    "<button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
+    "<button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>"+
+    "<button type='button' class='whop-out' data-signout>"+
+    "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' "+
+    "stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>"+
+    "<path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/>"+
+    "<polyline points='16 17 21 12 16 7'/><line x1='21' y1='12' x2='9' y2='12'/>"+
+    "</svg><span>Sign Out</span></button>";
   document.body.appendChild(o);
   nsStartupSound(o);
   nsLockScroll(true);
@@ -2794,6 +2808,17 @@ function nsWhoPicker(){
       adSetWho(id); close();
       /* A student has no use for the account panel a sign-in opens. */
       if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
+      return;
+    }
+    if(e.target.closest("[data-signout]")){
+      /* Leave the screen up while it happens: signOut clears the session and
+         this page is about to be replaced anyway, so a half-dismissed cover
+         would just flash the site at somebody who asked to leave it. */
+      var so=e.target.closest("[data-signout]");
+      so.disabled=true; so.querySelector("span").textContent="Signing out…";
+      Promise.resolve(NSAccount.signOut()).catch(function(){}).then(function(){
+        location.href="/";
+      });
       return;
     }
     if(e.target.closest("[data-manage]")){

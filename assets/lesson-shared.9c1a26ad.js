@@ -1411,7 +1411,13 @@ function nsWhoPicker(){
   o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
     "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2>"+
     "<div class='whop-row'></div>"+
-    "<button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>";
+    "<button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>"+
+    "<button type='button' class='whop-out' data-signout>"+
+    "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' "+
+    "stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>"+
+    "<path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/>"+
+    "<polyline points='16 17 21 12 16 7'/><line x1='21' y1='12' x2='9' y2='12'/>"+
+    "</svg><span>Sign Out</span></button>";
   document.body.appendChild(o);
   nsStartupSound(o);
   nsLockScroll(true);
@@ -1425,6 +1431,14 @@ function nsWhoPicker(){
       var id=b.getAttribute("data-who");
       adSetWho(id); close();
       if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
+      return;
+    }
+    if(e.target.closest("[data-signout]")){
+      var so=e.target.closest("[data-signout]");
+      so.disabled=true; so.querySelector("span").textContent="Signing out…";
+      Promise.resolve(NSAccount.signOut()).catch(function(){}).then(function(){
+        location.href="/";
+      });
       return;
     }
     if(e.target.closest("[data-manage]")){

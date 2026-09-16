@@ -958,6 +958,26 @@ html.whop-pre .whop{opacity:1;transition:none}
 .whop{position:fixed;inset:0;z-index:120;background:#0a0b0d;color:#f1f3f5;display:grid;place-items:center;
   padding:24px 16px;overflow-y:auto;opacity:0;transition:opacity .25s ease;font-family:"Archivo",system-ui,sans-serif}
 .whop.is-in{opacity:1}
+/* 🚪 SIGN OUT on the picker, bottom right, phone and desktop alike.
+   ⚠️ Inside .whop, which is display:grid/place-items:center, so it is taken
+   OUT of the grid with position:absolute - a normal child would be centred
+   with the tiles. Same reason .whop-brand is absolute.
+   ⚠️ The safe-area inset matters: on a phone this sits exactly where the home
+   indicator lives, and without it the button is half under the gesture bar. */
+.whop-out{
+  position:absolute;z-index:2;
+  right:calc(16px + env(safe-area-inset-right, 0px));
+  bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+  display:inline-flex;align-items:center;gap:8px;
+  font:inherit;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;
+  color:#c9ced6;background:transparent;
+  border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:9px 15px 9px 13px;
+}
+.whop-out svg{width:17px;height:17px;flex:0 0 auto}
+.whop-out:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+.whop-out:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.whop-out[disabled]{opacity:.6;cursor:default}
+@media (max-width:520px){ .whop-out{font-size:12.5px;padding:8px 13px 8px 11px} }
 .whop-in{text-align:center;max-width:760px}
 /* 🎬 The wordmark, top left, brand red - the Netflix placement Paul sent.
    #ff3131 is sampled from assets/brand/logo.png, so it IS the logo's red.
