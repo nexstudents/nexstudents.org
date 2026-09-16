@@ -265,6 +265,26 @@
   $("siRem").checked = NSAccount.remembering();
   $("siRem").onchange = function(){ NSAccount.setRemember($("siRem").checked); };
 
+  /* 🔊 THE STARTUP SOUND, ON THE TAP THAT SIGNS IN.
+     Paul asked for it "when the login screen appears", then agreed to hang it
+     on the tap instead: "could we wire it for after a tap for login". That is
+     not a compromise, it is the only version that works. A phone refuses audio
+     that no gesture asked for, so a sound fired when a screen appears is
+     silently dropped - the same rule that had NexVoice reading in the device
+     voice from sentence two.
+     ⚠️ It must start INSIDE this handler, before any await or fetch, or the
+     gesture is spent and the play() is refused.
+     ⚠️ Failure is ignored on purpose. A missing or blocked sound must never
+     stop somebody signing in. */
+  function nsStartupSound(){
+    try {
+      var a = new Audio("https://nexstudents-media.nexedgetech.workers.dev/ui/startup.mp3");
+      a.volume = 0.5;
+      var p = a.play();
+      if (p && p.catch) p.catch(function(){});
+    } catch (e) {}
+  }
+
   $("siForm").onsubmit = function(e){
     e.preventDefault();
     /* ⚠️ By id, never querySelector("button"): the first button in the form
@@ -282,6 +302,11 @@
     if (mode === "up" && !$("siFirst").value.trim()) return stop("Type your first name.");
     msg.textContent = { in: "Signing in", up: "Creating your account", forgot: "Sending the reset link",
                         reset: "Saving your new password" }[mode] + "...";
+
+    /* Past every check, so this really is a sign-in attempt rather than a
+       mistyped email. Still the same synchronous gesture, which is what the
+       sound needs. */
+    if (mode === "in") nsStartupSound();
 
     /* ⚠️ DO NOT CALL nsWhoPicker() HERE. It looks like the right place and is
        the opposite: paint() ends in location.replace("/?panel=account"), so
