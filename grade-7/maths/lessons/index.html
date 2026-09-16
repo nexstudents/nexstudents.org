@@ -3267,7 +3267,11 @@ function nsWhopCascade(o){
     var els=[].slice.call(o.querySelectorAll(".whop-brand,.whop-in > h2,.whop-row .whop-i,.whop-manage,.whop-out"));
     var seq=els.map(function(el){ return { el:el, top:el.getBoundingClientRect().top }; })
                .sort(function(a,b){ return a.top-b.top; });
-    seq.forEach(function(p,i){ p.el.style.animationDelay=(i*0.03).toFixed(3)+"s"; });
+    var row=-1, prevTop=null;
+    seq.forEach(function(p){
+      if(prevTop===null||Math.abs(p.top-prevTop)>12){ row++; prevTop=p.top; }
+      p.el.style.animationDelay=(row*0.03).toFixed(3)+"s";
+    });
     o.classList.add("is-ready");
   }catch(e){ o.classList.add("is-ready"); }
 }

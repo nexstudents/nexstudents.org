@@ -2768,10 +2768,21 @@ function nsWhopCascade(o){
     var els=[].slice.call(o.querySelectorAll(".whop-brand,.whop-in > h2,.whop-row .whop-i,.whop-manage,.whop-out"));
     var seq=els.map(function(el){ return { el:el, top:el.getBoundingClientRect().top }; })
                .sort(function(a,b){ return a.top-b.top; });
-    /* 30ms apart, which is the grade tiles' step exactly - Paul: "I do like how
-       the grades pop in and I want to similar effect." Same keyframe, same
-       easing, same gap, so the two screens move as one family. */
-    seq.forEach(function(p,i){ p.el.style.animationDelay=(i*0.03).toFixed(3)+"s"; });
+    /* 🚨 ONE DELAY PER ROW, NOT PER ELEMENT. Paul, 2026-09-16: "the profiles
+       just pop in. I think it first shows my profile then Kolten's."
+       Sorting by top alone still gave two tiles SIDE BY SIDE different delays,
+       so a single row arrived as pop, pop. Things at the same height read as
+       one thing and have to move as one - which is also what he meant by the
+       admin "and the sign out together".
+       Anything within 12px of the row above joins it; that tolerance covers a
+       tile whose label wraps to a second line and sits a pixel or two off. */
+    var row=-1, prevTop=null;
+    seq.forEach(function(p){
+      if(prevTop===null||Math.abs(p.top-prevTop)>12){ row++; prevTop=p.top; }
+      /* 30ms a row, the grade tiles' step exactly - Paul: "I do like how the
+         grades pop in and I want to similar effect." */
+      p.el.style.animationDelay=(row*0.03).toFixed(3)+"s";
+    });
     o.classList.add("is-ready");
   }catch(e){ o.classList.add("is-ready"); }
 }
