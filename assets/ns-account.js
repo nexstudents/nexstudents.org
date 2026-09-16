@@ -458,7 +458,13 @@
      (kind). The account holder is parent 1 and has no row. */
   /* `theme` is ONE of the eight lesson palettes and colours both the profile
      box and that profile's lessons. */
-  var STUDENT_COLS = "id,kind,name,grade,theme,birthday,gender,about,settings,created_at";
+  /* 🚨 ADD NEW COLUMNS HERE OR THE PANEL NEVER SEES THEM. This is an explicit
+     select, so a column added by a migration is absent from every row until it
+     is named, and absent reads as false. `is_holder` (019) shipped without it:
+     the account holder's profile looked like an ordinary parent, so Manage
+     Profiles offered "Change to Student" and never offered Switch Account
+     Holder at all. Paul: "there's no option at all for the account holder." */
+  var STUDENT_COLS = "id,kind,name,grade,theme,birthday,gender,about,settings,is_holder,created_at";
   function profileBody(f) {
     return { name: String(f.name || "").trim(), grade: f.grade || null, theme: f.theme || "ocean",
              birthday: f.birthday || null, gender: f.gender || null };
