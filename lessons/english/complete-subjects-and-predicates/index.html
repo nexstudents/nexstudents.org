@@ -2591,6 +2591,32 @@ function hasKey(){ return !!ttsKey; }
 function hasStudio(){
   return !!(AUDIO && AUDIO.clips && AUDIO.clips.length === SENT.length);
 }
+/* 🚨 A FALLBACK THAT SAYS NOTHING IS HOW A WRONG VOICE LOOKS LIKE A WORKING ONE.
+   Two paths drop from NexVoice to the device voice: the clip fails to play
+   (offline, a slow R2, a mobile-data hiccup), or we reach speak() still
+   believing we are baked when AUDIO never arrived. Both used to happen in
+   silence with the picker still reading NexVoice.
+
+   Paul, 2026-09-15, from his phone: "it does show it is available but the voice
+   is not correct and is defaulting to another voice I think from my phone ...
+   it sounds like a generic ai female voice." He could hear it was wrong and the
+   page insisted it was right, which cost an evening of looking in the wrong
+   place.
+
+   ⚠️ Whatever else changes here, the picker must never name a voice that is not
+   the one speaking.
+
+   ⚠️ selectValue lives inside the picker's closure and is NOT reachable from
+   here. window.syncVoiceUI is already exported for exactly this job: it moves
+   the <select> to the device voice once engine is "device". Then nsRenderVsel
+   repaints the list the reader is actually looking at. */
+function dropToDeviceVoice(){
+  if (engine === "device") return;
+  engine = "device";
+  if (typeof window.syncVoiceUI === "function") window.syncVoiceUI();
+  if (typeof window.nsRenderVsel === "function") window.nsRenderVsel();
+}
+
 /* Point AUDIO at a named track. Returns false if this lesson has no such
    voice, so the caller can fall back rather than play silence. */
 function useTrack(id){
@@ -2872,8 +2898,9 @@ if (!supported && !hasStudio() && !hasKey()){
       /* NexVoice first when the lesson has it - it is the reason the site has
          a voice at all. A saved pick still wins, so a reader who chose
          something else keeps it. */
+      /* ⚠️ The second branch here used to repeat the first one's condition
+         exactly, so it could never run. Collapsed rather than guessed at. */
       if (AUDIO_TRACKS.length) selectValue("__studio__:" + AUDIO_TRACKS[0].id);
-      else if (AUDIO_TRACKS.length) selectValue("__studio__:" + AUDIO_TRACKS[0].id);
       else if (voice) selectValue("d:" + voice.name);
     }
     applyVoiceChoice(voiceSel.value, false);
@@ -2957,8 +2984,23 @@ if (!supported && !hasStudio() && !hasKey()){
       store("gvoice", googleVoice);
     } else if (val.indexOf("__studio__") === 0){
       var id = val.split(":")[1];
-      if (id) useTrack(id);
-      engine = "baked";
+      /* 🚨 ONLY CLAIM "baked" IF A TRACK WAS ACTUALLY FOUND. useTrack returns
+         false for a reason and this line used to throw it away, so engine was
+         set to "baked" with AUDIO still null and speak() fell through to
+         playSynth - the device voice - while the picker went on saying
+         NexVoice. Paul, 2026-09-15, from his phone: "it does show it is
+         available but the voice is not correct and is defaulting to another
+         voice I think from my phone ... it sounds like a generic ai female
+         voice."
+         🚨 THE PLACEHOLDER IS THE COMMON CASE, not a saved pick. Until
+         voice.json resolves, the only NexVoice option is the DISABLED one whose
+         value is the bare "__studio__", with no id after the colon. That still
+         matched this branch, so every lesson claimed baked audio for as long as
+         the fetch took. On a desktop that is imperceptible; on a phone on
+         mobile data it is long enough to press play. */
+      if (id && useTrack(id)) engine = "baked";
+      else if (AUDIO_TRACKS.length && useTrack(AUDIO_TRACKS[0].id)) engine = "baked";
+      else engine = "device";
     } else {
       engine = "device";
       voice = voices.filter(function(v){ return "d:" + v.name === val; })[0] || voice;
@@ -4366,7 +4408,7 @@ function playClipFrom(mine, clip){
   var p = audioEl.play();
   if (p && p.then){
     p.then(function(){ rafId = requestAnimationFrame(tick); })
-     .catch(function(){ if (mine === gen) playSynth(mine); });   // clip broken -> device voice
+     .catch(function(){ if (mine === gen) { dropToDeviceVoice(); playSynth(mine); } });
   } else {
     rafId = requestAnimationFrame(tick);
   }
@@ -4439,7 +4481,16 @@ function speak(i){
 
   if (engine === "google" && hasKey()) playGoogle(mine);
   else if (engine === "baked" && hasStudio()) playClip(mine);
-  else playSynth(mine);
+  else {
+    /* 🚨 NEVER PLAY ONE VOICE WHILE THE PICKER NAMES ANOTHER. This used to fall
+       straight through to the device voice with the label still reading
+       NexVoice, which is how a wrong voice looks like a working one. If we get
+       here still believing we are baked, the belief is wrong: say so in the UI
+       by actually moving the picker to the device voice that is about to
+       speak. */
+    if (engine === "baked") dropToDeviceVoice();
+    playSynth(mine);
+  }
 }
 
 playBtn.addEventListener("click", function(){
