@@ -87,20 +87,13 @@ function checkPartB(L) {
   }
 }
 
-const numWord = (n) => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
-  'eight', 'nine', 'ten', 'eleven', 'twelve'][n] || String(n);
-
 /* ⚠️ Fill the counts from the data before anything reads the todo. Typing
-   "seven sentences" is how a lesson ends up telling the student to stop early. */
-function fillTodo(L) {
-  const a = numWord(L.practice.length), b = numWord(L.sort.length);
-  return Object.assign({}, L, {
-    todo: {
-      title: L.todo.title,
-      s: L.todo.s.map((line) => String(line).replace(/\{a\}/g, a).replace(/\{b\}/g, b))
-    }
-  });
-}
+   "seven sentences" is how a lesson ends up telling the student to stop early.
+   🚨 BOTH numWord AND fillTodo NOW COME FROM split-lessons.js, so bake-voice.js
+   composes the exact same sentences this page renders. They used to live here,
+   where the baker could not reach them, and the first split bake recorded the
+   unfilled "{a}" out loud. Do not re-declare them locally. */
+const { fillTodo, numWord } = require('./split-lessons.js');
 
 /* ── rendering ──────────────────────────────────────────────────────────── */
 

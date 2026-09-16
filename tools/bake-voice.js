@@ -146,6 +146,22 @@ function lessons() {
   const { partsFor } = require("./lesson-instructions.js");
   try { require("./lessons.js").LESSONS.forEach((L) => push(L.id, partsFor(L))); } catch (e) { fail("lessons.js: " + e.message); }
   try { require("./english-lessons.js").ENGLISH.forEach((L) => push(L.id, partsFor(L))); } catch (e) { fail("english-lessons.js: " + e.message); }
+  /* 🚨 SPLIT LESSONS ARE LESSONS TOO, AND THEY WERE MISSED FOR A MONTH.
+     They live in their own registry because build-split.js is their generator,
+     so every list that says "every lesson" has to name them explicitly. This
+     one did not, and complete-subjects-and-predicates shipped with a voice
+     player on the page and no audio behind it - the only grade 7 lesson with
+     no NexVoice, found 2026-09-15 when Paul asked for all 27 to be checked.
+     ⚠️ Their data shape is the ordinary one (parts with s, plus todo), so
+     partsFor works unchanged. The reason they were absent is the registry, not
+     the format - which is exactly why it was easy to miss. */
+  /* 🚨 fillTodo FIRST. The todo carries {a} and {b} placeholders that the page
+     fills from the data; skipping it bakes the braces into the speech and, more
+     usefully, breaks textHash so the lesson refuses the audio outright. */
+  try {
+    const { SPLIT, fillTodo } = require("./split-lessons.js");
+    SPLIT.forEach((L) => push(L.id, partsFor(fillTodo(L))));
+  } catch (e) { fail("split-lessons.js: " + e.message); }
   /* Integers are caption-driven like maths, not parts-driven like English:
      the walkthrough sentences come from integer-captions.js so the audio and
      the on-screen demo are generated from the same function. */
