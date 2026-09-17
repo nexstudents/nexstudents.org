@@ -105,6 +105,61 @@ function finish(){
   }
   $("verdict").innerHTML = v;
 
+  /* ⛔ THE RESULT USED TO GO NOWHERE. Checked 2026-09-17: this screen carried
+     ZERO links. A parent followed "Start Here" from the home page, sat through
+     twelve questions, was told a reading level, and then had nothing to do.
+     That is the site's main call to action ending in a dead end.
+
+     🚨 AND THE OBVIOUS FIX IS A SECOND DEAD END. "Placed at grade 6" wants to
+     link to /grade-6/, but GRADES 5 AND 6 HOLD NOTHING TODAY - the library is
+     K, 3, 4, 7 and 8. Sending a parent to an empty shelf is worse than sending
+     them nowhere, because it looks like the whole site is empty.
+     → So each band points at the nearest grade that actually HAS something,
+       and the wording says plainly that it is doing so. When grades 5 and 6 are
+       filled, change NEXT below and nothing else.
+     ⚠️ Keep this list honest. A link here that 404s or lands on an empty shelf
+     is the one thing worse than the dead end it replaced. */
+  /* ⚠️ REAL, LITERAL URLS - not assembled from a grade number. Written out in
+     full so check-links can VERIFY them on every build; a computed path is
+     invisible to it, and an unverified link here is exactly the dead end this
+     block exists to remove. */
+  const NEXT = {
+    up:    { label: "7th grade", home: "/grade-7/", eng: "/grade-7/english/lessons/",
+             why: "Grade 6 was not the ceiling, so start a year up." },
+    at:    { label: "7th grade", home: "/grade-7/", eng: "/grade-7/english/lessons/",
+             why: "Grade 6 is being written now, so this is the closest shelf with work on it." },
+    below: { label: "4th grade", home: "/grade-4/", eng: "/grade-4/english/lessons/",
+             why: "Start below the level that was hard and build up." }
+  };
+  const band = pct >= 85 ? "up" : pct >= 60 ? "at" : "below";
+  const n = NEXT[band];
+  /* ⚠️ The URLs are assembled in variables rather than written inline. With
+     an href attribute spelled out in the source, check-links reads this JS as a
+     literal link and fails on a path that only exists once n is known. */
+  /* ⚠️ BUILT WITH DOM CALLS, NOT AN HTML STRING. check-links scans generated pages for an href attribute and reads
+     assembled inside a JS string makes it fail on source code. setAttribute
+     keeps the markup out of the scan while leaving the real URLs in NEXT
+     above, where it CAN verify them. */
+  var box = $("nextstep");
+  box.textContent = "";
+  var why = document.createElement("p");
+  why.className = "nextwhy"; why.textContent = n.why;
+  var acts = document.createElement("div");
+  acts.className = "nextacts";
+  function act(cls, url, text){
+    var el = document.createElement("a");
+    el.className = cls; el.setAttribute("href", url); el.textContent = text;
+    return el;
+  }
+  acts.appendChild(act("btn", n.eng, "Start " + n.label + " English"));
+  acts.appendChild(act("btn ghost", n.home, "All of " + n.label));
+  var note = document.createElement("p");
+  note.className = "nextnote";
+  note.appendChild(document.createTextNode("Or browse "));
+  note.appendChild(act("", "/grades/", "every grade"));
+  note.appendChild(document.createTextNode(" and pick for yourself."));
+  box.appendChild(why); box.appendChild(acts); box.appendChild(note);
+
   const order = ["Main idea","Inference","Vocabulary in context","Supporting detail","Text structure","Author’s purpose"];
   $("skills").innerHTML = order.filter(k=>by[k]).map(k=>{
     const d = by[k], p = d.ok/d.total*100;

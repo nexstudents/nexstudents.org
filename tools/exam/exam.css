@@ -95,3 +95,14 @@
    both-ends rule that the day/night knob and the banner tint both taught. */
 :root{ --ex-good:#4ade80; --ex-warn:#e0a13a; --ex-bad:#ff6a4d; }
 :root[data-theme="light"]{ --ex-good:#1d7f4f; --ex-warn:#a3690f; --ex-bad:#b8352c; }
+
+/* ── where to go next ──────────────────────────────────────────────────
+   The result screen's most important element, because until 2026-09-17 it
+   did not exist and the exam simply stopped. Sits directly under the
+   verdict, above the skill breakdown: the breakdown is for a parent who
+   wants detail, this is for one who wants to get on with it. */
+.nextstep{margin:18px 0 6px}
+.nextwhy{margin:0 0 12px;line-height:1.6;max-width:56ch}
+.nextacts{display:flex;gap:10px;flex-wrap:wrap}
+.nextnote{margin:12px 0 0;font-size:.92rem;opacity:.8}
+@media(max-width:520px){ .nextacts .btn{flex:1 1 100%;justify-content:center} }
