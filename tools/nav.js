@@ -3004,14 +3004,19 @@ var adOrdersLoading=false;
 
 function adLoad(){
   if(adLoading) return; adLoading=true;
-  var a=NSAccount.getUser().then(function(u){ adUser=u; }).catch(function(){});
-  var c=NSAccount.students().then(function(k){ adKids=k||[]; }).catch(function(){ adKids=[]; });
-  var d=NSAccount.pinMap().then(function(p){ adPins=p||{}; }).catch(function(){ adPins={}; });
-  /* ⭐ ONE REPAINT, NOT THREE. Each of these used to call adRefresh() as it
-     landed, which is what made the tiles arrive in stages. Nothing is worth
-     showing until all three are in anyway: the strip needs the name AND the
-     list, and a padlock needs the pins. */
-  Promise.all([a,c,d]).then(function(){
+  /* ⚡ ONE REQUEST, ONE REPAINT (migration 020). This was three calls, each
+     repainting as it landed, which is what made the tiles arrive in stages.
+     NSAccount.bootstrap() returns the user, the profiles and the PIN map
+     together, and falls back to the old three if the function is not deployed
+     yet - so this is safe to ship before the SQL is applied. */
+  NSAccount.bootstrap().then(function(d){
+    if(d.me) adUser=d.me;
+    adKids=d.profiles||[];
+    adPins=d.pins||{};
+  }).catch(function(){
+    if(adKids===null) adKids=[];
+    if(adPins===null) adPins={};
+  }).then(function(){
     adLoading=false;
     adCacheWrite();
     adRefresh();

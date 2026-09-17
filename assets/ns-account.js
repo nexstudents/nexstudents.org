@@ -557,6 +557,47 @@
      parent's row id, or null for the account holder. pinMap() answers which
      parents have one: {owner: true, "<id>": true}. */
   function pinMap() { return rest("POST", "/rpc/pin_map", {}, "Could not check the PIN."); }
+
+  /* ⚡ ONE CALL FOR THE WHOLE PANEL (migration 020).
+     Paul, 2026-09-17: "if it's single request it feels good to do now."
+
+     Opening the panel used to ask three questions over three round trips — the
+     user, the profiles, the PIN map — and the panel repainted as each landed.
+     account_bootstrap() returns all three together.
+
+     🚨 IT FALLS BACK, ON PURPOSE. The SQL is applied by hand in the Supabase
+     console, so there is always a window where this code is live and the
+     function is not. A 404 there must not take the account panel down with it,
+     so a failure just runs the old three calls. Delete the fallback only once
+     the function is confirmed in production.
+
+     ⚠️ Shapes match the old calls exactly, so nothing downstream changes:
+     me -> getUser(), profiles -> students(), pins -> pinMap(). */
+  var bootstrapGone = false;
+  function bootstrap() {
+    if (bootstrapGone) return legacyBootstrap();
+    return rest("POST", "/rpc/account_bootstrap", {}, "Could not load your account.")
+      .then(function (d) {
+        if (!d || typeof d !== "object" || !("profiles" in d)) throw new Error("shape");
+        var rows = d.profiles || [];
+        /* Same guard students() applies: a profile deleted on another device
+           must not stay the active one here. */
+        var w = who();
+        if (w !== "parent" && !rows.some(function (r) { return r.id === w; })) write(WHO_KEY, "parent");
+        return { me: d.me || null, profiles: rows, pins: d.pins || {} };
+      })
+      .catch(function () {
+        bootstrapGone = true;   /* stop retrying it every page */
+        return legacyBootstrap();
+      });
+  }
+  function legacyBootstrap() {
+    return Promise.all([
+      getUser().catch(function () { return null; }),
+      students().catch(function () { return []; }),
+      pinMap().catch(function () { return {}; })
+    ]).then(function (r) { return { me: r[0], profiles: r[1], pins: r[2] }; });
+  }
   function checkPin(pin, profile) {
     return rest("POST", "/rpc/check_pin", { pin: String(pin || ""), profile: profile || null }, "Could not check the PIN.");
   }
@@ -900,6 +941,7 @@
     setProfileKind: setProfileKind, swapAccountHolder: swapAccountHolder,
     progressRows: progressRows, upsertProgress: upsertProgress, deleteProgress: deleteProgress,
     pinMap: pinMap, checkPin: checkPin, setPin: setPin, clearPin: clearPin,
+    bootstrap: bootstrap,
     isSignedIn: function () { return !!session; },
     uid: uid,
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
