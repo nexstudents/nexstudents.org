@@ -105,8 +105,12 @@ server.listen(0, "127.0.0.1", () => {
               path.relative(root, abs).replace(/\\/g, "/") + query;
 
   execFile(chrome, [
-    "--headless=new",
-    "--disable-gpu",
+    /* 🚨 PLAIN --headless, NOT --headless=new. Chrome 152 removed the =new
+           spelling: the old flag is rejected, Chrome exits 0 having done
+           nothing, and this printed "Chrome reported no error but wrote
+           nothing." New headless IS the default now. Found 2026-09-17. */
+        "--headless",
+    "--disable-gpu", "--virtual-time-budget=10000",
     "--no-pdf-header-footer",     // no browser URL/date furniture on the sheet
     "--print-to-pdf=" + out,
     url,

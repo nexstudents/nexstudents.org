@@ -136,7 +136,11 @@ const shot = path.join(os.tmpdir(), "ns-cover-" + process.pid + ".png");
 server.listen(0, "127.0.0.1", () => {
   const url = "http://127.0.0.1:" + server.address().port + PROOF_URL;
   execFile(chrome, [
-    "--headless=new", "--disable-gpu", "--hide-scrollbars",
+    /* 🚨 PLAIN --headless, NOT --headless=new. Chrome 152 removed the =new
+           spelling: the old flag is rejected, Chrome exits 0 having done
+           nothing, and this printed "Chrome reported no error but wrote
+           nothing." New headless IS the default now. Found 2026-09-17. */
+        "--headless", "--disable-gpu", "--virtual-time-budget=10000", "--hide-scrollbars",
     "--window-size=" + WIN_W + "," + WIN_H,
     "--screenshot=" + shot,
     url,

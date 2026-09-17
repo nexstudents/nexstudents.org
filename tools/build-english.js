@@ -460,7 +460,9 @@ function sheetCta(L) {
   const pdfRel = L.sheet.slug + ".pdf";
   const hasPdf = fs.existsSync(path.join(ROOT, base.slice(1), pdfRel));
   const dl = hasPdf
-    ? '      <a class="tab act" href="' + href + pdfRel + '" download>Download The PDF</a>\n'
+    /* ⚠️ THE PDF SITS AT THE FOLDER ROOT, NOT UNDER /print/. href points into
+       print/ for the page; the file does not live there. check-links caught it. */
+    ? '      <a class="tab act" href="' + base + pdfRel + '" download>Download The PDF</a>\n'
     : "";
   return '<div class="sheetcta">\n' +
     '    <p class="sheetnote">' + esc(L.sheet.note) + '</p>\n' +

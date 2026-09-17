@@ -30,6 +30,9 @@ const CANDIDATES = [
   "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
 ];
 const chrome = CANDIDATES.find((c) => fs.existsSync(c));
+/* A fixed port, because /json/version cannot be polled on port 0. Randomised
+   per run so two of these checks can be in flight without colliding. */
+const PORT = 9400 + Math.floor(Math.random() * 400);
 if (!chrome) { console.error("FAIL — Chrome or Edge not found; cannot run the pages."); process.exit(1); }
 if (typeof WebSocket !== "function") { console.error("FAIL — this Node has no WebSocket (needs Node 22+)."); process.exit(1); }
 
@@ -77,16 +80,38 @@ async function main() {
   const origin = "http://127.0.0.1:" + server.address().port;
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), "ns-ans-"));
   const proc = spawn(chrome, ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
-    "--remote-debugging-port=0", "--user-data-dir=" + profile, "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
+    "--remote-debugging-port=" + PORT, "--user-data-dir=" + profile, "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
 
-  const wsUrl = await new Promise((resolve, reject) => {
-    let buf = "";
-    const t = setTimeout(() => reject(new Error("Chrome did not open its debugging port")), 20000);
-    proc.stderr.on("data", (d) => {
-      buf += d; const m = /DevTools listening on (ws:\/\/\S+)/.exec(buf);
-      if (m) { clearTimeout(t); resolve(m[1]); }
-    });
-  });
+  /* 🚨 DO NOT WAIT FOR "DevTools listening on ..." ON STDERR.
+     Chrome 152 does not print it. This check timed out on every run from
+     2026-09-17 with the message "Chrome did not open its debugging port",
+     while the port was in fact open and answering the whole time - verified by
+     hand against /json/version. Two things were wrong with the old handshake:
+
+       · the line is not guaranteed, and newer Chrome omits it
+       · on Windows the launcher process often exits immediately while the
+         real browser carries on, so the child's stderr closes and the handle
+         says "exited" even though Chrome is running
+
+     Asking the browser is both simpler and true: poll /json/version until it
+     answers, and take the socket from its own reply. A fixed port is needed
+     for that, since port 0 is only discoverable from the line we cannot read. */
+  const wsUrl = await (async () => {
+    const deadline = Date.now() + 20000;
+    let lastErr = "no answer";
+    while (Date.now() < deadline) {
+      try {
+        const r = await fetch("http://127.0.0.1:" + PORT + "/json/version");
+        if (r.ok) {
+          const j = await r.json();
+          if (j && j.webSocketDebuggerUrl) return j.webSocketDebuggerUrl;
+        }
+        lastErr = "HTTP " + r.status;
+      } catch (e) { lastErr = e.message; }
+      await wait(200);
+    }
+    throw new Error("Chrome did not open its debugging port (" + lastErr + ")");
+  })();
 
   const ws = new WebSocket(wsUrl);
   await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
