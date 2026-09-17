@@ -187,6 +187,36 @@ async function capture(url) {
   /* Give webfonts and the stylesheet time to land; a cover of unstyled text is
      worse than no cover, and there is no error to tell us apart. */
   await sleep(3500);
+  /* 🚨 RENDER AS THE PRINTER SEES IT. The /print/ page carries the site nav,
+     the Print/Download bar, a dark body and a footer - all hidden by
+     @media print and none of which belong on a cover. Screenshotting the WEB
+     page is why every cover was cropped wrong and ended mid-sentence:
+     make-cover was cutting a fixed box out of a layout it could not predict.
+     Paul, 2026-09-17: "you should make these sheets fit inside of a square on
+     the site. you have the bottom cut off." */
+  await send("Emulation.setEmulatedMedia", { media: "print" });
+  /* 🚨 AND HIDE WHATEVER PRINT CSS MISSES. A dark strip still came through at
+     the top of the first cover - site chrome that @media print does not catch
+     in this context. A cover must be the SHEET and nothing else, so rather
+     than chase each stray element, show .sheet and hide its siblings. */
+  await send("Runtime.evaluate", { expression: "(function(){" +
+    "var st=document.createElement('style');" +
+    "st.textContent='body>*:not(.sheet){display:none!important}'+" +
+    "'html,body{background:#fff!important;margin:0!important;padding:0!important}'+" +
+    "'.sheet{margin:0!important;box-shadow:none!important;border:0!important}';" +
+    "document.head.appendChild(st);" +
+    "var s=document.querySelector('.sheet');" +
+    "if(s&&s.parentElement&&s.parentElement!==document.body){" +
+      "document.body.appendChild(s);" +
+    "}" +
+  "})()" });
+  await sleep(1200);
+  /* One Letter page is 816x1056 at 96dpi. Capture at that WIDTH and let the
+     height run; the crop below takes the first page off the top. */
+  const met = await send("Page.getLayoutMetrics");
+  const full = Math.min(Math.ceil((met.cssContentSize && met.cssContentSize.height) || PAGE_H), 16000);
+  await send("Emulation.setDeviceMetricsOverride", { width: PAGE_W, height: full, deviceScaleFactor: 2, mobile: false });
+  await sleep(500);
   const shotRes = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
   try { sock.close(); } catch (e) {}
   try { proc.kill(); } catch (e) {}
@@ -201,7 +231,19 @@ server.listen(0, "127.0.0.1", () => {
     if (!fs.existsSync(shot)) { console.error("Chrome wrote no screenshot."); process.exit(1); }
     execFile("ffmpeg", [
       "-y", "-loglevel", "error", "-i", shot,
-      "-vf", `crop=${PAGE_W}:${PAGE_H}:${OFF_X}:${OFF_Y},scale=700:-2`,
+      /* 🚨 PAGE ONE, WHOLE, IN A SQUARE.
+         · crop  the first page off the top. At deviceScaleFactor 2 every
+           dimension is doubled, hence the x2. No x/y offset is guessed any
+           more - print media puts the sheet at the origin.
+         · pad   a white margin around it, because @page margins exist only in
+           real pagination and never appear in a screenshot. Without this the
+           text runs to the very edge and the cover looks trimmed.
+         · scale to FIT 800x800 without distorting, then pad the remainder
+           white so every card on the shelf is the same square. */
+      "-vf", `crop=${PAGE_W * 2}:${PAGE_H * 2}:0:0,` +
+             `pad=${PAGE_W * 2 + 96}:${PAGE_H * 2 + 96}:48:48:white,` +
+             `scale=800:800:force_original_aspect_ratio=decrease,` +
+             `pad=800:800:(ow-iw)/2:(oh-ih)/2:white`,
       "-q:v", "4", out,
     ], (err2) => {
       fs.unlinkSync(shot);
