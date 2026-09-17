@@ -111,7 +111,44 @@
 </div>
 
 <section class="product" data-slug="forming-compound-subjects-and-predicates" data-paid="0" data-print="/worksheets/english/forming-compound-subjects-and-predicates/print/" data-pdf="/worksheets/english/forming-compound-subjects-and-predicates/forming-compound-subjects-and-predicates.pdf">
-    <div class="p-img"><img src="/worksheets/english/forming-compound-subjects-and-predicates/thumb.jpg" alt="Forming Compound Subjects and Predicates" width="700" height="700"></div>
+    <div class="p-img p-car">
+      <div class="p-track" tabindex="0" aria-label="Product images"><figure class="p-slide"><img src="/worksheets/english/forming-compound-subjects-and-predicates/thumb.jpg" alt="Forming Compound Subjects and Predicates, cover" width="700" height="700"></figure><figure class="p-slide"><img src="/worksheets/english/forming-compound-subjects-and-predicates/preview-1.jpg" alt="Forming Compound Subjects and Predicates, page 1" width="900" height="1165" loading="lazy"></figure><figure class="p-slide"><img src="/worksheets/english/forming-compound-subjects-and-predicates/preview-2.jpg" alt="Forming Compound Subjects and Predicates, page 2" width="900" height="1165" loading="lazy"></figure><figure class="p-slide"><img src="/worksheets/english/forming-compound-subjects-and-predicates/preview-3.jpg" alt="Forming Compound Subjects and Predicates, page 3" width="900" height="1165" loading="lazy"></figure></div>
+      <button class="p-nav prev" type="button" aria-label="Previous image">&lsaquo;</button>
+      <button class="p-nav next" type="button" aria-label="Next image">&rsaquo;</button>
+      <div class="p-dots"><button type="button" aria-label="Image 1 of 4" class="on"></button><button type="button" aria-label="Image 2 of 4"></button><button type="button" aria-label="Image 3 of 4"></button><button type="button" aria-label="Image 4 of 4"></button></div>
+    </div>
+    <script>(function(){
+      var car = document.currentScript.previousElementSibling;
+      var track = car.querySelector(".p-track");
+      var dots = [].slice.call(car.querySelectorAll(".p-dots button"));
+      /* ⚠️ THE CURRENT SLIDE IS KEPT, NOT READ BACK FROM scrollLeft. Reading it
+         mid-way through a smooth scroll rounds to the slide being LEFT, so a
+         second quick click went nowhere. */
+      var cur = 0;
+      function paint(){
+        dots.forEach(function(d, j){ d.classList.toggle("on", cur === j); });
+        car.querySelector(".prev").hidden = cur === 0;
+        car.querySelector(".next").hidden = cur === dots.length - 1;
+      }
+      function go(i){
+        cur = Math.max(0, Math.min(dots.length - 1, i));
+        track.scrollTo({ left: cur * track.clientWidth, behavior: "smooth" });
+        paint();
+      }
+      car.querySelector(".prev").onclick = function(){ go(cur - 1); };
+      car.querySelector(".next").onclick = function(){ go(cur + 1); };
+      dots.forEach(function(d, i){ d.onclick = function(){ go(i); }; });
+      /* A swipe moves the track without a click, so settle cur from where it
+         comes to rest. (No backticks in here: this is a template literal.) */
+      var t;
+      track.addEventListener("scroll", function(){
+        clearTimeout(t);
+        t = setTimeout(function(){
+          cur = Math.round(track.scrollLeft / track.clientWidth); paint();
+        }, 120);
+      }, { passive: true });
+      paint();
+    })();</script>
     <div class="p-info">
       <h1>Forming Compound Subjects and Predicates</h1>
       <p class="p-price">$0.00</p>

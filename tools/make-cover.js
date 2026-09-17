@@ -242,8 +242,13 @@ server.listen(0, "127.0.0.1", () => {
            white so every card on the shelf is the same square. */
       "-vf", `crop=${PAGE_W * 2}:${PAGE_H * 2}:0:0,` +
              `pad=${PAGE_W * 2 + 96}:${PAGE_H * 2 + 96}:48:48:white,` +
-             `scale=800:800:force_original_aspect_ratio=decrease,` +
-             `pad=800:800:(ow-iw)/2:(oh-ih)/2:white`,
+             /* 🚨 8.5x11, NOT A SQUARE. Paul, 2026-09-17: "you could just make
+                the preview for all the worksheets 8.5x11 ... so in the shopping
+                it would all look good for the preview." A worksheet IS a page.
+                A square either crops it or floats it in white; page-shaped, the
+                whole thing fits and every card matches. Letter is 0.7727 wide
+                to tall and 800x1035 is that ratio, so nothing stretches. */
+             `scale=800:1035`,
       "-q:v", "4", out,
     ], (err2) => {
       fs.unlinkSync(shot);
