@@ -133,20 +133,72 @@ const server = http.createServer((req, res) => {
 
 const shot = path.join(os.tmpdir(), "ns-cover-" + process.pid + ".png");
 
+/* 🚨 --screenshot WRITES NOTHING IN CHROME 152, so this drives the browser
+   over CDP instead - the same connection check-pages-run.js uses since the
+   stderr handshake died. Three of Chrome's convenience flags expired at once
+   on 2026-09-17: --headless=new, the "DevTools listening" line, and this.
+   ⚠️ The port is polled, never parsed out of stderr. Randomised so two covers
+   can be made at the same time. */
+const CDP_PORT = 9800 + Math.floor(Math.random() * 400);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function capture(url) {
+  const profile = fs.mkdtempSync(path.join(os.tmpdir(), "ns-cover-"));
+  const proc = require("child_process").spawn(chrome, [
+    "--headless", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
+    "--hide-scrollbars", "--window-size=" + WIN_W + "," + WIN_H,
+    "--remote-debugging-port=" + CDP_PORT, "--user-data-dir=" + profile, "about:blank",
+  ], { stdio: "ignore" });
+
+  let ws = "";
+  const deadline = Date.now() + 20000;
+  while (Date.now() < deadline && !ws) {
+    try {
+      /* 🚨 /json/version IS THE BROWSER ENDPOINT, AND Page.* DOES NOT EXIST
+         THERE. Page commands need a PAGE target, which is what /json lists.
+         Attaching to the browser socket connects fine and then returns no
+         image, with no error - exactly what happened on the first run. */
+      const r = await fetch("http://127.0.0.1:" + CDP_PORT + "/json");
+      if (r.ok) {
+        const list = await r.json();
+        const pg = (list || []).find((t) => t.type === "page" && t.webSocketDebuggerUrl);
+        ws = pg ? pg.webSocketDebuggerUrl : "";
+      }
+    } catch (e) { /* not up yet */ }
+    if (!ws) await sleep(200);
+  }
+  if (!ws) { try { proc.kill(); } catch (e) {} throw new Error("Chrome did not open its debugging port"); }
+
+  const sock = new WebSocket(ws);
+  let id = 0;
+  const pending = new Map();
+  await new Promise((ok, no) => { sock.onopen = ok; sock.onerror = () => no(new Error("CDP socket failed")); });
+  sock.onmessage = (m) => {
+    const d = JSON.parse(m.data);
+    if (d.id && pending.has(d.id)) { pending.get(d.id)(d.result || {}); pending.delete(d.id); }
+  };
+  const send = (method, params) => new Promise((ok) => {
+    const n = ++id; pending.set(n, ok);
+    sock.send(JSON.stringify({ id: n, method, params: params || {} }));
+  });
+
+  await send("Page.enable");
+  await send("Page.navigate", { url });
+  /* Give webfonts and the stylesheet time to land; a cover of unstyled text is
+     worse than no cover, and there is no error to tell us apart. */
+  await sleep(3500);
+  const shotRes = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
+  try { sock.close(); } catch (e) {}
+  try { proc.kill(); } catch (e) {}
+  if (!shotRes || !shotRes.data) throw new Error("CDP returned no image");
+  fs.writeFileSync(shot, Buffer.from(shotRes.data, "base64"));
+}
+
 server.listen(0, "127.0.0.1", () => {
   const url = "http://127.0.0.1:" + server.address().port + PROOF_URL;
-  execFile(chrome, [
-    /* 🚨 PLAIN --headless, NOT --headless=new. Chrome 152 removed the =new
-           spelling: the old flag is rejected, Chrome exits 0 having done
-           nothing, and this printed "Chrome reported no error but wrote
-           nothing." New headless IS the default now. Found 2026-09-17. */
-        "--headless", "--disable-gpu", "--virtual-time-budget=10000", "--hide-scrollbars",
-    "--window-size=" + WIN_W + "," + WIN_H,
-    "--screenshot=" + shot,
-    url,
-  ], (err) => {
+  capture(url).then(() => {
     server.close();
-    if (!fs.existsSync(shot)) { console.error("Chrome wrote no screenshot. " + (err ? err.message : "")); process.exit(1); }
+    if (!fs.existsSync(shot)) { console.error("Chrome wrote no screenshot."); process.exit(1); }
     execFile("ffmpeg", [
       "-y", "-loglevel", "error", "-i", shot,
       "-vf", `crop=${PAGE_W}:${PAGE_H}:${OFF_X}:${OFF_Y},scale=700:-2`,
@@ -156,5 +208,5 @@ server.listen(0, "127.0.0.1", () => {
       if (err2 || !fs.existsSync(out)) { console.error("ffmpeg failed: " + (err2 ? err2.message : "no output")); process.exit(1); }
       console.log(`${path.basename(out)}  ${(fs.statSync(out).size / 1024).toFixed(0)} KB`);
     });
-  });
+  }).catch((e) => { server.close(); console.error(e.message); process.exit(1); });
 });

@@ -549,7 +549,7 @@ const SHEETS = [
   price: "$0", buy: null,
   standalonePrice: "$2",
   includedWith: "english/forming-compound-subjects-and-predicates",
-  art: false, thumb: false,
+  art: false, thumb: true,
   eyebrow: "The Sentence &middot; Revising Strategies",
   signoff: "Read your own sentence out loud. If you had to say a word twice, it belongs to the part that gets joined.",
 
@@ -648,7 +648,7 @@ const SHEETS = [
   price: "$0", buy: null,
   standalonePrice: "$2",
   includedWith: "english/simple-subjects-and-simple-predicates",
-  art: false, thumb: false,
+  art: false, thumb: true,
   eyebrow: "The Sentence &middot; U1-L3",
   signoff: "Say the sentence with only those two words. If it still stands up on its own, you found them.",
 
@@ -716,7 +716,7 @@ const SHEETS = [
      standalonePrice at all and never becomes paid when entitlements land. */
   price: "$0", buy: null,
   includedWith: "english/complete-subjects-and-predicates",
-  art: false, thumb: false,
+  art: false, thumb: true,
   eyebrow: "The Sentence &middot; U1-L2",
   signoff: "Say the sentence out loud. Where you pause is usually where the line goes.",
 
