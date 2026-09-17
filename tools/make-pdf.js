@@ -143,7 +143,12 @@ server.listen(0, "127.0.0.1", () => {
       sock.close(); proc.kill(); server.close();
       console.error("the page did not load; Chrome title was: " + title); process.exit(1);
     }
-    const r = await send("Page.printToPDF", { printBackground: true, preferCSSPageSize: true });
+    /* 🚨 printBackground MUST STAY FALSE. Turning it on paints the SITE’S dark
+       page background around the white sheet - Paul, 2026-09-17: "you have this
+       big dark black boarder around it." These sheets are black and white by
+       design (his printer is), so no background should ever print. The flag
+       version never passed it; setting it was my regression. */
+    const r = await send("Page.printToPDF", { printBackground: false, preferCSSPageSize: true });
     sock.close(); proc.kill();
     if (!r || !r.data) { server.close(); console.error("Chrome returned no PDF"); process.exit(1); }
     fs.writeFileSync(out, Buffer.from(r.data, "base64"));
