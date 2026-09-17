@@ -2127,9 +2127,17 @@ if(adrawer&&acctLink){
     if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return;
     e.preventDefault();
     adMain(adD);
-    adLoad();
+    if(adKids===null||adUser===null) adLoad();
     adOpen(true);
   });
+  
+  function nsAcctPrefetch(){
+    if(!window.NSAccount||!NSAccount.isSignedIn()) return;
+    if(adKids!==null&&adUser!==null) return;
+    adLoad();
+  }
+  if(window.requestIdleCallback) requestIdleCallback(nsAcctPrefetch,{timeout:2500});
+  else setTimeout(nsAcctPrefetch,1200);
   ascrim.onclick=function(){ adOpen(false); };
   addEventListener("keydown",function(e){
     if(e.key==="Escape"&&document.body.classList.contains("acct-open")) adOpen(false);

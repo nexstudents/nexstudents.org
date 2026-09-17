@@ -3249,9 +3249,33 @@ if(adrawer&&acctLink){
     if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return;
     e.preventDefault();
     adMain(adD);
-    adLoad();
+    /* ⭐ ONLY FETCH IF WE DO NOT ALREADY HAVE IT. adLoad() fires four requests
+       and each one repaints as it lands, so calling it on every open is what
+       made the tiles arrive in stages. Paul, 2026-09-17: "is there a way it
+       just doesn't load up at all like that but when you pick the side menu it
+       already has loaded those in ... it seems like it's trying to refresh it
+       or something." He is right - it was refreshing, every single time. */
+    if(adKids===null||adUser===null) adLoad();
     adOpen(true);
   });
+
+  /* ⭐ PREFETCH, so the panel is already full when it opens.
+     The account data does not depend on the panel being on screen, and every
+     page load is a fresh enough moment to get it. Doing it here means the first
+     tap paints once, from data already in hand, instead of opening empty and
+     filling in under his thumb.
+     ⚠️ Idle, not immediate: this must never compete with the lesson itself for
+     the first paint. requestIdleCallback where it exists, a short timer where
+     it does not (Safari).
+     ⚠️ Guarded by the same adLoading flag adLoad() already uses, so a tap that
+     lands mid-prefetch does not start a second round. */
+  function nsAcctPrefetch(){
+    if(!window.NSAccount||!NSAccount.isSignedIn()) return;
+    if(adKids!==null&&adUser!==null) return;
+    adLoad();
+  }
+  if(window.requestIdleCallback) requestIdleCallback(nsAcctPrefetch,{timeout:2500});
+  else setTimeout(nsAcctPrefetch,1200);
   ascrim.onclick=function(){ adOpen(false); };
   addEventListener("keydown",function(e){
     if(e.key==="Escape"&&document.body.classList.contains("acct-open")) adOpen(false);
