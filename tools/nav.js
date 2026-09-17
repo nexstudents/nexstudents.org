@@ -2341,10 +2341,31 @@ var AD_ICON=acctLink?acctLink.innerHTML:"";
    not loaded on every page. So the last known pair is kept in ns:meicon and
    drawn at once; a fresh getUser() corrects it when the panel loads. */
 function adOwnerIconData(){
+  /* 🚨 NEVER DRAW OR CACHE THE "You" FALLBACK. Paul, 2026-09-17: "for a quick
+     moment ... it will be Y on my profile and in red before turning gray and P
+     for my name."
+
+     adMe() ends in '|| "You"', so before user_metadata has loaded it returns
+     "You" and this drew a letter **Y**. No metadata also means adOwnerTheme()
+     is null, and a null theme is the DEFAULT RED box - which is the red Y, then
+     "P" and his real colour a moment later when getUser() resolves.
+
+     ⚠️ AND IT CACHED THAT. The bad pair went into ns:meicon, so the next page
+     painted the red Y instantly from localStorage instead of the right letter.
+     The cache was making the flash worse on every page after the first.
+
+     So: only trust a name we actually have. With no name, fall back to the LAST
+     KNOWN good icon, and if there is none, return null - nsWhoIcon() then leaves
+     the icon exactly as it is rather than inventing one. */
   if(adUser){
-    var t=adTheme(adOwnerTheme()),d={l:adMe().charAt(0).toUpperCase(),c:t?t.box:"",n:adMe()};
-    try{ localStorage.setItem("ns:meicon",JSON.stringify(d)); }catch(e){}
-    return d;
+    var md=(adUser.user_metadata)||{};
+    var known=md.first_name||(adUser.email?adUser.email.split("@")[0]:"");
+    if(known){
+      var t=adTheme(adOwnerTheme()),d={l:known.charAt(0).toUpperCase(),c:t?t.box:"",n:known};
+      try{ localStorage.setItem("ns:meicon",JSON.stringify(d)); }catch(e){}
+      return d;
+    }
+    /* signed in, but we do not know who yet - do not guess */
   }
   try{ return JSON.parse(localStorage.getItem("ns:meicon"))||null; }catch(e){ return null; }
 }

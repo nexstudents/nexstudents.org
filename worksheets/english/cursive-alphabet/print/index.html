@@ -1266,9 +1266,13 @@ function adForgotPin(H,ctx){
 var AD_ICON=acctLink?acctLink.innerHTML:"";
 function adOwnerIconData(){
   if(adUser){
-    var t=adTheme(adOwnerTheme()),d={l:adMe().charAt(0).toUpperCase(),c:t?t.box:"",n:adMe()};
-    try{ localStorage.setItem("ns:meicon",JSON.stringify(d)); }catch(e){}
-    return d;
+    var md=(adUser.user_metadata)||{};
+    var known=md.first_name||(adUser.email?adUser.email.split("@")[0]:"");
+    if(known){
+      var t=adTheme(adOwnerTheme()),d={l:known.charAt(0).toUpperCase(),c:t?t.box:"",n:known};
+      try{ localStorage.setItem("ns:meicon",JSON.stringify(d)); }catch(e){}
+      return d;
+    }
   }
   try{ return JSON.parse(localStorage.getItem("ns:meicon"))||null; }catch(e){ return null; }
 }
