@@ -3914,7 +3914,7 @@ const REDIRECTS = [
     title: "Reading Comprehension: A Short Exam | NexStudents",
     desc: "A free short reading comprehension exam, written at a grade 6 reading level. Marked instantly, with a breakdown by skill.",
     crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; Reading Exam',
-    h1: "Reading Comprehension: a short exam.",
+    h1: "Reading Comprehension: A Short Exam",
     lead: "One passage, 12 questions, about 20 minutes. Written at a grade 6 reading level, and marked the moment you finish.",
     head: "\n<style>\n" + css + "</style>",
     body: '<div class="wrap examwrap"><div class="exam">\n' + screens + "</div></div>",

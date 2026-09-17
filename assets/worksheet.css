@@ -568,6 +568,29 @@ body.print-all .wk+.wk{page-break-before:always}
 .splits .spl{margin:0;font-size:1.05rem;line-height:2.4}
 .splits .spl span{display:inline-block;margin-right:15px}
 
+/* ── the ask, in a column of its own ───────────────────────────────────────
+   🚨 IT USED TO FLOW AFTER THE SENTENCE, and looked it. Seen on the rendered
+   sheet 2026-09-17, once headless Chrome could produce one again:
+     · "Circle the simple predicate" broke across two lines on four of six
+       rows, splitting the underline mid-phrase
+     · it began at a different x on every row, because a long sentence pushed
+       it right and a short one let it sit left
+   A worksheet is read down the page, so the instruction has to be in the same
+   place every time or the eye hunts for it.
+
+   ⚠️ FIXED WIDTH, NOT flex:1. The sentence takes the rest; this column never
+   moves and never wraps its label. */
+.splits > li{align-items:flex-start}
+.splits .spl{flex:1;min-width:0}
+.splits .sortans{flex:0 0 132px;margin:0;font-size:.88rem;line-height:1.45;
+  padding-top:.55rem;text-align:left}
+.splits .sortans u{text-decoration:none;font-weight:700;white-space:nowrap}
+
+@media print{
+  /* Narrower on paper: the sheet is 8.5in and the sentence needs the room. */
+  .splits .sortans{flex-basis:118px;font-size:.84rem}
+}
+
 .sorts .sortrow{flex:1}
 .sorts .sortsent{margin:0 0 6px;font-size:1.05rem;line-height:1.9}
 /* The marked half: a rule under the words, drawn clear of the descenders. */

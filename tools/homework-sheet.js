@@ -150,8 +150,12 @@ function divideItem(it, n) {
 
 function circleItem(it, n, part) {
   const ask = it.ask || part.ask || '';
-  const tail = ask ? '<p class="sortans">' + esc(part.askPrefix || 'Circle the') +
-    ' <u>' + esc(ask) + '</u></p>' : '';
+  /* 🚨 THE VERB IS SAID ONCE, IN THE PART NOTE - NOT ON EVERY ROW. Six rows
+     each reading "Circle the simple predicate" is one sentence printed six
+     times, and the length of that phrase is what forced it to wrap mid-word
+     on the rendered sheet. What changes row to row is only WHICH half, so
+     that is all this column carries. Seen 2026-09-17 on a real render. */
+  const tail = ask ? '<p class="sortans"><u>' + esc(ask) + '</u></p>' : '';
   return '<li><b>' + (n + 1) + '.</b><p class="spl">' + spaced(it.sentence) + '</p>' + tail + '</li>';
 }
 
