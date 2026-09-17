@@ -1313,14 +1313,30 @@ function adStrip(a){
       adEsc(name+(lock?", locked with a PIN":""))+"'>"+adAv(name,theme)+
       (lock?"<span class='ad-lockb' aria-hidden='true'>"+AD_LOCK+"</span>":"")+"<b>"+adEsc(name)+"</b></button>";
   }
-  /* ⭐ NO OWNER TILE UNTIL WE KNOW THE OWNER. An empty placeholder keeps the
-     strip the same height so nothing jumps when the real tile lands, and it
-     matches what the rest of the panel already does while it waits. */
-  var ownerTile = me
-    ? tile("parent",me,adOwnerTheme(),null,a===null)
-    : "<span class='ad-pro-i is-wait' aria-hidden='true'><i></i><b></b></span>";
+  /* ⭐ PAINT THE WHOLE STRIP ONCE, OR NOT AT ALL.
+     Paul, 2026-09-17, on the same recording as the red "Y": "what about also
+     the user icons just popping in like that?" His own tile appeared first and
+     Kolten's, plus the add button, arrived a moment later - two paints, so the
+     row visibly grew under his thumb.
+
+     There are two separate waits and the strip needs BOTH before it can be
+     right: the signed-in name (user_metadata) and the profile list. adKids is
+     null until the list lands, which is the same test the panel already uses
+     for its Loading... lines, and adOf() returns [] in the meantime - so a
+     strip drawn early is not merely incomplete, it claims this account has no
+     other profiles.
+
+     So: hold the whole row until both are in, then draw it complete. The
+     placeholders keep the row's height so the panel below does not jump. */
+  var ready = me && adKids!==null;
+  if(!ready){
+    return "<div class='ad-pro'>"+
+      "<span class='ad-pro-i is-wait' aria-hidden='true'><i></i><b></b></span>"+
+      "<span class='ad-pro-i is-wait' aria-hidden='true'><i></i><b></b></span>"+
+      "</div>";
+  }
   return "<div class='ad-pro'>"+
-    ownerTile+
+    tile("parent",me,adOwnerTheme(),null,a===null)+
     adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme,p.id,a&&a.id===p.id); }).join("")+
     adOf("student").map(function(k){ return tile(k.id,k.name,k.theme,false,a&&a.id===k.id); }).join("")+
     (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>"+AD_PLUS+"</i></button>":"")+
@@ -1590,7 +1606,10 @@ function adMain(H){
   /* 🚨 THE ORDER IS PAUL'S. 2026-09-10: "i want the Hi, Username still but in
      order I want Manage Profiles first then orders, the settings, then
      account, then Sign out." */
-  H.body.innerHTML="<div class='ad-hi'><h3>"+(hiName?"Hi, "+adEsc(hiName):"Hi there")+"</h3></div>"+
+  /* ⚠️ The greeting pops too - "Hi there" and then "Hi, Paul" a moment later.
+     A non-breaking space holds the heading's height so the panel does not jump
+     when the real name lands. Paul, 2026-09-17. */
+  H.body.innerHTML="<div class='ad-hi'><h3>"+(hiName?"Hi, "+adEsc(hiName):"&nbsp;")+"</h3></div>"+
     adStrip(a)+
     "<button class='ad-row' type='button' data-go='profiles'><b>Manage Profiles</b><span>"+adEsc(kidsLine)+"</span></button>"+
     "<button class='ad-row' type='button' data-go='orders'><b>Orders</b><span>"+adEsc(last)+"</span></button>"+

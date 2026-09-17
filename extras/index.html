@@ -516,11 +516,15 @@ function adStrip(a){
       adEsc(name+(lock?", locked with a PIN":""))+"'>"+adAv(name,theme)+
       (lock?"<span class='ad-lockb' aria-hidden='true'>"+AD_LOCK+"</span>":"")+"<b>"+adEsc(name)+"</b></button>";
   }
-  var ownerTile = me
-    ? tile("parent",me,adOwnerTheme(),null,a===null)
-    : "<span class='ad-pro-i is-wait' aria-hidden='true'><i></i><b></b></span>";
+  var ready = me && adKids!==null;
+  if(!ready){
+    return "<div class='ad-pro'>"+
+      "<span class='ad-pro-i is-wait' aria-hidden='true'><i></i><b></b></span>"+
+      "<span class='ad-pro-i is-wait' aria-hidden='true'><i></i><b></b></span>"+
+      "</div>";
+  }
   return "<div class='ad-pro'>"+
-    ownerTile+
+    tile("parent",me,adOwnerTheme(),null,a===null)+
     adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme,p.id,a&&a.id===p.id); }).join("")+
     adOf("student").map(function(k){ return tile(k.id,k.name,k.theme,false,a&&a.id===k.id); }).join("")+
     (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>"+AD_PLUS+"</i></button>":"")+
@@ -706,7 +710,8 @@ function adMain(H){
            (adOrders?"No orders yet":"Loading…");
   var ns=adKids?adOf("student").length:-1,np=adKids?adOf("parent").length+1:-1;
   var kidsLine=ns<0?"Loading…":np+" parent"+(np===1?"":"s")+" · "+ns+" student"+(ns===1?"":"s");
-  H.body.innerHTML="<div class='ad-hi'><h3>"+(hiName?"Hi, "+adEsc(hiName):"Hi there")+"</h3></div>"+
+  
+  H.body.innerHTML="<div class='ad-hi'><h3>"+(hiName?"Hi, "+adEsc(hiName):"&nbsp;")+"</h3></div>"+
     adStrip(a)+
     "<button class='ad-row' type='button' data-go='profiles'><b>Manage Profiles</b><span>"+adEsc(kidsLine)+"</span></button>"+
     "<button class='ad-row' type='button' data-go='orders'><b>Orders</b><span>"+adEsc(last)+"</span></button>"+
