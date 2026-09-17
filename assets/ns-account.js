@@ -565,38 +565,27 @@
      user, the profiles, the PIN map — and the panel repainted as each landed.
      account_bootstrap() returns all three together.
 
-     🚨 IT FALLS BACK, ON PURPOSE. The SQL is applied by hand in the Supabase
-     console, so there is always a window where this code is live and the
-     function is not. A 404 there must not take the account panel down with it,
-     so a failure just runs the old three calls. Delete the fallback only once
-     the function is confirmed in production.
+     ✅ APPLIED AND VERIFIED IN PRODUCTION 2026-09-17. The three-call fallback
+     that shipped with this is gone: it existed only for the window between the
+     code going live and the SQL being run, and that window is closed. Checked
+     on the live project (ztoglvzrmkedwmzxxpsq): the function exists, is
+     security definer with search_path pinned, authenticated may execute it and
+     anon may NOT, and it returns me / profiles / pins.
 
      ⚠️ Shapes match the old calls exactly, so nothing downstream changes:
-     me -> getUser(), profiles -> students(), pins -> pinMap(). */
-  var bootstrapGone = false;
+     me -> getUser(), profiles -> students(), pins -> pinMap().
+     ⚠️ getUser(), students() and pinMap() all still exist and are still used on
+     their own elsewhere - this only stops the PANEL calling three of them. */
   function bootstrap() {
-    if (bootstrapGone) return legacyBootstrap();
     return rest("POST", "/rpc/account_bootstrap", {}, "Could not load your account.")
       .then(function (d) {
-        if (!d || typeof d !== "object" || !("profiles" in d)) throw new Error("shape");
-        var rows = d.profiles || [];
+        var rows = (d && d.profiles) || [];
         /* Same guard students() applies: a profile deleted on another device
            must not stay the active one here. */
         var w = who();
         if (w !== "parent" && !rows.some(function (r) { return r.id === w; })) write(WHO_KEY, "parent");
-        return { me: d.me || null, profiles: rows, pins: d.pins || {} };
-      })
-      .catch(function () {
-        bootstrapGone = true;   /* stop retrying it every page */
-        return legacyBootstrap();
+        return { me: (d && d.me) || null, profiles: rows, pins: (d && d.pins) || {} };
       });
-  }
-  function legacyBootstrap() {
-    return Promise.all([
-      getUser().catch(function () { return null; }),
-      students().catch(function () { return []; }),
-      pinMap().catch(function () { return {}; })
-    ]).then(function (r) { return { me: r[0], profiles: r[1], pins: r[2] }; });
   }
   function checkPin(pin, profile) {
     return rest("POST", "/rpc/check_pin", { pin: String(pin || ""), profile: profile || null }, "Could not check the PIN.");

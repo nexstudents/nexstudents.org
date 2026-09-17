@@ -512,11 +512,10 @@ function adMain(H){
   var a=adActive();
   if(a===AD_PENDING){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
   if(!adParentSide(a)){
-    var anyPin=adHasPin(null)||adOf("parent").some(function(p){ return adHasPin(p.id); });
     H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
       "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me</span></button>"+
       "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
-      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>"+
+      
       "<button class='ad-signout' type='button' data-out>Sign Out</button>";
     if(typeof nsPaintMode==="function") nsPaintMode();
     return;

@@ -1633,11 +1633,15 @@ function adMain(H){
   /* A STUDENT'S PANEL: the strip and Settings, nothing that belongs to a
      parent. The note says how a grown-up gets back. */
   if(!adParentSide(a)){
-    var anyPin=adHasPin(null)||adOf("parent").some(function(p){ return adHasPin(p.id); });
     H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
       "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me</span></button>"+
       "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
-      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>"+
+      /* ⛔ THE "Grown-ups: tap your profile" NOTE WAS REMOVED 2026-09-17.
+         Paul: "I want that text removed I get the point to switch account
+         profile but it's obvious to just switch." The tiles are right above it
+         and tapping one is the whole interaction, so the sentence explained
+         something the screen already shows. The PIN still guards the way back;
+         nothing about that changed, only the caption. */
       /* 🚨 A STUDENT CAN SIGN OUT. Paul, 2026-09-16: "I want all profiles to
          have a logout and not have to switch to an adult just to logout."
          Only the parent side had one, so a child on a shared device had to get
