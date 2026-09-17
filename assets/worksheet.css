@@ -20,6 +20,22 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 .acts{margin-left:auto;display:flex;gap:8px;flex:none}
 .bar .btn{font-size:13px;padding:9px 14px;gap:7px;text-decoration:none;line-height:1}
 
+/* 🚨 THE SHEET'S OWN BUTTONS DO NOT TAKE THE THEME COLOUR.
+   Paul, 2026-09-17: "the print button on the worksheets is colored the theme
+   color while the download button is not. I would like them both not take the
+   theme color and remain white by default."
+   He is right that it read as a mismatch: .btn is background:var(--a) and
+   .btn.ghost is white, so Print came out in the accent and Download beside it
+   did not. Print and Download are the same KIND of choice - two doors to the
+   same sheet - so they should look alike.
+   ⚠️ Same pair of rules as .btn.ghost in ns.css, deliberately: white fill is
+   the DEFAULT because dark is this site's default, and light mode is the
+   override. Never the other way round or the button vanishes before a theme
+   is picked. */
+.bar .btn{background:#fff;color:#0a0b0d;box-shadow:none}
+:root[data-theme="light"] .bar .btn{background:transparent;color:var(--fg);
+  box-shadow:inset 0 0 0 1.5px var(--line)}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    🚨 THE SHEET IS ALWAYS PAPER, IN EITHER THEME.
 
