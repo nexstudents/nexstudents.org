@@ -172,7 +172,7 @@
 <div class="wrap"><p class="useline">Free to print and use with your own students. Please do not repost, resell, or republish these sheets. See our <a href="/terms/">terms of use</a>.</p></div>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
-<script src="/assets/ns-account.js?v=fe0de2b1"></script>
+<script src="/assets/ns-account.js?v=5cc603da"></script>
 <script>
 (function(){
 var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
@@ -383,6 +383,32 @@ var AD_THEMES=[{"k":"forest","name":"Forest","box":"#25664A"},{"k":"ocean","name
 var AD_HL=[{"k":"green","name":"Green","rgb":"72,176,110"},{"k":"blue","name":"Blue","rgb":"86,160,222"},{"k":"pink","name":"Pink","rgb":"228,118,166"},{"k":"orange","name":"Orange","rgb":"232,146,62"},{"k":"purple","name":"Purple","rgb":"160,130,224"}];
 var AD_WORKER="https://nexstudents-media.nexedgetech.workers.dev";
 var adUser=null,adOrders=null,adLoading=false;
+var AD_CK="ns:acct:v1:";
+function adCacheKey(){
+  try{ var u=window.NSAccount&&NSAccount.uid?NSAccount.uid():""; return u?AD_CK+u:""; }
+  catch(e){ return ""; }
+}
+function adCacheRead(){
+  var k=adCacheKey(); if(!k) return null;
+  try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; }
+}
+function adCacheWrite(){
+  var k=adCacheKey(); if(!k) return;
+  if(adKids===null) return;
+  try{
+    var md=(adUser&&adUser.user_metadata)||{};
+    localStorage.setItem(k,JSON.stringify({
+      kids:adKids, pins:adPins||{},
+      name:md.first_name||"", theme:md.theme||null
+    }));
+  }catch(e){}
+}
+function adCacheHydrate(){
+  var c=adCacheRead(); if(!c) return false;
+  if(c.kids) adKids=c.kids;
+  if(c.pins) adPins=c.pins;
+  return true;
+}
 var adHosts=[];
 function adHostOf(root){
   return {root:root,body:root.querySelector(".ad-body"),h:root.querySelector(".ad-h"),
@@ -1452,6 +1478,7 @@ function adSettings(H){
   });
 }
 function adList(H){
+  adOrdersLoad();
   adFrame(H,"Orders",adMain,"orders");
   if(!adOrders||!adOrders.length){
     H.body.innerHTML="<p class='ad-empty'>"+(adOrders?"No orders yet. Everything on this site goes through the "+
@@ -1655,22 +1682,39 @@ function adDeleteMe(H,confirmed){
   pw.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); go(); } });
   if(!noPw) pw.focus();
 }
-function adRefresh(){
+var adSeen="";
+function adChanged(){
+  var now="";
+  try{ now=JSON.stringify([adKids,adPins,adOrders,(adUser&&adUser.user_metadata)||null]); }
+  catch(e){ return true; }
+  if(now===adSeen) return false;
+  adSeen=now; return true;
+}
+function adRefresh(force){
+  if(!force&&!adChanged()) return;
   adHosts.forEach(function(H){
     if(H.view==="main") adMain(H); else if(H.view==="orders") adList(H);
     else if(H.view==="profiles") adProfiles(H);
   });
 }
+function adOrdersLoad(){
+  if(adOrders!==null||adOrdersLoading) return;
+  adOrdersLoading=true;
+  NSAccount.myDownloads().then(function(rows){ adOrders=adGroup(rows||[]); adOrdersLoading=false; adRefresh(); })
+    .catch(function(){ adOrders=[]; adOrdersLoading=false; adRefresh(); });
+}
+var adOrdersLoading=false;
 function adLoad(){
   if(adLoading) return; adLoading=true;
-  var a=NSAccount.getUser().then(function(u){ adUser=u; adRefresh(); }).catch(function(){});
-  var b=NSAccount.myDownloads().then(function(rows){ adOrders=adGroup(rows||[]); adRefresh(); })
-    .catch(function(){ adOrders=[]; adRefresh(); });
-  var c=NSAccount.students().then(function(k){ adKids=k||[]; adRefresh(); nsWhoIcon(); })
-    .catch(function(){ adKids=[]; adRefresh(); nsWhoIcon(); });
-  var d=NSAccount.pinMap().then(function(p){ adPins=p||{}; adRefresh(); })
-    .catch(function(){ adPins={}; });
-  Promise.all([a,b,c,d]).then(function(){ adLoading=false; });
+  var a=NSAccount.getUser().then(function(u){ adUser=u; }).catch(function(){});
+  var c=NSAccount.students().then(function(k){ adKids=k||[]; }).catch(function(){ adKids=[]; });
+  var d=NSAccount.pinMap().then(function(p){ adPins=p||{}; }).catch(function(){ adPins={}; });
+  Promise.all([a,c,d]).then(function(){
+    adLoading=false;
+    adCacheWrite();
+    adRefresh();
+    nsWhoIcon();
+  });
 }
 function nsStartupSound(scope){
   try {
@@ -1830,9 +1874,11 @@ if(adrawer&&acctLink){
     e.preventDefault();
     adMain(adD);
     if(adKids===null||adUser===null) adLoad();
+    adOrdersLoad();
     adOpen(true);
   });
   
+  try{ if(window.NSAccount&&NSAccount.isSignedIn()) adCacheHydrate(); }catch(e){}
   function nsAcctPrefetch(){
     if(!window.NSAccount||!NSAccount.isSignedIn()) return;
     if(adKids!==null&&adUser!==null) return;

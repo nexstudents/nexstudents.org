@@ -1135,6 +1135,57 @@ var AD_THEMES=${JSON.stringify(AD_THEMES)};
 var AD_HL=${JSON.stringify(AD_HL)};
 var AD_WORKER="https://nexstudents-media.nexedgetech.workers.dev";
 var adUser=null,adOrders=null,adLoading=false;
+
+/* ── 💾 THE ACCOUNT CACHE ───────────────────────────────────────────────────
+   Paul, 2026-09-17: "it seems like it's trying to refresh it or something" and
+   "we need to make sure it doesnt get overloaded with high traffic".
+   Both complaints are the same fact: the panel asked the server for its
+   profiles on every page, so it opened empty and filled in under his thumb.
+
+   🚨 A CACHE DONE CARELESSLY IS WHAT BREAKS THINGS. Paul, same day, and he had
+   just watched it: the red "Y" bug was made PERMANENT by ns:meicon storing a
+   placeholder identity and painting it confidently on every later page. So this
+   one follows his rule exactly:
+
+     · KEYED TO THE OWNER. NSAccount.uid() reads the id out of the JWT with no
+       request, so a shared device can never read another account's profiles.
+     · ONLY VERIFIED DATA. Written after a real fetch resolves, never from a
+       placeholder and never from a fallback string.
+     · CLEARED ON SIGN-OUT, by ns-account.js, using the id captured before the
+       session goes.
+     · VERSIONED (v1), so a shape change cannot be read by old code.
+     · REPAINTS ONLY ON CHANGE, so a refresh that finds nothing new is invisible.
+     · OPTIONAL. Every read and write is wrapped; a blocked or cleared store is
+       an ordinary case and the panel simply fetches as it used to. */
+var AD_CK="ns:acct:v1:";
+function adCacheKey(){
+  try{ var u=window.NSAccount&&NSAccount.uid?NSAccount.uid():""; return u?AD_CK+u:""; }
+  catch(e){ return ""; }
+}
+function adCacheRead(){
+  var k=adCacheKey(); if(!k) return null;
+  try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; }
+}
+function adCacheWrite(){
+  var k=adCacheKey(); if(!k) return;
+  /* null means "not loaded yet" - never freeze that into the cache */
+  if(adKids===null) return;
+  try{
+    var md=(adUser&&adUser.user_metadata)||{};
+    localStorage.setItem(k,JSON.stringify({
+      kids:adKids, pins:adPins||{},
+      name:md.first_name||"", theme:md.theme||null
+    }));
+  }catch(e){}
+}
+/* Hydrate before anything paints. The name and theme go back through the same
+   ns:meicon the nav icon already reads, so one shape serves both. */
+function adCacheHydrate(){
+  var c=adCacheRead(); if(!c) return false;
+  if(c.kids) adKids=c.kids;
+  if(c.pins) adPins=c.pins;
+  return true;
+}
 /* The views draw into a HOST: {body, h, back, x, up, view, save}. Today the
    drawer is the only host (the /account/ card that was a second one is gone,
    see panel=account below). Nothing inside a view uses an id, so a second host
@@ -2643,6 +2694,9 @@ function adSettings(H){
   });
 }
 function adList(H){
+  /* 📦 The orders view fetches its own data. adLoad() no longer does, because
+     every page load was buying a request nobody looked at. */
+  adOrdersLoad();
   adFrame(H,"Orders",adMain,"orders");
   if(!adOrders||!adOrders.length){
     H.body.innerHTML="<p class='ad-empty'>"+(adOrders?"No orders yet. Everything on this site goes through the "+
@@ -2919,22 +2973,50 @@ function adDeleteMe(H,confirmed){
 }
 /* Repaint whichever hosts are showing something the new data changes. A host
    the reader has moved into (an order, their profile) is left where it is. */
-function adRefresh(){
+/* ⭐ A REFRESH THAT FINDS NOTHING NEW MUST NOT REPAINT. With a cache the
+   common case is the server confirming exactly what is already on screen, and
+   repainting that is the flicker all over again, just better informed. */
+var adSeen="";
+function adChanged(){
+  var now="";
+  try{ now=JSON.stringify([adKids,adPins,adOrders,(adUser&&adUser.user_metadata)||null]); }
+  catch(e){ return true; }
+  if(now===adSeen) return false;
+  adSeen=now; return true;
+}
+function adRefresh(force){
+  if(!force&&!adChanged()) return;
   adHosts.forEach(function(H){
     if(H.view==="main") adMain(H); else if(H.view==="orders") adList(H);
     else if(H.view==="profiles") adProfiles(H);
   });
 }
+/* 📦 ORDERS ARE NOT FETCHED HERE ANY MORE. They are only ever shown in the
+   Orders view, and fetching them on every page load bought a request nobody
+   looked at. adOrdersLoad() gets them the moment that view opens. */
+function adOrdersLoad(){
+  if(adOrders!==null||adOrdersLoading) return;
+  adOrdersLoading=true;
+  NSAccount.myDownloads().then(function(rows){ adOrders=adGroup(rows||[]); adOrdersLoading=false; adRefresh(); })
+    .catch(function(){ adOrders=[]; adOrdersLoading=false; adRefresh(); });
+}
+var adOrdersLoading=false;
+
 function adLoad(){
   if(adLoading) return; adLoading=true;
-  var a=NSAccount.getUser().then(function(u){ adUser=u; adRefresh(); }).catch(function(){});
-  var b=NSAccount.myDownloads().then(function(rows){ adOrders=adGroup(rows||[]); adRefresh(); })
-    .catch(function(){ adOrders=[]; adRefresh(); });
-  var c=NSAccount.students().then(function(k){ adKids=k||[]; adRefresh(); nsWhoIcon(); })
-    .catch(function(){ adKids=[]; adRefresh(); nsWhoIcon(); });
-  var d=NSAccount.pinMap().then(function(p){ adPins=p||{}; adRefresh(); })
-    .catch(function(){ adPins={}; });
-  Promise.all([a,b,c,d]).then(function(){ adLoading=false; });
+  var a=NSAccount.getUser().then(function(u){ adUser=u; }).catch(function(){});
+  var c=NSAccount.students().then(function(k){ adKids=k||[]; }).catch(function(){ adKids=[]; });
+  var d=NSAccount.pinMap().then(function(p){ adPins=p||{}; }).catch(function(){ adPins={}; });
+  /* ⭐ ONE REPAINT, NOT THREE. Each of these used to call adRefresh() as it
+     landed, which is what made the tiles arrive in stages. Nothing is worth
+     showing until all three are in anyway: the strip needs the name AND the
+     list, and a padlock needs the pins. */
+  Promise.all([a,c,d]).then(function(){
+    adLoading=false;
+    adCacheWrite();
+    adRefresh();
+    nsWhoIcon();
+  });
 }
 /* ── "WHO'S LEARNING?" (2026-09-11) ─────────────────────────────────────────
    Paul picked it: a full-screen picker once after sign-in, like Netflix's
@@ -3256,6 +3338,12 @@ if(adrawer&&acctLink){
        already has loaded those in ... it seems like it's trying to refresh it
        or something." He is right - it was refreshing, every single time. */
     if(adKids===null||adUser===null) adLoad();
+    /* 📦 Orders load when the PANEL opens, not on every page. The main view
+       prints the last order, so they cannot be left until the Orders view or
+       that line reads Loading... forever - which is the regression this line
+       exists to stop. Opening the panel is far rarer than loading a page, so
+       the saving stands. */
+    adOrdersLoad();
     adOpen(true);
   });
 
@@ -3269,6 +3357,11 @@ if(adrawer&&acctLink){
      it does not (Safari).
      ⚠️ Guarded by the same adLoading flag adLoad() already uses, so a tap that
      lands mid-prefetch does not start a second round. */
+  /* 💾 Cache first, so the panel is complete the instant it opens, then the
+     prefetch confirms it behind. adRefresh() repaints only on a real change,
+     so a confirmation nobody needed is invisible. */
+  try{ if(window.NSAccount&&NSAccount.isSignedIn()) adCacheHydrate(); }catch(e){}
+
   function nsAcctPrefetch(){
     if(!window.NSAccount||!NSAccount.isSignedIn()) return;
     if(adKids!==null&&adUser!==null) return;

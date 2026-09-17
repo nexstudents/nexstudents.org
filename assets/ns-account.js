@@ -571,8 +571,35 @@
       "Could not turn the PIN off.");
   }
 
+  /* 🔑 WHO IS SIGNED IN, SYNCHRONOUSLY AND WITHOUT A REQUEST.
+     getUser() is a round trip, so nothing that paints on first frame can wait
+     for it. The access token is a JWT and its "sub" claim IS the user id, so
+     the answer is already on this device.
+
+     ⚠️ THIS IS AN IDENTIFIER, NEVER A PERMISSION. The payload is base64, not a
+     verified signature - anyone can forge one locally. Use it to KEY per-user
+     storage, so one account never reads another's cache. Never to decide what
+     somebody is allowed to see; the server does that, from the real token.
+
+     Returns "" when signed out or unreadable, which callers treat as "no cache". */
+  function uid() {
+    try {
+      if (!session || !session.access_token) return "";
+      var p = session.access_token.split(".")[1];
+      if (!p) return "";
+      p = p.replace(/-/g, "+").replace(/_/g, "/");
+      while (p.length % 4) p += "=";
+      var o = JSON.parse(atob(p));
+      return (o && o.sub) ? String(o.sub) : "";
+    } catch (e) { return ""; }
+  }
+
   function signOut() {
+    /* ⚠️ Read the id BEFORE session is cleared, or the cache key is unknowable
+       and the previous account's profiles stay on the device. */
+    var gone = uid();
     session = null; sessDrop(); drop(WHO_KEY); drop(PICK_KEY); drop("ns:accent"); drop("ns:meicon");
+    if (gone) drop("ns:acct:v1:" + gone);
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
   }
 
@@ -874,6 +901,7 @@
     progressRows: progressRows, upsertProgress: upsertProgress, deleteProgress: deleteProgress,
     pinMap: pinMap, checkPin: checkPin, setPin: setPin, clearPin: clearPin,
     isSignedIn: function () { return !!session; },
+    uid: uid,
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
     cartThumb: cartThumb, cartHref: cartHref,
     priceList: priceList, checkoutFree: checkoutFree, myPurchases: myPurchases
