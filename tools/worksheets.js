@@ -478,6 +478,287 @@ const SHEETS = [
   signoff: "Say the sentence out loud. Where you pause is usually where the line goes.",
 },
 
+/* ═════════════════════ THE HOMEWORK SHEETS ═════════════════════
+   kind "homework" - the paper half of an English lesson, rendered by
+   tools/homework-sheet.js from the `parts` below.
+
+   🚨 EVERY SENTENCE HERE IS ONE THE LESSON NEVER SHOWED HIM, and the build
+   FAILS if that is not true. Paul, 2026-09-17: "please use different examples
+   for the worksheet not the same exact examples ... this is a homework
+   worksheet so it's a different thing." The lesson page is retry-until-right,
+   so it can only ever prove he got there in the end. Ink proves he knew it.
+
+   🚨 EVERY PART IS KEYED AND EVERY PART IS SCORED. Paul: "all these lessons
+   need to answer keys besides anything that you're going to personally write.
+   and then also needs a score on them like 3/15 ... but make it blank so they
+   can write in the score." So each part heading carries a blank rule and its
+   own out-of, there is a blank Total at the foot, and the only part without a
+   key is `own` - which cannot have one, because the answer lives in a sentence
+   nobody has written yet.
+
+   ⚠️ SAME WORLD AS ITS LESSON. Airfield stays airfield and baseball stays
+   baseball. A new setting on the homework is one more thing to hold at the
+   moment he is supposed to be proving he learned the first.
+
+   💲 $0 TODAY, AND THAT IS NOT A PLACEHOLDER. Paul: "if anyone buys lessons any
+   of the worksheets that are included in the lesson are free and it immediately
+   takes you to the download page." Every lesson is free and public right now,
+   so by that rule these are included for everybody. `standalonePrice` is the
+   $2 each costs on its own and `includedWith` names the lesson that covers it -
+   the explicit lesson link ROADMAP item 42 requires in this file "before
+   pricing depends on it". Nothing here is rewritten when lessons become paid.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ────────── 1. FORMING COMPOUND SUBJECTS AND PREDICATES ────────── */
+{
+  slug: "forming-compound-subjects-and-predicates", subject: "English", grade: 7, grades: [7],
+  kind: "homework", lesson: "forming-compound-subjects-and-predicates",
+  title: "Forming Compound Subjects and Predicates",
+  dek: "The homework half of the lesson. Circle the joined words, name the kind, then fold and write your own.",
+  blurb: "Homework for the compound subjects and predicates lesson. Four parts, an answer key, and a space to grade it by hand.",
+  unit: "Homework &middot; answer key included",
+  contains: [
+    "Six sentences where you circle both of the joined words",
+    "Six more where you decide whether it was the subject or the predicate",
+    "Three sets of short sentences to fold into one",
+    "Two sentences of your own to write and mark up",
+    "An answer key, and a blank total to add up and sign by hand",
+  ],
+  /* 💲 $2 IS DECIDED, AND IT CANNOT BE SWITCHED ON YET. Paul, 2026-09-17:
+     "simple subjects and predicates will be paid $2, and also compound will be
+     paid $2." It is recorded in `standalonePrice` rather than `price`, and
+     here is the exact reason, which is worth reading before anyone "fixes" it:
+
+     🚨 A PAID SHEET GETS NO PUBLIC /print/ PAGE. build-worksheets.js only
+     writes one `if (!isPaid(s))`, and that rule is not fussiness - GitHub Pages
+     hands any file in the repo to anybody with the address, so a paid
+     printable sitting in the repo is simply published. Pricing these two today
+     therefore DELETES the page the lesson button opens.
+
+     ⚠️ And that collides with the other thing he asked for the same hour: "it
+     will go immediately to the page to print or download it it won't go to the
+     shopping cart." Both are right. They only hold together once the site can
+     tell who owns the lesson, which is the permission work he asked for next:
+     "basically we need a full permission system given by access." ROADMAP 42.
+
+     → SO: free today, so the homework actually opens; `standalonePrice` and
+     `includedWith` carry the decision. The day entitlement lands, move the $2
+     into `price` and the print page becomes owners-only. Nothing else changes.
+     ⛔ Do NOT set price:"$2" before then. It quietly removes the print page and
+     the lesson's Open Homework Page button starts 404ing. */
+  price: "$0", buy: null,
+  standalonePrice: "$2",
+  includedWith: "english/forming-compound-subjects-and-predicates",
+  art: false, thumb: false,
+  eyebrow: "The Sentence &middot; Revising Strategies",
+  signoff: "Read your own sentence out loud. If you had to say a word twice, it belongs to the part that gets joined.",
+
+  parts: [
+    { kind: "circle", heading: "Find both",
+      note: "Each sentence has two or three words that were joined together. Circle every one of them, not just the first.",
+      askPrefix: "Circle the words that make the",
+      key: "the words that should be circled.",
+      items: [
+        { sentence: "Dell and his brother carry the crates inside.", ask: "compound subject", words: ["Dell", "brother"] },
+        { sentence: "The honey seller labels each jar and stacks them in rows.", ask: "compound predicate", words: ["labels", "stacks"] },
+        { sentence: "Brown eggs and fresh butter sit in the cooler by the door.", ask: "compound subject", words: ["eggs", "butter"] },
+        { sentence: "A farmer in a blue cap weighs the beans and writes the price.", ask: "compound predicate", words: ["weighs", "writes"] },
+        { sentence: "A flat tire or a late start costs Rosa the best corner.", ask: "compound subject", words: ["tire", "start"] },
+        /* three joined parts, so a student who learned "circle two" has to read */
+        { sentence: "The children pick a melon, thump it twice, and set it down.", ask: "compound predicate", words: ["pick", "thump", "set"] },
+      ] },
+
+    { kind: "name", heading: "Which kind?",
+      note: "Nothing is marked for you. Decide which half got joined and write subject or predicate on the line.",
+      labels: ["This sentence has a compound"],
+      items: [
+        { sentence: "Dell and his brother open the gate at six.", answers: ["compound subject"] },
+        { sentence: "The honey seller wipes the jars and lines them up.", answers: ["compound predicate"] },
+        { sentence: "A broken scale or a missing price tag slows the whole line.", answers: ["compound subject"] },
+        { sentence: "The farmer loads his truck and drives to the next town.", answers: ["compound predicate"] },
+        { sentence: "Apples, pears and late plums crowd the end of the table.", answers: ["compound subject"] },
+        { sentence: "The dog sniffs every basket but never takes anything.", answers: ["compound predicate"] },
+      ] },
+
+    /* 🚨 THE BOOK'S OWN APPLY IT: "Combine these three sets of sentences to form
+       compound subjects and compound predicates." Set 2 is deliberately the
+       verb-agreement trap the lesson exists to head off. */
+    { kind: "combine", heading: "Fold them together",
+      note: "Fold each set into one sentence. Say what is the same in all of them, keep that part once, and join what is different.",
+      lineLabel: "All of it in one sentence",
+      items: [
+        { given: ["The gate opens at seven.", "The gate closes at noon."],
+          answer: "The gate opens at seven and closes at noon." },
+        { given: ["Dell packs the truck.", "Rosa packs the truck."],
+          answer: "Dell and Rosa pack the truck.  (pack, not packs, now that it is two people)" },
+        { given: ["The bread sells out by nine.", "The peaches sell out by nine.", "The sweet corn sells out by nine."],
+          answer: "The bread, the peaches and the sweet corn sell out by nine." },
+      ] },
+
+    { kind: "own", heading: "Write your own",
+      note: "Now your own. Write the sentence on the first line, then write the joined words underneath it.",
+      key: "Look for two words joined by and, or or but, and check the verb on the compound subject one: two people take sell, not sells. A sentence that merely uses the word and somewhere is not enough, because the join has to be between two subjects or between two predicates.",
+      items: [
+        { ask: "A sentence with a compound subject", markLabel: "The two subjects" },
+        { ask: "A sentence with a compound predicate", markLabel: "The two predicates" },
+      ] },
+  ],
+},
+
+/* ────────── 2. SIMPLE SUBJECTS AND SIMPLE PREDICATES ────────── */
+/* 🚨 ONE WORD, NOT TWO. This is the lesson BEFORE compound subjects, and the
+   whole skill is narrowing a half down to the single word running it. So Part A
+   circles ONE word and Part B asks for both of them on one sentence, which is
+   the two-word test the lesson teaches, on paper. */
+{
+  slug: "simple-subjects-and-simple-predicates", subject: "English", grade: 7, grades: [7],
+  kind: "homework", lesson: "simple-subjects-and-simple-predicates",
+  title: "Simple Subjects and Simple Predicates",
+  dek: "The homework half of the lesson. Circle the one word that runs each half, then strip a sentence down to two.",
+  blurb: "Homework for the simple subjects and predicates lesson. Three parts, an answer key, and a space to grade it by hand.",
+  unit: "Homework &middot; answer key included",
+  contains: [
+    "Six sentences where you circle the one word the question asks for",
+    "Five more where you name the simple subject and the simple predicate together",
+    "Two sentences of your own to write and strip down",
+    "An answer key, and a blank total to add up and sign by hand",
+  ],
+  /* 💲 $2 IS DECIDED, AND IT CANNOT BE SWITCHED ON YET. Paul, 2026-09-17:
+     "simple subjects and predicates will be paid $2, and also compound will be
+     paid $2." It is recorded in `standalonePrice` rather than `price`, and
+     here is the exact reason, which is worth reading before anyone "fixes" it:
+
+     🚨 A PAID SHEET GETS NO PUBLIC /print/ PAGE. build-worksheets.js only
+     writes one `if (!isPaid(s))`, and that rule is not fussiness - GitHub Pages
+     hands any file in the repo to anybody with the address, so a paid
+     printable sitting in the repo is simply published. Pricing these two today
+     therefore DELETES the page the lesson button opens.
+
+     ⚠️ And that collides with the other thing he asked for the same hour: "it
+     will go immediately to the page to print or download it it won't go to the
+     shopping cart." Both are right. They only hold together once the site can
+     tell who owns the lesson, which is the permission work he asked for next:
+     "basically we need a full permission system given by access." ROADMAP 42.
+
+     → SO: free today, so the homework actually opens; `standalonePrice` and
+     `includedWith` carry the decision. The day entitlement lands, move the $2
+     into `price` and the print page becomes owners-only. Nothing else changes.
+     ⛔ Do NOT set price:"$2" before then. It quietly removes the print page and
+     the lesson's Open Homework Page button starts 404ing. */
+  price: "$0", buy: null,
+  standalonePrice: "$2",
+  includedWith: "english/simple-subjects-and-simple-predicates",
+  art: false, thumb: false,
+  eyebrow: "The Sentence &middot; U1-L3",
+  signoff: "Say the sentence with only those two words. If it still stands up on its own, you found them.",
+
+  parts: [
+    { kind: "circle", heading: "One word",
+      note: "Circle the single word the question asks for. Describing words are never the answer, however close to the verb they sit.",
+      askPrefix: "Circle the",
+      key: "the word that should be circled.",
+      items: [
+        { sentence: "The tall antenna behind the office sways in the wind.", ask: "simple subject", words: ["antenna"] },
+        { sentence: "A student pilot in the first plane taxis toward the numbers.", ask: "simple predicate", words: ["taxis"] },
+        { sentence: "The green fuel drum beside the shed leaks a little.", ask: "simple subject", words: ["drum"] },
+        { sentence: "Two visitors near the gate photograph the yellow biplane.", ask: "simple predicate", words: ["photograph"] },
+        { sentence: "A folding chair under the wing holds somebody's coffee.", ask: "simple subject", words: ["chair"] },
+        { sentence: "The mechanic's daughter counts the planes on the ramp.", ask: "simple predicate", words: ["counts"] },
+      ] },
+
+    /* 🔑 THE TWO-WORD TEST, ON PAPER. The lesson's own check is "say the
+       sentence with only two words", and asking for both at once is that test
+       rather than a second round of the same question. */
+    { kind: "name", heading: "Down to two words",
+      note: "Write the simple subject and the simple predicate for each sentence. Then read those two words on their own and check that they still make sense together.",
+      labels: ["Simple subject", "Simple predicate"],
+      key: "subject, then predicate.",
+      items: [
+        { sentence: "The oldest plane on the field starts on the second try.", answers: ["plane", "starts"] },
+        { sentence: "A row of orange cones marks the edge of the apron.", answers: ["row", "marks"] },
+        { sentence: "The chief mechanic's radio crackles all morning.", answers: ["radio", "crackles"] },
+        { sentence: "Two dogs behind the fuel shed bark at every engine.", answers: ["dogs", "bark"] },
+        { sentence: "A thin line of cloud hides the far end of the runway.", answers: ["line", "hides"] },
+      ] },
+
+    { kind: "own", heading: "Write your own",
+      note: "Write a sentence of your own on the first line, then write its two words underneath.",
+      key: "The simple subject should be one noun or pronoun, never a describing word beside it, and the simple predicate should be the verb. If the two words he writes do not make sense read on their own, he has picked out of the describing phrase.",
+      items: [
+        { ask: "A sentence about anything you like", markLabel: "Its two words" },
+        { ask: "A longer sentence, with a phrase in the middle", markLabel: "Its two words" },
+      ] },
+  ],
+},
+
+/* ────────── 3. COMPLETE SUBJECTS AND PREDICATES ────────── */
+/* ⚠️ THIS LESSON ALREADY HAS A SHEET, and this is a SECOND one that does a
+   different job. The split sheet above reads the lesson's own sentences on
+   purpose, so it is the paper version of the lesson. This is homework: fresh
+   sentences, and he only sees it once he says he is finished.
+   🚨 SO THE SLUG HAS TO DIFFER from the split sheet's or they would build into
+   the same folder and one would overwrite the other. */
+{
+  slug: "complete-subjects-and-predicates-homework", subject: "English", grade: 7, grades: [7],
+  kind: "homework", lesson: "complete-subjects-and-predicates",
+  title: "Complete Subjects and Predicates: Homework",
+  dek: "Fresh sentences, none of them from the lesson. Draw the line, name the half, then write your own.",
+  blurb: "Homework for the complete subjects and predicates lesson. Three parts, an answer key, and a space to grade it by hand.",
+  unit: "Homework &middot; answer key included",
+  contains: [
+    "Six sentences where you draw the dividing line yourself",
+    "Five more with one half marked, and you name it",
+    "Two sentences of your own to write and take apart",
+    "An answer key, and a blank total to add up and sign by hand",
+  ],
+  /* 💲 FREE TO EVERYBODY. Paul, 2026-09-17: "complete subject and predicates
+     will be free". Not "free because its lesson is", so it carries no
+     standalonePrice at all and never becomes paid when entitlements land. */
+  price: "$0", buy: null,
+  includedWith: "english/complete-subjects-and-predicates",
+  art: false, thumb: false,
+  eyebrow: "The Sentence &middot; U1-L2",
+  signoff: "Say the sentence out loud. Where you pause is usually where the line goes.",
+
+  parts: [
+    { kind: "divide", heading: "Place the line",
+      note: "Draw one straight line down between the complete subject and the complete predicate.",
+      key: "the line goes where the bar is.",
+      items: [
+        { sentence: "The shortstop in the away uniform dropped an easy catch.", split: 6 },
+        { sentence: "My little sister keeps the scorebook every Saturday.", split: 3 },
+        { sentence: "Both umpires walked off the field together.", split: 2 },
+        { sentence: "A long line at the snack stand moved slowly.", split: 7 },
+        { sentence: "The coach's whistle ended the practice early.", split: 3 },
+        { sentence: "Everyone on the bench stood up for the last out.", split: 4 },
+      ] },
+
+    { kind: "name", heading: "Name the half",
+      note: "One half of each sentence is underlined. Write whether it is the complete subject or the complete predicate.",
+      labels: ["The underlined half is the"],
+      items: [
+        { sentence: "The tallest player on our team pitched the last inning.",
+          mark: { split: 6, shaded: "first" }, answers: ["complete subject"] },
+        { sentence: "My grandfather watched the whole game from his truck.",
+          mark: { split: 2, shaded: "second" }, answers: ["complete predicate"] },
+        { sentence: "A stray dog wandered across the outfield.",
+          mark: { split: 3, shaded: "second" }, answers: ["complete predicate"] },
+        { sentence: "The scoreboard behind the fence stopped working.",
+          mark: { split: 5, shaded: "first" }, answers: ["complete subject"] },
+        { sentence: "Two rows of parents cheered for every single hit.",
+          mark: { split: 4, shaded: "first" }, answers: ["complete subject"] },
+      ] },
+
+    { kind: "own", heading: "Write your own",
+      note: "Write a sentence of your own on the first line, then write its complete subject and complete predicate underneath.",
+      key: "Look for a complete subject that keeps every word telling you WHICH one, and a complete predicate that starts at the verb and runs to the end. A subject cut short, The man where the sentence says The man behind the paint counter, is the mistake to watch for.",
+      items: [
+        { ask: "A sentence of your own", markLabel: "Complete subject" },
+        { ask: "The same sentence again", markLabel: "Complete predicate" },
+      ] },
+  ],
+},
+
 {
   slug: "weekly-spelling-test", subject: "English", grade: 3, grades: [3, 7], kind: "blank",
   title: "Weekly Spelling Test",

@@ -581,6 +581,20 @@ body.print-all .wk+.wk{page-break-before:always}
 .owns .ownhalf{margin-left:18px}
 .owns .olbl{font-size:.78rem;color:var(--dim);white-space:nowrap;min-width:118px}
 .owns u{text-decoration:none;flex:1;border-bottom:1px solid var(--line-ink);min-height:1.7em}
+
+/* ── the grading block ────────────────────────────────────────────────────
+   🚨 A SHEET SOMEBODY MARKS BY HAND NEEDS SOMEWHERE TO MARK.
+   Paul, 2026-09-17: "it will feel like personalized graded material by hand."
+   The total is added up and signed by a person, so these are real ruled lines
+   like the answer lines above, not decoration. Without the rule the words
+   Total, Graded by and Notes float on the page with nothing to write on. */
+.grading{margin:6px 0 24px;padding:16px 0 0;border-top:1px solid var(--line-ink)}
+.grading .gtotal,.grading .gline{margin:0 0 13px;display:flex;gap:10px;align-items:baseline}
+.grading .olbl{font-size:.78rem;color:var(--dim);white-space:nowrap;min-width:78px}
+.grading u{text-decoration:none;flex:1;border-bottom:1px solid var(--line-ink);min-height:1.7em}
+.grading .gtotal u{flex:0 0 90px}
+.grading .gtotal b{font-size:1.05rem;white-space:nowrap}
+@media print{.grading{break-inside:avoid}}
 @media print{
   .owns u{border-bottom-color:#000}
   .owns .olbl{color:#000}

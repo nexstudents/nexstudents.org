@@ -70,6 +70,13 @@ function themesBlock() {
    because they are inside words, not around them. */
 const bare = (w) => w.replace(/[^A-Za-z']/g, "").toLowerCase();
 
+/* 🔑 ONE WORD, OR A LIST OF THEM. Every guard and renderer below assumed a
+   single target, because every lesson up to compound subjects had one. Rather
+   than fork each of them, they all run through this: a string becomes a
+   one-item list and a list stays a list, so the single-target lessons take the
+   identical path they always did and render byte for byte as before. */
+const asList = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
+
 /* 🚨 A DERIVED COUNT STILL HAS TO READ LIKE PROSE. The note said "Five done for
    you" when it was typed; deriving it turned that into "5 done for you" on a
    page nobody had otherwise touched. The count comes from the data either way -
@@ -85,20 +92,40 @@ function verifyPractice(L) {
     const where = L.slug + " practice[" + n + "]";
     /* "word" is the honest name on a lesson that is not about verbs. One field,
        two spellings, so the guard below still recomputes the index either way. */
-    if (!p.verb && p.word) p.verb = p.word;
+    if (!p.verb && p.word)  p.verb = p.word;
+    if (!p.verb && p.words) p.verb = p.words;
     const words = p.sentence.split(" ");
 
-    const hits = [];
-    words.forEach((w, i) => { if (bare(w) === bare(p.verb)) hits.push(i); });
+    /* ⭐ A COMPOUND ANSWER IS A LIST, AND THE GUARD RUNS ON EVERY ITEM OF IT.
+       Half-checking a pair would be worse than not checking it: the page would
+       accept the first word, refuse the second, and tell a student he was
+       wrong while he was right. That is the exact failure this file exists to
+       make impossible. */
+    const targets = asList(p.verb);
+    const given   = asList(p.answer);
+    if (!targets.length) fail(where + ": needs a target word");
+    if (targets.length !== given.length)
+      fail(where + ": " + targets.length + " target word(s) against " + given.length +
+           " answer index(es). They have to line up one for one.");
 
-    if (hits.length === 0)
-      fail(where + ': the verb "' + p.verb + '" does not appear in "' + p.sentence + '"');
-    if (hits.length > 1)
-      fail(where + ': the verb "' + p.verb + '" appears ' + hits.length + " times in \"" + p.sentence +
-           '" — the click target is ambiguous, reword the sentence');
-    if (hits[0] !== p.answer)
-      fail(where + ': answer is ' + p.answer + ' ("' + words[p.answer] + '") but the verb "' +
-           p.verb + '" is at index ' + hits[0] + ' — this page would mark a correct answer wrong');
+    targets.forEach(function (t, k) {
+      const hits = [];
+      words.forEach((w, i) => { if (bare(w) === bare(t)) hits.push(i); });
+
+      if (hits.length === 0)
+        fail(where + ': the word "' + t + '" does not appear in "' + p.sentence + '"');
+      if (hits.length > 1)
+        fail(where + ': the word "' + t + '" appears ' + hits.length + " times in \"" + p.sentence +
+             '" — the click target is ambiguous, reword the sentence');
+      if (hits[0] !== given[k])
+        fail(where + ": answer[" + k + "] is " + given[k] + ' ("' + words[given[k]] + '") but the word "' +
+             t + '" is at index ' + hits[0] + " — this page would mark a correct answer wrong");
+    });
+
+    /* The same word twice would draw one lit button for two targets, so the
+       item could never be completed and the lesson would trap the student. */
+    if (new Set(targets.map(bare)).size !== targets.length)
+      fail(where + ": the same word is listed twice as a target");
 
     if (!p.why || p.why.length < 20)
       fail(where + ": every answer needs a why, and it has to say more than 'correct'");
@@ -110,7 +137,7 @@ function verifyPractice(L) {
      correct answer first in a multiple choice. Vary the SUBJECT length to fix
      it, never the verb. */
   const spread = {};
-  L.practice.forEach((p) => { spread[p.answer] = (spread[p.answer] || 0) + 1; });
+  L.practice.forEach((p) => { const a = asList(p.answer)[0]; spread[a] = (spread[a] || 0) + 1; });
   const worst = Object.keys(spread).reduce((a, b) => (spread[a] > spread[b] ? a : b));
   const share = spread[worst] / L.practice.length;
   if (share > 0.4)
@@ -129,15 +156,28 @@ function checkSort(L) {
   if (!Array.isArray(L.sort) || L.sort.length < 4)
     fail(L.slug + ": needs a `sort` array of at least four sentences for Part B");
 
+  /* 🔑 THE TWO KINDS ARE A PROPERTY OF THE LESSON, NOT OF THIS FILE. A verbs
+     lesson sorts action against being. A compound-subjects lesson sorts
+     subject against predicate. Only the verbs pair can be checked against the
+     word itself, so `sortKinds` also turns that check off — and turns off the
+     requirement for `at`, because underlining the joined words in a
+     "which half got joined?" question would print the answer on the page. */
+  const KINDS = L.sortKinds || ["action", "being"];
+  if (KINDS.length !== 2) fail(L.slug + ": sortKinds must name exactly two kinds");
+  const verbKinds = !L.sortKinds;
+
   L.sort.forEach((p, i) => {
     const where = L.slug + " sort[" + i + "]";
     const words = String(p.sentence).split(" ");
-    if (typeof p.at !== "number" || !words[p.at])
+    if (verbKinds && (typeof p.at !== "number" || !words[p.at]))
       fail(where + ": `at` must be the index of the verb in the sentence");
-    if (p.kind !== "action" && p.kind !== "being")
-      fail(where + ': kind must be "action" or "being", not "' + p.kind + '"');
+    if (p.at != null && !words[p.at])
+      fail(where + ": `at` is " + p.at + ", which is past the end of the sentence");
+    if (KINDS.indexOf(p.kind) < 0)
+      fail(where + ': kind must be "' + KINDS[0] + '" or "' + KINDS[1] + '", not "' + p.kind + '"');
     if (!p.why || p.why.length < 20)
       fail(where + ": needs a real reason, not a label");
+    if (!verbKinds) return;
 
     /* 🚨 The two kinds are checked against the word itself, because this is the
        one place a typo becomes a wrong answer taught confidently. A being verb
@@ -151,10 +191,10 @@ function checkSort(L) {
       fail(where + ': "' + w + '" is marked action, but it is one of the eight being verbs');
   });
 
-  const being = L.sort.filter((p) => p.kind === "being").length;
+  const being = L.sort.filter((p) => p.kind === KINDS[1]).length;
   const action = L.sort.length - being;
   if (!being || !action)
-    fail(L.slug + ": Part B is all " + (being ? "being" : "action") + " verbs. It has to have both.");
+    fail(L.slug + ": Part B is all " + (being ? KINDS[1] : KINDS[0]) + ". It has to have both.");
   if (Math.max(being, action) / L.sort.length > 0.7)
     fail(L.slug + ": Part B is " + Math.round(Math.max(being, action) / L.sort.length * 100) +
          "% one kind. Answering the same way every time would score that, so even it up.");
@@ -179,15 +219,20 @@ function verifyExamples(L) {
        example whose marked word is not in its own sentence renders as plain
        text with nothing lit, which reads as an oversight rather than a bug. */
     const sentence = Array.isArray(e) ? e[0] : e.sentence;
-    const marks = Array.isArray(e) ? [e[1]] : [e.subject, e.predicate];
+    const marks = Array.isArray(e) ? [e[1]] : asList(e.subject).concat(asList(e.predicate));
     const why = Array.isArray(e) ? e[2] : e.why;
     marks.forEach((m) => {
       if (!m) fail(where + ": a two-colour example needs both a subject and a predicate");
       if (sentence.split(" ").findIndex((w) => bare(w) === bare(m)) < 0)
         fail(where + ': "' + m + '" does not appear in "' + sentence + '"');
     });
-    if (!Array.isArray(e) && bare(e.subject) === bare(e.predicate))
-      fail(where + ": the subject and the predicate are the same word");
+    if (!Array.isArray(e)) {
+      const subs = asList(e.subject).map(bare), preds = asList(e.predicate).map(bare);
+      if (!subs.length || !preds.length)
+        fail(where + ": a two-colour example needs both a subject and a predicate");
+      if (subs.some((x) => preds.indexOf(x) >= 0))
+        fail(where + ": the same word is marked as both subject and predicate");
+    }
     if (!why || why.length < 20) fail(where + ": needs a real explanation");
   });
 }
@@ -265,12 +310,16 @@ function verifyShowcase(L) {
            "        " + sc.sentence);
     const words = sc.sentence.split(" ").map(bare);
     ["subject", "predicate"].forEach((half) => {
-      if (!sc[half]) fail(where + ": needs a " + half);
-      if (words.indexOf(bare(sc[half])) < 0)
-        fail(where + ': the ' + half + ' "' + sc[half] + '" is not a word in its own sentence');
+      const list = asList(sc[half]);
+      if (!list.length) fail(where + ": needs a " + half);
+      list.forEach((m) => {
+        if (words.indexOf(bare(m)) < 0)
+          fail(where + ': the ' + half + ' "' + m + '" is not a word in its own sentence');
+      });
     });
-    if (bare(sc.subject) === bare(sc.predicate))
-      fail(where + ": the subject and the predicate are the same word");
+    const scSubs = asList(sc.subject).map(bare), scPreds = asList(sc.predicate).map(bare);
+    if (scSubs.some((x) => scPreds.indexOf(x) >= 0))
+      fail(where + ": the same word is marked as both subject and predicate");
     if (!sc.note || sc.note.length < 20) fail(where + ": needs a note saying how you could tell");
   });
 }
@@ -300,9 +349,14 @@ function partsHtml(parts) {
    needs. The object marks TWO words in the unit's own colours, for a lesson
    whose answer is a pair. Never a third shape without a reason. */
 function markPair(sentence, subject, predicate) {
+  /* A compound half is two or three words rather than one, so both sides are
+     lists here. The colours do not change: green is still the subject and
+     orange is still the predicate, exactly as in lessons 1-3 and 1-4. */
+  const subs  = asList(subject).map(bare);
+  const preds = asList(predicate).map(bare);
   return sentence.split(" ").map((w) =>
-    bare(w) === bare(subject)   ? '<span class="subj">' + esc(w) + "</span>" :
-    bare(w) === bare(predicate) ? '<span class="pred">' + esc(w) + "</span>" : esc(w)).join(" ");
+    subs.indexOf(bare(w)) >= 0  ? '<span class="subj">' + esc(w) + "</span>" :
+    preds.indexOf(bare(w)) >= 0 ? '<span class="pred">' + esc(w) + "</span>" : esc(w)).join(" ");
 }
 function examplesHtml(examples) {
   return examples.map((e) => {
@@ -375,6 +429,47 @@ function labelsFor(L) {
   return Object.assign(d, L.labels || {});
 }
 
+/* ⭐ THE SHEET HAS TO EXIST BEFORE THE LESSON CAN OFFER IT.
+   A lesson that says "open the homework" and links a 404 is worse than one that
+   says nothing, because the student goes looking. build-split.js already refuses
+   to build on a missing sheet; this is the same rule for English.
+   ⚠️ SO THE ORDER IN tools/README.md MATTERS: build-worksheets.js runs before
+   this generator. A lesson with no `sheet` renders nothing here and no empty
+   heading, which is how every lesson without homework stays unchanged. */
+function sheetCta(L) {
+  if (!L.sheet) return "";
+  const subject = (L.shelf && L.shelf.subject ? L.shelf.subject : "English").toLowerCase();
+  /* 🚨 /print/ , NOT THE PRODUCT PAGE. Paul, 2026-09-17: "it will go immediately
+     to the page to print or download it it won't go to the shopping cart."
+     The folder index is the SHOP page - price, What is included, Add to Cart.
+     The /print/ page under it is the sheet itself with Print and Download at the
+     top, which is the page he is describing. Linking the folder sent a student
+     who just finished the lesson to a checkout for something he already owns. */
+  const base = "/worksheets/" + subject + "/" + L.sheet.slug + "/";
+  const href = base + "print/";
+  const disk = path.join(ROOT, href.slice(1), "index.html");
+  if (!fs.existsSync(disk))
+    fail(L.slug + ": the lesson links a homework sheet that is not built - " + href +
+         ". Run build-worksheets.js before this generator.");
+  /* ⚠️ THE PDF BUTTON ONLY EXISTS IF THE PDF DOES. make-pdf.js renders it with
+     headless Chrome, which is a separate step and fails outright on a machine
+     where headless Chrome will not start. A dead Download is worse than no
+     Download: the sheet page itself always offers Print, so nothing is lost by
+     leaving this out until the file is there. check-links would catch it
+     anyway; this is so it never gets that far. */
+  const pdfRel = L.sheet.slug + ".pdf";
+  const hasPdf = fs.existsSync(path.join(ROOT, base.slice(1), pdfRel));
+  const dl = hasPdf
+    ? '      <a class="tab act" href="' + href + pdfRel + '" download>Download The PDF</a>\n'
+    : "";
+  return '<div class="sheetcta">\n' +
+    '    <p class="sheetnote">' + esc(L.sheet.note) + '</p>\n' +
+    '    <div class="actions">\n' +
+    '      <a class="tab act" href="' + href + '">Open Homework Page</a>\n' +
+    dl +
+    '    </div>\n  </div>';
+}
+
 const written = [];
 for (const L of ENGLISH) {
   verifyGround(L);
@@ -396,7 +491,7 @@ for (const L of ENGLISH) {
   /* The page only ever needs the sentence, the index and the why. Shipping
      `verb` too would put the answer in plain sight in the page source. */
   const practiceForPage = L.practice.map((p) => ({
-    sentence: p.sentence, answer: p.answer, why: p.why, ask: p.ask
+    sentence: p.sentence, answer: asList(p.answer), why: p.why, ask: p.ask
   }));
   /* Part B needs the kind in the page, because that IS the answer and the page
      has to check it. Nothing else about the item goes out. */
@@ -442,6 +537,7 @@ for (const L of ENGLISH) {
     .replace("__SHOWCASE_HTML__", () => showcaseHtml(L))
     .replace("__CHOOSE__", () => JSON.stringify(chooseForPage))
     .replace("__LABELS__", () => JSON.stringify(labelsFor(L)))
+    .replace("__SHEET_CTA__", () => sheetCta(L))
     .replace("__PARTS__", JSON.stringify(partsFor(L)))
     .replace("__PRACTICE__", JSON.stringify(practiceForPage))
     .replace("__SORT__", JSON.stringify(sortForPage))
@@ -464,6 +560,7 @@ for (const L of ENGLISH) {
                       "__RULE_LONG__", "__RULE_TEST__", "__PARTS_HTML__", "__EXAMPLES_HTML__",
                       "__PRACTICE_NOTE__", "__PART_SECTIONS__", "__SHOWCASE_HTML__", "__EXAMPLES_NOTE__",
                       "__PARTS__", "__PRACTICE__", "__SORT__", "__CHOOSE__", "__LABELS__", "__THEMES__",
+                      "__SHEET_CTA__",
                       "__PLAYER_CSS__", "__FIELD_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__",
                       "__CANONICAL__", "__MODEBOOT__", "__NAVCSS__", "__FAVICON__", "__NAV__", "__NAVSCRIPT__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);

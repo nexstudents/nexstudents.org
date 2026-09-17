@@ -159,6 +159,26 @@ const ICON_CART = '<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="
    and Download as a third door, and "" (the solid buy colour) for a paid one,
    where it is the ONLY door and must read as the primary action. */
 function cartBtn(s, variant) {
+  /* 🚨 A SHEET THAT COMES WITH A LESSON HAS NOTHING TO SELL ON ITS PRINT PAGE.
+     Paul, 2026-09-17: "the download and print page for the lesson ... that one
+     should not have a shopping cart icon ... that particular page should only be
+     available for people who have access to the lessons or who have already paid
+     to have that page available to them."
+     A student who just finished the lesson and pressed Open Homework Page has
+     already been given this sheet, so offering to sell it to him is wrong twice
+     over: it asks for money he does not owe, and it makes a page that is his
+     look like a shop.
+     ⚠️ THIS HIDES THE BUTTON, IT DOES NOT ENFORCE ANYTHING. The page is still
+     served to anyone who knows the address. Real gating needs the entitlement
+     work Paul asked for next, and it is ROADMAP item 42.
+     → the shelf card and the product page still carry Add to Cart, because that
+       is where somebody who does NOT own the lesson meets the sheet. */
+  /* ⚠️ ONLY ON THE PRINT PAGE. `variant` is undefined exactly when this is the
+     bar above the sheet itself, which is the page the lesson button opens. The
+     product page ("p-cart") and the shelf card still sell it, because that is
+     where somebody who does NOT own the lesson meets the sheet - and two of
+     these three are $2 on their own. */
+  if (s.includedWith && variant === undefined) return "";
   /* The thumbnail is a display hint only; the title and the price always come
      back from the products table. A sheet with no thumb passes nothing and the
      drawer draws a plain tile. */
@@ -543,6 +563,18 @@ ${navScript()}
    READ FROM THE LESSON, never retyped here. tools/split-sheet.js does that. */
 function splitHtml(s) {
   const { splitSheetBody } = require("./split-sheet.js");
+  return splitShell(s, splitSheetBody(s));
+}
+
+/* The homework sheet for an English lesson. Same page furniture as the split
+   sheet - only the body differs - so the two can never drift apart on the nav,
+   the back link, Print, Download or the footer. */
+function homeworkHtml(s) {
+  const { homeworkSheetBody } = require("./homework-sheet.js");
+  return splitShell(s, homeworkSheetBody(s));
+}
+
+function splitShell(s, body) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -585,7 +617,7 @@ ${navMarkup("w")}
     <span>Name <u></u></span>
     <span>Date <u></u></span>
   </div>
-${splitSheetBody(s)}
+${body}
   <p class="signoff"><em>${s.signoff}</em>
     <small>Copyright &copy; NexEdge Studios</small></p>
 
@@ -1288,6 +1320,7 @@ for (const s of SHEETS) {
              : s.kind === "pdf"        ? pdfHtml(s)
              : s.kind === "blank"      ? blankHtml(s)
              : s.kind === "split"      ? splitHtml(s)
+             : s.kind === "homework"   ? homeworkHtml(s)
              : s.kind === "flashcards" ? flashHtml(s)
              : isPaid(s)               ? bundleHtml(s)
              :                           sheetHtml(s);

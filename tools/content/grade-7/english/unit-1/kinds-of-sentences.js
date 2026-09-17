@@ -6,7 +6,7 @@ module.exports = {
   id: "english/kinds-of-sentences",
   slug: "kinds-of-sentences",
   title: "Kinds of Sentences",
-  unit: "English 7 &middot; U1-L1",
+  unit: "The Sentence · U1-L1",
   /* Houghton Mifflin puts this first in Unit 1, The Sentence, at page 32.
      `seq` is the order; the `unit` string above is a label and is never parsed. */
   seq: { unit: 1, unitTitle: "The Sentence", n: 1 },

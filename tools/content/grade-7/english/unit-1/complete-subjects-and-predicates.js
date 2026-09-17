@@ -42,6 +42,15 @@ module.exports = {
      book 1 and book 2, so on the shelf this is the third card. The eyebrow keeps
      the book's own numbering; `seq` keeps the order the student walks. */
   seq: { unit: 1, unitTitle: "The Sentence", n: 3 },
+  /* 🚨 A SECOND SHEET. The worksheet this lesson already links is its paper
+     version and shares its sentences on purpose. This one is HOMEWORK and
+     shares none of them: homework-sheet.js fails the build if it does.
+     Paul, 2026-09-17: "also add the buttons for them in the lessons." */
+  homework: {
+    slug: "complete-subjects-and-predicates-homework",
+    note: "When you are ready to prove it, this one is all sentences you have not seen, with a " +
+          "blank total at the foot for somebody to add up and sign."
+  },
 
   ground: {
     whatItIs: "Every sentence splits into two parts. The complete subject is all the words that tell who or what the sentence is about. The complete predicate is all the words that tell what that subject does, or what is true about it.",
@@ -236,7 +245,10 @@ module.exports = {
       "Read the story about the hardware store and listen to the explanation.",
       "Part A has {a} sentences. Put the dividing line where the sentence stops telling you who or what it is about.",
       "Part B has {b} sentences. One half is already shaded. Name it.",
-      "When you have finished both parts, print the worksheet and do it on paper. Writing the sentences out yourself is where this really sticks."
+      "When you have finished both parts, print the worksheet and do it on paper. Writing the sentences out yourself is where this really sticks.",
+      "Then print the homework from the second button and do that on paper too.",
+      "The homework uses sentences you have not seen here, so it asks whether you can work the rule rather than whether you remember these answers.",
+      "Add your total up at the bottom and hand it to whoever teaches you to check and sign."
     ]
   }
 };

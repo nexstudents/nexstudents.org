@@ -101,13 +101,39 @@ const { fillTodo, numWord } = require('./split-lessons.js');
    build-worksheets.js from the SAME lesson data. Run that generator first. */
 function sheetHref(L) {
   const subject = (L.shelf && L.shelf.subject ? L.shelf.subject : 'English').toLowerCase();
-  const href = '/worksheets/' + subject + '/' + L.slug + '/';
+  /* 🚨 /print/ , NOT THE PRODUCT PAGE - same fix as build-english.js, and the
+     same reason. This lesson had been sending a student who had just finished it
+     to a page whose main button is Add to Cart. Paul, 2026-09-17. */
+  const href = '/worksheets/' + subject + '/' + L.slug + '/print/';
   const disk = path.join(ROOT, href.slice(1), 'index.html');
   if (!fs.existsSync(disk)) {
     fail(L.slug + ': the lesson links a worksheet that is not built - ' + href +
          '. Run build-worksheets.js before this generator.');
   }
   return href;
+}
+
+/* The homework sheet, which is a different sheet from sheetHref's. A lesson
+   with no `homework` renders nothing here and no empty heading, so every split
+   lesson without one is untouched. */
+function homeworkCta(L) {
+  if (!L.homework) return '';
+  const subject = (L.shelf && L.shelf.subject ? L.shelf.subject : 'English').toLowerCase();
+  const base = '/worksheets/' + subject + '/' + L.homework.slug + '/';
+  const href = base + 'print/';
+  if (!fs.existsSync(path.join(ROOT, href.slice(1), 'index.html')))
+    fail(L.slug + ': the lesson links a homework sheet that is not built - ' + href +
+         '. Run build-worksheets.js before this generator.');
+  const pdfRel = L.homework.slug + '.pdf';
+  const dl = fs.existsSync(path.join(ROOT, base.slice(1), pdfRel))
+    ? '      <a class="tab act" href="' + base + pdfRel + '" download>Download The PDF</a>\n'
+    : '';
+  return '<div class="sheetcta">\n' +
+    '    <p class="sheetnote">' + L.homework.note + '</p>\n' +
+    '    <div class="actions">\n' +
+    '      <a class="tab act" href="' + href + '">Open Homework Page</a>\n' +
+    dl +
+    '    </div>\n  </div>';
 }
 
 function halves(sentence, split) {
@@ -294,8 +320,9 @@ for (const raw of SPLIT) {
     /* 🚨 THE WORKSHEET LINK IS CHECKED, NOT ASSUMED. A lesson that tells the
        student to print a sheet and then links nowhere is worse than one that
        says nothing. Same rule as the back links: the target must exist. */
+    .replace('__HOMEWORK_CTA__', () => homeworkCta(L))
     .replace('__SHEETHREF__', sheetHref(L))
-    .replace('__SHEETPDF__', sheetHref(L) + L.slug + '.pdf')
+    .replace('__SHEETPDF__', sheetHref(L).slice(0, -"print/".length) + L.slug + '.pdf')
     /* 🚨 A FULL SENTENCE, NOT A COUNT WITH A FULL STOP AFTER IT. Paul,
        2026-09-08: "there are seven sentences". The note opened on a bare
        "seven sentences." which reads as a label, not as someone telling the
@@ -332,7 +359,7 @@ for (const raw of SPLIT) {
     .replace('__NAVSCRIPT__', navScript);
 
   for (const slot of ['__TITLE__', '__DEK__', '__EYEBROW__', '__ID__', '__GROUND__', '__STORY__',
-    '__SHOWCASE__', '__EXAMPLE__', '__SHEETHREF__', '__SHEETPDF__', '__NOTE_A__', '__NOTE_B__', '__PARTS__', '__PRACTICE__',
+    '__SHOWCASE__', '__EXAMPLE__', '__SHEETHREF__', '__SHEETPDF__', '__HOMEWORK_CTA__', '__NOTE_A__', '__NOTE_B__', '__PARTS__', '__PRACTICE__',
     '__SORT__', '__VISUALS__', '__THEMES__', '__PLAYER_CSS__', '__PANEL_CSS__', '__PANEL_MARKUP__', '__FIELD_CSS__', '__PLAYER_MARKUP__',
     '__PLAYER_JS__', '__CANONICAL__', '__MODEBOOT__', '__NAVCSS__', '__FAVICON__', '__NAV__', '__NAVSCRIPT__',
     '__BACKHREF__', '__BACKLABEL__']) {

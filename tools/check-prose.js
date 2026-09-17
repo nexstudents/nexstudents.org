@@ -108,15 +108,46 @@ for (const file of files) {
      sentences reads as a list of fragments however good the sentences are. */
   const paras = [];
   let run = 0;
+  /* ⚠️ AN EXAMPLE BOX IS NOT A PARAGRAPH. A specimen sentence held up in an
+     [ex] or [verse] block is SUPPOSED to stand alone, so counting it drags the
+     average down and reports flat prose that is not flat. Skip the block, and
+     treat it as a break like a blank line. */
   (L.parts || []).forEach(p => { (p.s || []).forEach(t => {
-    if (String(t).trim()) run++; else { if (run) paras.push(run); run = 0; }
+    const line = String(t).trim();
+    const marked = line.indexOf("[ex] ") === 0 || line.indexOf("[verse] ") === 0;
+    if (line && !marked) run++; else { if (run) paras.push(run); run = 0; }
   }); if (run) { paras.push(run); run = 0; } });
   const perPara = paras.length ? (paras.reduce((a, b) => a + b, 0) / paras.length) : 0;
   const singles = paras.length ? Math.round(paras.filter(x => x === 1).length / paras.length * 100) : 0;
   rows[rows.length - 1].para = perPara.toFixed(1);
   rows[rows.length - 1].single = singles;
 
+  /* 🚨 THE DRUMBEAT. An average hides this completely: a lesson can sit on a
+     median of 15 and still have three four-word stubs back to back, and three
+     in a row is what a reader actually hears.
+
+     Paul, 2026-09-17: "you keep using periods over and over and it doesn't
+     sound fluid ... you might even need to use compound subjects and
+     predicates in your own writing." He was reading a lesson whose median and
+     short% BOTH passed, so nothing here caught it.
+
+     ⚠️ Runs are counted inside a paragraph only. A short line either side of a
+     blank line is a new thought, and often a deliberate closing beat. */
+  let worstRun = 0, runNow = 0, worstAt = "";
+  (L.parts || []).forEach(p => { (p.s || []).forEach(t => {
+    const line = String(t).trim();
+    if (!line) { runNow = 0; return; }
+    if (line.split(/\s+/).length < 8) {
+      runNow++;
+      if (runNow > worstRun) { worstRun = runNow; worstAt = line; }
+    } else runNow = 0;
+  }); runNow = 0; });
+  rows[rows.length - 1].run = worstRun;
+
   const bad = [];
+  if (worstRun >= 3)
+    bad.push(worstRun + ' short sentences in a row ("' + worstAt.slice(0, 40) +
+             '") - join them with and/but/or, do not chop further');
   if (median < MEDIAN_FLOOR) bad.push('median ' + median + ' words (want ' + MEDIAN_FLOOR + '+)');
   if (short > SHORT_CEILING) bad.push(short + '% of lines under 8 words (want under ' + SHORT_CEILING + '%)');
   if (perPara < 2.5) bad.push("paragraphs average " + perPara.toFixed(1) + " sentences (want 2.5+, Paul runs 3.0)");
@@ -126,10 +157,10 @@ for (const file of files) {
 }
 
 rows.sort((a, b) => a.median - b.median);
-console.log('\n  lesson'.padEnd(46) + 'lines  median  <8w   ,');
+console.log('\n  lesson'.padEnd(46) + 'lines  median  <8w   ,   run');
 for (const r of rows) {
   console.log('  ' + r.slug.slice(0, 42).padEnd(44) + String(r.n).padEnd(7) + String(r.median).padEnd(8) +
-              (r.short + '%').padEnd(6) + (r.comma + '%').padEnd(6) + String(r.para).padEnd(8) + r.single + '%');
+              (r.short + '%').padEnd(6) + (r.comma + '%').padEnd(6) + String(r.para).padEnd(8) + (r.single + '%').padEnd(7) + String(r.run||0));
 }
 
 if (warns.length) {

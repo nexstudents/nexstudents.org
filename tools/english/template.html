@@ -76,6 +76,58 @@ h1{margin:0 0 6px}
 .part h3{margin:0 0 8px;font-size:1.08rem}
 .part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
 
+/* ── examples and scripture get their own frame ────────────────────────────
+   🚨 AN EXAMPLE IS NOT STORY AND MUST NOT LOOK LIKE STORY.
+   Paul, 2026-09-17: "anything that's an example you need to outline in a
+   separate window text and I'm actually wondering if you can start
+   italicizing any of those examples" · "maybe even use a better font because
+   the font that you're currently using is pretty bad" · and then the limit on
+   that: "define for the regular story is fine but not for the examples."
+   So the body face is untouched and ONLY these two blocks change.
+
+   The engine has applied is-ex and is-verse since the history template was
+   written, and it strips the marker before the text ever reaches the reader or
+   the voice. The English page simply never styled them, so a marked line
+   rendered as one more line of story. That is the whole bug.
+
+   🔑 A SERIF, NOT THE MONOSPACE THE HISTORY PAGE USES. Monospace suits a sum or
+   a line of code. These are ENGLISH SENTENCES being held up as specimens, and a
+   book face says "read this as writing" where a code face says "read this as
+   data".
+   ⚠️ THE CLASS IS ON THE PARAGRAPH, NEVER ON .sent. .sent is the highlight
+   unit for the reading voice, and restyling it shifts the text out from under
+   the band while it is being read. */
+.part p.is-ex,
+.part p.is-verse{
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  font-style:italic;
+  margin:14px 0;
+  padding:12px 18px;
+}
+.part p.is-ex{
+  font-size:1.09em;line-height:1.62;max-width:58ch;
+  border:1px solid var(--boxline);
+  border-left:3px solid var(--a);
+  border-radius:0 var(--r) var(--r) 0;
+  background:var(--boxfill);
+}
+.part p.is-verse{
+  font-size:1.05em;line-height:1.72;max-width:62ch;
+  border-left:3px solid var(--a);
+  opacity:.94;
+}
+/* The reading band is tuned against the page ground, and the example box sits
+   on --boxfill, so the two can close up enough to lose the band inside it. */
+.part p.is-ex .sent.on,
+.part p.is-verse .sent.on{box-shadow:0 0 0 2px var(--a)}
+
+/* An italic serif at 1.09em is still small on a phone, and these are the lines
+   the student is asked to read most carefully. */
+@media (max-width:560px){
+  .part p.is-ex{font-size:1.14em;padding:12px 14px}
+  .part p.is-verse{font-size:1.08em;padding:10px 14px}
+}
+
 /* ── worked examples ── */
 .ex{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:16px 18px;margin:0 0 12px}
@@ -137,6 +189,10 @@ h1{margin:0 0 6px}
 .scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:16px;margin:22px 0 40px}
 .scorebar b{font-size:1.25rem}
+/* The homework call to action. Same shape as split/template.html, on purpose. */
+.sheetcta{margin:26px 0 0}
+.sheetnote{color:var(--dim);font-size:.95rem;line-height:1.6;margin:0 0 12px;max-width:62ch}
+.sheetcta .tab.act{text-align:center;text-decoration:none;line-height:1.3}
 
 /* ── TWO COLOURS, ONE MEANING ─────────────────────────────────────────────
    🚨 LIFTED FROM split/template.html, never re-picked. Green is the subject and
@@ -248,6 +304,31 @@ __NAV__
   __PART_SECTIONS__
 
   <div class="scorebar" id="scorebar"></div>
+
+  <!-- 🚨 THE HOMEWORK SHEET IS LINKED FROM THE LESSON THAT OWNS IT, AS A
+       SECOND BUTTON. Paul, 2026-09-17: "you can print out the lesson in the
+       results and we already do that but I want another button to also add
+       worksheets." So this sits BESIDE the results, it does not replace them.
+
+       🔑 WHY IT IS CALLED HOMEWORK. Paul, same day: "we might even call them
+       homework worksheets. because these are like ones to make sure that you
+       actually understand what you're learning and not you're not just
+       pressing a bunch of multiple choices and skipping through the lesson."
+
+       💲 IT GOES STRAIGHT TO THE SHEET, NEVER TO THE CART. Paul: "it will go
+       immediately to the page to print or download it it won't go to the
+       shopping cart ... if anyone buys lessons any of the worksheets that are
+       included in the lesson are free and it immediately takes you to the
+       download page because you've already purchased the lesson." The sheet
+       page IS the print-and-download page, so the link is the whole mechanism
+       today, and it stays right when lessons become paid.
+
+       ⚠️ The href is filled by build-english.js, which FAILS the build if the
+       sheet folder has no index.html. Do NOT name the slot tokens in prose
+       above the markup: the generator fills slots with a plain .replace, which
+       takes the FIRST match, so a token mentioned up here gets filled instead
+       of the markup below. That is the trap split/template.html records. -->
+  __SHEET_CTA__
 </div>
 
 <script>
@@ -256,7 +337,7 @@ __NAV__
 
 var LESSON_ID = "__ID__";
 var PARTS     = __PARTS__;
-var PRACTICE  = __PRACTICE__;   /* Part A - which word is the verb */
+var PRACTICE  = __PRACTICE__;   /* Part A - which word, or which WORDS */
 var SORT      = __SORT__;       /* Part B - which KIND of verb it is */
 /* 🚨 A THIRD PART SHAPE: the words are OFFERED rather than hunted for. Empty on
    a lesson that does not use it, and then nothing below it renders. */
@@ -409,21 +490,40 @@ function renderFind(){
     var nudge = document.createElement("p");
     nudge.className = "nudge";
 
+    /* 🚨 A COMPOUND ANSWER IS NOT FINISHED ON THE FIRST RIGHT TAP. The found
+       ones are remembered per question so a reload does not lose half a pair,
+       which is the same reason the answers themselves are in ns:prog at all. */
+    var want = p.answer;
+    var got  = state["af" + n] || [];
     p.sentence.split(" ").forEach(function(word, wi){
       var b = document.createElement("button");
       b.type = "button"; b.className = "pw"; b.textContent = word;
+      var isTarget = want.indexOf(wi) >= 0;
       if (done) {
         b.disabled = true;
-        if (wi === p.answer) b.classList.add("ok");
+        if (isTarget) b.classList.add("ok");
       } else {
+        if (isTarget && got.indexOf(wi) >= 0) { b.classList.add("ok"); b.disabled = true; }
         b.onclick = function(){
-          if (wi === p.answer) {
-            state["a" + n] = true; save();
-            render();
-            /* keep the explanation on screen after the re-render */
-            var fresh = wrap.children[n].querySelector(".nudge");
-            if (fresh) fresh.textContent = p.why;
-            score();
+          if (isTarget) {
+            if (got.indexOf(wi) < 0) got.push(wi);
+            state["af" + n] = got;
+            b.classList.add("ok"); b.disabled = true;
+            if (got.length >= want.length) {
+              state["a" + n] = true; save();
+              render();
+              /* keep the explanation on screen after the re-render */
+              var fresh = wrap.children[n].querySelector(".nudge");
+              if (fresh) fresh.textContent = p.why;
+              score();
+            } else {
+              save();
+              nudge.classList.remove("warn");
+              /* ⚠️ Say how many are LEFT, not how many are done. A student who
+                 taps one word of a pair and gets silence reads it as a bug. */
+              nudge.textContent = "That one is right. " +
+                (want.length - got.length) + " more to find in this sentence.";
+            }
           } else {
             b.classList.add("wrong");
             nudge.classList.add("warn");
@@ -617,7 +717,10 @@ document.getElementById("reveal").onclick = function(){
     var ws = boxes[i].querySelectorAll(".pw");
     for (j = 0; j < ws.length; j++) {
       ws[j].disabled = true;
-      if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");
+      /* ⚠️ A compound answer is a LIST, so this is a membership test. Comparing
+         j against the list itself lit nothing at all, which would have shipped
+         a Show Me The Answers button that answers nothing. */
+      if (PRACTICE[i].answer.indexOf(j) >= 0) ws[j].classList.add("reveal");
     }
     var nd = boxes[i].querySelector(".nudge");
     nd.classList.remove("warn");
@@ -630,7 +733,10 @@ document.getElementById("reveal").onclick = function(){
     var kb = kboxes[i].querySelectorAll(".kbtn");
     for (j = 0; j < kb.length; j++) {
       kb[j].disabled = true;
-      if ((j === 0 ? "action" : "being") === SORT[i].kind) kb[j].classList.add("reveal");
+      /* 🚨 The two kinds come from the lesson, the same as the buttons above.
+         Hardcoding action/being here meant a subject/predicate lesson revealed
+         nothing, while the buttons themselves were already generic. */
+      if ((j === 0 ? LABELS.kindAKey : LABELS.kindBKey) === SORT[i].kind) kb[j].classList.add("reveal");
     }
     var knd = kboxes[i].querySelector(".nudge");
     knd.classList.remove("warn");

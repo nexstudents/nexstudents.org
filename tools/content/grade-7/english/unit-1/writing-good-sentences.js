@@ -6,7 +6,7 @@ module.exports = {
   id: "english/writing-good-sentences",
   slug: "writing-good-sentences",
   title: "Writing Good Sentences",
-  unit: "English 7 &middot; U1-L2",
+  unit: "The Sentence · Revising Strategies",
   /* Houghton Mifflin's craft page right after Kinds of Sentences, book pages
      35-36. `seq` is the order; the `unit` string above is a label and is
      never parsed. */

@@ -2992,21 +2992,40 @@ function renderFind(){
     var nudge = document.createElement("p");
     nudge.className = "nudge";
 
+    /* 🚨 A COMPOUND ANSWER IS NOT FINISHED ON THE FIRST RIGHT TAP. The found
+       ones are remembered per question so a reload does not lose half a pair,
+       which is the same reason the answers themselves are in ns:prog at all. */
+    var want = p.answer;
+    var got  = state["af" + n] || [];
     p.sentence.split(" ").forEach(function(word, wi){
       var b = document.createElement("button");
       b.type = "button"; b.className = "pw"; b.textContent = word;
+      var isTarget = want.indexOf(wi) >= 0;
       if (done) {
         b.disabled = true;
-        if (wi === p.answer) b.classList.add("ok");
+        if (isTarget) b.classList.add("ok");
       } else {
+        if (isTarget && got.indexOf(wi) >= 0) { b.classList.add("ok"); b.disabled = true; }
         b.onclick = function(){
-          if (wi === p.answer) {
-            state["a" + n] = true; save();
-            render();
-            /* keep the explanation on screen after the re-render */
-            var fresh = wrap.children[n].querySelector(".nudge");
-            if (fresh) fresh.textContent = p.why;
-            score();
+          if (isTarget) {
+            if (got.indexOf(wi) < 0) got.push(wi);
+            state["af" + n] = got;
+            b.classList.add("ok"); b.disabled = true;
+            if (got.length >= want.length) {
+              state["a" + n] = true; save();
+              render();
+              /* keep the explanation on screen after the re-render */
+              var fresh = wrap.children[n].querySelector(".nudge");
+              if (fresh) fresh.textContent = p.why;
+              score();
+            } else {
+              save();
+              nudge.classList.remove("warn");
+              /* ⚠️ Say how many are LEFT, not how many are done. A student who
+                 taps one word of a pair and gets silence reads it as a bug. */
+              nudge.textContent = "That one is right. " +
+                (want.length - got.length) + " more to find in this sentence.";
+            }
           } else {
             b.classList.add("wrong");
             nudge.classList.add("warn");
@@ -3200,7 +3219,10 @@ document.getElementById("reveal").onclick = function(){
     var ws = boxes[i].querySelectorAll(".pw");
     for (j = 0; j < ws.length; j++) {
       ws[j].disabled = true;
-      if (j === PRACTICE[i].answer) ws[j].classList.add("reveal");
+      /* ⚠️ A compound answer is a LIST, so this is a membership test. Comparing
+         j against the list itself lit nothing at all, which would have shipped
+         a Show Me The Answers button that answers nothing. */
+      if (PRACTICE[i].answer.indexOf(j) >= 0) ws[j].classList.add("reveal");
     }
     var nd = boxes[i].querySelector(".nudge");
     nd.classList.remove("warn");
@@ -3213,7 +3235,10 @@ document.getElementById("reveal").onclick = function(){
     var kb = kboxes[i].querySelectorAll(".kbtn");
     for (j = 0; j < kb.length; j++) {
       kb[j].disabled = true;
-      if ((j === 0 ? "action" : "being") === SORT[i].kind) kb[j].classList.add("reveal");
+      /* 🚨 The two kinds come from the lesson, the same as the buttons above.
+         Hardcoding action/being here meant a subject/predicate lesson revealed
+         nothing, while the buttons themselves were already generic. */
+      if ((j === 0 ? LABELS.kindAKey : LABELS.kindBKey) === SORT[i].kind) kb[j].classList.add("reveal");
     }
     var knd = kboxes[i].querySelector(".nudge");
     knd.classList.remove("warn");

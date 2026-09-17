@@ -127,7 +127,7 @@
       </div>
       <button type="button" class="unitnav" data-step="1" aria-label="Next unit">&#8250;</button>
     </div>
-    <section class="unitpanel" data-unit="1" data-built="4" data-total="10" hidden>
+    <section class="unitpanel" data-unit="1" data-built="5" data-total="10" hidden>
       <div class="cardgrid">
         <div class="card" data-lesson="english/kinds-of-sentences" data-unit="English|1" data-n="1">
       <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
@@ -209,13 +209,25 @@
       </div>
       <span class="tick-score"></span>
     </div>
-        <div class="card is-slot" aria-hidden="true">
-      <span class="cthumb"></span>
-      <span class="cbody">
-        <em>English 7 &middot; U1 &middot; Revising Strategies</em>
-        <b class="ctitle">Forming Compound Subjects and Predicates</b>
-        <span class="cblurb">Not built yet.</span>
-      </span>
+        <div class="card" data-lesson="english/forming-compound-subjects-and-predicates" data-needs="english/simple-subjects-and-simple-predicates" data-unit="English|1" data-n="5">
+      <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
+      <a class="clink" href="/lessons/english/forming-compound-subjects-and-predicates/">
+        <span class="cthumb"></span>
+        <span class="cbody">
+          <em>English 7 &middot; U1 &middot; Revising Strategies</em>
+          <b class="ctitle">Forming Compound Subjects and Predicates</b>
+          <span class="cblurb">Two sentences that repeat each other can usually become one. Learn the fold.</span>
+        </span>
+      </a>
+      <div class="cmore">
+        <button class="cpeek" type="button">More Info</button>
+        <ul hidden><li>Teacher Notes with the grade and a reset only the teacher can reach</li><li>A Saturday morning at a farmers' market, read aloud one line at a time</li><li>The same story again with the joined parts marked in color</li><li>Worked examples that show the two short sentences underneath the long one</li><li>One part where you find both joined words yourself, and one where you say which half got joined</li></ul>
+      </div>
+      <div class="cmeta">
+        <span>Interactive</span>
+        <u class="gate is-open" title="Unlocked" aria-label="Unlocked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7a4 4 0 0 1 7.9-.6"/></svg></u>
+      </div>
+      <span class="tick-score"></span>
     </div>
         <div class="card is-slot" aria-hidden="true">
       <span class="cthumb"></span>
@@ -1501,7 +1513,7 @@ if(cdrawer){
 }
 var adrawer=document.getElementById("adrawer"),ascrim=document.getElementById("ascrim"),
     adClose=document.getElementById("adClose"),acctLink=document.getElementById("acctLink");
-var AD_ITEMS={"manuscript-alphabet":{"th":"/worksheets/english/manuscript-alphabet/thumb.jpg","open":"/worksheets/english/manuscript-alphabet/print/"},"cursive-alphabet":{"th":"/worksheets/english/cursive-alphabet/thumb.jpg","open":"/worksheets/english/cursive-alphabet/print/"},"multiplication-drill-100":{"th":"/worksheets/maths/multiplication-drill-100/thumb.jpg","open":"/worksheets/maths/multiplication-drill-100/print/"},"division-drill-100":{"th":"/worksheets/maths/division-drill-100/thumb.jpg","open":"/worksheets/maths/division-drill-100/print/"},"lewis-and-clark":{"th":"/worksheets/history/lewis-and-clark/thumb.jpg","open":"/worksheets/history/lewis-and-clark/print/"},"thirteen-colonies":{"th":"/worksheets/history/thirteen-colonies/thumb.jpg","open":"/worksheets/history/thirteen-colonies/print/"},"boston-tea-party":{"th":"","open":"/worksheets/history/boston-tea-party/print/"},"animal-cell":{"th":"/worksheets/science/animal-cell/thumb.jpg","open":"/worksheets/science/animal-cell/"},"plant-cell":{"th":"/worksheets/science/plant-cell/thumb.jpg","open":"/worksheets/science/plant-cell/"},"us-history-semester-1":{"th":"/worksheets/history/us-history-semester-1/thumb.jpg","open":"/worksheets/history/us-history-semester-1/"},"complete-subjects-and-predicates":{"th":"/worksheets/english/complete-subjects-and-predicates/thumb.jpg","open":"/worksheets/english/complete-subjects-and-predicates/print/"},"weekly-spelling-test":{"th":"/worksheets/english/weekly-spelling-test/thumb.jpg","open":"/worksheets/english/weekly-spelling-test/print/"},"spelling-flashcards":{"th":"/worksheets/english/spelling-flashcards/thumb.jpg","open":"/worksheets/english/spelling-flashcards/print/"},"newtons-laws-of-motion":{"th":"/worksheets/science/newtons-laws-of-motion/thumb.jpg","open":"/worksheets/science/newtons-laws-of-motion/print/"}};
+var AD_ITEMS={"manuscript-alphabet":{"th":"/worksheets/english/manuscript-alphabet/thumb.jpg","open":"/worksheets/english/manuscript-alphabet/print/"},"cursive-alphabet":{"th":"/worksheets/english/cursive-alphabet/thumb.jpg","open":"/worksheets/english/cursive-alphabet/print/"},"multiplication-drill-100":{"th":"/worksheets/maths/multiplication-drill-100/thumb.jpg","open":"/worksheets/maths/multiplication-drill-100/print/"},"division-drill-100":{"th":"/worksheets/maths/division-drill-100/thumb.jpg","open":"/worksheets/maths/division-drill-100/print/"},"lewis-and-clark":{"th":"/worksheets/history/lewis-and-clark/thumb.jpg","open":"/worksheets/history/lewis-and-clark/print/"},"thirteen-colonies":{"th":"/worksheets/history/thirteen-colonies/thumb.jpg","open":"/worksheets/history/thirteen-colonies/print/"},"boston-tea-party":{"th":"","open":"/worksheets/history/boston-tea-party/print/"},"animal-cell":{"th":"/worksheets/science/animal-cell/thumb.jpg","open":"/worksheets/science/animal-cell/"},"plant-cell":{"th":"/worksheets/science/plant-cell/thumb.jpg","open":"/worksheets/science/plant-cell/"},"us-history-semester-1":{"th":"/worksheets/history/us-history-semester-1/thumb.jpg","open":"/worksheets/history/us-history-semester-1/"},"complete-subjects-and-predicates":{"th":"/worksheets/english/complete-subjects-and-predicates/thumb.jpg","open":"/worksheets/english/complete-subjects-and-predicates/print/"},"forming-compound-subjects-and-predicates":{"th":"","open":"/worksheets/english/forming-compound-subjects-and-predicates/print/"},"simple-subjects-and-simple-predicates":{"th":"","open":"/worksheets/english/simple-subjects-and-simple-predicates/print/"},"complete-subjects-and-predicates-homework":{"th":"","open":"/worksheets/english/complete-subjects-and-predicates-homework/print/"},"weekly-spelling-test":{"th":"/worksheets/english/weekly-spelling-test/thumb.jpg","open":"/worksheets/english/weekly-spelling-test/print/"},"spelling-flashcards":{"th":"/worksheets/english/spelling-flashcards/thumb.jpg","open":"/worksheets/english/spelling-flashcards/print/"},"newtons-laws-of-motion":{"th":"/worksheets/science/newtons-laws-of-motion/thumb.jpg","open":"/worksheets/science/newtons-laws-of-motion/print/"}};
 var AD_THEMES=[{"k":"forest","name":"Forest","box":"#25664A"},{"k":"ocean","name":"Ocean","box":"#1F5E80"},{"k":"ember","name":"Ember","box":"#96441C"},{"k":"violet","name":"Violet","box":"#553093"},{"k":"graphite","name":"Graphite","box":"#3A4A63"},{"k":"rose","name":"Rose","box":"#9A2A5E"},{"k":"gold","name":"Gold","box":"#6F5100"},{"k":"teal","name":"Teal","box":"#0C625D"}];
 var AD_HL=[{"k":"green","name":"Green","rgb":"72,176,110"},{"k":"blue","name":"Blue","rgb":"86,160,222"},{"k":"pink","name":"Pink","rgb":"228,118,166"},{"k":"orange","name":"Orange","rgb":"232,146,62"},{"k":"purple","name":"Purple","rgb":"160,130,224"}];
 var AD_WORKER="https://nexstudents-media.nexedgetech.workers.dev";

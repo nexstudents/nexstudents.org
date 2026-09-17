@@ -1,0 +1,1673 @@
+
+(function(){
+var burger=document.getElementById("burger"),drawer=document.getElementById("drawer"),
+    scrim=document.getElementById("scrim"),dClose=document.getElementById("drawerClose");
+var nsLocks=0;
+function nsLockScroll(on){
+  nsLocks=Math.max(0,nsLocks+(on?1:-1));
+  document.documentElement.style.overflowY=nsLocks?"hidden":"";
+}
+function setNav(o){
+  if(document.body.classList.contains("nav-open")===o) return;
+  document.body.classList.toggle("nav-open",o);
+  burger.setAttribute("aria-expanded",o);drawer.setAttribute("aria-hidden",!o);
+  nsLockScroll(o);
+  if(!o) nsCloseSubs();}
+burger.onclick=function(){setNav(!document.body.classList.contains("nav-open"));};
+scrim.onclick=dClose.onclick=function(){setNav(false);};
+var nav=document.getElementById("nav");
+addEventListener("scroll",function(){nav.classList.toggle("stuck",scrollY>16);},{passive:true});
+function nsMode(){ return document.documentElement.getAttribute("data-theme")==="light"?"light":"dark"; }
+function nsPaintMode(){
+  var light=nsMode()==="light";
+  document.querySelectorAll("[data-mode-icon]").forEach(function(e){ e.innerHTML=light?"&#9788;":"&#9790;"; });
+  document.querySelectorAll("[data-mode-label]").forEach(function(e){ e.textContent=light?"Day Mode":"Night Mode"; });
+  document.querySelectorAll("[data-mode-toggle]").forEach(function(e){
+    e.setAttribute("aria-label", light?"Switch to night mode":"Switch to day mode"); });
+}
+document.addEventListener("click",function(e){
+  if(!e.target.closest("[data-mode-toggle]")) return;
+  var next=nsMode()==="light"?"dark":"light";
+  document.documentElement.setAttribute("data-theme",next);
+  try{localStorage.setItem("ns:mode",next);}catch(err){}
+  nsPaintMode();
+});
+nsPaintMode();
+var subStack=[];
+function nsRender(){
+  document.querySelectorAll("[data-subpanel]").forEach(function(p){
+    var id=p.getAttribute("data-subpanel");
+    var i=subStack.indexOf(id);
+    p.classList.toggle("open", i>=0);
+    p.classList.toggle("exit", i>=0 && i<subStack.length-1);
+    p.setAttribute("aria-hidden", i>=0 ? "false" : "true");
+  });
+  document.body.classList.toggle("sub-open", subStack.length>0);
+}
+function nsOpenSub(id){
+  var p=document.querySelector('[data-subpanel="'+id+'"]');
+  if(!p) return;
+  var back=p.querySelector("[data-sub-back]");
+  var parent=back?back.getAttribute("data-sub-back"):"";
+  var at=parent?subStack.indexOf(parent):-1;
+  subStack = parent && at>=0 ? subStack.slice(0,at+1) : (parent?[parent]:[]);
+  subStack.push(id);
+  nsRender();
+}
+function nsCloseSubs(){ subStack=[]; nsRender(); }
+function nsBack(){ subStack.pop(); nsRender(); }
+document.querySelectorAll("[data-sub]").forEach(function(b){
+  b.addEventListener("click",function(){ nsOpenSub(b.getAttribute("data-sub")); });
+});
+document.querySelectorAll("[data-sub-back]").forEach(function(b){
+  b.addEventListener("click", nsBack);
+});
+var panel=document.getElementById("megapanel");
+var tabEls=[].slice.call(document.querySelectorAll(".mg-top[data-menu]"));
+var onTab=document.querySelector(".mg-top.on");
+var closeTimer=null,current=null;
+function nsMark(el){
+  document.querySelectorAll(".mg-top.mg-live").forEach(function(t){ t.classList.remove("mg-live"); });
+  if(el) el.classList.add("mg-live");
+}
+var panelH=0;
+function nsMeasure(){
+  if(!panel) return;
+  var was=panel.className;
+  panel.classList.add("measuring");
+  var max=0;
+  panel.querySelectorAll(".mg-inner").forEach(function(i){ max=Math.max(max,i.offsetHeight); });
+  panel.className=was;
+  if(max>0){ panelH=max; if(panel.classList.contains("open")) panel.style.height=panelH+"px"; }
+}
+function nsShow(key){
+  if(!panel) return;
+  clearTimeout(closeTimer);
+  var inner=panel.querySelector('[data-for="'+key+'"]');
+  if(!inner) return;
+  if(!panelH) nsMeasure();
+  panel.classList.add("open");
+  panel.setAttribute("aria-hidden","false");
+  panel.style.height=panelH+"px";
+  if(current!==key){
+    current=key;
+    panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.toggle("on", i===inner); });
+    tabEls.forEach(function(t){ t.setAttribute("aria-expanded", String(t.getAttribute("data-menu")===key)); });
+    nsMark(document.querySelector('.mg-top[data-menu="'+key+'"]'));
+  }
+}
+function nsHide(){
+  if(!panel) return;
+  current=null;
+  panel.classList.remove("open");
+  panel.setAttribute("aria-hidden","true");
+  panel.style.height="";
+  panel.querySelectorAll(".mg-inner").forEach(function(i){ i.classList.remove("on"); });
+  tabEls.forEach(function(t){ t.setAttribute("aria-expanded","false"); });
+  nsMark(onTab);
+}
+function nsLater(){ clearTimeout(closeTimer); closeTimer=setTimeout(nsHide,220); }
+function nsKeep(){ clearTimeout(closeTimer); }
+if(panel){
+  nav.classList.add("js-nav");
+  nsMark(onTab);
+  if(matchMedia("(hover:hover)").matches){
+    tabEls.forEach(function(t){
+      t.addEventListener("mouseenter",function(){ nsShow(t.getAttribute("data-menu")); });
+      t.addEventListener("focus",function(){ nsShow(t.getAttribute("data-menu")); });
+      t.addEventListener("click",function(e){ e.preventDefault(); });
+    });
+    var tabsBox=document.querySelector(".tabs");
+    if(tabsBox){ tabsBox.addEventListener("mouseenter",nsKeep); tabsBox.addEventListener("mouseleave",nsLater); }
+    panel.addEventListener("mouseenter",nsKeep);
+    panel.addEventListener("mouseleave",nsLater);
+    addEventListener("keydown",function(e){ if(e.key==="Escape") nsHide(); });
+    addEventListener("resize",function(){ panelH=0; nsMeasure(); });
+    panel.querySelectorAll("img").forEach(function(im){
+      if(!im.complete) im.addEventListener("load",function(){ panelH=0; nsMeasure(); });
+    });
+    addEventListener("load",function(){ panelH=0; nsMeasure(); });
+  }
+}
+var cdrawer=document.getElementById("cdrawer"),cscrim=document.getElementById("cscrim"),
+    cdBody=document.getElementById("cdBody"),cdTotal=document.getElementById("cdTotal"),
+    cdN=document.getElementById("cdN"),cartn=document.getElementById("cartn"),
+    cdClose=document.getElementById("cdClose");
+function nsMoney(c){ return "$" + ((c||0)/100).toFixed(2); }
+function nsCartOpen(o){
+  if(!cdrawer) return;
+  if(document.body.classList.contains("cart-open")===o) return;
+  document.body.classList.toggle("cart-open",o);
+  cdrawer.setAttribute("aria-hidden",!o);
+  nsLockScroll(o);
+}
+function nsCartBadge(){
+  if(!cartn||!window.NSAccount) return;
+  var n=NSAccount.cart().length;
+  cartn.textContent=n;
+  cartn.hidden = n===0;
+  if(cdN) cdN.textContent=n;
+}
+function nsCartPaint(){
+  if(!cdBody||!window.NSAccount) return;
+  nsCartBadge();
+  var items=NSAccount.cart();
+  if(!items.length){
+    cdBody.innerHTML="<p class='cd-empty'>Nothing in your cart yet.</p>";
+    if(cdTotal) cdTotal.textContent=nsMoney(0);
+    return;
+  }
+  cdBody.innerHTML="<p class='cd-empty'>Loading&hellip;</p>";
+  NSAccount.priceList(items).then(function(rows){
+    if(!rows.length){
+      cdBody.innerHTML="<p class='cd-empty'>Could not load your cart just now. "+
+        "It is still saved &mdash; try again in a moment.</p>";
+      return;
+    }
+    var total=0,html="";
+    rows.forEach(function(r){
+      total+=r.price_cents;
+      var img=NSAccount.cartThumb(r.slug);
+      html+="<div class='cd-row'>"+
+        (img?"<img class='cd-th' src='"+img+"' alt='' width='56' height='56' loading='lazy'>"
+            :"<span class='cd-th cd-noth' aria-hidden='true'></span>")+
+        "<div class='cd-info'><b>"+r.title+"</b>"+
+        "<span class='cd-price'>"+nsMoney(r.price_cents)+"</span></div>"+
+        "<div class='cd-qty'><span class='cd-qbox'>1</span>"+
+        "<button class='cd-rm' type='button' data-rm='"+r.slug+"'>Remove</button></div></div>";
+    });
+    cdBody.innerHTML=html;
+    if(cdTotal) cdTotal.textContent=nsMoney(total);
+    cdBody.querySelectorAll("[data-rm]").forEach(function(b){
+      b.onclick=function(){ NSAccount.cartRemove(b.getAttribute("data-rm")); };
+    });
+  });
+}
+if(cdrawer){
+  var cartLink=document.getElementById("cartLink");
+  if(cartLink) cartLink.addEventListener("click",function(e){
+    if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return;
+    e.preventDefault();
+    nsCartPaint();
+    nsCartOpen(true);
+  });
+  cscrim.onclick=cdClose.onclick=function(){ nsCartOpen(false); };
+  addEventListener("keydown",function(e){
+    if(e.key==="Escape"&&document.body.classList.contains("cart-open")) nsCartOpen(false);
+  });
+  document.addEventListener("ns:cart",function(e){
+    nsCartPaint();
+    if(e.detail&&e.detail.added) nsCartOpen(true);
+  });
+  nsCartBadge();
+}
+var adrawer=document.getElementById("adrawer"),ascrim=document.getElementById("ascrim"),
+    adClose=document.getElementById("adClose"),acctLink=document.getElementById("acctLink");
+var AD_ITEMS={"manuscript-alphabet":{"th":"/worksheets/english/manuscript-alphabet/thumb.jpg","open":"/worksheets/english/manuscript-alphabet/print/"},"cursive-alphabet":{"th":"/worksheets/english/cursive-alphabet/thumb.jpg","open":"/worksheets/english/cursive-alphabet/print/"},"multiplication-drill-100":{"th":"/worksheets/maths/multiplication-drill-100/thumb.jpg","open":"/worksheets/maths/multiplication-drill-100/print/"},"division-drill-100":{"th":"/worksheets/maths/division-drill-100/thumb.jpg","open":"/worksheets/maths/division-drill-100/print/"},"lewis-and-clark":{"th":"/worksheets/history/lewis-and-clark/thumb.jpg","open":"/worksheets/history/lewis-and-clark/print/"},"thirteen-colonies":{"th":"/worksheets/history/thirteen-colonies/thumb.jpg","open":"/worksheets/history/thirteen-colonies/print/"},"boston-tea-party":{"th":"","open":"/worksheets/history/boston-tea-party/print/"},"animal-cell":{"th":"/worksheets/science/animal-cell/thumb.jpg","open":"/worksheets/science/animal-cell/"},"plant-cell":{"th":"/worksheets/science/plant-cell/thumb.jpg","open":"/worksheets/science/plant-cell/"},"us-history-semester-1":{"th":"/worksheets/history/us-history-semester-1/thumb.jpg","open":"/worksheets/history/us-history-semester-1/"},"complete-subjects-and-predicates":{"th":"/worksheets/english/complete-subjects-and-predicates/thumb.jpg","open":"/worksheets/english/complete-subjects-and-predicates/print/"},"forming-compound-subjects-and-predicates":{"th":"","open":"/worksheets/english/forming-compound-subjects-and-predicates/print/"},"simple-subjects-and-simple-predicates":{"th":"","open":"/worksheets/english/simple-subjects-and-simple-predicates/print/"},"complete-subjects-and-predicates-homework":{"th":"","open":"/worksheets/english/complete-subjects-and-predicates-homework/print/"},"weekly-spelling-test":{"th":"/worksheets/english/weekly-spelling-test/thumb.jpg","open":"/worksheets/english/weekly-spelling-test/print/"},"spelling-flashcards":{"th":"/worksheets/english/spelling-flashcards/thumb.jpg","open":"/worksheets/english/spelling-flashcards/print/"},"newtons-laws-of-motion":{"th":"/worksheets/science/newtons-laws-of-motion/thumb.jpg","open":"/worksheets/science/newtons-laws-of-motion/print/"}};
+var AD_THEMES=[{"k":"forest","name":"Forest","box":"#25664A"},{"k":"ocean","name":"Ocean","box":"#1F5E80"},{"k":"ember","name":"Ember","box":"#96441C"},{"k":"violet","name":"Violet","box":"#553093"},{"k":"graphite","name":"Graphite","box":"#3A4A63"},{"k":"rose","name":"Rose","box":"#9A2A5E"},{"k":"gold","name":"Gold","box":"#6F5100"},{"k":"teal","name":"Teal","box":"#0C625D"}];
+var AD_HL=[{"k":"green","name":"Green","rgb":"72,176,110"},{"k":"blue","name":"Blue","rgb":"86,160,222"},{"k":"pink","name":"Pink","rgb":"228,118,166"},{"k":"orange","name":"Orange","rgb":"232,146,62"},{"k":"purple","name":"Purple","rgb":"160,130,224"}];
+var AD_WORKER="https://nexstudents-media.nexedgetech.workers.dev";
+var adUser=null,adOrders=null,adLoading=false;
+var adHosts=[];
+function adHostOf(root){
+  return {root:root,body:root.querySelector(".ad-body"),h:root.querySelector(".ad-h"),
+          back:root.querySelector(".ad-back"),x:root.querySelector(".ad-x"),
+          xLabel:root.querySelector(".ad-x")?root.querySelector(".ad-x").textContent:"",
+          up:null,view:"main",save:null};
+}
+function adEsc(s){ var d=document.createElement("div"); d.textContent=s==null?"":String(s);
+  return d.innerHTML.replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+function adDate(w,long){
+  var d=new Date(w); if(isNaN(d)) return "";
+  return d.toLocaleDateString([],long?{month:"short",day:"numeric",year:"numeric"}:{month:"short",day:"numeric"});
+}
+function adOpen(o){
+  if(!adrawer) return;
+  if(document.body.classList.contains("acct-open")===o) return;
+  document.body.classList.toggle("acct-open",o);
+  adrawer.setAttribute("aria-hidden",!o);
+  nsLockScroll(o);
+}
+function adGroup(rows){
+  var list=[],seen={};
+  rows.forEach(function(r){
+    var k=r.order_no!=null?"n"+r.order_no:"t"+String(r.bought_at||"").slice(0,16);
+    if(!seen[k]){ seen[k]={no:r.order_no,when:r.bought_at,rows:[],total:0}; list.push(seen[k]); }
+    seen[k].rows.push(r); seen[k].total+=(r.amount_cents||0);
+  });
+  return list;
+}
+function adTitle(o){ return o.no!=null?"Order #"+o.no:"Order"; }
+function adFrame(H,title,up,view){
+  H.h.textContent=title; H.up=up||null; H.back.hidden=!up; H.view=view; H.save=null;
+  if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
+  H.body.scrollTop=0;
+}
+var AD_GRADES=["K","1","2","3","4","5","6","7","8"];
+var AD_MAX={student:10,parent:1};   
+var adKids=null,adPins=null;        
+var AD_LOCK="<svg class='ad-lock' viewBox='0 0 20 20' width='11' height='11' aria-hidden='true' fill='none' "+
+  "stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>"+
+  "<rect x='4' y='9' width='12' height='8' rx='1.6'/><path d='M7 9V6.5a3 3 0 0 1 6 0V9'/></svg>";
+function adKid(id){ return (adKids||[]).filter(function(k){ return k.id===id; })[0]||null; }
+function adOf(kind){ return (adKids||[]).filter(function(k){ return k.kind===kind; }); }
+function adTheme(k){ return AD_THEMES.filter(function(t){ return t.k===k; })[0]||null; }
+function adHasPin(key){ return !!(adPins&&adPins[key||"owner"]); }
+var AD_PENDING={pending:true};
+function adActive(){
+  var w=window.NSAccount?NSAccount.who():"parent";
+  if(w==="parent") return null;
+  if(adKids===null) return AD_PENDING;
+  return adKid(w);
+}
+function adParentSide(a){ return a===null||(a&&a!==AD_PENDING&&a.kind==="parent"); }
+function adAv(name,theme){
+  var t=adTheme(theme);
+  return "<i"+(t?" style='background:"+t.box+"'":"")+" aria-hidden='true'>"+adEsc(String(name||"?").charAt(0).toUpperCase())+"</i>";
+}
+function adMe(){
+  var md=(adUser&&adUser.user_metadata)||{};
+  return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
+}
+function adFull(){ return adOf("student").length>=AD_MAX.student&&adOf("parent").length>=AD_MAX.parent; }
+function adOwnerTheme(){ var md=(adUser&&adUser.user_metadata)||{}; return md.theme||null; }
+function adGradeWords(g){
+  if(!g) return "";
+  if(g==="K") return "Kindergarten";
+  var n=+g,s=n===1?"st":n===2?"nd":n===3?"rd":"th";
+  return n+s+" Grade";
+}
+function adSchoolYear(){
+  var d=new Date(),y=d.getFullYear(),start=d.getMonth()>=6?y:y-1;
+  return start+"-"+(start+1);
+}
+var AD_ABOUT=[["me","A little about me"],["color","Favorite color"],["food","Favorite food"],
+  ["animal","Favorite animal"],["subject","Favorite subject"],["game","Favorite game"],
+  ["grow_up","When I grow up I want to be"],["best_homeschool","Best thing about homeschooling"]];
+function adThemeTiles(cur,withDefault,attr){
+  attr=attr||"theme-k";
+  return "<div class='ad-tiles' role='group' aria-label='"+adEsc(attr==="theme-k"?"Theme color":"Lesson colors")+"'>"+
+    (withDefault?"<button type='button' data-"+attr+"='' aria-pressed='"+(!cur)+"'>"+
+      "<i style='background:#c62828' aria-hidden='true'></i><b>Default</b></button>":"")+
+    AD_THEMES.map(function(t){
+    return "<button type='button' data-"+attr+"='"+t.k+"' aria-pressed='"+(cur===t.k)+"'>"+
+      "<i style='background:"+t.box+"' aria-hidden='true'></i><b>"+t.name+"</b></button>";
+  }).join("")+"</div>";
+}
+var AD_PLUS="<svg viewBox='0 0 24 24'><path d='M12 4v16M4 12h16'/></svg>";
+function adStrip(a){
+  var me=adMe();
+  function tile(id,name,theme,pinKey,on){
+    var lock=pinKey!==false&&adHasPin(pinKey);
+    return "<button class='ad-pro-i"+(on?" is-me":"")+"' type='button' data-who='"+adEsc(id)+"' aria-label='"+
+      adEsc(name+(lock?", locked with a PIN":""))+"'>"+adAv(name,theme)+
+      (lock?"<span class='ad-lockb' aria-hidden='true'>"+AD_LOCK+"</span>":"")+"<b>"+adEsc(name)+"</b></button>";
+  }
+  return "<div class='ad-pro'>"+
+    tile("parent",me,adOwnerTheme(),null,a===null)+
+    adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme,p.id,a&&a.id===p.id); }).join("")+
+    adOf("student").map(function(k){ return tile(k.id,k.name,k.theme,false,a&&a.id===k.id); }).join("")+
+    (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>"+AD_PLUS+"</i></button>":"")+
+    "</div>";
+}
+function adSetWho(id){
+  var from=NSAccount.who(),moving=from!==id&&NSAccount.isSignedIn();
+  if(moving) nsProgHandOff(from,id);
+  NSAccount.setWho(id);
+  nsApplySettings(adSettingsOf(id==="parent"?null:(adKid(id)||AD_PENDING)));
+  nsWhoIcon();
+  if(moving) nsProgArrive(id);
+}
+var NS_PK=/^ns:(done|prog):(.+)$/;
+function nsProgSnap(){
+  var s={};
+  try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(NS_PK.test(k)) s[k]=localStorage.getItem(k); } }catch(e){}
+  return s;
+}
+function nsProgWrite(s){
+  Object.keys(nsProgSnap()).forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+  Object.keys(s||{}).forEach(function(k){ if(NS_PK.test(k)){ try{ localStorage.setItem(k,s[k]); }catch(e){} } });
+}
+function nsStashGet(who){ try{ return JSON.parse(localStorage.getItem("ns:stash:"+who))||{}; }catch(e){ return {}; } }
+function nsStashPut(who,s){ try{ localStorage.setItem("ns:stash:"+who,JSON.stringify(s)); }catch(e){} }
+function nsIsStudent(id){ var r=id&&id!=="parent"?adKid(id):null; return !!(r&&r.kind==="student"); }
+function nsFinished(d,pr){
+  if(d&&d.complete!==false) return true;
+  if(!pr) return false;
+  if(pr.complete===true) return true;
+  return typeof pr.done==="number"&&typeof pr.total==="number"&&pr.total>0&&pr.done>=pr.total;
+}
+function nsRowsFromSnap(studentId,s,only){
+  var by={};
+  Object.keys(s).forEach(function(k){
+    var m=NS_PK.exec(k); if(!m||(only&&!only[m[2]])) return;
+    by[m[2]]=by[m[2]]||{};
+    try{ by[m[2]][m[1]]=JSON.parse(s[k]); }catch(e){}
+  });
+  return Object.keys(by).map(function(id){
+    var d=by[id].done,p=by[id].prog,sc=null,tt=null;
+    if(d&&typeof d.score==="number"&&typeof d.total==="number"&&d.total>0){ tt=d.total; sc=Math.max(0,Math.min(d.score,d.total)); }
+    return {student_id:studentId,lesson_id:id,state:nsFinished(d,p)?"done":"part",detail:by[id],score:sc,total:tt,
+            updated_at:new Date().toISOString()};
+  });
+}
+function nsSnapFromRows(rows){
+  var s={};
+  (rows||[]).forEach(function(r){
+    var dt=r.detail||{};
+    if(dt.done) s["ns:done:"+r.lesson_id]=JSON.stringify(dt.done);
+    if(dt.prog) s["ns:prog:"+r.lesson_id]=JSON.stringify(dt.prog);
+  });
+  return s;
+}
+function nsProgPush(){
+  var id=window.NSAccount&&NSAccount.who();
+  if(!NSAccount.isSignedIn()||!nsIsStudent(id)) return Promise.resolve();
+  var s=nsProgSnap(),last={};
+  try{ last=JSON.parse(localStorage.getItem("ns:pushed:"+id))||{}; }catch(e){}
+  var changed={},gone={};
+  Object.keys(s).forEach(function(k){ if(last[k]!==s[k]) changed[NS_PK.exec(k)[2]]=1; });
+  Object.keys(last).forEach(function(k){ var m=NS_PK.exec(k); if(m&&!(k in s)) gone[m[2]]=1; });
+  Object.keys(changed).forEach(function(l){ delete gone[l]; });
+  Object.keys(s).forEach(function(k){ var m=NS_PK.exec(k); if(m) delete gone[m[2]]; });
+  var jobs=[];
+  if(Object.keys(changed).length) jobs.push(NSAccount.upsertProgress(nsRowsFromSnap(id,s,changed)));
+  Object.keys(gone).forEach(function(l){ jobs.push(NSAccount.deleteProgress(id,l)); });
+  if(!jobs.length) return Promise.resolve();
+  return Promise.all(jobs).then(function(){ try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(s)); }catch(e){} })
+    .catch(function(){});
+}
+function nsLessonsOf(s){
+  var by={};
+  Object.keys(s||{}).forEach(function(k){ var m=NS_PK.exec(k); if(m){ (by[m[2]]=by[m[2]]||{})[k]=s[k]; } });
+  return by;
+}
+function nsSame(a,b){
+  var ka=Object.keys(a||{}),kb=Object.keys(b||{});
+  if(ka.length!==kb.length) return false;
+  return ka.every(function(k){ return b[k]===a[k]; });
+}
+function nsDoneIn(recs){
+  var d=null,p=null;
+  Object.keys(recs||{}).forEach(function(k){
+    try{ if(k.indexOf("ns:done:")===0) d=JSON.parse(recs[k]); else p=JSON.parse(recs[k]); }catch(e){}
+  });
+  return nsFinished(d,p);
+}
+function nsMerge(local,server,pushed){
+  var L=nsLessonsOf(local),S=nsLessonsOf(server),P=nsLessonsOf(pushed),out={};
+  var ids={}; [L,S].forEach(function(o){ Object.keys(o).forEach(function(i){ ids[i]=1; }); });
+  Object.keys(ids).forEach(function(id){
+    var l=L[id],s=S[id],dirty=!!l&&!nsSame(l,P[id]),pick;
+    if(dirty) pick=(s&&nsDoneIn(s)&&!nsDoneIn(l))?s:l;
+    else pick=s||null;
+    if(pick) Object.keys(pick).forEach(function(k){ out[k]=pick[k]; });
+  });
+  return out;
+}
+function nsPushedGet(id){ try{ return JSON.parse(localStorage.getItem("ns:pushed:"+id))||{}; }catch(e){ return {}; } }
+function nsProgHandOff(from,to){
+  nsProgPush();                     
+  nsStashPut(from,nsProgSnap());
+  nsProgWrite(nsStashGet(to));
+}
+function nsProgRepaint(only){
+  var onLesson=location.pathname.indexOf("/lessons/")===0;
+  if(only){
+    var hit=Object.keys(only).some(function(l){
+      return (onLesson&&location.pathname.indexOf("/lessons/"+l+"/")===0)||
+             document.querySelector("[data-lesson='"+l.replace(/'/g,"")+"']");
+    });
+    if(hit) location.reload();
+    return;
+  }
+  if(document.querySelector("[data-lesson]")||onLesson) location.reload();
+}
+function nsChanged(a,b){
+  var A=nsLessonsOf(a),B=nsLessonsOf(b),out={};
+  Object.keys(A).concat(Object.keys(B)).forEach(function(l){ if(!nsSame(A[l],B[l])) out[l]=1; });
+  return out;
+}
+function nsProgArrive(id){
+  if(!nsIsStudent(id)){ nsProgRepaint(); return; }
+  NSAccount.progressRows(id).then(function(rows){
+    var server=nsSnapFromRows(rows),merged=nsMerge(nsProgSnap(),server,nsPushedGet(id));
+    nsProgWrite(merged);
+    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
+    nsProgPush(); nsProgRepaint();
+  }).catch(function(){ nsProgRepaint(); });
+}
+function nsProgBoot(){
+  if(!window.NSAccount||!NSAccount.isSignedIn()) return;
+  var id=NSAccount.who();
+  function go(){
+    if(!nsIsStudent(id)) return;
+    NSAccount.progressRows(id).then(function(rows){
+      var server=nsSnapFromRows(rows),local=nsProgSnap(),merged=nsMerge(local,server,nsPushedGet(id));
+      try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
+      if(nsSame(merged,local)){ nsProgPush(); return; }
+      nsProgWrite(merged); nsProgPush();
+      var last=0; try{ last=+sessionStorage.getItem("ns:reloaded:"+id)||0; }catch(e){}
+      if(Date.now()-last>8000){
+        try{ sessionStorage.setItem("ns:reloaded:"+id,String(Date.now())); }catch(e){}
+        nsProgRepaint(nsChanged(local,merged));
+      }
+    }).catch(function(){ nsProgPush(); });
+  }
+  if(id!=="parent"&&adKids===null) NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; go(); }).catch(function(){});
+  else go();
+  addEventListener("pagehide",function(){ nsProgPush(); });
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") nsProgPush(); });
+  setInterval(function(){ if(document.visibilityState==="visible") nsProgPush(); },45000);
+}
+function nsApplyAccent(){
+  if(!window.NSAccount) return;
+  var a=NSAccount.isSignedIn()?adActive():null;
+  if(a===AD_PENDING) return;
+  if(a===null&&NSAccount.isSignedIn()&&!adUser) return;
+  var t=a?adTheme(a.theme):adTheme(adOwnerTheme()),d=document.documentElement;
+  try{ if(t) localStorage.setItem("ns:accent",t.box); else localStorage.removeItem("ns:accent"); }catch(e){}
+  if(t){ d.style.setProperty("--me",t.box); d.classList.add("has-me"); }
+  else { d.style.removeProperty("--me"); d.classList.remove("has-me"); }
+}
+function adMain(H){
+  adFrame(H,"Account",null,"main");
+  var a=adActive();
+  if(a===AD_PENDING){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  if(!adParentSide(a)){
+    var anyPin=adHasPin(null)||adOf("parent").some(function(p){ return adHasPin(p.id); });
+    H.body.innerHTML="<div class='ad-hi'><h3>Hi, "+adEsc(a.name)+"</h3></div>"+adStrip(a)+
+      "<button class='ad-row' type='button' data-go='myprofile'><b>My Profile</b><span>About Me</span></button>"+
+      "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
+      "<p class='ad-note ad-mid'>Grown-ups: tap your profile"+(anyPin?" and enter your PIN":"")+" to get back to the account.</p>"+
+      "<button class='ad-signout' type='button' data-out>Sign Out</button>";
+    if(typeof nsPaintMode==="function") nsPaintMode();
+    return;
+  }
+  var md=(adUser&&adUser.user_metadata)||{};
+  var hiName=a?a.name:md.first_name;
+  var last=adOrders&&adOrders.length?"Last order "+(adOrders[0].no!=null?"#"+adOrders[0].no+" ":"")+"is completed":
+           (adOrders?"No orders yet":"Loading…");
+  var ns=adKids?adOf("student").length:-1,np=adKids?adOf("parent").length+1:-1;
+  var kidsLine=ns<0?"Loading…":np+" parent"+(np===1?"":"s")+" · "+ns+" student"+(ns===1?"":"s");
+  H.body.innerHTML="<div class='ad-hi'><h3>"+(hiName?"Hi, "+adEsc(hiName):"Hi there")+"</h3></div>"+
+    adStrip(a)+
+    "<button class='ad-row' type='button' data-go='profiles'><b>Manage Profiles</b><span>"+adEsc(kidsLine)+"</span></button>"+
+    "<button class='ad-row' type='button' data-go='orders'><b>Orders</b><span>"+adEsc(last)+"</span></button>"+
+    "<button class='ad-row' type='button' data-go='settings'><b>Settings</b><span data-mode-label>Night Mode</span></button>"+
+    "<button class='ad-row' type='button' data-go='account'><b>Account</b><span>"+
+      adEsc(adUser&&adUser.email||"")+"</span></button>"+
+    "<button class='ad-signout' type='button' data-out>Sign Out</button>";
+  if(typeof nsPaintMode==="function") nsPaintMode();
+}
+function adSwitch(H,id){
+  if(id===NSAccount.who()) return;
+  var row=id==="parent"?null:adKid(id);
+  var isParent=id==="parent"||(row&&row.kind==="parent");
+  var key=id==="parent"?null:id;
+  if(isParent&&adHasPin(key)) return adPinView(H,"unlock",{key:key,name:row?row.name:adMe()});
+  adSetWho(id); adMain(H);
+}
+function adGradeLine(k){ return k.grade?(k.grade==="K"?"Kindergarten":"Grade "+adEsc(k.grade)):"No grade set"; }
+function adRow(go,id,avatar,title,sub){
+  return "<button class='ad-ord ad-kidrow' type='button' data-go='"+go+"'"+(id?" data-id='"+adEsc(id)+"'":"")+">"+avatar+
+    "<span class='ad-ord-t'><b>"+title+"</b><span>"+sub+"</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>";
+}
+function adProfiles(H){
+  adFrame(H,"Manage Profiles",adMain,"profiles");
+  if(adKids===null){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  var me=adMe(),kids=adOf("student");
+  function pinLine(key){ return adHasPin(key)?"PIN on":"No PIN"; }
+  H.body.innerHTML=
+    "<p class='ad-cap'>Parents · "+(adOf("parent").length+1)+" of 2</p>"+
+    adRow("owner",null,adAv(me,adOwnerTheme()),adEsc(me),"Account holder · "+pinLine(null))+
+    adOf("parent").map(function(p){ return adRow("edit",p.id,adAv(p.name,p.theme),adEsc(p.name),"Parent · "+pinLine(p.id)); }).join("")+
+    "<p class='ad-cap'>Students · "+kids.length+" of 10</p>"+
+    (kids.length?"":"<p class='ad-note'>Give each student their own profile, so their lessons and progress stay separate.</p>")+
+    kids.map(function(k){ return adRow("edit",k.id,adAv(k.name,k.theme),adEsc(k.name),adGradeLine(k)); }).join("")+
+    (adFull()?"<p class='ad-note'>This account is full: 2 parents and 10 students.</p>":
+      "<button class='ad-ord ad-kidrow is-add' type='button' data-go='add'><i aria-hidden='true'>"+AD_PLUS+"</i>"+
+      "<span class='ad-ord-t'><b>Add Profile</b></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>")+
+    "<p class='ad-note'>Each parent can set their own PIN. Students need it to open that parent's profile, so Orders, Account and these settings stay with the grown-ups.</p>";
+}
+function adAddPick(H){
+  adFrame(H,"Add Profile",adProfiles,"add");
+  var np=adOf("parent").length,ns=adOf("student").length;
+  function opt(kind,label,used,max){
+    var full=used>=max;
+    return "<button class='ad-row' type='button' data-kind='"+kind+"'"+(full?" disabled":"")+"><b>"+label+"</b><span>"+
+      (full?"Full":(used+(kind==="parent"?1:0))+" of "+(kind==="parent"?2:10)+" used")+"</span></button>";
+  }
+  H.body.innerHTML="<p class='ad-empty ad-mid'>Who is this profile for?</p>"+
+    opt("parent","Parent",np,AD_MAX.parent)+opt("student","Student",ns,AD_MAX.student);
+  H.body.querySelectorAll("[data-kind]").forEach(function(b){
+    b.onclick=function(){ if(!b.disabled) adEdit(H,null,b.getAttribute("data-kind")); };
+  });
+}
+function adPinRows(key){
+  return "<p class='ad-cap'>PIN</p>"+
+    "<button class='ad-kv ad-go' type='button' data-pin><span>PIN</span><span class='ad-dim'>"+
+      (adHasPin(key)?"On":"Not set")+"<i aria-hidden='true'>&rsaquo;</i></span></button>"+
+    (adHasPin(key)?"<button class='ad-kv ad-go' type='button' data-pinoff><span>Turn PIN Off</span><span class='ad-dim'>"+
+      "<i aria-hidden='true'>&rsaquo;</i></span></button>":"");
+}
+function adPinWire(H,key,name){
+  var on=H.body.querySelector("[data-pin]"),off=H.body.querySelector("[data-pinoff]");
+  if(on) on.onclick=function(){ adPinView(H,"change",{key:key,name:name}); };
+  if(off) off.onclick=function(){ adPinView(H,"off",{key:key,name:name}); };
+}
+function adOwner(H){
+  adFrame(H,adMe(),adProfiles,"owner");
+  var others=adOf("parent");
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(adMe(),adOwnerTheme())+"</div>"+
+    adPinRows(null)+
+    (others.length
+      ? "<button class='ad-row' type='button' data-swap><b>Switch Account Holder</b>"+
+        "<span>Hand the account to another parent</span></button>"
+      : "<p class='ad-note'>Add a second parent profile to be able to hand the account over.</p>")+
+    "<p class='ad-note'>Your name, email and password are under Account. Your color is in Settings.</p>";
+  adPinWire(H,null,adMe());
+  var sw=H.body.querySelector("[data-swap]");
+  if(sw) sw.onclick=function(){
+    if(!adHasPin(null)) return adPinView(H,"first",{key:null,name:adMe(),next:function(){ adSwapHolder(H); }});
+    adPinView(H,"unlock",{key:null,name:adMe(),next:function(){ adSwapHolder(H); }});
+  };
+}
+function adSwapHolder(H){
+  adFrame(H,"Switch Account Holder",function(){ adOwner(H); },"swap");
+  var others=adOf("parent");
+  H.body.innerHTML="<p class='ad-note ad-mid'>The account moves to whoever you pick."+
+    " The email and password you sign in with do not change.</p>"+
+    others.map(function(p){
+      return "<button class='ad-row' type='button' data-take='"+adEsc(p.id)+"'><b>"+adEsc(p.name)+"</b>"+
+             "<span>Make this profile the account holder</span></button>";
+    }).join("")+"<p class='ad-msg ad-mid'></p>";
+  H.body.onclick=function(e){
+    var b=e.target.closest("[data-take]"); if(!b) return;
+    var row=adKid(b.getAttribute("data-take")); if(!row) return;
+    var msg=H.body.querySelector(".ad-msg");
+    b.disabled=true; if(msg) msg.textContent="Switching…";
+    var md=(adUser&&adUser.user_metadata)||{};
+    var oldName=adMe(), oldTheme=md.theme||row.theme;
+    NSAccount.updateStudent(row.id,{ name: oldName, theme: oldTheme })
+      .then(function(){ return NSAccount.saveMyMeta({ first_name: row.name, theme: row.theme }); })
+      .then(function(){
+        adUser=null; adKids=null;          
+        adLoad(); nsWhoIcon(); adProfiles(H);
+      })
+      .catch(function(err){
+        b.disabled=false;
+        if(msg) msg.textContent=err.message||"Could not switch the account holder.";
+      });
+  };
+}
+function adEdit(H,row,kindIn){
+  var kind=row?row.kind:kindIn;
+  var isKid=kind==="student";
+  adFrame(H,row?"Edit Profile":(isKid?"Add Student":"Add Parent"),row?adProfiles:adAddPick,"edit");
+  var used=(adKids||[]).map(function(k){ return k.theme; });
+  var fresh=AD_THEMES.filter(function(t){ return used.indexOf(t.k)<0; })[0]||AD_THEMES[0];
+  var bd=row&&row.birthday?String(row.birthday).split("-"):["","",""];
+  var f={name:row?row.name:"",grade:row?row.grade||"":"",theme:row?row.theme:fresh.k,gender:row?row.gender||"":""};
+  function chips(attr,list,cur,label,cls){
+    return "<div class='ad-chips"+(cls?" "+cls:"")+"' role='group' aria-label='"+label+"'>"+list.map(function(g){
+      return "<button type='button' data-"+attr+"='"+g[0]+"' aria-pressed='"+(cur===g[0])+"'>"+g[1]+"</button>";
+    }).join("")+"</div>";
+  }
+  H.body.innerHTML=
+    "<div class='ad-hi ad-edit-av'>"+adAv(f.name||"?",f.theme)+"</div>"+
+    (row&&isKid?"<button type='button' class='ad-ord ad-kidrow ad-progrow' data-prog><span class='ad-ord-t'><b>Progress</b>"+
+      "<span>Courses, overall score and what&#39;s next</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>":"")+
+    "<p class='ad-cap'>Name</p>"+
+    "<label class='ad-kv'><span>Name</span><input class='ad-in' data-f='name' maxlength='30' autocomplete='off' value='"+adEsc(f.name)+"'></label>"+
+    (isKid?
+      "<p class='ad-cap'>Birthday <em class='ad-opt'>Optional</em></p>"+
+      "<div class='ad-kv ad-bday'><span>Birthday</span><span>"+
+        "<input class='ad-in' data-f='mm' inputmode='numeric' maxlength='2' placeholder='MM' aria-label='Birth month' value='"+adEsc(bd[1]||"")+"'>/"+
+        "<input class='ad-in' data-f='dd' inputmode='numeric' maxlength='2' placeholder='DD' aria-label='Birth day' value='"+adEsc(bd[2]||"")+"'>/"+
+        "<input class='ad-in ad-yyyy' data-f='yy' inputmode='numeric' maxlength='4' placeholder='YYYY' aria-label='Birth year' value='"+adEsc(bd[0]||"")+"'>"+
+      "</span></div>"+
+      "<p class='ad-cap'>Male or Female <em class='ad-opt'>Optional</em></p>"+
+      chips("gender",[["male","Male"],["female","Female"]],f.gender,"Male or female","is-center")+
+      "<p class='ad-cap'>Grade Level</p>"+
+      chips("grade",AD_GRADES.map(function(g){ return [g,g]; }),f.grade,"Grade level","is-center")
+    :"")+
+    (!isKid&&row?adPinRows(row.id):"")+
+    "<p class='ad-msg'></p>"+
+    
+    (row?"<p class='ad-cap'>This profile</p>"+
+      "<div class='ad-kv'><span>Currently</span><span>"+(isKid?"Student":"Parent")+"</span></div>"+
+      "<button class='ad-row' type='button' data-kind='"+(isKid?"parent":"student")+"'><b>"+
+      (isKid?"Change to Parent Profile":"Change to Student Profile")+"</b><span>"+
+      (isKid?"Grown-up access to the account"
+            :"Their lessons and progress start being saved")+"</span></button>"
+      :"")+
+    (row?"<button class='ad-signout ad-del' type='button' data-del>"+(isKid?"Remove Student":"Remove Parent")+"</button>":"");
+  var q=function(s){ return H.body.querySelector(s); };
+  var msg=q(".ad-msg"),nameIn=q("[data-f=name]"),big=q(".ad-edit-av");
+  function paintBig(){ big.innerHTML=adAv(nameIn.value.trim()||"?",f.theme); }
+  function dirty(){ if(H.save) return; H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } }
+  H.body.querySelectorAll(".ad-in").forEach(function(i){
+    i.addEventListener("input",function(){
+      if(i!==nameIn) i.value=i.value.replace(/[^0-9]/g,"");
+      paintBig(); dirty();
+    });
+    i.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); if(H.save) H.save(); } });
+  });
+  function chipGroup(attr,field){
+    H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
+      b.onclick=function(){
+        var v=b.getAttribute("data-"+attr); f[field]=f[field]===v?"":v;
+        H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x.getAttribute("data-"+attr)===f[field]); });
+        dirty();
+      };
+    });
+  }
+  chipGroup("grade","grade"); chipGroup("gender","gender");
+  var BD=["mm","dd","yy"].map(function(k){ return q("[data-f="+k+"]"); }).filter(Boolean);
+  BD.forEach(function(inp,n){
+    var next=BD[n+1],prev=BD[n-1];
+    function full(v){
+      if(n===2) return false;
+      return v.length>=2||(v.length===1&&+v>(n===0?1:3));
+    }
+    inp.addEventListener("input",function(){
+      if(next&&full(inp.value)){ next.focus(); next.select(); }
+    });
+    inp.addEventListener("keydown",function(e){
+      if((e.key==="/"||e.key==="-"||e.key===".")&&next){ e.preventDefault(); if(inp.value) { next.focus(); next.select(); } return; }
+      if(e.key==="Backspace"&&!inp.value&&prev){
+        e.preventDefault();
+        prev.focus();
+        prev.value=prev.value.slice(0,-1);
+        prev.dispatchEvent(new Event("input",{bubbles:true}));
+        var L=prev.value.length; try{ prev.setSelectionRange(L,L); }catch(x){}
+      }
+    });
+  });
+  var progRow=q("[data-prog]");
+  if(progRow) progRow.onclick=function(){ adProgress(H,row); };
+  if(row&&!isKid) adPinWire(H,row.id,row.name);
+  function birthday(){
+    if(!isKid) return "";
+    var m=q("[data-f=mm]").value,d=q("[data-f=dd]").value,y=q("[data-f=yy]").value;
+    if(!m&&!d&&!y) return "";
+    if(!m||!d||y.length!==4) return null;
+    var iso=y+"-"+("0"+m).slice(-2)+"-"+("0"+d).slice(-2),dt=new Date(iso+"T00:00:00");
+    if(isNaN(dt)||dt.getDate()!==+d||dt.getMonth()+1!==+m) return null;
+    return iso;
+  }
+  var busy=false;
+  var doSave=function(){
+    if(busy) return;
+    var name=nameIn.value.trim(),b=birthday();
+    if(!name){ msg.textContent="Give the profile a name."; nameIn.focus(); return; }
+    if(b===null){ msg.textContent="Finish the birthday as MM / DD / YYYY, or leave it blank."; return; }
+    if(b&&new Date(b+"T00:00:00")>new Date()){ msg.textContent="Check the birthday. It can't be in the future."; return; }
+    busy=true; msg.textContent="Saving…";
+    var body={name:name,theme:f.theme,grade:isKid?f.grade:null,gender:isKid?f.gender:null,birthday:b||null,kind:kind};
+    var job=row?NSAccount.updateStudent(row.id,body):NSAccount.addStudent(body);
+    job.then(function(saved){
+      busy=false;
+      if(!saved) throw new Error("Could not save that profile.");
+      var firstKid=!row&&isKid&&adOf("student").length===0;
+      if(row) adKids=adKids.map(function(k){ return k.id===saved.id?saved:k; });
+      else adKids=(adKids||[]).concat([saved]);
+      if(row&&NSAccount.who()===row.id) adSetWho(row.id); else nsWhoIcon();
+      if(!row&&!isKid) adPinView(H,"first",{key:saved.id,name:saved.name,forParent:true});
+      else if(firstKid&&!adHasPin(null)) adPinView(H,"first",{key:null,name:adMe(),kid:saved.name});
+      else adProfiles(H);
+    }).catch(function(e){ busy=false; msg.textContent=e.message||"Could not save that profile."; });
+  };
+  if(!row){ H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } nameIn.focus(); }
+  var del=q("[data-del]");
+  if(del) del.onclick=function(){ adRemove(H,row); };
+  
+  function adGuardPin(then){
+    if(!adHasPin(null)) return adPinView(H,"first",{key:null,name:adMe(),next:then});
+    adPinView(H,"unlock",{key:null,name:adMe(),next:then});
+  }
+  var kd=q("[data-kind]");
+  if(kd) kd.onclick=function(){
+    var want=kd.getAttribute("data-kind");
+    adGuardPin(function(){
+      adProfiles(H);
+      NSAccount.setProfileKind(row.id,want).then(function(){
+        adKids=null;                       
+        adLoad(); adProfiles(H);
+      }).catch(function(e){
+        adProfiles(H);
+        var p=document.createElement("p");
+        p.className="ad-msg ad-mid";
+        p.textContent=e.message||"Could not change that profile.";
+        H.body.insertBefore(p,H.body.firstChild);
+      });
+    });
+  };
+}
+function adHolderPick(H,row){
+  adFrame(H,"Switch Account Holder",function(){ adEdit(H,row); },"holder");
+  var others=adOf("parent").filter(function(p){ return p.id!==row.id; });
+  if(!others.length){
+    H.body.innerHTML="<p class='ad-empty ad-mid'>There is no other parent profile to hand the account to."+
+      " Add one first, or change a student to a parent profile.</p>";
+    return;
+  }
+  H.body.innerHTML="<p class='ad-note ad-mid'>The account side moves to whoever you pick."+
+    " The email and password you sign in with do not change.</p>"+
+    others.map(function(p){
+      return "<button class='ad-row' type='button' data-take='"+adEsc(p.id)+"'><b>"+adEsc(p.name)+"</b>"+
+             "<span>Make this profile the account holder</span></button>";
+    }).join("")+"<p class='ad-msg'></p>";
+  H.body.onclick=function(e){
+    var b=e.target.closest("[data-take]"); if(!b) return;
+    b.disabled=true;
+    NSAccount.swapAccountHolder(b.getAttribute("data-take")).then(function(){
+      adKids=null; adLoad(); adProfiles(H);
+    }).catch(function(err){
+      b.disabled=false;
+      var m=H.body.querySelector(".ad-msg"); if(m) m.textContent=err.message;
+    });
+  };
+}
+var adCourses=null;
+function adLoadCourses(){
+  if(adCourses) return Promise.resolve(adCourses);
+  return fetch("/assets/courses.json").then(function(r){ return r.json(); }).then(function(m){ adCourses=m; return m; });
+}
+function adProgMap(rows){
+  var by={};
+  (rows||[]).forEach(function(r){
+    by[r.lesson_id]={done:r.state==="done",pct:r.total?Math.round(r.score*100/r.total):null};
+  });
+  return by;
+}
+function adProgressFor(row){
+  return NSAccount.progressRows(row.id).then(function(rows){
+    var by=adProgMap(rows);
+    if(NSAccount.who()===row.id){
+      var local=adProgMap(nsRowsFromSnap(row.id,nsProgSnap()));
+      Object.keys(local).forEach(function(k){ by[k]=local[k]; });
+    }
+    return by;
+  });
+}
+function adProgTotals(by){
+  var done=0,pts=0,sum=0,n=0;
+  Object.keys(by).forEach(function(k){
+    var x=by[k]; if(!x.done) return;
+    done++; pts+=10;
+    if(x.pct!=null){ sum+=x.pct; n++; if(x.pct>=90) pts+=5; }
+  });
+  return {done:done,points:pts,avg:n?Math.round(sum/n):null};
+}
+function adCourseStats(c,by){
+  var items=[];
+  c.units.forEach(function(u){ u.items.forEach(function(it){ items.push(it); }); });
+  var built=items.filter(function(it){ return it.id; }),
+      done=built.filter(function(it){ return by[it.id]&&by[it.id].done; }),
+      scored=done.filter(function(it){ return by[it.id].pct!=null; }),
+      next=items.filter(function(it){ return !(it.id&&by[it.id]&&by[it.id].done); })[0]||null,
+      any=built.some(function(it){ return by[it.id]; });
+  return {built:built,done:done.length,avg:scored.length?Math.round(scored.reduce(function(s,it){ return s+by[it.id].pct; },0)/scored.length):null,
+          next:next,any:any};
+}
+function adCoursesFor(row,by,m){
+  var mine=m.courses.filter(function(c){
+    return (row.grade&&c.grade===String(row.grade))||adCourseStats(c,by).any;
+  });
+  return mine.length?mine:m.courses;
+}
+function adNextLine(s){
+  if(!s.next) return "Every lesson finished";
+  return "Next: "+adEsc(s.next.label)+" · "+adEsc(s.next.title)+(s.next.id?"":" (being built)");
+}
+function adStats(t){
+  return "<div class='ad-stats'>"+
+    "<div><b>"+t.done+"</b><span>Lessons Finished</span></div>"+
+    "<div><b>"+(t.avg==null?"N/A":t.avg+"%")+"</b><span>Overall Score</span></div>"+
+    "<div><b>"+t.points+"</b><span>Points</span></div></div>";
+}
+function nsProgForget(studentId,lessonId){
+  function strip(s){
+    Object.keys(s).forEach(function(k){ var m=NS_PK.exec(k); if(m&&(!lessonId||m[2]===lessonId)) delete s[k]; });
+    return s;
+  }
+  if(NSAccount.who()===studentId) nsProgWrite(strip(nsProgSnap()));
+  nsStashPut(studentId,strip(nsStashGet(studentId)));
+  try{
+    var p=JSON.parse(localStorage.getItem("ns:pushed:"+studentId))||{};
+    localStorage.setItem("ns:pushed:"+studentId,JSON.stringify(strip(p)));
+  }catch(e){}
+}
+function adProgress(H,row){
+  adFrame(H,"Progress",function(){ adEdit(H,row); },"progress");
+  H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>";
+  Promise.all([adLoadCourses(),adProgressFor(row)]).then(function(r){
+    var m=r[0],by=r[1],t=adProgTotals(by),gw=adGradeWords(row.grade);
+    var list=adCoursesFor(row,by,m);
+    var other=(m.other||[]).filter(function(o){ return by[o.id]; });
+    var stash=nsStashGet("parent"),stashN=Object.keys(adProgMap(nsRowsFromSnap(row.id,stash))).length;
+    function lessonRows(items){
+      return items.map(function(it){
+        var x=by[it.id],st=!x?"Not started":x.done?(x.pct!=null?"Done · "+x.pct+"%":"Done"):"In progress";
+        return "<div class='ad-lsn'><span><b>"+adEsc(it.label||"")+"</b> "+adEsc(it.title)+"</span><span class='ad-dim'>"+st+"</span>"+
+          (x?"<button type='button' class='ad-link ad-reset1' data-reset1='"+adEsc(it.id)+"'>Reset</button>":"")+"</div>";
+      }).join("");
+    }
+    H.body.innerHTML=
+      "<div class='ad-me'>"+adAv(row.name,row.theme)+"<div><b>"+adEsc(row.name)+"</b>"+
+        (gw?"<span>"+gw+"</span>":"")+"<span>School year "+adSchoolYear()+"</span></div></div>"+
+      adStats(t)+
+      adCap("Courses","","Each course lists the lessons done, the average score of the lessons that have one, and what comes next. Tap a course to see its lessons and reset one so it can be taken again.")+
+      list.map(function(c,i){
+        var s=adCourseStats(c,by);
+        var units=c.units.map(function(u,j){
+          var built=u.items.filter(function(it){ return it.id; });
+          if(!built.length) return "";
+          var done=built.filter(function(it){ return by[it.id]&&by[it.id].done; }).length,
+              pct=Math.round(done*100/u.items.length),left=u.items.length-built.length,key=i+"-"+j;
+          return "<button type='button' class='ad-unit' data-unit='"+key+"'><span class='ad-unit-t'><b>U"+adEsc(u.n)+
+            " · "+adEsc(u.name)+"</b><span>"+done+" of "+u.items.length+" lessons · "+pct+"%</span>"+
+            "<i class='ad-bar' aria-hidden='true'><i style='width:"+pct+"%'></i></i></span>"+
+            "<span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
+            "<div class='ad-unitbody hidden' data-unitbody='"+key+"'>"+lessonRows(built)+
+            (left?"<p class='ad-note'>"+left+" more lesson"+(left===1?"":"s")+" in this unit being built.</p>":"")+"</div>";
+        }).join("");
+        return "<button type='button' class='ad-ord ad-crs' data-crs='"+i+"'><span class='ad-ord-t'><b>"+adEsc(c.name)+"</b>"+
+          "<span>"+s.done+" of "+s.built.length+" lessons done"+(s.avg==null?"":" · "+s.avg+"%")+"</span>"+
+          "<span>"+adNextLine(s)+"</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>"+
+          "<div class='ad-crsbody hidden' data-crsbody='"+i+"'>"+(units||"<p class='ad-note'>No lessons built for this course yet.</p>")+"</div>";
+      }).join("")+
+      (other.length?adCap("Other Lessons","","Lessons that are not part of a course yet.")+
+        lessonRows(other.map(function(o){ return {id:o.id,label:"",title:o.title}; })):"")+
+      (stashN?"<div class='ad-warn ad-move'><b>Progress from before profiles</b><p>This device has "+stashN+" lesson"+(stashN===1?"":"s")+
+        " of progress saved before profiles existed. If it is "+adEsc(row.name)+"&#39;s, move it onto their profile.</p>"+
+        "<button type='button' class='ad-link' data-move>Move It to "+adEsc(row.name)+"</button></div>":"")+
+      "<p class='ad-msg'></p>"+
+      "<button class='ad-signout ad-del' type='button' data-resetall>Reset All Progress</button>";
+    var msg=H.body.querySelector(".ad-msg");
+    ["crs","unit"].forEach(function(kind){
+      H.body.querySelectorAll("[data-"+kind+"]").forEach(function(b){
+        b.onclick=function(){
+          var body=H.body.querySelector("[data-"+kind+"body='"+b.getAttribute("data-"+kind)+"']");
+          var open=body.classList.contains("hidden"); body.classList.toggle("hidden",!open); b.classList.toggle("is-open",open);
+        };
+      });
+    });
+    H.body.querySelectorAll("[data-reset1]").forEach(function(b){
+      var armed=false;
+      b.onclick=function(){
+        var id=b.getAttribute("data-reset1");
+        if(!armed){ armed=true; b.textContent="Tap again to reset"; b.classList.add("is-armed"); return; }
+        b.textContent="Resetting…";
+        NSAccount.deleteProgress(row.id,id).then(function(){ nsProgForget(row.id,id); adProgress(H,row); })
+          .catch(function(e){ armed=false; b.textContent="Reset"; msg.textContent=e.message; });
+      };
+    });
+    var mv=H.body.querySelector("[data-move]");
+    if(mv) mv.onclick=function(){
+      mv.textContent="Moving…";
+      var rows=nsRowsFromSnap(row.id,stash);
+      NSAccount.upsertProgress(rows).then(function(){
+        nsStashPut("parent",{});
+        if(NSAccount.who()===row.id) nsProgWrite(Object.assign({},stash,nsProgSnap()));
+        adProgress(H,row);
+      }).catch(function(e){ mv.textContent="Move It to "+row.name; msg.textContent=e.message||"Could not move it."; });
+    };
+    H.body.querySelector("[data-resetall]").onclick=function(){ adResetAll(H,row,t); };
+  }).catch(function(){ H.body.innerHTML="<p class='ad-empty ad-mid'>Could not load progress. Try again in a moment.</p>"; });
+}
+function adResetAll(H,row,t){
+  var n=adEsc(row.name);
+  adFrame(H,"Reset Progress",function(){ adProgress(H,row); },"resetall");
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(row.name,row.theme)+"</div>"+
+    "<div class='ad-warn'><b>This can&#39;t be undone.</b>"+
+    "<p>Resetting wipes all of "+n+"&#39;s progress: "+t.done+" finished lesson"+(t.done===1?"":"s")+
+    ", every score, and the "+t.points+" points they earned.</p>"+
+    "<p>Their profile, About Me and settings stay.</p></div>"+
+    "<p class='ad-msg'></p>"+
+    "<button class='ad-danger' type='button' data-yes>Reset "+n+"&#39;s Progress</button>"+
+    "<button class='ad-link' type='button' data-no>Cancel</button>";
+  var msg=H.body.querySelector(".ad-msg"),yes=H.body.querySelector("[data-yes]");
+  H.body.querySelector("[data-no]").onclick=function(){ adProgress(H,row); };
+  yes.onclick=function(){
+    yes.disabled=true; yes.textContent="Resetting…";
+    NSAccount.deleteProgress(row.id,null).then(function(){ nsProgForget(row.id,null); adProgress(H,row); })
+      .catch(function(e){ yes.disabled=false; yes.textContent="Reset "+row.name+"'s Progress"; msg.textContent=e.message; });
+  };
+}
+function adMyProgress(H,row){
+  var box=H.body.querySelector("[data-myprog]"); if(!box) return;
+  Promise.all([adLoadCourses(),adProgressFor(row)]).then(function(r){
+    var m=r[0],by=r[1];
+    box.innerHTML=adStats(adProgTotals(by))+
+      adCoursesFor(row,by,m).map(function(c){
+        var s=adCourseStats(c,by);
+        var line="<b>"+adEsc(c.name)+"</b><span>"+adNextLine(s)+"</span>";
+        return s.next&&s.next.id?"<a class='ad-nextup' href='/lessons/"+adEsc(s.next.id)+"/'>"+line+"</a>":"<div class='ad-nextup'>"+line+"</div>";
+      }).join("");
+  }).catch(function(){ box.innerHTML="<p class='ad-note'>Progress could not load right now.</p>"; });
+}
+function adRemove(H,row){
+  var isKid=row.kind==="student",n=adEsc(row.name);
+  adFrame(H,isKid?"Remove Student":"Remove Parent",function(){ adEdit(H,row); },"remove");
+  H.body.innerHTML="<div class='ad-hi ad-edit-av'>"+adAv(row.name,row.theme)+"</div>"+
+    "<div class='ad-warn'><b>This can&#39;t be undone.</b>"+
+    (isKid?"<p>Removing "+n+" deletes their profile and <strong>wipes all of their progress</strong>: every lesson they&#39;ve finished and every score.</p>":
+           "<p>Removing "+n+" deletes their profile and their PIN.</p>")+
+    "<p>Your orders and downloads are not affected.</p></div>"+
+    "<p class='ad-msg'></p>"+
+    "<button class='ad-danger' type='button' data-yes>Remove "+n+"</button>"+
+    "<button class='ad-link' type='button' data-no>Cancel</button>";
+  var msg=H.body.querySelector(".ad-msg"),yes=H.body.querySelector("[data-yes]");
+  H.body.querySelector("[data-no]").onclick=function(){ adEdit(H,row); };
+  yes.onclick=function(){
+    yes.disabled=true; yes.textContent="Removing…";
+    NSAccount.deleteStudent(row.id).then(function(){
+      adKids=adKids.filter(function(k){ return k.id!==row.id; });
+      if(adPins) delete adPins[row.id];
+      nsWhoIcon(); adProfiles(H);
+    }).catch(function(e){ yes.disabled=false; yes.textContent="Remove "+row.name; msg.textContent=e.message; });
+  };
+}
+function adPinView(H,mode,ctx){
+  ctx=ctx||{};
+  var key=ctx.key||null,who=ctx.name||"your";
+  var up=mode==="unlock"?adMain:adProfiles;
+  var steps=mode==="unlock"?["check"]:mode==="off"?["old"]:(mode==="change"&&adHasPin(key)?["old","new","again"]:["new","again"]);
+  var i=0,vals={};
+  var WORDS={
+    check:"Enter "+who+"'s PIN to open their profile.",
+    old:mode==="off"?"Enter "+who+"'s current PIN to turn it off.":"Enter "+who+"'s current PIN.",
+    "new":mode==="first"?(ctx.forParent?"Set a 4-number PIN for "+who+". Students will need it to open "+who+"'s profile.":
+      "Set a 4-number PIN for "+who+". "+(ctx.kid||"Your student")+" will need it to get back to your profile."):
+      "Pick a new 4-number PIN for "+who+".",
+    again:"Type the same PIN again."
+  };
+  function draw(note){
+    adFrame(H,mode==="unlock"?"Enter PIN":mode==="off"?"Turn PIN Off":"Parent/Teacher PIN",up,"pin");
+    H.body.innerHTML="<p class='ad-empty ad-mid'>"+adEsc(WORDS[steps[i]])+"</p>"+
+      "<div class='ad-pinbox'><span></span><span></span><span></span><span></span>"+
+      "<input type='password' inputmode='numeric' pattern='[0-9]*' maxlength='4' autocomplete='off' aria-label='PIN'></div>"+
+      "<p class='ad-msg'>"+adEsc(note||"")+"</p>"+
+      (mode==="unlock"||steps[i]==="old"?"<button class='ad-link' type='button' data-forgot>Forgot PIN?</button>":"")+
+      (mode==="first"?"<button class='ad-link' type='button' data-skip>Not Now</button>":"");
+    var box=H.body.querySelector(".ad-pinbox"),inp=box.querySelector("input"),
+        dots=box.querySelectorAll("span"),msg=H.body.querySelector(".ad-msg");
+    function paint(){ dots.forEach(function(d,j){ d.classList.toggle("is-on",j<inp.value.length); d.classList.toggle("is-cur",j===inp.value.length); }); }
+    inp.addEventListener("input",function(){
+      inp.value=inp.value.replace(/[^0-9]/g,"").slice(0,4); paint();
+      if(inp.value.length===4) done(inp.value);
+    });
+    function wrong(t){ inp.value=""; paint(); msg.textContent=t; box.classList.remove("is-shake"); void box.offsetWidth; box.classList.add("is-shake"); inp.focus(); }
+    function done(v){
+      var step=steps[i];
+      if(step==="check"){
+        inp.disabled=true; msg.textContent="Checking…";
+        NSAccount.checkPin(v,key).then(function(ok){
+          inp.disabled=false;
+          if(ok===true){
+            if(ctx.next){ ctx.next(); return; }
+            adSetWho(key||"parent"); adMain(H);
+          }
+          else wrong("That PIN isn't right. Try again.");
+        }).catch(function(e){ inp.disabled=false; wrong(e.message); });
+        return;
+      }
+      if(mode==="off"){
+        inp.disabled=true; msg.textContent="Turning it off…";
+        NSAccount.clearPin(v,key).then(function(ok){
+          inp.disabled=false;
+          if(ok===true){ if(adPins) delete adPins[key||"owner"]; nsWhoIcon(); adProfiles(H); }
+          else wrong("That PIN isn't right. Try again.");
+        }).catch(function(e){ inp.disabled=false; wrong(e.message); });
+        return;
+      }
+      if(step==="again"&&v!==vals["new"]){ i=steps.indexOf("new"); vals={old:vals.old}; draw("Those didn't match. Start the new PIN again."); return; }
+      vals[step]=v;
+      if(i<steps.length-1){ i++; draw(); return; }
+      inp.disabled=true; msg.textContent="Saving…";
+      NSAccount.setPin(vals["new"],vals.old==null?null:vals.old,key).then(function(){
+        adPins=adPins||{}; adPins[key||"owner"]=true;
+        if(ctx.next){ ctx.next(); return; }
+        adProfiles(H);
+      }).catch(function(e){
+        inp.disabled=false;
+        if(steps[0]==="old"){ i=0; vals={}; draw(e.message); } else wrong(e.message);
+      });
+    }
+    paint(); inp.focus();
+    var fg=H.body.querySelector("[data-forgot]"); if(fg) fg.onclick=function(){ adForgotPin(H,mode==="off"?{key:ctx.key,name:ctx.name,off:true}:ctx); };
+    var sk=H.body.querySelector("[data-skip]"); if(sk) sk.onclick=function(){ adProfiles(H); };
+  }
+  draw();
+}
+var AD_EYE="<svg class='eye-on' viewBox='0 0 24 24' aria-hidden='true'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3'/></svg>"+
+  "<svg class='eye-off' viewBox='0 0 24 24' aria-hidden='true'><path d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24'/><path d='M1 1l22 22'/></svg>";
+function adPw(where,attrs){
+  return "<span class='pw-wrap is-"+where+"'><input type='password' "+attrs+">"+
+    "<button class='pw-eye' type='button' aria-label='Show password' aria-pressed='false'>"+AD_EYE+"</button></span>";
+}
+function adForgotPin(H,ctx){
+  adFrame(H,"Forgot PIN",adMain,"pin");
+  var em=adUser&&adUser.email||"";
+  H.body.innerHTML="<p class='ad-empty ad-mid'>Sign in with the account password to "+(ctx&&ctx.off?"turn off the PIN":"pick a new PIN")+
+    (ctx&&ctx.name?" for "+adEsc(ctx.name):"")+".</p>"+
+    "<div class='ad-kv'><span>Email</span><span>"+adEsc(em)+"</span></div>"+
+    "<label class='ad-kv'><span>Password</span>"+adPw("kv","class='ad-in' data-f='pw' autocomplete='current-password'")+"</label>"+
+    "<p class='ad-msg'></p><button class='ad-link' type='button' data-go-pw>Continue</button>";
+  var pw=H.body.querySelector("[data-f=pw]"),msg=H.body.querySelector(".ad-msg");
+  function go(){
+    if(!pw.value){ msg.textContent="Type your password."; pw.focus(); return; }
+    msg.textContent="Checking…";
+    NSAccount.logIn(em,pw.value).then(function(){
+      NSAccount.pickerShown(); nsWhoIcon();
+      if(ctx&&ctx.off) return NSAccount.clearPin(null,ctx.key||null).then(function(){
+        if(adPins) delete adPins[ctx.key||"owner"]; adProfiles(H);
+      });
+      adPinView(H,"reset",ctx);
+    }).catch(function(e){ msg.textContent=e.message||"That password isn't right."; });
+  }
+  H.body.querySelector("[data-go-pw]").onclick=go;
+  pw.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); go(); } });
+  pw.focus();
+}
+var AD_ICON=acctLink?acctLink.innerHTML:"";
+function adOwnerIconData(){
+  if(adUser){
+    var t=adTheme(adOwnerTheme()),d={l:adMe().charAt(0).toUpperCase(),c:t?t.box:"",n:adMe()};
+    try{ localStorage.setItem("ns:meicon",JSON.stringify(d)); }catch(e){}
+    return d;
+  }
+  try{ return JSON.parse(localStorage.getItem("ns:meicon"))||null; }catch(e){ return null; }
+}
+function nsWhoIcon(){
+  nsApplyAccent();
+  if(!acctLink||!window.NSAccount) return;
+  if(!NSAccount.isSignedIn()){
+    if(acctLink.innerHTML!==AD_ICON){ acctLink.innerHTML=AD_ICON; acctLink.setAttribute("aria-label","Account"); }
+    return;
+  }
+  var k=adActive(),l="",c="",n="";
+  if(k===AD_PENDING) return;
+  if(k){ var t=adTheme(k.theme); l=k.name.charAt(0).toUpperCase(); c=t?t.box:""; n=k.name; }
+  else { var o=adOwnerIconData(); if(!o) return; l=o.l; c=o.c; n=o.n; }
+  acctLink.innerHTML="<span class='nv-av'"+(c?" style='background:"+c+"'":"")+" aria-hidden='true'>"+adEsc(l)+"</span>";
+  acctLink.setAttribute("aria-label","Account, "+n);
+}
+function adMyProfile(H){
+  var a=adActive();
+  if(!a||a===AD_PENDING||a.kind!=="student") return adMain(H);
+  adFrame(H,"My Profile",adMain,"myprofile");
+  var ab=a.about||{},filled=AD_ABOUT.filter(function(p){ return ab[p[0]]; }),gw=adGradeWords(a.grade);
+  H.body.innerHTML=
+    "<div class='ad-me'>"+adAv(a.name,a.theme)+"<div><b>"+adEsc(a.name)+"</b>"+
+      (gw?"<span>"+gw+"</span>":"")+"<span>School year "+adSchoolYear()+"</span></div></div>"+
+    adCap("My Progress","","Lessons you have finished, the points they earned (10 each, 5 more for 90% or better), and what is next in each course. Tap one to go straight to it.")+
+    "<div data-myprog><p class='ad-note'>Loading…</p></div>"+
+    "<p class='ad-cap'>About Me</p>"+
+    (filled.length?"<dl class='ad-about'>"+filled.map(function(p){
+      return "<dt>"+p[1]+"</dt><dd>"+adEsc(ab[p[0]])+"</dd>";
+    }).join("")+"</dl>":
+      "<p class='ad-note'>This part is all yours. Tell everyone a bit about you: what you like, what you&#39;re good at, what you want to be one day.</p>")+
+    "<button class='ad-link' type='button' data-about>"+(filled.length?"Edit My About Me":"Write My About Me")+"</button>";
+  H.body.querySelector("[data-about]").onclick=function(){ adAboutEdit(H,a); };
+  adMyProgress(H,a);
+}
+function adAboutEdit(H,a){
+  adFrame(H,"About Me",adMyProfile,"about");
+  var ab=a.about||{};
+  H.body.innerHTML=AD_ABOUT.map(function(p){
+    return p[0]==="me"?
+      "<p class='ad-cap'>"+p[1]+"</p><textarea class='ad-in ad-ta' data-k='me' maxlength='600' rows='4'>"+adEsc(ab.me||"")+"</textarea>":
+      "<p class='ad-cap'>"+p[1]+"</p><input class='ad-in ad-box' data-k='"+p[0]+"' maxlength='60' autocomplete='off' value='"+adEsc(ab[p[0]]||"")+"'>";
+  }).join("")+"<p class='ad-msg'></p>";
+  var msg=H.body.querySelector(".ad-msg"),busy=false;
+  var doSave=function(){
+    if(busy) return; busy=true; msg.textContent="Saving…";
+    var out={};
+    H.body.querySelectorAll("[data-k]").forEach(function(i){ var v=i.value.trim(); if(v) out[i.getAttribute("data-k")]=v; });
+    NSAccount.saveOwn(a.id,{about:out}).then(function(row){
+      busy=false; if(!row) throw new Error("Could not save that.");
+      adKids=adKids.map(function(x){ return x.id===row.id?row:x; });
+      adMyProfile(H);
+    }).catch(function(e){ busy=false; msg.textContent=e.message||"Could not save that."; });
+  };
+  H.body.querySelectorAll("[data-k]").forEach(function(i){
+    i.addEventListener("input",function(){ if(H.save) return; H.save=doSave; if(H.x){ H.x.textContent="Save"; H.x.hidden=false; } });
+  });
+  var first=H.body.querySelector("[data-k]"); if(first) first.focus();
+}
+var adTipTimer=null;
+function adTipsShow(H,btn){
+  clearTimeout(adTipTimer);
+  H.body.querySelectorAll(".ad-info").forEach(function(b){
+    var open=b===btn;
+    b.setAttribute("aria-expanded",open);
+    b.parentNode.querySelector(".ad-tip").classList.toggle("is-on",open);
+  });
+  if(btn) adTipTimer=setTimeout(function(){ adTipsShow(H,null); },4000);
+}
+function adCap(title,extra,info){
+  if(!info) return "<p class='ad-cap'>"+title+(extra||"")+"</p>";
+  return "<div class='ad-caprow'><p class='ad-cap'>"+title+(extra||"")+"</p>"+
+    "<span class='ad-infow'><button class='ad-info' type='button' aria-expanded='false' aria-label='"+
+      adEsc("More about "+title)+"'>?</button>"+
+    "<span class='ad-tip' role='tooltip'>"+info+"</span></span></div>";
+}
+var AD_VOICE=[["male","Male"],["female","Female"]];
+var AD_SPEED=[["0.7","Slow"],["0.85","Normal"],["1","Fast"]];
+function adSettingsOf(a){
+  if(a===null) return ((adUser&&adUser.user_metadata)||{}).settings||{};
+  return (a&&a!==AD_PENDING&&a.settings)||{};
+}
+function nsApplySettings(s){
+  s=s||{};
+  try{
+    if(s.voice) localStorage.setItem("ns:voice","__studio__:"+s.voice);
+    if(s.speed) localStorage.setItem("ns:speed",s.speed);
+    
+    if(s.highlight!=null){
+      if(s.highlight) localStorage.setItem("ns:highlight",s.highlight); else localStorage.removeItem("ns:highlight");
+    }
+  }catch(e){}
+  if(s.highlight!=null){
+    try{ document.dispatchEvent(new CustomEvent("ns:settings")); }catch(e){}
+  }
+}
+function adSettings(H){
+  adFrame(H,"Settings",adMain,"settings");
+  var a=adActive();
+  if(a===AD_PENDING){ H.body.innerHTML="<p class='ad-empty ad-mid'>Loading…</p>"; return; }
+  var s=adSettingsOf(a),dev={};
+  try{
+    dev.voice=(localStorage.getItem("ns:voice")||"").replace("__studio__:","");
+    dev.speed=localStorage.getItem("ns:speed")||"0.85";
+    dev.lesson=localStorage.getItem("ns:theme")||"graphite";
+  }catch(e){}
+  try{ dev.highlight=localStorage.getItem("ns:highlight")||""; }catch(e){}
+  var cur={voice:s.voice||(dev.voice==="female"?"female":"male"),speed:s.speed||dev.speed||"0.85",lesson:s.lesson||dev.lesson||"graphite",
+           highlight:s.highlight!=null?s.highlight:(dev.highlight||"")};
+  var themeCur=a===null?(adOwnerTheme()||""):(a&&a.theme)||"";
+  function chips(attr,list,label){
+    return "<div class='ad-chips is-center' role='group' aria-label='"+label+"'>"+list.map(function(p){
+      return "<button type='button' data-"+attr+"='"+p[0]+"' aria-pressed='"+(cur[attr]===p[0])+"'>"+p[1]+"</button>";
+    }).join("")+"</div>";
+  }
+  var hlTiles="<div class='ad-tiles' role='group' aria-label='Reading highlight'>"+
+    [{k:"",name:"Default",rgb:"216,179,85"}].concat(AD_HL).map(function(h){
+      return "<button type='button' data-highlight='"+h.k+"' aria-pressed='"+(cur.highlight===h.k)+"'>"+
+        "<i style='background:rgb("+h.rgb+")' aria-hidden='true'></i><b>"+h.name+"</b></button>";
+    }).join("")+"</div>";
+  function hlName(k){ var h=AD_HL.filter(function(x){ return x.k===k; })[0]; return h?h.name:"Default"; }
+  H.body.innerHTML=
+    adCap("Reading Voice","","The NexVoice that reads lessons aloud. Lessons without NexVoice use your device&#39;s default voice.")+
+    chips("voice",AD_VOICE,"Reading voice")+
+    adCap("Reading Speed","","How fast lessons are read aloud. Normal suits most readers; Slow helps with new or hard words.")+
+    chips("speed",AD_SPEED,"Reading speed")+
+    adCap("Theme Color"," · <span data-tname>"+adEsc(themeCur?(adTheme(themeCur)||{}).name:"Default")+"</span>",
+      "Your color for your box, the buttons and the menu bar while you&#39;re on.")+
+    adThemeTiles(themeCur,a===null)+
+    adCap("Reading Highlight"," · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span>",
+      "The color that marks the words as a lesson is read aloud.")+
+    hlTiles+
+    adCap("Display","","Switches the whole site between a dark and a light look. It&#39;s kept on this device.")+
+    "<div class='ad-kv'><span>Light or Dark</span>"+
+    "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
+    "<span class='mswitch-track'><span class='mswitch-knob'></span></span>"+
+    "<span data-mode-label>Night Mode</span></button></div>"+
+    "<p class='ad-msg'></p>";
+  if(typeof nsPaintMode==="function") nsPaintMode();
+  var msg=H.body.querySelector(".ad-msg");
+  function pick(attr,v,btn){
+    cur[attr]=v;
+    H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x===btn); });
+    if(attr==="highlight") H.body.querySelector("[data-hname]").textContent=hlName(v);
+    var next={voice:cur.voice,speed:cur.speed,highlight:cur.highlight};
+    nsApplySettings(next);
+    if(!NSAccount.isSignedIn()){ msg.textContent="Saved on this device."; return; }
+    msg.textContent="Saving…";
+    var job=a===null?NSAccount.saveMySettings(next):NSAccount.saveOwn(a.id,{settings:next});
+    job.then(function(r){
+      if(a===null){ if(r&&r.user_metadata) adUser=r; }
+      else if(r){ adKids=adKids.map(function(x){ return x.id===r.id?r:x; }); a=r; }
+      msg.textContent="Saved.";
+    }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
+  }
+  ["voice","speed","highlight"].forEach(function(attr){
+    H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
+      b.onclick=function(){ var v=b.getAttribute("data-"+attr); if(v!==cur[attr]) pick(attr,v,b); };
+    });
+  });
+  H.body.querySelectorAll("[data-theme-k]").forEach(function(b){
+    b.onclick=function(){
+      var k=b.getAttribute("data-theme-k")||"";
+      if(k===themeCur) return;
+      if(a!==null&&!k) return;
+      themeCur=k;
+      H.body.querySelectorAll("[data-theme-k]").forEach(function(x){ x.setAttribute("aria-pressed",x===b); });
+      H.body.querySelector("[data-tname]").textContent=k?(adTheme(k)||{}).name:"Default";
+      msg.textContent="Saving…";
+      var job=a===null?NSAccount.saveMyTheme(k||null):NSAccount.saveOwn(a.id,{theme:k});
+      job.then(function(r){
+        if(a===null){
+          if(r&&r.user_metadata) adUser=r;
+          else if(adUser){ adUser.user_metadata=adUser.user_metadata||{}; adUser.user_metadata.theme=k||null; }
+        } else if(r){ adKids=adKids.map(function(x){ return x.id===r.id?r:x; }); a=r; }
+        nsWhoIcon(); msg.textContent="Saved.";
+      }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
+    };
+  });
+}
+function adList(H){
+  adFrame(H,"Orders",adMain,"orders");
+  if(!adOrders||!adOrders.length){
+    H.body.innerHTML="<p class='ad-empty'>"+(adOrders?"No orders yet. Everything on this site goes through the "+
+      "cart, free sheets included, so each one shows up here once you check out.":"Loading…")+"</p>";
+    return;
+  }
+  H.body.innerHTML=adOrders.map(function(o,i){
+    return "<button class='ad-ord' type='button' data-go='order' data-i='"+i+"'><span class='ad-ord-t'>"+
+      "<b>"+adTitle(o)+"</b><span>"+adDate(o.when)+" &middot; "+nsMoney(o.total)+"</span>"+
+      "<span class='ad-ths'>"+o.rows.map(function(r){
+        var it=AD_ITEMS[r.product];
+        return it&&it.th?"<img src='"+it.th+"' alt='' width='42' height='42' loading='lazy'>":"<i></i>";
+      }).join("")+"</span></span><span class='ad-chev' aria-hidden='true'>&rsaquo;</span></button>";
+  }).join("");
+}
+function adOrder(H,i){
+  var o=adOrders&&adOrders[i]; if(!o) return adList(H);
+  adFrame(H,adTitle(o),adList,"order");
+  var items=o.rows.map(function(r){
+    var it=AD_ITEMS[r.product]||{};
+    var paid=(r.amount_cents||0)>0;
+    var href=paid?AD_WORKER+"/download?t="+encodeURIComponent(r.token):(it.open||"");
+    return "<div class='ad-item'><div class='ad-item-t'><b>"+adEsc(r.title||r.product)+"</b>"+
+      "<span>"+nsMoney(r.amount_cents)+"</span></div><span class='ad-q'>Qty: 1</span>"+
+      (href?"<a class='ad-dl' href='"+href+"'"+(paid?"":" target='_blank' rel='noopener'")+">"+
+        (paid?"Download item":"Open item")+"<span aria-hidden='true'>&rsaquo;</span></a>":"")+"</div>";
+  }).join("");
+  H.body.innerHTML=
+    "<div class='ad-kv'><span>Order Date</span><span>"+adDate(o.when,true)+"</span></div>"+
+    "<div class='ad-kv'><span>Status</span><span>Completed</span></div>"+
+    "<p class='ad-cap'>Items</p>"+items+
+    "<p class='ad-cap'>Summary</p>"+
+    "<div class='ad-kv'><span>Subtotal</span><span>"+nsMoney(o.total)+"</span></div>"+
+    "<div class='ad-kv'><span>Tax</span><span>"+nsMoney(0)+"</span></div>"+
+    "<div class='ad-kv ad-tot'><span>Total</span><span>"+nsMoney(o.total)+"</span></div>";
+}
+function adProfile(H){
+  adFrame(H,"Account",adMain,"account");
+  var md=(adUser&&adUser.user_metadata)||{};
+  H.body.innerHTML=
+    adCap("Access Type","","What this account can open. Anything you buy unlocks it for every parent and student on the account. More ways to unlock lessons are coming soon.")+
+    "<div class='ad-kv'><span>Free</span><span><em class='ad-soon'>More Coming Soon</em></span></div>"+
+    "<p class='ad-cap'>Name</p>"+
+    "<label class='ad-kv'><span>First</span><input class='ad-in' data-f='first' autocomplete='given-name' value='"+adEsc(md.first_name||"")+"'></label>"+
+    "<label class='ad-kv'><span>Last</span><input class='ad-in' data-f='last' autocomplete='family-name' value='"+adEsc(md.last_name||"")+"'></label>"+
+    "<p class='ad-cap'>Email</p>"+
+    "<button class='ad-kv ad-go' type='button' data-open='em'><span>Email</span><span class='ad-dim'>"+
+      adEsc(adUser&&adUser.email||"")+
+      (adUser&&adUser.email_confirmed_at?" <em class='ad-ok'>Verified</em>":"")+
+      "<i aria-hidden='true'>&rsaquo;</i></span></button>"+
+    (adUser&&adUser.new_email?"<p class='ad-note'>Waiting on the confirm link sent to "+adEsc(adUser.new_email)+
+      ". Until it is pressed you still sign in with the address above.</p>":"")+
+    "<div class='ad-open hidden' data-box='em'>"+
+      "<input class='ad-in ad-box' type='email' data-f='em' autocomplete='email' placeholder='New Email' aria-label='New email'></div>"+
+    "<p class='ad-cap'>Password</p>"+
+    "<button class='ad-kv ad-go' type='button' data-open='pw'><span>Password</span><span class='ad-dim'>"+
+      "&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;<i aria-hidden='true'>&rsaquo;</i></span></button>"+
+    "<div class='ad-open hidden' data-box='pw'>"+
+      adPw("box","class='ad-in ad-box' data-f='pw1' autocomplete='new-password' placeholder='New Password' aria-label='New password'")+
+      adPw("box","class='ad-in ad-box' data-f='pw2' autocomplete='new-password' placeholder='Re-type New Password' aria-label='Re-type new password'")+
+      "</div>"+
+    "<p class='ad-msg'></p>"+
+    "<button class='ad-signout ad-del' type='button' data-delme>Delete Account</button>";
+  var q=function(s){ return H.body.querySelector(s); };
+  var msg=q(".ad-msg"),first=q("[data-f=first]"),lastIn=q("[data-f=last]"),
+      em=q("[data-f=em]"),pw1=q("[data-f=pw1]"),pw2=q("[data-f=pw2]");
+  H.body.querySelectorAll("[data-open]").forEach(function(row){
+    row.onclick=function(){
+      var box=q("[data-box="+row.getAttribute("data-open")+"]");
+      var opening=box.classList.contains("hidden");
+      box.classList.toggle("hidden",!opening);
+      row.classList.toggle("is-open",opening);
+      if(opening){ var i=box.querySelector("input"); if(i) i.focus(); }
+      else {
+        box.querySelectorAll("input").forEach(function(i){ i.value=""; });
+        box.querySelectorAll(".pw-eye.is-on").forEach(function(b){ b.click(); });
+      }
+    };
+  });
+  function saved(){
+    H.save=null;
+    if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
+  }
+  function dirty(){
+    if(H.save) return;
+    H.save=doSave;
+    if(H.x){ H.x.textContent="Save"; H.x.hidden=false; }
+  }
+  var doSave=function(){
+    var f=first.value.trim(),l=lastIn.value.trim(),a=pw1.value,b=pw2.value;
+    var newEm=em.value.trim().toLowerCase(),oldEm=String(adUser&&adUser.email||"").toLowerCase();
+    var nameChanged=f!==(md.first_name||"")||l!==(md.last_name||"");
+    var pwTyped=a.length||b.length;
+    var emTyped=newEm.length>0&&newEm!==oldEm;
+    if(emTyped&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEm)){ msg.textContent="Type the new email address in full."; return; }
+    if(pwTyped&&a.length<8){ msg.textContent="Pick a password with at least 8 characters."; return; }
+    if(pwTyped&&a!==b){ msg.textContent="The two passwords do not match."; return; }
+    if(!nameChanged&&!pwTyped&&!emTyped){ msg.textContent="Nothing to save yet."; return; }
+    msg.textContent="Saving…";
+    var jobs=[],said=[];
+    if(nameChanged) jobs.push(NSAccount.updateProfile(f,l).then(function(u){
+      md.first_name=f; md.last_name=l;
+      if(u&&u.user_metadata) adUser=u; else if(adUser){ adUser.user_metadata=md; }
+      said.push("Name saved.");
+    }));
+    if(pwTyped) jobs.push(NSAccount.newPassword(a).then(function(){
+      pw1.value=pw2.value=""; q("[data-box=pw]").classList.add("hidden");
+      said.push("Password saved.");
+    }));
+    if(emTyped) jobs.push(NSAccount.changeEmail(newEm).then(function(u){
+      if(u&&u.id) adUser=u;
+      em.value=""; q("[data-box=em]").classList.add("hidden");
+      said.push("Check your email: press the link we sent to "+newEm+" to finish the change.");
+    }));
+    Promise.all(jobs).then(function(){
+      msg.textContent=said.join(" ");
+      saved();
+    }).catch(function(e){ msg.textContent=e.message||"Could not save that. Try again."; });
+  };
+  H.body.querySelectorAll(".ad-in").forEach(function(i){
+    i.addEventListener("input",dirty);
+    i.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); if(H.save) H.save(); } });
+  });
+  q("[data-delme]").onclick=function(){ adDeleteMe(H); };
+}
+var AD_DELGO="ns:delgoogle";
+function adDelMark(){ try{ localStorage.setItem(AD_DELGO,String(Date.now())); }catch(e){} }
+function adDelTake(){
+  var t=null;
+  try{ t=localStorage.getItem(AD_DELGO); localStorage.removeItem(AD_DELGO); }catch(e){}
+  return !!t && (Date.now()-parseInt(t,10)) < 300000;
+}
+function adDeleteMe(H,confirmed){
+  adFrame(H,"Delete Account",function(){ adProfile(H); },"delme");
+  var em=adUser&&adUser.email||"";
+  var kids=(adKids||[]).filter(function(k){ return k.kind==="student"; }).length;
+  H.body.innerHTML="<div class='ad-warn'><b>This can&#39;t be undone.</b>"+
+    "<p>Deleting your account ends your sign-in and <strong>wipes every profile on it</strong>"+
+    (kids?", including "+kids+" student"+(kids===1?"":"s")+" and all of their progress, scores and points":", with all progress, scores and points")+
+    ", and every PIN.</p>"+
+    "<p>Your past orders are kept. Sign up again with "+adEsc(em||"the same email")+" and they come back.</p></div>"+
+    "<p class='ad-empty ad-mid'>Type your password to delete the account.</p>"+
+    "<label class='ad-kv'><span>Password</span>"+adPw("kv","class='ad-in' data-f='pw' autocomplete='current-password'")+"</label>"+
+    "<p class='ad-msg'></p>"+
+    "<button class='ad-danger' type='button' data-yes>Delete My Account</button>"+
+    "<button class='ad-link' type='button' data-no>Cancel</button>";
+  var pw=H.body.querySelector("[data-f=pw]"),msg=H.body.querySelector(".ad-msg"),yes=H.body.querySelector("[data-yes]");
+  H.body.querySelector("[data-no]").onclick=function(){ adProfile(H); };
+  var promptEl=H.body.querySelector(".ad-empty.ad-mid"),
+      pwRow=H.body.querySelector("label.ad-kv"),
+      noPw=false;
+  function hidePwRow(){ noPw=true; pwRow.style.display="none"; }
+  if(confirmed){
+    promptEl.textContent="That confirmed it is you. This is the last step.";
+    hidePwRow();
+  } else if(NSAccount.identities){
+    NSAccount.identities().then(function(list){
+      if(!H.body.contains(yes)) return;
+      if(!list.length) return;
+      if(list.indexOf("email")>=0) return;
+      var which=list.indexOf("facebook")>=0?"facebook":"google";
+      var nice=which==="facebook"?"Facebook":"Google";
+      promptEl.textContent="Confirm with "+nice+" to delete the account.";
+      hidePwRow();
+      yes.textContent="Continue with "+nice;
+      yes.onclick=function(){
+        yes.disabled=true; yes.textContent="Taking you to "+nice+"…";
+        adDelMark();
+        NSAccount.signInWith(which,"/account/");
+      };
+    });
+  }
+  function go(){
+    if(confirmed||noPw){
+      yes.disabled=true; yes.textContent="Deleting…"; msg.textContent="";
+      NSAccount.pickerShown();
+      return NSAccount.deleteAccount().then(done).catch(fail);
+    }
+    if(!pw.value){ msg.textContent="Type your password."; pw.focus(); return; }
+    yes.disabled=true; yes.textContent="Deleting…"; msg.textContent="";
+    NSAccount.logIn(em,pw.value).then(function(){
+      NSAccount.pickerShown();
+      return NSAccount.deleteAccount();
+    }).then(done).catch(fail);
+  }
+  function done(){
+      adUser=null; adKids=null; adPins=null; adOrders=null;
+      H.up=null; H.back.hidden=true;
+      H.body.innerHTML="<p class='ad-empty ad-mid'><b>Your account is deleted.</b></p>"+
+        "<p class='ad-note ad-mid'>Thank you for learning with us. Everything on this device is cleared too.</p>"+
+        "<button class='ad-link' type='button' data-done>Done</button>";
+      H.body.querySelector("[data-done]").onclick=function(){ location.replace("/"); };
+      if(H.x){ H.x.textContent=H.xLabel; H.x.hidden=!H.xLabel; }
+      nsWhoIcon();
+  }
+  function fail(e){
+    yes.disabled=false; yes.textContent="Delete My Account";
+    msg.textContent=(e&&e.message)||"That did not work. Try again.";
+  }
+  yes.onclick=go;
+  pw.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); go(); } });
+  if(!noPw) pw.focus();
+}
+function adRefresh(){
+  adHosts.forEach(function(H){
+    if(H.view==="main") adMain(H); else if(H.view==="orders") adList(H);
+    else if(H.view==="profiles") adProfiles(H);
+  });
+}
+function adLoad(){
+  if(adLoading) return; adLoading=true;
+  var a=NSAccount.getUser().then(function(u){ adUser=u; adRefresh(); }).catch(function(){});
+  var b=NSAccount.myDownloads().then(function(rows){ adOrders=adGroup(rows||[]); adRefresh(); })
+    .catch(function(){ adOrders=[]; adRefresh(); });
+  var c=NSAccount.students().then(function(k){ adKids=k||[]; adRefresh(); nsWhoIcon(); })
+    .catch(function(){ adKids=[]; adRefresh(); nsWhoIcon(); });
+  var d=NSAccount.pinMap().then(function(p){ adPins=p||{}; adRefresh(); })
+    .catch(function(){ adPins={}; });
+  Promise.all([a,b,c,d]).then(function(){ adLoading=false; });
+}
+function nsStartupSound(scope){
+  try {
+    var a = new Audio("https://nexstudents-media.nexedgetech.workers.dev/ui/startup.mp3");
+    a.volume = 0.5;
+    var armed = true;
+    var once = function(){
+      if (!armed) return;
+      armed = false;
+      try { a.currentTime = 0; var q = a.play(); if (q && q.catch) q.catch(function(){}); } catch (e) {}
+    };
+    var p = a.play();
+    if (p && p.then) p.then(function(){ armed = false; }, function(){
+      if (scope) scope.addEventListener("pointerdown", once, { once: true });
+      document.addEventListener("pointerdown", once, { once: true });
+    });
+  } catch (e) {}
+}
+function nsWhopCascade(o){
+  try{
+    var els=[].slice.call(o.querySelectorAll(".whop-brand,.whop-in > h2,.whop-row .whop-i,.whop-manage,.whop-out"));
+    var seq=els.map(function(el){ return { el:el, top:el.getBoundingClientRect().top }; })
+               .sort(function(a,b){ return a.top-b.top; });
+    var row=-1, prevTop=null;
+    seq.forEach(function(p){
+      if(prevTop===null||Math.abs(p.top-prevTop)>12){ row++; prevTop=p.top; }
+      p.el.style.animationDelay=(row*0.03).toFixed(3)+"s";
+    });
+    o.classList.add("is-ready");
+  }catch(e){ o.classList.add("is-ready"); }
+}
+function nsWhopPre(off){
+  try{ document.documentElement.classList[off?"remove":"add"]("whop-pre"); }catch(e){}
+}
+function nsWhoPicker(){
+  if(!window.NSAccount||!NSAccount.wantsPicker()){ nsWhopPre(true); return; }
+  
+  var o=document.createElement("div");
+  o.className="whop"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true");
+  o.setAttribute("aria-labelledby","whopH");
+  o.innerHTML="<span class='whop-brand' aria-hidden='true'>Nex<b>Students</b></span>"+
+    "<div class='whop-in'><h2 id='whopH'>Who&#39;s learning?</h2>"+
+    "<div class='whop-row'></div>"+
+    "<button type='button' class='whop-manage' data-manage>Manage Profiles</button></div>"+
+    "<button type='button' class='whop-out' data-signout>"+
+    "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' "+
+    "stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>"+
+    "<path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/>"+
+    "<polyline points='16 17 21 12 16 7'/><line x1='21' y1='12' x2='9' y2='12'/>"+
+    "</svg><span>Sign Out</span></button>";
+  document.body.appendChild(o);
+  nsStartupSound(o);
+  nsLockScroll(true);
+  requestAnimationFrame(function(){ o.classList.add("is-in"); });
+  function close(){ o.remove(); nsLockScroll(false); nsWhopPre(true); nsWhoIcon(); }
+  var landed=false;
+  var giveUp=setTimeout(function(){ if(!landed) close(); },8000);
+  o.addEventListener("click",function(e){
+    var b=e.target.closest("[data-who]");
+    if(b){
+      var id=b.getAttribute("data-who");
+      var pinKey=(id==="parent")?null:id;
+      var isKid=adKids&&adOf("student").some(function(k){ return k.id===id; });
+      if(!isKid&&adHasPin(pinKey)){
+        close();
+        if(adD){ adOpen(true); adPinView(adD,"unlock",{key:pinKey,name:b.textContent.trim()}); }
+        return;
+      }
+      adSetWho(id); close();
+      if(!adParentSide(adActive())) adOpen(false); else if(adD) adMain(adD);
+      return;
+    }
+    if(e.target.closest("[data-signout]")){
+      var so=e.target.closest("[data-signout]");
+      so.disabled=true; so.querySelector("span").textContent="Signing out…";
+      Promise.resolve(NSAccount.signOut()).catch(function(){}).then(function(){
+        location.href="/";
+      });
+      return;
+    }
+    if(e.target.closest("[data-manage]")){
+      adSetWho("parent"); close();
+      if(location.pathname==="/"){ if(adD){ adProfiles(adD); adLoad(); adOpen(true); } }
+      else location.href="/?panel=profiles";
+    }
+  });
+  addEventListener("keydown",function esc(e){
+    if(e.key!=="Escape"||!o.isConnected) return;
+    removeEventListener("keydown",esc); close();
+  });
+  Promise.all([NSAccount.getUser(),NSAccount.students(),NSAccount.pinMap().catch(function(){ return {}; })]).then(function(r){
+    landed=true; clearTimeout(giveUp);
+    if(!o.isConnected) return;   
+    var rows=r[1]||[];
+    adUser=adUser||r[0]; adKids=rows; adPins=r[2]||{};
+    var me=adMe();
+    function tile(id,name,theme){
+      return "<button type='button' class='whop-i' data-who='"+adEsc(id)+"'>"+adAv(name,theme)+"<b>"+adEsc(name)+"</b></button>";
+    }
+    o.querySelector(".whop-row").innerHTML=
+      tile("parent",me,adOwnerTheme())+
+      adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme); }).join("")+
+      adOf("student").map(function(k){ return tile(k.id,k.name,k.theme); }).join("");
+    nsWhopCascade(o);
+    NSAccount.pickerShown();
+    o.setAttribute("tabindex","-1");
+    o.focus({preventScroll:true});
+  }).catch(function(){ clearTimeout(giveUp); close(); });
+}
+function adWire(H){
+  adHosts.push(H);
+  H.back.onclick=function(){ if(H.up) H.up(H); };
+  if(H.x) H.x.onclick=function(){ if(H.save) H.save(); else if(H===adD) adOpen(false); };
+  H.body.addEventListener("click",function(e){
+    if(e.target.closest("[data-out]")){ NSAccount.signOut(); location.reload(); return; }
+    var inf=e.target.closest(".ad-info");
+    adTipsShow(H,inf&&inf.getAttribute("aria-expanded")!=="true"?inf:null);
+    if(inf) return;
+    var w=e.target.closest("[data-who]");
+    if(w){ adSwitch(H,w.getAttribute("data-who")); nsWhoIcon(); return; }
+    var b=e.target.closest("[data-go]"); if(!b) return;
+    var g=b.getAttribute("data-go");
+    if(g==="myprofile") return adMyProfile(H);
+    if(g!=="settings"&&!adParentSide(adActive())) return adMain(H);
+    if(g==="orders") adList(H);
+    else if(g==="profiles") adProfiles(H);
+    else if(g==="add") adAddPick(H);
+    else if(g==="owner") adOwner(H);
+    else if(g==="edit") adEdit(H,adKid(b.getAttribute("data-id")));
+    else if(g==="settings") adSettings(H);
+    else if(g==="account") adProfile(H);
+    else if(g==="order") adOrder(H,+b.getAttribute("data-i"));
+  });
+  adMain(H);
+}
+var adD=adrawer?adHostOf(adrawer):null;
+if(adD) adWire(adD);
+var nsPanelWant=(function(){
+  var q=location.search;
+  if(q.indexOf("panel=profiles")>=0) return "profiles";
+  if(q.indexOf("panel=account")>=0) return "account";
+  return "";
+})();
+if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&nsPanelWant){
+  history.replaceState(null,"",location.pathname+location.hash);
+  if(nsPanelWant==="profiles") adProfiles(adD); else adMain(adD);
+  adLoad(); adOpen(true);
+}
+if(adD&&window.NSAccount&&NSAccount.isSignedIn()&&adDelTake()){
+  NSAccount.pickerShown();
+  adLoad(); adOpen(true); adDeleteMe(adD,true);
+}
+if(adrawer&&acctLink){
+  acctLink.addEventListener("click",function(e){
+    if(!window.NSAccount||!NSAccount.isSignedIn()) return;
+    if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return;
+    e.preventDefault();
+    adMain(adD);
+    adLoad();
+    adOpen(true);
+  });
+  ascrim.onclick=function(){ adOpen(false); };
+  addEventListener("keydown",function(e){
+    if(e.key==="Escape"&&document.body.classList.contains("acct-open")) adOpen(false);
+  });
+}
+document.addEventListener("ns:auth",function(){ nsWhoIcon(); });
+document.addEventListener("pointerdown",function(e){
+  if(e.target&&e.target.closest&&e.target.closest(".pw-eye")) e.preventDefault();
+});
+document.addEventListener("click",function(e){
+  var b=e.target&&e.target.closest?e.target.closest(".pw-eye"):null; if(!b) return;
+  var i=b.parentNode.querySelector("input"); if(!i) return;
+  var show=i.type==="password";
+  i.type=show?"text":"password";
+  b.classList.toggle("is-on",show);
+  b.setAttribute("aria-pressed",show?"true":"false");
+  b.setAttribute("aria-label",show?"Hide password":"Show password");
+});
+if(!window.NSAccount||!NSAccount.isSignedIn()) nsWhopPre(true);
+if(window.NSAccount&&NSAccount.isSignedIn()){
+  nsWhoPicker();
+  nsProgBoot();
+  if(NSAccount.who()!=="parent"&&adKids===null){
+    NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; nsWhoIcon(); }).catch(function(){});
+  } else if(NSAccount.who()==="parent"){
+    nsWhoIcon();
+    try{ if(!localStorage.getItem("ns:meicon")) NSAccount.getUser().then(function(u){ if(u){ adUser=adUser||u; nsWhoIcon(); } }).catch(function(){}); }catch(e){}
+  }
+}
+})();

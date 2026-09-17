@@ -56,6 +56,17 @@ module.exports = {
   },
 
   seq: { unit: 1, unitTitle: "The Sentence", n: 4 },
+  /* 🚨 THE HOMEWORK SHEET. Its sentences are NOT these sentences:
+     homework-sheet.js fails the build if any of them appear anywhere in this
+     file. Paul, 2026-09-17: "this is a homework worksheet so it is a different
+     thing." build-english.js fails the build if the sheet is not built yet, so
+     build-worksheets.js runs before it. */
+  sheet: {
+    slug: "simple-subjects-and-simple-predicates",
+    note: "This page lets you try again until you get it right. The homework does not, and that is " +
+          "the point: eleven sentences you have not seen, written once in your own hand, with a " +
+          "blank total at the foot for somebody to add up and sign."
+  },
 
   ground: {
     whatItIs: "The complete subject is every word telling you who or what the sentence is about, and inside it one main word carries the meaning. That word is the simple subject. The complete predicate is everything said about that subject, and inside it the verb is the simple predicate.",
@@ -259,7 +270,10 @@ module.exports = {
       "Part B gives you nothing but the sentence, so you have to find the word on your own.",
       "When a question asks for the simple subject, say the sentence out loud and ask who or what it is about.",
       "When it asks for the simple predicate, ask what that subject does.",
-      "If you get one wrong, the page tells you why and lets you go again, so nothing here counts against you."
+      "If you get one wrong, the page tells you why and lets you go again, so nothing here counts against you.",
+      "Last, print the homework from the button at the foot of this page and do it on paper.",
+      "It uses sentences you have not seen here, so it asks whether you can work the rule rather than whether you remember these answers.",
+      "Add your total up at the bottom and hand it to whoever teaches you to check and sign."
     ]
   }
 };

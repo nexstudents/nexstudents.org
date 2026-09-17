@@ -64,6 +64,58 @@ h1{margin:0 0 6px}
 .part h3{margin:0 0 8px;font-size:1.08rem}
 .part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
 
+/* ── examples and scripture get their own frame ────────────────────────────
+   🚨 AN EXAMPLE IS NOT STORY AND MUST NOT LOOK LIKE STORY.
+   Paul, 2026-09-17: "anything that's an example you need to outline in a
+   separate window text and I'm actually wondering if you can start
+   italicizing any of those examples" · "maybe even use a better font because
+   the font that you're currently using is pretty bad" · and then the limit on
+   that: "define for the regular story is fine but not for the examples."
+   So the body face is untouched and ONLY these two blocks change.
+
+   The engine has applied is-ex and is-verse since the history template was
+   written, and it strips the marker before the text ever reaches the reader or
+   the voice. The English page simply never styled them, so a marked line
+   rendered as one more line of story. That is the whole bug.
+
+   🔑 A SERIF, NOT THE MONOSPACE THE HISTORY PAGE USES. Monospace suits a sum or
+   a line of code. These are ENGLISH SENTENCES being held up as specimens, and a
+   book face says "read this as writing" where a code face says "read this as
+   data".
+   ⚠️ THE CLASS IS ON THE PARAGRAPH, NEVER ON .sent. .sent is the highlight
+   unit for the reading voice, and restyling it shifts the text out from under
+   the band while it is being read. */
+.part p.is-ex,
+.part p.is-verse{
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  font-style:italic;
+  margin:14px 0;
+  padding:12px 18px;
+}
+.part p.is-ex{
+  font-size:1.09em;line-height:1.62;max-width:58ch;
+  border:1px solid var(--boxline);
+  border-left:3px solid var(--a);
+  border-radius:0 var(--r) var(--r) 0;
+  background:var(--boxfill);
+}
+.part p.is-verse{
+  font-size:1.05em;line-height:1.72;max-width:62ch;
+  border-left:3px solid var(--a);
+  opacity:.94;
+}
+/* The reading band is tuned against the page ground, and the example box sits
+   on --boxfill, so the two can close up enough to lose the band inside it. */
+.part p.is-ex .sent.on,
+.part p.is-verse .sent.on{box-shadow:0 0 0 2px var(--a)}
+
+/* An italic serif at 1.09em is still small on a phone, and these are the lines
+   the student is asked to read most carefully. */
+@media (max-width:560px){
+  .part p.is-ex{font-size:1.14em;padding:12px 14px}
+  .part p.is-verse{font-size:1.08em;padding:10px 14px}
+}
+
 /* ── worked examples ── */
 .ex{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:16px 18px;margin:0 0 12px}
@@ -125,6 +177,10 @@ h1{margin:0 0 6px}
 .scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:16px;margin:22px 0 40px}
 .scorebar b{font-size:1.25rem}
+/* The homework call to action. Same shape as split/template.html, on purpose. */
+.sheetcta{margin:26px 0 0}
+.sheetnote{color:var(--dim);font-size:.95rem;line-height:1.6;margin:0 0 12px;max-width:62ch}
+.sheetcta .tab.act{text-align:center;text-decoration:none;line-height:1.3}
 
 /* ── TWO COLOURS, ONE MEANING ─────────────────────────────────────────────
    🚨 LIFTED FROM split/template.html, never re-picked. Green is the subject and
