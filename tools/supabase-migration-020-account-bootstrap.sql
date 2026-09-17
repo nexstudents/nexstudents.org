@@ -35,12 +35,19 @@ security definer
 set search_path = public
 as $$
   select jsonb_build_object(
-    -- Who is signed in. The panel reads first_name and theme out of
-    -- user_metadata; nothing else here is used, so nothing else is sent.
+    -- 🚨 EVERY FIELD nav.js READS OFF adUser MUST BE HERE. Checked against the
+    -- source on 2026-09-17: user_metadata, email, new_email, email_confirmed_at.
+    -- The first draft returned only the first two, which would have quietly
+    -- broken the pending-email-change notice and the verified-email check the
+    -- moment this went live. Re-check this list whenever nav.js touches adUser.
+    -- ⚠️ The pending address is auth.users.email_change in the table; GoTrue
+    -- calls it new_email over the API, and nav.js expects that name.
     'me', (
       select jsonb_build_object(
-        'id',   u.id,
+        'id',    u.id,
         'email', u.email,
+        'new_email', nullif(u.email_change, ''),
+        'email_confirmed_at', u.email_confirmed_at,
         'user_metadata', coalesce(u.raw_user_meta_data, '{}'::jsonb)
       )
       from auth.users u
