@@ -1237,6 +1237,21 @@ function adMe(){
   var md=(adUser&&adUser.user_metadata)||{};
   return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
 }
+/* 🚨 THE NAME WE ACTUALLY HAVE, OR "" - NEVER THE WORD "You".
+   Paul, 2026-09-17, with a screen recording: the account panel opened showing a
+   RED TILE READING "Y" captioned "You", while Manage Profiles and Orders both
+   said Loading... A moment later it became his own letter and colour.
+
+   adMe() ends in '|| "You"' so it always returns something printable, which is
+   right for a greeting and WRONG for an identity. The panel drew that "You" as
+   a profile tile, so the site asserted a profile that does not exist, in the
+   default red, before it knew who was signed in.
+   ⚠️ adMe() is deliberately left alone - "Hi there" and the greeting still want
+   a friendly fallback. Anything that draws a TILE or an AVATAR uses this. */
+function adMeKnown(){
+  var md=(adUser&&adUser.user_metadata)||{};
+  return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"");
+}
 function adFull(){ return adOf("student").length>=AD_MAX.student&&adOf("parent").length>=AD_MAX.parent; }
 /* The account holder's theme key, from their user_metadata (saveMyTheme).
    null = the default red box and no accent. */
@@ -1286,7 +1301,7 @@ function adThemeTiles(cur,withDefault,attr){
    centred grid cell is drawn at the exact centre at any zoom, on any phone. */
 var AD_PLUS="<svg viewBox='0 0 24 24'><path d='M12 4v16M4 12h16'/></svg>";
 function adStrip(a){
-  var me=adMe();
+  var me=adMeKnown();   /* "" until user_metadata lands - see adMeKnown */
   /* pinKey false = a student, never locked. ⚠️ Not the word for "no value":
      build-worksheets fails any page containing it, as a broken-template net. */
   function tile(id,name,theme,pinKey,on){
@@ -1298,8 +1313,14 @@ function adStrip(a){
       adEsc(name+(lock?", locked with a PIN":""))+"'>"+adAv(name,theme)+
       (lock?"<span class='ad-lockb' aria-hidden='true'>"+AD_LOCK+"</span>":"")+"<b>"+adEsc(name)+"</b></button>";
   }
+  /* ⭐ NO OWNER TILE UNTIL WE KNOW THE OWNER. An empty placeholder keeps the
+     strip the same height so nothing jumps when the real tile lands, and it
+     matches what the rest of the panel already does while it waits. */
+  var ownerTile = me
+    ? tile("parent",me,adOwnerTheme(),null,a===null)
+    : "<span class='ad-pro-i is-wait' aria-hidden='true'><i></i><b></b></span>";
   return "<div class='ad-pro'>"+
-    tile("parent",me,adOwnerTheme(),null,a===null)+
+    ownerTile+
     adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme,p.id,a&&a.id===p.id); }).join("")+
     adOf("student").map(function(k){ return tile(k.id,k.name,k.theme,false,a&&a.id===k.id); }).join("")+
     (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>"+AD_PLUS+"</i></button>":"")+

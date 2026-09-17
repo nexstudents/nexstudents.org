@@ -2926,3 +2926,9 @@ nav{border-bottom:1px solid var(--line)}
 .out-n{font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums;min-width:1.3em;text-align:right}
 .out-t{min-width:0;overflow-wrap:break-word}
 .out-w{font-size:11.5px;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* The account panel's owner tile while it is still loading. It reserves the
+   space so the strip does not jump, and it must NOT take the default red box
+   an avatar gets - that red square reading "Y" is the bug it exists to stop.
+   Paul, 2026-09-17. */
+.ad-pro-i.is-wait{visibility:hidden}

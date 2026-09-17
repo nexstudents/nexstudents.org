@@ -45,8 +45,8 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <title>Animal Cell: Label the Parts | NexStudents</title>
 <meta name="description" content="Label 16 parts of an animal cell. Answer key included.">
-<link rel="stylesheet" href="/assets/ns.css?v=41c2d4ed">
-<link rel="stylesheet" href="/assets/worksheet.css?v=41c2d4ed">
+<link rel="stylesheet" href="/assets/ns.css?v=fb7aa39d">
+<link rel="stylesheet" href="/assets/worksheet.css?v=fb7aa39d">
 </head>
 <body>
 
@@ -495,6 +495,10 @@ function adMe(){
   var md=(adUser&&adUser.user_metadata)||{};
   return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"You");
 }
+function adMeKnown(){
+  var md=(adUser&&adUser.user_metadata)||{};
+  return md.first_name||(adUser&&adUser.email?adUser.email.split("@")[0]:"");
+}
 function adFull(){ return adOf("student").length>=AD_MAX.student&&adOf("parent").length>=AD_MAX.parent; }
 function adOwnerTheme(){ var md=(adUser&&adUser.user_metadata)||{}; return md.theme||null; }
 function adGradeWords(g){
@@ -522,15 +526,18 @@ function adThemeTiles(cur,withDefault,attr){
 }
 var AD_PLUS="<svg viewBox='0 0 24 24'><path d='M12 4v16M4 12h16'/></svg>";
 function adStrip(a){
-  var me=adMe();
+  var me=adMeKnown();   
   function tile(id,name,theme,pinKey,on){
     var lock=pinKey!==false&&adHasPin(pinKey);
     return "<button class='ad-pro-i"+(on?" is-me":"")+"' type='button' data-who='"+adEsc(id)+"' aria-label='"+
       adEsc(name+(lock?", locked with a PIN":""))+"'>"+adAv(name,theme)+
       (lock?"<span class='ad-lockb' aria-hidden='true'>"+AD_LOCK+"</span>":"")+"<b>"+adEsc(name)+"</b></button>";
   }
+  var ownerTile = me
+    ? tile("parent",me,adOwnerTheme(),null,a===null)
+    : "<span class='ad-pro-i is-wait' aria-hidden='true'><i></i><b></b></span>";
   return "<div class='ad-pro'>"+
-    tile("parent",me,adOwnerTheme(),null,a===null)+
+    ownerTile+
     adOf("parent").map(function(p){ return tile(p.id,p.name,p.theme,p.id,a&&a.id===p.id); }).join("")+
     adOf("student").map(function(k){ return tile(k.id,k.name,k.theme,false,a&&a.id===k.id); }).join("")+
     (adParentSide(a)&&!adFull()?"<button class='ad-pro-i is-add' type='button' data-go='add' aria-label='Add Profile'><i aria-hidden='true'>"+AD_PLUS+"</i></button>":"")+
