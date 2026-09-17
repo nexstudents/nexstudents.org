@@ -104,17 +104,50 @@ server.listen(0, "127.0.0.1", () => {
   const url = "http://127.0.0.1:" + server.address().port + "/" +
               path.relative(root, abs).replace(/\\/g, "/") + query;
 
-  execFile(chrome, [
-    /* 🚨 PLAIN --headless, NOT --headless=new. Chrome 152 removed the =new
-           spelling: the old flag is rejected, Chrome exits 0 having done
-           nothing, and this printed "Chrome reported no error but wrote
-           nothing." New headless IS the default now. Found 2026-09-17. */
-        "--headless",
-    "--disable-gpu", "--virtual-time-budget=10000",
-    "--no-pdf-header-footer",     // no browser URL/date furniture on the sheet
-    "--print-to-pdf=" + out,
-    url,
-  ], (err) => {
+  /* 🚨 --print-to-pdf PRINTED CHROME’S ERROR PAGE. Found 2026-09-17: Paul could
+     not open one of these in three different viewers. The files were VALID
+     PDFs - right header, xref, trailer - which is why every check passed. The
+     tell was /Count 1 on a three-page sheet, and a /Title of "127.0.0.1:PORT"
+     instead of the worksheet name. Chrome had rendered its own "site can’t be
+     reached" page and printed that.
+     The one-shot flag gives Chrome no way to report a failed load: it exits 0,
+     the file exists, and nothing downstream can tell. So drive it over CDP,
+     wait for the page, CHECK IT LOADED, then print from the open page. */
+  (async () => {
+    const cdp = 9700 + Math.floor(Math.random() * 300);
+    const profile = fs.mkdtempSync(path.join(require("os").tmpdir(), "ns-pdf-"));
+    const proc = require("child_process").spawn(chrome, ["--headless","--disable-gpu",
+      "--no-first-run","--no-default-browser-check",
+      "--remote-debugging-port=" + cdp, "--user-data-dir=" + profile, "about:blank"], { stdio: "ignore" });
+    const nap = (ms) => new Promise((r) => setTimeout(r, ms));
+    let ws = ""; const until = Date.now() + 20000;
+    while (Date.now() < until && !ws) {
+      try { const r = await fetch("http://127.0.0.1:" + cdp + "/json");
+        if (r.ok) { const l = await r.json();
+          const pg = (l||[]).find(t => t.type === "page" && t.webSocketDebuggerUrl);
+          ws = pg ? pg.webSocketDebuggerUrl : ""; } } catch (e) {}
+      if (!ws) await nap(200);
+    }
+    if (!ws) { proc.kill(); server.close(); console.error("Chrome did not open its debugging port"); process.exit(1); }
+    const sock = new WebSocket(ws); let id = 0; const pend = new Map();
+    await new Promise((ok,no) => { sock.onopen = ok; sock.onerror = () => no(new Error("socket")); });
+    sock.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pend.has(d.id)) { pend.get(d.id)(d.result||{}); pend.delete(d.id); } };
+    const send = (me,pa) => new Promise(ok => { const n = ++id; pend.set(n, ok); sock.send(JSON.stringify({id:n,method:me,params:pa||{}})); });
+    await send("Page.enable");
+    await send("Page.navigate", { url });
+    await nap(3500);
+    /* ⭐ PROVE IT LOADED. The error page carries the host as its title. */
+    const t = await send("Runtime.evaluate", { expression: "document.title", returnByValue: true });
+    const title = (t && t.result && t.result.value) || "";
+    if (!title || /^[0-9]+.[0-9]+.[0-9]+.[0-9]+/.test(title)) {
+      sock.close(); proc.kill(); server.close();
+      console.error("the page did not load; Chrome title was: " + title); process.exit(1);
+    }
+    const r = await send("Page.printToPDF", { printBackground: true, preferCSSPageSize: true });
+    sock.close(); proc.kill();
+    if (!r || !r.data) { server.close(); console.error("Chrome returned no PDF"); process.exit(1); }
+    fs.writeFileSync(out, Buffer.from(r.data, "base64"));
+    ((err) => {
     server.close();
     if (err && !fs.existsSync(out)) { console.error(err.message); process.exit(1); }
     if (!fs.existsSync(out)) { console.error("Chrome reported no error but wrote nothing."); process.exit(1); }
@@ -128,5 +161,6 @@ server.listen(0, "127.0.0.1", () => {
       process.exit(1);
     }
     console.log(`${path.basename(out)}  ${(fs.statSync(out).size / 1024).toFixed(0)} KB`);
-  });
+  })();
+  })().catch(e => { try { server.close(); } catch(x){} console.error(e.message); process.exit(1); });
 });

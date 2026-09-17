@@ -77,8 +77,13 @@ body{margin:0;background:var(--bg);color:var(--fg)}
   color:var(--dim);margin:0}
 .sheet h1{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1.12;margin:9px 0 6px}
 .dek{margin:0;color:var(--dim);font-size:.95rem}
+/* 🚨 ONE RULE, NOT TWO. Paul, 2026-09-17: "you have name and date between two
+   lines and it looks weird." He is right - .head already draws a 2px rule under
+   the title, and this drew a second hairline under itself, so Name and Date sat
+   in a thin sandwich that belonged to neither the heading nor the first part.
+   The heading rule is the divider; Name and Date hang beneath it. */
 .namebar{display:flex;gap:26px;flex-wrap:wrap;font-size:13px;
-  border-bottom:1px solid var(--line);padding:13px 0;margin-bottom:26px}
+  padding:13px 0 0;margin-bottom:30px}
 .namebar span{display:flex;gap:8px;align-items:baseline}
 .namebar u{text-decoration:none;border-bottom:1px solid var(--line-ink);
   min-width:150px;display:inline-block}
@@ -168,7 +173,6 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
   .art{border:1px solid #999;page-break-inside:avoid}
   .art img{max-height:150mm;width:auto;margin:0 auto}
   .lines i,.vocab u,.namebar u{border-bottom:1px solid #000}
-  .namebar{border-bottom:1px solid #000}
   .key{page-break-before:always;border-top:0}
   ol.qs>li,.vocab li{page-break-inside:avoid}
 }
