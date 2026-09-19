@@ -3167,7 +3167,51 @@ function score(){
   bar.innerHTML = "<b>" + c.got + " / " + c.all + "</b> \u00b7 " + pct + "%" +
     " <span class=\"tag\">" + c.bits.join(" \u00b7 ") + "</span>" +
     (c.all && c.got === c.all ? " \u2014 all of them. Write the score in your notes." : "");
+  var dn = document.getElementById("lessondone");
+  if (dn) {
+    if (c.all && c.got === c.all) {
+      dn.hidden = false;
+      dn.innerHTML = "<b>Lesson complete</b>" + c.got + " of " + c.all + " right (" + pct + "%). " +
+        "Print the answer sheet, or retake the lesson to go again.";
+    } else { dn.hidden = true; dn.innerHTML = ""; }
+  }
 }
+
+/* Print Answer Sheet: one page of what was asked and what the answers are. The
+   sheet is built at click time and appended to <body> itself, because the print
+   rule hides every other body child and display on a descendant of a hidden
+   parent does nothing. */
+function plainWord(w){ return String(w).replace(/[.,?!;:]+$/, ""); }
+function buildSheet(){
+  var ps = document.getElementById("psheet"), c = countDone(), h = "", i, n = 0;
+  var pct = c.all ? Math.round((c.got / c.all) * 100) : 0;
+  h += "<h1>" + document.title.replace(/ \| .*/, "") + " \u2014 Answer Sheet</h1>";
+  h += "<div class=\"pl\"><span>Name</span><span>Date</span></div>";
+  h += "<p class=\"k\">Score: " + c.got + " / " + c.all + " (" + pct + "%)</p>";
+  function list(title, items, fn){
+    if (!items.length) return;
+    h += "<h2 style=\"font-size:15px;margin:12px 0 4px\">" + title + "</h2><ol>";
+    for (i = 0; i < items.length; i++) h += "<li>" + fn(items[i]) + "</li>";
+    h += "</ol>";
+  }
+  list("Part A", CHOOSE, function(q){ return q.sentence + " \u2014 <span class=\"k\">" + q.word + "</span>"; });
+  list(CHOOSE.length ? "Part B" : "Part A", PRACTICE, function(q){
+    var words = String(q.sentence).split(" "), a = [].concat(q.answer).map(function(k){ return plainWord(words[k]); });
+    return q.sentence + " \u2014 <span class=\"k\">" + a.join(" and ") + "</span>";
+  });
+  ps.innerHTML = h;
+}
+document.getElementById("printKey").onclick = function(){
+  buildSheet();
+  document.body.classList.add("printing");
+  window.print();
+  setTimeout(function(){ document.body.classList.remove("printing"); }, 500);
+};
+document.getElementById("retake").onclick = function(){
+  if (!window.confirm("Start this lesson over? Your answers will be cleared.")) return;
+  state = {}; save(); render(); score(); paintTeacherScore();
+  window.scrollTo(0, 0);
+};
 
 /* The teacher's line and reset, in Teacher Notes. Mirrors the history template so
    both read the same on the page and in a screenshot for HomeschoolGrades.

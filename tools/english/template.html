@@ -236,6 +236,44 @@ h1{margin:0 0 6px}
   .player,.themerow,.actions,.ns-back,.ground{display:none!important}
   .prob{break-inside:avoid;page-break-inside:avoid}
 }
+/* 🚨 THE COLUMN IS CENTRED, NOT PARKED LEFT. Every text block carried its own
+   ch-based max-width inside a 900px box, so the prose sat in the left two thirds
+   of the page. Paul, 2026-09-19: "the text all looks indented to the left side
+   and not centered." One narrower box, and the blocks fill it. */
+.wrapx{max-width:740px}
+.dek,.section-note,.ground p,.ground ul,.rulebox .long,.rulebox .test,.part p,
+.ex .why,.ws-note,.nudge,.sheetnote,.sc .why{max-width:none}
+/* THE END OF THE LESSON, same pieces the reading lessons have: a complete box,
+   Print Answer Sheet, Retake, the homework button, and the unit neighbours. */
+.lessondone{border:1px solid var(--free);border-radius:var(--r);padding:16px;margin:0 0 18px;
+  background:var(--panel);text-align:center;line-height:1.6}
+.lessondone[hidden]{display:none}
+.lessondone b{display:block;font-size:1.15rem;color:var(--free);margin-bottom:2px}
+.endbtns{justify-content:center;margin:0 0 6px}
+.tab.is-off{opacity:.4;pointer-events:none;cursor:default;border-style:dashed}
+.unitnav{width:100%;box-sizing:border-box;display:flex;gap:12px;align-items:stretch;margin:30px 0 8px;flex-wrap:wrap}
+.unitnav a{flex:1 1 240px;display:flex;flex-direction:column;gap:3px;padding:14px 16px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  text-decoration:none;color:var(--fg)}
+.unitnav a:hover{border-color:var(--a)}
+.unitnav em{font-style:normal;font-size:.68rem;font-weight:800;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim)}
+.unitnav b{font-size:1rem;font-weight:800}
+.unitnav .fwd{text-align:right}
+.unitnav .unitdone{flex:1 1 100%;padding:14px 16px;border:1px dashed var(--line);
+  border-radius:var(--r);color:var(--dim);margin:0;text-align:center}
+#psheet{display:none}
+@media print{
+  .unitnav{display:none}
+  body.printing>*:not(#psheet){display:none!important}
+  body.printing #psheet{display:block!important;color:#000;background:#fff;padding:24px;font:14px/1.6 Georgia,serif}
+  #psheet h1{font-size:20px;margin:0 0 4px}
+  #psheet .pl{display:flex;gap:40px;margin:10px 0 16px}
+  #psheet .pl span{border-bottom:1px solid #000;flex:1;min-height:18px}
+  #psheet ol{margin:6px 0 16px;padding-left:22px}
+  #psheet li{margin:0 0 8px;break-inside:avoid}
+  #psheet .k{font-weight:700}
+}
 __PLAYER_CSS__
 __FIELD_CSS__
 </style>
@@ -328,8 +366,19 @@ __NAV__
        above the markup: the generator fills slots with a plain .replace, which
        takes the FIRST match, so a token mentioned up here gets filled instead
        of the markup below. That is the trap split/template.html records. -->
+  <!-- 🚨 THE END OF THE LESSON. Paul, 2026-09-19, on Finding the Subject: no
+       lesson complete box, no forward and back buttons, no Print Answer Sheet,
+       no retake, and no homework button on a lesson that has none yet. The
+       reading lessons have all of these; the English engine had none. -->
+  <div class="lessondone" id="lessondone" hidden></div>
+  <div class="actions endbtns">
+    <button class="tab act" type="button" id="printKey">Print Answer Sheet</button>
+    <button class="tab act" type="button" id="retake">Retake Lesson</button>
+  </div>
   __SHEET_CTA__
+  __NEXTNAV__
 </div>
+<div id="psheet" aria-hidden="true"></div>
 
 <script>
 (function(){
@@ -665,7 +714,51 @@ function score(){
   bar.innerHTML = "<b>" + c.got + " / " + c.all + "</b> \u00b7 " + pct + "%" +
     " <span class=\"tag\">" + c.bits.join(" \u00b7 ") + "</span>" +
     (c.all && c.got === c.all ? " \u2014 all of them. Write the score in your notes." : "");
+  var dn = document.getElementById("lessondone");
+  if (dn) {
+    if (c.all && c.got === c.all) {
+      dn.hidden = false;
+      dn.innerHTML = "<b>Lesson complete</b>" + c.got + " of " + c.all + " right (" + pct + "%). " +
+        "Print the answer sheet, or retake the lesson to go again.";
+    } else { dn.hidden = true; dn.innerHTML = ""; }
+  }
 }
+
+/* Print Answer Sheet: one page of what was asked and what the answers are. The
+   sheet is built at click time and appended to <body> itself, because the print
+   rule hides every other body child and display on a descendant of a hidden
+   parent does nothing. */
+function plainWord(w){ return String(w).replace(/[.,?!;:]+$/, ""); }
+function buildSheet(){
+  var ps = document.getElementById("psheet"), c = countDone(), h = "", i, n = 0;
+  var pct = c.all ? Math.round((c.got / c.all) * 100) : 0;
+  h += "<h1>" + document.title.replace(/ \| .*/, "") + " \u2014 Answer Sheet</h1>";
+  h += "<div class=\"pl\"><span>Name</span><span>Date</span></div>";
+  h += "<p class=\"k\">Score: " + c.got + " / " + c.all + " (" + pct + "%)</p>";
+  function list(title, items, fn){
+    if (!items.length) return;
+    h += "<h2 style=\"font-size:15px;margin:12px 0 4px\">" + title + "</h2><ol>";
+    for (i = 0; i < items.length; i++) h += "<li>" + fn(items[i]) + "</li>";
+    h += "</ol>";
+  }
+  list("Part A", CHOOSE, function(q){ return q.sentence + " \u2014 <span class=\"k\">" + q.word + "</span>"; });
+  list(CHOOSE.length ? "Part B" : "Part A", PRACTICE, function(q){
+    var words = String(q.sentence).split(" "), a = [].concat(q.answer).map(function(k){ return plainWord(words[k]); });
+    return q.sentence + " \u2014 <span class=\"k\">" + a.join(" and ") + "</span>";
+  });
+  ps.innerHTML = h;
+}
+document.getElementById("printKey").onclick = function(){
+  buildSheet();
+  document.body.classList.add("printing");
+  window.print();
+  setTimeout(function(){ document.body.classList.remove("printing"); }, 500);
+};
+document.getElementById("retake").onclick = function(){
+  if (!window.confirm("Start this lesson over? Your answers will be cleared.")) return;
+  state = {}; save(); render(); score(); paintTeacherScore();
+  window.scrollTo(0, 0);
+};
 
 /* The teacher's line and reset, in Teacher Notes. Mirrors the history template so
    both read the same on the page and in a screenshot for HomeschoolGrades.

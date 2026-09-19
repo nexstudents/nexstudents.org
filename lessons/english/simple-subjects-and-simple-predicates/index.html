@@ -47,7 +47,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
 <link rel="stylesheet" href="/assets/ns.css">
 <link rel="stylesheet" href="/assets/lesson-nav.css?v=b3483b3a">
-<link rel="stylesheet" href="/assets/lesson-shared.cfcdbdca.css">
+<link rel="stylesheet" href="/assets/lesson-shared.4a02ebb7.css">
 </head>
 <body>
 
@@ -330,6 +330,15 @@
        above the markup: the generator fills slots with a plain .replace, which
        takes the FIRST match, so a token mentioned up here gets filled instead
        of the markup below. That is the trap split/template.html records. -->
+  <!-- 🚨 THE END OF THE LESSON. Paul, 2026-09-19, on Finding the Subject: no
+       lesson complete box, no forward and back buttons, no Print Answer Sheet,
+       no retake, and no homework button on a lesson that has none yet. The
+       reading lessons have all of these; the English engine had none. -->
+  <div class="lessondone" id="lessondone" hidden></div>
+  <div class="actions endbtns">
+    <button class="tab act" type="button" id="printKey">Print Answer Sheet</button>
+    <button class="tab act" type="button" id="retake">Retake Lesson</button>
+  </div>
   <div class="sheetcta">
     <p class="sheetnote">This page lets you try again until you get it right. The homework does not, and that is the point: eleven sentences you have not seen, written once in your own hand, with a blank total at the foot for somebody to add up and sign.</p>
     <div class="actions">
@@ -337,7 +346,9 @@
       <a class="tab act" href="/worksheets/english/simple-subjects-and-simple-predicates/simple-subjects-and-simple-predicates.pdf" download>Download The PDF</a>
     </div>
   </div>
+  <div class="unitnav" role="navigation" aria-label="Unit navigation"><a class="fwd" href="/lessons/english/forming-compound-subjects-and-predicates/"><em>Lesson 5 &rarr;</em><b>Forming Compound Subjects and Predicates</b></a></div>
 </div>
+<div id="psheet" aria-hidden="true"></div>
 
 <script>
 var LESSON_ID = "english/simple-subjects-and-simple-predicates";
@@ -352,7 +363,7 @@ var CHOOSE    = [{"sentence":"The mechanic under the left wing tightened a bolt.
    about subjects, and a hardcoded string is not something a build can check. */
 var LABELS    = {"tagFind":"Tap the word","tagFindDone":"Found it","tagKind":"Action or being","tagKindDone":"Got it","tagChoose":"Pick the word","tagChooseDone":"Got it","kindAKey":"action","kindBKey":"being","kindA":"Action verb","kindB":"Being verb","wrongKindA":"Not action. Try to film this sentence - if nothing happens that you could point a camera at, the verb is a being verb.","wrongKindB":"Not being. The being verbs are am, is, are, was, were, be, been and being. This underlined word is not one of them, so something is happening.","wrongFind":"Not that one. Put “Yesterday” at the front and read it again — which word has to change shape?","wrongSubject":"Not that one. Ask who or what the whole sentence is about, then say it in a single word.","wrongPredicate":"Not that one. Ask what the subject actually DOES. That word is the simple predicate.","askPrefix":"Which word is the","askSubject":"simple subject","askPredicate":"simple predicate","beingCheck":false};
 </script>
-<script src="/assets/lesson-engine-english-1.d602fea4.js"></script>
+<script src="/assets/lesson-engine-english-1.09cbeedf.js"></script>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
 <script src="/assets/ns-account.js?v=79acc1f3"></script>

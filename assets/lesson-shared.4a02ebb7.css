@@ -224,6 +224,44 @@ h1{margin:0 0 6px}
   .player,.themerow,.actions,.ns-back,.ground{display:none!important}
   .prob{break-inside:avoid;page-break-inside:avoid}
 }
+/* 🚨 THE COLUMN IS CENTRED, NOT PARKED LEFT. Every text block carried its own
+   ch-based max-width inside a 900px box, so the prose sat in the left two thirds
+   of the page. Paul, 2026-09-19: "the text all looks indented to the left side
+   and not centered." One narrower box, and the blocks fill it. */
+.wrapx{max-width:740px}
+.dek,.section-note,.ground p,.ground ul,.rulebox .long,.rulebox .test,.part p,
+.ex .why,.ws-note,.nudge,.sheetnote,.sc .why{max-width:none}
+/* THE END OF THE LESSON, same pieces the reading lessons have: a complete box,
+   Print Answer Sheet, Retake, the homework button, and the unit neighbours. */
+.lessondone{border:1px solid var(--free);border-radius:var(--r);padding:16px;margin:0 0 18px;
+  background:var(--panel);text-align:center;line-height:1.6}
+.lessondone[hidden]{display:none}
+.lessondone b{display:block;font-size:1.15rem;color:var(--free);margin-bottom:2px}
+.endbtns{justify-content:center;margin:0 0 6px}
+.tab.is-off{opacity:.4;pointer-events:none;cursor:default;border-style:dashed}
+.unitnav{width:100%;box-sizing:border-box;display:flex;gap:12px;align-items:stretch;margin:30px 0 8px;flex-wrap:wrap}
+.unitnav a{flex:1 1 240px;display:flex;flex-direction:column;gap:3px;padding:14px 16px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  text-decoration:none;color:var(--fg)}
+.unitnav a:hover{border-color:var(--a)}
+.unitnav em{font-style:normal;font-size:.68rem;font-weight:800;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim)}
+.unitnav b{font-size:1rem;font-weight:800}
+.unitnav .fwd{text-align:right}
+.unitnav .unitdone{flex:1 1 100%;padding:14px 16px;border:1px dashed var(--line);
+  border-radius:var(--r);color:var(--dim);margin:0;text-align:center}
+#psheet{display:none}
+@media print{
+  .unitnav{display:none}
+  body.printing>*:not(#psheet){display:none!important}
+  body.printing #psheet{display:block!important;color:#000;background:#fff;padding:24px;font:14px/1.6 Georgia,serif}
+  #psheet h1{font-size:20px;margin:0 0 4px}
+  #psheet .pl{display:flex;gap:40px;margin:10px 0 16px}
+  #psheet .pl span{border-bottom:1px solid #000;flex:1;min-height:18px}
+  #psheet ol{margin:6px 0 16px;padding-left:22px}
+  #psheet li{margin:0 0 8px;break-inside:avoid}
+  #psheet .k{font-weight:700}
+}
 /* ---------- player ---------- */
 .player{
   /* Docked to the foot of the screen on every width. Paul, 2026-08-29:

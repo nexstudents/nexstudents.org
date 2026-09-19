@@ -436,8 +436,14 @@ function labelsFor(L) {
    ⚠️ SO THE ORDER IN tools/README.md MATTERS: build-worksheets.js runs before
    this generator. A lesson with no `sheet` renders nothing here and no empty
    heading, which is how every lesson without homework stays unchanged. */
+/* 🚨 A LESSON WITH NO HOMEWORK STILL SHOWS THE BUTTON, FADED. Paul, 2026-09-19:
+   "we are suppose to have a print homework page button on all of our lessons but
+   we can fade them if they dont currently have a homework worksheet." It is a
+   span, not a link, so there is nothing to click into a page that does not exist. */
 function sheetCta(L) {
-  if (!L.sheet) return "";
+  if (!L.sheet) return '<div class="sheetcta">\n    <div class="actions">\n' +
+    '      <span class="tab act is-off" aria-disabled="true">Homework Page: Not Available Yet</span>\n' +
+    '    </div>\n  </div>';
   const subject = (L.shelf && L.shelf.subject ? L.shelf.subject : "English").toLowerCase();
   /* 🚨 /print/ , NOT THE PRODUCT PAGE. Paul, 2026-09-17: "it will go immediately
      to the page to print or download it it won't go to the shopping cart."
@@ -470,6 +476,21 @@ function sheetCta(L) {
     '      <a class="tab act" href="' + href + '">Open Homework Page</a>\n' +
     dl +
     '    </div>\n  </div>';
+}
+
+/* Prev and next are the neighbours by seq inside the same unit, the same rule
+   build-lessons.js uses for the reading lessons. */
+function nextNav(L) {
+  if (!L.seq) return "";
+  const sib = (n) => ENGLISH.find((o) => o.seq && o.seq.unit === L.seq.unit && o.seq.n === n);
+  const prev = sib(L.seq.n - 1), next = sib(L.seq.n + 1);
+  const card = (l, dir, label) => '<a class="' + dir + '" href="/lessons/' + l.id + '/"><em>' + label +
+    "</em><b>" + esc(l.title) + "</b></a>";
+  const parts = [];
+  if (prev) parts.push(card(prev, "back", "&larr; Lesson " + prev.seq.n));
+  if (next) parts.push(card(next, "fwd", "Lesson " + next.seq.n + " &rarr;"));
+  else parts.push('<p class="unitdone">The next lesson in ' + esc(L.seq.unitTitle || "this unit") + " is not built yet.</p>");
+  return '<div class="unitnav" role="navigation" aria-label="Unit navigation">' + parts.join("") + "</div>";
 }
 
 const written = [];
@@ -521,6 +542,7 @@ for (const L of ENGLISH) {
     .replace("__FIELD_CSS__", player.fieldCss)
     .replace("__PLAYER_MARKUP__", player.playerMarkup)
     .replace("__PLAYER_JS__", player.playerScript)
+    .replace("__NEXTNAV__", () => nextNav(L))
     .replace("__EXAMPLES_HTML__", examplesHtml(L.examples))
     /* 🚨 THIS LINE USED TO BE TYPED INTO THE TEMPLATE. It said "Five done for
        you. The underlined word is the verb" on a lesson with four examples, no
@@ -562,7 +584,7 @@ for (const L of ENGLISH) {
                       "__RULE_LONG__", "__RULE_TEST__", "__PARTS_HTML__", "__EXAMPLES_HTML__",
                       "__PRACTICE_NOTE__", "__PART_SECTIONS__", "__SHOWCASE_HTML__", "__EXAMPLES_NOTE__",
                       "__PARTS__", "__PRACTICE__", "__SORT__", "__CHOOSE__", "__LABELS__", "__THEMES__",
-                      "__SHEET_CTA__",
+                      "__SHEET_CTA__", "__NEXTNAV__",
                       "__PLAYER_CSS__", "__FIELD_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__",
                       "__CANONICAL__", "__MODEBOOT__", "__NAVCSS__", "__FAVICON__", "__NAV__", "__NAVSCRIPT__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);
