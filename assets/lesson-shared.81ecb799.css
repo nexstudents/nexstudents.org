@@ -1025,20 +1025,24 @@ h2{
   font-variant-numeric:tabular-nums;line-height:1.1;
 }
 .score .pct{font-size:15px;color:var(--ink-soft);margin-top:4px}
+/* 🚨 THE TWO PART BOXES CARRY THE ANSWER A PARENT ACTUALLY WANTS - which HALF
+   went wrong - so they were too small for the job. Paul, 2026-09-19. Bigger box,
+   bigger number, and the 10px radius every other panel now uses. */
 .score .split{
-  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:18px;
 }
 .score .split span{
-  display:flex;flex-direction:column;gap:2px;align-items:center;
-  border:1px solid var(--rule);border-radius:4px;padding:9px 16px;min-width:120px;
+  display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;
+  border:1px solid var(--rule);border-radius:10px;padding:18px 26px;
+  min-width:165px;background:var(--surface-2);
 }
 /* 🚨 NEUTRAL, NOT THE THEME ACCENT. Same leak as the stripe that used to sit on
    top of this panel: PART ONE / PART TWO are LABELS, and a label has no verdict
    to deliver. Bold, uppercase and letterspaced is already enough to read as a
    heading without borrowing the accent. Paul, 2026-09-19. */
-.score .split b{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
-.score .split span{font-size:12px;color:var(--ink-soft)}
-.score .split i{font-style:normal;font-size:17px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.score .split b{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.score .split span{font-size:13px;color:var(--ink-soft)}
+.score .split i{font-style:normal;font-size:26px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .score .line{font-size:14px;color:var(--ink-soft);margin-top:14px;line-height:1.6}
 
 /* completion state */
