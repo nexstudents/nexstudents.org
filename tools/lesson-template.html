@@ -749,7 +749,12 @@ h2{
 .dbox.is-full{
   --dbfull-dock:104px;
   position:fixed;left:0;right:0;top:0;bottom:var(--dbfull-dock);
-  z-index:50;max-width:none;width:auto;margin:0;transform:none;
+  /* 🚨 ABOVE THE SITE NAV (z-index 60), BELOW the picture lightbox (200).
+     In true fullscreen the whole page still renders, so the sticky site nav
+     sat across the top of the panel and it did not read as fullscreen at all.
+     ⚠️ Raising this does NOT hide the reading dock: the dock stays visible
+     because the panel STOPS ABOVE IT by geometry, never by stacking order. */
+  z-index:80;max-width:none;width:auto;margin:0;transform:none;
   border:0;border-radius:0;background:var(--ground, var(--bg));
   display:flex;flex-direction:column;justify-content:center;
   padding:20px clamp(16px,5vw,64px);overflow-y:auto;
@@ -3738,7 +3743,16 @@ function setDboxFull(on, fromBrowser){
   else { dbox.style.removeProperty("--dbfull-dock"); }
   /* fromBrowser = the browser told US it changed, so do not tell it back. */
   if (fromBrowser) return;
-  if (on) nativeFullOn(dbox); else nativeFullOff();
+  /* 🚨 FULLSCREEN THE PAGE, NOT THE PANEL. Paul, 2026-09-19: "this is not a true
+     fullscreen because you have the browser bar at the top."
+     Requesting it on the panel DID hide the browser bar, but native fullscreen
+     renders ONLY the fullscreened element and its descendants - so the reading
+     dock, which is a sibling, would have vanished with it. That is the exact
+     thing he asked to keep: "i need the play and the pause and the scrub to show
+     while in fullscreen." Fullscreening documentElement hides the browser chrome
+     AND keeps every element on the page, so the overlay covers the screen and
+     the dock still sits under it. */
+  if (on) nativeFullOn(document.documentElement); else nativeFullOff();
 }
 if (dboxFull) dboxFull.addEventListener("click", function(){
   setDboxFull(!dbox.classList.contains("is-full"));

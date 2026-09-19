@@ -688,7 +688,12 @@ h2{
 .dbox.is-full{
   --dbfull-dock:104px;
   position:fixed;left:0;right:0;top:0;bottom:var(--dbfull-dock);
-  z-index:50;max-width:none;width:auto;margin:0;transform:none;
+  /* 🚨 ABOVE THE SITE NAV (z-index 60), BELOW the picture lightbox (200).
+     In true fullscreen the whole page still renders, so the sticky site nav
+     sat across the top of the panel and it did not read as fullscreen at all.
+     ⚠️ Raising this does NOT hide the reading dock: the dock stays visible
+     because the panel STOPS ABOVE IT by geometry, never by stacking order. */
+  z-index:80;max-width:none;width:auto;margin:0;transform:none;
   border:0;border-radius:0;background:var(--ground, var(--bg));
   display:flex;flex-direction:column;justify-content:center;
   padding:20px clamp(16px,5vw,64px);overflow-y:auto;
