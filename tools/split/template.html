@@ -253,6 +253,9 @@ __PANEL_CSS__
   margin-right:6px;vertical-align:baseline;background:currentColor;
 }
 __FIELD_CSS__
+/* The closing strip - homework button and prev/next arrows - is ONE
+   definition shared by all five lesson templates → tools/lesson-footer.js */
+__FOOTCSS__
 </style>
 </head>
 <body>
@@ -363,7 +366,7 @@ __SHOWCASE__
        ⚠️ Filled by build-split.js, which FAILS the build on a missing sheet. Do
        NOT name the slot token in prose above the markup: the generator fills
        slots with a plain .replace, which takes the FIRST match. -->
-  __HOMEWORK_CTA__
+  __LESSONFOOT__
 </div>
 
 __PLAYER_MARKUP__

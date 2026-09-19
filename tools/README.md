@@ -30,6 +30,10 @@ node tools/build-sitemap.js .
 node tools/split-lesson-engine.js       # THEN THESE TWO, IN THIS ORDER
 node tools/extract-lesson-assets.js
 
+node tools/check-lesson-parts.js . # every lesson ENDS the same way: homework button,
+                                 # prev/next arrows, results, print, retake. Reads the BUILT
+                                 # pages, because the data was right every time the bottom of a
+                                 # lesson was wrong. See tools/lesson-footer.js
 node tools/check-nav-css.js .    # the shared nav is styled in BOTH stylesheets
 node tools/check-contrast.js .   # every text colour, in BOTH themes
 node tools/check-escape.js .     # account-panel text escaped for the attribute it lands in

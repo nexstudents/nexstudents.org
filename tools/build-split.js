@@ -31,6 +31,8 @@ const { backFor } = require('./lesson-back.js');
 const player = require('./voice-player.js');
 
 const ROOT = process.argv[2] || '.';
+/* 🚨 ONE ENDING, EVERY LESSON TYPE → tools/lesson-footer.js */
+const lessonFooter = require('./lesson-footer.js');
 const TPL = path.join(__dirname, 'split', 'template.html');
 
 function fail(msg) { console.error('FAIL: build-split.js — ' + msg); process.exit(1); }
@@ -320,7 +322,8 @@ for (const raw of SPLIT) {
     /* 🚨 THE WORKSHEET LINK IS CHECKED, NOT ASSUMED. A lesson that tells the
        student to print a sheet and then links nowhere is worse than one that
        says nothing. Same rule as the back links: the target must exist. */
-    .replace('__HOMEWORK_CTA__', () => homeworkCta(L))
+    .replace('__LESSONFOOT__', () => lessonFooter.lessonFoot(L, { root: ROOT }))
+    .replace('__FOOTCSS__', () => lessonFooter.footerCss())
     .replace('__SHEETHREF__', sheetHref(L))
     .replace('__SHEETPDF__', sheetHref(L).slice(0, -"print/".length) + L.slug + '.pdf')
     /* 🚨 A FULL SENTENCE, NOT A COUNT WITH A FULL STOP AFTER IT. Paul,
@@ -359,7 +362,7 @@ for (const raw of SPLIT) {
     .replace('__NAVSCRIPT__', navScript);
 
   for (const slot of ['__TITLE__', '__DEK__', '__EYEBROW__', '__ID__', '__GROUND__', '__STORY__',
-    '__SHOWCASE__', '__EXAMPLE__', '__SHEETHREF__', '__SHEETPDF__', '__HOMEWORK_CTA__', '__NOTE_A__', '__NOTE_B__', '__PARTS__', '__PRACTICE__',
+    '__SHOWCASE__', '__EXAMPLE__', '__SHEETHREF__', '__SHEETPDF__', '__LESSONFOOT__', '__FOOTCSS__', '__NOTE_A__', '__NOTE_B__', '__PARTS__', '__PRACTICE__',
     '__SORT__', '__VISUALS__', '__THEMES__', '__PLAYER_CSS__', '__PANEL_CSS__', '__PANEL_MARKUP__', '__FIELD_CSS__', '__PLAYER_MARKUP__',
     '__PLAYER_JS__', '__CANONICAL__', '__MODEBOOT__', '__NAVCSS__', '__FAVICON__', '__NAV__', '__NAVSCRIPT__',
     '__BACKHREF__', '__BACKLABEL__']) {

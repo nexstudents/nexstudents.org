@@ -1,0 +1,123 @@
+
+  /* the reset the artifact host normally provides */
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%}
+  /* back link to the subject hub, in the lesson's own palette */
+  /* 🚨 CENTRED WITH THE MASTHEAD BELOW IT. Leaving the back link hard left while
+     the title centres is one of the five centring traps already written up in
+     CLAUDE.md - "a crumb left unstyled while the title centred, so the header
+     read as off-centre." It was fixed on the site pages and would have been
+     reintroduced here the moment .mast started centring. */
+  .ns-back{
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    max-width:660px;margin:0 auto;padding:18px 22px 0;
+    font-size:13px;font-weight:600;letter-spacing:.04em;text-align:center;
+  }
+  .ns-back a{color:var(--verdigris);text-decoration:none;display:inline-flex;gap:7px;align-items:center}
+  .ns-back a:hover{text-decoration:underline}
+  .ns-back a:focus-visible{outline:2px solid var(--verdigris);outline-offset:3px;border-radius:2px}
+
+  /* ══ THE UNIT STRIP — how you leave a lesson forwards ══
+     Paul, 2026-08-31: "i would like to have a way inside to switch to the next
+     one." Before this the only exit from a finished lesson was the back button,
+     so the course had no forward direction at all from inside a lesson.
+     Rendered by build-lessons.js from `seq`; a lesson without `seq` gets an
+     empty string here and the strip simply does not appear. */
+  /* ⚠️ THIS TEMPLATE HAS ITS OWN PALETTE. There is no --line, --panel or
+     --muted here; those are ns.css tokens and they resolve to NOTHING inside a
+     lesson page. The five themes swap --rule, --surface-2, --ink-soft and
+     --verdigris, so a strip built on those re-colours with the theme picker
+     for free. Never hardcode a colour, and never borrow an ns.css token name. */
+  /* The closing strip - homework button and the prev/next arrows - is ONE
+     definition in tools/lesson-footer.js, shared by all five lesson
+     templates. It was four copies and they drifted; see that file. */
+
+/* ── the end of the lesson: shared by all five templates (lesson-footer.js) ── */
+.lfoot{
+  --lf-l: var(--lf-line,   var(--rule,    var(--line,    rgba(255,255,255,.16))));
+  --lf-p: var(--lf-panel,  var(--surface, var(--panel,   rgba(255,255,255,.04))));
+  --lf-i: var(--lf-ink,    var(--ink,     var(--fg,      #f2f4f7)));
+  --lf-d: var(--lf-dim,    var(--ink-soft,var(--dim,     rgba(255,255,255,.62))));
+  --lf-a: var(--lf-accent, var(--verdigris, var(--a,     #7fd1c1)));
+  margin:26px 0 0;
+}
+/* The homework row. One button, full width, so it reads as a destination and
+   not as a third control beside Print and Retake. */
+.lfoot-hw{display:block;width:100%;box-sizing:border-box;text-align:center;
+  padding:13px 16px;border:1px solid var(--lf-l);border-radius:10px;
+  background:var(--lf-p);color:var(--lf-i);font-weight:600;font-size:.95rem;
+  text-decoration:none;line-height:1.35}
+a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
+/* 🚨 NO HOMEWORK YET = FADED AND NOT CLICKABLE, and it is a <span>, never an <a>.
+   Paul, 2026-09-19: "even a homework button if one comes available and if not it
+   just says unavailable." A disabled-looking <a> that still navigates is worse
+   than no button, so there is no href to follow in the first place. */
+.lfoot-hw.is-off{opacity:.42;border-style:dashed;cursor:default;font-weight:500}
+.lfoot-hw small{display:block;font-weight:400;font-size:.8rem;color:var(--lf-d);
+  margin-top:2px}
+
+/* ── prev / next ──────────────────────────────────────────────────────────
+   🚨 SMALL ARROWS, NOT CARDS. Paul, 2026-09-19: "i want a smaller jump to the
+   next and previous lesson arrwo button honestly." They used to be two large
+   tiles carrying the full lesson title, which ate the bottom of the page and
+   competed with the results. The title is still there for a reader and a screen
+   reader, just no longer set at heading size. */
+.lfoot-nav{display:flex;align-items:center;gap:10px;margin:16px 0 0;flex-wrap:wrap}
+.lfoot-nav a{display:inline-flex;align-items:center;gap:7px;max-width:46%;
+  padding:8px 13px;border:1px solid var(--lf-l);border-radius:999px;
+  background:var(--lf-p);color:var(--lf-i);text-decoration:none;
+  font-size:.86rem;line-height:1.3}
+.lfoot-nav a:hover{border-color:var(--lf-a)}
+.lfoot-nav a .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--lf-d)}
+.lfoot-nav a .ar{font-size:1rem;line-height:1;color:var(--lf-a);flex:0 0 auto}
+.lfoot-nav .next{margin-left:auto}
+.lfoot-nav .lfoot-end{margin:0;color:var(--lf-d);font-size:.84rem}
+@media (max-width:560px){
+  .lfoot-nav a{max-width:100%;flex:1 1 auto;justify-content:center}
+  .lfoot-nav .next{margin-left:0}
+}
+@media print{ .lfoot{display:none!important} }
+
+/* ── ONE CORNER RADIUS, EVERY LESSON TYPE ─────────────────────────────────
+   Paul, 2026-09-19: "even on the teacher notes panel you have rounded corners
+   but not on the neewer ones they are more angle corners."
+
+   He is right, and it is the same failure as the footer: a shared surface with
+   no shared definition. Measured across the two prose engines that evening:
+
+     Teacher Notes    reading 10px   english 4px    <- the same panel, two shapes
+     results / score  reading  4px   english 4px
+     visual panel     reading 10px   -
+
+   So a student walking from Writing Good Sentences to Simple Subjects saw the
+   identical Teacher Notes panel change shape, and inside one reading lesson the
+   Teacher Notes and the results panel disagreed with each other.
+
+   🚨 PANELS ARE 10px. PILLS STAY 999px. Those are the only two shapes a lesson
+   page uses, and --lf-r is here so a future template can read the number instead
+   of typing it again.
+
+   🚨 SCOPED TO THE LESSON WRAPPER, and that is not decoration. This block is
+   injected near the TOP of lesson-template.html and at the END of the <style> in
+   the other four, so source order cannot be relied on to win. .wrap/.wrapx is
+
+   ⚠️ AND NOTE WHAT THE CSS COMMENTS HERE MUST NEVER DO: name a slot token. The
+   generators fill slots with a plain .replace, which takes the FIRST match, so a
+   token spelled inside this string gets substituted into the page and the
+   unfilled-slot guard then fails on the copy it just injected. That is exactly
+   how this block failed its first build, and split/template.html already carried
+   the same warning. Spell it "the CSS slot", never the token itself.
+
+   .wrap/.wrapx puts these at
+   two-class specificity, which beats each template's own single-class rule
+   wherever the block happens to sit. Do not "simplify" these to bare classes. */
+.wrap, .wrapx{ --lf-r:10px }
+.wrap .ground,   .wrapx .ground,
+.wrap .score,    .wrapx .score,
+.wrap .status,   .wrapx .status,
+.wrap .scorebar, .wrapx .scorebar,
+.wrap .dbox,     .wrapx .dbox,
+.wrap .lfoot-hw, .wrapx .lfoot-hw{ border-radius:var(--lf-r,10px) }
+

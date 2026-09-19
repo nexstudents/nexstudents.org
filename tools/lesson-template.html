@@ -42,21 +42,10 @@ __FAVICON__
      lesson page. The five themes swap --rule, --surface-2, --ink-soft and
      --verdigris, so a strip built on those re-colours with the theme picker
      for free. Never hardcode a colour, and never borrow an ns.css token name. */
-  .unitnav{display:flex;gap:12px;align-items:stretch;margin:34px 0 8px;flex-wrap:wrap}
-  .unitnav a{flex:1 1 240px;display:flex;flex-direction:column;gap:3px;
-    padding:14px 16px;border:1px solid var(--rule);border-radius:6px;
-    text-decoration:none;color:inherit;background:var(--surface-2);
-    transition:border-color .2s ease,transform .2s ease}
-  .unitnav a:hover{border-color:var(--verdigris);transform:translateY(-2px)}
-  .unitnav a:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
-  .unitnav em{font-style:normal;font-size:.68rem;font-weight:800;letter-spacing:.11em;
-    text-transform:uppercase;color:var(--ink-soft)}
-  .unitnav b{font-size:1rem;font-weight:800;letter-spacing:-.01em}
-  /* The forward card is the one being pushed, so it carries the accent. */
-  .unitnav .fwd{text-align:right;border-color:var(--verdigris)}
-  .unitnav .unitdone{flex:1 1 100%;padding:14px 16px;border:1px dashed var(--rule);
-    border-radius:6px;color:var(--ink-soft);font-size:.9rem}
-  @media print{ .unitnav{display:none} }
+  /* The closing strip - homework button and the prev/next arrows - is ONE
+     definition in tools/lesson-footer.js, shared by all five lesson
+     templates. It was four copies and they drifted; see that file. */
+__FOOTCSS__
 </style>
 __NAVCSS__
 <style>
@@ -1871,7 +1860,7 @@ body.player-hidden .scrub{margin:0;height:20px}
     <b>When you finish:</b> write the answers out in your own words &mdash; not copied word for word from the choices. Saying it your own way is the part that proves you understood it. Then use <b>Print Answer Sheet</b> for a one-page record of what was answered and scored.
   </div>
 
-__NEXTNAV__
+__LESSONFOOT__
 
 </div>
 

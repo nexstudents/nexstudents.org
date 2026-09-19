@@ -40,6 +40,8 @@ const { partsFor, requireTodo, checkTodoCounts, checkOneSentence } = require("./
    even with the bar to go back so he can repeat. this is the standard for all
    future lessons we will have on the entire site." */
 const player = require("./voice-player.js");
+/* 🚨 ONE ENDING, EVERY LESSON TYPE → tools/lesson-footer.js */
+const lessonFooter = require("./lesson-footer.js");
 
 const ROOT = process.argv[2] || ".";
 /* ONE back-link rule for every lesson generator - see lesson-back.js. These
@@ -436,62 +438,9 @@ function labelsFor(L) {
    ⚠️ SO THE ORDER IN tools/README.md MATTERS: build-worksheets.js runs before
    this generator. A lesson with no `sheet` renders nothing here and no empty
    heading, which is how every lesson without homework stays unchanged. */
-/* 🚨 A LESSON WITH NO HOMEWORK STILL SHOWS THE BUTTON, FADED. Paul, 2026-09-19:
-   "we are suppose to have a print homework page button on all of our lessons but
-   we can fade them if they dont currently have a homework worksheet." It is a
-   span, not a link, so there is nothing to click into a page that does not exist. */
-function sheetCta(L) {
-  if (!L.sheet) return '<div class="sheetcta">\n    <div class="actions">\n' +
-    '      <span class="tab act is-off" aria-disabled="true">Homework Page: Not Available Yet</span>\n' +
-    '    </div>\n  </div>';
-  const subject = (L.shelf && L.shelf.subject ? L.shelf.subject : "English").toLowerCase();
-  /* 🚨 /print/ , NOT THE PRODUCT PAGE. Paul, 2026-09-17: "it will go immediately
-     to the page to print or download it it won't go to the shopping cart."
-     The folder index is the SHOP page - price, What is included, Add to Cart.
-     The /print/ page under it is the sheet itself with Print and Download at the
-     top, which is the page he is describing. Linking the folder sent a student
-     who just finished the lesson to a checkout for something he already owns. */
-  const base = "/worksheets/" + subject + "/" + L.sheet.slug + "/";
-  const href = base + "print/";
-  const disk = path.join(ROOT, href.slice(1), "index.html");
-  if (!fs.existsSync(disk))
-    fail(L.slug + ": the lesson links a homework sheet that is not built - " + href +
-         ". Run build-worksheets.js before this generator.");
-  /* ⚠️ THE PDF BUTTON ONLY EXISTS IF THE PDF DOES. make-pdf.js renders it with
-     headless Chrome, which is a separate step and fails outright on a machine
-     where headless Chrome will not start. A dead Download is worse than no
-     Download: the sheet page itself always offers Print, so nothing is lost by
-     leaving this out until the file is there. check-links would catch it
-     anyway; this is so it never gets that far. */
-  const pdfRel = L.sheet.slug + ".pdf";
-  const hasPdf = fs.existsSync(path.join(ROOT, base.slice(1), pdfRel));
-  const dl = hasPdf
-    /* ⚠️ THE PDF SITS AT THE FOLDER ROOT, NOT UNDER /print/. href points into
-       print/ for the page; the file does not live there. check-links caught it. */
-    ? '      <a class="tab act" href="' + base + pdfRel + '" download>Download The PDF</a>\n'
-    : "";
-  return '<div class="sheetcta">\n' +
-    '    <p class="sheetnote">' + esc(L.sheet.note) + '</p>\n' +
-    '    <div class="actions">\n' +
-    '      <a class="tab act" href="' + href + '">Open Homework Page</a>\n' +
-    dl +
-    '    </div>\n  </div>';
-}
 
-/* Prev and next are the neighbours by seq inside the same unit, the same rule
-   build-lessons.js uses for the reading lessons. */
-function nextNav(L) {
-  if (!L.seq) return "";
-  const sib = (n) => ENGLISH.find((o) => o.seq && o.seq.unit === L.seq.unit && o.seq.n === n);
-  const prev = sib(L.seq.n - 1), next = sib(L.seq.n + 1);
-  const card = (l, dir, label) => '<a class="' + dir + '" href="/lessons/' + l.id + '/"><em>' + label +
-    "</em><b>" + esc(l.title) + "</b></a>";
-  const parts = [];
-  if (prev) parts.push(card(prev, "back", "&larr; Lesson " + prev.seq.n));
-  if (next) parts.push(card(next, "fwd", "Lesson " + next.seq.n + " &rarr;"));
-  else parts.push('<p class="unitdone">The next lesson in ' + esc(L.seq.unitTitle || "this unit") + " is not built yet.</p>");
-  return '<div class="unitnav" role="navigation" aria-label="Unit navigation">' + parts.join("") + "</div>";
-}
+
+
 
 const written = [];
 for (const L of ENGLISH) {
@@ -542,7 +491,6 @@ for (const L of ENGLISH) {
     .replace("__FIELD_CSS__", player.fieldCss)
     .replace("__PLAYER_MARKUP__", player.playerMarkup)
     .replace("__PLAYER_JS__", player.playerScript)
-    .replace("__NEXTNAV__", () => nextNav(L))
     .replace("__EXAMPLES_HTML__", examplesHtml(L.examples))
     /* 🚨 THIS LINE USED TO BE TYPED INTO THE TEMPLATE. It said "Five done for
        you. The underlined word is the verb" on a lesson with four examples, no
@@ -561,7 +509,14 @@ for (const L of ENGLISH) {
     .replace("__SHOWCASE_HTML__", () => showcaseHtml(L))
     .replace("__CHOOSE__", () => JSON.stringify(chooseForPage))
     .replace("__LABELS__", () => JSON.stringify(labelsFor(L)))
-    .replace("__SHEET_CTA__", () => sheetCta(L))
+    .replace("__LESSONFOOT__", () => {
+      return lessonFooter.lessonFoot(L, {
+        root: ROOT,
+        subject: (L.shelf && L.shelf.subject) || "English",
+        unitTitle: L.seq && L.seq.unitTitle,
+      });
+    })
+    .replace("__FOOTCSS__", () => lessonFooter.footerCss())
     .replace("__PARTS__", JSON.stringify(partsFor(L)))
     .replace("__PRACTICE__", JSON.stringify(practiceForPage))
     .replace("__SORT__", JSON.stringify(sortForPage))
@@ -584,7 +539,7 @@ for (const L of ENGLISH) {
                       "__RULE_LONG__", "__RULE_TEST__", "__PARTS_HTML__", "__EXAMPLES_HTML__",
                       "__PRACTICE_NOTE__", "__PART_SECTIONS__", "__SHOWCASE_HTML__", "__EXAMPLES_NOTE__",
                       "__PARTS__", "__PRACTICE__", "__SORT__", "__CHOOSE__", "__LABELS__", "__THEMES__",
-                      "__SHEET_CTA__", "__NEXTNAV__",
+                      "__LESSONFOOT__", "__FOOTCSS__",
                       "__PLAYER_CSS__", "__FIELD_CSS__", "__PLAYER_MARKUP__", "__PLAYER_JS__",
                       "__CANONICAL__", "__MODEBOOT__", "__NAVCSS__", "__FAVICON__", "__NAV__", "__NAVSCRIPT__"]) {
     if (h.includes(slot)) fail("unfilled slot " + slot + " in " + L.slug);

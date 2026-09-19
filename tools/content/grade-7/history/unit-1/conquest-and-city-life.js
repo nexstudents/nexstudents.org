@@ -32,6 +32,9 @@ module.exports = {
   slug: "conquest-and-city-life",
   title: "Conquest, Provinces, and City Life",
   unit: "World History &middot; U1-L4",
+  /* The order is declared in history-units.js (labels 1-1..1-5); this mirrors it
+     so the prev/next arrows can find their neighbours. */
+  seq: { unit: 1, unitTitle: "Rome, and the Church That Outlived It", n: 4 },
 
   plan: {
     objective: "Explain how Rome moved from conquering territory to governing it, through provinces, governors, local authorities, Roman law and citizenship.",

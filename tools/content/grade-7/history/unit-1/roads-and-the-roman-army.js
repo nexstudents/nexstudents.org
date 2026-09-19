@@ -33,6 +33,9 @@ module.exports = {
   slug: "roads-and-the-roman-army",
   title: "Roads, Bridges, and the Roman Army",
   unit: "World History &middot; U1-L3",
+  /* The order is declared in history-units.js (labels 1-1..1-5); this mirrors it
+     so the prev/next arrows can find their neighbours. */
+  seq: { unit: 1, unitTitle: "Rome, and the Church That Outlived It", n: 3 },
 
   plan: {
     objective: "Explain how Rome learned to extend its power across distance through roads, bridges, military organization and alliances.",

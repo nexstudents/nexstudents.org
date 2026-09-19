@@ -240,7 +240,10 @@ h1{margin:0 0 6px}
    ch-based max-width inside a 900px box, so the prose sat in the left two thirds
    of the page. Paul, 2026-09-19: "the text all looks indented to the left side
    and not centered." One narrower box, and the blocks fill it. */
-.wrapx{max-width:740px}
+/* 🚨 THE SAME MEASURE AS THE READING TEMPLATE (.wrap, 660px). Two prose
+   templates set at two different widths is the drift a student feels as
+   "this page is not the same page". Change one, change both. */
+.wrapx{max-width:660px}
 .dek,.section-note,.ground p,.ground ul,.rulebox .long,.rulebox .test,.part p,
 .ex .why,.ws-note,.nudge,.sheetnote,.sc .why{max-width:none}
 /* THE END OF THE LESSON, same pieces the reading lessons have: a complete box,
@@ -250,21 +253,9 @@ h1{margin:0 0 6px}
 .lessondone[hidden]{display:none}
 .lessondone b{display:block;font-size:1.15rem;color:var(--free);margin-bottom:2px}
 .endbtns{justify-content:center;margin:0 0 6px}
-.tab.is-off{opacity:.4;pointer-events:none;cursor:default;border-style:dashed}
-.unitnav{width:100%;box-sizing:border-box;display:flex;gap:12px;align-items:stretch;margin:30px 0 8px;flex-wrap:wrap}
-.unitnav a{flex:1 1 240px;display:flex;flex-direction:column;gap:3px;padding:14px 16px;
-  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  text-decoration:none;color:var(--fg)}
-.unitnav a:hover{border-color:var(--a)}
-.unitnav em{font-style:normal;font-size:.68rem;font-weight:800;letter-spacing:.11em;
-  text-transform:uppercase;color:var(--dim)}
-.unitnav b{font-size:1rem;font-weight:800}
-.unitnav .fwd{text-align:right}
-.unitnav .unitdone{flex:1 1 100%;padding:14px 16px;border:1px dashed var(--line);
-  border-radius:var(--r);color:var(--dim);margin:0;text-align:center}
+__FOOTCSS__
 #psheet{display:none}
 @media print{
-  .unitnav{display:none}
   body.printing>*:not(#psheet){display:none!important}
   body.printing #psheet{display:block!important;color:#000;background:#fff;padding:24px;font:14px/1.6 Georgia,serif}
   #psheet h1{font-size:20px;margin:0 0 4px}
@@ -375,8 +366,7 @@ __NAV__
     <button class="tab act" type="button" id="printKey">Print Answer Sheet</button>
     <button class="tab act" type="button" id="retake">Retake Lesson</button>
   </div>
-  __SHEET_CTA__
-  __NEXTNAV__
+  __LESSONFOOT__
 </div>
 <div id="psheet" aria-hidden="true"></div>
 

@@ -136,6 +136,9 @@ h1{margin:0 0 6px}
 .legend span b{color:var(--fg)}
 __PLAYER_CSS__
 __FIELD_CSS__
+/* The closing strip - homework button and prev/next arrows - is ONE
+   definition shared by all five lesson templates → tools/lesson-footer.js */
+__FOOTCSS__
 </style>
 </head>
 <body>
@@ -189,6 +192,8 @@ __NAV__
   <div id="problems"></div>
 
   <div class="scorebar" id="scorebar"></div>
+
+  __LESSONFOOT__
 </div>
 
 <script>

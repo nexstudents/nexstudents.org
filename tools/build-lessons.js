@@ -28,6 +28,9 @@ const { navMarkup, navScript, modeBoot, faviconTags, lessonHead, navCssTag } = r
    lesson's OWN closing instructions. bake-voice.js calls the same function, so
    the audio cannot read something the page does not show. */
 const { partsFor, requireTodo, checkTodoCounts, checkOneSentence } = require("./lesson-instructions.js");
+/* 🚨 ONE ENDING, EVERY LESSON TYPE. Homework button + prev/next arrows.
+   Do not re-implement either one here → tools/lesson-footer.js */
+const lessonFooter = require("./lesson-footer.js");
 
 const ROOT = process.argv[2];
 const TPL = process.argv[3];
@@ -982,24 +985,16 @@ for (const L of LESSONS) {
      ⚠️ A lesson with no `seq` gets an EMPTY STRING, not a strip with dead
      arrows - history and maths keep exactly the page they had. The slot must
      still be replaced either way or `__NEXTNAV__` ships visible on the page. */
-  const sib = (n) => LESSONS.find((o) => o.seq && L.seq &&
-    o.id.split("/")[0] === subject && o.seq.unit === L.seq.unit && o.seq.n === n);
-  let nav = "";
-  if (L.seq) {
-    const prev = sib(L.seq.n - 1), next = sib(L.seq.n + 1);
-    const card = (l, dir, label) =>
-      '<a class="' + dir + '" href="/lessons/' + l.id + '/">' +
-      "<em>" + label + "</em><b>" + esc(l.title) + "</b></a>";
-    const parts = [];
-    if (prev) parts.push(card(prev, "back", "&larr; Lesson " + prev.seq.n));
-    if (next) parts.push(card(next, "fwd", "Lesson " + next.seq.n + " &rarr;"));
-    /* The last lesson in a unit says so, rather than ending on nothing. */
-    if (!next) parts.push('<p class="unitdone">That is the last lesson in ' +
-      esc(L.seq.unitTitle || ("Unit " + L.seq.unit)) + ".</p>");
-    nav = '<nav class="unitnav" aria-label="Unit navigation">' + parts.join("") + "</nav>";
+  h = h.replace("__LESSONFOOT__", () => lessonFooter.lessonFoot(L, {
+    root: ROOT,
+    subject: subject,
+    unitTitle: L.seq && (L.seq.unitTitle || ("Unit " + L.seq.unit)),
+  }));
+  h = h.replace("__FOOTCSS__", () => lessonFooter.footerCss());
+  if (h.includes("__LESSONFOOT__") || h.includes("__FOOTCSS__")) {
+    console.error("FAIL: " + L.slug + ": lesson footer slot not filled");
+    process.exit(1);
   }
-  h = h.replace("__NEXTNAV__", nav);
-  if (h.includes("__NEXTNAV__")) { console.error("FAIL: " + L.slug + ": __NEXTNAV__ slot not filled"); process.exit(1); }
 
   const dir = path.join(ROOT, "lessons", subject, L.slug);
   fs.mkdirSync(dir, { recursive: true });

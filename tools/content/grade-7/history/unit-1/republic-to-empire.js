@@ -8,6 +8,9 @@ module.exports = {
   slug: "republic-to-empire",
   title: "From Republic to Empire",
   unit: "World History &middot; U1-L1",
+  /* The order is declared in history-units.js (labels 1-1..1-5); this mirrors it
+     so the prev/next arrows can find their neighbours. */
+  seq: { unit: 1, unitTitle: "Rome, and the Church That Outlived It", n: 1 },
   /* `shelf` is what the site needs to put a card on a shelf. It lives here,
      beside the lesson, so a lesson is added in ONE file. It used to be a
      second hand-written entry in build-pages.js, which meant every lesson was

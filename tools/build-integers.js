@@ -70,6 +70,8 @@ const ROOT = process.argv[2] || ".";
    templates used to hardcode /maths/ and /english/, so a single-grade lesson
    sent the student to a subject root instead of the shelf they came from. */
 const { backFor } = require("./lesson-back.js");
+/* 🚨 ONE ENDING, EVERY LESSON TYPE → tools/lesson-footer.js */
+const lessonFooter = require("./lesson-footer.js");
 const TPL = path.join(__dirname, "integers", "template.html");
 const template = fs.readFileSync(TPL, "utf8");
 
@@ -380,6 +382,9 @@ for (const L of INTEGERS) {
     .replace("__FAVICON__", faviconTags)
     .replace("__NAV__", () => navMarkup(null, "navbtn"))
     .replace("__NAVSCRIPT__", navScript);
+
+  h = h.replace("__LESSONFOOT__", () => lessonFooter.lessonFoot(L, { root: ROOT }));
+  h = h.replace("__FOOTCSS__", () => lessonFooter.footerCss());
 
   for (const slot of ["__TITLE__", "__DEK__", "__ID__", "__GROUND__", "__SIGN_TABLE__",
                       "__PRACTICE_NOTE__", "__TODO_TITLE__",
