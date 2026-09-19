@@ -643,7 +643,19 @@ h2{
 }
 .dbox.is-shut .dbox-sent{display:none}
 .dbox.is-wide .dbox-in{min-height:0}
-.dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
+/* 🚨 16:9 INLINE TOO, NOT ONLY IN FULLSCREEN. Paul, 2026-09-19: "iwant the
+   aspect even not in fullscreen to still be 16x9". The frame is then the same
+   shape in both places, and it is already the shape a lesson video needs - so
+   dropping a video in later does not change the size of the box the student has
+   been reading next to.
+   ⚠️ min-height is GONE on purpose. Two rules fighting over one box is what made
+   the panel jump between frames; aspect-ratio owns the height now, and overflow
+   catches the rare frame whose text is taller than the ratio allows. */
+.dbox-in{aspect-ratio:16/9;min-height:0;overflow:auto;
+  display:flex;flex-direction:column;justify-content:center}
+/* Fullscreen hands the ratio to the ART instead, so the frame can use the whole
+   screen rather than being capped by the box it sits in. */
+.dbox.is-full .dbox-in{aspect-ratio:auto;overflow:visible}
 /* The Coming Soon state: the sentence bar stays, the frame area says so. */
 .dbox.is-soon .dbox-in{min-height:96px;justify-content:center;text-align:center}
 .dbox-soon{
@@ -717,6 +729,68 @@ h2{
 @media (max-height:820px){ .dbox.is-wide{max-width:660px} }
 @media (max-height:620px){ .dbox.is-wide{max-width:520px} }
 /* full screen on tap, because the detail in these does not survive a phone */
+/* ── FULLSCREEN VISUAL PANEL ───────────────────────────────────────────────
+   Paul, 2026-09-19: "the visual panel also needs to go fullscreen", and it is
+   the panel a lesson video will eventually play in.
+
+   🚨 IT STOPS ABOVE THE PLAYER, IT DOES NOT COVER IT. The reading dock is
+   position:fixed at z-index 40. A panel on inset:0 would bury the play button,
+   the scrub bar and the step arrows - so on a reading lesson the student could
+   not advance the very reading the panel is following, and on a video he could
+   not pause it. --dbfull-dock is the gap left for the dock.
+
+   🚨 NOT THE FULLSCREEN API. requestFullscreen() needs a fresh user gesture
+   every time, is refused outright inside some embedded contexts, and hands the
+   screen to the browser so the page can no longer draw anything over the video.
+   A fixed element is ours, works on every phone, and Escape still exits.
+
+   ⚠️ .is-wide sets margin-left:50% and a translateX to break out of the column.
+   Both have to be unset here or the panel sits half a screen to the right. */
+.dbox.is-full{
+  --dbfull-dock:104px;
+  position:fixed;left:0;right:0;top:0;bottom:var(--dbfull-dock);
+  z-index:50;max-width:none;width:auto;margin:0;transform:none;
+  border:0;border-radius:0;background:var(--ground, var(--bg));
+  display:flex;flex-direction:column;justify-content:center;
+  padding:20px clamp(16px,5vw,64px);overflow-y:auto;
+}
+.dbox.is-full .dbox-in{min-height:0}
+/* 16:9, which is the shape a YouTube embed wants and what the wide mode already
+   used. max-height keeps it inside a short laptop screen. */
+/* 🚨 :not([hidden]) IS LOAD-BEARING. .dbox-art carries display:flex, and a class
+   rule that sets display BEATS the user-agent [hidden]{display:none} - the trap
+   this file already records three times. Without the guard, a text-only frame
+   reserved a 440px empty 16:9 well and pushed the words to the floor of the
+   screen, which is exactly what the first build did. */
+.dbox.is-full .dbox-art[hidden]{display:none}
+.dbox.is-full .dbox-art:not([hidden]){
+  width:100%;max-width:1100px;margin:0 auto 14px;
+  aspect-ratio:16/9;max-height:66vh;align-items:center;
+}
+.dbox.is-full .dbox-art img{width:100%;height:100%;object-fit:contain}
+.dbox.is-full .dbox-art iframe{width:100%;height:100%;border:0;display:block}
+.dbox.is-full .dbox-words{max-width:900px;margin-inline:auto;text-align:center}
+.dbox.is-full .dbox-sent{max-width:900px;margin-inline:auto;text-align:center}
+.dbox.is-full .dbox-kind{height:auto;overflow:visible}
+.dbox.is-full .dbox-foot{max-width:1100px;margin-inline:auto;width:100%}
+/* A short screen has no room for the dock AND a 16:9 frame. */
+@media (max-height:560px){ .dbox.is-full{--dbfull-dock:0px} }
+html.dbox-full-open, body.dbox-full-open{overflow:hidden}
+/* The icon button. 44px so it is a real touch target on a phone. */
+.dbox-full{
+  appearance:none;background:transparent;border:1px solid transparent;border-radius:8px;
+  color:var(--ink-soft, var(--dim));cursor:pointer;
+  width:40px;height:40px;display:grid;place-items:center;flex:none;padding:0;
+}
+.dbox-full:hover{color:var(--ink);border-color:var(--rule)}
+.dbox-full:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.dbox-full svg{width:20px;height:20px;fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* One glyph shows at a time: arrows out to enter, arrows in to leave. */
+.dbox-full .i-out{display:none}
+.dbox.is-full .dbox-full .i-in{display:none}
+.dbox.is-full .dbox-full .i-out{display:inline}
+
 .picfull{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);
   display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
 .picfull img{max-width:100%;max-height:100%;border-radius:6px}
@@ -1780,6 +1854,17 @@ body.player-hidden .scrub{margin:0;height:20px}
          on screen either way, and there is no state where the control is visible
          without the thing it controls being named. -->
     <div class="dbox-foot">
+      <!-- 🚨 AN ICON, NOT A WORD. Paul, 2026-09-19. The label still exists for a
+           screen reader and as the tooltip; only the glyph is on screen, because
+           this row already carries "Close Visual Panel" and two long labels side
+           by side read as a menu rather than a control. -->
+      <button class="dbox-full" type="button" id="dboxfull"
+              aria-pressed="false" aria-label="Fullscreen" title="Fullscreen">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path class="i-in"  d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>
+          <path class="i-out" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>
+        </svg>
+      </button>
       <button class="dbox-x" type="button" id="dboxx" aria-expanded="true">Close Visual Panel</button>
     </div>
   </div>
@@ -3575,6 +3660,92 @@ buildWork();
    is the failure `find` needs findsAt to guard against. */
 var dbox  = document.getElementById("dbox");
 var dboxX = document.getElementById("dboxx");
+
+/* ── fullscreen the visual panel ──────────────────────────────────────────
+   🚨 THE PANEL MUST BE OPEN TO BE FULLSCREEN. Going full while collapsed would
+   paint an empty screen over the lesson, which reads as the page having broken.
+   So entering full also un-collapses, and Escape leaves.
+   ⚠️ The body lock is what stops the page scrolling underneath a fullscreen
+   panel on a phone, where a stray drag otherwise moves the lesson behind it. */
+var dboxFull = document.getElementById("dboxfull");
+
+/* 🚨 TWO MECHANISMS, AND BOTH ARE NEEDED. Paul, 2026-09-19: "it needs to work on
+   pc and mobile fullscreen."
+   1. The CLASS is the one that always works. A fixed element covering the
+      viewport behaves identically on every browser, and it is what actually
+      carries the layout.
+   2. The Fullscreen API is asked for ON TOP of that, because only it can hide
+      the browser's own chrome on a PC and on Android - a real fullscreen rather
+      than a big box inside a browser window.
+   ⚠️ iOS Safari has NO requestFullscreen on a div (only on <video>), so on an
+   iPhone step 2 simply never fires and step 1 is the whole feature. That is why
+   the class can never be made conditional on the API succeeding: doing so would
+   ship a dead button to every iPhone, and Kolten's test phone is an iPhone SE. */
+function nativeFullOn(el){
+  var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+  if (!fn) return;
+  try { var p = fn.call(el); if (p && p.catch) p.catch(function(){}); } catch (e) {}
+}
+function nativeFullOff(){
+  if (!(document.fullscreenElement || document.webkitFullscreenElement)) return;
+  var fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+  if (!fn) return;
+  try { var p = fn.call(document); if (p && p.catch) p.catch(function(){}); } catch (e) {}
+}
+/* 🚨 RE-MEASURED, NOT MEASURED ONCE. Entering native fullscreen changes the
+   viewport, and the dock is laid out again at the new size - so a gap measured
+   before the transition is the wrong gap after it. It is also re-run on resize
+   and on rotate, because a phone turning sideways re-flows the dock. */
+function sizeDbFullDock(){
+  if (!dbox || !dbox.classList.contains("is-full")) return;
+  var dockEl = document.querySelector(".player");
+  var dockH = dockEl ? Math.ceil(dockEl.getBoundingClientRect().height) : 104;
+  /* 🚨 EXACTLY THE DOCK HEIGHT, WITH NO BREATHING GAP. A 12px gap was added
+     first and it let a 12px sliver of the lesson page show between the panel
+     and the dock, which reads as the panel being see-through. The dock is
+     already a solid bar with its own padding; it IS the bottom edge. */
+  dbox.style.setProperty("--dbfull-dock", dockH + "px");
+}
+window.addEventListener("resize", sizeDbFullDock);
+window.addEventListener("orientationchange", function(){ setTimeout(sizeDbFullDock, 250); });
+
+function setDboxFull(on, fromBrowser){
+  if (!dbox || !dboxFull) return;
+  if (on && dbox.classList.contains("is-shut")) setDemoOpen(true);
+  dbox.classList.toggle("is-full", !!on);
+  document.documentElement.classList.toggle("dbox-full-open", !!on);
+  document.body.classList.toggle("dbox-full-open", !!on);
+  dboxFull.setAttribute("aria-pressed", on ? "true" : "false");
+  var label = on ? "Exit fullscreen" : "Fullscreen";
+  dboxFull.setAttribute("aria-label", label);
+  dboxFull.setAttribute("title", label);
+  /* 🚨 MEASURE THE DOCK, NEVER GUESS IT. The first build reserved a flat 104px
+     and the play button still sat half under the panel - Paul saw it at once:
+     "you are hiding the play button under the screen". The dock grows with the
+     settings row, the theme and the font size, so the only number that is right
+     on every screen is the one read off the element. */
+  if (on) { sizeDbFullDock(); dbox.scrollTop = 0; }
+  else { dbox.style.removeProperty("--dbfull-dock"); }
+  /* fromBrowser = the browser told US it changed, so do not tell it back. */
+  if (fromBrowser) return;
+  if (on) nativeFullOn(dbox); else nativeFullOff();
+}
+if (dboxFull) dboxFull.addEventListener("click", function(){
+  setDboxFull(!dbox.classList.contains("is-full"));
+});
+/* 🚨 THE BROWSER CAN LEAVE FULLSCREEN WITHOUT US. Escape, the F11 key and
+   Android's back gesture all exit natively, and the panel would have been left
+   painted over the lesson with no way back. */
+["fullscreenchange", "webkitfullscreenchange"].forEach(function(ev){
+  document.addEventListener(ev, function(){
+    var native = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (!native && dbox && dbox.classList.contains("is-full")) setDboxFull(false, true);
+    else if (native) setTimeout(sizeDbFullDock, 60);
+  });
+});
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape" && dbox && dbox.classList.contains("is-full")) setDboxFull(false);
+});
 var curVis = -2;
 
 /* Decided ONCE, from the lesson's own frames. A lesson with pictures is wide for

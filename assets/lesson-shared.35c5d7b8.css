@@ -601,6 +601,68 @@ h2{
 @media (max-height:820px){ .dbox.is-wide{max-width:660px} }
 @media (max-height:620px){ .dbox.is-wide{max-width:520px} }
 /* full screen on tap, because the detail in these does not survive a phone */
+/* ── FULLSCREEN VISUAL PANEL ───────────────────────────────────────────────
+   Paul, 2026-09-19: "the visual panel also needs to go fullscreen", and it is
+   the panel a lesson video will eventually play in.
+
+   🚨 IT STOPS ABOVE THE PLAYER, IT DOES NOT COVER IT. The reading dock is
+   position:fixed at z-index 40. A panel on inset:0 would bury the play button,
+   the scrub bar and the step arrows - so on a reading lesson the student could
+   not advance the very reading the panel is following, and on a video he could
+   not pause it. --dbfull-dock is the gap left for the dock.
+
+   🚨 NOT THE FULLSCREEN API. requestFullscreen() needs a fresh user gesture
+   every time, is refused outright inside some embedded contexts, and hands the
+   screen to the browser so the page can no longer draw anything over the video.
+   A fixed element is ours, works on every phone, and Escape still exits.
+
+   ⚠️ .is-wide sets margin-left:50% and a translateX to break out of the column.
+   Both have to be unset here or the panel sits half a screen to the right. */
+.dbox.is-full{
+  --dbfull-dock:104px;
+  position:fixed;left:0;right:0;top:0;bottom:var(--dbfull-dock);
+  z-index:50;max-width:none;width:auto;margin:0;transform:none;
+  border:0;border-radius:0;background:var(--ground, var(--bg));
+  display:flex;flex-direction:column;justify-content:center;
+  padding:20px clamp(16px,5vw,64px);overflow-y:auto;
+}
+.dbox.is-full .dbox-in{min-height:0}
+/* 16:9, which is the shape a YouTube embed wants and what the wide mode already
+   used. max-height keeps it inside a short laptop screen. */
+/* 🚨 :not([hidden]) IS LOAD-BEARING. .dbox-art carries display:flex, and a class
+   rule that sets display BEATS the user-agent [hidden]{display:none} - the trap
+   this file already records three times. Without the guard, a text-only frame
+   reserved a 440px empty 16:9 well and pushed the words to the floor of the
+   screen, which is exactly what the first build did. */
+.dbox.is-full .dbox-art[hidden]{display:none}
+.dbox.is-full .dbox-art:not([hidden]){
+  width:100%;max-width:1100px;margin:0 auto 14px;
+  aspect-ratio:16/9;max-height:66vh;align-items:center;
+}
+.dbox.is-full .dbox-art img{width:100%;height:100%;object-fit:contain}
+.dbox.is-full .dbox-art iframe{width:100%;height:100%;border:0;display:block}
+.dbox.is-full .dbox-words{max-width:900px;margin-inline:auto;text-align:center}
+.dbox.is-full .dbox-sent{max-width:900px;margin-inline:auto;text-align:center}
+.dbox.is-full .dbox-kind{height:auto;overflow:visible}
+.dbox.is-full .dbox-foot{max-width:1100px;margin-inline:auto;width:100%}
+/* A short screen has no room for the dock AND a 16:9 frame. */
+@media (max-height:560px){ .dbox.is-full{--dbfull-dock:0px} }
+html.dbox-full-open, body.dbox-full-open{overflow:hidden}
+/* The icon button. 44px so it is a real touch target on a phone. */
+.dbox-full{
+  appearance:none;background:transparent;border:1px solid transparent;border-radius:8px;
+  color:var(--ink-soft, var(--dim));cursor:pointer;
+  width:40px;height:40px;display:grid;place-items:center;flex:none;padding:0;
+}
+.dbox-full:hover{color:var(--ink);border-color:var(--rule)}
+.dbox-full:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.dbox-full svg{width:20px;height:20px;fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* One glyph shows at a time: arrows out to enter, arrows in to leave. */
+.dbox-full .i-out{display:none}
+.dbox.is-full .dbox-full .i-in{display:none}
+.dbox.is-full .dbox-full .i-out{display:inline}
+
 .picfull{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);
   display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
 .picfull img{max-width:100%;max-height:100%;border-radius:6px}

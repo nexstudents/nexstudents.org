@@ -5,7 +5,6 @@
 .ns-back a:hover{color:var(--fg)}
 h1{margin:0 0 6px}
 .dek{color:var(--dim);max-width:60ch;margin:0 0 22px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 22px}
 .section-head{margin:34px 0 4px;font-size:1.35rem}
 .section-note{color:var(--dim);font-size:.92rem;margin:0 0 16px;max-width:62ch}
 
@@ -18,9 +17,9 @@ h1{margin:0 0 6px}
   --nv-line:var(--line);--nv-accent:var(--a);--nv-on:var(--on-accent,#0b160f)}
 
 /* ── Ground Control ────────────────────────────────────────────────────────
-   The teacher panel, and the reason this page exists. It is deliberately the
-   FIRST thing on the page and deliberately shut by default: the parent opens
-   it before the lesson, the student never needs to. */
+   The teacher panel. Deliberately FIRST on the page and deliberately shut by
+   default: the parent opens it before the lesson, the student never needs to.
+   Identical treatment to the English lessons on purpose. */
 .ground{border:1px solid var(--boxline);border-radius:var(--r);margin:0 0 26px;
   background:var(--boxfill);overflow:hidden}
 /* 🚨 CENTRED, THE WAY THE HISTORY TEMPLATE DOES IT: 1fr auto 1fr with an empty
@@ -32,9 +31,12 @@ h1{margin:0 0 6px}
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center}
 .ground summary::before{content:""}
 .ground summary::-webkit-details-marker{display:none}
+/* Closed points RIGHT, open points DOWN - the way every disclosure works.
+   Paul, 2026-08-30. It was a down arrow that flipped to up, which reads as
+   "collapse" in both states. */
 .ground summary::after{content:"▸";justify-self:end;color:var(--dim);
-  transition:transform .18s}
-.ground[open] summary::after{transform:rotate(180deg)}
+  transition:transform .18s;display:inline-block}
+.ground[open] summary::after{transform:rotate(90deg)}
 .ground summary:hover{color:var(--a)}
 .ground .who{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
   color:var(--dim);font-weight:600}
@@ -44,10 +46,17 @@ h1{margin:0 0 6px}
 .ground p{margin:0;line-height:1.6;max-width:68ch}
 .ground ul{margin:6px 0 0;padding-left:20px;line-height:1.65;max-width:68ch}
 .ground li{margin:0 0 7px}
+/* The stated rule, sitting at the top of the panel so the teacher has the
+   one-line version before the explanation of it. */
+.ground .grule{font-weight:700;font-size:1.02rem;line-height:1.5;
+  padding:11px 13px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid var(--a)}
 
 /* ── the rule ─────────────────────────────────────────────────────────────
-   A rule the student can point at. `.ruletest` is set apart on purpose: the
-   definition is what he is told, the test is what he can actually DO. */
+   🚨 THE RULE BOX IS THE LESSON. Paul chose rules-first on 2026-08-30 for
+   speed, so the rule is stated up front rather than discovered at the end.
+   That only works if it is stated precisely - build-integers.js refuses to
+   build a lesson whose short rule contains the folk version. */
 .rulebox{border:1px solid var(--a);border-radius:var(--r);padding:20px;margin:0 0 26px;
   background:var(--accent-soft)}
 .rulebox .short{font-size:1.16rem;font-weight:700;margin:0 0 12px;line-height:1.45}
@@ -56,293 +65,116 @@ h1{margin:0 0 6px}
   background:var(--panel);border:1px solid var(--boxline);line-height:1.6;max-width:66ch}
 .ruletest b:first-child{color:var(--a)}
 
-/* The reading player CSS is injected from lesson-template.html via
-   tools/voice-player.js. Do not restyle it here - one player, every lesson. */
+/* ── the sign chart ───────────────────────────────────────────────────────
+   Wide content scrolls inside its own box rather than pushing the page
+   sideways on a phone. */
+.tablewrap{overflow-x:auto;margin:0 0 26px}
+table.signs{border-collapse:collapse;width:100%;min-width:420px;font-size:.95rem}
+table.signs caption{text-align:left;color:var(--dim);font-size:.85rem;padding:0 0 8px}
+table.signs th,table.signs td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+table.signs th{background:var(--boxfill);font-size:.82rem;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--dim)}
+table.signs tbody tr:nth-child(odd){background:var(--panel)}
 
-/* ── taught prose ── */
-.part{margin:0 0 26px}
-.part h3{margin:0 0 8px;font-size:1.08rem}
-.part p{margin:0 0 9px;line-height:1.72;max-width:66ch}
+/* ── the walkthrough ──────────────────────────────────────────────────────
+   🚨 THIS REPLACED THE PROSE SECTION. Paul, 2026-08-30: the rule was being
+   told three times before the student did anything. Now it is demonstrated
+   instead, one row at a time as the voice reads, the way the long division
+   bracket fills in. `.row.on` is the reveal; the number line draws its jump
+   on the last step of each example. */
+.demo{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:20px;margin:0 0 26px}
+.work{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:1.5rem;line-height:1.9;min-height:7.6em}
+.work .row{opacity:0;transform:translateY(-4px);transition:opacity .22s,transform .22s}
+.work .row.on{opacity:1;transform:none}
+/* The middle row names the case rather than computing it, so it reads as a
+   decision and not as another sum. */
+.work .row.note{font-family:inherit;font-size:1.02rem;color:var(--a);font-weight:700;
+  letter-spacing:.02em}
+.work .row.ans{color:var(--free);font-weight:700}
+.work .op{color:var(--dim)}
+/* The minus sign is its own span so it can be lit up the moment the voice
+   says "they both have a negative line in front". Paul, 2026-08-30 - point at
+   the thing on the page rather than only reading the sum aloud. */
+.work .sgn{transition:color .18s,background .18s;border-radius:4px;padding:0 2px}
+.work.hi-sgn .sgn{color:var(--a);background:var(--accent-soft);font-weight:700}
+.nlwrap{margin-top:6px;min-height:104px}
+.nlwrap svg{display:block;width:100%;height:auto;color:var(--fg)}
 
-/* ── examples and scripture get their own frame ────────────────────────────
-   🚨 AN EXAMPLE IS NOT STORY AND MUST NOT LOOK LIKE STORY.
-   Paul, 2026-09-17: "anything that's an example you need to outline in a
-   separate window text and I'm actually wondering if you can start
-   italicizing any of those examples" · "maybe even use a better font because
-   the font that you're currently using is pretty bad" · and then the limit on
-   that: "define for the regular story is fine but not for the examples."
-   So the body face is untouched and ONLY these two blocks change.
+/* ── the questions block ──────────────────────────────────────────────────
+   Its own titled section rather than four more lines of narration running on
+   from the worked example, and it fills in as the voice reaches each line. */
+.todobox{background:var(--panel);border:1px solid var(--a);border-radius:var(--r);
+  padding:18px 20px;margin:0 0 26px}
+.todobox h3{margin:0 0 10px;font-size:1.06rem;color:var(--a)}
+.todobox p{margin:0 0 8px;line-height:1.65;max-width:66ch;
+  opacity:0;transform:translateY(-3px);transition:opacity .22s,transform .22s}
+.todobox p.on{opacity:1;transform:none}
 
-   The engine has applied is-ex and is-verse since the history template was
-   written, and it strips the marker before the text ever reaches the reader or
-   the voice. The English page simply never styled them, so a marked line
-   rendered as one more line of story. That is the whole bug.
-
-   🔑 A SERIF, NOT THE MONOSPACE THE HISTORY PAGE USES. Monospace suits a sum or
-   a line of code. These are ENGLISH SENTENCES being held up as specimens, and a
-   book face says "read this as writing" where a code face says "read this as
-   data".
-   ⚠️ THE CLASS IS ON THE PARAGRAPH, NEVER ON .sent. .sent is the highlight
-   unit for the reading voice, and restyling it shifts the text out from under
-   the band while it is being read. */
-.part p.is-ex,
-.part p.is-verse{
-  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
-  font-style:italic;
-  margin:14px 0;
-  padding:12px 18px;
-}
-.part p.is-ex{
-  font-size:1.09em;line-height:1.62;max-width:58ch;
-  border:1px solid var(--boxline);
-  border-left:3px solid var(--a);
-  border-radius:0 var(--r) var(--r) 0;
-  background:var(--boxfill);
-}
-.part p.is-verse{
-  font-size:1.05em;line-height:1.72;max-width:62ch;
-  border-left:3px solid var(--a);
-  opacity:.94;
-}
-/* The reading band is tuned against the page ground, and the example box sits
-   on --boxfill, so the two can close up enough to lose the band inside it. */
-.part p.is-ex .sent.on,
-.part p.is-verse .sent.on{box-shadow:0 0 0 2px var(--a)}
-
-/* An italic serif at 1.09em is still small on a phone, and these are the lines
-   the student is asked to read most carefully. */
-@media (max-width:560px){
-  .part p.is-ex{font-size:1.14em;padding:12px 14px}
-  .part p.is-verse{font-size:1.08em;padding:10px 14px}
-}
-
-/* ── worked examples ── */
-.ex{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:16px 18px;margin:0 0 12px}
-.ex .sent{font-size:1.1rem;line-height:1.6;margin:0 0 8px}
-.ex .sent u{text-decoration:none;color:var(--a);font-weight:700;
-  border-bottom:2px solid var(--a);padding-bottom:1px}
-.ex .why{margin:0;color:var(--dim);font-size:.93rem;line-height:1.6;max-width:66ch}
-
-/* ── practice: click the word ── */
+/* ── practice ── */
+.tabs{display:flex;gap:6px;margin:0 0 12px}
 .tab{background:transparent;border:1px solid var(--line);border-radius:999px;
   color:var(--dim);font:inherit;font-size:.9rem;padding:7px 16px;cursor:pointer}
 .tab:hover{color:var(--fg)}
+.tab.on{background:var(--accent-soft);border-color:var(--a);color:var(--fg);font-weight:700}
 .actions{display:flex;flex-wrap:nowrap;gap:8px;margin:0 0 18px}
 .tab.act{flex:1 1 0;min-width:0;color:var(--fg);border-color:var(--boxline);
   background:var(--boxfill);font-weight:600;white-space:nowrap;padding:11px 10px;font-size:.88rem}
 .tab.act:hover{border-color:var(--a)}
 .tab.act:disabled{opacity:.45;cursor:default;border-color:var(--line)}
-/* ── the two worksheet parts ──────────────────────────────────────────────
-   A printed worksheet says "Part A" with its own directions underneath, and a
-   rule across the page so you can see where one job stops and the next starts.
-   That rule is the whole reason this reads as two tasks rather than a list. */
-.wspart{margin:22px 0 0;padding-top:18px;border-top:2px solid var(--line)}
-.wspart:first-of-type{border-top:0;padding-top:0}
-.ws-head{margin:0 0 4px;font-size:1.06rem;letter-spacing:.01em}
-.ws-note{color:var(--dim);font-size:.9rem;margin:0 0 14px;max-width:62ch}
-
-/* Part B: the sentence, then two buttons. The verb is already underlined,
-   because the question is not which word it is - that was Part A. */
-.kverb{text-decoration:underline;text-underline-offset:3px;font-weight:700}
-.kpick{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
-.kbtn{font:inherit;font-size:.92rem;font-weight:600;padding:9px 17px;border-radius:999px;
-  background:transparent;border:1px solid var(--line);color:inherit;cursor:pointer}
-.kbtn:hover:not(:disabled){border-color:var(--a)}
-.kbtn.ok{background:var(--a);border-color:var(--a);color:var(--on-accent,#0b160f)}
-.kbtn.wrong{border-color:#c9503f}
-.kbtn.reveal{border-color:var(--a);border-style:dashed}
-.kbtn:disabled{cursor:default}
 
 .prob{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:18px;margin:0 0 16px}
+  padding:16px 18px;margin:0 0 12px}
 .prob.solved{border-color:var(--free)}
-.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.probhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
 .probnum{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
 .tag{font-size:.85rem;color:var(--dim)}
 .tag.done{color:var(--free);font-weight:700}
-.words{display:flex;flex-wrap:wrap;gap:6px}
-/* Every word is a target, so nothing about the layout hints at the answer.
-   A word that is not clickable would give it away. */
-.pw{background:transparent;border:1px solid transparent;border-radius:7px;
-  color:var(--fg);font:inherit;font-size:1.06rem;padding:6px 8px;cursor:pointer;
-  transition:background .12s,border-color .12s}
-.pw:hover{background:var(--boxfill);border-color:var(--boxline)}
-.pw:disabled{cursor:default}
-.pw.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
-.pw.wrong{border-color:#e5484d;color:#e5484d}
-.pw.reveal{border-color:var(--free);color:var(--free);font-weight:700}
-.nudge{margin-top:12px;font-size:.92rem;color:var(--dim);min-height:1.4em;line-height:1.6;max-width:66ch}
+/* The expression reads on one line and wraps on a phone rather than scrolling. */
+.expr{display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:1.28rem;line-height:1.5}
+.expr .op{color:var(--dim)}
+.ans{width:4.4em;background:transparent;border:1px solid var(--boxline);border-radius:8px;
+  color:var(--fg);font:inherit;text-align:center;padding:5px 4px;
+  transition:background .12s,border-color .12s,box-shadow .12s}
+.ans::placeholder{color:var(--dim);opacity:.55}
+.ans:focus{outline:none;background:var(--boxfill);border:2px solid var(--a);
+  box-shadow:0 0 0 3px var(--accent-soft)}
+.ans:disabled{opacity:.5;cursor:default}
+.ans.ok{border-color:var(--free);color:var(--free);font-weight:700;opacity:1}
+.ans.wrong{border-color:#e5484d;color:#e5484d;font-weight:700;opacity:1}
+.ans.bad{border-color:#e5484d;animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+/* The rewrite box is the first half of a subtraction and is labelled, because
+   an unlabelled second box on the same line reads as a typo. */
+.steplab{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 6px}
+
+/* ── the clickable number line on a problem ───────────────────────────────
+   Paul, 2026-08-30: "we can also do is add a number line with the question so
+   they can see it visually per each problem and clicking the line changes the
+   answer maybe?" Only drawn on the small problems - a line spanning 120 units
+   has tick targets a few pixels wide and would be a worse way in than the
+   keyboard. Typing always works; this is the other way, not the only way. */
+.pnl{margin-top:12px;cursor:pointer;touch-action:manipulation}
+.pnl svg{display:block;width:100%;height:auto;color:var(--dim)}
+.pnl .hit{fill:transparent}
+.pnl:hover .axis{stroke:var(--fg)}
+.pnl .pick{fill:var(--a)}
+.pnl .picklab{fill:var(--a);font-weight:700}
+.pnl-note{font-size:.78rem;color:var(--dim);margin:5px 0 0}
+.nudge{margin-top:10px;font-size:.92rem;color:var(--dim);min-height:1.4em;
+  line-height:1.6;max-width:66ch}
 .nudge.warn{color:#e5484d}
 .scorebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
   padding:16px;margin:22px 0 40px}
 .scorebar b{font-size:1.25rem}
-/* The homework call to action. Same shape as split/template.html, on purpose. */
-.sheetcta{margin:26px 0 0}
-.sheetnote{color:var(--dim);font-size:.95rem;line-height:1.6;margin:0 0 12px;max-width:62ch}
-.sheetcta .tab.act{text-align:center;text-decoration:none;line-height:1.3}
-
-/* ── TWO COLOURS, ONE MEANING ─────────────────────────────────────────────
-   🚨 LIFTED FROM split/template.html, never re-picked. Green is the subject and
-   orange is the predicate on every lesson in this unit, so the colour a student
-   learned in Complete Subjects and Predicates still means the same thing when
-   the target narrows to one word. Change one file, change both. */
-:root{--sj:rgba(60,200,150,.16);--sj-line:#3fc79a;--pd:rgba(230,140,90,.16);--pd-line:#e5906a}
-.subj{background:var(--sj);border-bottom:2px solid var(--sj-line);padding:1px 2px;border-radius:3px}
-.pred{background:var(--pd);border-bottom:2px solid var(--pd-line);padding:1px 2px;border-radius:3px}
-
-/* The marked-up story. The SAME sentences the player reads, shown again with
-   the two words lit, so the colour and the reading are one thing and not two. */
-.showcase{margin:0 0 6px}
-.sclegend{color:var(--dim);font-size:.9rem;margin:0 0 14px}
-.sclegend .subj,.sclegend .pred{font-weight:700}
-.sc{border-left:3px solid var(--line);padding:2px 0 2px 16px;margin:0 0 15px}
-.sc .sent{margin:0 0 5px;font-size:1.06rem;line-height:1.85}
-.sc .why{margin:0;color:var(--dim);font-size:.9rem;line-height:1.6;max-width:66ch}
-
-/* ── PART A WHEN THE WORDS ARE OFFERED ────────────────────────────────────
-   🚨 The tap-the-word part gives no help: every word in the line is a target.
-   That is right for a skill he has already met, and too steep for one he has
-   not. So a lesson may open with the words laid out as choices, and close with
-   the same job done unaided. Buttons lifted from lesson-template.html. */
-.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.choice{background:transparent;border:1px solid var(--line);border-radius:9px;
-  color:var(--fg);font:inherit;font-size:1.02rem;padding:9px 15px;cursor:pointer;
-  transition:background .12s,border-color .12s}
-/* Hover is a lift, NOT an accent border: an accent border is what a chosen
-   answer looks like, and a cursor resting over a choice while the page
-   scrolls made one box look already picked. Paul, 2026-09-19. */
-.choice:hover:not(:disabled){background:var(--panel);border-color:var(--line)}
-.choice:disabled{cursor:default}
-.choice.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
-.choice.wrong{border-color:#e5484d;color:#e5484d}
-.choice.reveal{border-color:var(--free);color:var(--free);font-weight:700}
-/* The half being asked for, in its own colour, so the question carries its key. */
-.askfor{font-weight:700}
-.askfor.subject{color:var(--sj-line)}
-.askfor.predicate{color:var(--pd-line)}
-.cline{font-size:1.06rem;line-height:1.8;margin:0}
 
 @media print{
-  .player,.themerow,.actions,.ns-back,.ground{display:none!important}
+  .player,.themerow,.actions,.tabs,.ns-back,.ground{display:none!important}
   .prob{break-inside:avoid;page-break-inside:avoid}
-}
-/* 🚨 THE COLUMN IS CENTRED, NOT PARKED LEFT. Every text block carried its own
-   ch-based max-width inside a 900px box, so the prose sat in the left two thirds
-   of the page. Paul, 2026-09-19: "the text all looks indented to the left side
-   and not centered." One narrower box, and the blocks fill it. */
-/* 🚨 THE SAME MEASURE AS THE READING TEMPLATE (.wrap, 660px). Two prose
-   templates set at two different widths is the drift a student feels as
-   "this page is not the same page". Change one, change both. */
-.wrapx{max-width:660px}
-.dek,.section-note,.ground p,.ground ul,.rulebox .long,.rulebox .test,.part p,
-.ex .why,.ws-note,.nudge,.sheetnote,.sc .why{max-width:none}
-/* THE END OF THE LESSON, same pieces the reading lessons have: a complete box,
-   Print Answer Sheet, Retake, the homework button, and the unit neighbours. */
-.lessondone{border:1px solid var(--free);border-radius:var(--r);padding:16px;margin:0 0 18px;
-  background:var(--panel);text-align:center;line-height:1.6}
-.lessondone[hidden]{display:none}
-.lessondone b{display:block;font-size:1.15rem;color:var(--free);margin-bottom:2px}
-.endbtns{justify-content:center;margin:0 0 6px}
-
-/* ── the end of the lesson: shared by all five templates (lesson-footer.js) ── */
-.lfoot{
-  --lf-l: var(--lf-line,   var(--rule,    var(--line,    rgba(255,255,255,.16))));
-  --lf-p: var(--lf-panel,  var(--surface, var(--panel,   rgba(255,255,255,.04))));
-  --lf-i: var(--lf-ink,    var(--ink,     var(--fg,      #f2f4f7)));
-  --lf-d: var(--lf-dim,    var(--ink-soft,var(--dim,     rgba(255,255,255,.62))));
-  --lf-a: var(--lf-accent, var(--verdigris, var(--a,     #7fd1c1)));
-  margin:26px 0 0;
-}
-/* The homework row. One button, full width, so it reads as a destination and
-   not as a third control beside Print and Retake. */
-.lfoot-hw{display:block;width:100%;box-sizing:border-box;text-align:center;
-  padding:13px 16px;border:1px solid var(--lf-l);border-radius:10px;
-  background:var(--lf-p);color:var(--lf-i);font-weight:600;font-size:.95rem;
-  text-decoration:none;line-height:1.35}
-a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
-/* 🚨 NO HOMEWORK YET = FADED AND NOT CLICKABLE, and it is a <span>, never an <a>.
-   Paul, 2026-09-19: "even a homework button if one comes available and if not it
-   just says unavailable." A disabled-looking <a> that still navigates is worse
-   than no button, so there is no href to follow in the first place. */
-.lfoot-hw.is-off{opacity:.42;border-style:dashed;cursor:default;font-weight:500}
-.lfoot-hw small{display:block;font-weight:400;font-size:.8rem;color:var(--lf-d);
-  margin-top:2px}
-
-/* ── prev / next ──────────────────────────────────────────────────────────
-   🚨 SMALL ARROWS, NOT CARDS. Paul, 2026-09-19: "i want a smaller jump to the
-   next and previous lesson arrwo button honestly." They used to be two large
-   tiles carrying the full lesson title, which ate the bottom of the page and
-   competed with the results. The title is still there for a reader and a screen
-   reader, just no longer set at heading size. */
-.lfoot-nav{display:flex;align-items:center;gap:10px;margin:16px 0 0;flex-wrap:wrap}
-.lfoot-nav a{display:inline-flex;align-items:center;gap:7px;max-width:46%;
-  padding:8px 13px;border:1px solid var(--lf-l);border-radius:999px;
-  background:var(--lf-p);color:var(--lf-i);text-decoration:none;
-  font-size:.86rem;line-height:1.3}
-.lfoot-nav a:hover{border-color:var(--lf-a)}
-.lfoot-nav a .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  color:var(--lf-d)}
-.lfoot-nav a .ar{font-size:1rem;line-height:1;color:var(--lf-a);flex:0 0 auto}
-.lfoot-nav .next{margin-left:auto}
-.lfoot-nav .lfoot-end{margin:0;color:var(--lf-d);font-size:.84rem}
-@media (max-width:560px){
-  .lfoot-nav a{max-width:100%;flex:1 1 auto;justify-content:center}
-  .lfoot-nav .next{margin-left:0}
-}
-@media print{ .lfoot{display:none!important} }
-
-/* ── ONE CORNER RADIUS, EVERY LESSON TYPE ─────────────────────────────────
-   Paul, 2026-09-19: "even on the teacher notes panel you have rounded corners
-   but not on the neewer ones they are more angle corners."
-
-   He is right, and it is the same failure as the footer: a shared surface with
-   no shared definition. Measured across the two prose engines that evening:
-
-     Teacher Notes    reading 10px   english 4px    <- the same panel, two shapes
-     results / score  reading  4px   english 4px
-     visual panel     reading 10px   -
-
-   So a student walking from Writing Good Sentences to Simple Subjects saw the
-   identical Teacher Notes panel change shape, and inside one reading lesson the
-   Teacher Notes and the results panel disagreed with each other.
-
-   🚨 PANELS ARE 10px. PILLS STAY 999px. Those are the only two shapes a lesson
-   page uses, and --lf-r is here so a future template can read the number instead
-   of typing it again.
-
-   🚨 SCOPED TO THE LESSON WRAPPER, and that is not decoration. This block is
-   injected near the TOP of lesson-template.html and at the END of the <style> in
-   the other four, so source order cannot be relied on to win. .wrap/.wrapx is
-
-   ⚠️ AND NOTE WHAT THE CSS COMMENTS HERE MUST NEVER DO: name a slot token. The
-   generators fill slots with a plain .replace, which takes the FIRST match, so a
-   token spelled inside this string gets substituted into the page and the
-   unfilled-slot guard then fails on the copy it just injected. That is exactly
-   how this block failed its first build, and split/template.html already carried
-   the same warning. Spell it "the CSS slot", never the token itself.
-
-   .wrap/.wrapx puts these at
-   two-class specificity, which beats each template's own single-class rule
-   wherever the block happens to sit. Do not "simplify" these to bare classes. */
-.wrap, .wrapx{ --lf-r:10px }
-.wrap .ground,   .wrapx .ground,
-.wrap .score,    .wrapx .score,
-.wrap .status,   .wrapx .status,
-.wrap .scorebar, .wrapx .scorebar,
-.wrap .dbox,     .wrapx .dbox,
-.wrap .lfoot-hw, .wrapx .lfoot-hw{ border-radius:var(--lf-r,10px) }
-
-#psheet{display:none}
-@media print{
-  body.printing>*:not(#psheet){display:none!important}
-  body.printing #psheet{display:block!important;color:#000;background:#fff;padding:24px;font:14px/1.6 Georgia,serif}
-  #psheet h1{font-size:20px;margin:0 0 4px}
-  #psheet .pl{display:flex;gap:40px;margin:10px 0 16px}
-  #psheet .pl span{border-bottom:1px solid #000;flex:1;min-height:18px}
-  #psheet ol{margin:6px 0 16px;padding-left:22px}
-  #psheet li{margin:0 0 8px;break-inside:avoid}
-  #psheet .k{font-weight:700}
 }
 /* ---------- player ---------- */
 .player{
@@ -823,6 +655,68 @@ h2{
 @media (max-height:820px){ .dbox.is-wide{max-width:660px} }
 @media (max-height:620px){ .dbox.is-wide{max-width:520px} }
 /* full screen on tap, because the detail in these does not survive a phone */
+/* ── FULLSCREEN VISUAL PANEL ───────────────────────────────────────────────
+   Paul, 2026-09-19: "the visual panel also needs to go fullscreen", and it is
+   the panel a lesson video will eventually play in.
+
+   🚨 IT STOPS ABOVE THE PLAYER, IT DOES NOT COVER IT. The reading dock is
+   position:fixed at z-index 40. A panel on inset:0 would bury the play button,
+   the scrub bar and the step arrows - so on a reading lesson the student could
+   not advance the very reading the panel is following, and on a video he could
+   not pause it. --dbfull-dock is the gap left for the dock.
+
+   🚨 NOT THE FULLSCREEN API. requestFullscreen() needs a fresh user gesture
+   every time, is refused outright inside some embedded contexts, and hands the
+   screen to the browser so the page can no longer draw anything over the video.
+   A fixed element is ours, works on every phone, and Escape still exits.
+
+   ⚠️ .is-wide sets margin-left:50% and a translateX to break out of the column.
+   Both have to be unset here or the panel sits half a screen to the right. */
+.dbox.is-full{
+  --dbfull-dock:104px;
+  position:fixed;left:0;right:0;top:0;bottom:var(--dbfull-dock);
+  z-index:50;max-width:none;width:auto;margin:0;transform:none;
+  border:0;border-radius:0;background:var(--ground, var(--bg));
+  display:flex;flex-direction:column;justify-content:center;
+  padding:20px clamp(16px,5vw,64px);overflow-y:auto;
+}
+.dbox.is-full .dbox-in{min-height:0}
+/* 16:9, which is the shape a YouTube embed wants and what the wide mode already
+   used. max-height keeps it inside a short laptop screen. */
+/* 🚨 :not([hidden]) IS LOAD-BEARING. .dbox-art carries display:flex, and a class
+   rule that sets display BEATS the user-agent [hidden]{display:none} - the trap
+   this file already records three times. Without the guard, a text-only frame
+   reserved a 440px empty 16:9 well and pushed the words to the floor of the
+   screen, which is exactly what the first build did. */
+.dbox.is-full .dbox-art[hidden]{display:none}
+.dbox.is-full .dbox-art:not([hidden]){
+  width:100%;max-width:1100px;margin:0 auto 14px;
+  aspect-ratio:16/9;max-height:66vh;align-items:center;
+}
+.dbox.is-full .dbox-art img{width:100%;height:100%;object-fit:contain}
+.dbox.is-full .dbox-art iframe{width:100%;height:100%;border:0;display:block}
+.dbox.is-full .dbox-words{max-width:900px;margin-inline:auto;text-align:center}
+.dbox.is-full .dbox-sent{max-width:900px;margin-inline:auto;text-align:center}
+.dbox.is-full .dbox-kind{height:auto;overflow:visible}
+.dbox.is-full .dbox-foot{max-width:1100px;margin-inline:auto;width:100%}
+/* A short screen has no room for the dock AND a 16:9 frame. */
+@media (max-height:560px){ .dbox.is-full{--dbfull-dock:0px} }
+html.dbox-full-open, body.dbox-full-open{overflow:hidden}
+/* The icon button. 44px so it is a real touch target on a phone. */
+.dbox-full{
+  appearance:none;background:transparent;border:1px solid transparent;border-radius:8px;
+  color:var(--ink-soft, var(--dim));cursor:pointer;
+  width:40px;height:40px;display:grid;place-items:center;flex:none;padding:0;
+}
+.dbox-full:hover{color:var(--ink);border-color:var(--rule)}
+.dbox-full:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+.dbox-full svg{width:20px;height:20px;fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* One glyph shows at a time: arrows out to enter, arrows in to leave. */
+.dbox-full .i-out{display:none}
+.dbox.is-full .dbox-full .i-in{display:none}
+.dbox.is-full .dbox-full .i-out{display:inline}
+
 .picfull{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);
   display:flex;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
 .picfull img{max-width:100%;max-height:100%;border-radius:6px}
@@ -1469,4 +1363,95 @@ body.player-hidden .scrub{margin:0;height:20px}
   .tick{border-radius:2px}
 
 }
+
+/* The closing strip - homework button and prev/next arrows - is ONE
+   definition shared by all five lesson templates → tools/lesson-footer.js */
+
+/* ── the end of the lesson: shared by all five templates (lesson-footer.js) ── */
+.lfoot{
+  --lf-l: var(--lf-line,   var(--rule,    var(--line,    rgba(255,255,255,.16))));
+  --lf-p: var(--lf-panel,  var(--surface, var(--panel,   rgba(255,255,255,.04))));
+  --lf-i: var(--lf-ink,    var(--ink,     var(--fg,      #f2f4f7)));
+  --lf-d: var(--lf-dim,    var(--ink-soft,var(--dim,     rgba(255,255,255,.62))));
+  --lf-a: var(--lf-accent, var(--verdigris, var(--a,     #7fd1c1)));
+  margin:26px 0 0;
+}
+/* The homework row. One button, full width, so it reads as a destination and
+   not as a third control beside Print and Retake. */
+.lfoot-hw{display:block;width:100%;box-sizing:border-box;text-align:center;
+  padding:13px 16px;border:1px solid var(--lf-l);border-radius:10px;
+  background:var(--lf-p);color:var(--lf-i);font-weight:600;font-size:.95rem;
+  text-decoration:none;line-height:1.35}
+a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
+/* 🚨 NO HOMEWORK YET = FADED AND NOT CLICKABLE, and it is a <span>, never an <a>.
+   Paul, 2026-09-19: "even a homework button if one comes available and if not it
+   just says unavailable." A disabled-looking <a> that still navigates is worse
+   than no button, so there is no href to follow in the first place. */
+.lfoot-hw.is-off{opacity:.42;border-style:dashed;cursor:default;font-weight:500}
+.lfoot-hw small{display:block;font-weight:400;font-size:.8rem;color:var(--lf-d);
+  margin-top:2px}
+
+/* ── prev / next ──────────────────────────────────────────────────────────
+   🚨 SMALL ARROWS, NOT CARDS. Paul, 2026-09-19: "i want a smaller jump to the
+   next and previous lesson arrwo button honestly." They used to be two large
+   tiles carrying the full lesson title, which ate the bottom of the page and
+   competed with the results. The title is still there for a reader and a screen
+   reader, just no longer set at heading size. */
+.lfoot-nav{display:flex;align-items:center;gap:10px;margin:16px 0 0;flex-wrap:wrap}
+.lfoot-nav a{display:inline-flex;align-items:center;gap:7px;max-width:46%;
+  padding:8px 13px;border:1px solid var(--lf-l);border-radius:999px;
+  background:var(--lf-p);color:var(--lf-i);text-decoration:none;
+  font-size:.86rem;line-height:1.3}
+.lfoot-nav a:hover{border-color:var(--lf-a)}
+.lfoot-nav a .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--lf-d)}
+.lfoot-nav a .ar{font-size:1rem;line-height:1;color:var(--lf-a);flex:0 0 auto}
+.lfoot-nav .next{margin-left:auto}
+.lfoot-nav .lfoot-end{margin:0;color:var(--lf-d);font-size:.84rem}
+@media (max-width:560px){
+  .lfoot-nav a{max-width:100%;flex:1 1 auto;justify-content:center}
+  .lfoot-nav .next{margin-left:0}
+}
+@media print{ .lfoot{display:none!important} }
+
+/* ── ONE CORNER RADIUS, EVERY LESSON TYPE ─────────────────────────────────
+   Paul, 2026-09-19: "even on the teacher notes panel you have rounded corners
+   but not on the neewer ones they are more angle corners."
+
+   He is right, and it is the same failure as the footer: a shared surface with
+   no shared definition. Measured across the two prose engines that evening:
+
+     Teacher Notes    reading 10px   english 4px    <- the same panel, two shapes
+     results / score  reading  4px   english 4px
+     visual panel     reading 10px   -
+
+   So a student walking from Writing Good Sentences to Simple Subjects saw the
+   identical Teacher Notes panel change shape, and inside one reading lesson the
+   Teacher Notes and the results panel disagreed with each other.
+
+   🚨 PANELS ARE 10px. PILLS STAY 999px. Those are the only two shapes a lesson
+   page uses, and --lf-r is here so a future template can read the number instead
+   of typing it again.
+
+   🚨 SCOPED TO THE LESSON WRAPPER, and that is not decoration. This block is
+   injected near the TOP of lesson-template.html and at the END of the <style> in
+   the other four, so source order cannot be relied on to win. .wrap/.wrapx is
+
+   ⚠️ AND NOTE WHAT THE CSS COMMENTS HERE MUST NEVER DO: name a slot token. The
+   generators fill slots with a plain .replace, which takes the FIRST match, so a
+   token spelled inside this string gets substituted into the page and the
+   unfilled-slot guard then fails on the copy it just injected. That is exactly
+   how this block failed its first build, and split/template.html already carried
+   the same warning. Spell it "the CSS slot", never the token itself.
+
+   .wrap/.wrapx puts these at
+   two-class specificity, which beats each template's own single-class rule
+   wherever the block happens to sit. Do not "simplify" these to bare classes. */
+.wrap, .wrapx{ --lf-r:10px }
+.wrap .ground,   .wrapx .ground,
+.wrap .score,    .wrapx .score,
+.wrap .status,   .wrapx .status,
+.wrap .scorebar, .wrapx .scorebar,
+.wrap .dbox,     .wrapx .dbox,
+.wrap .lfoot-hw, .wrapx .lfoot-hw{ border-radius:var(--lf-r,10px) }
 

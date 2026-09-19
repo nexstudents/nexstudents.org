@@ -1659,6 +1659,92 @@ buildWork();
    is the failure `find` needs findsAt to guard against. */
 var dbox  = document.getElementById("dbox");
 var dboxX = document.getElementById("dboxx");
+
+/* ── fullscreen the visual panel ──────────────────────────────────────────
+   🚨 THE PANEL MUST BE OPEN TO BE FULLSCREEN. Going full while collapsed would
+   paint an empty screen over the lesson, which reads as the page having broken.
+   So entering full also un-collapses, and Escape leaves.
+   ⚠️ The body lock is what stops the page scrolling underneath a fullscreen
+   panel on a phone, where a stray drag otherwise moves the lesson behind it. */
+var dboxFull = document.getElementById("dboxfull");
+
+/* 🚨 TWO MECHANISMS, AND BOTH ARE NEEDED. Paul, 2026-09-19: "it needs to work on
+   pc and mobile fullscreen."
+   1. The CLASS is the one that always works. A fixed element covering the
+      viewport behaves identically on every browser, and it is what actually
+      carries the layout.
+   2. The Fullscreen API is asked for ON TOP of that, because only it can hide
+      the browser's own chrome on a PC and on Android - a real fullscreen rather
+      than a big box inside a browser window.
+   ⚠️ iOS Safari has NO requestFullscreen on a div (only on <video>), so on an
+   iPhone step 2 simply never fires and step 1 is the whole feature. That is why
+   the class can never be made conditional on the API succeeding: doing so would
+   ship a dead button to every iPhone, and Kolten's test phone is an iPhone SE. */
+function nativeFullOn(el){
+  var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+  if (!fn) return;
+  try { var p = fn.call(el); if (p && p.catch) p.catch(function(){}); } catch (e) {}
+}
+function nativeFullOff(){
+  if (!(document.fullscreenElement || document.webkitFullscreenElement)) return;
+  var fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+  if (!fn) return;
+  try { var p = fn.call(document); if (p && p.catch) p.catch(function(){}); } catch (e) {}
+}
+/* 🚨 RE-MEASURED, NOT MEASURED ONCE. Entering native fullscreen changes the
+   viewport, and the dock is laid out again at the new size - so a gap measured
+   before the transition is the wrong gap after it. It is also re-run on resize
+   and on rotate, because a phone turning sideways re-flows the dock. */
+function sizeDbFullDock(){
+  if (!dbox || !dbox.classList.contains("is-full")) return;
+  var dockEl = document.querySelector(".player");
+  var dockH = dockEl ? Math.ceil(dockEl.getBoundingClientRect().height) : 104;
+  /* 🚨 EXACTLY THE DOCK HEIGHT, WITH NO BREATHING GAP. A 12px gap was added
+     first and it let a 12px sliver of the lesson page show between the panel
+     and the dock, which reads as the panel being see-through. The dock is
+     already a solid bar with its own padding; it IS the bottom edge. */
+  dbox.style.setProperty("--dbfull-dock", dockH + "px");
+}
+window.addEventListener("resize", sizeDbFullDock);
+window.addEventListener("orientationchange", function(){ setTimeout(sizeDbFullDock, 250); });
+
+function setDboxFull(on, fromBrowser){
+  if (!dbox || !dboxFull) return;
+  if (on && dbox.classList.contains("is-shut")) setDemoOpen(true);
+  dbox.classList.toggle("is-full", !!on);
+  document.documentElement.classList.toggle("dbox-full-open", !!on);
+  document.body.classList.toggle("dbox-full-open", !!on);
+  dboxFull.setAttribute("aria-pressed", on ? "true" : "false");
+  var label = on ? "Exit fullscreen" : "Fullscreen";
+  dboxFull.setAttribute("aria-label", label);
+  dboxFull.setAttribute("title", label);
+  /* 🚨 MEASURE THE DOCK, NEVER GUESS IT. The first build reserved a flat 104px
+     and the play button still sat half under the panel - Paul saw it at once:
+     "you are hiding the play button under the screen". The dock grows with the
+     settings row, the theme and the font size, so the only number that is right
+     on every screen is the one read off the element. */
+  if (on) { sizeDbFullDock(); dbox.scrollTop = 0; }
+  else { dbox.style.removeProperty("--dbfull-dock"); }
+  /* fromBrowser = the browser told US it changed, so do not tell it back. */
+  if (fromBrowser) return;
+  if (on) nativeFullOn(dbox); else nativeFullOff();
+}
+if (dboxFull) dboxFull.addEventListener("click", function(){
+  setDboxFull(!dbox.classList.contains("is-full"));
+});
+/* 🚨 THE BROWSER CAN LEAVE FULLSCREEN WITHOUT US. Escape, the F11 key and
+   Android's back gesture all exit natively, and the panel would have been left
+   painted over the lesson with no way back. */
+["fullscreenchange", "webkitfullscreenchange"].forEach(function(ev){
+  document.addEventListener(ev, function(){
+    var native = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (!native && dbox && dbox.classList.contains("is-full")) setDboxFull(false, true);
+    else if (native) setTimeout(sizeDbFullDock, 60);
+  });
+});
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape" && dbox && dbox.classList.contains("is-full")) setDboxFull(false);
+});
 var curVis = -2;
 
 /* Decided ONCE, from the lesson's own frames. A lesson with pictures is wide for

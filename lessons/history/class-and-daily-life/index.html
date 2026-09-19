@@ -115,7 +115,7 @@
 <div class="ascrim" id="ascrim"></div><aside class="adrawer" id="adrawer" aria-hidden="true" aria-label="Account"><div class="ad-top"><button class="ad-back" id="adBack" type="button" hidden><svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4 6.5 10l6 6"/></svg><span>Back</span></button><h2 class="ad-h" id="adH">Account</h2><button class="ad-x" id="adClose" type="button">Close</button></div><div class="ad-body" id="adBody"></div></aside>
 
   <div class="ns-back"><a href="/grade-7/history/lessons/">&larr; 7th Grade History</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.81ecb799.css">
+<link rel="stylesheet" href="/assets/lesson-shared.e2781eea.css">
 
 <div class="wrap">
 
@@ -304,6 +304,17 @@
          on screen either way, and there is no state where the control is visible
          without the thing it controls being named. -->
     <div class="dbox-foot">
+      <!-- 🚨 AN ICON, NOT A WORD. Paul, 2026-09-19. The label still exists for a
+           screen reader and as the tooltip; only the glyph is on screen, because
+           this row already carries "Close Visual Panel" and two long labels side
+           by side read as a menu rather than a control. -->
+      <button class="dbox-full" type="button" id="dboxfull"
+              aria-pressed="false" aria-label="Fullscreen" title="Fullscreen">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path class="i-in"  d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>
+          <path class="i-out" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>
+        </svg>
+      </button>
       <button class="dbox-x" type="button" id="dboxx" aria-expanded="true">Close Visual Panel</button>
     </div>
   </div>
@@ -801,7 +812,7 @@ var QUESTIONS = [
 var LESSON_TITLE = "Social Class, Slavery, and Daily Life";
 var LESSON_UNIT  = "World History · U1-L5";
 </script>
-<script src="/assets/lesson-engine-english-1.76054e5a.js"></script>
+<script src="/assets/lesson-engine-english-1.647e8a8d.js"></script>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
 <script src="/assets/ns-account.js?v=79acc1f3"></script>
