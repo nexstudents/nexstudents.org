@@ -1007,7 +1007,14 @@ h2{
 
 /* ---------- score ---------- */
 .score{
-  border:1px solid var(--rule);border-top:3px solid var(--verdigris);
+  /* 🚨 NO ACCENT BAR ON THE RESULTS. It was border-top:3px var(--verdigris),
+     and --verdigris is the THEME accent, so the results box wore a 3px stripe
+     in whatever colour the theme happened to be - grey on Graphite, which is
+     what Paul saw: "you have a graphite boader along the top of the box".
+     It also implied a verdict the box must not give: this panel shows 29% as
+     readily as 100%, so it has no business being coloured. Plain rule, exactly
+     like .status right below it. */
+  border:1px solid var(--rule);
   border-radius:4px;background:var(--surface);
   padding:22px;margin-top:26px;text-align:center;
   font-family:"IBM Plex Sans",system-ui,sans-serif;display:none;
