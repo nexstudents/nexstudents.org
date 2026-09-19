@@ -507,7 +507,7 @@ const GRADE7 = {
       { n: 3, title: "Simple Subjects and Simple Predicates", page: 40, slug: "english/simple-subjects-and-simple-predicates" },
       { title: "Forming Compound Subjects and Predicates", book: "Revising Strategies: Forming Compound Subjects and Predicates", page: 43, craft: true,
         slug: "english/forming-compound-subjects-and-predicates" },
-      { n: 4, title: "Finding the Subject", page: 45 },
+      { n: 4, title: "Finding the Subject", page: 45, slug: "english/finding-the-subject" },
       { n: 5, title: "Conjunctions", page: 48 },
       { n: 6, title: "Fragments and Run-ons", page: 51 },
       { title: "Forming Compound and Complex Sentences", book: "Revising Strategies: Forming Compound and Complex Sentences", page: 55, craft: true },
