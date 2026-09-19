@@ -796,6 +796,20 @@ h2{
   position:static;left:auto;right:auto;bottom:auto;z-index:auto;
   width:100%;max-width:1100px;margin:10px auto 0;flex:none;
 }
+/* 🚨 THE HIDE SWITCH COMES WITH IT. Paul, 2026-09-19: "the slider that hides the
+   voice engine is still not there you just put the engine inside the full screen
+   but the slider itself is not there." It is a separate fixed element at
+   z-index 41, so a panel at 80 simply covered it - the dock arrived in
+   fullscreen with no way to collapse it.
+   ⚠️ pointer-events is OFF on the label and back ON for the track, because the
+   label is stretched to the dock width to line the switch up with it. Without
+   that, a click anywhere along that row would toggle the player. */
+.dbox.is-full .playerhide{
+  position:static;right:auto;bottom:auto;z-index:auto;
+  width:100%;max-width:1100px;margin:0 auto;
+  display:flex;justify-content:flex-end;pointer-events:none;
+}
+.dbox.is-full .playerhide .track{pointer-events:auto}
 .dbox.is-full .dbox-in{flex:1 1 auto;min-height:0}
 html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 /* The icon button. 44px so it is a real touch target on a phone. */
@@ -3732,17 +3746,26 @@ function nativeFullOff(){
    the dock returns to its own slot in the DOM rather than to the end of body -
    the player is position:fixed normally, so a wrong parent would look correct
    right up until something else re-flowed. */
-var dockHome = null;
+var dockHomes = null;
 function dockIntoPanel(on){
-  var dockEl = document.querySelector(".player");
-  if (!dockEl || !dbox) return;
+  /* 🚨 THE SWITCH TRAVELS WITH THE BAR. They are two separate fixed elements and
+     moving only the bar left the student in fullscreen with no way to collapse
+     it. Order matters: the switch is appended FIRST so it sits above the bar,
+     which is where it lives on the page. */
+  if (!dbox) return;
+  var els = [document.querySelector(".playerhide"), document.querySelector(".player")].filter(Boolean);
+  if (!els.length) return;
   if (on) {
-    if (dockEl.parentNode === dbox) return;
-    dockHome = { parent: dockEl.parentNode, next: dockEl.nextSibling };
-    dbox.appendChild(dockEl);
-  } else if (dockHome) {
-    dockHome.parent.insertBefore(dockEl, dockHome.next);
-    dockHome = null;
+    if (dockHomes) return;
+    dockHomes = els.map(function(el){
+      var home = { el: el, parent: el.parentNode, next: el.nextSibling };
+      dbox.appendChild(el);
+      return home;
+    });
+  } else if (dockHomes) {
+    /* Backwards, so each one lands before the sibling it was recorded against. */
+    dockHomes.slice().reverse().forEach(function(h){ h.parent.insertBefore(h.el, h.next); });
+    dockHomes = null;
   }
 }
 

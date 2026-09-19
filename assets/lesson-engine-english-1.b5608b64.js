@@ -1542,17 +1542,26 @@ function nativeFullOff(){
    the dock returns to its own slot in the DOM rather than to the end of body -
    the player is position:fixed normally, so a wrong parent would look correct
    right up until something else re-flowed. */
-var dockHome = null;
+var dockHomes = null;
 function dockIntoPanel(on){
-  var dockEl = document.querySelector(".player");
-  if (!dockEl || !dbox) return;
+  /* 🚨 THE SWITCH TRAVELS WITH THE BAR. They are two separate fixed elements and
+     moving only the bar left the student in fullscreen with no way to collapse
+     it. Order matters: the switch is appended FIRST so it sits above the bar,
+     which is where it lives on the page. */
+  if (!dbox) return;
+  var els = [document.querySelector(".playerhide"), document.querySelector(".player")].filter(Boolean);
+  if (!els.length) return;
   if (on) {
-    if (dockEl.parentNode === dbox) return;
-    dockHome = { parent: dockEl.parentNode, next: dockEl.nextSibling };
-    dbox.appendChild(dockEl);
-  } else if (dockHome) {
-    dockHome.parent.insertBefore(dockEl, dockHome.next);
-    dockHome = null;
+    if (dockHomes) return;
+    dockHomes = els.map(function(el){
+      var home = { el: el, parent: el.parentNode, next: el.nextSibling };
+      dbox.appendChild(el);
+      return home;
+    });
+  } else if (dockHomes) {
+    /* Backwards, so each one lands before the sibling it was recorded against. */
+    dockHomes.slice().reverse().forEach(function(h){ h.parent.insertBefore(h.el, h.next); });
+    dockHomes = null;
   }
 }
 
