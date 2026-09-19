@@ -103,19 +103,20 @@ const LIFE = {
            not exist. Delete the `thumb` here the day the lesson ships, since
            `shelf: { thumb: true }` on the lesson then derives the same path. */
         { label: "2-4", title: "Organ Transplants, and the Questions They Raise", book: "Science and Society: Organ Transplants", page: 46, kind: "lesson",
-          thumb: "/lessons/science/organ-transplants-and-the-questions-they-raise/thumb.jpg" },
+          slug: "science/organ-transplants-and-the-questions-they-raise" },
         { label: "T", title: "Technology: A Touch of Diamonds", page: 33, kind: "feature" },
         { label: "PS", title: "Problem Solving: A Tale of a Tail", page: 40, kind: "feature" },
         { label: "2-1A", title: "Activity: Comparing Plant and Animal Cells", page: 43, kind: "activity" },
         { label: "2-2A", title: "Activity: Comparing Plant and Animal Tissues", page: 48, kind: "activity" },
         { label: "2-5", title: "Unit 2 Review: Inside the Cell", kind: "review",
-          thumb: "/lessons/science/unit-2-review/thumb.jpg" },
+          slug: "science/unit-2-review" },
       ],
     },
     {
       n: 3, page: 52, title: "How Cells Work", book: "Cell Processes", bookUnit: 1, bookUnitTitle: "Life",
       items: [
-        { label: "3-1", title: "What Living Things Are Made Of", book: "Chemistry of Living Things", page: 54, kind: "lesson" },
+        { label: "3-1", title: "What Living Things Are Made Of", book: "Chemistry of Living Things", page: 54, kind: "lesson",
+          slug: "science/what-living-things-are-made-of" },
         { label: "3-2", title: "How Things Get In and Out of a Cell", book: "Cell Transport", page: 58, kind: "lesson",
           slug: "science/how-things-get-in-and-out-of-a-cell" },
         { label: "3-3", title: "Where a Cell Gets Its Energy", book: "Energy in Cells", page: 63, kind: "lesson",
