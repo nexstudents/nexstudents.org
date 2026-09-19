@@ -823,11 +823,21 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
    the moment the button carried the name itself. One item, so it is genuinely
    centred rather than a centred GROUP - two things in a centred row is the trap
    where neither of them lands on the middle. */
+/* 🚨 THREE COLUMNS, NOT flex+center. Paul, 2026-09-19: "close visual panel text
+   is not centered" - and it was not, because the fullscreen icon is a sibling.
+   justify-content:center centres the GROUP, so the label sat pushed right by
+   half the width of the icon beside it. 1fr auto 1fr gives the label its own
+   column, so it lands on the panel centre line whatever sits to its left. This
+   is the same fix .ground summary already uses for its chevron, and the trap is
+   written up in CLAUDE.md under the five ways to get centring wrong. */
 .dbox-foot{
-  display:flex;justify-content:center;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   margin:10px 0 0;padding-top:8px;
   border-top:1px solid var(--rule, var(--line));
 }
+/* The icon sits in column one, hard left; the label owns the middle. */
+.dbox-foot .dbox-full{justify-self:start}
+.dbox-foot .dbox-x{grid-column:2}
 /* 🚨 THE WHOLE ROW IS THE TAP TARGET, NOT JUST THE WORDS. Paul, 2026-09-14:
    "it's also hard to tap on if not pressed directly in the middle text of the
    panel." It was a 12px text button with 4px of padding, so the hit area was the
