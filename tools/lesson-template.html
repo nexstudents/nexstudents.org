@@ -73,6 +73,9 @@ __NAV__
   --verdigris-soft:rgba(37,102,74,.12);
   --porphyry:#8A2F3F;
   --porphyry-soft:rgba(138,47,63,.10);
+  /* 🚨 RIGHT IS GREEN ON EVERY THEME. Never move these into THEMES. */
+  --laurel:#15803D;
+  --laurel-soft:rgba(21,128,61,.12);
   --brass:#7E6A16;
   --band:rgba(158,138,40,.42);
   --word:rgba(158,138,40,.85);
@@ -98,6 +101,8 @@ __NAV__
     --verdigris-soft:rgba(102,194,147,.16);
     --porphyry:#E08497;
     --porphyry-soft:rgba(224,132,151,.16);
+    --laurel:#4ADE80;
+    --laurel-soft:rgba(74,222,128,.16);
     --brass:#D8B355;
     --band:rgba(216,179,85,.42);
     --word:rgba(216,179,85,.85);
@@ -123,6 +128,8 @@ __NAV__
   --verdigris-soft:rgba(102,194,147,.16);
   --porphyry:#E08497;
   --porphyry-soft:rgba(224,132,151,.16);
+  --laurel:#4ADE80;
+  --laurel-soft:rgba(74,222,128,.16);
   --brass:#D8B355;
   --band:rgba(216,179,85,.42);
   --word:rgba(216,179,85,.85);
@@ -1019,10 +1026,10 @@ h2{
   padding:12px 14px;cursor:pointer;
   transition:border-color .15s,background .15s;
 }
-.choice:hover:not(:disabled){border-color:var(--verdigris)}
+.choice:hover:not(:disabled){background:var(--surface);border-color:var(--rule)}
 .choice:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
 .choice:disabled{cursor:default}
-.choice.right{background:var(--verdigris-soft);border-color:var(--verdigris);font-weight:600}
+.choice.right{background:var(--laurel-soft);border-color:var(--laurel);color:var(--laurel);font-weight:600}
 .choice.wrong{background:var(--porphyry-soft);border-color:var(--porphyry)}
 /* 🚨 A BOX, AND PLAIN GREEN OR RED. Paul, 2026-09-04: "make the box and this
    answer green text ... if wrong say incorrect making everything red."

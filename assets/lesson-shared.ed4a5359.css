@@ -209,7 +209,10 @@ h1{margin:0 0 6px}
 .choice{background:transparent;border:1px solid var(--line);border-radius:9px;
   color:var(--fg);font:inherit;font-size:1.02rem;padding:9px 15px;cursor:pointer;
   transition:background .12s,border-color .12s}
-.choice:hover:not(:disabled){border-color:var(--a)}
+/* Hover is a lift, NOT an accent border: an accent border is what a chosen
+   answer looks like, and a cursor resting over a choice while the page
+   scrolls made one box look already picked. Paul, 2026-09-19. */
+.choice:hover:not(:disabled){background:var(--panel);border-color:var(--line)}
 .choice:disabled{cursor:default}
 .choice.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
 .choice.wrong{border-color:#e5484d;color:#e5484d}
