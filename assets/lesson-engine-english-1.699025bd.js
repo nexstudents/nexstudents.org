@@ -1538,18 +1538,23 @@ function nativeFullOff(){
    viewport, and the dock is laid out again at the new size - so a gap measured
    before the transition is the wrong gap after it. It is also re-run on resize
    and on rotate, because a phone turning sideways re-flows the dock. */
-function sizeDbFullDock(){
-  if (!dbox || !dbox.classList.contains("is-full")) return;
+/* 🚨 PUT IT BACK EXACTLY WHERE IT WAS. The anchor is captured on the way in, so
+   the dock returns to its own slot in the DOM rather than to the end of body -
+   the player is position:fixed normally, so a wrong parent would look correct
+   right up until something else re-flowed. */
+var dockHome = null;
+function dockIntoPanel(on){
   var dockEl = document.querySelector(".player");
-  var dockH = dockEl ? Math.ceil(dockEl.getBoundingClientRect().height) : 104;
-  /* 🚨 EXACTLY THE DOCK HEIGHT, WITH NO BREATHING GAP. A 12px gap was added
-     first and it let a 12px sliver of the lesson page show between the panel
-     and the dock, which reads as the panel being see-through. The dock is
-     already a solid bar with its own padding; it IS the bottom edge. */
-  dbox.style.setProperty("--dbfull-dock", dockH + "px");
+  if (!dockEl || !dbox) return;
+  if (on) {
+    if (dockEl.parentNode === dbox) return;
+    dockHome = { parent: dockEl.parentNode, next: dockEl.nextSibling };
+    dbox.appendChild(dockEl);
+  } else if (dockHome) {
+    dockHome.parent.insertBefore(dockEl, dockHome.next);
+    dockHome = null;
+  }
 }
-window.addEventListener("resize", sizeDbFullDock);
-window.addEventListener("orientationchange", function(){ setTimeout(sizeDbFullDock, 250); });
 
 function setDboxFull(on, fromBrowser){
   if (!dbox || !dboxFull) return;
@@ -1566,8 +1571,8 @@ function setDboxFull(on, fromBrowser){
      "you are hiding the play button under the screen". The dock grows with the
      settings row, the theme and the font size, so the only number that is right
      on every screen is the one read off the element. */
-  if (on) { sizeDbFullDock(); dbox.scrollTop = 0; }
-  else { dbox.style.removeProperty("--dbfull-dock"); }
+  dockIntoPanel(!!on);
+  if (on) dbox.scrollTop = 0;
   /* fromBrowser = the browser told US it changed, so do not tell it back. */
   if (fromBrowser) return;
   /* 🚨 FULLSCREEN THE PAGE, NOT THE PANEL. Paul, 2026-09-19: "this is not a true
@@ -1591,7 +1596,6 @@ if (dboxFull) dboxFull.addEventListener("click", function(){
   document.addEventListener(ev, function(){
     var native = !!(document.fullscreenElement || document.webkitFullscreenElement);
     if (!native && dbox && dbox.classList.contains("is-full")) setDboxFull(false, true);
-    else if (native) setTimeout(sizeDbFullDock, 60);
   });
 });
 document.addEventListener("keydown", function(e){

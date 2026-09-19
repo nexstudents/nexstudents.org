@@ -685,9 +685,18 @@ h2{
 
    ⚠️ .is-wide sets margin-left:50% and a translateX to break out of the column.
    Both have to be unset here or the panel sits half a screen to the right. */
+/* 🚨 THE PANEL IS THE WHOLE SCREEN AND THE DOCK MOVES INSIDE IT.
+   Three builds tried to leave a gap at the bottom for the docked player, and the
+   last one failed INVISIBLY: in native fullscreen the page reported innerHeight
+   994 while the window was really 840, so a dock pinned to the bottom of "the
+   viewport" sat 150px below the glass. Every measurement said the scrub bar was
+   on screen. It was not, and Paul told me so three times.
+   Reserving space for an element you do not control is the mistake. The dock is
+   RE-PARENTED into the panel on the way in and put back on the way out, so the
+   controls live inside the thing that is fullscreen and cannot be lost whatever
+   the viewport claims. It is also how a video player does it. */
 .dbox.is-full{
-  --dbfull-dock:104px;
-  position:fixed;left:0;right:0;top:0;bottom:var(--dbfull-dock);
+  position:fixed;inset:0;
   /* 🚨 ABOVE THE SITE NAV (z-index 60), BELOW the picture lightbox (200).
      In true fullscreen the whole page still renders, so the sticky site nav
      sat across the top of the panel and it did not read as fullscreen at all.
@@ -719,6 +728,14 @@ h2{
 .dbox.is-full .dbox-foot{max-width:1100px;margin-inline:auto;width:100%}
 /* A short screen has no room for the dock AND a 16:9 frame. */
 @media (max-height:560px){ .dbox.is-full{--dbfull-dock:0px} }
+/* The dock, once it is a child of the panel: a normal block at the foot of the
+   column instead of a fixed bar. Every control and every handler is unchanged;
+   only where it sits changes. */
+.dbox.is-full .player{
+  position:static;left:auto;right:auto;bottom:auto;z-index:auto;
+  width:100%;max-width:1100px;margin:10px auto 0;flex:none;
+}
+.dbox.is-full .dbox-in{flex:1 1 auto;min-height:0}
 html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 /* The icon button. 44px so it is a real touch target on a phone. */
 .dbox-full{
