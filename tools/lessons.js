@@ -39,6 +39,7 @@ const LESSONS = [
   require('./content/grade-7/maths/unit-1/order-of-operations'),
   require('./content/grade-7/english/unit-1/kinds-of-sentences'),
   require('./content/grade-7/english/unit-1/writing-good-sentences'),
+  require('./content/grade-7/english/unit-1/finding-the-subject'),
   require('./content/grade-7/science/unit-3/what-living-things-are-made-of'),
   require('./content/grade-7/science/unit-3/how-things-get-in-and-out-of-a-cell'),
   require('./content/grade-7/science/unit-3/where-a-cell-gets-its-energy'),

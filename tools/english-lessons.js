@@ -61,7 +61,6 @@ const ENGLISH = [
   require('./content/grade-3/english/unit-2/verbs-action-and-being'),
   require('./content/grade-7/english/unit-1/simple-subjects-and-simple-predicates'),
   require('./content/grade-7/english/unit-1/forming-compound-subjects-and-predicates'),
-  require('./content/grade-7/english/unit-1/finding-the-subject'),
 ];
 
 module.exports = { ENGLISH };
