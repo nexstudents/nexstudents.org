@@ -268,6 +268,22 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .hnote{font-size:.85rem;color:var(--dim);margin:14px 0 0}
 
 /* ── 2. GRADE PICKER — the main CTA target ── */
+/* ── THE GRADE DROPDOWN ON THE HOME PAGE ──────────────────────────────────
+   Paul, 2026-09-19: Start Here opens the grades instead of leaving for the
+   placement exam, and they slide down.
+   🚨 OPEN IS THE DEFAULT STATE, AND THAT IS THE WHOLE SAFETY OF IT. The
+   collapse is added by script on load, so with JS off the grades are simply on
+   screen the way they have always been. The home page grades anchor is linked
+   from the mega menu on EVERY page of the site, so a collapsed-by-default picker
+   would send every one of those visitors to a section showing nothing.
+   ⚠️ 0fr/1fr rather than max-height: a max-height guess either clips the row on
+   a narrow screen or leaves dead space on a wide one, and the grid has nine
+   cells that wrap differently at every width. */
+.gwrap{display:grid;grid-template-rows:1fr;
+  transition:grid-template-rows .34s ease,opacity .22s ease}
+.gwrap>.grades{min-height:0;overflow:hidden}
+.gwrap.is-shut{grid-template-rows:0fr;opacity:0}
+@media (prefers-reduced-motion:reduce){ .gwrap{transition:none} }
 .grades{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:10px}
 @media(max-width:900px){ .grades{grid-template-columns:repeat(5,minmax(0,1fr))} }
 @media(max-width:480px){ .grades{grid-template-columns:repeat(3,minmax(0,1fr))} }

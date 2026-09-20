@@ -44,7 +44,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=13b8d505">
+<link rel="stylesheet" href="/assets/ns.css?v=e02db764">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -134,11 +134,20 @@
            ⛔ Start Here no longer takes the accent either - he asked for the
            colour change to stop. It is .ghost now, the same white as every
            other button on the site. -->
+      <!-- 🚨 START HERE OPENS THE GRADES, IT DOES NOT LEAVE THE PAGE. Paul,
+           2026-09-19: "i want it to display the grades in a dropdown so when they
+           press start here the grades appear on the homepage and slide down ...
+           we will not be using that for the exam right now and the main thing
+           will be the grades." It used to go to /placement-exam.html.
+           ⚠️ IT IS STILL A REAL LINK TO #grades, not a button. With JS off the
+           grades are already on screen and this jumps to them; the script below
+           is what turns it into a dropdown. The exam page is untouched and still
+           reachable from For Parents. -->
       <div class="hacts">
-        <a class="btn ghost" href="/placement-exam.html">Start Here</a>
+        <a class="btn ghost" href="#grades" id="startHere">Start Here</a>
       </div>
-      <p class="hnote">Not sure of the level? The reading placement exam is free and
-        marked the moment it is finished.</p>
+      <p class="hnote">Nine grades, Kindergarten through 8th. Pick the one you need
+        and everything in it is one tap away.</p>
     </div>
   </div>
 </div>
@@ -146,6 +155,21 @@
 <!-- ═══ 2. GRADE PICKER ═══ -->
 <div class="wrap" id="grades" style="padding-bottom:var(--rhythm)">
   <p class="kick rv">Already know the level &middot; pick a grade</p>
+  <!-- ⚠️ THE WRAPPER IS OUTSIDE `.grades`, AND IT HAS TO STAY THAT WAY.
+       build-pages.js splices this picker by finding `<div class="grades rv d1">
+    <a class="gr live" href="/grade-k/"><b>K</b><span>Live</span></a>
+    <a class="gr live" href="/grade-1/"><b>1</b><span>Live</span></a>
+    <a class="gr live" href="/grade-2/"><b>2</b><span>Live</span></a>
+    <a class="gr live" href="/grade-3/"><b>3</b><span>Live</span></a>
+    <a class="gr live" href="/grade-4/"><b>4</b><span>Live</span></a>
+    <a class="gr live" href="/grade-5/"><b>5</b><span>Live</span></a>
+    <a class="gr live" href="/grade-6/"><b>6</b><span>Live</span></a>
+    <a class="gr live" href="/grade-7/"><b>7</b><span>Live</span></a>
+    <a class="gr live" href="/grade-8/"><b>8</b><span>Live</span></a>
+  </div>`. Every cell is an <a>, so that first closing tag
+       is the picker's own. Nesting anything else inside would make the splice cut
+       in the wrong place and silently eat the markup. -->
+  <div class="gwrap" id="gwrap">
   <div class="grades rv d1">
     <a class="gr live" href="/grade-k/"><b>K</b><span>Live</span></a>
     <a class="gr live" href="/grade-1/"><b>1</b><span>Live</span></a>
@@ -156,6 +180,7 @@
     <a class="gr live" href="/grade-6/"><b>6</b><span>Live</span></a>
     <a class="gr live" href="/grade-7/"><b>7</b><span>Live</span></a>
     <a class="gr live" href="/grade-8/"><b>8</b><span>Live</span></a>
+  </div>
   </div>
 </div>
 
@@ -1294,6 +1319,48 @@ if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measureRail);
 
 
 
+
+
+
+<!-- 🚨 OUTSIDE THE NAV-SCRIPT MARKERS ON PURPOSE. build-pages.js replaces
+     everything between ns:nav-script and /ns:nav-script on every build, so
+     anything home-specific written in there is gone the next time the site is
+     generated. This block is home-only, so it lives here. -->
+<script>
+(function(){
+  var wrap = document.getElementById("gwrap");
+  var btn  = document.getElementById("startHere");
+  var sect = document.getElementById("grades");
+  if (!wrap || !btn || !sect) return;
+
+  /* 🚨 THE COLLAPSE IS ADDED HERE, NOT IN THE MARKUP. The grades ship visible so
+     that a reader with no JavaScript, and every `#grades` link in the mega menu,
+     still land on something. Only once this runs does it become a dropdown. */
+  var openAtLoad = location.hash === "#grades";
+  if (!openAtLoad) wrap.classList.add("is-shut");
+  btn.setAttribute("aria-controls", "gwrap");
+  btn.setAttribute("aria-expanded", openAtLoad ? "true" : "false");
+
+  function setOpen(on){
+    wrap.classList.toggle("is-shut", !on);
+    btn.setAttribute("aria-expanded", on ? "true" : "false");
+  }
+
+  btn.addEventListener("click", function(e){
+    e.preventDefault();
+    var willOpen = wrap.classList.contains("is-shut");
+    setOpen(willOpen);
+    /* Scroll only when opening. Scrolling on the close leaves the reader staring
+       at a gap where the thing they just shut used to be. */
+    if (willOpen) sect.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  /* Arriving from another page's mega menu, which links /#grades. */
+  addEventListener("hashchange", function(){
+    if (location.hash === "#grades") setOpen(true);
+  });
+})();
+</script>
 
 <!-- ns:nav-script -->
 <script src="/assets/supabase-config.js?v=525295e0"></script>

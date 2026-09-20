@@ -653,7 +653,19 @@ h2{
 }
 .dbox.is-shut .dbox-sent{display:none}
 .dbox.is-wide .dbox-in{min-height:0}
-.dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
+/* 🚨 16:9 INLINE TOO, NOT ONLY IN FULLSCREEN. Paul, 2026-09-19: "iwant the
+   aspect even not in fullscreen to still be 16x9". The frame is then the same
+   shape in both places, and it is already the shape a lesson video needs - so
+   dropping a video in later does not change the size of the box the student has
+   been reading next to.
+   ⚠️ min-height is GONE on purpose. Two rules fighting over one box is what made
+   the panel jump between frames; aspect-ratio owns the height now, and overflow
+   catches the rare frame whose text is taller than the ratio allows. */
+.dbox-in{aspect-ratio:16/9;min-height:0;overflow:auto;
+  display:flex;flex-direction:column;justify-content:center}
+/* Fullscreen hands the ratio to the ART instead, so the frame can use the whole
+   screen rather than being capped by the box it sits in. */
+.dbox.is-full .dbox-in{aspect-ratio:auto;overflow:visible}
 /* The Coming Soon state: the sentence bar stays, the frame area says so. */
 .dbox.is-soon .dbox-in{min-height:96px;justify-content:center;text-align:center}
 .dbox-soon{
@@ -744,10 +756,24 @@ h2{
 
    ⚠️ .is-wide sets margin-left:50% and a translateX to break out of the column.
    Both have to be unset here or the panel sits half a screen to the right. */
+/* 🚨 THE PANEL IS THE WHOLE SCREEN AND THE DOCK MOVES INSIDE IT.
+   Three builds tried to leave a gap at the bottom for the docked player, and the
+   last one failed INVISIBLY: in native fullscreen the page reported innerHeight
+   994 while the window was really 840, so a dock pinned to the bottom of "the
+   viewport" sat 150px below the glass. Every measurement said the scrub bar was
+   on screen. It was not, and Paul told me so three times.
+   Reserving space for an element you do not control is the mistake. The dock is
+   RE-PARENTED into the panel on the way in and put back on the way out, so the
+   controls live inside the thing that is fullscreen and cannot be lost whatever
+   the viewport claims. It is also how a video player does it. */
 .dbox.is-full{
-  --dbfull-dock:104px;
-  position:fixed;left:0;right:0;top:0;bottom:var(--dbfull-dock);
-  z-index:50;max-width:none;width:auto;margin:0;transform:none;
+  position:fixed;inset:0;
+  /* 🚨 ABOVE THE SITE NAV (z-index 60), BELOW the picture lightbox (200).
+     In true fullscreen the whole page still renders, so the sticky site nav
+     sat across the top of the panel and it did not read as fullscreen at all.
+     ⚠️ Raising this does NOT hide the reading dock: the dock stays visible
+     because the panel STOPS ABOVE IT by geometry, never by stacking order. */
+  z-index:80;max-width:none;width:auto;margin:0;transform:none;
   border:0;border-radius:0;background:var(--ground, var(--bg));
   display:flex;flex-direction:column;justify-content:center;
   padding:20px clamp(16px,5vw,64px);overflow-y:auto;
@@ -773,6 +799,28 @@ h2{
 .dbox.is-full .dbox-foot{max-width:1100px;margin-inline:auto;width:100%}
 /* A short screen has no room for the dock AND a 16:9 frame. */
 @media (max-height:560px){ .dbox.is-full{--dbfull-dock:0px} }
+/* The dock, once it is a child of the panel: a normal block at the foot of the
+   column instead of a fixed bar. Every control and every handler is unchanged;
+   only where it sits changes. */
+.dbox.is-full .player{
+  position:static;left:auto;right:auto;bottom:auto;z-index:auto;
+  width:100%;max-width:1100px;margin:10px auto 0;flex:none;
+}
+/* 🚨 THE HIDE SWITCH COMES WITH IT. Paul, 2026-09-19: "the slider that hides the
+   voice engine is still not there you just put the engine inside the full screen
+   but the slider itself is not there." It is a separate fixed element at
+   z-index 41, so a panel at 80 simply covered it - the dock arrived in
+   fullscreen with no way to collapse it.
+   ⚠️ pointer-events is OFF on the label and back ON for the track, because the
+   label is stretched to the dock width to line the switch up with it. Without
+   that, a click anywhere along that row would toggle the player. */
+.dbox.is-full .playerhide{
+  position:static;right:auto;bottom:auto;z-index:auto;
+  width:100%;max-width:1100px;margin:0 auto;
+  display:flex;justify-content:flex-end;pointer-events:none;
+}
+.dbox.is-full .playerhide .track{pointer-events:auto}
+.dbox.is-full .dbox-in{flex:1 1 auto;min-height:0}
 html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 /* The icon button. 44px so it is a real touch target on a phone. */
 .dbox-full{
@@ -821,11 +869,21 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
    the moment the button carried the name itself. One item, so it is genuinely
    centred rather than a centred GROUP - two things in a centred row is the trap
    where neither of them lands on the middle. */
+/* 🚨 THREE COLUMNS, NOT flex+center. Paul, 2026-09-19: "close visual panel text
+   is not centered" - and it was not, because the fullscreen icon is a sibling.
+   justify-content:center centres the GROUP, so the label sat pushed right by
+   half the width of the icon beside it. 1fr auto 1fr gives the label its own
+   column, so it lands on the panel centre line whatever sits to its left. This
+   is the same fix .ground summary already uses for its chevron, and the trap is
+   written up in CLAUDE.md under the five ways to get centring wrong. */
 .dbox-foot{
-  display:flex;justify-content:center;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   margin:10px 0 0;padding-top:8px;
   border-top:1px solid var(--rule, var(--line));
 }
+/* The icon sits in column one, hard left; the label owns the middle. */
+.dbox-foot .dbox-full{justify-self:start}
+.dbox-foot .dbox-x{grid-column:2}
 /* 🚨 THE WHOLE ROW IS THE TAP TARGET, NOT JUST THE WORDS. Paul, 2026-09-14:
    "it's also hard to tap on if not pressed directly in the middle text of the
    panel." It was a 12px text button with 4px of padding, so the hit area was the
@@ -1046,7 +1104,19 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 }
 .dbox.is-shut .dbox-sent{display:none}
 .dbox.is-wide .dbox-in{min-height:0}
-.dbox-in{min-height:124px;display:flex;flex-direction:column;justify-content:center}
+/* 🚨 16:9 INLINE TOO, NOT ONLY IN FULLSCREEN. Paul, 2026-09-19: "iwant the
+   aspect even not in fullscreen to still be 16x9". The frame is then the same
+   shape in both places, and it is already the shape a lesson video needs - so
+   dropping a video in later does not change the size of the box the student has
+   been reading next to.
+   ⚠️ min-height is GONE on purpose. Two rules fighting over one box is what made
+   the panel jump between frames; aspect-ratio owns the height now, and overflow
+   catches the rare frame whose text is taller than the ratio allows. */
+.dbox-in{aspect-ratio:16/9;min-height:0;overflow:auto;
+  display:flex;flex-direction:column;justify-content:center}
+/* Fullscreen hands the ratio to the ART instead, so the frame can use the whole
+   screen rather than being capped by the box it sits in. */
+.dbox.is-full .dbox-in{aspect-ratio:auto;overflow:visible}
 /* The Coming Soon state: the sentence bar stays, the frame area says so. */
 .dbox.is-soon .dbox-in{min-height:96px;justify-content:center;text-align:center}
 .dbox-soon{
@@ -1137,10 +1207,24 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 
    ⚠️ .is-wide sets margin-left:50% and a translateX to break out of the column.
    Both have to be unset here or the panel sits half a screen to the right. */
+/* 🚨 THE PANEL IS THE WHOLE SCREEN AND THE DOCK MOVES INSIDE IT.
+   Three builds tried to leave a gap at the bottom for the docked player, and the
+   last one failed INVISIBLY: in native fullscreen the page reported innerHeight
+   994 while the window was really 840, so a dock pinned to the bottom of "the
+   viewport" sat 150px below the glass. Every measurement said the scrub bar was
+   on screen. It was not, and Paul told me so three times.
+   Reserving space for an element you do not control is the mistake. The dock is
+   RE-PARENTED into the panel on the way in and put back on the way out, so the
+   controls live inside the thing that is fullscreen and cannot be lost whatever
+   the viewport claims. It is also how a video player does it. */
 .dbox.is-full{
-  --dbfull-dock:104px;
-  position:fixed;left:0;right:0;top:0;bottom:var(--dbfull-dock);
-  z-index:50;max-width:none;width:auto;margin:0;transform:none;
+  position:fixed;inset:0;
+  /* 🚨 ABOVE THE SITE NAV (z-index 60), BELOW the picture lightbox (200).
+     In true fullscreen the whole page still renders, so the sticky site nav
+     sat across the top of the panel and it did not read as fullscreen at all.
+     ⚠️ Raising this does NOT hide the reading dock: the dock stays visible
+     because the panel STOPS ABOVE IT by geometry, never by stacking order. */
+  z-index:80;max-width:none;width:auto;margin:0;transform:none;
   border:0;border-radius:0;background:var(--ground, var(--bg));
   display:flex;flex-direction:column;justify-content:center;
   padding:20px clamp(16px,5vw,64px);overflow-y:auto;
@@ -1166,6 +1250,28 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 .dbox.is-full .dbox-foot{max-width:1100px;margin-inline:auto;width:100%}
 /* A short screen has no room for the dock AND a 16:9 frame. */
 @media (max-height:560px){ .dbox.is-full{--dbfull-dock:0px} }
+/* The dock, once it is a child of the panel: a normal block at the foot of the
+   column instead of a fixed bar. Every control and every handler is unchanged;
+   only where it sits changes. */
+.dbox.is-full .player{
+  position:static;left:auto;right:auto;bottom:auto;z-index:auto;
+  width:100%;max-width:1100px;margin:10px auto 0;flex:none;
+}
+/* 🚨 THE HIDE SWITCH COMES WITH IT. Paul, 2026-09-19: "the slider that hides the
+   voice engine is still not there you just put the engine inside the full screen
+   but the slider itself is not there." It is a separate fixed element at
+   z-index 41, so a panel at 80 simply covered it - the dock arrived in
+   fullscreen with no way to collapse it.
+   ⚠️ pointer-events is OFF on the label and back ON for the track, because the
+   label is stretched to the dock width to line the switch up with it. Without
+   that, a click anywhere along that row would toggle the player. */
+.dbox.is-full .playerhide{
+  position:static;right:auto;bottom:auto;z-index:auto;
+  width:100%;max-width:1100px;margin:0 auto;
+  display:flex;justify-content:flex-end;pointer-events:none;
+}
+.dbox.is-full .playerhide .track{pointer-events:auto}
+.dbox.is-full .dbox-in{flex:1 1 auto;min-height:0}
 html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 /* The icon button. 44px so it is a real touch target on a phone. */
 .dbox-full{
@@ -1214,11 +1320,21 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
    the moment the button carried the name itself. One item, so it is genuinely
    centred rather than a centred GROUP - two things in a centred row is the trap
    where neither of them lands on the middle. */
+/* 🚨 THREE COLUMNS, NOT flex+center. Paul, 2026-09-19: "close visual panel text
+   is not centered" - and it was not, because the fullscreen icon is a sibling.
+   justify-content:center centres the GROUP, so the label sat pushed right by
+   half the width of the icon beside it. 1fr auto 1fr gives the label its own
+   column, so it lands on the panel centre line whatever sits to its left. This
+   is the same fix .ground summary already uses for its chevron, and the trap is
+   written up in CLAUDE.md under the five ways to get centring wrong. */
 .dbox-foot{
-  display:flex;justify-content:center;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   margin:10px 0 0;padding-top:8px;
   border-top:1px solid var(--rule, var(--line));
 }
+/* The icon sits in column one, hard left; the label owns the middle. */
+.dbox-foot .dbox-full{justify-self:start}
+.dbox-foot .dbox-x{grid-column:2}
 /* 🚨 THE WHOLE ROW IS THE TAP TARGET, NOT JUST THE WORDS. Paul, 2026-09-14:
    "it's also hard to tap on if not pressed directly in the middle text of the
    panel." It was a 12px text button with 4px of padding, so the hit area was the
@@ -3776,18 +3892,32 @@ function nativeFullOff(){
    viewport, and the dock is laid out again at the new size - so a gap measured
    before the transition is the wrong gap after it. It is also re-run on resize
    and on rotate, because a phone turning sideways re-flows the dock. */
-function sizeDbFullDock(){
-  if (!dbox || !dbox.classList.contains("is-full")) return;
-  var dockEl = document.querySelector(".player");
-  var dockH = dockEl ? Math.ceil(dockEl.getBoundingClientRect().height) : 104;
-  /* 🚨 EXACTLY THE DOCK HEIGHT, WITH NO BREATHING GAP. A 12px gap was added
-     first and it let a 12px sliver of the lesson page show between the panel
-     and the dock, which reads as the panel being see-through. The dock is
-     already a solid bar with its own padding; it IS the bottom edge. */
-  dbox.style.setProperty("--dbfull-dock", dockH + "px");
+/* 🚨 PUT IT BACK EXACTLY WHERE IT WAS. The anchor is captured on the way in, so
+   the dock returns to its own slot in the DOM rather than to the end of body -
+   the player is position:fixed normally, so a wrong parent would look correct
+   right up until something else re-flowed. */
+var dockHomes = null;
+function dockIntoPanel(on){
+  /* 🚨 THE SWITCH TRAVELS WITH THE BAR. They are two separate fixed elements and
+     moving only the bar left the student in fullscreen with no way to collapse
+     it. Order matters: the switch is appended FIRST so it sits above the bar,
+     which is where it lives on the page. */
+  if (!dbox) return;
+  var els = [document.querySelector(".playerhide"), document.querySelector(".player")].filter(Boolean);
+  if (!els.length) return;
+  if (on) {
+    if (dockHomes) return;
+    dockHomes = els.map(function(el){
+      var home = { el: el, parent: el.parentNode, next: el.nextSibling };
+      dbox.appendChild(el);
+      return home;
+    });
+  } else if (dockHomes) {
+    /* Backwards, so each one lands before the sibling it was recorded against. */
+    dockHomes.slice().reverse().forEach(function(h){ h.parent.insertBefore(h.el, h.next); });
+    dockHomes = null;
+  }
 }
-window.addEventListener("resize", sizeDbFullDock);
-window.addEventListener("orientationchange", function(){ setTimeout(sizeDbFullDock, 250); });
 
 function setDboxFull(on, fromBrowser){
   if (!dbox || !dboxFull) return;
@@ -3804,11 +3934,20 @@ function setDboxFull(on, fromBrowser){
      "you are hiding the play button under the screen". The dock grows with the
      settings row, the theme and the font size, so the only number that is right
      on every screen is the one read off the element. */
-  if (on) { sizeDbFullDock(); dbox.scrollTop = 0; }
-  else { dbox.style.removeProperty("--dbfull-dock"); }
+  dockIntoPanel(!!on);
+  if (on) dbox.scrollTop = 0;
   /* fromBrowser = the browser told US it changed, so do not tell it back. */
   if (fromBrowser) return;
-  if (on) nativeFullOn(dbox); else nativeFullOff();
+  /* 🚨 FULLSCREEN THE PAGE, NOT THE PANEL. Paul, 2026-09-19: "this is not a true
+     fullscreen because you have the browser bar at the top."
+     Requesting it on the panel DID hide the browser bar, but native fullscreen
+     renders ONLY the fullscreened element and its descendants - so the reading
+     dock, which is a sibling, would have vanished with it. That is the exact
+     thing he asked to keep: "i need the play and the pause and the scrub to show
+     while in fullscreen." Fullscreening documentElement hides the browser chrome
+     AND keeps every element on the page, so the overlay covers the screen and
+     the dock still sits under it. */
+  if (on) nativeFullOn(document.documentElement); else nativeFullOff();
 }
 if (dboxFull) dboxFull.addEventListener("click", function(){
   setDboxFull(!dbox.classList.contains("is-full"));
@@ -3820,7 +3959,6 @@ if (dboxFull) dboxFull.addEventListener("click", function(){
   document.addEventListener(ev, function(){
     var native = !!(document.fullscreenElement || document.webkitFullscreenElement);
     if (!native && dbox && dbox.classList.contains("is-full")) setDboxFull(false, true);
-    else if (native) setTimeout(sizeDbFullDock, 60);
   });
 });
 document.addEventListener("keydown", function(e){
