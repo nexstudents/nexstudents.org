@@ -56,6 +56,21 @@
   --ann-bg:#1c2126; --ann-fg:#eef1f4; --nav-bg:rgba(10,11,13,.92);
   --hero-glow:rgba(255,255,255,.05);
   --on-a-soft:rgba(10,11,13,.65);
+  /* 🚨 THE NEXSTUDENTS ORANGE. THIS IS A BRAND COLOUR, NOT A GRADE COLOUR.
+     Paul, 2026-09-19: "i think this will be a theme for nexstudents in the future
+     with this orange." It arrived as a grade-tile colour and was renamed the same
+     day, because --grade would have sent the next person looking for a gradebook
+     value. It is the warm hue of the rolling banner at the foot of the page,
+     opened up.
+     🚨 IT IS NOT --a AND MUST NEVER BECOME IT. --a is the site accent, on every
+     button on every page; folding orange into it repaints the whole site. This is
+     a second, deliberate colour applied where it is asked for.
+     ⭐ USED TODAY BY: the grade tiles, the Start Here tab, and the hero headline
+     stroke. Add to that list when something else takes it.
+     ⚠️ THE INK IS DARK, and that is forced, not chosen. A light orange cannot
+     hold white text at 4.5:1 - the first pass tried and failed. Going lighter
+     means going darker on top, every time. */
+  --orange:#FF9440; --orange-ink:#2A1206; --orange-soft:rgba(42,18,6,.70);
   --fg-28:rgba(241,243,245,.28); --fg-07:rgba(241,243,245,.07);
   --r:4px; --pill:999px; --rhythm:96px;
   --ease:cubic-bezier(.23,1,.32,1);
@@ -81,6 +96,9 @@
   --bg:#f2f4f7; --panel:#ffffff; --panel-2:#e8ecf1; --line:#c6cfd9;
   --fg:#1b2229; --dim:#5d6874;
   --a:#27313f; --a-ink:#ffffff;
+  /* Half a shade deeper than the dark theme so it still separates from a white
+     page, but the same family and the same dark ink. */
+  --orange:#E8822F; --orange-ink:#2A1206; --orange-soft:rgba(42,18,6,.74);
   /* ⚠️ THE BANNER TINT NEEDS ITS OWN LIGHT VALUE, not the dark one. #5a2b1f is
      a deep warm that sits just above near-black; on a near-white ground it
      would read as hard brown text rather than as the ghost the banner is meant
@@ -292,9 +310,52 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
   transition:border-color .25s ease,transform .25s var(--ease),background .25s}
 .gr b{font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1}
 .gr span{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.gr.live{background:var(--a);color:var(--a-ink);border-color:var(--a)}
-.gr.live span{color:var(--on-a-soft)}
-@media(hover:hover){ .gr:hover{transform:translateY(-4px);border-color:var(--a)} }
+.gr.live{background:var(--orange);color:var(--orange-ink);border-color:var(--orange)}
+.gr.live span{color:var(--orange-soft)}
+@media(hover:hover){ .gr:hover{transform:translateY(-4px);border-color:var(--orange)} }
+/* ── THE START HERE TAB ───────────────────────────────────────────────────
+   Paul, 2026-09-19: "put a line above it showing like a tab for that start here
+   button showing something is hidden." A centred button on its own says nothing
+   about there being anything behind it; a rule running the width of the section
+   with a rule under it reads as a drawer pull.
+   🚨 THE RULE SITS BELOW THE BUTTON, NOT THROUGH IT. It started life as a line
+   across the middle of the button; Paul, 2026-09-19: "that line needs to below
+   the start here button right above the hidden grades." Underneath, it is the
+   lid the grades come out from. Through the middle it was just a decorated
+   button and said nothing about anything being behind it.
+   ⚠️ The rule is on .gstart, NOT on .gwrap. .gwrap collapses to 0fr, and a
+   border there would collapse with it - the line has to stay while the thing it
+   covers is hidden, because that is the entire point of it. */
+/* 🚨 THE HERO HEADLINE IS OUTLINED IN THE GRADE ORANGE. Paul, 2026-09-19:
+   "can you make the Learning at home should not have to be complicated or
+   expensive. outline in orange."
+   ⚠️ paint-order:stroke fill is what keeps it READABLE. Without it the stroke
+   is painted over the glyph and eats 1.5px off the inside of every letter, so
+   the text thins and the counters close up at this weight. Stroke behind fill
+   leaves the letterform intact and the orange sits outside it.
+   ⚠️ Scoped to the hero h1 only - every other h1 on the site is untouched. */
+.hero h1{-webkit-text-stroke:1.5px var(--orange);paint-order:stroke fill}
+@supports not (paint-order:stroke){ .hero h1{-webkit-text-stroke-width:1px} }
+
+.gstart{position:relative;display:flex;justify-content:center;margin:0 0 20px;
+  padding-bottom:18px}
+.gstart::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:var(--line)}
+/* 🚨 THE BUTTON WEARS THE GRADE ORANGE, NOT THE SITE ACCENT. Paul, 2026-09-19:
+   "the start here can be orange too." It is the handle on an orange drawer, so
+   it matches what it opens. Scoped to .gstart so .btn.ghost everywhere else on
+   the site is untouched - that class is on a lot of pages.
+   ⚠️ Same dark ink as the tiles, for the same reason: this orange cannot carry
+   white text at 4.5:1. */
+.gstart .btn{position:relative;z-index:1;display:inline-flex;align-items:center;gap:9px;
+  background:var(--orange);color:var(--orange-ink);border-color:var(--orange)}
+.gstart .btn:hover{background:var(--orange);color:var(--orange-ink);
+  border-color:var(--orange-ink);opacity:.92}
+.gchev{width:9px;height:9px;border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;transform:rotate(45deg) translate(-1px,-1px);
+  transition:transform .3s ease}
+.gstart .btn[aria-expanded="true"] .gchev{transform:rotate(225deg) translate(-1px,-1px)}
+@media(prefers-reduced-motion:reduce){ .gchev{transition:none} }
 /* 🚨 `.gr.soon` and its 50% fade are GONE. Paul, 2026-08-29: "remove the soon
    from the homepage grade icons ... since they are connected." Every grade tile
    opens a real page now, and a half-faded tile reads as disabled no matter what

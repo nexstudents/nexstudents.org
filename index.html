@@ -44,7 +44,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png">
-<link rel="stylesheet" href="/assets/ns.css?v=e02db764">
+<link rel="stylesheet" href="/assets/ns.css?v=4f173331">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -143,9 +143,6 @@
            grades are already on screen and this jumps to them; the script below
            is what turns it into a dropdown. The exam page is untouched and still
            reachable from For Parents. -->
-      <div class="hacts">
-        <a class="btn ghost" href="#grades" id="startHere">Start Here</a>
-      </div>
       <p class="hnote">Nine grades, Kindergarten through 8th. Pick the one you need
         and everything in it is one tap away.</p>
     </div>
@@ -155,6 +152,9 @@
 <!-- ═══ 2. GRADE PICKER ═══ -->
 <div class="wrap" id="grades" style="padding-bottom:var(--rhythm)">
   <p class="kick rv">Already know the level &middot; pick a grade</p>
+  <!-- The button lives WITH the thing it opens, centred above it. Paul,
+       2026-09-19: "also put the button above them in the center." -->
+  <div class="gstart rv"><a class="btn ghost" href="#grades" id="startHere"><span>Start Here</span><i class="gchev" aria-hidden="true"></i></a></div>
   <!-- ⚠️ THE WRAPPER IS OUTSIDE `.grades`, AND IT HAS TO STAY THAT WAY.
        build-pages.js splices this picker by finding `<div class="grades rv d1">
     <a class="gr live" href="/grade-k/"><b>K</b><span>Live</span></a>
@@ -1350,9 +1350,22 @@ if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measureRail);
     e.preventDefault();
     var willOpen = wrap.classList.contains("is-shut");
     setOpen(willOpen);
-    /* Scroll only when opening. Scrolling on the close leaves the reader staring
-       at a gap where the thing they just shut used to be. */
-    if (willOpen) sect.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!willOpen) return;
+
+    /* 🚨 `block:"nearest"` AND NOTHING STRONGER. Paul, 2026-09-19: "it does slide
+       but it jumps the page for some reason." That was block:"start", which drags
+       the picker to the TOP of the viewport - and the picker sits just under the
+       hero, so opening it threw the whole page upward. "nearest" does NOTHING
+       when the element is already on screen, which it usually is, and otherwise
+       moves the minimum needed.
+       ⚠️ Measured AFTER the slide, not during. The row is mid-transition from 0fr
+       to 1fr at click time, so anything measured now is the height on the way up
+       and the scroll lands in the wrong place. */
+    setTimeout(function(){
+      var r = wrap.getBoundingClientRect();
+      var hidden = r.bottom > (innerHeight || document.documentElement.clientHeight);
+      if (hidden) wrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 360);
   });
 
   /* Arriving from another page's mega menu, which links /#grades. */
@@ -1361,6 +1374,16 @@ if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measureRail);
   });
 })();
 </script>
+
+
+
+
+
+
+
+
+
+
 
 <!-- ns:nav-script -->
 <script src="/assets/supabase-config.js?v=525295e0"></script>
