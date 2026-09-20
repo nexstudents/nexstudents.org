@@ -105,7 +105,18 @@ shelf cards, so run it last.
 | `leif-units.js` | The Leif book's 50 lesson titles + which are built. Drives the unit pager. |
 | `lesson-template.html` | The lesson shell: read-aloud, themes, answer hunt, print sheet. |
 | `make-pdf.js` | Renders a worksheet to a real PDF with headless Chrome. |
-| `wrap-lesson.js` | Wraps an artifact-authored page as a standalone site page. |
+
+## Removed 2026-09-19 — the artifact wrapper
+
+`wrap-lesson.js` took a lesson authored as a Claude Artifact and wrapped it into a standalone
+site page. That was the workflow BEFORE the generators existed. It bypassed every template and
+every guard, so anything made with it would have had none of the shared lesson ending, no
+prev/next, no homework button and nothing for check-lesson-parts.js to check.
+
+Nothing used it, no built page carried its fingerprint, and it had not been meaningfully touched
+since before 2026-09-04. Paul asked for conflicting lesson builders to go. **A lesson is built
+from data by a generator now** - see tools/lesson-footer.js and the /lesson skill.
+
 | `calendar.js` / `schedule2.js` | School-year maths: what fits, what date it finishes. |
 
 ## Gotchas
