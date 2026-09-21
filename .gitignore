@@ -15,3 +15,4 @@ review/
 # history and cannot be removed without rewriting it. This only stops it
 # growing. voice.json itself IS committed - it is small and the page needs it.
 lessons/**/voice/
+.cm.tmp
