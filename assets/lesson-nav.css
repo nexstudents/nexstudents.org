@@ -52,12 +52,12 @@
    reason this file exists separately: a LESSON PAGE HAS ITS OWN PALETTE. There
    is no --a-text there, so the token would resolve to nothing and the wordmark
    would render unstyled. Same pattern as .mg-grade.live and .drawer .navbtn.
-   ⚠️ Values must stay identical to ns.css's --a-text: #FF751F / #A8490A.
+   ⚠️ Values must stay identical to ns.css's --a-text: #FF9440 / #A8490A.
    check-nav-css catches a class styled in only one file; it CANNOT catch these
    two disagreeing. Change one, change both. */
 .nv .word{font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;font-size:21px;
-  letter-spacing:.035em;text-transform:uppercase;color:#FF751F}
-.nv .word b{color:#FF751F;font-weight:inherit}
+  letter-spacing:.035em;text-transform:uppercase;color:#FF9440}
+.nv .word b{color:#FF9440;font-weight:inherit}
 :root[data-theme="light"] .nv .word,
 :root[data-theme="light"] .nv .word b{color:#A8490A}
 .nv .tabs{display:flex;gap:20px}
@@ -168,8 +168,8 @@ nav:not(.js-nav) .mg-top.on::after,
    LITERAL for the reason above, so they do NOT follow ns.css on their own -
    when the site accent moves, move them by hand in the same change. Dark ink
    on both, because this orange cannot carry white text. */
-.mg-grade.live{background:#FF751F;color:#2A1206;border-color:#FF751F}
-:root[data-theme="light"] .mg-grade.live{background:#E06810;color:#2A1206;border-color:#E06810}
+.mg-grade.live{background:#FF9440;color:#2A1206;border-color:#FF9440}
+:root[data-theme="light"] .mg-grade.live{background:#E8822F;color:#2A1206;border-color:#E8822F}
 .mg-grade.soon{color:var(--nv-dim);opacity:.6}
 /* 🚨 THE NAV IS ONE MARKUP AND TWO STYLESHEETS, so the three grade states
    have to exist HERE as well as in ns.css or the dropdown on a lesson page
@@ -634,8 +634,8 @@ html{-webkit-tap-highlight-color:transparent}
 /* 🟠 The drawer's own button, orange since 2026-09-21. Same literal-tracking
    rule as .mg-grade.live above: ns.css moved --a to orange, so this moves too
    or the side menu is a different colour on a lesson page. */
-.drawer .navbtn{background:#FF751F;color:#2A1206}
-:root[data-theme="light"] .drawer .navbtn{background:#E06810;color:#2A1206}
+.drawer .navbtn{background:#FF9440;color:#2A1206}
+:root[data-theme="light"] .drawer .navbtn{background:#E8822F;color:#2A1206}
 
 /* ── THE CART COUNT BADGE ──────────────────────────────────────────────────
    Lives in the nav BAR, so it takes the lesson's palette like the rest of the
@@ -1089,7 +1089,7 @@ html.whop-pre .whop{opacity:1;transition:none}
 .whop-brand{position:absolute;top:clamp(22px,3.4vw,46px);left:clamp(16px,2.8vw,46px);
   font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;
   font-size:clamp(34px,4.9vw,60px);letter-spacing:.045em;
-  text-transform:uppercase;color:#FF751F;line-height:1;
+  text-transform:uppercase;color:#FF9440;line-height:1;
   -webkit-text-stroke:5px #2A1206;paint-order:stroke fill;
   pointer-events:none;user-select:none}
 /* One weight across the whole word. The nav's wordmark splits Nex from a bolder
