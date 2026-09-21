@@ -310,8 +310,17 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
   transition:border-color .25s ease,transform .25s var(--ease),background .25s}
 .gr b{font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1}
 .gr span{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+/* 🚨 THREE STATES, AND ONLY ONE IS FILLED. Paul, 2026-09-21: every grade but
+   7 reads Pending, and 3 reads Queued. So the orange fill now marks the ONE
+   year that is actually being taught, instead of marking all nine and meaning
+   nothing. Status words come from `gradeStatus()` in nav.js — one source, three
+   call sites. Do not hardcode a fourth.
+   ⚠️ Queued is deliberately a shade brighter than Pending and nothing more. It
+   is "next up", not a second live state, so it must not get a fill. */
 .gr.live{background:var(--orange);color:var(--orange-ink);border-color:var(--orange)}
 .gr.live span{color:var(--orange-soft)}
+.gr.queued span{color:var(--fg);opacity:.72}
+.gr.pending span{color:var(--dim)}
 @media(hover:hover){ .gr:hover{transform:translateY(-4px);border-color:var(--orange)} }
 /* ── THE START HERE TAB ───────────────────────────────────────────────────
    Paul, 2026-09-19: "put a line above it showing like a tab for that start here
@@ -1539,6 +1548,11 @@ nav:not(.js-nav) .mg-top.on::after,
 .mg-grade b{font-size:1.15rem;font-weight:800;letter-spacing:-.03em;line-height:1}
 .mg-grade span{font-size:.5rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
 .mg-grade.live{background:var(--a);color:var(--a-ink);border-color:var(--a)}
+/* The dropdown's copy of the three states. It has to agree with .gr above:
+   the picker and the dropdown showing different words for the same grade is
+   exactly the drift `gradeStatus()` exists to stop. */
+.mg-grade.queued span{color:var(--fg);opacity:.72}
+.mg-grade.pending span{color:var(--dim)}
 /* Same as .gr: no Soon state, and hover applies to EVERY tile — a tile that
    does not respond to the pointer looks broken next to eight that do. */
 @media(hover:hover){ .mg-grade:hover{transform:translateY(-3px);border-color:var(--a)} }

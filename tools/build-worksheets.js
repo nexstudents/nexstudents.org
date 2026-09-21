@@ -257,7 +257,13 @@ function previewFiles(s) {
 function carousel(s, dir, art) {
   const paid = isPaid(s);
   const slides = [];
-  if (s.thumb) slides.push(`<figure class="p-slide"><img src="${art}" alt="${s.title}, cover" width="700" height="700"></figure>`);
+  /* 🚨 800x1035, NOT 700x700. Every thumb.jpg on the shelf is a picture of an
+     8.5x11 page and always has been - checked all 17 on 2026-09-21, not one is
+     square. The declared size was square anyway, so the browser reserved a
+     square box and the picture snapped to its real shape once it loaded. Wrong
+     intrinsic size is layout shift, and it is invisible on a fast local disk.
+     Declared sizes are a promise about the FILE; measure, do not assume. */
+  if (s.thumb) slides.push(`<figure class="p-slide"><img src="${art}" alt="${s.title}, cover" width="800" height="1035"></figure>`);
   previewFiles(s).forEach((f, i) => slides.push(
     `<figure class="p-slide"><img src="${dir}${f}" alt="${s.title}, page ${i + 1}${paid ? " preview" : ""}" width="900" height="1165"${slides.length ? ' loading="lazy"' : ""}></figure>`));
   if (paid) slides.push(`<figure class="p-slide p-hidden"><div><span class="p-lock" aria-hidden="true">&#128274;</span>

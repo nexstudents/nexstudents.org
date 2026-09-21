@@ -118,6 +118,29 @@ const SUBJECTS = [
    grade is worse than not showing it. */
 const LIVE_GRADES = ["K", "3", "4", "6", "7", "8"];
 const ALL_GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
+
+/* ── WHAT A GRADE TILE SAYS ────────────────────────────────────────────────
+   🚨 ONE SOURCE, THREE CALL SITES. The home page picker, the nav mega-panel
+   and the "Or Jump to a Grade" block on every subject page all draw these
+   tiles. They were three separate hardcoded "Live" strings until 2026-09-21,
+   which is three places to forget.
+
+   Paul, 2026-09-21: "as for all the grades except for 7th how it says live I
+   want them to say Pending. 3rd Grade you can say Qeuded" (queued).
+
+   ⚠️ THIS REVERSES HIS OWN 2026-08-29 CALL, deliberately and by him. That one
+   read: "1, 2, 4, 5 make it say live and make them white because i dont want
+   to waste time changing them later." The reason it changed is that he is now
+   building custom worksheets himself, a grade at a time, so the tiles have a
+   real queue behind them and can tell the truth about it.
+
+   Grade 7 is the year being taught in his house, so it is the only one Live.
+   Grade 3 is next up. Everything else is Pending.
+   ⚠️ `live` stays the class name AND the indexing signal elsewhere. Only
+   grade 7 carries it now, so only grade 7 gets the filled tile. */
+const GRADE_STATUS = { "3": "Queued", "7": "Live" };
+const gradeStatus = (g) => GRADE_STATUS[String(g)] || "Pending";
+const gradeStatusClass = (g) => gradeStatus(g).toLowerCase();
 const gradeName = (g) => (g === "K" ? "Kindergarten" : "Grade " + g);
 
 /* A grade's URL is its label lowercased: "K" lives at /grade-k/. */
@@ -135,8 +158,8 @@ const gslug = (g) => String(g).toLowerCase();
 /* Every grade reads Live here too, so the dropdown and the home picker match.
    Paul, 2026-08-29. */
 const gradeTiles = () => ALL_GRADES.map(g =>
-  '<a class="mg-grade live" href="/grade-' + gslug(g) + '/"><b>' + g +
-  "</b><span>Live</span></a>"
+  '<a class="mg-grade ' + gradeStatusClass(g) + '" href="/grade-' + gslug(g) + '/"><b>' + g +
+  "</b><span>" + gradeStatus(g) + "</span></a>"
 ).join("");
 
 const col = (heading, links) =>
@@ -3556,6 +3579,7 @@ function navCssTag(ROOT) {
   return '<link rel="stylesheet" href="/assets/lesson-nav.css?v=' + v + '">';
 }
 
-module.exports = { NAV, navCssTag, assetV, SUBJECTS, LIVE_GRADES, ALL_GRADES, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
+module.exports = { NAV, navCssTag, assetV, SUBJECTS, LIVE_GRADES, ALL_GRADES,
+                   GRADE_STATUS, gradeStatus, gradeStatusClass, MENUS, SHEETS, tabs, drawerLinks, drawerSubs, faviconTags,
                    megaPanel, navMarkup, navScript, modeSwitch, modeBoot, footerMarkup, FOOTER_COLS,
                    socialTags, breadcrumbLd, crumbTrail, lessonHead, SITE_ORIGIN };

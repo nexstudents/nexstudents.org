@@ -23,7 +23,8 @@ const CSS_V = require("crypto")
    only ever true of the pages this file builds - worksheet pages had no nav at
    all, and a parent landing on one from a search could not reach the site. */
 const { NAV, SUBJECTS, LIVE_GRADES, ALL_GRADES, tabs, drawerLinks, navMarkup, navScript, modeBoot, faviconTags,
-        footerMarkup, socialTags, breadcrumbLd, crumbTrail, assetV } = require("./nav.js");
+        footerMarkup, socialTags, breadcrumbLd, crumbTrail, assetV,
+        gradeStatus, gradeStatusClass } = require("./nav.js");
 
 /* The live origin. Canonicals and the sitemap are absolute URLs by spec. */
 const SITE = "https://nexstudents.org";
@@ -233,8 +234,8 @@ const gslug = (g) => String(g).toLowerCase();
    indexing elsewhere — this is a presentation decision, not a claim about
    content. */
 const gradeCells = (live, cls) => ["K","1","2","3","4","5","6","7","8"].map(g =>
-  '<a class="gr live" href="/grade-' + gslug(g) + '/"><b>' + g +
-  "</b><span>Live</span></a>"
+  '<a class="gr ' + gradeStatusClass(g) + '" href="/grade-' + gslug(g) + '/"><b>' + g +
+  "</b><span>" + gradeStatus(g) + "</span></a>"
 ).join("\n    " + (cls || ""));
 
 const gradeGrid = () => {
@@ -1239,7 +1240,7 @@ const subjectLanding = (s, slugIn) => {
   ${group("Or Jump to a Grade", "The years this subject has something built for so far.",
     grades.length
       ? `<div class="grades">
-    ${grades.map(g => `<a class="gr live" href="/grade-${gslug(g)}/"><b>${g}</b><span>Live</span></a>`).join("\n    ")}
+    ${grades.map(g => `<a class="gr ${gradeStatusClass(g)}" href="/grade-${gslug(g)}/"><b>${g}</b><span>${gradeStatus(g)}</span></a>`).join("\n    ")}
     </div>`
       : emptyTile("Grades appear here as lessons are added."))}
 </div>`;
@@ -3676,6 +3677,21 @@ for (const p of pages) {
 const homeFile = path.join(ROOT, "index.html");
 const home = fs.readFileSync(homeFile, "utf8");
 const OPEN = '<div class="grades rv d1">', CLOSE = "</div>";
+/* 🚨 THE MARKER MUST APPEAR EXACTLY ONCE, and this guard exists because on
+   2026-09-21 it appeared twice: once in a COMMENT documenting the splice, and
+   once in the real markup. indexOf takes the first, so the splice rewrote the
+   comment, left the picker alone, and still printed homePickerUpdated: true.
+   Every grade tile on the home page went on saying Live while the build
+   reported it had changed them.
+   This is the same trap CLAUDE.md already records for lesson-footer.js. A
+   silent wrong-place splice is worse than a failed build, so: count, then cut. */
+const hits = home.split(OPEN).length - 1;
+if (hits > 1) {
+  console.error("FAIL: the home grade picker marker appears " + hits + " times in index.html. " +
+    "It must appear ONCE, in the markup only - never in a comment or a string above it, " +
+    "because the splice takes the first match and would rewrite that instead.");
+  process.exit(1);
+}
 const a = home.indexOf(OPEN);
 if (a < 0) { console.error("FAIL: home grade picker not found"); process.exit(1); }
 const b = home.indexOf(CLOSE, a + OPEN.length);

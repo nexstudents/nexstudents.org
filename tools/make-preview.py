@@ -3,6 +3,9 @@
     py tools/make-preview.py <source.pdf|.png> <slug> <subject-slug> [--plain] [--pages N]
     -> worksheets/<subject-slug>/<slug>/preview-1.jpg ... preview-N.jpg
 
+    py tools/make-preview.py <source.pdf> <slug> <subject-slug> --thumb
+    -> worksheets/<subject-slug>/<slug>/thumb.jpg   (page 1, 800px, never marked)
+
 PAID sheets (the default): WATERMARKED, page 1 only. ROADMAP 40. Paul,
 2026-09-09: "put something over it so noone can steal the example."
 FREE sheets (--plain --pages 2): no watermark, first pages. Paul, 2026-09-10:
@@ -21,6 +24,14 @@ build-worksheets.js puts every preview-N.jpg it finds into the carousel, in
 order, so re-running with fewer pages must not leave stale ones behind; this
 deletes preview-*.jpg in the folder first.
 
+🖼️ --thumb IS THE COVER, and it exists because make-cover.js cannot make one
+for a kind:"pdf" sheet. make-cover.js renders a PAGE; these sheets have no page
+to render, only Paul's file. Added 2026-09-21 with the first of his own
+worksheets. 800px wide to match every other thumb on the shelf, and never
+watermarked - a cover is the shop window, not the goods.
+⚠️ It writes thumb.jpg and touches no preview-*.jpg, so the two runs are
+independent and either can be repeated on its own.
+
 Needs PyMuPDF and Pillow: py -m pip install --user pymupdf pillow
 """
 import sys, os, glob
@@ -28,6 +39,7 @@ import pymupdf
 from PIL import Image, ImageDraw, ImageFont
 
 WIDTH = 900
+THUMB_WIDTH = 800
 MARK = "NEXSTUDENTS  ·  PREVIEW"
 
 
@@ -50,17 +62,17 @@ def watermark(img):
     return Image.alpha_composite(img.convert("RGBA"), layer).convert("RGB")
 
 
-def pages_of(src, n):
+def pages_of(src, n, width=WIDTH):
     if src.lower().endswith(".png") or src.lower().endswith(".jpg"):
         img = Image.open(src).convert("RGB")
-        if img.width > WIDTH:
-            img = img.resize((WIDTH, round(img.height * WIDTH / img.width)), Image.LANCZOS)
+        if img.width > width:
+            img = img.resize((width, round(img.height * width / img.width)), Image.LANCZOS)
         return [img]
     doc = pymupdf.open(src)
     out = []
     for i in range(min(n, doc.page_count)):
         page = doc[i]
-        zoom = WIDTH / page.rect.width
+        zoom = width / page.rect.width
         pix = page.get_pixmap(matrix=pymupdf.Matrix(zoom, zoom), alpha=False)
         out.append(Image.frombytes("RGB", (pix.width, pix.height), pix.samples))
     return out
@@ -69,6 +81,7 @@ def pages_of(src, n):
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     plain = "--plain" in sys.argv
+    thumb = "--thumb" in sys.argv
     n = 1
     if "--pages" in sys.argv:
         n = int(sys.argv[sys.argv.index("--pages") + 1])
@@ -80,6 +93,13 @@ def main():
     folder = os.path.join(root, "worksheets", subj, slug)
     if not os.path.isdir(folder):
         sys.exit("no such worksheet folder: " + folder)
+
+    if thumb:
+        img = pages_of(src, 1, THUMB_WIDTH)[0]
+        out = os.path.join(folder, "thumb.jpg")
+        img.save(out, "JPEG", quality=82, optimize=True)
+        print(out, img.size, os.path.getsize(out), "bytes")
+        return
 
     for old in glob.glob(os.path.join(folder, "preview-*.jpg")):
         os.remove(old)
