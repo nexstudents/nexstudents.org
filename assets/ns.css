@@ -32,6 +32,12 @@
      color palette on the site for theme." That is option 2 of the two written
      there — orange is the DEFAULT accent, and a chosen profile theme replaces
      it everywhere — not option 1, brand-colour-always.
+     🟠 THE VALUE IS THE LOGO'S OWN ORANGE, #FF751F, sampled from
+     assets/brand/logo.png. Paul, 2026-09-21: "I just looked at my logo is not
+     the same color what color is the buttons" - the accent had been #FF9440,
+     the same hue family but 13 points less saturated, which reads as washed
+     out sitting next to the mark. One orange, taken from the artwork, so the
+     two can never drift again. --orange carries the identical values.
      🚨 SO html.has-me STILL WINS, AND THAT IS NOW THE FEATURE, not the bug the
      old note warned about. A signed-in profile repaints .btn:not(.ghost),
      .navbtn, the nav top line and .mg-top::after. Orange is simply what the
@@ -39,14 +45,15 @@
      ⚠️ THE INK ON ORANGE IS DARK AND THAT IS FORCED, NOT CHOSEN. Every attempt
      at white on this orange fails 4.5:1. If the orange is ever lightened the
      ink goes darker, never the other way. */
-  --a:#FF9440; --a-ink:#2A1206;
+  --a:#FF751F; --a-ink:#2A1206;
   /* 🚨 ORANGE AS TEXT IS A DIFFERENT COLOUR FROM ORANGE AS A FILL, and this
      token exists because folding them into one is wrong in light mode. The
      fill only has to carry its own dark ink; TEXT has to carry itself against
-     the page. #E8822F as text on white is 2.74:1 — a fail, not a near miss.
+     the page. The light fill #E06810 as text on white is 3.41:1 — a fail, not
+     a near miss.
      On the dark theme the fill orange is already 8.97:1 as text, so --a-text
      is simply --a there and only the light override moves. */
-  --a-text:#FF9440;
+  --a-text:#FF751F;
   /* 🟠 THE THIRD ORANGE, AND IT IS A BORDER — never a fill, never text.
      Paul, 2026-09-21: "put an dark orange outline around the pill buttons that
      are not being used."
@@ -55,7 +62,7 @@
      3.4:1 against the page where the pressed pill is a solid fill. If this ever
      gets as loud as --a the row stops showing which one is chosen, which is the
      only job the row has. --line, for comparison, is 1.50:1 — a whisper. */
-  --a-edge:#9A5418;
+  --a-edge:#9A5412;
   /* 🚨 THE GRADE TILES ARE WHITE WITH BLACK TEXT IN BOTH THEMES.
      Paul, 2026-09-02: "I wanted white boxes for the grades with black text."
      Not derived from --panel/--panel-2: a tile one step off the drawer is
@@ -99,7 +106,7 @@
      ⚠️ THE INK IS DARK, and that is forced, not chosen. A light orange cannot
      hold white text at 4.5:1 - the first pass tried and failed. Going lighter
      means going darker on top, every time. */
-  --orange:#FF9440; --orange-ink:#2A1206; --orange-soft:rgba(42,18,6,.70);
+  --orange:#FF751F; --orange-ink:#2A1206; --orange-soft:rgba(42,18,6,.70);
   --fg-28:rgba(241,243,245,.28); --fg-07:rgba(241,243,245,.07);
   --r:4px; --pill:999px; --rhythm:96px;
   --ease:cubic-bezier(.23,1,.32,1);
@@ -125,17 +132,18 @@
   --bg:#f2f4f7; --panel:#ffffff; --panel-2:#e8ecf1; --line:#c6cfd9;
   --fg:#1b2229; --dim:#5d6874;
   /* Half a shade deeper than the dark theme's, the same reason the tiles are:
-     #FF9440 on a near-white page does not separate. Same dark ink. */
-  --a:#E8822F; --a-ink:#2A1206;
+     #FF751F is 2.44:1 on a near-white page and does not separate. Same dark
+     ink, and the same hue as the logo. */
+  --a:#E06810; --a-ink:#2A1206;
   /* Burnt, not bright: 5.80:1 on white, 4.89:1 on --panel-2. It is the same
      hue family walked down until it can be read, which is the only way an
      orange works as text on a pale ground. */
   --a-text:#A8490A;
   /* Darker again on a pale ground, same reasoning as --a-text. */
-  --a-edge:#B4530E;
+  --a-edge:#B04E0C;
   /* Half a shade deeper than the dark theme so it still separates from a white
      page, but the same family and the same dark ink. */
-  --orange:#E8822F; --orange-ink:#2A1206; --orange-soft:rgba(42,18,6,.74);
+  --orange:#E06810; --orange-ink:#2A1206; --orange-soft:rgba(42,18,6,.74);
   /* ⚠️ THE BANNER TINT NEEDS ITS OWN LIGHT VALUE, not the dark one. #5a2b1f is
      a deep warm that sits just above near-black; on a near-white ground it
      would read as hard brown text rather than as the ghost the banner is meant
@@ -2629,7 +2637,7 @@ html.whop-pre .whop{opacity:1;transition:none}
 .whop-brand{position:absolute;top:clamp(22px,3.4vw,46px);left:clamp(16px,2.8vw,46px);
   font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;
   font-size:clamp(34px,4.9vw,60px);letter-spacing:.045em;
-  text-transform:uppercase;color:#FF9440;line-height:1;
+  text-transform:uppercase;color:#FF751F;line-height:1;
   -webkit-text-stroke:5px #2A1206;paint-order:stroke fill;
   pointer-events:none;user-select:none}
 /* One weight across the whole word. The nav's wordmark splits Nex from a bolder
