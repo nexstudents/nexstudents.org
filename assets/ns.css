@@ -237,13 +237,26 @@ nav.stuck{border-bottom-color:var(--line)}
    ⚠️ THE TRACKING FLIPS SIGN. Archivo ran -.03em, which is right for a tight
    grotesque and wrong for a condensed display face - Anton's caps need air or
    they knit together. Do not carry the negative value over.
-   🔴 RED, matching the mark beside it and the picker - Paul, 2026-09-12:
-   "make the text not white but red on the site." It is a LITERAL #ff3131, not a
-   theme token, because the wordmark is brand and must not change with the
-   palette. That is also why it is the logo red sampled from logo.png. */
+   🟠 ORANGE SINCE 2026-09-21. Paul: "if you want you can also change the
+   NexStudents name to orange."
+   ⚠️ THIS REVERSES THE LITERAL RULE THAT WAS HERE, and the reason matters.
+   The old note said the wordmark must be a literal #ff3131 "because the
+   wordmark is brand and must not change with the palette". That reasoning held
+   while brand meant red. Orange is now the DEFAULT ACCENT and is meant to
+   follow the theme, so the wordmark follows it.
+   🚨 IT HAS TO BE --a-text, NOT --a. At 21px Anton regular this is NORMAL
+   text, so it needs 4.5:1, and --a is 2.49:1 on the light page.
+   ⚠️ NO SINGLE ORANGE CAN DO BOTH THEMES HERE - a mid-tone cannot clear 4.5:1
+   against both a near-black and a near-white ground. So a literal was never an
+   option once the colour moved off red. For the record the old red was 3.32:1
+   in light mode, a fail nobody had measured; this change makes the wordmark
+   MORE readable, not less.
+   🔴 THE LOGO IMAGE BESIDE IT IS STILL RED (assets/brand/logo.png, #ff3131
+   sampled from it). Until Paul re-exports the mark, an orange wordmark sits
+   next to a red circle. He was told. */
 .word{font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;font-size:21px;
-  letter-spacing:.035em;text-transform:uppercase;color:#ff3131}
-.word b{color:#ff3131;font-weight:inherit}
+  letter-spacing:.035em;text-transform:uppercase;color:var(--a-text)}
+.word b{color:var(--a-text);font-weight:inherit}
 .tabs{display:flex;gap:20px}
 .tabs a{font-size:14px;font-weight:500;color:var(--dim);transition:color .18s}
 .tabs a.on{color:var(--fg)}
@@ -2584,8 +2597,11 @@ html.whop-pre .whop{opacity:1;transition:none}
   .whop-brand,.whop-in > h2,.whop-manage,.whop-out,.whop-row .whop-i{animation:none;opacity:1}
 }
 .whop-in{text-align:center;max-width:760px}
-/* 🎬 The wordmark, top left, brand red - the Netflix placement Paul sent.
-   #ff3131 is sampled from assets/brand/logo.png, so it IS the logo's red.
+/* 🎬 The wordmark, top left - the Netflix placement Paul sent.
+   🟠 ORANGE SINCE 2026-09-21, with the stroke moved from the dark red #4a0606
+   to --a-ink's #2A1206 so the outline still belongs to the fill.
+   ⚠️ A LITERAL HERE IS CORRECT, unlike .word above: .whop is a hard #0a0b0d
+   overlay in BOTH themes, so there is one ground and one right answer (8.97:1).
    ⚠️ .whop is display:grid/place-items:center, so a normal child would be
    centred with everything else. Absolute takes it out of that flow.
    ⚠️ TWINNED: byte-identical in ns.css and lesson-nav.css, or check-nav-css
@@ -2613,8 +2629,8 @@ html.whop-pre .whop{opacity:1;transition:none}
 .whop-brand{position:absolute;top:clamp(22px,3.4vw,46px);left:clamp(16px,2.8vw,46px);
   font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;
   font-size:clamp(34px,4.9vw,60px);letter-spacing:.045em;
-  text-transform:uppercase;color:#ff3131;line-height:1;
-  -webkit-text-stroke:5px #4a0606;paint-order:stroke fill;
+  text-transform:uppercase;color:#FF9440;line-height:1;
+  -webkit-text-stroke:5px #2A1206;paint-order:stroke fill;
   pointer-events:none;user-select:none}
 /* One weight across the whole word. The nav's wordmark splits Nex from a bolder
    Students, but the reference logotype has no such split - it is one solid

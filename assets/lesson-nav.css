@@ -47,9 +47,19 @@
    page moved to Anton, with no warning. Change these two rules together.
    🔴 RED, not --nv-fg. Paul, 2026-09-12: "make the text not white but red on
    the site." A lesson palette must not recolour the brand, so this is literal. */
+/* 🟠 ORANGE SINCE 2026-09-21, tracking ns.css's .word.
+   🚨 LITERALS WITH A THEME OVERRIDE, NOT var(--a-text), and this is the whole
+   reason this file exists separately: a LESSON PAGE HAS ITS OWN PALETTE. There
+   is no --a-text there, so the token would resolve to nothing and the wordmark
+   would render unstyled. Same pattern as .mg-grade.live and .drawer .navbtn.
+   ⚠️ Values must stay identical to ns.css's --a-text: #FF9440 / #A8490A.
+   check-nav-css catches a class styled in only one file; it CANNOT catch these
+   two disagreeing. Change one, change both. */
 .nv .word{font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;font-size:21px;
-  letter-spacing:.035em;text-transform:uppercase;color:#ff3131}
-.nv .word b{color:#ff3131;font-weight:inherit}
+  letter-spacing:.035em;text-transform:uppercase;color:#FF9440}
+.nv .word b{color:#FF9440;font-weight:inherit}
+:root[data-theme="light"] .nv .word,
+:root[data-theme="light"] .nv .word b{color:#A8490A}
 .nv .tabs{display:flex;gap:20px}
 .nv .tabs a{font-size:14px;font-weight:500;color:var(--nv-dim);transition:color .18s}
 .nv .tabs a.on{color:var(--nv-fg)}
@@ -1050,7 +1060,8 @@ html.whop-pre .whop{opacity:1;transition:none}
 }
 .whop-in{text-align:center;max-width:760px}
 /* 🎬 The wordmark, top left, brand red - the Netflix placement Paul sent.
-   #ff3131 is sampled from assets/brand/logo.png, so it IS the logo's red.
+   🟠 Orange since 2026-09-21, stroke moved to #2A1206. TWINNED with ns.css
+   byte for byte - check-nav-css fails the build if they drift.
    ⚠️ .whop is display:grid/place-items:center, so a normal child would be
    centred with everything else. Absolute takes it out of that flow.
    ⚠️ TWINNED: byte-identical in ns.css and lesson-nav.css, or check-nav-css
@@ -1078,8 +1089,8 @@ html.whop-pre .whop{opacity:1;transition:none}
 .whop-brand{position:absolute;top:clamp(22px,3.4vw,46px);left:clamp(16px,2.8vw,46px);
   font-family:'Anton',Archivo,system-ui,sans-serif;font-weight:400;
   font-size:clamp(34px,4.9vw,60px);letter-spacing:.045em;
-  text-transform:uppercase;color:#ff3131;line-height:1;
-  -webkit-text-stroke:5px #4a0606;paint-order:stroke fill;
+  text-transform:uppercase;color:#FF9440;line-height:1;
+  -webkit-text-stroke:5px #2A1206;paint-order:stroke fill;
   pointer-events:none;user-select:none}
 /* One weight across the whole word. The nav's wordmark splits Nex from a bolder
    Students, but the reference logotype has no such split - it is one solid
