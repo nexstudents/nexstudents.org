@@ -154,8 +154,12 @@ nav:not(.js-nav) .mg-top.on::after,
    ⚠️ `check-nav-css.js` CANNOT catch this. It fails when a class is styled in
    one stylesheet and not the other, and this class is styled in both - just in
    the wrong colour. Compare the VALUES when touching shared chrome. */
-.mg-grade.live{background:#ffffff;color:#0a0b0d;border-color:#ffffff}
-:root[data-theme="light"] .mg-grade.live{background:#27313f;color:#ffffff;border-color:#27313f}
+/* 🟠 ORANGE SINCE 2026-09-21, tracking ns.css's --a / --a-ink. These stay
+   LITERAL for the reason above, so they do NOT follow ns.css on their own -
+   when the site accent moves, move them by hand in the same change. Dark ink
+   on both, because this orange cannot carry white text. */
+.mg-grade.live{background:#FF9440;color:#2A1206;border-color:#FF9440}
+:root[data-theme="light"] .mg-grade.live{background:#E8822F;color:#2A1206;border-color:#E8822F}
 .mg-grade.soon{color:var(--nv-dim);opacity:.6}
 /* 🚨 THE NAV IS ONE MARKUP AND TWO STYLESHEETS, so the three grade states
    have to exist HERE as well as in ns.css or the dropdown on a lesson page
@@ -617,8 +621,11 @@ html{-webkit-tap-highlight-color:transparent}
    ⚠️ Everything ELSE in the drawer still uses --nv-*. The knob and the active
    link stay per lesson on purpose; it is only the solid button that has to
    match, because a filled block of colour is what the eye compares. */
-.drawer .navbtn{background:#ffffff;color:#0a0b0d}
-:root[data-theme="light"] .drawer .navbtn{background:#27313f;color:#ffffff}
+/* 🟠 The drawer's own button, orange since 2026-09-21. Same literal-tracking
+   rule as .mg-grade.live above: ns.css moved --a to orange, so this moves too
+   or the side menu is a different colour on a lesson page. */
+.drawer .navbtn{background:#FF9440;color:#2A1206}
+:root[data-theme="light"] .drawer .navbtn{background:#E8822F;color:#2A1206}
 
 /* ── THE CART COUNT BADGE ──────────────────────────────────────────────────
    Lives in the nav BAR, so it takes the lesson's palette like the rest of the

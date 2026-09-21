@@ -26,7 +26,27 @@
 :root{
   --bg:#0a0b0d; --panel:#16191d; --panel-2:#1f242a; --line:#2b3138;
   --fg:#f1f3f5; --dim:#98a1ab;
-  --a:#ffffff; --a-ink:#0a0b0d;
+  /* 🟠 ORANGE IS THE DEFAULT ACCENT. Paul, 2026-09-21, closing the decision
+     BEHAVIOR.md had left open since 2026-09-19: "make all the buttons orange
+     ... this will be the default color but changing the theme will change the
+     color palette on the site for theme." That is option 2 of the two written
+     there — orange is the DEFAULT accent, and a chosen profile theme replaces
+     it everywhere — not option 1, brand-colour-always.
+     🚨 SO html.has-me STILL WINS, AND THAT IS NOW THE FEATURE, not the bug the
+     old note warned about. A signed-in profile repaints .btn:not(.ghost),
+     .navbtn, the nav top line and .mg-top::after. Orange is simply what the
+     site wears when nobody has chosen anything.
+     ⚠️ THE INK ON ORANGE IS DARK AND THAT IS FORCED, NOT CHOSEN. Every attempt
+     at white on this orange fails 4.5:1. If the orange is ever lightened the
+     ink goes darker, never the other way. */
+  --a:#FF9440; --a-ink:#2A1206;
+  /* 🚨 ORANGE AS TEXT IS A DIFFERENT COLOUR FROM ORANGE AS A FILL, and this
+     token exists because folding them into one is wrong in light mode. The
+     fill only has to carry its own dark ink; TEXT has to carry itself against
+     the page. #E8822F as text on white is 2.74:1 — a fail, not a near miss.
+     On the dark theme the fill orange is already 8.97:1 as text, so --a-text
+     is simply --a there and only the light override moves. */
+  --a-text:#FF9440;
   /* 🚨 THE GRADE TILES ARE WHITE WITH BLACK TEXT IN BOTH THEMES.
      Paul, 2026-09-02: "I wanted white boxes for the grades with black text."
      Not derived from --panel/--panel-2: a tile one step off the drawer is
@@ -95,7 +115,13 @@
      of his and it still holds. */
   --bg:#f2f4f7; --panel:#ffffff; --panel-2:#e8ecf1; --line:#c6cfd9;
   --fg:#1b2229; --dim:#5d6874;
-  --a:#27313f; --a-ink:#ffffff;
+  /* Half a shade deeper than the dark theme's, the same reason the tiles are:
+     #FF9440 on a near-white page does not separate. Same dark ink. */
+  --a:#E8822F; --a-ink:#2A1206;
+  /* Burnt, not bright: 5.80:1 on white, 4.89:1 on --panel-2. It is the same
+     hue family walked down until it can be read, which is the only way an
+     orange works as text on a pale ground. */
+  --a-text:#A8490A;
   /* Half a shade deeper than the dark theme so it still separates from a white
      page, but the same family and the same dark ink. */
   --orange:#E8822F; --orange-ink:#2A1206; --orange-soft:rgba(42,18,6,.74);
@@ -152,7 +178,7 @@ a{color:inherit;text-decoration:none}
 
    The arrow marks it as leaving the site. It is on ::after so it never ends up
    inside the link text a screen reader announces. */
-.res-card a{color:var(--a);text-decoration:underline;
+.res-card a{color:var(--a-text);text-decoration:underline;
   text-underline-offset:3px;text-decoration-thickness:1.5px;
   transition:text-decoration-thickness .15s ease,filter .15s ease}
 .res-card h4 a{text-decoration-thickness:2px}
@@ -167,8 +193,13 @@ a{color:inherit;text-decoration:none}
 :root[data-theme="light"] .res-card h4 a{text-decoration-thickness:2.5px}
 h1,h2,h3{font-weight:800;letter-spacing:-.04em;line-height:1.03;margin:0}
 h2{font-size:clamp(1.8rem,3.5vw,2.7rem);max-width:22ch}
+/* 🟠 THE EYEBROW IS THE ORANGE TEXT. Paul, 2026-09-21: "maybe even some text
+   in orange." This is the right place for it and most others are not: it is a
+   LABEL, never a sentence, so colour reads as branding rather than as emphasis
+   the reader has to decode. Body text stays --fg and links stay links.
+   ⚠️ --a-text, NOT --a. The fill orange is 2.49:1 on the light page. */
 .kick{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--dim);margin:0 0 14px}
+  color:var(--a-text);margin:0 0 14px}
 .h2s{color:var(--dim);max-width:52ch;margin:14px 0 0;font-size:1.02rem}
 
 /* ── announcement ── */
@@ -356,10 +387,23 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    the site is untouched - that class is on a lot of pages.
    ⚠️ Same dark ink as the tiles, for the same reason: this orange cannot carry
    white text at 4.5:1. */
+/* 🚨 THE LIGHT-MODE OVERRIDE HAS TO BE SPELLED OUT, and this is the bug Paul
+   reported on 2026-09-21: "the orange start here button doesn't stay orange in
+   light mode."
+   `.gstart .btn` is (0,2,0). `:root[data-theme="light"] .btn.ghost` above is
+   (0,4,0) and repaints it transparent with a grey outline. Nothing was wrong
+   with the orange rule; it was simply outranked, and only in one theme, which
+   is why it survived review on the default dark.
+   ⚠️ A theme override must be answered BY a theme override. Do not try to win
+   this with !important - the pair below mirrors the .btn.ghost pair exactly. */
 .gstart .btn{position:relative;z-index:1;display:inline-flex;align-items:center;gap:9px;
-  background:var(--orange);color:var(--orange-ink);border-color:var(--orange)}
+  background:var(--orange);color:var(--orange-ink);border-color:var(--orange);box-shadow:none}
+:root[data-theme="light"] .gstart .btn.ghost{background:var(--orange);color:var(--orange-ink);
+  border-color:var(--orange);box-shadow:none}
 .gstart .btn:hover{background:var(--orange);color:var(--orange-ink);
   border-color:var(--orange-ink);opacity:.92}
+:root[data-theme="light"] .gstart .btn.ghost:hover{background:var(--orange);
+  color:var(--orange-ink);border-color:var(--orange-ink);opacity:.92}
 .gchev{width:9px;height:9px;border-right:2px solid currentColor;
   border-bottom:2px solid currentColor;transform:rotate(45deg) translate(-1px,-1px);
   transition:transform .3s ease}
@@ -600,7 +644,7 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .minibox b{font-size:1rem;font-weight:800;letter-spacing:-.02em}
 .minibox span{font-size:.76rem;color:var(--dim)}
 .minibox u{text-decoration:none;margin-top:8px;font-size:.74rem;font-weight:800;
-  letter-spacing:.06em;text-transform:uppercase;color:var(--a)}
+  letter-spacing:.06em;text-transform:uppercase;color:var(--a-text)}
 .minibox.is-soon u{color:var(--dim)}
 
 /* ── 5. GAMES + 6. COMICS ── */
@@ -640,7 +684,7 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .cpeek{width:100%;background:none;border:0;font:inherit;text-align:left;
   cursor:pointer;padding:8px 13px;color:var(--dim);
   font-weight:700;letter-spacing:.03em;display:flex;align-items:center;gap:6px}
-.cpeek:before{content:"+";font-weight:800;font-size:.9rem;line-height:1;color:var(--a)}
+.cpeek:before{content:"+";font-weight:800;font-size:.9rem;line-height:1;color:var(--a-text)}
 @media(hover:hover){ .cpeek:hover{color:var(--fg)} }
 .cpeek:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
 
@@ -996,7 +1040,7 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 .state{background:var(--a);color:var(--a-ink);padding:74px 0}
 .state h2{max-width:18ch}
 .state p{color:var(--on-a-soft);max-width:52ch;margin:18px 0 28px;font-weight:500}
-.state .btn{background:var(--a-ink);color:var(--a)}
+.state .btn{background:var(--a-ink);color:var(--a-text)}
 
 .mq{height:250px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;
   background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -1358,7 +1402,7 @@ footer li a{font-size:.9rem;color:var(--dim);transition:color .2s}
 .authswap button{appearance:none;background:none;border:0;padding:0;cursor:pointer;
   font:inherit;font-size:inherit;color:var(--fg);font-weight:700;
   text-decoration:underline;text-underline-offset:3px}
-.authswap button:hover{color:var(--a)}
+.authswap button:hover{color:var(--a-text)}
 .crumb a{color:var(--dim)}
 @media(hover:hover){ .crumb a:hover{color:var(--fg)} }
 
@@ -1538,7 +1582,7 @@ nav:not(.js-nav) .mg-top.on::after,
 .mg-inner.on{opacity:1;pointer-events:auto}
 .mg-body{flex:1 1 auto;min-width:0}
 .mg-all{margin:16px 0 0}
-.mg-all a{font-size:13px;font-weight:700;color:var(--a);text-decoration:none}
+.mg-all a{font-size:13px;font-weight:700;color:var(--a-text);text-decoration:none}
 
 /* Grades: the nine tiles, in miniature. */
 .mg-grades{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px}
@@ -1593,7 +1637,7 @@ nav:not(.js-nav) .mg-top.on::after,
   text-transform:uppercase;color:var(--dim);margin-top:4px}
 .dl-open i{position:absolute;right:2px;top:50%;transform:translateY(-50%);
   font-style:normal;font-size:22px;line-height:1;color:var(--dim)}
-.dl-open.on{color:var(--a)}
+.dl-open.on{color:var(--a-text)}
 
 .dsub{position:absolute;inset:0;
   background:var(--panel);border-right:1px solid var(--line);padding:22px;
@@ -1621,7 +1665,7 @@ nav:not(.js-nav) .mg-top.on::after,
 .dsr i{position:absolute;right:2px;top:50%;transform:translateY(-50%);
   font-style:normal;font-size:21px;line-height:1;color:var(--dim)}
 .dsr.soon{opacity:.45;font-weight:600;cursor:default}
-.dsr.view{color:var(--a)}
+.dsr.view{color:var(--a-text)}
 
 /* Measuring pass: all inners briefly laid out so the tallest can be found.
    Invisible to the reader - it never paints, it is only read. */
@@ -2732,8 +2776,8 @@ nav{border-bottom:1px solid var(--line)}
    available." Derived from the same registry that fills the page, so it cannot
    claim a number the shelf does not have. */
 .phead .shelfcount{margin-top:10px;font-size:.78rem;font-weight:800;
-  letter-spacing:.06em;text-transform:uppercase;color:var(--a)}
-:root[data-theme="light"] .phead .shelfcount{color:var(--a)}
+  letter-spacing:.06em;text-transform:uppercase;color:var(--a-text)}
+:root[data-theme="light"] .phead .shelfcount{color:var(--a-text)}
 
 /* 🚨 The two boxes STAY SIDE BY SIDE on a phone. Paul, 2026-08-27: "on
    desktop you can see all the subjects but on mobile I only have no subjects but
@@ -2755,7 +2799,7 @@ nav{border-bottom:1px solid var(--line)}
 
 /* The two shelf counts sit on one line: the one you are on in plain type, the
    other as a link across. */
-.phead .shelfcount a{color:var(--a);text-decoration:none;border-bottom:1px solid transparent}
+.phead .shelfcount a{color:var(--a-text);text-decoration:none;border-bottom:1px solid transparent}
 .phead .shelfcount a:hover{border-bottom-color:currentColor}
 .phead .shelfcount b{color:var(--fg)}
 .phead .shelfcount i{font-style:normal;opacity:.45;margin:0 9px}

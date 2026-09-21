@@ -33,7 +33,17 @@ const CSS = path.join(ROOT, 'assets', 'ns.css');
 const TEXT = [
     'fg', 'dim', 'free', 'paid',
     'g-a', 'g-b', 'g-c', 'g-f', 'g-part',
+    /* a-text was ADDED 2026-09-21 and it is why this list must be kept up.
+       Orange became the default accent that day. --a was never in this list,
+       so the swap passed clean while --a as text sat at 2.31:1 in light mode.
+       A token this file does not name is a token nobody is checking. */
+    'a-text',
 ];
+/* Tokens used as a FILL under text. Checked the other way round: the ink has
+   to be readable ON them, not them on the page. --a is here and not in TEXT
+   because orange is a button colour; --a-text above is the one that carries
+   itself against the page. */
+const FILL = [['a', 'a-ink']];
 /* The surfaces text actually sits on. */
 const SURFACES = ['bg', 'panel', 'panel-2'];
 
@@ -108,10 +118,28 @@ for (const [name, t] of Object.entries(themes)) {
     }
 }
 
+/* FILL pairs: the ink has to be readable ON the fill. A button is text on a
+   colour, so the page behind it is irrelevant and SURFACES would be the wrong
+   test. Added with the orange accent, 2026-09-21. */
+for (const [name, t] of Object.entries(themes)) {
+    for (const [fill, ink] of FILL) {
+        if (!t[fill] || !t[ink]) {
+            warns.push(`${name}: --${fill} or --${ink} is not defined in this theme`);
+            continue;
+        }
+        const r = ratio(t[ink], t[fill]);
+        checked++;
+        if (r < AA) {
+            fails.push(`${name}: --${ink} ${t[ink]} ON --${fill} ${t[fill]} ` +
+                `is ${r.toFixed(2)}:1 — the ink cannot be read on its own button (needs ${AA})`);
+        }
+    }
+}
+
 /* A token that exists in one theme and not the other is the exact shape of the
    bug Paul described: something added while looking at one side. */
 if (themes.light) {
-    for (const k of TEXT) {
+    for (const k of TEXT.concat(FILL.flat())) {
         if (themes.dark[k] && !themes.light[k]) {
             fails.push(`--${k} is defined for dark and NOT for light — ` +
                 `the light theme will inherit the dark value.`);
