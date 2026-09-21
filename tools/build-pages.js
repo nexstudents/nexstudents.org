@@ -629,6 +629,7 @@ const { COURSE2 } = require("./maths-units.js");
 const { LIFE } = require("./science-units.js");
 const { WORLD } = require("./history-units.js");
 const YEAR = require("./year-plan.js");
+const MLS7 = require("./mls-grade-7.js");
 const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
 
 /* Leif world history: lessons are bare strings, BUILT maps "unit:n" to a slug.
@@ -1374,6 +1375,10 @@ const planRow = (g) => sameGrade(g, 7) ? `
         <b>The 7th Grade Year</b><span>36 weeks, Monday to Thursday</span>
         <u>429 lessons in order &rarr;</u>
       </a>
+      <a class="minibox" href="/grade-7/standards/">
+        <b>What Missouri Expects</b><span>The state's 160 standards, checked against the plan</span>
+        <u>See what is covered &rarr;</u>
+      </a>
     </div>`)}
 </div>` : "";
 
@@ -1950,6 +1955,149 @@ const yearPlanBody = () => {
 ${planViewScript}`;
 };
 
+/* ── THE STANDARDS PAGE, /grade-7/standards/ ──────────────────────────────
+   Paul, 2026-09-21: "save this layout local server page to NexStudents website
+   next to the yearly roadmap so I can reference later.. online how you put it
+   all together. also add the links to the standards in the layout."
+
+   🚨 IT SITS BESIDE /grade-7/plan/ AND ANSWERS THE OPPOSITE QUESTION. The plan
+   says what a student does and when. This says what the STATE expects and
+   whether the plan meets it. Same data source underneath - the four course
+   files - read from two directions.
+
+   🚨 THE JUDGEMENTS LIVE IN mls-grade-7.js, NOT HERE, and they are hand made.
+   Read that file's header before changing a status. This function only draws.
+
+   ⚠️ EVERY SUBJECT LINKS OUT TO ITS SOURCE PDF at DESE. That is the point of
+   the page: a parent has to be able to check the claim rather than take it.
+   The links are in the data file so one URL change is one edit. */
+const STD_LABEL = { covered: "Covered", partial: "Partial", gap: "Not covered" };
+
+const stdRow = (r) =>
+  '<li class="std-row">' +
+    '<i class="plan-pip s-' + r.status + '" aria-hidden="true"></i>' +
+    '<span class="std-code">' + r.code + '</span>' +
+    '<span class="std-body">' +
+      '<span class="std-text">' + r.text + '</span>' +
+      '<span class="std-meta">' +
+        '<span class="std-tag s-' + r.status + '">' + STD_LABEL[r.status] + '</span>' +
+        (r.where ? '<span class="std-where">' + r.where + '</span>' : '') +
+      '</span>' +
+      (r.note ? '<span class="std-note">' + r.note + '</span>' : '') +
+    '</span>' +
+  '</li>';
+
+const stdSubject = (s) => {
+  const c = s.rows.filter((r) => r.status === "covered").length;
+  const p = s.rows.filter((r) => r.status === "partial").length;
+  const g = s.rows.filter((r) => r.status === "gap").length;
+  const pct = (n) => (n * 100 / s.rows.length).toFixed(2);
+
+  /* Grouped the way its own standards document groups them, so a parent
+     holding the PDF finds the same headings in the same order. */
+  const out = [];
+  let group = null;
+  let cluster = null;
+  for (const r of s.rows) {
+    if (r.group !== group) {
+      if (group !== null) out.push('</ul>');
+      group = r.group; cluster = null;
+      out.push('<h4 class="std-grp">' + r.group + '</h4><ul class="std-list">');
+    }
+    if (r.cluster && r.cluster !== cluster) {
+      cluster = r.cluster;
+      out.push('<li class="std-cl">' + r.cluster + '</li>');
+    }
+    out.push(stdRow(r));
+  }
+  if (group !== null) out.push('</ul>');
+
+  return '<section class="plan-subject" id="std-' + s.subject.toLowerCase() + '">' +
+    '<h3 class="plan-sh">' +
+      '<span class="plan-tag t-' + SUBJ_ABBR[s.subject] + '">' + SUBJ_ABBR[s.subject] + '</span> ' +
+      s.title + ' <em>' + s.rows.length + ' standards</em>' +
+    '</h3>' +
+    '<p class="std-course">' + s.note + ' Taught from <b>' + s.course + '</b>.</p>' +
+    '<div class="std-bar" role="img" aria-label="' + c + ' covered, ' + p +
+      ' partial, ' + g + ' not covered">' +
+      '<i class="s-covered" style="width:' + pct(c) + '%"></i>' +
+      '<i class="s-partial" style="width:' + pct(p) + '%"></i>' +
+      '<i class="s-gap" style="width:' + pct(g) + '%"></i>' +
+    '</div>' +
+    '<p class="std-barkey">' + c + ' covered &middot; ' + p + ' partial &middot; ' +
+      g + ' not covered</p>' +
+    '<p class="std-src">Source: <a href="' + s.source.url +
+      '" rel="noopener noreferrer" target="_blank">' + s.source.label +
+      '</a> &middot; Missouri DESE</p>' +
+    out.join("\n      ") +
+  '</section>';
+};
+
+const standardsBody = () => {
+  const all = MLS7.SUBJECTS.reduce((a, s) => a.concat(s.rows), []);
+  const c = all.filter((r) => r.status === "covered").length;
+  const p = all.filter((r) => r.status === "partial").length;
+  const g = all.filter((r) => r.status === "gap").length;
+
+  const oob = MLS7.SCIENCE_OUT_OF_BAND.map((x) =>
+    '<li class="std-row std-row-plain">' +
+      '<span class="std-code">' + x.code + '</span>' +
+      '<span class="std-body"><span class="std-text">' + x.text + '</span>' +
+      '<span class="std-note">' + x.group + '</span></span>' +
+    '</li>').join("\n      ");
+
+  const sources = MLS7.SOURCES.map((s) =>
+    '<li><a href="' + s.url + '" rel="noopener noreferrer" target="_blank">' +
+    s.label + '</a></li>').join("\n      ");
+
+  return `<div class="band"><div class="wrap">
+    <div class="plan-figs">
+      <div class="plan-fig"><b>${all.length}</b><span>Standards checked</span></div>
+      <div class="plan-fig"><b>${c}</b><span>Covered</span></div>
+      <div class="plan-fig"><b>${p}</b><span>Partial</span></div>
+      <div class="plan-fig"><b>${g}</b><span>Not covered</span></div>
+    </div>
+    <p class="plan-key">
+      <span><i class="plan-pip s-covered"></i>the year plan teaches it</span>
+      <span><i class="plan-pip s-partial"></i>met, but not by name, or met in another subject</span>
+      <span><i class="plan-pip s-gap"></i>nothing in the year plan touches it</span>
+    </p>
+    <p class="plan-note"><b>This is a gap-spotting tool, not a syllabus.</b> Missouri homeschool
+      law is hours based, 1,000 a year with 600 in the core subjects, and there is no state test.
+      DESE says it plainly too: the standards do not dictate curriculum. So a &ldquo;not
+      covered&rdquo; row is a place this year and the public 7th grade differ. It is a difference,
+      not a debt.</p>
+    <p class="plan-note">Every standard below is quoted from Missouri&rsquo;s own 2016
+      board-approved documents, and every subject links out to the document it came from. The
+      coverage column is a judgement made by hand against
+      <a href="/grade-7/plan/">the year plan</a>, once, in September 2026.</p>
+
+    ${MLS7.SUBJECTS.map(stdSubject).join("\n    ")}
+
+    <section class="plan-subject">
+      <h3 class="plan-sh">The rest of the 6&ndash;8 science band <em>${MLS7.SCIENCE_OUT_OF_BAND.length} standards</em></h3>
+      <p class="std-course">Missouri writes science as one band across three years rather than
+        grade by grade. This year is the life science third, scored above. Physical science, earth
+        and space science and engineering design are the other two thirds, so they are
+        <b>not this year and not a gap</b>.</p>
+      <ul class="std-list">
+      ${oob}
+      </ul>
+    </section>
+
+    <section class="plan-subject">
+      <h3 class="plan-sh">The two social studies courses that are not this year</h3>
+      <p class="std-course">Missouri writes middle school social studies per course, not per
+        grade. <b>American History</b> has ${MLS7.OTHER_SS_COURSES.AH} standards and is the
+        8th grade course. <b>Geography</b> has ${MLS7.OTHER_SS_COURSES.GEO} and is its own
+        course, taken in neither of these two years.</p>
+      <ul class="std-srclist">
+      ${sources}
+      </ul>
+    </section>
+  </div></div>`;
+};
+
 /* 🚨 NO BACKTICKS ANYWHERE INSIDE THIS STRING, comments included. It is returned
    into a template literal above, and a stray backtick closes it and kills the
    build on the next word - the same trap that cost a build on 2026-08-31. */
@@ -2208,6 +2356,17 @@ const pages = [
     h1: "The 7th Grade Year, Week by Week.",
     lead: "Four subjects, 36 weeks, Monday to Thursday. Every lesson in the order it should be taught, with the holidays and breaks already taken out.",
     body: yearPlanBody() },
+
+  /* The standards check. Sits beside the year plan and answers the opposite
+     question: not what a student does, but what the state expects and whether
+     the plan meets it. See standardsBody above. */
+  { dir: "grade-7/standards", active: null, pclass: "termshead",
+    title: "What Missouri Expects | 7th Grade | NexStudents",
+    desc: "Every Missouri Learning Standard a 7th grader is measured against, in all four core subjects, checked against the year plan. Links to the state documents throughout.",
+    crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Standards',
+    h1: "What Missouri Expects.",
+    lead: "All 160 Missouri Learning Standards for 7th grade, across English, History, Math and Science, lined up against the year plan so you can see the holes. Every subject links to the state document it came from.",
+    body: standardsBody() },
 
   { dir: "extras", active: "x", pclass: "termshead",
     title: "Extras | NexStudents",
