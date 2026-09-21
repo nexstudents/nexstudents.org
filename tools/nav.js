@@ -433,7 +433,7 @@ ${drawerSubs()}
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg>
     </a>
   </div>
-  <a class="word" href="/"><img src="/assets/brand/logo.png" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
+  <a class="word" href="/"><img src="/assets/brand/logo.png${assetV("brand/logo.png")}" alt="" width="512" height="512" decoding="async"><span class="wordtext">Nex<b>Students</b></span></a>
   <div class="tabs">${tabs(active)}</div>
   ${/* Sign in and cart sit where "Pick a Grade" used to. Paul, 2026-08-29.
        The button was redundant anyway: Grades is a nav tab with its own mega
@@ -450,10 +450,17 @@ ${accountDrawer()}`;
 /* Favicon set. One source image, three sizes, so a browser tab, an Android
    home screen and an iOS bookmark each get something sharp instead of a
    1500px PNG scaled down on the fly. */
+/* 🚨 CACHE-BUSTED, AND IT HAS TO BE. These three shipped bare until 2026-09-21,
+   the day the mark went from red to orange. A favicon is one of the most
+   aggressively cached things a browser holds, so without assetV() every
+   returning visitor keeps the RED icon and the deploy looks like it failed.
+   Exactly the trap CLAUDE.md records for ns-account.js and lesson-nav.css:
+   correct code, stale asset, hours lost looking at the code.
+   assetV() hashes the file, so changing the art changes the URL by itself. */
 const faviconTags = () =>
-  '<link rel="icon" href="/assets/brand/logo-32.png" sizes="32x32" type="image/png">\n' +
-  '<link rel="icon" href="/assets/brand/logo.png" sizes="512x512" type="image/png">\n' +
-  '<link rel="apple-touch-icon" href="/assets/brand/logo-180.png">';
+  '<link rel="icon" href="/assets/brand/logo-32.png' + assetV("brand/logo-32.png") + '" sizes="32x32" type="image/png">\n' +
+  '<link rel="icon" href="/assets/brand/logo.png' + assetV("brand/logo.png") + '" sizes="512x512" type="image/png">\n' +
+  '<link rel="apple-touch-icon" href="/assets/brand/logo-180.png' + assetV("brand/logo-180.png") + '">';
 
 /* ── SHARE CARDS AND BREADCRUMBS ──────────────────────────────────────────
    Both of these were on ONE page out of 184: the hand-written root index.html.
@@ -478,7 +485,15 @@ const SITE_ORIGIN = "https://nexstudents.org";
    "summary_large_image" with a square image gets centre-cropped, and it was
    previously the reverse mistake - the root index.html declared the large card
    while supplying no image at all, which renders as a blank slab. */
-const SHARE_IMAGE = SITE_ORIGIN + "/assets/brand/share.png";
+/* 🚨 Busted too, and it must be a FUNCTION, not a const. Facebook, X and
+   the rest cache an og:image by URL and hold it, so the card kept its RED
+   logo after the orange one shipped; a new hash is a new URL, which is the
+   only reliable way to make a scraper look again.
+   ⚠️ assetV is declared ~350 lines BELOW this point, so calling it here at
+   module-load time threw "Cannot access 'assetV' before initialization" and
+   took every generator down with it. A function defers the call to use
+   time, by which point assetV exists. Do not turn this back into a const. */
+const shareImage = () => SITE_ORIGIN + "/assets/brand/share.png" + assetV("brand/share.png");
 const TWITTER_CARD = "summary_large_image";
 
 /* `path` is root-absolute and starts with "/". `type` is "website" for a shelf
@@ -492,11 +507,11 @@ const socialTags = (o) => {
     '<meta property="og:url" content="' + url + '">',
     '<meta property="og:title" content="' + esc(o.title) + '">',
     '<meta property="og:description" content="' + esc(o.desc) + '">',
-    '<meta property="og:image" content="' + (o.image || SHARE_IMAGE) + '">',
+    '<meta property="og:image" content="' + (o.image || shareImage()) + '">',
     '<meta name="twitter:card" content="' + TWITTER_CARD + '">',
     '<meta name="twitter:title" content="' + esc(o.title) + '">',
     '<meta name="twitter:description" content="' + esc(o.desc) + '">',
-    '<meta name="twitter:image" content="' + (o.image || SHARE_IMAGE) + '">',
+    '<meta name="twitter:image" content="' + (o.image || shareImage()) + '">',
   ].join("\n");
 };
 
