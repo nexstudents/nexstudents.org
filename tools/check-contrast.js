@@ -44,6 +44,11 @@ const TEXT = [
    because orange is a button colour; --a-text above is the one that carries
    itself against the page. */
 const FILL = [['a', 'a-ink']];
+/* Tokens that carry no text and so have no ratio to meet, but that MUST exist
+   in both themes. A border colour defined only for dark silently inherits the
+   dark value on the light page, which is the one-sided bug this file exists to
+   catch. --a-edge, the unpressed-pill outline, is the first of them. */
+const BOTH_THEMES = ['a-edge'];
 /* The surfaces text actually sits on. */
 const SURFACES = ['bg', 'panel', 'panel-2'];
 
@@ -139,7 +144,7 @@ for (const [name, t] of Object.entries(themes)) {
 /* A token that exists in one theme and not the other is the exact shape of the
    bug Paul described: something added while looking at one side. */
 if (themes.light) {
-    for (const k of TEXT.concat(FILL.flat())) {
+    for (const k of TEXT.concat(FILL.flat()).concat(BOTH_THEMES)) {
         if (themes.dark[k] && !themes.light[k]) {
             fails.push(`--${k} is defined for dark and NOT for light — ` +
                 `the light theme will inherit the dark value.`);

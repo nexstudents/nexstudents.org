@@ -47,6 +47,15 @@
      On the dark theme the fill orange is already 8.97:1 as text, so --a-text
      is simply --a there and only the light override moves. */
   --a-text:#FF9440;
+  /* 🟠 THE THIRD ORANGE, AND IT IS A BORDER — never a fill, never text.
+     Paul, 2026-09-21: "put an dark orange outline around the pill buttons that
+     are not being used."
+     🚨 THE POINT IS THAT IT IS QUIETER THAN --a. An unpressed filter has to
+     read as "an option in the same family, currently off", so it sits about
+     3.4:1 against the page where the pressed pill is a solid fill. If this ever
+     gets as loud as --a the row stops showing which one is chosen, which is the
+     only job the row has. --line, for comparison, is 1.50:1 — a whisper. */
+  --a-edge:#9A5418;
   /* 🚨 THE GRADE TILES ARE WHITE WITH BLACK TEXT IN BOTH THEMES.
      Paul, 2026-09-02: "I wanted white boxes for the grades with black text."
      Not derived from --panel/--panel-2: a tile one step off the drawer is
@@ -122,6 +131,8 @@
      hue family walked down until it can be read, which is the only way an
      orange works as text on a pale ground. */
   --a-text:#A8490A;
+  /* Darker again on a pale ground, same reasoning as --a-text. */
+  --a-edge:#B4530E;
   /* Half a shade deeper than the dark theme so it still separates from a white
      page, but the same family and the same dark ink. */
   --orange:#E8822F; --orange-ink:#2A1206; --orange-soft:rgba(42,18,6,.74);
@@ -438,8 +449,14 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
 /* Rounded SQUARES, not pills. Paul, 2026-09-06: "make those different buttons on top
    more rounded squares". `--pill` is a 999px radius; 10px against a ~36px tall button
    reads as a square with the corners taken off. Do not put `--pill` back here. */
+/* 🚨 THE UNPRESSED PILL WEARS THE DARK ORANGE EDGE, the pressed one wears the
+   fill. Both states are now orange and they are told apart by WEIGHT, not by
+   hue, which is why --a-edge must stay quieter than --a. The label goes to --fg
+   as well: --dim inside an orange outline read as a disabled control rather
+   than an available one. */
 .filters button{font-family:inherit;font-size:13px;font-weight:700;padding:9px 16px;border-radius:10px;
-  background:transparent;color:var(--dim);border:1px solid var(--line);cursor:pointer;transition:all .22s}
+  background:transparent;color:var(--fg);border:1px solid var(--a-edge);cursor:pointer;transition:all .22s}
+@media(hover:hover){ .filters button:not([aria-pressed="true"]):hover{border-color:var(--a);color:var(--a-text)} }
 .filters button[aria-pressed="true"]{background:var(--a);color:var(--a-ink);border-color:var(--a)}
 @media(max-width:600px){
   /* the label sits above its row on a phone, or 74px of every row is gone to it */
@@ -580,12 +597,16 @@ h1{font-size:clamp(2.1rem,5.6vw,4.1rem);margin-bottom:18px}
    ⚠️ `.railfoot .arrows` only. The GAMES rail keeps its arrows up in `.shead` and
    must not pick these up -- its heading is short and it has no filter block. */
 .railfoot{display:flex;align-items:center;gap:24px;margin-top:4px}
-.railtrack{flex:1;height:2px;border-radius:2px;background:var(--line);position:relative;
+/* 🟠 The shelf's scroll line, orange since 2026-09-21. Paul: "the line slider
+   under it you can also make that orange." The TRACK is the quiet edge orange
+   and the moving part below is the full accent, so the bar reads as how much
+   shelf is left rather than as two grey lines. */
+.railtrack{flex:1;height:2px;border-radius:2px;background:var(--a-edge);position:relative;
   overflow:hidden}
 /* The filled part. Width and offset are set by paintTrack() from the real scroll
    position, so it doubles as "how much of the shelf is left". */
 .railtrack span{position:absolute;top:0;height:100%;border-radius:2px;
-  background:var(--fg-28);transition:transform .18s linear;
+  background:var(--a);transition:transform .18s linear;
   left:0;width:100%;transform-origin:left center}
 /* 🚨 The track is DECORATION and is hidden when the rail cannot scroll, because a
    full-width bar that never moves reads as a broken progress bar. */
@@ -3027,9 +3048,14 @@ nav{border-bottom:1px solid var(--line)}
    every property in that declaration was dropped and the buttons rendered as bare
    dim text on a transparent ground - invisible on the dark theme. Paul: "I don't
    see where I can switch between unit and lessons?" Set the properties longhand. */
+/* ⚠️ SAME TOGGLE-PILL PATTERN AS `.filters button`, so it wears the same
+   dark orange edge when unpressed. These two are the only fill-when-pressed
+   pills on the site; if a third appears, it joins them.
+   (`.ser` on the comics page is NOT one - pressed there is a border plus a
+   panel fill, a different language, deliberately left alone.) */
 .plan-vb{font-family:inherit;font-size:14px;font-weight:600;line-height:1;
   padding:10px 18px;border-radius:999px;cursor:pointer;
-  border:1px solid var(--line);background:var(--panel-2,var(--panel));color:var(--fg)}
+  border:1px solid var(--a-edge);background:var(--panel-2,var(--panel));color:var(--fg)}
 .plan-vb:hover{border-color:var(--a)}
 .plan-vb[aria-pressed="true"]{background:var(--a);color:var(--a-ink);border-color:var(--a)}
 .plan-vb:focus-visible{outline:2px solid var(--a);outline-offset:2px}
