@@ -1,0 +1,18 @@
+Add /favicon.ico so the orange mark reaches Google search
+
+Paul: "can you also change the logo on the website view. when it shows up on
+Google search."
+
+The root /favicon.ico was 404ing - it had never existed, only the PNG rel=icon
+tags. Google checks that path first and some crawlers check only it. Written
+as a multi-resolution ICO (16 to 256) from the new orange logo.png, and
+declared in the head ahead of the PNGs.
+
+No cache-buster on it, deliberately: Google re-crawls a favicon on its own
+schedule and wants a stable URL. Browsers still get the busted PNGs.
+
+The Organization schema logo in index.html already points at logo.png, so it
+picked up the new mark with the file swap. Left bare of a query string on
+purpose - structured data should name a canonical URL.
+
+Regenerate favicon.ico whenever assets/brand/logo.png changes.

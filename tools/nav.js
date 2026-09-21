@@ -458,6 +458,14 @@ ${accountDrawer()}`;
    correct code, stale asset, hours lost looking at the code.
    assetV() hashes the file, so changing the art changes the URL by itself. */
 const faviconTags = () =>
+  /* 🔍 GOOGLE READS /favicon.ico FIRST, and it 404'd until 2026-09-21 — Paul:
+     "can you also change the logo on the website view. when it shows up on
+     Google search". Google looks for this file or a rel="icon", and the root
+     file is the one location every crawler knows.
+     ⚠️ NO CACHE-BUSTER HERE, deliberately: Google re-crawls a favicon on its own
+     schedule and wants a stable URL. Browsers get the busted PNGs below.
+     ⚠️ Multi-resolution ICO, 16 to 256. Regenerate it whenever logo.png changes. */
+  '<link rel="icon" href="/favicon.ico" sizes="any">\n' +
   '<link rel="icon" href="/assets/brand/logo-32.png' + assetV("brand/logo-32.png") + '" sizes="32x32" type="image/png">\n' +
   '<link rel="icon" href="/assets/brand/logo.png' + assetV("brand/logo.png") + '" sizes="512x512" type="image/png">\n' +
   '<link rel="apple-touch-icon" href="/assets/brand/logo-180.png' + assetV("brand/logo-180.png") + '">';
