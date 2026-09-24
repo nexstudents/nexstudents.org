@@ -358,6 +358,6 @@ module.exports = {
       "The one almost everybody gets wrong is theory against law.",
       "A theory does not get promoted to a law once it is proven; they do different jobs, and Hypothesis, Theory, and Law says which is which.",
       "When the questions are done, there is the lima bean jar to set up, and that is the whole method done with your own hands.",
-      "Last, the word cards at the top and the check at the bottom of the page."
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] }
 };

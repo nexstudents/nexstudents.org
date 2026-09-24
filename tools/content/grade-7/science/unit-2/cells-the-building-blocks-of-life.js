@@ -446,6 +446,6 @@ module.exports = {
       "If a question is hard, use the bar or the arrows to go back to the section that scientist is in and read it again.",
       "The one worth slowing down on is why an electron microscope is not simply the better microscope.",
       "It cannot look at anything that is still alive, and that is the whole answer.",
-      "Last, the word cards at the top and the check at the bottom of the page."
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] }
 };

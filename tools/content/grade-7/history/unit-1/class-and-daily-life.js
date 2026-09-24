@@ -370,7 +370,7 @@ module.exports = {
       "If a question is hard, use the bar or the arrows to go back to the part it came from, because every answer is somewhere in the reading.",
       "The one worth slowing down over is the letter at the end.",
       "Paul does not tell Philemon that Roman law has the wrong answer about who owns whom; he tells a slave owner that the man he owns is his brother, and asks him to go home and act like it.",
-      "Finish with the word cards at the top and the check at the bottom of the page."
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
     ]
   }
 };

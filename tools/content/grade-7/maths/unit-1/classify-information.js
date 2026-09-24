@@ -297,6 +297,6 @@ module.exports = {
       "If a question is hard, go back to What Do I Know and read the van trip again from there.",
       "The one people trip on is the two adults who are driving.",
       "It is a true fact and it is in the problem, and you still do not need it.",
-      "Last, the word cards at the top and the check at the bottom of the page."
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] }
 };

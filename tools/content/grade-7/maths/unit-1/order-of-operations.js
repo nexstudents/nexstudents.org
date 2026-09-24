@@ -432,6 +432,6 @@ module.exports = {
       "The one people get wrong is why division comes first in 24 divided by 6 times 2.",
       "It is not because division outranks multiplication.",
       "Read Second: Multiplication and Division again if that one is hard.",
-      "Last, the word cards at the top and the check at the bottom of the page."
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] }
 };

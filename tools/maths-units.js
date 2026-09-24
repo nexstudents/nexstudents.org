@@ -79,7 +79,7 @@ const L = (label, title, page, slug) => {
   return { label, title, page, kind: "lesson", slug: slug || null };
 };
 const LAB = (label, title, page) => ({ label, title, page, kind: "lab" });
-const REV = (title, page) => ({ label: "", title, page, kind: "review" });
+const REV = (title, page, slug) => ({ label: "", title, page, kind: "review", slug: slug || null });
 const TEST = (title, page) => ({ label: "", title, page, kind: "test" });
 const DEC = (title, page) => ({ label: "", title, page, kind: "decision" });
 const OTH = (title, page) => ({ label: "", title, page, kind: "other" });
@@ -102,23 +102,23 @@ const COURSE2 = {
       DEC("Planning a Flower Garden", 22),
       L("1-7", "Order of Operations", 24, "maths/order-of-operations"),
       LAB("1-8A", "Mathematics Lab: Algebra: Variables and Expressions", 27),
-      L("1-8", "Algebra Connection: Variables and Expressions", 28),
-      L("1-9", "Algebra Connection: Powers and Exponents", 32),
+      L("1-8", "Algebra Connection: Variables and Expressions", 28, "maths/variables-and-expressions"),
+      L("1-9", "Algebra Connection: Powers and Exponents", 32, "maths/powers-and-exponents"),
       LAB("1-9B", "Mathematics Lab: Spreadsheets", 36),
-      L("1-10", "Algebra Connection: Solving Equations Mentally", 38),
-      REV("Study Guide and Review", 42),
+      L("1-10", "Algebra Connection: Solving Equations Mentally", 38, "maths/solving-equations-mentally"),
+      REV("Study Guide and Review", 42, "maths/unit-1-review"),
       TEST("Chapter Test", 45),
     ]},
     { n: 2, title: "Applications with Decimals", project: "Clubs and Recreations", page: 46, items: [
-      L("2-1", "Comparing and Ordering Decimals", 48),
-      L("2-2", "Rounding Decimals", 51),
-      L("2-3", "Estimating with Decimals", 54),
+      L("2-1", "Comparing and Ordering Decimals", 48, "maths/comparing-and-ordering-decimals"),
+      L("2-2", "Rounding Decimals", 51, "maths/rounding-decimals"),
+      L("2-3", "Estimating with Decimals", 54, "maths/estimating-with-decimals"),
       OTH("Review: Addition and Subtraction of Decimals", 58),
       LAB("2-4A", "Mathematics Lab: Multiplication with Decimal Models", 60),
-      L("2-4", "Multiplying Decimals", 61),
-      L("2-5", "Mental Math Strategy: Powers of Ten", 64),
+      L("2-4", "Multiplying Decimals", 61, "maths/multiplying-decimals"),
+      L("2-5", "Mental Math Strategy: Powers of Ten", 64, "maths/powers-of-ten"),
       REV("Mid-Chapter Review", 66),
-      L("2-6", "Scientific Notation", 67),
+      L("2-6", "Scientific Notation", 67, "maths/scientific-notation"),
       LAB("2-7A", "Mathematics Lab: Division with Decimal Models", 70),
       L("2-7", "Dividing Decimals", 71),
       L("2-8", "Rounding Quotients", 75),

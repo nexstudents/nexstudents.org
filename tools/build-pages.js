@@ -276,16 +276,6 @@ const PLANNED = [
     thumb: "/lessons/history/conquest-and-city-life/thumb.jpg" },
   { kind: "lesson", subject: "History", grade: 7, unit: "U1-L5",  title: "Class, Slavery, and Daily Life in Rome",
     thumb: "/lessons/history/class-and-daily-life/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L6",  title: "Judea Under Roman Rule",
-    thumb: "/lessons/history/judea-under-rome/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L7",  title: "Jesus and the First Christians",
-    thumb: "/lessons/history/jesus-and-the-first-christians/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L8",  title: "Paul, Persecution, and a Church That Spread",
-    thumb: "/lessons/history/paul-and-the-early-church/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L9",  title: "Crisis, Reform, and the Fall of the West",
-    thumb: "/lessons/history/fall-of-the-west/thumb.jpg" },
-  { kind: "lesson", subject: "History", grade: 7, unit: "U1-L10", title: "Unit 1 Review: Rome and the Early Church",
-    thumb: "/lessons/history/unit-1-review/thumb.jpg" },
   /* ✅ The Science Unit 1 Review SHIPPED 2026-09-13, so its PLANNED slot is gone.
      Leaving it would show the card twice - once as a slot, once as the real lesson. */
 ];

@@ -401,6 +401,6 @@ module.exports = {
       "The one worth slowing down on is why a short sentence from Paul changed what those soldiers were willing to do.",
       "He did not become powerful.",
       "He named a legal standing that the men holding him had to respect.",
-      "Last, the word cards at the top and the check at the bottom of the page."
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] }
 };

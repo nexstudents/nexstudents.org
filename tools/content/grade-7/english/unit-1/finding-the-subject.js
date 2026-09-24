@@ -263,8 +263,8 @@ module.exports = {
       "{c} word cards at the top of the page, then {Q} questions about the lesson, then {v} more questions about those words. {T} questions in all.",
       "When a sentence looks strange, turn it around and put the subject first, or find the verb and ask who or what does it.",
       "Remember that here and there are never the subject, and that in a command the subject is you.",
-      "Read the word cards at the top of the page before you start.",
       "Tap each card to see what it means, then answer the word questions at the bottom of the page.",
-      "If you get stuck, go back to the section with that name and read its first line again."
+      "If you get stuck, go back to the section with that name and read its first line again.",
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] },
 };

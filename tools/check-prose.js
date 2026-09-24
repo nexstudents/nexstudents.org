@@ -53,6 +53,17 @@ const COMMA_FLOOR = 25;    /* % of lines carrying a comma */
    actually it is unnatural! ... it's all really ugly and looks so watered down
    and feels like ai." He had said it before and it kept shipping. A build is
    the only thing that reliably stops me repeating myself. */
+const GRANDFATHERED = [
+  "english/finding-the-subject", "english/forming-compound-subjects-and-predicates",
+  "english/simple-subjects-and-simple-predicates", "history/class-and-daily-life",
+  "history/conquest-and-city-life", "history/roads-and-the-roman-army",
+  "maths/choose-the-method-of-computation", "maths/classify-information", "maths/order-of-operations",
+  "science/cells-the-building-blocks-of-life", "science/from-cells-to-tissues-to-organs",
+  "science/how-things-get-in-and-out-of-a-cell", "science/organ-transplants-and-the-questions-they-raise",
+  "science/unit-1-review", "science/unit-2-review", "science/what-living-things-are-made-of",
+  "science/what-we-throw-away", "science/where-a-cell-gets-its-energy"
+];
+
 const BANNED = [
   ['That is the reading done', 'Write an opening that belongs to THIS lesson.'],
   ['Now that we have learned', 'Do not narrate the lesson. Keep teaching.'],
@@ -81,11 +92,16 @@ for (const file of files) {
   try { L = require(file); } catch (e) { continue; }
   if (!L || !L.slug) continue;
 
-  /* every line the student actually reads: the story, then the assignment */
+  /* every line the student actually reads: the story, then the assignment.
+     🚨 PROSE ONLY, 2026-09-24. An [ex] or [verse] line is a specimen, short on
+     purpose, and counting it let me wave off a real warning as "the example
+     boxes skew it". Now the numbers are about the prose and nothing else, so
+     a warning here is always about sentences I wrote. */
+  const isMarked = (t) => /^\[(?:ex|verse)\] /.test(String(t).trim());
   const lines = [];
   (L.parts || []).forEach(p => (p.s || []).forEach(t => {
-    let x = String(t).replace(/^\[(?:ex|verse)\] /, '');
-    if (x.trim()) lines.push(x);
+    if (isMarked(t)) return;
+    if (String(t).trim()) lines.push(String(t));
   }));
   (L.todo && L.todo.s ? L.todo.s : []).forEach(t => { if (String(t).trim()) lines.push(String(t)); });
   if (lines.length < 6) continue;
@@ -136,7 +152,7 @@ for (const file of files) {
   let worstRun = 0, runNow = 0, worstAt = "";
   (L.parts || []).forEach(p => { (p.s || []).forEach(t => {
     const line = String(t).trim();
-    if (!line) { runNow = 0; return; }
+    if (!line || isMarked(line)) { runNow = 0; return; }
     if (line.split(/\s+/).length < 8) {
       runNow++;
       if (runNow > worstRun) { worstRun = runNow; worstAt = line; }
@@ -154,6 +170,26 @@ for (const file of files) {
   if (singles > 35) bad.push(singles + "% of paragraphs are a single sentence (want under 35%)");
   if (comma < COMMA_FLOOR) bad.push('only ' + comma + '% of lines carry a comma (want ' + COMMA_FLOOR + '%+)');
   if (bad.length) warns.push(L.slug + ' - ' + bad.join(' · '));
+
+  /* 🚨 THE /natural GATE, 2026-09-24. Paul: "this is the stuff I keep saying
+     that is wasting a lot of token usage going back and forth." Ten lessons
+     went to him after I READ /natural and then skipped its editing pass, so
+     the drumbeat he has named four times shipped again.
+     A lesson stamped natural: "<date>" is claiming the pass ran, so the claim
+     is checked: a drumbeat or a pile of stubs FAILS the build. A new lesson
+     with a plan and no stamp FAILS too, so the pass can't be skipped quietly.
+     GRANDFATHERED is every lesson built before the gate. Do not add to it. */
+  const needsStamp = L.plan && GRANDFATHERED.indexOf(L.id) < 0;
+  if (needsStamp && !L.natural)
+    fails.push(L.slug + '\n      no /natural pass recorded. Run THE PASS in the skill, then add natural: "<date>".');
+  if (L.natural) {
+    const hard = [];
+    if (worstRun >= 3) hard.push(worstRun + ' short prose sentences in a row ("' + worstAt.slice(0, 40) + '")');
+    if (short > SHORT_CEILING) hard.push(short + '% of prose lines under 8 words (max ' + SHORT_CEILING + '%)');
+    if (perPara < 2.0) hard.push('prose paragraphs average ' + perPara.toFixed(1) + ' sentences (min 2.0; a one-line setup before an example box counts as a paragraph, so 2.0 not 2.5)');
+    if (hard.length) fails.push(L.slug + '\n      stamped natural: "' + L.natural + '" but still flat:\n        ' +
+      hard.join('\n        ') + '\n      Join the short lines with and/but/so, a comma or a semicolon. Do not pad.');
+  }
 }
 
 rows.sort((a, b) => a.median - b.median);
@@ -171,7 +207,7 @@ if (warns.length) {
 }
 
 if (fails.length) {
-  console.error('\ncheck-prose FAILED — ' + fails.length + ' banned phrase(s):\n');
+  console.error('\ncheck-prose FAILED — ' + fails.length + ' problem(s):\n');
   for (const f of fails) console.error('  - ' + f + '\n');
   process.exit(1);
 }

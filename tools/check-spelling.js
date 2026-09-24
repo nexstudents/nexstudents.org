@@ -58,6 +58,7 @@ const BAD = [
 /* Exact strings that are quotations and must survive verbatim. */
 const ALLOW = [
   "honour of kings",
+  "they labour in vain that build it",   /* Psalm 127:1, KJV */
 ];
 
 function walk(dir, out) {

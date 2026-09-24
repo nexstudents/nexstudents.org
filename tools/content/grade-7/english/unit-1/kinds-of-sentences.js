@@ -400,8 +400,8 @@ module.exports = {
       "{c} word cards at the top of the page, then {Q} questions about the story, then {v} more questions about those words. {T} questions in all.",
       "For each sentence, decide what it is doing: telling, asking, commanding, or shouting.",
       "The mark on the end is a clue, not the answer.",
-      "Read the word cards at the top of the page before you start.",
       "Tap each card to see what it means, then answer the word questions at the bottom of the page.",
-      "If you get stuck, go back to the section with that name and read its first line again."
+      "If you get stuck, go back to the section with that name and read its first line again.",
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] },
 };

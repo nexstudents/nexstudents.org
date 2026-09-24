@@ -470,6 +470,6 @@ module.exports = {
       "If one is hard, use the bar or the arrows to go back to the section it came from and read it again.",
       "The one worth slowing down on is Cannae.",
       "Rome lost an entire army and kept fighting, and the reason is the whole point of the lesson.",
-      "Last, the word cards at the top and the check at the bottom of the page."
+      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] }
 };

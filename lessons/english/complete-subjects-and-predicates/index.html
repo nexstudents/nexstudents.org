@@ -578,18 +578,29 @@ h2{
    ⚠️ THE PARAGRAPH CARRIES THE CLASS, NOT THE SENTENCE. `.sent` is the highlight
    unit for the voice player and the answer hunt; styling it would fight the
    reading band and move the text under the highlight. */
+/* 🚨 ITALIC SERIF, NOT MONOSPACE. Paul, 2026-09-24: he had already said he did
+   not like the monospace examples, and it shipped again on ten lessons. Same
+   face as english/template.html, which got this right.
+   Each example LINE is its own line: consecutive [ex] lines share one box, and
+   inline they ran together, so a stacked comparison or a worked step lost its
+   shape. */
 .para.is-ex{
-  font-family:ui-monospace,"Cascadia Mono","Consolas",monospace;
-  font-size:1.02em;letter-spacing:.01em;
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  font-style:italic;
+  font-size:1.05em;
   margin:6px 0;padding:10px 16px;
   border-left:3px solid var(--verdigris);
   background:var(--surface-2);border-radius:0 4px 4px 0;
 }
+.para.is-ex .sent{display:block}
+/* 🚨 NOT FADED. Paul, 2026-09-24: "you always seem to make it faded". The verse
+   is read at full ink like the story; only the box and the italic set it apart. */
 .para.is-verse{
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
   font-style:italic;
   margin:6px 0;padding:10px 18px;
   border-left:3px solid var(--rule);
-  color:var(--ink-soft);
+  color:var(--ink);
 }
 /* ⚠️ The highlight band still has to read INSIDE both boxes. `--band` is tuned
    against the page ground, and the example box sits on --surface-2, so the two
