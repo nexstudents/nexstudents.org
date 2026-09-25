@@ -164,6 +164,7 @@
       if(!nb||!ob){location.href=url;return;}
       ob.innerHTML=nb.innerHTML;document.title=d.title;
       if(push)history.pushState({ss:1},"",url+location.hash);
+      try{if(/grade-/.test(url))localStorage.setItem("ns:ss-last",url);}catch(e){}
       initTabs();
     }).catch(function(){location.href=url;});
   }
@@ -187,6 +188,12 @@
   /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
      the subjects do not exist yet. Wait for the DOM. */
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
+  /* On the main page, reopen the last state and grade picked in this browser. */
+  try{var last=localStorage.getItem("ns:ss-last");
+    if(location.pathname==="/state-standards/"&&last&&last!=="/state-standards/missouri/grade-k/"){
+      var ps=last.split("/");if(f&&ps[2])f.elements.state.value=ps[2];
+      if(f&&ps[3])f.setAttribute("data-grade",ps[3].replace("grade-",""));swap(last,false);}}catch(e){}
+  try{if(/grade-/.test(location.pathname))localStorage.setItem("ns:ss-last",location.pathname);}catch(e){}
 })();</script>
     <div id="ssBody">
     <p class="ss-viewing">Showing <b>Montana</b></p>

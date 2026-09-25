@@ -2243,6 +2243,7 @@ const ssScript = `<script>(function(){
       if(!nb||!ob){location.href=url;return;}
       ob.innerHTML=nb.innerHTML;document.title=d.title;
       if(push)history.pushState({ss:1},"",url+location.hash);
+      try{if(/grade-/.test(url))localStorage.setItem("ns:ss-last",url);}catch(e){}
       initTabs();
     }).catch(function(){location.href=url;});
   }
@@ -2266,6 +2267,12 @@ const ssScript = `<script>(function(){
   /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
      the subjects do not exist yet. Wait for the DOM. */
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
+  /* On the main page, reopen the last state and grade picked in this browser. */
+  try{var last=localStorage.getItem("ns:ss-last");
+    if(location.pathname==="/state-standards/"&&last&&last!=="/state-standards/missouri/grade-k/"){
+      var ps=last.split("/");if(f&&ps[2])f.elements.state.value=ps[2];
+      if(f&&ps[3])f.setAttribute("data-grade",ps[3].replace("grade-",""));swap(last,false);}}catch(e){}
+  try{if(/grade-/.test(location.pathname))localStorage.setItem("ns:ss-last",location.pathname);}catch(e){}
 })();</script>`;
 
 const ssGradeBody = (st, g) => `<div class="band"><div class="wrap">
@@ -2371,7 +2378,11 @@ const ssPages = () => [
     title: "State Standards | NexStudents",
     desc: "Read your state's learning standards for every grade, K to 8, word for word, with the date they were last updated.",
     crumb: SS_HEAD.crumb, h1: SS_HEAD.h1, lead: SS_HEAD.lead,
-    body: ssLandingBody() },
+    /* 🚨 THE MAIN PAGE SHOWS STANDARDS STRAIGHT AWAY. Paul, 2026-09-25, on
+       /state-standards/: "I don't see it on this main page." It opens on
+       Missouri, Kindergarten - the same view a grade page shows - and the
+       script reopens the last state and grade this browser picked. */
+    body: ssGradeBody(SS.STATES.find((x) => x.slug === "missouri"), "K") },
   ...SS.STATES.map((st) => ({
     dir: "state-standards/" + st.slug, active: "p", pclass: "termshead",
     title: st.name + " Homeschool Law and Standards | NexStudents",
