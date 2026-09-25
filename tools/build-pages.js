@@ -2128,6 +2128,17 @@ const SS_PART = {
 const ssPill = (attr, val, label, on) =>
   `<button type="button" class="plan-vb" ${attr}="${val}" aria-pressed="${on ? "true" : "false"}">${label}</button>`;
 
+/* 🟢 WHICH STANDARDS WE ALREADY TEACH. Paul, 2026-09-25: "put little green dots
+   ... if NexStudents has this lesson available compared to your state subject
+   plan." Read from k8-attach.js (the same map the year plans use), and only a
+   lesson whose page EXISTS counts - a planned title is not a lesson.
+   ⚠️ Missouri codes only, because that map is Missouri's. A second state needs
+   its own map before it can show a dot. */
+const { ATTACH: SS_ATTACH } = require("./k8-attach.js");
+const ssHave = (st, code) => st.slug !== "missouri" ? [] :
+  (SS_ATTACH[code] || []).filter((a) => a.slug &&
+    fs.existsSync(path.join(ROOT, "lessons", a.slug, "index.html")));
+
 const ssRows = (st, subj, g) => {
   const band = Number(g) >= 6 && st.bands[subj.key];
   return st.data().filter((r) => r.subject === subj.key &&
@@ -2157,8 +2168,13 @@ const ssSubject = (st, subj, g, first) => {
       let out = "";
       if (r.cluster && r.cluster !== lastCl) { out += `<li class="std-cl">${escT(r.cluster)}</li>`; lastCl = r.cluster; lastStem = null; }
       if (r.stem && r.stem !== r.text && r.stem !== lastStem) { out += `<li class="std-stem">${escT(r.stem)}</li>`; lastStem = r.stem; }
-      return out + `<li class="std-row std-row-plain"><span class="std-code">${escT(r.code)}</span>` +
-        `<span class="std-body"><span class="std-text">${escT(r.text)}</span></span></li>`;
+      const have = ssHave(st, r.code);
+      return out + `<li class="std-row std-row-plain${have.length ? " has-lesson" : ""}"><span class="std-code">` +
+        (have.length ? `<i class="ss-dot" title="NexStudents has a lesson for this"></i>` : "") + `${escT(r.code)}</span>` +
+        `<span class="std-body"><span class="std-text">${escT(r.text)}</span>` +
+        (have.length ? `<span class="ss-ours">NexStudents lesson: ${have.map((a) =>
+          `<a href="/lessons/${a.slug}/">${escT(a.title)}</a>`).join(", ")}</span>` : "") +
+        `</span></li>`;
     }).join("\n        ");
     return `<div class="ss-grp"${gp.part ? ` data-part="${escT(gp.part)}"` : ""}>
       <h4 class="std-grp">${escT(gp.head)}</h4>
@@ -2261,6 +2277,8 @@ const ssGradeBody = (st, g) => `<div class="band"><div class="wrap">
       ${st.subjects.map((s, i) => ssPill("data-subj-go", SS_ID[s.key],
         SS_TAB[s.key] + " <small>" + ssRows(st, s, g).length + "</small>", i === 0)).join("\n      ")}
     </div>
+    ${(() => { const n = st.subjects.reduce((t, sb) => t + ssRows(st, sb, g).filter((r) => ssHave(st, r.code).length).length, 0);
+      return n ? `<p class="ss-key ss-center"><i class="ss-dot"></i> A green dot means NexStudents already has a lesson for that standard. ${n} in ${gradeLabel(g)} so far.</p>` : ""; })()}
     <div class="ss-find">
       <input type="search" id="ssFind" placeholder="Search these standards, like fractions or commas" aria-label="Search these standards" autocomplete="off">
       <span id="ssFound" aria-live="polite"></span>
