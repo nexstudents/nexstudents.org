@@ -3190,7 +3190,36 @@ nav{border-bottom:1px solid var(--line)}
 .ss-pick select option{color:initial}
 .ss-pick .btn{flex:0 0 auto;height:46px;display:inline-flex;align-items:center}
 .ss-tabs,.ss-parts{flex-wrap:wrap}
-.ss-tabs{margin:0 0 14px}
+/* The four core subjects, centred and a size up. Paul: "I like to center the
+   four main core subjects." */
+.ss-tabs{margin:0 0 16px;justify-content:center;gap:10px}
+.ss-tabs .plan-vb{font-size:16px;padding:12px 22px}
+.ss-center{text-align:center;justify-content:center}
+.ss-find{justify-content:center}
+.ss-find input{max-width:560px}
+/* Grade tiles and state tiles, replacing the lines of text links. */
+.ss-gradegrid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px;margin:0 0 26px}
+.ss-gtile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;
+  border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);text-decoration:none}
+.ss-gtile b{font-size:20px;line-height:1.1}
+.ss-gtile span{font-size:11px;color:var(--dim);white-space:nowrap}
+.ss-gtile:hover{border-color:var(--a)}
+.ss-gtile.on{background:var(--a);border-color:var(--a);color:var(--a-ink)}
+.ss-gtile.on span{color:var(--a-ink)}
+.ss-gtile:focus-visible,.ss-stile:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+@media (max-width:760px){.ss-gradegrid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media (max-width:420px){.ss-gradegrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ss-stategrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:0 0 26px}
+.ss-stile{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);
+  border-radius:6px;background:var(--panel);color:var(--fg);text-decoration:none;min-width:0}
+.ss-stile b{font-size:14px;overflow-wrap:break-word}
+.ss-stile span{font-size:11.5px;color:var(--dim)}
+.ss-stile:hover{border-color:var(--a)}
+/* More Information: dates, sources, homeschool law, closed by default. */
+.ss-more{margin:26px 0 0;border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:0 16px}
+.ss-more>summary{cursor:pointer;font-weight:700;font-size:15px;padding:14px 0;list-style-position:inside}
+.ss-more[open]>summary{border-bottom:1px solid var(--line);margin-bottom:16px}
+.ss-more .ss-dates{background:transparent}
 .plan-vb small{font-size:.8em;font-weight:500;opacity:.7;margin-left:4px;font-variant-numeric:tabular-nums}
 .ss-find{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 26px}
 .ss-find input{font:inherit;font-size:15px;line-height:1.25;color:var(--fg);background:var(--panel);

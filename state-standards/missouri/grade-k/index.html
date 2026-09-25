@@ -55,7 +55,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=c0c18fb3">
+<link rel="stylesheet" href="/assets/ns.css?v=56203cfb">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -189,26 +189,19 @@
     f.addEventListener("submit",function(e){e.preventDefault();go();});
     f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
   }
-  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-grades a");
-    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1];
-    if(m&&f)f.elements.grade.value=m.replace("/","");swap(u,true);});
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-gradegrid a, .ss-stategrid a");
+    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1],sl=u.split("/")[2];
+    if(m&&f)f.elements.grade.value=m.replace("/","");if(sl&&f)f.elements.state.value=sl;
+    swap(u,true);
+    /* A state tile sits at the bottom of the page; its new content starts at the top. */
+    if(a.closest(".ss-stategrid")&&f)f.scrollIntoView({behavior:"smooth",block:"start"});});
   window.addEventListener("popstate",function(){swap(location.pathname,false);});
   /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
      the subjects do not exist yet. Wait for the DOM. */
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
 })();</script>
     <div id="ssBody">
-    <p class="ss-grades"><b>Kindergarten</b><a href="/state-standards/missouri/grade-1/">1st Grade</a><a href="/state-standards/missouri/grade-2/">2nd Grade</a><a href="/state-standards/missouri/grade-3/">3rd Grade</a><a href="/state-standards/missouri/grade-4/">4th Grade</a><a href="/state-standards/missouri/grade-5/">5th Grade</a><a href="/state-standards/missouri/grade-6/">6th Grade</a><a href="/state-standards/missouri/grade-7/">7th Grade</a><a href="/state-standards/missouri/grade-8/">8th Grade</a></p>
-    <div class="ss-dates">
-      <p><b>Missouri Learning Standards</b>, published by the Missouri Department of Elementary and Secondary Education (DESE).</p>
-      <ul>
-        <li>Adopted by the state: <b>2016</b></li>
-        <li>Science reviewed: <b>September 2024</b> (DESE's reviewed file)</li>
-        <li>Last checked by NexStudents: <b>September 25, 2026</b></li>
-      </ul>
-      <p class="ss-fine">Copied from the state's own files, word for word. States revise their standards,
-        so check <a href="https://dese.mo.gov/college-career-readiness/curriculum/missouri-learning-standards" rel="noopener">the state's page</a> for the current version.</p>
-    </div>
+    <nav class="ss-gradegrid" aria-label="Grades"><a class="ss-gtile on" href="/state-standards/missouri/grade-k/" aria-current="page"><b>K</b><span>Kindergarten</span></a><a class="ss-gtile" href="/state-standards/missouri/grade-1/"><b>1</b><span>Grade 1</span></a><a class="ss-gtile" href="/state-standards/missouri/grade-2/"><b>2</b><span>Grade 2</span></a><a class="ss-gtile" href="/state-standards/missouri/grade-3/"><b>3</b><span>Grade 3</span></a><a class="ss-gtile" href="/state-standards/missouri/grade-4/"><b>4</b><span>Grade 4</span></a><a class="ss-gtile" href="/state-standards/missouri/grade-5/"><b>5</b><span>Grade 5</span></a><a class="ss-gtile" href="/state-standards/missouri/grade-6/"><b>6</b><span>Grade 6</span></a><a class="ss-gtile" href="/state-standards/missouri/grade-7/"><b>7</b><span>Grade 7</span></a><a class="ss-gtile" href="/state-standards/missouri/grade-8/"><b>8</b><span>Grade 8</span></a></nav>
     <div class="plan-views ss-tabs" role="group" aria-label="Subject">
       <button type="button" class="plan-vb" data-subj-go="english" aria-pressed="true">English <small>94</small></button>
       <button type="button" class="plan-vb" data-subj-go="math" aria-pressed="false">Math <small>28</small></button>
@@ -492,8 +485,19 @@
         <li class="std-cl">Developing a research plan and identifying resources</li><li class="std-row std-row-plain"><span class="std-code">K.TS.7.E.a</span><span class="std-body"><span class="std-text">Ask questions and find answers with assistance.</span></span></li>
       </ul></div>
     </section>
-    <details class="ss-lawbox"><summary>Homeschool Law in Missouri</summary>
-    <section class="ss-law" id="law">
+    <details class="ss-more">
+      <summary>More Information: Missouri Dates, Sources and Homeschool Law</summary>
+      <div class="ss-dates">
+      <p><b>Missouri Learning Standards</b>, published by the Missouri Department of Elementary and Secondary Education (DESE).</p>
+      <ul>
+        <li>Adopted by the state: <b>2016</b></li>
+        <li>Science reviewed: <b>September 2024</b> (DESE's reviewed file)</li>
+        <li>Last checked by NexStudents: <b>September 25, 2026</b></li>
+      </ul>
+      <p class="ss-fine">Copied from the state's own files, word for word. States revise their standards,
+        so check <a href="https://dese.mo.gov/college-career-readiness/curriculum/missouri-learning-standards" rel="noopener">the state's page</a> for the current version.</p>
+    </div><ul class="std-srclist"><li><a href="https://dese.mo.gov/media/file/curr-mls-standards-ela-k-12-sboe-2016" rel="noopener">English Language Arts, K-12</a> (the state's file)</li><li><a href="https://dese.mo.gov/media/file/curr-mls-standards-math-k-12-sboe-2016" rel="noopener">Mathematics, K-12</a> (the state's file)</li><li><a href="https://dese.mo.gov/media/file/curr-mls-standards-sci-k-12-sboe-2016" rel="noopener">Science, K-12</a> (the state's file)</li><li><a href="https://dese.mo.gov/media/file/curr-mls-standards-ss-k-12-sboe-2016" rel="noopener">Social Studies, K-12</a> (the state's file)</li></ul>
+      <section class="ss-law" id="law">
       <h3 class="plan-sh">Homeschool Law in Missouri</h3>
       <dl class="ss-law-grid">
         <div class="ss-law-row"><dt>School required for ages</dt><dd>7–17</dd></div>

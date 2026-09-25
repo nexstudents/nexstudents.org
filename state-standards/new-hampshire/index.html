@@ -55,7 +55,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=c0c18fb3">
+<link rel="stylesheet" href="/assets/ns.css?v=56203cfb">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -189,18 +189,24 @@
     f.addEventListener("submit",function(e){e.preventDefault();go();});
     f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
   }
-  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-grades a");
-    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1];
-    if(m&&f)f.elements.grade.value=m.replace("/","");swap(u,true);});
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-gradegrid a, .ss-stategrid a");
+    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1],sl=u.split("/")[2];
+    if(m&&f)f.elements.grade.value=m.replace("/","");if(sl&&f)f.elements.state.value=sl;
+    swap(u,true);
+    /* A state tile sits at the bottom of the page; its new content starts at the top. */
+    if(a.closest(".ss-stategrid")&&f)f.scrollIntoView({behavior:"smooth",block:"start"});});
   window.addEventListener("popstate",function(){swap(location.pathname,false);});
   /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
      the subjects do not exist yet. Wait for the DOM. */
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
 })();</script>
     <div id="ssBody">
-    <p class="plan-note">New Hampshire's learning standards are not up yet. We are adding states
-      one at a time. The homeschool law below covers the whole state.</p>
-    <section class="ss-law" id="law">
+    <p class="plan-note ss-center">New Hampshire's grade-by-grade subjects are not up yet.
+      We are adding states one at a time. The homeschool law for New Hampshire is below.</p>
+    <details class="ss-more" open>
+      <summary>More Information: New Hampshire Dates, Sources and Homeschool Law</summary>
+      
+      <section class="ss-law" id="law">
       <h3 class="plan-sh">Homeschool Law in New Hampshire</h3>
       <dl class="ss-law-grid">
         <div class="ss-law-row"><dt>School required for ages</dt><dd>6–18 (with exceptions)</dd></div>
@@ -217,6 +223,7 @@
         read September 25, 2026. Laws change and this is not legal advice. Read
         <a href="https://hslda.org/post/how-to-comply-with-new-hampshire-s-homeschool-law" rel="noopener">HSLDA's full step-by-step guide</a> before you file anything.</p>
     </section>
+    </details>
     </div>
   </div></div>
 

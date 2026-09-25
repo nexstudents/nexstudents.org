@@ -2091,8 +2091,25 @@ const ssDates = (st) => `<div class="ss-dates">
         so check <a href="${st.home}" rel="noopener">the state's page</a> for the current version.</p>
     </div>`;
 
-const ssGradeLinks = (st, g) => `<p class="ss-grades">${SS.GRADES.map((x) =>
-  g != null && sameGrade(g, x) ? `<b>${gradeLabel(x)}</b>` : `<a href="${ssHref(st, x)}">${gradeLabel(x)}</a>`).join("")}</p>`;
+/* Grade tiles, not a line of text links. Paul, 2026-09-25: "you kind of have a
+   list of options and states and grades on the page with just text ... put all
+   that in more of a better structure." */
+const ssGradeLinks = (st, g) => `<nav class="ss-gradegrid" aria-label="Grades">${SS.GRADES.map((x) => {
+  const on = g != null && sameGrade(g, x);
+  return `<a class="ss-gtile${on ? " on" : ""}" href="${ssHref(st, x)}"${on ? ' aria-current="page"' : ""}>` +
+    `<b>${x}</b><span>${x === "K" ? "Kindergarten" : "Grade " + x}</span></a>`;
+}).join("")}</nav>`;
+
+/* ONE "More Information" dropdown holds everything that is not the subjects:
+   the dates, the state's files, and the homeschool law. Paul: "NexStudents is
+   designed so parents can know what subjects to teach ... put that info in a
+   details section." */
+const ssMore = (st, open) => `<details class="ss-more"${open ? " open" : ""}>
+      <summary>More Information: ${st.name} Dates, Sources and Homeschool Law</summary>
+      ${st.live ? ssDates(st) + `<ul class="std-srclist">${st.sources.map((x) =>
+        `<li><a href="${x.href}" rel="noopener">${x.label}</a> (the state's file)</li>`).join("")}</ul>` : ""}
+      ${lawPanel(st.slug)}
+    </details>`;
 
 /* One subject's outline: strand heading, then cluster rows, then standards.
    A lettered sub-standard sits under its parent's wording, shown once.
@@ -2224,9 +2241,12 @@ const ssScript = `<script>(function(){
     f.addEventListener("submit",function(e){e.preventDefault();go();});
     f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
   }
-  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-grades a");
-    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1];
-    if(m&&f)f.elements.grade.value=m.replace("/","");swap(u,true);});
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-gradegrid a, .ss-stategrid a");
+    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1],sl=u.split("/")[2];
+    if(m&&f)f.elements.grade.value=m.replace("/","");if(sl&&f)f.elements.state.value=sl;
+    swap(u,true);
+    /* A state tile sits at the bottom of the page; its new content starts at the top. */
+    if(a.closest(".ss-stategrid")&&f)f.scrollIntoView({behavior:"smooth",block:"start"});});
   window.addEventListener("popstate",function(){swap(location.pathname,false);});
   /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
      the subjects do not exist yet. Wait for the DOM. */
@@ -2237,7 +2257,6 @@ const ssGradeBody = (st, g) => `<div class="band"><div class="wrap">
     ${ssPicker(st, g)}
     <div id="ssBody">
     ${ssGradeLinks(st, g)}
-    ${ssDates(st)}
     <div class="plan-views ss-tabs" role="group" aria-label="Subject">
       ${st.subjects.map((s, i) => ssPill("data-subj-go", SS_ID[s.key],
         SS_TAB[s.key] + " <small>" + ssRows(st, s, g).length + "</small>", i === 0)).join("\n      ")}
@@ -2247,9 +2266,7 @@ const ssGradeBody = (st, g) => `<div class="band"><div class="wrap">
       <span id="ssFound" aria-live="polite"></span>
     </div>
     ${st.subjects.map((s, i) => ssSubject(st, s, g, i === 0)).join("\n    ")}
-    <details class="ss-lawbox"><summary>Homeschool Law in ${st.name}</summary>
-    ${lawPanel(st.slug)}
-    </details>
+    ${ssMore(st, false)}
     </div>
   </div></div>`;
 
@@ -2262,12 +2279,11 @@ const ssLandingBody = () => {
       know by the end of each grade. Pick your state and grade to read them in full. Every state and
       DC also has a page on its homeschool law: the ages, the notice, the testing and the instruction time.
       We are adding each state's standards one at a time.</p>
-    ${live.map((st) => `<h3 class="plan-sh">${st.name}</h3>
-    ${ssGradeLinks(st, null)}
-    ${ssDates(st)}
-    <ul class="std-srclist">${st.sources.map((s) => `<li><a href="${s.href}" rel="noopener">${s.label}</a> (the state's file)</li>`).join("")}</ul>`).join("\n")}
-    <h3 class="plan-sh" style="margin-top:34px">Homeschool Law by State</h3>
-    <p class="ss-states">${SS.STATES.map((x) => `<a href="/state-standards/${x.slug}/">${x.name}</a>`).join("")}</p>
+    ${live.map((st) => `<h3 class="plan-sh ss-center">${st.name}: Pick a Grade</h3>
+    ${ssGradeLinks(st, null)}`).join("\n")}
+    <h3 class="plan-sh ss-center" style="margin-top:34px">Every State</h3>
+    <nav class="ss-stategrid" aria-label="States">${SS.STATES.map((x) =>
+      `<a class="ss-stile" href="/state-standards/${x.slug}/"><b>${x.name}</b><span>${x.live ? "Subjects and law" : "Homeschool law"}</span></a>`).join("")}</nav>
     </div>
   </div></div>`;
 };
@@ -2307,11 +2323,10 @@ const lawPanel = (slug) => {
 const ssStateBody = (st) => `<div class="band"><div class="wrap">
     ${ssPicker(st, null)}
     <div id="ssBody">
-    ${st.live ? `<h3 class="plan-sh">${st.name} Learning Standards</h3>
-    ${ssGradeLinks(st, null)}
-    ${ssDates(st)}` : `<p class="plan-note">${st.name}'s learning standards are not up yet. We are adding states
-      one at a time. The homeschool law below covers the whole state.</p>`}
-    ${lawPanel(st.slug)}
+    ${st.live ? `<h3 class="plan-sh ss-center">Pick a Grade</h3>
+    ${ssGradeLinks(st, null)}` : `<p class="plan-note ss-center">${st.name}'s grade-by-grade subjects are not up yet.
+      We are adding states one at a time. The homeschool law for ${st.name} is below.</p>`}
+    ${ssMore(st, !st.live)}
     </div>
   </div></div>`;
 
