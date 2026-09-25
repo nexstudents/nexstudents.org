@@ -2094,11 +2094,11 @@ const ssDates = (st) => `<div class="ss-dates">
 /* Grade tiles, not a line of text links. Paul, 2026-09-25: "you kind of have a
    list of options and states and grades on the page with just text ... put all
    that in more of a better structure." */
-const ssGradeLinks = (st, g) => `<nav class="ss-gradegrid" aria-label="Grades">${SS.GRADES.map((x) => {
+const ssGradeLinks = (st, g) => `<div class="ss-gradegrid" role="navigation" aria-label="Grades">${SS.GRADES.map((x) => {
   const on = g != null && sameGrade(g, x);
   return `<a class="ss-gtile${on ? " on" : ""}" href="${ssHref(st, x)}"${on ? ' aria-current="page"' : ""}>` +
     `<b>${x}</b><span>${x === "K" ? "Kindergarten" : "Grade " + x}</span></a>`;
-}).join("")}</nav>`;
+}).join("")}</div>`;
 
 /* ONE "More Information" dropdown holds everything that is not the subjects:
    the dates, the state's files, and the homeschool law. Paul: "NexStudents is
@@ -2169,8 +2169,10 @@ const ssSubject = (st, subj, g, first) => {
       if (r.cluster && r.cluster !== lastCl) { out += `<li class="std-cl">${escT(r.cluster)}</li>`; lastCl = r.cluster; lastStem = null; }
       if (r.stem && r.stem !== r.text && r.stem !== lastStem) { out += `<li class="std-stem">${escT(r.stem)}</li>`; lastStem = r.stem; }
       const have = ssHave(st, r.code);
+      const mapped = st.slug === "missouri";
       return out + `<li class="std-row std-row-plain${have.length ? " has-lesson" : ""}"><span class="std-code">` +
-        (have.length ? `<i class="ss-dot" title="NexStudents has a lesson for this"></i>` : "") + `${escT(r.code)}</span>` +
+        (mapped ? `<i class="plan-pip ${have.length ? "p-built" : "p-todo"} ss-pip" title="${have.length ? "NexStudents lesson ready" : "No NexStudents lesson yet"}"></i>` : "") +
+        `${escT(r.code)}</span>` +
         `<span class="std-body"><span class="std-text">${escT(r.text)}</span>` +
         (have.length ? `<span class="ss-ours">NexStudents lesson: ${have.map((a) =>
           `<a href="/lessons/${a.slug}/">${escT(a.title)}</a>`).join(", ")}</span>` : "") +
@@ -2236,19 +2238,16 @@ const ssScript = `<script>(function(){
       found.textContent=n+(n===1?" standard matches":" standards match");});}
   }
   function swap(url,push){
-    fetch(url,{credentials:"same-origin"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){
+    fetch(url,{credentials:"same-origin",cache:"no-cache"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){
       var d=new DOMParser().parseFromString(h,"text/html"),nb=d.getElementById("ssBody"),ob=document.getElementById("ssBody");
       if(!nb||!ob){location.href=url;return;}
       ob.innerHTML=nb.innerHTML;document.title=d.title;
-      var h1=document.querySelector("h1"),n1=d.querySelector("h1");if(h1&&n1)h1.innerHTML=n1.innerHTML;
-      var c=document.querySelector(".crumb"),nc=d.querySelector(".crumb");if(c&&nc)c.innerHTML=nc.innerHTML;
-      var l=h1&&h1.nextElementSibling,nl=n1&&n1.nextElementSibling;
-      if(l&&nl&&l.tagName==="P"&&nl.tagName==="P")l.innerHTML=nl.innerHTML;
       if(push)history.pushState({ss:1},"",url+location.hash);
       initTabs();
     }).catch(function(){location.href=url;});
   }
   var f=document.getElementById("ssPick");
+  /* Grades are the TILES only. Paul, 2026-09-25: "get rid of the drop down for grades selection". */
   function go(){var s=f.elements.state.value,g=f.getAttribute("data-grade"),o=f.elements.state.selectedOptions[0];
     if(!s)return;
     if(o&&o.getAttribute("data-std")&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);
@@ -2259,7 +2258,7 @@ const ssScript = `<script>(function(){
   }
   document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-gradegrid a, .ss-stategrid a");
     if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1],sl=u.split("/")[2];
-    if(f){if(m)f.setAttribute("data-grade",m.replace("/",""));else f.removeAttribute("data-grade");if(sl)f.elements.state.value=sl;}
+    if(f){if(m)f.setAttribute("data-grade",m.replace("/",""));if(sl)f.elements.state.value=sl;}
     swap(u,true);
     /* A state tile sits at the bottom of the page; its new content starts at the top. */
     if(a.closest(".ss-stategrid")&&f)f.scrollIntoView({behavior:"smooth",block:"start"});});
@@ -2272,13 +2271,19 @@ const ssScript = `<script>(function(){
 const ssGradeBody = (st, g) => `<div class="band"><div class="wrap">
     ${ssPicker(st, g)}
     <div id="ssBody">
+    ${ssViewing(st, g)}
     ${ssGradeLinks(st, g)}
     <div class="plan-views ss-tabs" role="group" aria-label="Subject">
       ${st.subjects.map((s, i) => ssPill("data-subj-go", SS_ID[s.key],
         SS_TAB[s.key] + " <small>" + ssRows(st, s, g).length + "</small>", i === 0)).join("\n      ")}
     </div>
-    ${(() => { const n = st.subjects.reduce((t, sb) => t + ssRows(st, sb, g).filter((r) => ssHave(st, r.code).length).length, 0);
-      return n ? `<p class="ss-key ss-center"><i class="ss-dot"></i> A green dot means NexStudents already has a lesson for that standard. ${n} in ${gradeLabel(g)} so far.</p>` : ""; })()}
+    ${(() => {
+      if (st.slug !== "missouri") return `<p class="ss-key ss-center">We have not matched our lessons to ${st.name} yet, so these standards have no dots.</p>`;
+      const all = st.subjects.reduce((t, sb) => t + ssRows(st, sb, g).length, 0);
+      const n = st.subjects.reduce((t, sb) => t + ssRows(st, sb, g).filter((r) => ssHave(st, r.code).length).length, 0);
+      return `<p class="ss-key ss-center"><span><i class="plan-pip p-built"></i> NexStudents lesson ready</span>
+        <span><i class="plan-pip p-todo"></i> Not built yet</span>
+        <span>${n} of ${all} ready in ${gradeLabel(g)}</span></p>`; })()}
     <div class="ss-find">
       <input type="search" id="ssFind" placeholder="Search these standards, like fractions or commas" aria-label="Search these standards" autocomplete="off">
       <span id="ssFound" aria-live="polite"></span>
@@ -2298,11 +2303,11 @@ const ssLandingBody = () => {
       DC also has a page on its homeschool law: the ages, the notice, the testing and the instruction time.
       We are adding each state's standards one at a time.</p>
     <h3 class="plan-sh ss-center">Every Subject, Every Grade</h3>
-    <nav class="ss-stategrid ss-live" aria-label="States with every subject">${live.map((x) =>
-      `<a class="ss-stile" href="/state-standards/${x.slug}/"><b>${x.name}</b><span>English, Math, Science, Social Studies</span></a>`).join("")}</nav>
+    <div class="ss-stategrid ss-live" role="navigation" aria-label="States with every subject">${live.map((x) =>
+      `<a class="ss-stile" href="/state-standards/${x.slug}/"><b>${x.name}</b><span>English, Math, Science, Social Studies</span></a>`).join("")}</div>
     <h3 class="plan-sh ss-center" style="margin-top:34px">Every State</h3>
-    <nav class="ss-stategrid" aria-label="States">${SS.STATES.map((x) =>
-      `<a class="ss-stile" href="/state-standards/${x.slug}/"><b>${x.name}</b><span>${x.live ? "Subjects and law" : "Homeschool law"}</span></a>`).join("")}</nav>
+    <div class="ss-stategrid" role="navigation" aria-label="States">${SS.STATES.map((x) =>
+      `<a class="ss-stile" href="/state-standards/${x.slug}/"><b>${x.name}</b><span>${x.live ? "Subjects and law" : "Homeschool law"}</span></a>`).join("")}</div>
     </div>
   </div></div>`;
 };
@@ -2342,6 +2347,7 @@ const lawPanel = (slug) => {
 const ssStateBody = (st) => `<div class="band"><div class="wrap">
     ${ssPicker(st, null)}
     <div id="ssBody">
+    ${ssViewing(st, null)}
     ${st.live ? `<h3 class="plan-sh ss-center">Pick a Grade</h3>
     ${ssGradeLinks(st, null)}` : `<p class="plan-note ss-center">${st.name}'s grade-by-grade subjects are not up yet.
       We are adding states one at a time. The homeschool law for ${st.name} is below.</p>`}
@@ -2349,33 +2355,36 @@ const ssStateBody = (st) => `<div class="band"><div class="wrap">
     </div>
   </div></div>`;
 
+/* 🚨 ONE PAGE. Paul, 2026-09-25: "we don't need extra pages inside other pages.
+   it needs to look like all the same page but the information changes based on
+   your selection." Every state and grade view carries this SAME header; only
+   #ssBody changes, and it says what is showing in one line. */
+const SS_HEAD = {
+  crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; State Standards',
+  h1: "State Standards.",
+  lead: "What your state expects a student to know in each grade, in English, Math, Science and Social Studies. Pick a state and a grade.",
+};
+const ssViewing = (st, g) => `<p class="ss-viewing">Showing <b>${st.name}</b>${g != null ? ` &middot; <b>${gradeLabel(g)}</b>` : ""}</p>`;
+
 const ssPages = () => [
   { dir: "state-standards", active: "p", pclass: "termshead",
     title: "State Standards | NexStudents",
     desc: "Read your state's learning standards for every grade, K to 8, word for word, with the date they were last updated.",
-    crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; State Standards',
-    h1: "State Standards.",
-    lead: "What your state expects a student to know in each grade, in English, Math, Science and Social Studies. Pick a state and a grade.",
+    crumb: SS_HEAD.crumb, h1: SS_HEAD.h1, lead: SS_HEAD.lead,
     body: ssLandingBody() },
   ...SS.STATES.map((st) => ({
     dir: "state-standards/" + st.slug, active: "p", pclass: "termshead",
     title: st.name + " Homeschool Law and Standards | NexStudents",
     desc: "What " + st.name + " requires of homeschoolers: ages, notice, testing, subjects and instruction time, with sources." +
           (st.live ? " Plus the state's learning standards for every grade, K to 8." : ""),
-    crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; <a href="/state-standards/">State Standards</a> &rsaquo; ' + st.name,
-    h1: st.name + ".",
-    lead: st.live ? "The state's learning standards by grade, and what the law asks of a homeschooling family."
-                  : "What the law asks of a homeschooling family in " + st.name + ".",
+    crumb: SS_HEAD.crumb, h1: SS_HEAD.h1, lead: SS_HEAD.lead,
     body: ssStateBody(st),
   })),
   ...SS.STATES.filter((s) => s.live).flatMap((st) => SS.GRADES.map((g) => ({
     dir: "state-standards/" + st.slug + "/grade-" + gslug(g), active: "p", pclass: "termshead",
     title: st.name + " " + gradeLabel(g) + " Standards | NexStudents",
     desc: "The " + st.title + " for " + gradeLabel(g) + ", every subject, word for word from the state, with the date they were last updated.",
-    crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; <a href="/state-standards/">State Standards</a> &rsaquo; ' +
-           st.name + " &rsaquo; " + gradeLabel(g),
-    h1: st.name + ", " + gradeLabel(g) + ".",
-    lead: "Every " + st.title.replace(/s$/, "") + " for " + gradeLabel(g) + ", exactly as the state publishes it.",
+    crumb: SS_HEAD.crumb, h1: SS_HEAD.h1, lead: SS_HEAD.lead,
     body: ssGradeBody(st, g),
   }))),
 ];

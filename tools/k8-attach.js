@@ -107,10 +107,9 @@ const ATTACH = {
   /* ── Math already built on other grades ── */
   "4.NBT.A.7": [{ title: "Long Division", slug: "maths/long-division" },
                 { title: "Long Division with Remainders", slug: "maths/long-division-remainders" }],
-  /* ⚠️ Missouri ADDS and SUBTRACTS integers in grade 7 (7.NS.A.1a); grade 6 only
-     uses them to represent quantities. These two stay on grade 6 until Paul
-     decides - maths-units.js BUILT_NOTES records why they were put there. */
-  "6.NS.C.5":  [{ title: "Adding Integers", slug: "maths/adding-integers" },
+  /* Missouri ADDS and SUBTRACTS integers in grade 7. Moved from 6.NS.C.5 on
+     2026-09-25, Paul: "you made it obvious integers stay in 7th." */
+  "7.NS.A.1a": [{ title: "Adding Integers", slug: "maths/adding-integers" },
                 { title: "Subtracting Integers", slug: "maths/subtracting-integers" }],
 };
 

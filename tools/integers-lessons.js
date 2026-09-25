@@ -40,8 +40,8 @@
 /* One lesson, one file, filed under its own grade / subject / unit.
    Add a lesson by dropping a file in the right folder and listing it here. */
 const INTEGERS = [
-  require('./content/grade-6/maths/unit-1/adding-integers'),
-  require('./content/grade-6/maths/unit-1/subtracting-integers'),
+  require('./content/grade-7/maths/unit-7/adding-integers'),
+  require('./content/grade-7/maths/unit-7/subtracting-integers'),
 ];
 
 module.exports = { INTEGERS };

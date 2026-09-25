@@ -201,9 +201,9 @@ const COURSE2 = {
       L("7-2", "Comparing and Ordering Integers", 257),
       L("7-3", "The Coordinate System", 259),
       LAB("7-4A", "Mathematics Lab: Adding Integers", 262),
-      L("7-4", "Adding Integers", 263),
+      L("7-4", "Adding Integers", 263, "maths/adding-integers"),
       LAB("7-5A", "Mathematics Lab: Subtracting Integers", 267),
-      L("7-5", "Subtracting Integers", 268),
+      L("7-5", "Subtracting Integers", 268, "maths/subtracting-integers"),
       REV("Mid-Chapter Review", 271),
       DEC("Planning for Good Nutrition", 272),
       L("7-6", "Problem-Solving Strategy: Find a Pattern", 274),
@@ -345,8 +345,9 @@ const COURSE2 = {
    with Paul. An outline that claims a lesson is built when it teaches something
    different is worse than an empty shelf → [[feedback-never-assign-an-unbuilt-lesson]]. */
 const BUILT_NOTES = {
-  "7-4": "maths/adding-integers exists (grade 6 shelf). Same skill, different grade.",
-  "7-5": "maths/subtracting-integers exists (grade 6 shelf). Same skill, different grade.",
+  /* ✅ 2026-09-25, Paul: "you made it obvious integers stay in 7th." Missouri adds and
+     subtracts integers in grade 7 (7.NS.A.1a), so both moved off grade 6 and are wired
+     into 7-4 and 7-5 above. Nothing is left to map. */
 };
 
 const tally = () => COURSE2.units.map((u) => ({

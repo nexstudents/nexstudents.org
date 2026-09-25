@@ -1,5 +1,5 @@
 /* maths/adding-integers
-   Grade 6 · maths · unit 1. Its home is this folder.
+   Grade 7 · maths · unit 7. Its home is this folder.
    Built by tools/integers-lessons.js. Edit the lesson here, not in the registry. */
 /* ════════════ Integers · Unit 1 · Lesson 1 — Adding Integers ════════════ */
 'use strict';
@@ -7,7 +7,7 @@ module.exports = {
   id: "maths/adding-integers",
   slug: "adding-integers",
   title: "Adding Integers",
-  unit: "Integers &middot; U1-L1",
+  unit: "Integers &middot; U7-L4",
   eyebrow: ["Math", "U1-L1", "Integers"],
   dek: "Two rules cover every addition. Which one you use depends on whether the signs match.",
   /* ⚠️ GRADE 6, not 7, and the reasoning is worth keeping because the
@@ -27,7 +27,7 @@ module.exports = {
      🚨 7th grade maths is pre-algebra: 7.EE two-step equations, 7.RP
      proportions and percent, 7.G circles and scale. That is what belongs on
      the grade 7 shelf, and it is currently empty of it. */
-  shelf: { grades: [6], subject: "Math",
+  shelf: { grades: [7], subject: "Math",
     blurb: "Two rules cover every case. Which one you use depends on whether the signs match.",
     contains: [
       "Teacher Notes: the exact mistake to watch for, and what to say",

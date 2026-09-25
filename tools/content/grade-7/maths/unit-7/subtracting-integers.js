@@ -1,5 +1,5 @@
 /* maths/subtracting-integers
-   Grade 6 · maths · unit 1. Its home is this folder.
+   Grade 7 · maths · unit 7. Its home is this folder.
    Built by tools/integers-lessons.js. Edit the lesson here, not in the registry. */
 /* ══════════ Integers · Unit 1 · Lesson 2 — Subtracting Integers ══════════ */
 'use strict';
@@ -7,7 +7,7 @@ module.exports = {
   id: "maths/subtracting-integers",
   slug: "subtracting-integers",
   title: "Subtracting Integers",
-  unit: "Integers &middot; U1-L2",
+  unit: "Integers &middot; U7-L5",
   eyebrow: ["Math", "U1-L2", "Integers"],
   dek: "No new arithmetic. Turn every subtraction into an addition, then use the rules you already have.",
   /* ⚠️ GRADE 6, not 7, and the reasoning is worth keeping because the
@@ -27,7 +27,7 @@ module.exports = {
      🚨 7th grade maths is pre-algebra: 7.EE two-step equations, 7.RP
      proportions and percent, 7.G circles and scale. That is what belongs on
      the grade 7 shelf, and it is currently empty of it. */
-  shelf: { grades: [6], subject: "Math",
+  shelf: { grades: [7], subject: "Math",
     blurb: "No new arithmetic. Turn it into an addition, then use the rules you already have.",
     contains: [
       "Teacher Notes: why this is one step and not two",
