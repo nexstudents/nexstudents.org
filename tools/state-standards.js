@@ -85,16 +85,47 @@ const TEXAS = {
   bands: {}, courses: {},
 };
 
+/* NORTH CAROLINA, added 2026-09-25. NC DPI publishes its Standard Course of Study
+   as public Google Docs, read as plain text (export?format=txt): one K-12 doc
+   each for ELA, Math and Science, one per grade for Social Studies.
+   ⚠️ Math bullets under a standard have no code of their own, so they show under
+   the standard's wording with a blank code - NC does not letter them.
+   ⚠️ The ELA doc lists grades 9-10 and 11-12 after grade 8; their lettered parts
+   are skipped, not attached to grade 8. */
+const NORTH_CAROLINA = {
+  slug: "north-carolina", name: "North Carolina", live: true,
+  title: "North Carolina Standard Course of Study",
+  agency: "North Carolina Department of Public Instruction (NC DPI)",
+  adopted: "English 2017, Math 2017, Science 2023, Social Studies 2021",
+  revised: [],
+  checked: "2026-09-25",
+  home: "https://www.dpi.nc.gov/districts-schools/classroom-resources/office-teaching-and-learning/standard-course-study",
+  sources: [
+    { label: "English Language Arts", href: "https://www.dpi.nc.gov/districts-schools/classroom-resources/academic-standards/standard-course-study/english-language-arts/resources" },
+    { label: "Mathematics", href: "https://www.dpi.nc.gov/districts-schools/classroom-resources/academic-standards/standard-course-study/mathematics/resources" },
+    { label: "Science", href: "https://www.dpi.nc.gov/districts-schools/classroom-resources/academic-standards/standard-course-study/science/resources" },
+    { label: "Social Studies", href: "https://www.dpi.nc.gov/districts-schools/classroom-resources/academic-standards/standard-course-study/social-studies/resources" },
+  ],
+  data: () => require("./nc-k8.json"),
+  subjects: [
+    { key: "English", name: "English Language Arts" },
+    { key: "Math",    name: "Mathematics" },
+    { key: "Science", name: "Science" },
+    { key: "History", name: "Social Studies" },
+  ],
+  bands: {}, courses: {},
+};
+
 const OTHER = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
   "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho",
   "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
   "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Montana", "Nebraska", "Nevada",
-  "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
+  "New Hampshire", "New Jersey", "New Mexico", "New York", "North Dakota",
   "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
   "South Dakota", "Tennessee", "Utah", "Vermont", "Virginia", "Washington",
   "West Virginia", "Wisconsin", "Wyoming"];
 
-const STATES = [MISSOURI, TEXAS, ...OTHER.map((name) => ({
+const STATES = [MISSOURI, TEXAS, NORTH_CAROLINA, ...OTHER.map((name) => ({
   slug: name.toLowerCase().replace(/[^a-z]+/g, "-"), name, live: false,
 }))].sort((a, b) => a.name.localeCompare(b.name));
 
