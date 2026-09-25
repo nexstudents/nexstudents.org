@@ -55,7 +55,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=bcd17f01">
+<link rel="stylesheet" href="/assets/ns.css?v=c0c18fb3">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -127,7 +127,7 @@
 <div class="band"><div class="wrap">
     <form class="ss-pick" id="ssPick" action="/state-standards/">
       <label><span>State</span><select name="state">
-        <option value="alabama" disabled>Alabama (coming soon)</option><option value="alaska" disabled>Alaska (coming soon)</option><option value="arizona" disabled>Arizona (coming soon)</option><option value="arkansas" disabled>Arkansas (coming soon)</option><option value="california" disabled>California (coming soon)</option><option value="colorado" disabled>Colorado (coming soon)</option><option value="connecticut" disabled>Connecticut (coming soon)</option><option value="delaware" disabled>Delaware (coming soon)</option><option value="district-of-columbia" disabled>District of Columbia (coming soon)</option><option value="florida" disabled>Florida (coming soon)</option><option value="georgia" disabled>Georgia (coming soon)</option><option value="hawaii" disabled>Hawaii (coming soon)</option><option value="idaho" disabled>Idaho (coming soon)</option><option value="illinois" disabled>Illinois (coming soon)</option><option value="indiana" disabled>Indiana (coming soon)</option><option value="iowa" disabled>Iowa (coming soon)</option><option value="kansas" disabled>Kansas (coming soon)</option><option value="kentucky" disabled>Kentucky (coming soon)</option><option value="louisiana" disabled>Louisiana (coming soon)</option><option value="maine" disabled>Maine (coming soon)</option><option value="maryland" disabled>Maryland (coming soon)</option><option value="massachusetts" disabled>Massachusetts (coming soon)</option><option value="michigan" disabled>Michigan (coming soon)</option><option value="minnesota" disabled>Minnesota (coming soon)</option><option value="mississippi" disabled>Mississippi (coming soon)</option><option value="missouri" selected>Missouri</option><option value="montana" disabled>Montana (coming soon)</option><option value="nebraska" disabled>Nebraska (coming soon)</option><option value="nevada" disabled>Nevada (coming soon)</option><option value="new-hampshire" disabled>New Hampshire (coming soon)</option><option value="new-jersey" disabled>New Jersey (coming soon)</option><option value="new-mexico" disabled>New Mexico (coming soon)</option><option value="new-york" disabled>New York (coming soon)</option><option value="north-carolina" disabled>North Carolina (coming soon)</option><option value="north-dakota" disabled>North Dakota (coming soon)</option><option value="ohio" disabled>Ohio (coming soon)</option><option value="oklahoma" disabled>Oklahoma (coming soon)</option><option value="oregon" disabled>Oregon (coming soon)</option><option value="pennsylvania" disabled>Pennsylvania (coming soon)</option><option value="rhode-island" disabled>Rhode Island (coming soon)</option><option value="south-carolina" disabled>South Carolina (coming soon)</option><option value="south-dakota" disabled>South Dakota (coming soon)</option><option value="tennessee" disabled>Tennessee (coming soon)</option><option value="texas" disabled>Texas (coming soon)</option><option value="utah" disabled>Utah (coming soon)</option><option value="vermont" disabled>Vermont (coming soon)</option><option value="virginia" disabled>Virginia (coming soon)</option><option value="washington" disabled>Washington (coming soon)</option><option value="west-virginia" disabled>West Virginia (coming soon)</option><option value="wisconsin" disabled>Wisconsin (coming soon)</option><option value="wyoming" disabled>Wyoming (coming soon)</option>
+        <option value="alabama">Alabama</option><option value="alaska">Alaska</option><option value="arizona">Arizona</option><option value="arkansas">Arkansas</option><option value="california">California</option><option value="colorado">Colorado</option><option value="connecticut">Connecticut</option><option value="delaware">Delaware</option><option value="district-of-columbia">District of Columbia</option><option value="florida">Florida</option><option value="georgia">Georgia</option><option value="hawaii">Hawaii</option><option value="idaho">Idaho</option><option value="illinois">Illinois</option><option value="indiana">Indiana</option><option value="iowa">Iowa</option><option value="kansas">Kansas</option><option value="kentucky">Kentucky</option><option value="louisiana">Louisiana</option><option value="maine">Maine</option><option value="maryland">Maryland</option><option value="massachusetts">Massachusetts</option><option value="michigan">Michigan</option><option value="minnesota">Minnesota</option><option value="mississippi">Mississippi</option><option value="missouri" data-std="1" selected>Missouri</option><option value="montana">Montana</option><option value="nebraska">Nebraska</option><option value="nevada">Nevada</option><option value="new-hampshire">New Hampshire</option><option value="new-jersey">New Jersey</option><option value="new-mexico">New Mexico</option><option value="new-york">New York</option><option value="north-carolina">North Carolina</option><option value="north-dakota">North Dakota</option><option value="ohio">Ohio</option><option value="oklahoma">Oklahoma</option><option value="oregon">Oregon</option><option value="pennsylvania">Pennsylvania</option><option value="rhode-island">Rhode Island</option><option value="south-carolina">South Carolina</option><option value="south-dakota">South Dakota</option><option value="tennessee">Tennessee</option><option value="texas">Texas</option><option value="utah">Utah</option><option value="vermont">Vermont</option><option value="virginia">Virginia</option><option value="washington">Washington</option><option value="west-virginia">West Virginia</option><option value="wisconsin">Wisconsin</option><option value="wyoming">Wyoming</option>
       </select></label>
       <label><span>Grade</span><select name="grade">
         <option value="k" selected>Kindergarten</option><option value="1">1st Grade</option><option value="2">2nd Grade</option><option value="3">3rd Grade</option><option value="4">4th Grade</option><option value="5">5th Grade</option><option value="6">6th Grade</option><option value="7">7th Grade</option><option value="8">8th Grade</option>
@@ -181,8 +181,10 @@
     }).catch(function(){location.href=url;});
   }
   var f=document.getElementById("ssPick");
-  function go(){var s=f.elements.state.value,g=f.elements.grade.value;
-    if(s&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);}
+  function go(){var s=f.elements.state.value,g=f.elements.grade.value,o=f.elements.state.selectedOptions[0];
+    if(!s)return;
+    if(o&&o.getAttribute("data-std")&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);
+    else swap("/state-standards/"+s+"/",true);}
   if(f){
     f.addEventListener("submit",function(e){e.preventDefault();go();});
     f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
@@ -490,6 +492,25 @@
         <li class="std-cl">Developing a research plan and identifying resources</li><li class="std-row std-row-plain"><span class="std-code">K.TS.7.E.a</span><span class="std-body"><span class="std-text">Ask questions and find answers with assistance.</span></span></li>
       </ul></div>
     </section>
+    <details class="ss-lawbox"><summary>Homeschool Law in Missouri</summary>
+    <section class="ss-law" id="law">
+      <h3 class="plan-sh">Homeschool Law in Missouri</h3>
+      <dl class="ss-law-grid">
+        <div class="ss-law-row"><dt>School required for ages</dt><dd>7–17</dd></div>
+        <div class="ss-law-row"><dt>Ways to homeschool</dt><dd>One</dd></div>
+        <div class="ss-law-row"><dt>Notice to the state</dt><dd>No</dd></div>
+        <div class="ss-law-row"><dt>Teacher qualifications</dt><dd>No</dd></div>
+        <div class="ss-law-row"><dt>Required subjects</dt><dd>Yes</dd></div>
+        <div class="ss-law-row"><dt>Testing or evaluation</dt><dd>Yes</dd></div>
+        <div class="ss-law-row"><dt>Immunization records</dt><dd>No</dd></div>
+        <div class="ss-law-row"><dt>Instruction time</dt><dd>1,000 hours a year. 600 of them in reading, math, social studies, language arts and science, and 400 of those 600 at home.</dd></div>
+        <div class="ss-law-row"><dt>The law</dt><dd>Missouri Revised Statute §167.031</dd></div>
+      </dl>
+      <p class="ss-fine">Written from <a href="https://hslda.org/legal/missouri" rel="noopener">HSLDA's summary of Missouri homeschool law</a>,
+        read September 25, 2026. Laws change and this is not legal advice. Read
+        <a href="https://hslda.org/post/how-to-comply-with-missouris-homeschool-law" rel="noopener">HSLDA's full step-by-step guide</a> before you file anything.</p>
+    </section>
+    </details>
     </div>
   </div></div>
 

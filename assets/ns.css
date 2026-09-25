@@ -3212,6 +3212,21 @@ nav{border-bottom:1px solid var(--line)}
 .ss-jump{margin:0 0 26px;font-size:14px}
 .ss-jump a{color:var(--a-text,var(--a))}
 .ss-subj{margin:0 0 40px}
+/* Homeschool Law panel → tools/state-law.json */
+.ss-law{margin:30px 0 10px}
+.ss-law-grid{margin:0 0 12px;border:1px solid var(--line);border-radius:4px;background:var(--panel);overflow:hidden}
+.ss-law-row{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:14px;padding:11px 15px;
+  border-top:1px solid var(--line);font-size:14px;line-height:1.45}
+.ss-law-row:first-child{border-top:0}
+.ss-law-row dt{color:var(--dim);font-weight:600}
+.ss-law-row dd{margin:0;min-width:0;overflow-wrap:break-word}
+.ss-law .ss-fine{font-size:12.5px;color:var(--dim);line-height:1.5}
+.ss-law .ss-fine a{color:var(--fg)}
+.ss-lawbox{margin:10px 0 0;border-top:1px solid var(--line);padding-top:16px}
+.ss-lawbox summary{cursor:pointer;font-weight:700;font-size:16px}
+.ss-states{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px}
+.ss-states a{color:var(--a-text,var(--a))}
+@media (max-width:560px){.ss-law-row{grid-template-columns:minmax(0,1fr);gap:3px}}
 
 .std-srclist{list-style:none;margin:14px 0 0;padding:0;font-size:14px}
 .std-srclist li{padding:8px 0;border-top:1px solid var(--line)}

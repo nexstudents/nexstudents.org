@@ -2070,8 +2070,8 @@ const longDate = (iso) => new Date(iso + "T12:00:00Z").toLocaleDateString("en-US
 
 const ssPicker = (cur, g) => `<form class="ss-pick" id="ssPick" action="/state-standards/">
       <label><span>State</span><select name="state">
-        ${SS.STATES.map((s) => `<option value="${s.slug}"${s.live ? "" : " disabled"}${
-          cur && cur.slug === s.slug ? " selected" : ""}>${s.name}${s.live ? "" : " (coming soon)"}</option>`).join("")}
+        ${SS.STATES.map((s) => `<option value="${s.slug}"${s.live ? ' data-std="1"' : ""}${
+          cur && cur.slug === s.slug ? " selected" : ""}>${s.name}</option>`).join("")}
       </select></label>
       <label><span>Grade</span><select name="grade">
         ${SS.GRADES.map((x) => `<option value="${gslug(x)}"${g != null && sameGrade(g, x) ? " selected" : ""}>${gradeLabel(x)}</option>`).join("")}
@@ -2216,8 +2216,10 @@ const ssScript = `<script>(function(){
     }).catch(function(){location.href=url;});
   }
   var f=document.getElementById("ssPick");
-  function go(){var s=f.elements.state.value,g=f.elements.grade.value;
-    if(s&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);}
+  function go(){var s=f.elements.state.value,g=f.elements.grade.value,o=f.elements.state.selectedOptions[0];
+    if(!s)return;
+    if(o&&o.getAttribute("data-std")&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);
+    else swap("/state-standards/"+s+"/",true);}
   if(f){
     f.addEventListener("submit",function(e){e.preventDefault();go();});
     f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
@@ -2245,6 +2247,9 @@ const ssGradeBody = (st, g) => `<div class="band"><div class="wrap">
       <span id="ssFound" aria-live="polite"></span>
     </div>
     ${st.subjects.map((s, i) => ssSubject(st, s, g, i === 0)).join("\n    ")}
+    <details class="ss-lawbox"><summary>Homeschool Law in ${st.name}</summary>
+    ${lawPanel(st.slug)}
+    </details>
     </div>
   </div></div>`;
 
@@ -2254,15 +2259,61 @@ const ssLandingBody = () => {
     ${ssPicker(null, null)}
     <div id="ssBody">
     <p class="plan-note">Every state publishes its own learning standards: what a student is expected to
-      know by the end of each grade. Pick your state and grade to read them in full. We are adding states
-      one at a time; the ones marked coming soon are not up yet.</p>
+      know by the end of each grade. Pick your state and grade to read them in full. Every state and
+      DC also has a page on its homeschool law: the ages, the notice, the testing and the instruction time.
+      We are adding each state's standards one at a time.</p>
     ${live.map((st) => `<h3 class="plan-sh">${st.name}</h3>
     ${ssGradeLinks(st, null)}
     ${ssDates(st)}
     <ul class="std-srclist">${st.sources.map((s) => `<li><a href="${s.href}" rel="noopener">${s.label}</a> (the state's file)</li>`).join("")}</ul>`).join("\n")}
+    <h3 class="plan-sh" style="margin-top:34px">Homeschool Law by State</h3>
+    <p class="ss-states">${SS.STATES.map((x) => `<a href="/state-standards/${x.slug}/">${x.name}</a>`).join("")}</p>
     </div>
   </div></div>`;
 };
+
+/* ── HOMESCHOOL LAW, one panel per state → tools/state-law.json ──────────
+   Paul, 2026-09-25: "build that law panel. you can write it from the HSLDA
+   and cite your sources." Every state and DC. The yes/no facts are HSLDA's At
+   a Glance; the instruction-time line is ours, written from HSLDA's how-to
+   article, and says so plainly where HSLDA gives no figure.
+   🚨 HomeschoolGrades' version was the IDEA only (their "minimum instruction"
+   is the user's own target, not law) → reference_hg_state_law_data. */
+const LAW = require("./state-law.json");
+const lawRow = (k, v) => v ? `<div class="ss-law-row"><dt>${k}</dt><dd>${escT(v)}</dd></div>` : "";
+const lawPanel = (slug) => {
+  const L = LAW.states[slug];
+  if (!L) return "";
+  return `<section class="ss-law" id="law">
+      <h3 class="plan-sh">Homeschool Law in ${escT(L.name)}</h3>
+      <dl class="ss-law-grid">
+        ${lawRow("School required for ages", L.ages)}
+        ${lawRow("Ways to homeschool", L.options)}
+        ${lawRow("Notice to the state", L.notice)}
+        ${lawRow("Teacher qualifications", L.teacher)}
+        ${lawRow("Required subjects", L.subjects)}
+        ${lawRow("Testing or evaluation", L.assessment)}
+        ${lawRow("Immunization records", L.immunization)}
+        ${lawRow("Instruction time", L.time)}
+        ${lawRow("The law", L.law)}
+      </dl>
+      <p class="ss-fine">Written from <a href="${L.hslda}" rel="noopener">HSLDA's summary of ${escT(L.name)} homeschool law</a>,
+        read ${longDate(LAW.checked)}. Laws change and this is not legal advice. Read
+        <a href="${L.comply}" rel="noopener">HSLDA's full step-by-step guide</a> before you file anything.</p>
+    </section>`;
+};
+
+/* One page per state: its law, and its standards when we have them. */
+const ssStateBody = (st) => `<div class="band"><div class="wrap">
+    ${ssPicker(st, null)}
+    <div id="ssBody">
+    ${st.live ? `<h3 class="plan-sh">${st.name} Learning Standards</h3>
+    ${ssGradeLinks(st, null)}
+    ${ssDates(st)}` : `<p class="plan-note">${st.name}'s learning standards are not up yet. We are adding states
+      one at a time. The homeschool law below covers the whole state.</p>`}
+    ${lawPanel(st.slug)}
+    </div>
+  </div></div>`;
 
 const ssPages = () => [
   { dir: "state-standards", active: "p", pclass: "termshead",
@@ -2272,6 +2323,17 @@ const ssPages = () => [
     h1: "State Standards.",
     lead: "What your state expects a student to know in each grade, in English, Math, Science and Social Studies. Pick a state and a grade.",
     body: ssLandingBody() },
+  ...SS.STATES.map((st) => ({
+    dir: "state-standards/" + st.slug, active: "p", pclass: "termshead",
+    title: st.name + " Homeschool Law and Standards | NexStudents",
+    desc: "What " + st.name + " requires of homeschoolers: ages, notice, testing, subjects and instruction time, with sources." +
+          (st.live ? " Plus the state's learning standards for every grade, K to 8." : ""),
+    crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; <a href="/state-standards/">State Standards</a> &rsaquo; ' + st.name,
+    h1: st.name + ".",
+    lead: st.live ? "The state's learning standards by grade, and what the law asks of a homeschooling family."
+                  : "What the law asks of a homeschooling family in " + st.name + ".",
+    body: ssStateBody(st),
+  })),
   ...SS.STATES.filter((s) => s.live).flatMap((st) => SS.GRADES.map((g) => ({
     dir: "state-standards/" + st.slug + "/grade-" + gslug(g), active: "p", pclass: "termshead",
     title: st.name + " " + gradeLabel(g) + " Standards | NexStudents",
