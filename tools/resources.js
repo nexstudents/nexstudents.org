@@ -168,6 +168,26 @@ const RESOURCES = [
   ],
 },
 
+/* ═══════════════════════ Games elsewhere ═════════════════════════════════
+   Paul, 2026-09-25: "another link to resources too for like external games off
+   our site." Games that are not ours, each with the same what / why / catch. */
+{
+  slug: "chesskid",
+  cat: "games-elsewhere",
+  title: "ChessKid",
+  url: "https://www.chesskid.com/",
+  cost: "Free, with a paid Gold membership",
+  affiliate: false,
+  what: "Chess.com's site for children: games against other kids and against bots, plus lessons and puzzles.",
+  why:
+    "Chess is planning, patience and losing gracefully, taught by a game a child actually wants to play. " +
+    "ChessKid is built for children from the ground up rather than an adult site with a filter on it: " +
+    "there is no chat, usernames are generated for them, and a parent gets reports of what their child did.",
+  note:
+    "The free account plays games and bots and opens some lessons and puzzles. Unlimited lessons, puzzles and " +
+    "videos are Gold, which is paid. There are apps for iPhone and Android.",
+},
+
 /* ═══════════════════════ Placement testing ═══════════════════════════════ */
 {
   slug: "khan-academy",

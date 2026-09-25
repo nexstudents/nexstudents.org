@@ -3170,6 +3170,29 @@ nav{border-bottom:1px solid var(--line)}
 .std-where{font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums}
 .std-note{display:block;margin-top:6px;font-size:13px;line-height:1.45;color:var(--dim)}
 
+/* State Standards, /state-standards/ → tools/state-standards.js */
+.std-stem{padding:10px 15px 2px;border-top:1px solid var(--line);font-size:13.5px;
+  font-weight:600;line-height:1.45;color:var(--fg)}
+.ss-pick{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;margin:0 0 18px}
+.ss-pick label{display:flex;flex-direction:column;gap:5px;font-size:12px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dim);min-width:0;flex:1 1 180px}
+.ss-pick select{font:inherit;font-size:15px;letter-spacing:0;text-transform:none;color:var(--fg);
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 12px;
+  width:100%;max-width:100%}
+.ss-pick select:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.ss-pick .btn{flex:0 0 auto}
+.ss-grades{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 20px;font-size:14px}
+.ss-grades a{color:var(--a-text,var(--a))}
+.ss-dates{border:1px solid var(--line);border-radius:4px;background:var(--panel);
+  padding:14px 16px;margin:0 0 22px;font-size:14px;line-height:1.5}
+.ss-dates p{margin:0 0 8px}
+.ss-dates ul{margin:0 0 8px;padding-left:18px}
+.ss-dates .ss-fine{margin:0;font-size:12.5px;color:var(--dim)}
+.ss-dates a{color:var(--fg)}
+.ss-jump{margin:0 0 26px;font-size:14px}
+.ss-jump a{color:var(--a-text,var(--a))}
+.ss-subj{margin:0 0 40px}
+
 .std-srclist{list-style:none;margin:14px 0 0;padding:0;font-size:14px}
 .std-srclist li{padding:8px 0;border-top:1px solid var(--line)}
 .std-srclist li:first-child{border-top:0}

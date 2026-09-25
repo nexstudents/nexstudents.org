@@ -138,7 +138,7 @@ const ALL_GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
    Grade 3 is next up. Everything else is Pending.
    ⚠️ `live` stays the class name AND the indexing signal elsewhere. Only
    grade 7 carries it now, so only grade 7 gets the filled tile. */
-const GRADE_STATUS = { "3": "Queued", "7": "Live" };
+const GRADE_STATUS = { "7": "Live", "8": "Queued" };   /* Paul, 2026-09-25: "mark 7th live and mark 8th quede", everything else Pending */
 const gradeStatus = (g) => GRADE_STATUS[String(g)] || "Pending";
 const gradeStatusClass = (g) => gradeStatus(g).toLowerCase();
 const gradeName = (g) => (g === "K" ? "Kindergarten" : "Grade " + g);
@@ -202,6 +202,7 @@ const MENUS = {
       col("Extras", [
         { label: "Science Experiments", href: "/resources/science-experiments/" },
         { label: "Reading Lists", href: "/resources/reading-lists/" },
+        { label: "Games Elsewhere", href: "/resources/games-elsewhere/" },
       ]) +
       col("Writing", [
         { label: "Blog", href: "/blog/" },
@@ -242,6 +243,7 @@ const MENUS = {
   p: {
     body: '<div class="mg-cols">' +
       col("Placement", [{ label: "Reading Placement Exam", href: "/placement-exam.html" }]) +
+      col("Standards", [{ label: "State Standards", href: "/state-standards/" }]) +
       col("Planning", [
         { label: "What We Use", href: "/resources/" },
         { label: "About NexStudents", href: "/about/" },
@@ -335,6 +337,7 @@ SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS
   { label: "Reading Lists", href: "/resources/reading-lists/", note: "By grade" },
   { label: "Blog", href: "/blog/", note: "How we teach it" },
   { label: "Placement Tests", href: "/resources/placement-tests/", note: "Free, and not ours" },
+  { label: "Games Elsewhere", href: "/resources/games-elsewhere/", note: "Good games on other sites" },
 ]};
 
 SHEETS.g = { title: "Games", parent: null, view: "/games/", rows: [
@@ -354,6 +357,7 @@ SHEETS.c = { title: "Comics", parent: null, view: "/comics/", promo: MENUS.c.pro
 
 SHEETS.p = { title: "For Parents", parent: null, view: "/for-parents/", rows: [
   { label: "Reading Placement Exam", href: "/placement-exam.html" },
+  { label: "State Standards", href: "/state-standards/" },
   { label: "What We Use", href: "/resources/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
@@ -3497,6 +3501,7 @@ const FOOTER_COLS = [
   ]},
   { title: "Resources", links: [
     { label: "What we use", href: "/resources/" },
+    { label: "State Standards", href: "/state-standards/" },
     { label: "Worksheets", href: "/worksheets/" },
     { label: "Games", href: "/games/" },
     { label: "Comics", href: "/comics/" },

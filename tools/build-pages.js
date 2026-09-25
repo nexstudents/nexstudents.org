@@ -1283,7 +1283,8 @@ const fail = (msg) => { console.error("FAIL: " + msg); process.exit(1); };
 
 (function checkResources(){
   const cats = new Set(["books-and-readers", "tools-and-supplies",
-                        "science-experiments", "reading-lists", "placement-tests"]);
+                        "science-experiments", "reading-lists", "placement-tests",
+                        "games-elsewhere"]);
   for (const r of RESOURCES) {
     /* 🚨 `affiliate` must be EXPLICIT. BEHAVIOR.md: any affiliate link is
        marked as one. Defaulting a missing value to false is how an unmarked
@@ -1341,6 +1342,8 @@ const resourcesIndex = () => {
      "By grade, honest about level rather than flattering about it."],
     ["placement-tests", "Placement Tests",
      "Free ways to find out where a student actually is, before you buy a year of the wrong thing."],
+    ["games-elsewhere", "Games Elsewhere",
+     "Good games that are not ours, on other sites. Each one says what is free and what is not."],
   ].filter(([cat]) => resourcesIn(cat).length);
 
   return `<div class="band"><div class="wrap">
@@ -1695,7 +1698,7 @@ const subjectRows = (grade) => {
       <div class="subj-head">
         <n>${String(i + 1).padStart(2, "0")}</n>
         <div>
-          <h3>${s.name} <i>${s.live ? "Live" : "Soon"}</i></h3>
+          <h3>${s.name} <i>${grade == null ? (s.live ? "Live" : "Soon") : gradeStatus(grade)}</i></h3>
           <p>${s.blurb}</p>
         </div>
       </div>
@@ -1816,6 +1819,12 @@ const parents = () => `<div class="band"><div class="wrap">
   </div>
   <p class="h2s" style="margin-top:34px">The full exam is not built yet. The short reading
     placement is live now and is genuinely free &mdash; no card, no account.</p>
+  <div class="subj-sub" style="margin-top:34px;max-width:560px">
+    <a class="minibox" href="/state-standards/">
+      <b>State Standards</b><span>What your state expects in each grade, word for word</span>
+      <u>See the standards &rarr;</u>
+    </a>
+  </div>
 </div></div>`;
 
 /* ── THE EXTRAS SHELF ─────────────────────────────────────────────────────
@@ -2049,6 +2058,125 @@ ${planViewScript}`;
    ⚠️ EVERY SUBJECT LINKS OUT TO ITS SOURCE PDF at DESE. That is the point of
    the page: a parent has to be able to check the claim rather than take it.
    The links are in the data file so one URL change is one edit. */
+/* ── STATE STANDARDS, /state-standards/ ──────────────────────────────────
+   A resource page: pick a state and a grade, read that state's standards
+   exactly as published → tools/state-standards.js for the why and the dates.
+   🚨 Not tied to our lessons on purpose. Paul: "we don't need to build our
+   lessons to those state standards. this is just a page to get that information." */
+const SS = require("./state-standards.js");
+const ssHref = (st, g) => "/state-standards/" + st.slug + "/grade-" + gslug(g) + "/";
+const longDate = (iso) => new Date(iso + "T12:00:00Z").toLocaleDateString("en-US",
+  { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+const ssPicker = (cur, g) => `<form class="ss-pick" id="ssPick" action="/state-standards/">
+      <label><span>State</span><select name="state">
+        ${SS.STATES.map((s) => `<option value="${s.slug}"${s.live ? "" : " disabled"}${
+          cur && cur.slug === s.slug ? " selected" : ""}>${s.name}${s.live ? "" : " (coming soon)"}</option>`).join("")}
+      </select></label>
+      <label><span>Grade</span><select name="grade">
+        ${SS.GRADES.map((x) => `<option value="${gslug(x)}"${g != null && sameGrade(g, x) ? " selected" : ""}>${gradeLabel(x)}</option>`).join("")}
+      </select></label>
+      <button class="btn" type="submit">Show Standards</button>
+    </form>
+    <script>(function(){var f=document.getElementById("ssPick");if(!f)return;
+      function go(){var s=f.elements.state.value,g=f.elements.grade.value;
+        if(s&&g)location.href="/state-standards/"+s+"/grade-"+g+"/";}
+      f.addEventListener("submit",function(e){e.preventDefault();go();});
+      f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);})();</script>`;
+
+const ssDates = (st) => `<div class="ss-dates">
+      <p><b>${st.title}</b>, published by the ${st.agency}.</p>
+      <ul>
+        <li>Adopted by the state: <b>${st.adopted}</b></li>
+        ${st.revised.map((r) => `<li>${r.what} reviewed: <b>${r.when}</b> (${r.note})</li>`).join("")}
+        <li>Last checked by NexStudents: <b>${longDate(st.checked)}</b></li>
+      </ul>
+      <p class="ss-fine">Copied from the state's own files, word for word. States revise their standards,
+        so check <a href="${st.home}" rel="noopener">the state's page</a> for the current version.</p>
+    </div>`;
+
+const ssGradeLinks = (st, g) => `<p class="ss-grades">${SS.GRADES.map((x) =>
+  g != null && sameGrade(g, x) ? `<b>${gradeLabel(x)}</b>` : `<a href="${ssHref(st, x)}">${gradeLabel(x)}</a>`).join("")}</p>`;
+
+/* One subject's outline: strand heading, then cluster rows, then standards.
+   A lettered sub-standard sits under its parent's wording, shown once. */
+const ssSubject = (st, subj, g) => {
+  const n = Number(g);
+  const all = st.data();
+  const band = n >= 6 && st.bands[subj.key];
+  const rows = all.filter((r) => r.subject === subj.key &&
+    (band ? r.grade === "6-8" : r.grade === String(g)));
+  if (!rows.length) return "";
+  const groups = [];
+  for (const r of rows) {
+    const head = r.course ? (st.courses[r.course] || r.courseName) + ": " + r.strand : r.strand;
+    let gp = groups[groups.length - 1];
+    if (!gp || gp.head !== head) groups.push((gp = { head, items: [] }));
+    gp.items.push(r);
+  }
+  const body = groups.map((gp) => {
+    let lastCl = null, lastStem = null;
+    const lis = gp.items.map((r) => {
+      let out = "";
+      if (r.cluster && r.cluster !== lastCl) { out += `<li class="std-cl">${escT(r.cluster)}</li>`; lastCl = r.cluster; lastStem = null; }
+      if (r.stem && r.stem !== r.text && r.stem !== lastStem) { out += `<li class="std-stem">${escT(r.stem)}</li>`; lastStem = r.stem; }
+      return out + `<li class="std-row std-row-plain"><span class="std-code">${escT(r.code)}</span>` +
+        `<span class="std-body"><span class="std-text">${escT(r.text)}</span></span></li>`;
+    }).join("\n        ");
+    return `<h4 class="std-grp">${escT(gp.head)}</h4>
+      <ul class="std-list">
+        ${lis}
+      </ul>`;
+  }).join("\n      ");
+  return `<section class="ss-subj" id="${gslug(subj.key)}">
+      <h3 class="plan-sh">${subj.name} <em>${rows.length} standards</em></h3>
+      ${band ? `<p class="std-course">${band}</p>` : ""}
+      ${body}
+    </section>`;
+};
+
+const ssGradeBody = (st, g) => `<div class="band"><div class="wrap">
+    ${ssPicker(st, g)}
+    ${ssGradeLinks(st, g)}
+    ${ssDates(st)}
+    <p class="ss-jump">${st.subjects.map((s) => `<a href="#${gslug(s.key)}">${s.name}</a>`).join(" &middot; ")}</p>
+    ${st.subjects.map((s) => ssSubject(st, s, g)).join("\n    ")}
+  </div></div>`;
+
+const ssLandingBody = () => {
+  const live = SS.STATES.filter((s) => s.live);
+  return `<div class="band"><div class="wrap">
+    ${ssPicker(null, null)}
+    <p class="plan-note">Every state publishes its own learning standards: what a student is expected to
+      know by the end of each grade. Pick your state and grade to read them in full. We are adding states
+      one at a time; the ones marked coming soon are not up yet.</p>
+    ${live.map((st) => `<h3 class="plan-sh">${st.name}</h3>
+    ${ssGradeLinks(st, null)}
+    ${ssDates(st)}
+    <ul class="std-srclist">${st.sources.map((s) => `<li><a href="${s.href}" rel="noopener">${s.label}</a> (the state's file)</li>`).join("")}</ul>`).join("\n")}
+  </div></div>`;
+};
+
+const ssPages = () => [
+  { dir: "state-standards", active: "p", pclass: "termshead",
+    title: "State Standards | NexStudents",
+    desc: "Read your state's learning standards for every grade, K to 8, word for word, with the date they were last updated.",
+    crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; State Standards',
+    h1: "State Standards.",
+    lead: "What your state expects a student to know in each grade, in English, Math, Science and Social Studies. Pick a state and a grade.",
+    body: ssLandingBody() },
+  ...SS.STATES.filter((s) => s.live).flatMap((st) => SS.GRADES.map((g) => ({
+    dir: "state-standards/" + st.slug + "/grade-" + gslug(g), active: "p", pclass: "termshead",
+    title: st.name + " " + gradeLabel(g) + " Standards | NexStudents",
+    desc: "The " + st.title + " for " + gradeLabel(g) + ", every subject, word for word from the state, with the date they were last updated.",
+    crumb: '<a href="/for-parents/">For Parents</a> &rsaquo; <a href="/state-standards/">State Standards</a> &rsaquo; ' +
+           st.name + " &rsaquo; " + gradeLabel(g),
+    h1: st.name + ", " + gradeLabel(g) + ".",
+    lead: "Every " + st.title.replace(/s$/, "") + " for " + gradeLabel(g) + ", exactly as the state publishes it.",
+    body: ssGradeBody(st, g),
+  }))),
+];
+
 const STD_LABEL = { covered: "Covered", partial: "Partial", gap: "Not covered" };
 
 const stdRow = (r) =>
@@ -2438,6 +2566,9 @@ const pages = [
   /* The K-8 plans from Missouri's standards, one per grade. Grade 7's sits
      under its real plan until Paul decides which one Kolten follows. */
   ...K8.GRADES.map(k8PlanPage),
+
+  /* State Standards, the resource page → ssPages above. */
+  ...ssPages(),
 
   /* The standards check. Sits beside the year plan and answers the opposite
      question: not what a student does, but what the state expects and whether
@@ -3022,6 +3153,15 @@ const SOON_PAGES = [
       "Run it, watch it, write down what happened.",
       "Science on a screen is not science. Each of these will be an experiment you can actually run at home, with a video walkthrough and a record sheet to write the observation on, because writing down what you saw is the part that turns a trick into a lesson.",
       "Several are already run here and not yet written up: static electricity, surface tension, centre of mass.") },
+
+  { dir: "resources/games-elsewhere", active: "r",
+    title: "Games Elsewhere | NexStudents",
+    desc: "Learning games on other sites that we think are worth a child's time, and what each one costs.",
+    crumb: '<a href="/resources/">Resources</a> &rsaquo; Games Elsewhere',
+    h1: "Games Elsewhere.",
+    lead: "Good games that live on other sites. None of them is ours, and each one says plainly what is free.",
+    body: resourceList("games-elsewhere",
+      "The games are being written up.") },
 
   { dir: "resources/placement-tests", active: "r",
     title: "Free Placement Tests | NexStudents",
