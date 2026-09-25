@@ -55,7 +55,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=941c0504">
+<link rel="stylesheet" href="/assets/ns.css?v=28bfba69">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -126,13 +126,10 @@
 
 <div class="band"><div class="wrap">
     <form class="ss-pick" id="ssPick" action="/state-standards/">
-      <label><span>State</span><select name="state">
-        <option value="alabama">Alabama</option><option value="alaska">Alaska</option><option value="arizona">Arizona</option><option value="arkansas">Arkansas</option><option value="california">California</option><option value="colorado">Colorado</option><option value="connecticut">Connecticut</option><option value="delaware">Delaware</option><option value="district-of-columbia">District of Columbia</option><option value="florida">Florida</option><option value="georgia">Georgia</option><option value="hawaii">Hawaii</option><option value="idaho">Idaho</option><option value="illinois">Illinois</option><option value="indiana">Indiana</option><option value="iowa">Iowa</option><option value="kansas">Kansas</option><option value="kentucky">Kentucky</option><option value="louisiana">Louisiana</option><option value="maine">Maine</option><option value="maryland">Maryland</option><option value="massachusetts">Massachusetts</option><option value="michigan">Michigan</option><option value="minnesota">Minnesota</option><option value="mississippi">Mississippi</option><option value="missouri" data-std="1">Missouri</option><option value="montana">Montana</option><option value="nebraska">Nebraska</option><option value="nevada">Nevada</option><option value="new-hampshire">New Hampshire</option><option value="new-jersey">New Jersey</option><option value="new-mexico">New Mexico</option><option value="new-york">New York</option><option value="north-carolina">North Carolina</option><option value="north-dakota">North Dakota</option><option value="ohio">Ohio</option><option value="oklahoma">Oklahoma</option><option value="oregon">Oregon</option><option value="pennsylvania">Pennsylvania</option><option value="rhode-island">Rhode Island</option><option value="south-carolina">South Carolina</option><option value="south-dakota" selected>South Dakota</option><option value="tennessee">Tennessee</option><option value="texas">Texas</option><option value="utah">Utah</option><option value="vermont">Vermont</option><option value="virginia">Virginia</option><option value="washington">Washington</option><option value="west-virginia">West Virginia</option><option value="wisconsin">Wisconsin</option><option value="wyoming">Wyoming</option>
+      <label><span>Your State</span><select name="state">
+        
+        <option value="alabama">Alabama</option><option value="alaska">Alaska</option><option value="arizona">Arizona</option><option value="arkansas">Arkansas</option><option value="california">California</option><option value="colorado">Colorado</option><option value="connecticut">Connecticut</option><option value="delaware">Delaware</option><option value="district-of-columbia">District of Columbia</option><option value="florida">Florida</option><option value="georgia">Georgia</option><option value="hawaii">Hawaii</option><option value="idaho">Idaho</option><option value="illinois">Illinois</option><option value="indiana">Indiana</option><option value="iowa">Iowa</option><option value="kansas">Kansas</option><option value="kentucky">Kentucky</option><option value="louisiana">Louisiana</option><option value="maine">Maine</option><option value="maryland">Maryland</option><option value="massachusetts">Massachusetts</option><option value="michigan">Michigan</option><option value="minnesota">Minnesota</option><option value="mississippi">Mississippi</option><option value="missouri" data-std="1">Missouri (all subjects)</option><option value="montana">Montana</option><option value="nebraska">Nebraska</option><option value="nevada">Nevada</option><option value="new-hampshire">New Hampshire</option><option value="new-jersey">New Jersey</option><option value="new-mexico">New Mexico</option><option value="new-york">New York</option><option value="north-carolina">North Carolina</option><option value="north-dakota">North Dakota</option><option value="ohio">Ohio</option><option value="oklahoma">Oklahoma</option><option value="oregon">Oregon</option><option value="pennsylvania">Pennsylvania</option><option value="rhode-island">Rhode Island</option><option value="south-carolina">South Carolina</option><option value="south-dakota" selected>South Dakota</option><option value="tennessee">Tennessee</option><option value="texas" data-std="1">Texas (all subjects)</option><option value="utah">Utah</option><option value="vermont">Vermont</option><option value="virginia">Virginia</option><option value="washington">Washington</option><option value="west-virginia">West Virginia</option><option value="wisconsin">Wisconsin</option><option value="wyoming">Wyoming</option>
       </select></label>
-      <label><span>Grade</span><select name="grade">
-        <option value="k">Kindergarten</option><option value="1">1st Grade</option><option value="2">2nd Grade</option><option value="3">3rd Grade</option><option value="4">4th Grade</option><option value="5">5th Grade</option><option value="6">6th Grade</option><option value="7">7th Grade</option><option value="8">8th Grade</option>
-      </select></label>
-      <button class="btn" type="submit">Show Standards</button>
     </form>
     <script>(function(){
   function initTabs(){
@@ -181,17 +178,17 @@
     }).catch(function(){location.href=url;});
   }
   var f=document.getElementById("ssPick");
-  function go(){var s=f.elements.state.value,g=f.elements.grade.value,o=f.elements.state.selectedOptions[0];
+  function go(){var s=f.elements.state.value,g=f.getAttribute("data-grade"),o=f.elements.state.selectedOptions[0];
     if(!s)return;
     if(o&&o.getAttribute("data-std")&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);
     else swap("/state-standards/"+s+"/",true);}
   if(f){
     f.addEventListener("submit",function(e){e.preventDefault();go();});
-    f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
+    f.elements.state.addEventListener("change",go);
   }
   document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-gradegrid a, .ss-stategrid a");
     if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1],sl=u.split("/")[2];
-    if(m&&f)f.elements.grade.value=m.replace("/","");if(sl&&f)f.elements.state.value=sl;
+    if(f){if(m)f.setAttribute("data-grade",m.replace("/",""));else f.removeAttribute("data-grade");if(sl)f.elements.state.value=sl;}
     swap(u,true);
     /* A state tile sits at the bottom of the page; its new content starts at the top. */
     if(a.closest(".ss-stategrid")&&f)f.scrollIntoView({behavior:"smooth",block:"start"});});

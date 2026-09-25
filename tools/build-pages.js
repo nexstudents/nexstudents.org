@@ -2068,15 +2068,15 @@ const ssHref = (st, g) => "/state-standards/" + st.slug + "/grade-" + gslug(g) +
 const longDate = (iso) => new Date(iso + "T12:00:00Z").toLocaleDateString("en-US",
   { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
-const ssPicker = (cur, g) => `<form class="ss-pick" id="ssPick" action="/state-standards/">
-      <label><span>State</span><select name="state">
+/* 🚨 ONE PICKER, THE STATE. Grades are the tiles below it. The first version had
+   a grade dropdown AND grade tiles on the same page, so the grade was picked
+   twice; Paul: "you kind of messed up the layout". */
+const ssPicker = (cur, g) => `<form class="ss-pick" id="ssPick" action="/state-standards/"${g != null ? ` data-grade="${gslug(g)}"` : ""}>
+      <label><span>Your State</span><select name="state">
+        ${cur ? "" : `<option value="" selected disabled>Choose your state</option>`}
         ${SS.STATES.map((s) => `<option value="${s.slug}"${s.live ? ' data-std="1"' : ""}${
-          cur && cur.slug === s.slug ? " selected" : ""}>${s.name}</option>`).join("")}
+          cur && cur.slug === s.slug ? " selected" : ""}>${s.name}${s.live ? " (all subjects)" : ""}</option>`).join("")}
       </select></label>
-      <label><span>Grade</span><select name="grade">
-        ${SS.GRADES.map((x) => `<option value="${gslug(x)}"${g != null && sameGrade(g, x) ? " selected" : ""}>${gradeLabel(x)}</option>`).join("")}
-      </select></label>
-      <button class="btn" type="submit">Show Standards</button>
     </form>
     ${ssScript}`;
 
@@ -2249,17 +2249,17 @@ const ssScript = `<script>(function(){
     }).catch(function(){location.href=url;});
   }
   var f=document.getElementById("ssPick");
-  function go(){var s=f.elements.state.value,g=f.elements.grade.value,o=f.elements.state.selectedOptions[0];
+  function go(){var s=f.elements.state.value,g=f.getAttribute("data-grade"),o=f.elements.state.selectedOptions[0];
     if(!s)return;
     if(o&&o.getAttribute("data-std")&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);
     else swap("/state-standards/"+s+"/",true);}
   if(f){
     f.addEventListener("submit",function(e){e.preventDefault();go();});
-    f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
+    f.elements.state.addEventListener("change",go);
   }
   document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-gradegrid a, .ss-stategrid a");
     if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1],sl=u.split("/")[2];
-    if(m&&f)f.elements.grade.value=m.replace("/","");if(sl&&f)f.elements.state.value=sl;
+    if(f){if(m)f.setAttribute("data-grade",m.replace("/",""));else f.removeAttribute("data-grade");if(sl)f.elements.state.value=sl;}
     swap(u,true);
     /* A state tile sits at the bottom of the page; its new content starts at the top. */
     if(a.closest(".ss-stategrid")&&f)f.scrollIntoView({behavior:"smooth",block:"start"});});
@@ -2297,8 +2297,9 @@ const ssLandingBody = () => {
       know by the end of each grade. Pick your state and grade to read them in full. Every state and
       DC also has a page on its homeschool law: the ages, the notice, the testing and the instruction time.
       We are adding each state's standards one at a time.</p>
-    ${live.map((st) => `<h3 class="plan-sh ss-center">${st.name}: Pick a Grade</h3>
-    ${ssGradeLinks(st, null)}`).join("\n")}
+    <h3 class="plan-sh ss-center">Every Subject, Every Grade</h3>
+    <nav class="ss-stategrid ss-live" aria-label="States with every subject">${live.map((x) =>
+      `<a class="ss-stile" href="/state-standards/${x.slug}/"><b>${x.name}</b><span>English, Math, Science, Social Studies</span></a>`).join("")}</nav>
     <h3 class="plan-sh ss-center" style="margin-top:34px">Every State</h3>
     <nav class="ss-stategrid" aria-label="States">${SS.STATES.map((x) =>
       `<a class="ss-stile" href="/state-standards/${x.slug}/"><b>${x.name}</b><span>${x.live ? "Subjects and law" : "Homeschool law"}</span></a>`).join("")}</nav>

@@ -3195,6 +3195,18 @@ nav{border-bottom:1px solid var(--line)}
 .ss-tabs{margin:0 0 16px;justify-content:center;gap:10px}
 .ss-tabs .plan-vb{font-size:16px;padding:12px 22px}
 .ss-center{text-align:center;justify-content:center}
+/* ONE CENTRED COLUMN. Paul, 2026-09-25: "you kind of messed up the layout" -
+   headings were centred while the text under them sat left, and the state and
+   grade were picked twice. The picker is now one state box, centred. */
+.ss-pick{justify-content:center}
+.ss-pick label{flex:0 1 420px;align-items:center;text-align:center}
+#ssBody>.plan-note{text-align:center;max-width:640px;margin-left:auto;margin-right:auto}
+.ss-subj>.plan-sh{justify-content:center;text-align:center}
+.ss-subj>.std-course{text-align:center;margin-left:auto;margin-right:auto}
+.ss-parts{justify-content:center}
+.ss-live{display:flex;flex-wrap:wrap;justify-content:center}
+.ss-live .ss-stile{flex:0 1 240px}
+.ss-live .ss-stile{border-color:var(--a-edge,var(--line))}
 .ss-find{justify-content:center}
 .ss-find input{max-width:560px}
 /* Grade tiles and state tiles, replacing the lines of text links. */
@@ -3208,7 +3220,7 @@ nav{border-bottom:1px solid var(--line)}
 .ss-gtile.on span{color:var(--a-ink)}
 .ss-gtile:focus-visible,.ss-stile:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 @media (max-width:760px){.ss-gradegrid{grid-template-columns:repeat(5,minmax(0,1fr))}}
-@media (max-width:420px){.ss-gradegrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.ss-gradegrid{gap:6px}.ss-gtile{padding:8px 2px}.ss-gtile span{font-size:10px}}
 .ss-stategrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:0 0 26px}
 .ss-stile{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);
   border-radius:6px;background:var(--panel);color:var(--fg);text-decoration:none;min-width:0}

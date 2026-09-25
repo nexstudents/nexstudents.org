@@ -55,16 +55,46 @@ const MISSOURI = {
   courses: { GEO: "World Geography", WH: "World History", AH: "American History" },
 };
 
+/* TEXAS, added 2026-09-25. Read from TEA's own PDFs of 19 TAC chapters 110-113
+   (the TEKS), one current section per grade. Codes are Texas's own style,
+   grade.topic+letter: 3.2A is grade 3, knowledge-and-skills statement 2, item A.
+   ⚠️ The PDFs print the topic numbers in a separate column, so the reader finds a
+   topic by its shape ("Title. The student ...") and numbers them in order; it was
+   checked against the official counts (grade 3 math 9 topics, grade 3 ELA 13). */
+const TEXAS = {
+  slug: "texas", name: "Texas", live: true,
+  title: "Texas Essential Knowledge and Skills (TEKS)",
+  agency: "Texas Education Agency (TEA)",
+  adopted: "English 2017, Math 2012, Science 2021, Social Studies 2022",
+  revised: [],
+  checked: "2026-09-25",
+  home: "https://tea.texas.gov/academics/curriculum-standards/teks-review/texas-essential-knowledge-and-skills",
+  sources: [
+    { label: "English Language Arts and Reading, 19 TAC Chapter 110", href: "https://tea.texas.gov/about-tea/laws-and-rules/texas-administrative-code/19-tac-chapter-110" },
+    { label: "Mathematics, 19 TAC Chapter 111", href: "https://tea.texas.gov/about-tea/laws-and-rules/texas-administrative-code/19-tac-chapter-111" },
+    { label: "Science, 19 TAC Chapter 112", href: "https://tea.texas.gov/about-tea/laws-and-rules/texas-administrative-code/19-tac-chapter-112" },
+    { label: "Social Studies, 19 TAC Chapter 113", href: "https://tea.texas.gov/about-tea/laws-and-rules/texas-administrative-code/19-tac-chapter-113" },
+  ],
+  data: () => require("./tx-k8.json"),
+  subjects: [
+    { key: "English", name: "English Language Arts and Reading" },
+    { key: "Math",    name: "Mathematics" },
+    { key: "Science", name: "Science" },
+    { key: "History", name: "Social Studies" },
+  ],
+  bands: {}, courses: {},
+};
+
 const OTHER = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
   "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho",
   "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
   "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Montana", "Nebraska", "Nevada",
   "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
   "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
-  "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+  "South Dakota", "Tennessee", "Utah", "Vermont", "Virginia", "Washington",
   "West Virginia", "Wisconsin", "Wyoming"];
 
-const STATES = [MISSOURI, ...OTHER.map((name) => ({
+const STATES = [MISSOURI, TEXAS, ...OTHER.map((name) => ({
   slug: name.toLowerCase().replace(/[^a-z]+/g, "-"), name, live: false,
 }))].sort((a, b) => a.name.localeCompare(b.name));
 
