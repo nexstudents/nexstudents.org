@@ -2096,8 +2096,8 @@ const ssDates = (st) => `<div class="ss-dates">
    that in more of a better structure." */
 const ssGradeLinks = (st, g) => `<div class="ss-gradegrid" role="navigation" aria-label="Grades">${SS.GRADES.map((x) => {
   const on = g != null && sameGrade(g, x);
-  return `<a class="ss-gtile${on ? " on" : ""}" href="${ssHref(st, x)}"${on ? ' aria-current="page"' : ""}>` +
-    `<b>${x}</b><span>${x === "K" ? "Kindergarten" : "Grade " + x}</span></a>`;
+  return `<a class="ss-gtile${on ? " on" : ""}" href="${ssHref(st, x)}" aria-label="${x === "K" ? "Kindergarten" : "Grade " + x}"${on ? ' aria-current="page"' : ""}>` +
+    `<b>${x}</b></a>`;
 }).join("")}</div>`;
 
 /* ONE "More Information" dropdown holds everything that is not the subjects:
