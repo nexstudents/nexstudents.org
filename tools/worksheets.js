@@ -453,7 +453,7 @@ const SHEETS = [
    is black and white and a colour that prints grey is a question with no
    answer. Do not "improve" this sheet by adding the lesson's colours. */
 {
-  slug: "complete-subjects-and-predicates", subject: "English", grade: 7, grades: [7],
+  slug: "complete-subjects-and-predicates", subject: "English", grade: 3, grades: [3],
   kind: "split", lesson: "complete-subjects-and-predicates",
   title: "Complete Subjects and Predicates",
   dek: "Twelve sentences on paper. Place the line, then name the half.",
@@ -511,7 +511,7 @@ const SHEETS = [
 
 /* ────────── 1. FORMING COMPOUND SUBJECTS AND PREDICATES ────────── */
 {
-  slug: "forming-compound-subjects-and-predicates", subject: "English", grade: 7, grades: [7],
+  slug: "forming-compound-subjects-and-predicates", subject: "English", grade: 4, grades: [4],
   kind: "homework", lesson: "forming-compound-subjects-and-predicates",
   title: "Forming Compound Subjects and Predicates",
   dek: "The homework half of the lesson. Circle the joined words, name the kind, then fold and write your own.",
@@ -611,7 +611,7 @@ const SHEETS = [
    circles ONE word and Part B asks for both of them on one sentence, which is
    the two-word test the lesson teaches, on paper. */
 {
-  slug: "simple-subjects-and-simple-predicates", subject: "English", grade: 7, grades: [7],
+  slug: "simple-subjects-and-simple-predicates", subject: "English", grade: 3, grades: [3],
   kind: "homework", lesson: "simple-subjects-and-simple-predicates",
   title: "Simple Subjects and Simple Predicates",
   dek: "The homework half of the lesson. Circle the one word that runs each half, then strip a sentence down to two.",
@@ -699,7 +699,7 @@ const SHEETS = [
    🚨 SO THE SLUG HAS TO DIFFER from the split sheet's or they would build into
    the same folder and one would overwrite the other. */
 {
-  slug: "complete-subjects-and-predicates-homework", subject: "English", grade: 7, grades: [7],
+  slug: "complete-subjects-and-predicates-homework", subject: "English", grade: 3, grades: [3],
   kind: "homework", lesson: "complete-subjects-and-predicates",
   title: "Complete Subjects and Predicates: Homework",
   dek: "Fresh sentences, none of them from the lesson. Draw the line, name the half, then write your own.",
