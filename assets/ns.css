@@ -3264,6 +3264,12 @@ nav{border-bottom:1px solid var(--line)}
 .ss-jump{margin:0 0 26px;font-size:14px}
 .ss-jump a{color:var(--a-text,var(--a))}
 .ss-subj{margin:0 0 40px}
+/* A state with no subjects yet. Paul, 2026-09-25: "a little box underneath ...
+   the box just says no info or something". */
+.ss-empty{max-width:520px;margin:6px auto 22px;padding:18px 20px;text-align:center;
+  border:1px dashed var(--line);border-radius:6px;background:var(--panel);
+  display:flex;flex-direction:column;gap:6px;font-size:15px}
+.ss-empty span{font-size:13px;color:var(--dim)}
 /* 🟢 A standard NexStudents already teaches. Green is --laurel ("right / done"),
    never --verdigris, which is the theme accent → CLAUDE.md. A shape, so 3:1. */
 .ss-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--laurel,#2f9e5b);
