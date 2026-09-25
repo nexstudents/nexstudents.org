@@ -55,7 +55,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=d1466f6b">
+<link rel="stylesheet" href="/assets/ns.css?v=bcd17f01">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -134,11 +134,68 @@
       </select></label>
       <button class="btn" type="submit">Show Standards</button>
     </form>
-    <script>(function(){var f=document.getElementById("ssPick");if(!f)return;
-      function go(){var s=f.elements.state.value,g=f.elements.grade.value;
-        if(s&&g)location.href="/state-standards/"+s+"/grade-"+g+"/";}
-      f.addEventListener("submit",function(e){e.preventDefault();go();});
-      f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);})();</script>
+    <script>(function(){
+  function initTabs(){
+    var tabs=document.querySelectorAll("[data-subj-go]"),secs=document.querySelectorAll(".ss-subj");
+    if(!tabs.length||!secs.length)return;
+    function show(id){var hit=false;
+      secs.forEach(function(s){var on=s.getAttribute("data-subj")===id;s.hidden=!on;if(on)hit=true;});
+      if(!hit){secs.forEach(function(s,i){s.hidden=i!==0;});id=secs[0].getAttribute("data-subj");}
+      tabs.forEach(function(t){t.setAttribute("aria-pressed",t.getAttribute("data-subj-go")===id?"true":"false");});}
+    tabs.forEach(function(t){t.addEventListener("click",function(){var id=t.getAttribute("data-subj-go");
+      show(id);if(history.replaceState)history.replaceState(history.state,"",location.pathname+"#"+id);});});
+    show((location.hash||"").slice(1));
+    secs.forEach(function(sec){var pills=sec.querySelectorAll("[data-part-go]"),grps=sec.querySelectorAll(".ss-grp");
+      pills.forEach(function(p){p.addEventListener("click",function(){var v=p.getAttribute("data-part-go");
+        grps.forEach(function(g){g.hidden=!(v==="all"||g.getAttribute("data-part")===v);});
+        pills.forEach(function(q){q.setAttribute("aria-pressed",q===p?"true":"false");});});});});
+    /* SEARCH across every subject. While a word is typed, every subject opens
+       and only matching standards show; clearing it puts the tabs back. */
+    var box=document.getElementById("ssFind"),found=document.getElementById("ssFound");
+    if(box){box.addEventListener("input",function(){
+      var q=box.value.trim().toLowerCase(),rows=document.querySelectorAll("#ssBody .std-row");
+      var heads=document.querySelectorAll("#ssBody .std-cl, #ssBody .std-stem");
+      var grps=document.querySelectorAll("#ssBody .ss-grp");
+      if(!q){rows.forEach(function(r){r.hidden=false;});heads.forEach(function(h){h.hidden=false;});
+        grps.forEach(function(g){g.hidden=false;});
+        document.querySelectorAll("#ssBody [data-part-go]").forEach(function(p){p.setAttribute("aria-pressed",p.getAttribute("data-part-go")==="all"?"true":"false");});
+        found.textContent="";show((location.hash||"").slice(1));return;}
+      var n=0;rows.forEach(function(r){var hit=r.textContent.toLowerCase().indexOf(q)>-1;r.hidden=!hit;if(hit)n++;});
+      heads.forEach(function(h){h.hidden=true;});
+      grps.forEach(function(g){g.hidden=!g.querySelector(".std-row:not([hidden])");});
+      secs.forEach(function(s){s.hidden=!s.querySelector(".std-row:not([hidden])");});
+      tabs.forEach(function(t){t.setAttribute("aria-pressed","false");});
+      found.textContent=n+(n===1?" standard matches":" standards match");});}
+  }
+  function swap(url,push){
+    fetch(url,{credentials:"same-origin"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){
+      var d=new DOMParser().parseFromString(h,"text/html"),nb=d.getElementById("ssBody"),ob=document.getElementById("ssBody");
+      if(!nb||!ob){location.href=url;return;}
+      ob.innerHTML=nb.innerHTML;document.title=d.title;
+      var h1=document.querySelector("h1"),n1=d.querySelector("h1");if(h1&&n1)h1.innerHTML=n1.innerHTML;
+      var c=document.querySelector(".crumb"),nc=d.querySelector(".crumb");if(c&&nc)c.innerHTML=nc.innerHTML;
+      var l=h1&&h1.nextElementSibling,nl=n1&&n1.nextElementSibling;
+      if(l&&nl&&l.tagName==="P"&&nl.tagName==="P")l.innerHTML=nl.innerHTML;
+      if(push)history.pushState({ss:1},"",url+location.hash);
+      initTabs();
+    }).catch(function(){location.href=url;});
+  }
+  var f=document.getElementById("ssPick");
+  function go(){var s=f.elements.state.value,g=f.elements.grade.value;
+    if(s&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);}
+  if(f){
+    f.addEventListener("submit",function(e){e.preventDefault();go();});
+    f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
+  }
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-grades a");
+    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1];
+    if(m&&f)f.elements.grade.value=m.replace("/","");swap(u,true);});
+  window.addEventListener("popstate",function(){swap(location.pathname,false);});
+  /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
+     the subjects do not exist yet. Wait for the DOM. */
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
+})();</script>
+    <div id="ssBody">
     <p class="ss-grades"><a href="/state-standards/missouri/grade-k/">Kindergarten</a><a href="/state-standards/missouri/grade-1/">1st Grade</a><a href="/state-standards/missouri/grade-2/">2nd Grade</a><a href="/state-standards/missouri/grade-3/">3rd Grade</a><a href="/state-standards/missouri/grade-4/">4th Grade</a><a href="/state-standards/missouri/grade-5/">5th Grade</a><b>6th Grade</b><a href="/state-standards/missouri/grade-7/">7th Grade</a><a href="/state-standards/missouri/grade-8/">8th Grade</a></p>
     <div class="ss-dates">
       <p><b>Missouri Learning Standards</b>, published by the Missouri Department of Elementary and Secondary Education (DESE).</p>
@@ -150,10 +207,27 @@
       <p class="ss-fine">Copied from the state's own files, word for word. States revise their standards,
         so check <a href="https://dese.mo.gov/college-career-readiness/curriculum/missouri-learning-standards" rel="noopener">the state's page</a> for the current version.</p>
     </div>
-    <p class="ss-jump"><a href="#english">English Language Arts</a> &middot; <a href="#math">Mathematics</a> &middot; <a href="#science">Science</a> &middot; <a href="#history">Social Studies</a></p>
-    <section class="ss-subj" id="english">
+    <div class="plan-views ss-tabs" role="group" aria-label="Subject">
+      <button type="button" class="plan-vb" data-subj-go="english" aria-pressed="true">English <small>40</small></button>
+      <button type="button" class="plan-vb" data-subj-go="math" aria-pressed="false">Math <small>50</small></button>
+      <button type="button" class="plan-vb" data-subj-go="science" aria-pressed="false">Science <small>54</small></button>
+      <button type="button" class="plan-vb" data-subj-go="social-studies" aria-pressed="false">Social Studies <small>176</small></button>
+    </div>
+    <div class="ss-find">
+      <input type="search" id="ssFind" placeholder="Search these standards, like fractions or commas" aria-label="Search these standards" autocomplete="off">
+      <span id="ssFound" aria-live="polite"></span>
+    </div>
+    <section class="ss-subj" id="english" data-subj="english">
       <h3 class="plan-sh">English Language Arts <em>40 standards</em></h3>
       
+      <div class="plan-views ss-parts" role="group" aria-label="English parts">
+        <button type="button" class="plan-vb" data-part-go="all" aria-pressed="true">All</button>
+        <button type="button" class="plan-vb" data-part-go="Literature" aria-pressed="false">Literature <small>12</small></button>
+        <button type="button" class="plan-vb" data-part-go="Informational Text" aria-pressed="false">Informational Text <small>12</small></button>
+        <button type="button" class="plan-vb" data-part-go="Writing" aria-pressed="false">Writing <small>10</small></button>
+        <button type="button" class="plan-vb" data-part-go="Speaking and Listening" aria-pressed="false">Speaking and Listening <small>6</small></button>
+      </div>
+      <div class="ss-grp" data-part="Literature">
       <h4 class="std-grp">Reading Literary Text</h4>
       <ul class="std-list">
         <li class="std-cl">Evidence/Inference</li><li class="std-row std-row-plain"><span class="std-code">6.RL.1.A</span><span class="std-body"><span class="std-text">Draw conclusions, infer and analyze by citing textual evidence to support analysis of what the text says explicitly as well as inferences drawn from the text.</span></span></li>
@@ -168,7 +242,8 @@
         <li class="std-cl">Relationships in Texts</li><li class="std-row std-row-plain"><span class="std-code">6.RL.3.B</span><span class="std-body"><span class="std-text">Compare and contrast texts in different genres that address similar themes or topics.</span></span></li>
         <li class="std-cl">Historical Context</li><li class="std-row std-row-plain"><span class="std-code">6.RL.3.C</span><span class="std-body"><span class="std-text">Explain how plot and conflict reflect historical and/or cultural contexts.</span></span></li>
         <li class="std-cl">Comprehension</li><li class="std-row std-row-plain"><span class="std-code">6.RL.3.D</span><span class="std-body"><span class="std-text">Read and comprehend literature, including stories, dramas and poems, independently and proficiently.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Informational Text">
       <h4 class="std-grp">Reading Informational Text</h4>
       <ul class="std-list">
         <li class="std-cl">Evidence/Inference</li><li class="std-row std-row-plain"><span class="std-code">6.RI.1.A</span><span class="std-body"><span class="std-text">Draw conclusions, infer and analyze by citing textual evidence to support analysis of what the text says explicitly as well as inferences drawn from the text.</span></span></li>
@@ -183,7 +258,8 @@
         <li class="std-cl">Relationships/ Texts</li><li class="std-row std-row-plain"><span class="std-code">6.RI.3.B</span><span class="std-body"><span class="std-text">Compare and contrast one author’s presentation of events with that of another.</span></span></li>
         <li class="std-cl">Historical Context</li><li class="std-row std-row-plain"><span class="std-code">6.RI.3.C</span><span class="std-body"><span class="std-text">Explain how the text reflects historical and/or cultural contexts.</span></span></li>
         <li class="std-cl">Comprehension</li><li class="std-row std-row-plain"><span class="std-code">6.RI.3.D</span><span class="std-body"><span class="std-text">Read and comprehend informational text independently and proficiently.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Writing">
       <h4 class="std-grp">Writing</h4>
       <ul class="std-list">
         <li class="std-cl">Research</li><li class="std-row std-row-plain"><span class="std-code">6.W.1.A.a</span><span class="std-body"><span class="std-text">Conduct research to answer a question, drawing on several sources; integrate information using a standard citation system.</span></span></li>
@@ -196,7 +272,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6.W.3.A.c</span><span class="std-body"><span class="std-text">Conventions of standard English and usage: Demonstrate a command of the conventions of standard English grammar and usage, including spelling and punctuation</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.W.3.A.d</span><span class="std-body"><span class="std-text">Use transitions to clarify relationships and connect ideas, claims and signal time shifts</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.W.3.A.e</span><span class="std-body"><span class="std-text">Use technology, including the Internet, to produce and publish writing as well as to interact and collaborate with others</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Speaking and Listening">
       <h4 class="std-grp">Speaking and Listening</h4>
       <ul class="std-list">
         <li class="std-cl">Conversations</li><li class="std-row std-row-plain"><span class="std-code">6.SL.1.A</span><span class="std-body"><span class="std-text">Follow rules for collegial discussions and decision-making, track progress toward specific goals and deadlines, and define individual roles as needed.</span></span></li>
@@ -205,11 +282,13 @@
         <li class="std-cl">Verbal Delivery</li><li class="std-row std-row-plain"><span class="std-code">6.SL.2.A</span><span class="std-body"><span class="std-text">Speak clearly, audibly, and to the point, using conventions of language as appropriate to task, purpose and audience when presenting including appropriate volume.</span></span></li>
         <li class="std-cl">Nonverbal</li><li class="std-row std-row-plain"><span class="std-code">6.SL.2.B</span><span class="std-body"><span class="std-text">Position body to face the audience when speaking and make eye contact with listeners at various intervals using gestures to communicate a clear viewpoint.</span></span></li>
         <li class="std-cl">Multimedia</li><li class="std-row std-row-plain"><span class="std-code">6.SL.2.C</span><span class="std-body"><span class="std-text">Plan and deliver appropriate presentations based on the task, audience and purpose including multimedia components in presentations to clarify claims findings and ideas.</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="math">
+    <section class="ss-subj" id="math" data-subj="math">
       <h3 class="plan-sh">Mathematics <em>50 standards</em></h3>
       
+      
+      <div class="ss-grp">
       <h4 class="std-grp">Ratios and Proportional Relationships</h4>
       <ul class="std-list">
         <li class="std-cl">Understand and use ratios to solve problems.</li><li class="std-row std-row-plain"><span class="std-code">6.RP.A.1</span><span class="std-body"><span class="std-text">Understand a ratio as a comparison of two quantities and represent these comparisons.</span></span></li>
@@ -218,7 +297,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6.RP.A.3b</span><span class="std-body"><span class="std-text">Solve unit rate problems.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.RP.A.3c</span><span class="std-body"><span class="std-text">Solve percent problems.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.RP.A.3d</span><span class="std-body"><span class="std-text">Convert measurement units within and between two systems of measurement.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Number Sense and Operations</h4>
       <ul class="std-list">
         <li class="std-cl">Apply and extend previous understandings of multiplication and division to divide fractions by fractions.</li><li class="std-stem">Compute and interpret quotients of positive fractions.</li><li class="std-row std-row-plain"><span class="std-code">6.NS.A.1a</span><span class="std-body"><span class="std-text">Solve problems involving division of fractions by fractions.</span></span></li>
@@ -232,7 +312,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6.NS.C.6c</span><span class="std-body"><span class="std-text">Understand that a number and its opposite (additive inverse) are located on opposite sides of zero on the number line.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.NS.C.7</span><span class="std-body"><span class="std-text">Understand that the absolute value of a rational number is its distance from 0 on the number line.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.NS.C.8</span><span class="std-body"><span class="std-text">Extend prior knowledge to generate equivalent representations of rational numbers between fractions, decimals and percentages (limited to terminating decimals and/or benchmark fractions of 1/3 and 2/3).</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Expressions, Equations and Inequalities</h4>
       <ul class="std-list">
         <li class="std-cl">Apply and extend previous understandings of arithmetic to algebraic expressions.</li><li class="std-row std-row-plain"><span class="std-code">6.EEI.A.1</span><span class="std-body"><span class="std-text">Describe the difference between an expression and an equation.</span></span></li>
@@ -250,7 +331,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6.EEI.B.8b</span><span class="std-body"><span class="std-text">Graph the solution set of an inequality.</span></span></li>
         <li class="std-cl">Represent and analyze quantitative relationships between dependent and independent variables.</li><li class="std-stem">Identify and describe relationships between two variables that change in relationship to one another.</li><li class="std-row std-row-plain"><span class="std-code">6.EEI.C.9a</span><span class="std-body"><span class="std-text">Write an equation to express one quantity, the dependent variable, in terms of the other quantity, the independent variable.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.EEI.C.9b</span><span class="std-body"><span class="std-text">Analyze the relationship between the dependent and independent variables using graphs, tables and equations and relate these representations to each other.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Geometry and Measurement</h4>
       <ul class="std-list">
         <li class="std-cl">Solve problems involving area, surface area and volume.</li><li class="std-row std-row-plain"><span class="std-code">6.GM.A.1</span><span class="std-body"><span class="std-text">Find the area of polygons by composing or decomposing the shapes into rectangles or triangles.</span></span></li>
@@ -262,7 +344,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6.GM.A.3d</span><span class="std-body"><span class="std-text">Construct polygons in the Cartesian coordinate plane.</span></span></li>
         <li class="std-stem">Solve problems using nets.</li><li class="std-row std-row-plain"><span class="std-code">6.GM.A.4a</span><span class="std-body"><span class="std-text">Represent three-dimensional figures using nets made up of rectangles and triangles.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.GM.A.4b</span><span class="std-body"><span class="std-text">Use nets to find the surface area of three-dimensional figures whose sides are made up of rectangles and triangles.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Data Analysis, Statistics and Probability</h4>
       <ul class="std-list">
         <li class="std-cl">Develop understanding of statistical variability</li><li class="std-row std-row-plain"><span class="std-code">6.DSP.A.1</span><span class="std-body"><span class="std-text">Recognize a statistical question as one that anticipates variability in the data related to the question and accounts for it in the answers.</span></span></li>
@@ -274,11 +357,13 @@
         <li class="std-row std-row-plain"><span class="std-code">6.DSP.B.5b</span><span class="std-body"><span class="std-text">Describe the nature of the attribute under investigation, including how it was measured and its units of measurement.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.DSP.B.5c</span><span class="std-body"><span class="std-text">Give quantitative measures of center (median and/or mean) and variability (interquartile range and/or mean absolute deviation), as well as describing any overall pattern and any striking deviations from the overall pattern with reference to the context of the data.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.DSP.B.5d</span><span class="std-body"><span class="std-text">Analyze the choice of measures of center and variability based on the shape of the data distribution and/or the context of the data.</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="science">
+    <section class="ss-subj" id="science" data-subj="science">
       <h3 class="plan-sh">Science <em>54 standards</em></h3>
       <p class="std-course">Missouri writes middle school science as one grade 6-8 band. Every grade 6, 7 and 8 page shows the whole band.</p>
+      
+      <div class="ss-grp">
       <h4 class="std-grp">Earth and Space Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">The Universe and its Stars</li><li class="std-row std-row-plain"><span class="std-code">6-8.ESS1.A.1</span><span class="std-body"><span class="std-text">Develop and use a model of the Earth-sun-moon system to explain the cyclic patterns of lunar phases and eclipses of the sun and moon.  [Clarification Statement: Examples of models can be physical, graphical, or conceptual and should emphasize relative positions and distances.]</span></span></li>
@@ -297,14 +382,16 @@
         <li class="std-cl">Human Impacts on Earth's System</li><li class="std-row std-row-plain"><span class="std-code">6-8.ESS3.C.1</span><span class="std-body"><span class="std-text">Analyze data to define the relationship for how increases in human population and per-capita consumption of natural resources impact Earth's System.  [Clarification Statement: Examples of data include grade-appropriate databases on human populations and the rates of consumption of food and natural resources (such as freshwater, mineral, and energy). Examples of impacts can include changes to the appearance, composition, and structure of Earth's System as well as the rates at which they change.]</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.ESS3.C.2</span><span class="std-body"><span class="std-text">Apply scientific principles to design a method for monitoring and minimizing a human impact on the environment. [Clarification Statement: Examples of the design process include examining human environmental impacts, assessing the kinds of solutions that are feasible, and designing and evaluating solutions that could reduce that impact. Examples of human impacts can include water usage (such as the withdrawal of water from streams and aquifers or the construction of dams and levees), land usage (such as urban development, agriculture, or the removal of wetlands), and pollution (such as of the air, water, or land).]</span></span></li>
         <li class="std-cl">Global Climate Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.ESS3.D.1</span><span class="std-body"><span class="std-text">Analyze evidence of the factors that have caused the change in global temperatures over the past century.  [Clarification Statement: Examples of factors include human activities (such as fossil fuel combustion, cement production, and agricultural activity) and natural processes (such as changes in incoming solar radiation or volcanic activity). Examples of evidence can include tables, graph, and maps of global and regional temperatures, atmospheric levels of gases such as carbon dioxide and methane, and the rates of human activities.]</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Engineering, Technology, and Application of Science</h4>
       <ul class="std-list">
         <li class="std-cl">Defining and Delimiting Engineering Proble6-8</li><li class="std-row std-row-plain"><span class="std-code">6-8.ETS1.A.1</span><span class="std-body"><span class="std-text">Define the criteria and constraints of a design problem with sufficient precision to ensure a successful solution, taking into account relevant scientific principles and potential impacts on people and the natural environment that may limit possible solutions.</span></span></li>
         <li class="std-cl">Developing Possible Solutions</li><li class="std-row std-row-plain"><span class="std-code">6-8.ETS1.B.1</span><span class="std-body"><span class="std-text">Evaluate competing design solutions using a systematic process to determine how well they meet the criteria and constraints of the problem.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.ETS1.B.2</span><span class="std-body"><span class="std-text">Analyze data from tests to determine similarities and differences among several design solutions to identify the best characteristics of each that can be combined into a new solution to better meet the criteria for success.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.ETS1.B.3</span><span class="std-body"><span class="std-text">Develop a model to generate data for iterative testing and modification of a proposed object, tool, or process such that an optimal design can be achieved.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Life Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">Structure and Function</li><li class="std-row std-row-plain"><span class="std-code">6-8.LS1.A.1</span><span class="std-body"><span class="std-text">Provide evidence that Organisms (unicellular and multicellular) are made of cells and that a single cell must carry out all of the basic functions of life.  [Clarification Statement: Emphasis is on developing evidence that living things are made of cells, distinguishing between living and non-living things, and understanding that living things may be made of one cell or many and varied cells.]</span></span></li>
@@ -323,7 +410,8 @@
         <li class="std-cl">Natural Selection</li><li class="std-row std-row-plain"><span class="std-code">6-8.LS4.B.1</span><span class="std-body"><span class="std-text">Construct an explanation based on evidence that describes how genetic variations of traits in a population increase some individuals' probability of surviving and reproducing in a specific environment.  [Clarification Statement: Emphasis is on using simple probability statements and proportional reasoning to construct explanations.]</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.LS4.B.2</span><span class="std-body"><span class="std-text">Gather and synthesize information about the technologies that have changed the way humans influence the inheritance of desired traits in Organisms.  [Clarification Statement: Emphasis is on synthesizing information from reliable sources about the influence of humans on genetic outcomes in artificial selection (such as genetic modification, animal husbandry, and farming practices).]</span></span></li>
         <li class="std-cl">Adaptation</li><li class="std-row std-row-plain"><span class="std-code">6-8.LS4.C.1</span><span class="std-body"><span class="std-text">Interpret graphical representations to support explanations of how natural selection may lead to increases and decreases of specific traits in populations over time.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Physical Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">Structure and Properties of Matter</li><li class="std-row std-row-plain"><span class="std-code">6-8.PS1.A.1</span><span class="std-body"><span class="std-text">Develop models to describe the atomic composition of simple molecules and extended structures.  [Clarification Statement: Emphasis is on developing models of molecules that vary in complexity. Examples of simple molecules could include ammonia and methanol. Examples of extended structures could include sodium chloride or diamonds. Examples of molecular-level models could include drawings, 3D ball and stick structures, or computer representations showing different molecules with different types of atoms.</span></span></li>
@@ -344,11 +432,18 @@
         <li class="std-cl">Conservation of Energy and Energy Transfer</li><li class="std-row std-row-plain"><span class="std-code">6-8.PS3.B.1</span><span class="std-body"><span class="std-text">Construct, use, and present arguments to support the claim that when the kinetic energy of an object changes, energy is transferred to or from the object.  [Clarification Statement: Examples of empirical evidence used in arguments could include an inventory or other representation of the energy before and after the transfer in the form of temperature changes or motion of object.]</span></span></li>
         <li class="std-cl">Wave Properties</li><li class="std-row std-row-plain"><span class="std-code">6-8.PS4.A.1</span><span class="std-body"><span class="std-text">Use mathematical representations to describe a simple model for waves that includes how the amplitude of a wave is related to the energy in a wave. [Clarification Statement: Emphasis is on describing waves with both qualitative and quantitative thinking.]</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.PS4.A.2</span><span class="std-body"><span class="std-text">Develop and use a model to describe that waves are reflected, absorbed, or transmitted through various materials.  [Clarification Statement: Emphasis is on both light and mechanical waves. Examples of models could include drawings, simulations, and written descriptions.]</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="history">
+    <section class="ss-subj" id="social-studies" data-subj="social-studies">
       <h3 class="plan-sh">Social Studies <em>176 standards</em></h3>
       <p class="std-course">Missouri writes middle school social studies as three courses, not grades. Every grade 6, 7 and 8 page shows all three.</p>
+      <div class="plan-views ss-parts" role="group" aria-label="Social Studies parts">
+        <button type="button" class="plan-vb" data-part-go="all" aria-pressed="true">All</button>
+        <button type="button" class="plan-vb" data-part-go="American History" aria-pressed="false">American History <small>86</small></button>
+        <button type="button" class="plan-vb" data-part-go="World History" aria-pressed="false">World History <small>54</small></button>
+        <button type="button" class="plan-vb" data-part-go="World Geography" aria-pressed="false">World Geography <small>36</small></button>
+      </div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Tools of Social Science Inquiry</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.1.CC.A</span><span class="std-body"><span class="std-text">Create and use tools to analyze a chronological sequence of related events in American History</span></span></li>
@@ -363,7 +458,8 @@
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.1.EC.A</span><span class="std-body"><span class="std-text">Using an American history lens, examine the opportunity costs and benefits of economic decisions on society as a whole as well as on individuals, prior to c. 1870.</span></span></li>
         <li class="std-cl">People, Groups and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.1.PC.A</span><span class="std-body"><span class="std-text">Using an American history lens, describe how peoples’ perspectives shaped the sources/artifacts they created.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.1.PC.B</span><span class="std-body"><span class="std-text">Using an American history lens, examine the origins and impact of social structures and stratification on societies and relationships between peoples.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Settlements</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.CC.A</span><span class="std-body"><span class="std-text">Trace the causes and consequences of indigenous peoples arriving in the Americas beginning c. 15,000 BCE.</span></span></li>
@@ -371,7 +467,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.CC.C</span><span class="std-body"><span class="std-text">Trace the causes and consequences of conflict and cooperation between Native Americans and North and South American colonists using multiple viewpoints.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.CC.D</span><span class="std-body"><span class="std-text">Describe the causes and consequences of the Seven Years' War as a turning point in American history.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.CC.E</span><span class="std-body"><span class="std-text">Analyze the concept of Manifest Destiny as a catalyst for change in American history.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Founding</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.CC.A</span><span class="std-body"><span class="std-text">Trace the events leading to escalating conflict between Great Britain and the colonies, from multiple viewpoints.</span></span></li>
@@ -380,25 +477,29 @@
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.CC.D</span><span class="std-body"><span class="std-text">Explain the major debates that occurred during the adoption of the Constitution and their ultimate resolution.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.CC.E</span><span class="std-body"><span class="std-text">Evaluate the responses of early American leaders to the social, political, economic and religious challenges facing the new nation.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.CC.F</span><span class="std-body"><span class="std-text">Infer how events of this period led to the development of philosophies, interest groups and political parties.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Expansion</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.CC.A</span><span class="std-body"><span class="std-text">Analyze the expansion of the United States in the early nineteenth century to trace U.S. growth and form hypotheses about future conflicts.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.CC.B</span><span class="std-body"><span class="std-text">Evaluate the responses of North and South American leaders to the social, political, economic and religious challenges of the period.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.CC.C</span><span class="std-body"><span class="std-text">Analyze the forced removal and resettlements of Native Americans to determine its impact on their cultures and civilizations.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Conflict and Crisis</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.CC.A</span><span class="std-body"><span class="std-text">Analyze political compromises over slavery in the territories to explain intensifying sectional conflicts.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.CC.B</span><span class="std-body"><span class="std-text">Trace the events as well as political, cultural, economic and social conditions leading to conflict between Northern and Southern states.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.CC.C</span><span class="std-body"><span class="std-text">Describe critical developments and turning points in the Civil War, including major battles.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Settlements</h4>
       <ul class="std-list">
         <li class="std-cl">Governmental Systems and Principles</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.GS.A</span><span class="std-body"><span class="std-text">Compare the governmental systems of European powers to determine their effect on colonization in the Americas.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.GS.B</span><span class="std-body"><span class="std-text">Explain how the founding of English colonies influenced their governments and expectations for self- rule.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.GS.C</span><span class="std-body"><span class="std-text">Analyze local and colonial governments to trace the factors influencing their structure and function.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Founding</h4>
       <ul class="std-list">
         <li class="std-cl">Governmental Systems and Principles</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.GS.A</span><span class="std-body"><span class="std-text">Evaluate the impact of the French and Indian Wars on Great Britain’s approach to colonial rule.</span></span></li>
@@ -408,72 +509,84 @@
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.GS.E</span><span class="std-body"><span class="std-text">Apply the principles of rule of law, representation, separation of powers, checks and balances, and federalism to explain the purposes and functions of the Constitution.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.GS.F</span><span class="std-body"><span class="std-text">Describe the origins and purposes of the Bill of Rights and evaluate the enduring significance of these concepts to the preservation of individual rights and liberties.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.GS.G</span><span class="std-body"><span class="std-text">Examine elections, issues, laws, and events of this time period to explain how the concepts of judicial review, elastic clause, and an amendment process were established or used to meet challenges.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Expansion</h4>
       <ul class="std-list">
         <li class="std-cl">Governmental Systems and Principles</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.GS.A</span><span class="std-body"><span class="std-text">Trace the expansion of voting rights and patterns and explain how it impacted elections and political movements.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.GS.B</span><span class="std-body"><span class="std-text">Analyze landmark Supreme Court cases to determine the effect on the definition and expansion of federal power.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.GS.C</span><span class="std-body"><span class="std-text">Explain how the principles of rule of law, separation of powers, checks and balances, and federalism were impacted by Jacksonian Democracy.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Conflict and Crisis</h4>
       <ul class="std-list">
         <li class="std-cl">Governmental Systems and Principles</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.GS.A</span><span class="std-body"><span class="std-text">Compare responses of government systems in the North and South to major legislation, executive orders, and court decisions before, during and immediately after the Civil War.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.GS.B</span><span class="std-body"><span class="std-text">Analyze federalism and popular sovereignty to explain peoples’ expectations of the role of government and their place in governance.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.GS.C</span><span class="std-body"><span class="std-text">Analyze the election of 1860 to explain the development of political parties and how they influence the selection of leaders.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.GS.D</span><span class="std-body"><span class="std-text">Compare and contrast the governmental systems of the U.S. North and South to determine the strengths and weaknesses of federal and confederal systems.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Settlements</h4>
       <ul class="std-list">
         <li class="std-cl">Geographical Study</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.G.A</span><span class="std-body"><span class="std-text">Analyze diverse Native American cultures in North, Central and South America to explain the ways they adapted to their various environments.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.G.B</span><span class="std-body"><span class="std-text">Analyze the geography of colonial regions to explain their cultural, social and economic differences.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.G.C</span><span class="std-body"><span class="std-text">Compare major patterns of population distribution, demographics and migrations in the United States and the impact of those patterns on cultures and community life.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Founding</h4>
       <ul class="std-list">
         <li class="std-cl">Geographical Study</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.G.A</span><span class="std-body"><span class="std-text">Draw conclusions about regional conflict and cooperation as a consequence of physical geography.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.G.B</span><span class="std-body"><span class="std-text">Evaluate the relationships among population, representation, and their effect on power in the new government.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.G.C</span><span class="std-body"><span class="std-text">Compare major patterns of population distribution, demographics and migrations in the United States during this era c. 1763-1812.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Expansion</h4>
       <ul class="std-list">
         <li class="std-cl">Geographical Study</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.G.A</span><span class="std-body"><span class="std-text">Trace the changing boundaries of the United States and describe how it represents the changing relationships with its neighbors and Native Americans.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.G.B</span><span class="std-body"><span class="std-text">Assess Manifest Destiny in relation to push-pull factors, geographic features, and human environmental interactions to determine their influence on the movement of goods, people and ideas.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.G.C</span><span class="std-body"><span class="std-text">Compare major patterns of population distribution, demographics and migrations in the United States and the impact of those patterns on cultures and community life c.1812-1848.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Conflict and Crisis</h4>
       <ul class="std-list">
         <li class="std-cl">Geographical Study</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.G.A</span><span class="std-body"><span class="std-text">Analyze the United States' geography of North, South, and West in order to explain regional cultural, social and economic differences.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.G.B</span><span class="std-body"><span class="std-text">Evaluate the significance of geography on the conduct of the war and strategy of the North and South.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.G.C</span><span class="std-body"><span class="std-text">Compare major patterns of population distribution, demographics and migrations in the United States and the impact of those patterns on cultures and community life.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Settlements</h4>
       <ul class="std-list">
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.EC.A</span><span class="std-body"><span class="std-text">Compare sources of labor, emerging economic production, and availability of land in the New World and their impact on economic development in North and South America.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.EC.B</span><span class="std-body"><span class="std-text">Analyze the mercantile system to explain colonial responses to economic control by European nations including Great Britain.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Founding</h4>
       <ul class="std-list">
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.EC.A</span><span class="std-body"><span class="std-text">Describe the function and purpose of taxes imposed by Great Britain following the Seven Years' War, evaluating colonial responses to them.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.EC.B</span><span class="std-body"><span class="std-text">Compare the emerging economic characteristics of the nation and colonial regions to make predictions about future expansion and conflict.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.EC.C</span><span class="std-body"><span class="std-text">Trace the development of the American economic system to explain how taxes, tariffs, and monetary policies were used to establish sustainability and growth.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Expansion</h4>
       <ul class="std-list">
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.EC.A</span><span class="std-body"><span class="std-text">Analyze the origins and characteristics of coercive labor systems, including slavery, and their impact on economic and political expansion.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.EC.B</span><span class="std-body"><span class="std-text">Explain how the expansion of industrialization, transportation and technological developments influenced different regions and the relationship among those regions.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.EC.C</span><span class="std-body"><span class="std-text">Trace the continued development of the American economic system to explain how taxes, tariffs, and monetary policies were used to establish sustainability and growth.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Conflict and Crisis</h4>
       <ul class="std-list">
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.EC.A</span><span class="std-body"><span class="std-text">Explain how the expansion of industrialization, transportation, and technological developments influenced different regions and the relationship among those regions.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.EC.B</span><span class="std-body"><span class="std-text">Compare the economic strengths and weaknesses of the North and South before, during and immediately after the Civil War.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Settlements</h4>
       <ul class="std-list">
         <li class="std-cl">People, Groups, and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.PC.A</span><span class="std-body"><span class="std-text">Analyze the religious, cultural, political and intellectual developments of Spanish, Portuguese, British and French regions to explain the development of diverse cultures throughout the Americas.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.PC.B</span><span class="std-body"><span class="std-text">Analyze the religious, cultural, and intellectual developments of the European colonies to explain the development of regionalism and an American identity</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.2.PC.C</span><span class="std-body"><span class="std-text">Compare and contrast the interaction of European settlers with Native Americans in both North and South America.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Founding</h4>
       <ul class="std-list">
         <li class="std-cl">People, Groups, and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.PC.A</span><span class="std-body"><span class="std-text">Analyze the perspectives of diverse individuals and groups to explain the extent of their support for the Revolutionary War.</span></span></li>
@@ -481,7 +594,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.PC.C</span><span class="std-body"><span class="std-text">Compare and contrast the perspectives of individuals and groups regarding the development of the American governmental system to explain emerging divisions and political philosophies.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.PC.D</span><span class="std-body"><span class="std-text">Evaluate laws, events, and perspectives to determine the extent to which individuals and groups could participate in, and realize, the promise of American ideals.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.3.PC.E</span><span class="std-body"><span class="std-text">Analyze the artistic and intellectual achievements of early Americans to provide evidence of an emerging American identity.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Expansion</h4>
       <ul class="std-list">
         <li class="std-cl">People, Groups, and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.PC.A</span><span class="std-body"><span class="std-text">Evaluate the effectiveness of various reform movements, laws, and events to determine their impact on the promise of American ideals.</span></span></li>
@@ -489,7 +603,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.PC.C</span><span class="std-body"><span class="std-text">Analyze artistic, intellectual, and religious movements to show how they reflect the aspirations and beliefs of the developing nation.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.PC.D</span><span class="std-body"><span class="std-text">Describe the culture and accomplishments of native American cultures to compare the various ways they responded to American expansion.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.4.PC.E</span><span class="std-body"><span class="std-text">Analyze patterns of immigration to determine their impacts on the cultural, social, political and economic development.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="American History">
       <h4 class="std-grp">American History: Conflict and Crisis</h4>
       <ul class="std-list">
         <li class="std-cl">People, Groups, and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.PC.A</span><span class="std-body"><span class="std-text">Determine the impact of the ideas contained in major speeches, literature, music, and writings from diverse individuals on the perspectives of American people, groups and movements.</span></span></li>
@@ -497,7 +612,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.PC.C</span><span class="std-body"><span class="std-text">Analyze the evolution of the women’s movement to trace its continued development and evaluate its impact.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.PC.D</span><span class="std-body"><span class="std-text">Analyze the evolution of the Abolitionist Movement to trace its continued development and evaluate its impact.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.AH.5.PC.E</span><span class="std-body"><span class="std-text">Trace the development of African American culture in non-slave states and in the context of slavery.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Tools of Social Science Inquiry</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.1.CC.A</span><span class="std-body"><span class="std-text">Create and use tools to analyze a chronological sequence of related events in world history.</span></span></li>
@@ -512,86 +628,101 @@
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.1.EC.A</span><span class="std-body"><span class="std-text">Using a world history lens, examine the opportunity costs and benefits of economic decisions on society as a whole as well as on individuals prior to c. 1450.</span></span></li>
         <li class="std-cl">People, Groups and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6.8.WH.1.PC.A</span><span class="std-body"><span class="std-text">Using a world history lens, describe how peoples’ perspectives shaped the sources/artifacts they created.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6.8.WH.1.PC. B</span><span class="std-body"><span class="std-text">Using a world history lens, examine the origins and impact of social structures and stratification on societies and relationships between peoples.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Early Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8WH.2.CC.A</span><span class="std-body"><span class="std-text">Explain the causes and results of the Agricultural Revolution in relation to the development of new and more complex societies in Asia, Africa, and the Americas.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.CC.B</span><span class="std-body"><span class="std-text">Analyze the role early civilizations had in shaping concepts of government, law, and social order.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Classical Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.CC.A</span><span class="std-body"><span class="std-text">Analyze the rise and fall of classical civilizations to determine their significance to future societies.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.CC.B</span><span class="std-body"><span class="std-text">Trace the impact of conflicts, competition, and cooperation within and among classical civilizations.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Middle Ages</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.CC.A</span><span class="std-body"><span class="std-text">Compare how the collapse of government and resulting instability led to the development of feudal kingdoms in Europe and Japan.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.CC.B</span><span class="std-body"><span class="std-text">Explain the origins and significance of the expansion of the Muslim and Mongol rule in Europe, Asia and Africa.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.CC.C</span><span class="std-body"><span class="std-text">Analyze how the Crusades and Black Death affected existing societies in Europe, Asia and Africa.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.CC.D</span><span class="std-body"><span class="std-text">Analyze the cultures of civilizations in sub-Saharan Africa, Mesoamerica, and Andean South America.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Early Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">Governmental Systems and Principles</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.GS.A</span><span class="std-body"><span class="std-text">Explain the origins, functions, and structure of monarchies, theocracies, city-states, empires and dynasties.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.GS.B</span><span class="std-body"><span class="std-text">Distinguish the powers and responsibilities of subjects and political leaders in monarchies, theocracies, city-states, and empires.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.GS.C</span><span class="std-body"><span class="std-text">Explain how the codification of law impacted early civilizations.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Classical Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">Governmental Systems and Principles</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.GS.A</span><span class="std-body"><span class="std-text">Explain the origins, functions, and structure of governmental systems within classical civilizations.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.GS.B</span><span class="std-body"><span class="std-text">Analyze direct democracy and representative democracy in order to apply the concepts of majority rule, minority rights and civic duty.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.GS.C</span><span class="std-body"><span class="std-text">Explain how the rule of law developed from a written code of laws as well as concepts of separation of powers and checks and balances.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Middle Ages</h4>
       <ul class="std-list">
         <li class="std-cl">Governmental Systems and Principles</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.GS.A</span><span class="std-body"><span class="std-text">Explain the origins, functions, and structure of governmental systems within civilizations.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.GS.B</span><span class="std-body"><span class="std-text">Explain how the rule of law is further developed by the Magna Carta, and other documents including limited government and due process.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.GS.C</span><span class="std-body"><span class="std-text">Analyze the conflict and cooperation between religions and the states to determine their impact on people and societies.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Early Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">Geographical Study</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.G.A</span><span class="std-body"><span class="std-text">Describe how physical characteristics of river valleys supported permanent settlements and the rise of early civilizations.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.G.B</span><span class="std-body"><span class="std-text">Analyze the cultural characteristics of civilizations to explain how they are similar and different.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.G.C</span><span class="std-body"><span class="std-text">Explain how various characteristics of civilizations are connected to identities and cultures.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Classical Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">Geographical Study</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.G.A</span><span class="std-body"><span class="std-text">Explain the significance of physical geography to the development of classical civilizations.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.G.B</span><span class="std-body"><span class="std-text">Identify the effect of natural forces upon human activities.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Middle Ages</h4>
       <ul class="std-list">
         <li class="std-cl">Geographical Study</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.G.A</span><span class="std-body"><span class="std-text">Explain how the spread of cultural patterns and economic decisions shape and are shaped by environments.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.G.B</span><span class="std-body"><span class="std-text">Explain how physical geographic characteristics influence human identities and cultures.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Early Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.EC.A</span><span class="std-body"><span class="std-text">Using a world history lens, explain how the concept of economic surplus led to trade and the emergence of specialized labor</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.EC.B</span><span class="std-body"><span class="std-text">Explain how standardization affects the early stability of a society.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Classical Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.EC.A</span><span class="std-body"><span class="std-text">Describe trade patterns and how they influence the movement of resources, goods and services.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.EC.B</span><span class="std-body"><span class="std-text">Explain how standardization impacts the stability of a civilization.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.EC.C</span><span class="std-body"><span class="std-text">Explain how political and economic stability affects the well-being of individuals and society.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Middle Ages</h4>
       <ul class="std-list">
         <li class="std-cl">Economic Concepts</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.EC.A</span><span class="std-body"><span class="std-text">Explain how inter-regional trade intensified the exchange of goods, ideas and people.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Early Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">People, Groups and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.PC.A</span><span class="std-body"><span class="std-text">Explain the significance of monotheistic and polytheistic religions to the social and political order of early civilizations.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.PC.B</span><span class="std-body"><span class="std-text">Describe the origins, structure, and essential beliefs of Judaism, Hinduism, and Buddhism.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.PC.C</span><span class="std-body"><span class="std-text">Describe how the world view of social groups and institutions influence culture and define the position of the individual within various societies.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.2.PC.D</span><span class="std-body"><span class="std-text">Analyze scientific, technological, intellectual, and artistic advancements to determine the legacy of the ancient civilizations.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Classical Civilizations</h4>
       <ul class="std-list">
         <li class="std-cl">People, Groups and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.PC.A</span><span class="std-body"><span class="std-text">Explain the significance of art, mythology, literature and philosophy to the culture and social order of classical civilizations</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.PC.B</span><span class="std-body"><span class="std-text">Analyze scientific, technological, intellectual, and artistic advancements to determine the legacy of the classical civilizations.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.PC.C</span><span class="std-body"><span class="std-text">Analyze the extent and impact of cultural diffusion that results from empire building.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World History">
       <h4 class="std-grp">World History: Middle Ages</h4>
       <ul class="std-list">
         <li class="std-cl">People, Groups and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.WH.3.PC.D</span><span class="std-body"><span class="std-text">From a historical perspective, explain the origin, structure, spread, and significant beliefs of Christianity.</span></span></li>
@@ -599,7 +730,8 @@
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.PC.B</span><span class="std-body"><span class="std-text">From a historical perspective, explain the origin, structure, spread, and significant beliefs of Islam.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.PC.C</span><span class="std-body"><span class="std-text">Describe how the world view of individuals, social groups, and institutions change as a result of connections among regions.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.WH.4.PC.D</span><span class="std-body"><span class="std-text">Analyze the causes and effects of the changing roles of class, ethnicity, race, gender and age on world cultures prior to c. 1450.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World Geography">
       <h4 class="std-grp">World Geography: Tools of Social Science Inquiry</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.GEO.1.CC.A</span><span class="std-body"><span class="std-text">Create and use historical maps and timelines in order to represent continuity and change within and among regions over time.</span></span></li>
@@ -619,7 +751,8 @@
         <li class="std-cl">People, Groups and Cultures</li><li class="std-row std-row-plain"><span class="std-code">6-8.GEO.1.PC.A</span><span class="std-body"><span class="std-text">Analyze material culture to explain a people’s perspective and use of place.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.GEO.1.PC.B</span><span class="std-body"><span class="std-text">Explain how the physical and human characteristics of places and regions are connected to human identities and cultures.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.GEO.1.PC.C</span><span class="std-body"><span class="std-text">Compare and contrast the human characteristics within and among contemporary and historic regions over time.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="World Geography">
       <h4 class="std-grp">World Geography: World Geography and Cultures</h4>
       <ul class="std-list">
         <li class="std-cl">History: Continuity and Change</li><li class="std-row std-row-plain"><span class="std-code">6-8.GEO.2.CC.A</span><span class="std-body"><span class="std-text">Explain how regions of the world change over time in relation to historical events and trends and the human characteristics of place.</span></span></li>
@@ -641,8 +774,9 @@
         <li class="std-row std-row-plain"><span class="std-code">6-8.GEO.2.PC.C</span><span class="std-body"><span class="std-text">Analyze the relationship between the physical environments and cultural traditions to determine their impact on individuals, groups, and institutions.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.GEO.2.PC.D</span><span class="std-body"><span class="std-text">Analyze religion and belief systems of a place to determine their varying impact on people, groups, and cultures.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">6-8.GEO.2.PC.E</span><span class="std-body"><span class="std-text">Describe how a peoples’ culture is expressed through their art, architecture and literature.</span></span></li>
-      </ul>
+      </ul></div>
     </section>
+    </div>
   </div></div>
 
 <footer><div class="wrap">

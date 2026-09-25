@@ -49,7 +49,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=d1466f6b">
+<link rel="stylesheet" href="/assets/ns.css?v=bcd17f01">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -128,11 +128,68 @@
       </select></label>
       <button class="btn" type="submit">Show Standards</button>
     </form>
-    <script>(function(){var f=document.getElementById("ssPick");if(!f)return;
-      function go(){var s=f.elements.state.value,g=f.elements.grade.value;
-        if(s&&g)location.href="/state-standards/"+s+"/grade-"+g+"/";}
-      f.addEventListener("submit",function(e){e.preventDefault();go();});
-      f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);})();</script>
+    <script>(function(){
+  function initTabs(){
+    var tabs=document.querySelectorAll("[data-subj-go]"),secs=document.querySelectorAll(".ss-subj");
+    if(!tabs.length||!secs.length)return;
+    function show(id){var hit=false;
+      secs.forEach(function(s){var on=s.getAttribute("data-subj")===id;s.hidden=!on;if(on)hit=true;});
+      if(!hit){secs.forEach(function(s,i){s.hidden=i!==0;});id=secs[0].getAttribute("data-subj");}
+      tabs.forEach(function(t){t.setAttribute("aria-pressed",t.getAttribute("data-subj-go")===id?"true":"false");});}
+    tabs.forEach(function(t){t.addEventListener("click",function(){var id=t.getAttribute("data-subj-go");
+      show(id);if(history.replaceState)history.replaceState(history.state,"",location.pathname+"#"+id);});});
+    show((location.hash||"").slice(1));
+    secs.forEach(function(sec){var pills=sec.querySelectorAll("[data-part-go]"),grps=sec.querySelectorAll(".ss-grp");
+      pills.forEach(function(p){p.addEventListener("click",function(){var v=p.getAttribute("data-part-go");
+        grps.forEach(function(g){g.hidden=!(v==="all"||g.getAttribute("data-part")===v);});
+        pills.forEach(function(q){q.setAttribute("aria-pressed",q===p?"true":"false");});});});});
+    /* SEARCH across every subject. While a word is typed, every subject opens
+       and only matching standards show; clearing it puts the tabs back. */
+    var box=document.getElementById("ssFind"),found=document.getElementById("ssFound");
+    if(box){box.addEventListener("input",function(){
+      var q=box.value.trim().toLowerCase(),rows=document.querySelectorAll("#ssBody .std-row");
+      var heads=document.querySelectorAll("#ssBody .std-cl, #ssBody .std-stem");
+      var grps=document.querySelectorAll("#ssBody .ss-grp");
+      if(!q){rows.forEach(function(r){r.hidden=false;});heads.forEach(function(h){h.hidden=false;});
+        grps.forEach(function(g){g.hidden=false;});
+        document.querySelectorAll("#ssBody [data-part-go]").forEach(function(p){p.setAttribute("aria-pressed",p.getAttribute("data-part-go")==="all"?"true":"false");});
+        found.textContent="";show((location.hash||"").slice(1));return;}
+      var n=0;rows.forEach(function(r){var hit=r.textContent.toLowerCase().indexOf(q)>-1;r.hidden=!hit;if(hit)n++;});
+      heads.forEach(function(h){h.hidden=true;});
+      grps.forEach(function(g){g.hidden=!g.querySelector(".std-row:not([hidden])");});
+      secs.forEach(function(s){s.hidden=!s.querySelector(".std-row:not([hidden])");});
+      tabs.forEach(function(t){t.setAttribute("aria-pressed","false");});
+      found.textContent=n+(n===1?" standard matches":" standards match");});}
+  }
+  function swap(url,push){
+    fetch(url,{credentials:"same-origin"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){
+      var d=new DOMParser().parseFromString(h,"text/html"),nb=d.getElementById("ssBody"),ob=document.getElementById("ssBody");
+      if(!nb||!ob){location.href=url;return;}
+      ob.innerHTML=nb.innerHTML;document.title=d.title;
+      var h1=document.querySelector("h1"),n1=d.querySelector("h1");if(h1&&n1)h1.innerHTML=n1.innerHTML;
+      var c=document.querySelector(".crumb"),nc=d.querySelector(".crumb");if(c&&nc)c.innerHTML=nc.innerHTML;
+      var l=h1&&h1.nextElementSibling,nl=n1&&n1.nextElementSibling;
+      if(l&&nl&&l.tagName==="P"&&nl.tagName==="P")l.innerHTML=nl.innerHTML;
+      if(push)history.pushState({ss:1},"",url+location.hash);
+      initTabs();
+    }).catch(function(){location.href=url;});
+  }
+  var f=document.getElementById("ssPick");
+  function go(){var s=f.elements.state.value,g=f.elements.grade.value;
+    if(s&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);}
+  if(f){
+    f.addEventListener("submit",function(e){e.preventDefault();go();});
+    f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
+  }
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-grades a");
+    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1];
+    if(m&&f)f.elements.grade.value=m.replace("/","");swap(u,true);});
+  window.addEventListener("popstate",function(){swap(location.pathname,false);});
+  /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
+     the subjects do not exist yet. Wait for the DOM. */
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
+})();</script>
+    <div id="ssBody">
     <p class="plan-note">Every state publishes its own learning standards: what a student is expected to
       know by the end of each grade. Pick your state and grade to read them in full. We are adding states
       one at a time; the ones marked coming soon are not up yet.</p>
@@ -149,6 +206,7 @@
         so check <a href="https://dese.mo.gov/college-career-readiness/curriculum/missouri-learning-standards" rel="noopener">the state's page</a> for the current version.</p>
     </div>
     <ul class="std-srclist"><li><a href="https://dese.mo.gov/media/file/curr-mls-standards-ela-k-12-sboe-2016" rel="noopener">English Language Arts, K-12</a> (the state's file)</li><li><a href="https://dese.mo.gov/media/file/curr-mls-standards-math-k-12-sboe-2016" rel="noopener">Mathematics, K-12</a> (the state's file)</li><li><a href="https://dese.mo.gov/media/file/curr-mls-standards-sci-k-12-sboe-2016" rel="noopener">Science, K-12</a> (the state's file)</li><li><a href="https://dese.mo.gov/media/file/curr-mls-standards-ss-k-12-sboe-2016" rel="noopener">Social Studies, K-12</a> (the state's file)</li></ul>
+    </div>
   </div></div>
 
 <footer><div class="wrap">

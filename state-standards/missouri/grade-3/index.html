@@ -55,7 +55,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=d1466f6b">
+<link rel="stylesheet" href="/assets/ns.css?v=bcd17f01">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -134,11 +134,68 @@
       </select></label>
       <button class="btn" type="submit">Show Standards</button>
     </form>
-    <script>(function(){var f=document.getElementById("ssPick");if(!f)return;
-      function go(){var s=f.elements.state.value,g=f.elements.grade.value;
-        if(s&&g)location.href="/state-standards/"+s+"/grade-"+g+"/";}
-      f.addEventListener("submit",function(e){e.preventDefault();go();});
-      f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);})();</script>
+    <script>(function(){
+  function initTabs(){
+    var tabs=document.querySelectorAll("[data-subj-go]"),secs=document.querySelectorAll(".ss-subj");
+    if(!tabs.length||!secs.length)return;
+    function show(id){var hit=false;
+      secs.forEach(function(s){var on=s.getAttribute("data-subj")===id;s.hidden=!on;if(on)hit=true;});
+      if(!hit){secs.forEach(function(s,i){s.hidden=i!==0;});id=secs[0].getAttribute("data-subj");}
+      tabs.forEach(function(t){t.setAttribute("aria-pressed",t.getAttribute("data-subj-go")===id?"true":"false");});}
+    tabs.forEach(function(t){t.addEventListener("click",function(){var id=t.getAttribute("data-subj-go");
+      show(id);if(history.replaceState)history.replaceState(history.state,"",location.pathname+"#"+id);});});
+    show((location.hash||"").slice(1));
+    secs.forEach(function(sec){var pills=sec.querySelectorAll("[data-part-go]"),grps=sec.querySelectorAll(".ss-grp");
+      pills.forEach(function(p){p.addEventListener("click",function(){var v=p.getAttribute("data-part-go");
+        grps.forEach(function(g){g.hidden=!(v==="all"||g.getAttribute("data-part")===v);});
+        pills.forEach(function(q){q.setAttribute("aria-pressed",q===p?"true":"false");});});});});
+    /* SEARCH across every subject. While a word is typed, every subject opens
+       and only matching standards show; clearing it puts the tabs back. */
+    var box=document.getElementById("ssFind"),found=document.getElementById("ssFound");
+    if(box){box.addEventListener("input",function(){
+      var q=box.value.trim().toLowerCase(),rows=document.querySelectorAll("#ssBody .std-row");
+      var heads=document.querySelectorAll("#ssBody .std-cl, #ssBody .std-stem");
+      var grps=document.querySelectorAll("#ssBody .ss-grp");
+      if(!q){rows.forEach(function(r){r.hidden=false;});heads.forEach(function(h){h.hidden=false;});
+        grps.forEach(function(g){g.hidden=false;});
+        document.querySelectorAll("#ssBody [data-part-go]").forEach(function(p){p.setAttribute("aria-pressed",p.getAttribute("data-part-go")==="all"?"true":"false");});
+        found.textContent="";show((location.hash||"").slice(1));return;}
+      var n=0;rows.forEach(function(r){var hit=r.textContent.toLowerCase().indexOf(q)>-1;r.hidden=!hit;if(hit)n++;});
+      heads.forEach(function(h){h.hidden=true;});
+      grps.forEach(function(g){g.hidden=!g.querySelector(".std-row:not([hidden])");});
+      secs.forEach(function(s){s.hidden=!s.querySelector(".std-row:not([hidden])");});
+      tabs.forEach(function(t){t.setAttribute("aria-pressed","false");});
+      found.textContent=n+(n===1?" standard matches":" standards match");});}
+  }
+  function swap(url,push){
+    fetch(url,{credentials:"same-origin"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){
+      var d=new DOMParser().parseFromString(h,"text/html"),nb=d.getElementById("ssBody"),ob=document.getElementById("ssBody");
+      if(!nb||!ob){location.href=url;return;}
+      ob.innerHTML=nb.innerHTML;document.title=d.title;
+      var h1=document.querySelector("h1"),n1=d.querySelector("h1");if(h1&&n1)h1.innerHTML=n1.innerHTML;
+      var c=document.querySelector(".crumb"),nc=d.querySelector(".crumb");if(c&&nc)c.innerHTML=nc.innerHTML;
+      var l=h1&&h1.nextElementSibling,nl=n1&&n1.nextElementSibling;
+      if(l&&nl&&l.tagName==="P"&&nl.tagName==="P")l.innerHTML=nl.innerHTML;
+      if(push)history.pushState({ss:1},"",url+location.hash);
+      initTabs();
+    }).catch(function(){location.href=url;});
+  }
+  var f=document.getElementById("ssPick");
+  function go(){var s=f.elements.state.value,g=f.elements.grade.value;
+    if(s&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);}
+  if(f){
+    f.addEventListener("submit",function(e){e.preventDefault();go();});
+    f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
+  }
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-grades a");
+    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1];
+    if(m&&f)f.elements.grade.value=m.replace("/","");swap(u,true);});
+  window.addEventListener("popstate",function(){swap(location.pathname,false);});
+  /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
+     the subjects do not exist yet. Wait for the DOM. */
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
+})();</script>
+    <div id="ssBody">
     <p class="ss-grades"><a href="/state-standards/missouri/grade-k/">Kindergarten</a><a href="/state-standards/missouri/grade-1/">1st Grade</a><a href="/state-standards/missouri/grade-2/">2nd Grade</a><b>3rd Grade</b><a href="/state-standards/missouri/grade-4/">4th Grade</a><a href="/state-standards/missouri/grade-5/">5th Grade</a><a href="/state-standards/missouri/grade-6/">6th Grade</a><a href="/state-standards/missouri/grade-7/">7th Grade</a><a href="/state-standards/missouri/grade-8/">8th Grade</a></p>
     <div class="ss-dates">
       <p><b>Missouri Learning Standards</b>, published by the Missouri Department of Elementary and Secondary Education (DESE).</p>
@@ -150,10 +207,28 @@
       <p class="ss-fine">Copied from the state's own files, word for word. States revise their standards,
         so check <a href="https://dese.mo.gov/college-career-readiness/curriculum/missouri-learning-standards" rel="noopener">the state's page</a> for the current version.</p>
     </div>
-    <p class="ss-jump"><a href="#english">English Language Arts</a> &middot; <a href="#math">Mathematics</a> &middot; <a href="#science">Science</a> &middot; <a href="#history">Social Studies</a></p>
-    <section class="ss-subj" id="english">
+    <div class="plan-views ss-tabs" role="group" aria-label="Subject">
+      <button type="button" class="plan-vb" data-subj-go="english" aria-pressed="true">English <small>119</small></button>
+      <button type="button" class="plan-vb" data-subj-go="math" aria-pressed="false">Math <small>45</small></button>
+      <button type="button" class="plan-vb" data-subj-go="science" aria-pressed="false">Science <small>14</small></button>
+      <button type="button" class="plan-vb" data-subj-go="social-studies" aria-pressed="false">Social Studies <small>55</small></button>
+    </div>
+    <div class="ss-find">
+      <input type="search" id="ssFind" placeholder="Search these standards, like fractions or commas" aria-label="Search these standards" autocomplete="off">
+      <span id="ssFound" aria-live="polite"></span>
+    </div>
+    <section class="ss-subj" id="english" data-subj="english">
       <h3 class="plan-sh">English Language Arts <em>119 standards</em></h3>
       
+      <div class="plan-views ss-parts" role="group" aria-label="English parts">
+        <button type="button" class="plan-vb" data-part-go="all" aria-pressed="true">All</button>
+        <button type="button" class="plan-vb" data-part-go="Reading" aria-pressed="false">Reading <small>46</small></button>
+        <button type="button" class="plan-vb" data-part-go="Phonics" aria-pressed="false">Phonics <small>7</small></button>
+        <button type="button" class="plan-vb" data-part-go="Writing" aria-pressed="false">Writing <small>35</small></button>
+        <button type="button" class="plan-vb" data-part-go="Grammar and Spelling" aria-pressed="false">Grammar and Spelling <small>19</small></button>
+        <button type="button" class="plan-vb" data-part-go="Speaking and Listening" aria-pressed="false">Speaking and Listening <small>12</small></button>
+      </div>
+      <div class="ss-grp" data-part="Reading">
       <h4 class="std-grp">Reading</h4>
       <ul class="std-list">
         <li class="std-cl">Comprehension</li><li class="std-stem">Develop and demonstrate reading skills in response to text by:</li><li class="std-row std-row-plain"><span class="std-code">3.R.1.A.a</span><span class="std-body"><span class="std-text">explain how specific aspects of a text’s illustrations contribute to what is conveyed by the words in a story</span></span></li>
@@ -202,7 +277,8 @@
         <li class="std-row std-row-plain"><span class="std-code">3.R.4.A.b</span><span class="std-body"><span class="std-text">explaining how various design techniques used in media influence the message</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.R.4.A.c</span><span class="std-body"><span class="std-text">comparing various written conventions used for digital media</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.R.4.A.d</span><span class="std-body"><span class="std-text">identifying text structures and graphics features of a web page</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Phonics">
       <h4 class="std-grp">Reading Foundations</h4>
       <ul class="std-list">
         <li class="std-cl">Phonics</li><li class="std-stem">Develop phonics in the reading process by:</li><li class="std-row std-row-plain"><span class="std-code">3.RF.3.A.a</span><span class="std-body"><span class="std-text">decoding multisyllabic words in context, and independent of context, by applying common spelling patterns</span></span></li>
@@ -212,7 +288,8 @@
         <li class="std-row std-row-plain"><span class="std-code">3.RF.3.A.e</span><span class="std-body"><span class="std-text">decoding known and unknown words by  spelling patterns</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.RF.3.A.f</span><span class="std-body"><span class="std-text">reading irregularly spelled high frequency words</span></span></li>
         <li class="std-cl">Fluency</li><li class="std-stem">Read appropriate texts with fluency (rate, accuracy, expression, appropriate phrasing) with purpose and for  comprehension</li><li class="std-row std-row-plain"><span class="std-code">3.RF.4.A.a</span><span class="std-body"><span class="std-text">use context to confirm or self-correct word recognition and understanding, rereading as necessary</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Writing">
       <h4 class="std-grp">Writing</h4>
       <ul class="std-list">
         <li class="std-cl">Prewriting</li><li class="std-stem">Follow a writing process to plan a first draft by:</li><li class="std-row std-row-plain"><span class="std-code">3.W.1.A.a</span><span class="std-body"><span class="std-text">using a simple pre-writing strategy when given the purpose and the intended audience</span></span></li>
@@ -267,7 +344,8 @@ purpose
         <li class="std-row std-row-plain"><span class="std-code">3.W.3.A.g</span><span class="std-body"><span class="std-text">use quotation marks to denote direct quotations when recording specific words and sentences from a source</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.W.3.A.h</span><span class="std-body"><span class="std-text">create a resource  page from notes</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.W.3.A.i</span><span class="std-body"><span class="std-text">present and evaluate the information in a report or annotated display, using previously established teacher/student criteria</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Grammar and Spelling">
       <h4 class="std-grp">Language</h4>
       <ul class="std-list">
         <li class="std-cl">Grammar</li><li class="std-stem">In speech and written form, apply standard English grammar to:</li><li class="std-row std-row-plain"><span class="std-code">3.L.1.A.a</span><span class="std-body"><span class="std-text">use regular and irregular verbs and simple verb tenses</span></span></li>
@@ -289,7 +367,8 @@ purpose
         <li class="std-row std-row-plain"><span class="std-code">3.L.1.B.j</span><span class="std-body"><span class="std-text">spell plural words that change ‘y’ to ‘ies’</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.L.1.B.k</span><span class="std-body"><span class="std-text">consult reference materials to check and correct spellings</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.L.1.B.l</span><span class="std-body"><span class="std-text">arrange words in alphabetical order, to the third letter</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Speaking and Listening">
       <h4 class="std-grp">Speaking/Listening</h4>
       <ul class="std-list">
         <li class="std-cl">Purpose</li><li class="std-stem">Develop and apply effective listening skills and strategies in formal and informal settings by:</li><li class="std-row std-row-plain"><span class="std-code">3.SL.1.A.a</span><span class="std-body"><span class="std-text">following classroom listening rules</span></span></li>
@@ -304,18 +383,21 @@ purpose
         <li class="std-row std-row-plain"><span class="std-code">3.SL.4.A.c</span><span class="std-body"><span class="std-text">giving an informal presentation, using a variety of media</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.SL.4.A.d</span><span class="std-body"><span class="std-text">choosing words and phrases for effect (adjectives, action verbs, figurative language)</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.SL.4.A.e</span><span class="std-body"><span class="std-text">using academic language and conventions</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="math">
+    <section class="ss-subj" id="math" data-subj="math">
       <h3 class="plan-sh">Mathematics <em>45 standards</em></h3>
       
+      
+      <div class="ss-grp">
       <h4 class="std-grp">Number Sense and Operations in Base Ten</h4>
       <ul class="std-list">
         <li class="std-cl">Use place value understanding and properties of operations to perform multi-digit arithmetic</li><li class="std-row std-row-plain"><span class="std-code">3.NBT.A.1</span><span class="std-body"><span class="std-text">Round whole numbers to the nearest 10 or 100.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.NBT.A.2</span><span class="std-body"><span class="std-text">Read, write and identify whole numbers within 100,000 using base ten numerals, number names and expanded form.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.NBT.A.3</span><span class="std-body"><span class="std-text">Demonstrate fluency with addition and subtraction within 1000.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.NBT.A.4</span><span class="std-body"><span class="std-text">Multiply whole numbers by multiples of 10 in the range 10-90.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Number Sense and Operations in Fractions</h4>
       <ul class="std-list">
         <li class="std-cl">Develop understanding of fractions as numbers</li><li class="std-row std-row-plain"><span class="std-code">3.NF.A.1</span><span class="std-body"><span class="std-text">Understand a unit fraction as the quantity formed by one part when a whole is partitioned into equal parts.</span></span></li>
@@ -328,7 +410,8 @@ purpose
         <li class="std-row std-row-plain"><span class="std-code">3.NF.A.5</span><span class="std-body"><span class="std-text">Recognize and generate equivalent fractions using visual models, and justify why the fractions are equivalent.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.NF.A.6</span><span class="std-body"><span class="std-text">Compare two fractions with the same numerator or denominator using the symbols &gt;, = or &lt;, and justify the solution.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.NF.A.7</span><span class="std-body"><span class="std-text">Explain why fraction comparisons are only valid when the two fractions refer to the same whole.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Relationships and Algebraic Thinking</h4>
       <ul class="std-list">
         <li class="std-cl">Represent and solve problems involving multiplication and division.</li><li class="std-row std-row-plain"><span class="std-code">3.RA.A.1</span><span class="std-body"><span class="std-text">Interpret products of whole numbers.</span></span></li>
@@ -342,7 +425,8 @@ purpose
         <li class="std-cl">Use the four operations to solve word problems</li><li class="std-row std-row-plain"><span class="std-code">3.RA.D.9</span><span class="std-body"><span class="std-text">Write and solve two-step problems involving variables using any of the four operations.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.RA.D.10</span><span class="std-body"><span class="std-text">Interpret the reasonableness of answers using mental computation and estimation strategies including rounding.</span></span></li>
         <li class="std-cl">Identify and explain arithmetic patterns.</li><li class="std-row std-row-plain"><span class="std-code">3.RA.E.11</span><span class="std-body"><span class="std-text">Identify arithmetic patterns and explain the patterns using properties of operations.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Geometry and Measurement</h4>
       <ul class="std-list">
         <li class="std-cl">Reason with shapes and their attributes.</li><li class="std-row std-row-plain"><span class="std-code">3.GM.A.1</span><span class="std-body"><span class="std-text">Understand that shapes in different categories may share attributes and that the shared attributes can define a larger category.</span></span></li>
@@ -361,31 +445,36 @@ purpose
         <li class="std-row std-row-plain"><span class="std-code">3.GM.C.14</span><span class="std-body"><span class="std-text">Decompose a rectangle into smaller rectangles to find the area of the original rectangle.</span></span></li>
         <li class="std-cl">Understand concepts of perimeter</li><li class="std-row std-row-plain"><span class="std-code">3.GM.D.15</span><span class="std-body"><span class="std-text">Solve problems involving perimeters of polygons.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.GM.D.16</span><span class="std-body"><span class="std-text">Understand that rectangles can have equal perimeters but different areas, or rectangles can have equal areas but different perimeters.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Data and Statistics</h4>
       <ul class="std-list">
         <li class="std-cl">Represent and analyze data</li><li class="std-row std-row-plain"><span class="std-code">3.DS.A.1</span><span class="std-body"><span class="std-text">Create frequency tables, scaled picture graphs and bar graphs to represent a data set with several categories.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.DS.A.2</span><span class="std-body"><span class="std-text">Solve one- and two-step problems using information presented in bar and/or picture graphs.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.DS.A.3</span><span class="std-body"><span class="std-text">Create a line plot to represent data.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.DS.A.4</span><span class="std-body"><span class="std-text">Use data shown in a line plot to answer questions.</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="science">
+    <section class="ss-subj" id="science" data-subj="science">
       <h3 class="plan-sh">Science <em>14 standards</em></h3>
       
+      
+      <div class="ss-grp">
       <h4 class="std-grp">Earth and Space Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">Weather and Climate</li><li class="std-row std-row-plain"><span class="std-code">3.ESS2.D.1</span><span class="std-body"><span class="std-text">Represent data in tables and graphical displays to describe typical weather conditions expected during a particular season. [Clarification Statement: Examples of data could include average temperature, precipitation, and wind direction.]</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.ESS2.D.2</span><span class="std-body"><span class="std-text">Obtain and combine information to describe climates in different regions of the world.</span></span></li>
         <li class="std-cl">Natural Hazards</li><li class="std-row std-row-plain"><span class="std-code">3.ESS3.B.1</span><span class="std-body"><span class="std-text">Make a claim about the merit of an existing design solution (e.g. levies, tornado shelters, sea walls, etc.) that reduces the impacts of a weather-related hazard. [Clarification
 Statement: Examples of design solutions to weather-related hazards could include barriers to prevent flooding, wind resistant roofs, and lightning rods.]</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Engineering, Technology, and Application of Science</h4>
       <ul class="std-list">
         <li class="std-cl">Defining and Delimiting Engineering Proble6-8</li><li class="std-row std-row-plain"><span class="std-code">3.ETS1.A.1</span><span class="std-body"><span class="std-text">Define a simple design problem reflecting a need or a want that includes specified criteria for success and constraints on materials, time, or cost.</span></span></li>
         <li class="std-cl">Developing Possible Solutions</li><li class="std-row std-row-plain"><span class="std-code">3.ETS1.B.1</span><span class="std-body"><span class="std-text">Generate and compare multiple possible solutions to a problem based on how well each is likely to meet the criteria and constraints of the problem.</span></span></li>
         <li class="std-cl">Optimizing the Solution Process</li><li class="std-row std-row-plain"><span class="std-code">3.ETS1.C.1</span><span class="std-body"><span class="std-text">Plan and carry out fair tests in which variables are controlled and failure points are considered to identify aspects of a model or prototype that can be improved.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Life Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">Growth and Development of Organisms</li><li class="std-row std-row-plain"><span class="std-code">3.LS1.B.1</span><span class="std-body"><span class="std-text">Develop a model to compare and contrast observations on the life cycle of different plants and animals.  [Clarification Statement: Changes Organisms go through during their life form a pattern.]</span></span></li>
@@ -393,17 +482,20 @@ Statement: Examples of design solutions to weather-related hazards could include
         <li class="std-cl">Natural Selection</li><li class="std-row std-row-plain"><span class="std-code">3.LS3.B.1</span><span class="std-body"><span class="std-text">Use evidence to construct an explanation for how the variations in characteristics among individuals of the same species may provide advantages in surviving and finding mates. [Clarification Statement: Examples of cause and effect relationships could be plants that have larger thorns than other plants may be less likely to be eaten by predators; and, animals that have better camouflage coloration than other animals may be more likely to survive and therefore more likely to leave offspring.]</span></span></li>
         <li class="std-cl">Adaptation</li><li class="std-row std-row-plain"><span class="std-code">3.LS3.C.1</span><span class="std-body"><span class="std-text">Construct an argument with evidence that in a particular ecosystem some Organisms -- based on structural adaptations or behaviors -- can survive well, some survive less well, and some cannot. [Clarification Statement: Examples of evidence could include needs and characteristics of the Organisms and habitats involved. The Organisms and their habitat make up a system in which the parts depend on each other.]</span></span></li>
         <li class="std-cl">Biodiversity and Humans</li><li class="std-row std-row-plain"><span class="std-code">3.LS3.D.1</span><span class="std-body"><span class="std-text">Make a claim about the merit of a solution to a problem caused when the environment changes and the types of plants and animals that live there may change.  [Clarification Statement: Examples of environmental changes could include changes in land characteristics, water distribution, temperature, food, and other Organisms.]</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Physical Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">Structure and Properties of Matter</li><li class="std-row std-row-plain"><span class="std-code">3.PS1.A.1</span><span class="std-body"><span class="std-text">Predict and investigate that water can change from a liquid to a solid (freeze), and back again (melt), or from a liquid to a gas (evaporation), and back again (condensation) as the result of temperature changes.</span></span></li>
         <li class="std-cl">Types of Interactions of Matter</li><li class="std-row std-row-plain"><span class="std-code">3.PS1.B.1</span><span class="std-body"><span class="std-text">Construct an argument with evidence that some changes caused by heating or cooling can be reversed and some cannot.</span></span></li>
         <li class="std-cl">Types of Interaction</li><li class="std-row std-row-plain"><span class="std-code">3.PS2.B.1</span><span class="std-body"><span class="std-text">Plan and conduct investigations to determine the cause and effect relationship of electric or magnetic interactions between two objects not in contact with each other. [Clarification Statement: Examples of an electric force could include the force on hair from an electrically charged balloon and the electrical forces between a charged rod and pieces of paper; examples of a magnetic force could include the force between two permanent magnets, the force between an electromagnet and steel paperclips, and the force exerted by one magnet versus the force exerted by two magnets. Examples of cause and effect relationships could include how the distance between objects affects strength of the force and how the orientation of magnets affects the direction of the magnetic force.]</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="history">
+    <section class="ss-subj" id="social-studies" data-subj="social-studies">
       <h3 class="plan-sh">Social Studies <em>55 standards</em></h3>
       
+      
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of the principles expressed in documents shaping constitutional democracy in the United States</h4>
       <ul class="std-list">
         <li class="std-cl">Purposes and principles of the Constitution</li><li class="std-row std-row-plain"><span class="std-code">3.PC.1.B.a</span><span class="std-body"><span class="std-text">Explain and give examples of how laws are made and changed within the state.</span></span></li>
@@ -413,14 +505,16 @@ Statement: Examples of design solutions to weather-related hazards could include
         <li class="std-cl">Character traits and civic attitudes of significant individuals.</li><li class="std-row std-row-plain"><span class="std-code">3.PC.1.E.a</span><span class="std-body"><span class="std-text">Describe the character traits and civic attitudes of influential Missourians.</span></span></li>
         <li class="std-cl">Knowledge of the symbols of our state and the nation.</li><li class="std-row std-row-plain"><span class="std-code">3.PC.1.F.a</span><span class="std-body"><span class="std-text">Explain how the National Anthem symbolizes our nation</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.PC.1.F.b</span><span class="std-body"><span class="std-text">Recognize and explain the significance of the Gateway Arch and the Great Seal of Missouri and other symbols of our state.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of principles and processes of governance systems.</h4>
       <ul class="std-list">
         <li class="std-cl">Purposes and roles of government</li><li class="std-row std-row-plain"><span class="std-code">3.GS.2.A.a</span><span class="std-body"><span class="std-text">Explain how governments balance individual rights with common good to solve local community or state issues.</span></span></li>
         <li class="std-cl">Dispute resolution</li><li class="std-row std-row-plain"><span class="std-code">3.GS.2.B.a</span><span class="std-body"><span class="std-text">Analyze peaceful resolution of disputes by the courts, or other legitimate authorities in Missouri.</span></span></li>
         <li class="std-cl">Processes of governmental systems in decision making</li><li class="std-row std-row-plain"><span class="std-code">3.GS.2.C.a</span><span class="std-body"><span class="std-text">Describe how authoritative decisions are made, enforced and interpreted by the state government across historical time periods and/or in current events.</span></span></li>
         <li class="std-cl">Functions of governmental systems.</li><li class="std-row std-row-plain"><span class="std-code">3.GS.2.D.a</span><span class="std-body"><span class="std-text">Identify and explain the functions of the three branches of government in Missouri.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of continuity and change in the history of Missouri and the United States.</h4>
       <ul class="std-list">
         <li class="std-cl">Understand the movement of people from many regions of the world to North America.</li><li class="std-row std-row-plain"><span class="std-code">3.H.3.A.a</span><span class="std-body"><span class="std-text">Describe the migration of Native Americans to Missouri prior to European settlement in the state.</span></span></li>
@@ -435,7 +529,8 @@ Statement: Examples of design solutions to weather-related hazards could include
         <li class="std-row std-row-plain"><span class="std-code">3.H.3.F.c</span><span class="std-body"><span class="std-text">Discuss issues of Missouri statehood.</span></span></li>
         <li class="std-cl">Understanding the causes and consequences of the Civil War.</li><li class="std-row std-row-plain"><span class="std-code">3.H.3.G.a</span><span class="std-body"><span class="std-text">Explain Missouri’s role in the Civil War, including the concept of a border state.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.H.3.G.b</span><span class="std-body"><span class="std-text">Describe the consequences of the Civil War in Missouri including on education, transportation, and communication.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of economic concepts and principles</h4>
       <ul class="std-list">
         <li class="std-cl">Knowledge of basic economic concepts.</li><li class="std-row std-row-plain"><span class="std-code">3.E.4.A.a</span><span class="std-body"><span class="std-text">Compare and contrast private and public goods and services.</span></span></li>
@@ -445,7 +540,8 @@ Statement: Examples of design solutions to weather-related hazards could include
         <li class="std-cl">Understanding the consequences of economic decisions.</li><li class="std-row std-row-plain"><span class="std-code">3.E.4.B.a</span><span class="std-body"><span class="std-text">Conduct a personal cost-benefit analysis.</span></span></li>
         <li class="std-cl">Understanding a various types of taxes and their purposes.</li><li class="std-row std-row-plain"><span class="std-code">3.E.4.C.a</span><span class="std-body"><span class="std-text">Define taxes and explain how taxes are generated and used.</span></span></li>
         <li class="std-cl">Factors that influence the economy.</li><li class="std-row std-row-plain"><span class="std-code">3.E.4.D.a</span><span class="std-body"><span class="std-text">Explain factors, past and present, that influence changes in our state’s economy.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of major elements of geographical study and analysis and their relationship to changes in society and the environment.</h4>
       <ul class="std-list">
         <li class="std-cl">Reading and constructing maps.</li><li class="std-row std-row-plain"><span class="std-code">3.EG.5.A.a</span><span class="std-body"><span class="std-text">Read and construct historical and current maps.</span></span></li>
@@ -458,7 +554,8 @@ Statement: Examples of design solutions to weather-related hazards could include
         <li class="std-cl">Understanding relationships between and among regions.</li><li class="std-row std-row-plain"><span class="std-code">3.EG.5.F.a</span><span class="std-body"><span class="std-text">Identify regions in Missouri.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.EG.5.F.b</span><span class="std-body"><span class="std-text">Compare regions in Missouri.</span></span></li>
         <li class="std-cl">Using geography to interpret, explain and predict.</li><li class="std-row std-row-plain"><span class="std-code">3.EG.5.G.a</span><span class="std-body"><span class="std-text">Explain how geography affected important events in Missouri history.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of relationships of the individual and groups to institutions and cultural traditions.</h4>
       <ul class="std-list">
         <li class="std-cl">Cultural characteristics of all people</li><li class="std-row std-row-plain"><span class="std-code">3.RI.6.A.a</span><span class="std-body"><span class="std-text">Compare the cultural characteristics of regions in Missouri.</span></span></li>
@@ -466,7 +563,8 @@ Statement: Examples of design solutions to weather-related hazards could include
         <li class="std-cl">Ideas and beliefs of different cultures</li><li class="std-row std-row-plain"><span class="std-code">3.RI.6.C.a</span><span class="std-body"><span class="std-text">Research stories and songs that reflect the cultural history of Missouri.</span></span></li>
         <li class="std-cl">Cultural heritage and preservation.</li><li class="std-row std-row-plain"><span class="std-code">3.RI.6.D.a</span><span class="std-body"><span class="std-text">Describe how people in Missouri preserve their cultural heritage</span></span></li>
         <li class="std-cl">Changing of roles of various groups</li><li class="std-row std-row-plain"><span class="std-code">3.RI.6.E.a</span><span class="std-body"><span class="std-text">Examine the changing roles of  Native Americans, Immigrants, African Americans, women and others in Missouri history.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of the use of tools of social science inquiry</h4>
       <ul class="std-list">
         <li class="std-cl">Identify, select, analyze, and evaluate resources to create a product of social science inquiry</li><li class="std-row std-row-plain"><span class="std-code">3.TS.7.A.a</span><span class="std-body"><span class="std-text">Select and analyze primary and secondary social studies’ sources to determine importance with guidance and support.</span></span></li>
@@ -479,8 +577,9 @@ Statement: Examples of design solutions to weather-related hazards could include
         <li class="std-row std-row-plain"><span class="std-code">3.TS.7.E.b</span><span class="std-body"><span class="std-text">Use steps in a process to investigate a social studies’ question.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">3.TS.7.E.c</span><span class="std-body"><span class="std-text">Use appropriate sources to investigate social studies’ questions.</span></span></li>
         <li class="std-cl">Conducting and presenting research with appropriate resources.</li><li class="std-row std-row-plain"><span class="std-code">3.TS.7.F.a</span><span class="std-body"><span class="std-text">Investigate an appropriate social studies’ question and share results with assistance, if needed.</span></span></li>
-      </ul>
+      </ul></div>
     </section>
+    </div>
   </div></div>
 
 <footer><div class="wrap">

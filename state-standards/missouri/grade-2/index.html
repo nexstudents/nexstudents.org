@@ -55,7 +55,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=d1466f6b">
+<link rel="stylesheet" href="/assets/ns.css?v=bcd17f01">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -134,11 +134,68 @@
       </select></label>
       <button class="btn" type="submit">Show Standards</button>
     </form>
-    <script>(function(){var f=document.getElementById("ssPick");if(!f)return;
-      function go(){var s=f.elements.state.value,g=f.elements.grade.value;
-        if(s&&g)location.href="/state-standards/"+s+"/grade-"+g+"/";}
-      f.addEventListener("submit",function(e){e.preventDefault();go();});
-      f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);})();</script>
+    <script>(function(){
+  function initTabs(){
+    var tabs=document.querySelectorAll("[data-subj-go]"),secs=document.querySelectorAll(".ss-subj");
+    if(!tabs.length||!secs.length)return;
+    function show(id){var hit=false;
+      secs.forEach(function(s){var on=s.getAttribute("data-subj")===id;s.hidden=!on;if(on)hit=true;});
+      if(!hit){secs.forEach(function(s,i){s.hidden=i!==0;});id=secs[0].getAttribute("data-subj");}
+      tabs.forEach(function(t){t.setAttribute("aria-pressed",t.getAttribute("data-subj-go")===id?"true":"false");});}
+    tabs.forEach(function(t){t.addEventListener("click",function(){var id=t.getAttribute("data-subj-go");
+      show(id);if(history.replaceState)history.replaceState(history.state,"",location.pathname+"#"+id);});});
+    show((location.hash||"").slice(1));
+    secs.forEach(function(sec){var pills=sec.querySelectorAll("[data-part-go]"),grps=sec.querySelectorAll(".ss-grp");
+      pills.forEach(function(p){p.addEventListener("click",function(){var v=p.getAttribute("data-part-go");
+        grps.forEach(function(g){g.hidden=!(v==="all"||g.getAttribute("data-part")===v);});
+        pills.forEach(function(q){q.setAttribute("aria-pressed",q===p?"true":"false");});});});});
+    /* SEARCH across every subject. While a word is typed, every subject opens
+       and only matching standards show; clearing it puts the tabs back. */
+    var box=document.getElementById("ssFind"),found=document.getElementById("ssFound");
+    if(box){box.addEventListener("input",function(){
+      var q=box.value.trim().toLowerCase(),rows=document.querySelectorAll("#ssBody .std-row");
+      var heads=document.querySelectorAll("#ssBody .std-cl, #ssBody .std-stem");
+      var grps=document.querySelectorAll("#ssBody .ss-grp");
+      if(!q){rows.forEach(function(r){r.hidden=false;});heads.forEach(function(h){h.hidden=false;});
+        grps.forEach(function(g){g.hidden=false;});
+        document.querySelectorAll("#ssBody [data-part-go]").forEach(function(p){p.setAttribute("aria-pressed",p.getAttribute("data-part-go")==="all"?"true":"false");});
+        found.textContent="";show((location.hash||"").slice(1));return;}
+      var n=0;rows.forEach(function(r){var hit=r.textContent.toLowerCase().indexOf(q)>-1;r.hidden=!hit;if(hit)n++;});
+      heads.forEach(function(h){h.hidden=true;});
+      grps.forEach(function(g){g.hidden=!g.querySelector(".std-row:not([hidden])");});
+      secs.forEach(function(s){s.hidden=!s.querySelector(".std-row:not([hidden])");});
+      tabs.forEach(function(t){t.setAttribute("aria-pressed","false");});
+      found.textContent=n+(n===1?" standard matches":" standards match");});}
+  }
+  function swap(url,push){
+    fetch(url,{credentials:"same-origin"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){
+      var d=new DOMParser().parseFromString(h,"text/html"),nb=d.getElementById("ssBody"),ob=document.getElementById("ssBody");
+      if(!nb||!ob){location.href=url;return;}
+      ob.innerHTML=nb.innerHTML;document.title=d.title;
+      var h1=document.querySelector("h1"),n1=d.querySelector("h1");if(h1&&n1)h1.innerHTML=n1.innerHTML;
+      var c=document.querySelector(".crumb"),nc=d.querySelector(".crumb");if(c&&nc)c.innerHTML=nc.innerHTML;
+      var l=h1&&h1.nextElementSibling,nl=n1&&n1.nextElementSibling;
+      if(l&&nl&&l.tagName==="P"&&nl.tagName==="P")l.innerHTML=nl.innerHTML;
+      if(push)history.pushState({ss:1},"",url+location.hash);
+      initTabs();
+    }).catch(function(){location.href=url;});
+  }
+  var f=document.getElementById("ssPick");
+  function go(){var s=f.elements.state.value,g=f.elements.grade.value;
+    if(s&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);}
+  if(f){
+    f.addEventListener("submit",function(e){e.preventDefault();go();});
+    f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
+  }
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-grades a");
+    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1];
+    if(m&&f)f.elements.grade.value=m.replace("/","");swap(u,true);});
+  window.addEventListener("popstate",function(){swap(location.pathname,false);});
+  /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
+     the subjects do not exist yet. Wait for the DOM. */
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
+})();</script>
+    <div id="ssBody">
     <p class="ss-grades"><a href="/state-standards/missouri/grade-k/">Kindergarten</a><a href="/state-standards/missouri/grade-1/">1st Grade</a><b>2nd Grade</b><a href="/state-standards/missouri/grade-3/">3rd Grade</a><a href="/state-standards/missouri/grade-4/">4th Grade</a><a href="/state-standards/missouri/grade-5/">5th Grade</a><a href="/state-standards/missouri/grade-6/">6th Grade</a><a href="/state-standards/missouri/grade-7/">7th Grade</a><a href="/state-standards/missouri/grade-8/">8th Grade</a></p>
     <div class="ss-dates">
       <p><b>Missouri Learning Standards</b>, published by the Missouri Department of Elementary and Secondary Education (DESE).</p>
@@ -150,10 +207,28 @@
       <p class="ss-fine">Copied from the state's own files, word for word. States revise their standards,
         so check <a href="https://dese.mo.gov/college-career-readiness/curriculum/missouri-learning-standards" rel="noopener">the state's page</a> for the current version.</p>
     </div>
-    <p class="ss-jump"><a href="#english">English Language Arts</a> &middot; <a href="#math">Mathematics</a> &middot; <a href="#science">Science</a> &middot; <a href="#history">Social Studies</a></p>
-    <section class="ss-subj" id="english">
+    <div class="plan-views ss-tabs" role="group" aria-label="Subject">
+      <button type="button" class="plan-vb" data-subj-go="english" aria-pressed="true">English <small>112</small></button>
+      <button type="button" class="plan-vb" data-subj-go="math" aria-pressed="false">Math <small>35</small></button>
+      <button type="button" class="plan-vb" data-subj-go="science" aria-pressed="false">Science <small>13</small></button>
+      <button type="button" class="plan-vb" data-subj-go="social-studies" aria-pressed="false">Social Studies <small>43</small></button>
+    </div>
+    <div class="ss-find">
+      <input type="search" id="ssFind" placeholder="Search these standards, like fractions or commas" aria-label="Search these standards" autocomplete="off">
+      <span id="ssFound" aria-live="polite"></span>
+    </div>
+    <section class="ss-subj" id="english" data-subj="english">
       <h3 class="plan-sh">English Language Arts <em>112 standards</em></h3>
       
+      <div class="plan-views ss-parts" role="group" aria-label="English parts">
+        <button type="button" class="plan-vb" data-part-go="all" aria-pressed="true">All</button>
+        <button type="button" class="plan-vb" data-part-go="Reading" aria-pressed="false">Reading <small>44</small></button>
+        <button type="button" class="plan-vb" data-part-go="Phonics" aria-pressed="false">Phonics <small>12</small></button>
+        <button type="button" class="plan-vb" data-part-go="Writing" aria-pressed="false">Writing <small>31</small></button>
+        <button type="button" class="plan-vb" data-part-go="Grammar and Spelling" aria-pressed="false">Grammar and Spelling <small>17</small></button>
+        <button type="button" class="plan-vb" data-part-go="Speaking and Listening" aria-pressed="false">Speaking and Listening <small>8</small></button>
+      </div>
+      <div class="ss-grp" data-part="Reading">
       <h4 class="std-grp">Reading</h4>
       <ul class="std-list">
         <li class="std-cl">Comprehension</li><li class="std-stem">Develop and demonstrate reading skills in response to text by:</li><li class="std-row std-row-plain"><span class="std-code">2.R.1.A.a</span><span class="std-body"><span class="std-text">using text features to make and confirm predictions, explain why not confirmed</span></span></li>
@@ -200,7 +275,8 @@
         <li class="std-cl">Digital and Media Literacy</li><li class="std-stem">Read to develop an understanding of media and its components by:</li><li class="std-row std-row-plain"><span class="std-code">2.R.4.A.a</span><span class="std-body"><span class="std-text">explaining purposes of media</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.R.4.A.b</span><span class="std-body"><span class="std-text">describing techniques used to create media messages</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.R.4.A.c</span><span class="std-body"><span class="std-text">identifying various written conventions for using digital media</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Phonics">
       <h4 class="std-grp">Reading Foundations</h4>
       <ul class="std-list">
         <li class="std-cl">Print Awareness</li><li class="std-stem">Develop print awareness in the reading process by:</li><li class="std-row std-row-plain"><span class="std-code">2.RF.1.A.a</span><span class="std-body"><span class="std-text">understanding that sentences are organized into paragraphs to convey meaning</span></span></li>
@@ -215,7 +291,8 @@
         <li class="std-row std-row-plain"><span class="std-code">2.RF.3.A.i</span><span class="std-body"><span class="std-text">reading irregularly spelled high-frequency words</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.RF.3.A.j</span><span class="std-body"><span class="std-text">demonstrating decoding skills when reading new words in a text</span></span></li>
         <li class="std-cl">Fluency</li><li class="std-stem">Read appropriate texts with fluency (rate, accuracy, expression, appropriate phrasing) with purpose and for comprehension</li><li class="std-row std-row-plain"><span class="std-code">2.RF.4.A.a</span><span class="std-body"><span class="std-text">use context to confirm or self-correct word recognition and understanding, rereading as necessary</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Writing">
       <h4 class="std-grp">Writing</h4>
       <ul class="std-list">
         <li class="std-cl">Prewriting</li><li class="std-stem">Follow a writing process  to plan a first draft by:</li><li class="std-row std-row-plain"><span class="std-code">2.W.1.A.a</span><span class="std-body"><span class="std-text">brainstorming and recording key ideas using a graphic organizer</span></span></li>
@@ -249,7 +326,8 @@
         <li class="std-row std-row-plain"><span class="std-code">2.W.3.A.d</span><span class="std-body"><span class="std-text">gather evidence from available sources, literary and informational</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.W.3.A.e</span><span class="std-body"><span class="std-text">record basic information from literary and informational texts in simple visual format</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.W.3.A.f</span><span class="std-body"><span class="std-text">present and evaluate information in written and oral reports or displays, using previously established teacher/student criteria</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Grammar and Spelling">
       <h4 class="std-grp">Language</h4>
       <ul class="std-list">
         <li class="std-cl">Grammar</li><li class="std-stem">In speech and written form, apply standard English grammar to:</li><li class="std-row std-row-plain"><span class="std-code">2.L.1.A.a</span><span class="std-body"><span class="std-text">use nouns and pronouns in writing</span></span></li>
@@ -269,7 +347,8 @@
         <li class="std-row std-row-plain"><span class="std-code">2.L.1.B.g</span><span class="std-body"><span class="std-text">spell and use the plural of nouns by adding –es to nouns ending in  -s, -ss, -sh, -ch, or -x</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.L.1.B.h</span><span class="std-body"><span class="std-text">use nouns that change their spelling in plural form</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.L.1.B.i</span><span class="std-body"><span class="std-text">arrange words in alphabetical order, to the second letter</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp" data-part="Speaking and Listening">
       <h4 class="std-grp">Speaking/Listening</h4>
       <ul class="std-list">
         <li class="std-cl">Purpose</li><li class="std-stem">Develop and apply effective listening skills and strategies in formal and informal settings by:</li><li class="std-row std-row-plain"><span class="std-code">2.SL.1.A.a</span><span class="std-body"><span class="std-text">following classroom listening rules</span></span></li>
@@ -280,11 +359,13 @@
         <li class="std-cl">Presenting</li><li class="std-stem">Speak clearly, audibly and to the point, using conventions of language when presenting individually or with a group by:</li><li class="std-row std-row-plain"><span class="std-code">2.SL.4.A.a</span><span class="std-body"><span class="std-text">explaining a topic (student-chosen or teacher-assigned), while maintaining eye contact with audience</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.SL.4.A.b</span><span class="std-body"><span class="std-text">recalling and telling a story with details, including a beginning, middle, and end</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.SL.4.A.c</span><span class="std-body"><span class="std-text">using academic language and conventions</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="math">
+    <section class="ss-subj" id="math" data-subj="math">
       <h3 class="plan-sh">Mathematics <em>35 standards</em></h3>
       
+      
+      <div class="ss-grp">
       <h4 class="std-grp">Number Sense and Operations in Base Ten</h4>
       <ul class="std-list">
         <li class="std-cl">Understand place value of three digit numbers</li><li class="std-row std-row-plain"><span class="std-code">2.NBT.A.1</span><span class="std-body"><span class="std-text">Understand three-digit numbers are composed of hundreds, tens and ones.</span></span></li>
@@ -298,7 +379,8 @@
         <li class="std-row std-row-plain"><span class="std-code">2.NBT.B.9</span><span class="std-body"><span class="std-text">Use the relationship between addition and subtraction to solve problems.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.NBT.B.10</span><span class="std-body"><span class="std-text">Add or subtract mentally 10 or 100 to or from a given number within 1000.</span></span></li>
         <li class="std-cl">Represent and solve problems involving addition and subtraction</li><li class="std-row std-row-plain"><span class="std-code">2.NBT.C.11</span><span class="std-body"><span class="std-text">Write and solve problems involving addition and subtraction within 100.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Relationships and Algebraic Thinking</h4>
       <ul class="std-list">
         <li class="std-cl">Add and subtract within 20</li><li class="std-row std-row-plain"><span class="std-code">2.RA.A.1</span><span class="std-body"><span class="std-text">Demonstrate fluency with addition and subtraction within 20.</span></span></li>
@@ -306,7 +388,8 @@
         <li class="std-row std-row-plain"><span class="std-code">2.RA.B.2b</span><span class="std-body"><span class="std-text">Express even numbers as pairings/groups of 2, and write an expression to represent the number using addends of 2.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.RA.B.2c</span><span class="std-body"><span class="std-text">Express even numbers as being composed of equal groups and write an expression to represent the number with 2 equal addends.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.RA.B.3</span><span class="std-body"><span class="std-text">Find the total number of objects arranged in a rectangular array with up to 5 rows and 5 columns, and write an equation to represent the total as a sum of equal addends.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Geometry and Measurement</h4>
       <ul class="std-list">
         <li class="std-cl">Reason with shapes and their attributes.</li><li class="std-stem">Recognize and draw shapes having specified attributes, such as a given number of angles or sides.</li><li class="std-row std-row-plain"><span class="std-code">2.GM.A.1a</span><span class="std-body"><span class="std-text">Identify triangles, quadrilaterals, pentagons, hexagons, circles and cubes.</span></span></li>
@@ -323,7 +406,8 @@
         <li class="std-row std-row-plain"><span class="std-code">2.GM.D.11</span><span class="std-body"><span class="std-text">Describe a time shown on a digital clock as representing hours and minutes, and relate a time shown on a digital clock to the same time on an analog clock.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.GM.D.12</span><span class="std-body"><span class="std-text">Find the value of combinations of dollar bills, quarters, dimes, nickels and pennies, using $ and ¢ appropriately.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.GM.D.13</span><span class="std-body"><span class="std-text">Find combinations of coins that equal a given amount.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Data and Statistics</h4>
       <ul class="std-list">
         <li class="std-cl">Represent and interpret data</li><li class="std-row std-row-plain"><span class="std-code">2.DS.A.1</span><span class="std-body"><span class="std-text">Create a line plot to represent a set of numeric data, given a horizontal scale marked in whole numbers.</span></span></li>
@@ -331,43 +415,51 @@
         <li class="std-row std-row-plain"><span class="std-code">2.DS.A.3</span><span class="std-body"><span class="std-text">Draw a picture graph or a bar graph to represent a data set with up to four categories.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.DS.A.4</span><span class="std-body"><span class="std-text">Solve problems using information presented in line plots, picture graphs and bar graphs.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.DS.A.5</span><span class="std-body"><span class="std-text">Draw conclusions from line plots, picture graphs and bar graphs.</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="science">
+    <section class="ss-subj" id="science" data-subj="science">
       <h3 class="plan-sh">Science <em>13 standards</em></h3>
       
+      
+      <div class="ss-grp">
       <h4 class="std-grp">Physical Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">Structure and Properties of Matter</li><li class="std-row std-row-plain"><span class="std-code">2. PS1.A.1</span><span class="std-body"><span class="std-text">Plan and conduct an investigation to describe and classify different kinds of materials by their observable properties.  [Clarification Statement: Observations could include color, texture, hardness, and flexibility. Patterns could include the similar properties that different materials share.]</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Earth and Space Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">The History of Planet Earth</li><li class="std-row std-row-plain"><span class="std-code">2.ESS1.C.1</span><span class="std-body"><span class="std-text">Use information from several sources to provide evidence that Earth events can occur quickly or slowly. [Clarification Statement: Examples of events and timescales could include volcanic explosions and earthquakes, which happen quickly and erosion of rocks, which occurs slowly.]</span></span></li>
         <li class="std-cl">Earth Materials andSystem</li><li class="std-row std-row-plain"><span class="std-code">2.ESS2.A.1</span><span class="std-body"><span class="std-text">Compare multiple solutions designed to slow or prevent wind or water from changing the shape of the land. [Clarification Statement: Examples of solutions could include different designs of dikes and windbreaks to hold back wind and water, and different designs for using shrubs, grass, and trees to hold back the land.]</span></span></li>
         <li class="std-cl">Plate Tectonics and Large-ScaleSystem</li><li class="std-row std-row-plain"><span class="std-code">2.ESS2.B.1</span><span class="std-body"><span class="std-text">Develop a model to represent the shapes and kinds of land and bodies of water in an area.</span></span></li>
         <li class="std-cl">The Role of Water in Earth's Surface Processes</li><li class="std-row std-row-plain"><span class="std-code">2.ESS2.C.1</span><span class="std-body"><span class="std-text">Obtain information to identify where water is found on Earth and that it can be solid or liquid.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Engineering, Technology, and Application of Science</h4>
       <ul class="std-list">
         <li class="std-cl">Defining and Delimiting Engineering Proble6-8</li><li class="std-row std-row-plain"><span class="std-code">2.ETS1.A.1</span><span class="std-body"><span class="std-text">Ask questions, make observations, and gather information about a situation people want to change to define a simple problem that can be solved through the development of a new or improved object or tool.</span></span></li>
         <li class="std-cl">Developing Possible Solutions</li><li class="std-row std-row-plain"><span class="std-code">2.ETS1.B1</span><span class="std-body"><span class="std-text">Develop a simple sketch, drawing, or physical model to illustrate how the shape of an object helps it function as needed to solve a given problem.</span></span></li>
         <li class="std-cl">Optimizing the Solution Process</li><li class="std-row std-row-plain"><span class="std-code">2.ETS1.C.1</span><span class="std-body"><span class="std-text">Analyze data from tests of two objects designed to solve the same problem to compare the strength and weaknesses of how each performs.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Life Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">Interdependent Relationships in Ecosystems</li><li class="std-row std-row-plain"><span class="std-code">2.LS2.A.1</span><span class="std-body"><span class="std-text">Plan and conduct investigations on the growth of plants when growing conditions are altered (e.g., dark vs. light, water vs. no water).</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.LS2.A.2</span><span class="std-body"><span class="std-text">Develop a simple model that mimics the function of an animal in dispersing seeds or pollinating plants.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Physical Sciences</h4>
       <ul class="std-list">
         <li class="std-cl">Structure and Properties of Matter</li><li class="std-row std-row-plain"><span class="std-code">2.PS1.A.2</span><span class="std-body"><span class="std-text">Analyze data obtained from testing different materials to determine which materials have the properties that are best suited for an intended purpose.  [Clarification Statement: Examples of properties could include, strength, flexibility, hardness, texture, and absorbency.]</span></span></li>
         <li class="std-cl">Forces and Motion</li><li class="std-row std-row-plain"><span class="std-code">2.PS2.A.1</span><span class="std-body"><span class="std-text">Analyze data to determine how the motion of an object changed by an applied force or the mass of an object.</span></span></li>
         <li class="std-cl">Wave Properties</li><li class="std-row std-row-plain"><span class="std-code">2.PS4.A.1</span><span class="std-body"><span class="std-text">Plan and conduct investigations to provide evidence that changes in vibration create change in sound.</span></span></li>
-      </ul>
+      </ul></div>
     </section>
-    <section class="ss-subj" id="history">
+    <section class="ss-subj" id="social-studies" data-subj="social-studies">
       <h3 class="plan-sh">Social Studies <em>43 standards</em></h3>
       
+      
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of the principles expressed in documents shaping constitutional democracy in the United States</h4>
       <ul class="std-list">
         <li class="std-cl">Purposes and principles of the Constitution</li><li class="std-row std-row-plain"><span class="std-code">2. PC.1.B.a</span><span class="std-body"><span class="std-text">Explain and give examples of how laws and rules are made and changed within a community.</span></span></li>
@@ -377,18 +469,21 @@
         <li class="std-cl">Character traits and civic attitudes of significant individuals.</li><li class="std-row std-row-plain"><span class="std-code">2.PC.1.E.a</span><span class="std-body"><span class="std-text">Describe the character traits and civic attitudes of inventors or pioneers in their field who influenced progress in the nation.</span></span></li>
         <li class="std-cl">Knowledge of the symbols of our state and the nation.</li><li class="std-row std-row-plain"><span class="std-code">2.PC.1.F.a</span><span class="std-body"><span class="std-text">Describe the importance of the Pledge of Allegiance.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.PC.1.F.b</span><span class="std-body"><span class="std-text">Recognize and explain the significance of national symbols including national landmarks, national parks, and important memorials.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of principles and processes of governance systems.</h4>
       <ul class="std-list">
         <li class="std-cl">Processes of governmental systems in decision making</li><li class="std-row std-row-plain"><span class="std-code">2.GS.2.C.a</span><span class="std-body"><span class="std-text">Distinguish the responsibilities and powers of government officials at various levels and branches of government in authoritative decision making.</span></span></li>
         <li class="std-cl">Functions of governmental systems.</li><li class="std-row std-row-plain"><span class="std-code">2.GS.2.D.a</span><span class="std-body"><span class="std-text">Identify and explain the concept of branches and functions of government.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of continuity and change in the history of Missouri and the United States.</h4>
       <ul class="std-list">
         <li class="std-cl">Understand the movement of people from many regions of the world to North America.</li><li class="std-row std-row-plain"><span class="std-code">2.H.3.A.a</span><span class="std-body"><span class="std-text">Compare the culture and people in our community across multiple time periods.</span></span></li>
         <li class="std-cl">Historical perspective/Thinking/Passage of time</li><li class="std-row std-row-plain"><span class="std-code">2.H.3.B.a</span><span class="std-body"><span class="std-text">Compare and contrast the changing habitats, resources, art and daily lives of Native American people in regions of the U.S.</span></span></li>
         <li class="std-cl">Knowledge of the contributions of significant persons in U.S. history</li><li class="std-row std-row-plain"><span class="std-code">2.H.3.C.a</span><span class="std-body"><span class="std-text">Describe the contributions of inventors or pioneers in their field who influenced progress in our nation.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of economic concepts and principles</h4>
       <ul class="std-list">
         <li class="std-cl">Knowledge of basic economic concepts.</li><li class="std-row std-row-plain"><span class="std-code">2.E.4.A.a</span><span class="std-body"><span class="std-text">Describe consumption and production and the relationship to goods and services within your region.</span></span></li>
@@ -396,7 +491,8 @@
         <li class="std-row std-row-plain"><span class="std-code">2.E.4.A.c</span><span class="std-body"><span class="std-text">Demonstrate how people barter to exchange goods and services.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.E.4.A.d</span><span class="std-body"><span class="std-text">Explain the relationship of income, labor, and wages.</span></span></li>
         <li class="std-cl">Understanding the consequences of economic decisions.</li><li class="std-row std-row-plain"><span class="std-code">2.E.4.B.a</span><span class="std-body"><span class="std-text">Describe a personal cost-benefit situation.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of major elements of geographical study and analysis and their relationship to changes in society and the environment.</h4>
       <ul class="std-list">
         <li class="std-cl">Reading and constructing maps.</li><li class="std-row std-row-plain"><span class="std-code">2.EG.5.A.a</span><span class="std-body"><span class="std-text">Read and construct maps with title and key.</span></span></li>
@@ -412,14 +508,16 @@
         <li class="std-row std-row-plain"><span class="std-code">2.EG.5.F.b</span><span class="std-body"><span class="std-text">Identify examples of different regions in Missouri.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.EG.5.F.c</span><span class="std-body"><span class="std-text">Describe why people of different groups settle more in one place or region than another</span></span></li>
         <li class="std-cl">Use geography to interpret, explain and predict.</li><li class="std-row std-row-plain"><span class="std-code">2.EG.5.G.a</span><span class="std-body"><span class="std-text">Explain how geography affects the way people live today.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of relationships of the individual and groups to institutions and cultural traditions.</h4>
       <ul class="std-list">
         <li class="std-cl">Cultural characteristics of all people</li><li class="std-row std-row-plain"><span class="std-code">2.RI.6.A.a</span><span class="std-body"><span class="std-text">Compare the cultural characteristics of regions in the state</span></span></li>
         <li class="std-cl">Methods of resolving conflicts</li><li class="std-row std-row-plain"><span class="std-code">2.RI.6.B.a</span><span class="std-body"><span class="std-text">Demonstrate a peaceful resolution to a dispute</span></span></li>
         <li class="std-cl">Ideas and beliefs of different cultures</li><li class="std-row std-row-plain"><span class="std-code">2.RI.6.C.a</span><span class="std-body"><span class="std-text">Recall stories and songs that reflect the cultural history of peoples from various regions in the United States including regional folk figures, Native American legends and African American folktales.</span></span></li>
         <li class="std-cl">Cultural heritage and preservation.</li><li class="std-row std-row-plain"><span class="std-code">2.RI.6.D.a</span><span class="std-body"><span class="std-text">Describe how regions commemorate cultural heritage.</span></span></li>
-      </ul>
+      </ul></div>
+      <div class="ss-grp">
       <h4 class="std-grp">Knowledge of the use of tools of social science inquiry</h4>
       <ul class="std-list">
         <li class="std-cl">Identify, select, analyze, and evaluate resources to create a product of social science inquiry</li><li class="std-row std-row-plain"><span class="std-code">2.TS.7.A.a</span><span class="std-body"><span class="std-text">Describe and analyze primary and secondary social studies’ sources in classroom discussion with guidance and support.</span></span></li>
@@ -431,8 +529,9 @@
         <li class="std-cl">Developing a research plan and identifying resources</li><li class="std-row std-row-plain"><span class="std-code">2.TS.7.E.a</span><span class="std-body"><span class="std-text">Develop supporting questions about social studies’ topics, with assistance.</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.TS.7.E.b</span><span class="std-body"><span class="std-text">Describe a process to answer those questions</span></span></li>
         <li class="std-row std-row-plain"><span class="std-code">2.TS.7.E.c</span><span class="std-body"><span class="std-text">Discuss types of sources that would be helpful in exploring social studies’ questions.</span></span></li>
-      </ul>
+      </ul></div>
     </section>
+    </div>
   </div></div>
 
 <footer><div class="wrap">

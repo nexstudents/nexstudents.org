@@ -2078,11 +2078,7 @@ const ssPicker = (cur, g) => `<form class="ss-pick" id="ssPick" action="/state-s
       </select></label>
       <button class="btn" type="submit">Show Standards</button>
     </form>
-    <script>(function(){var f=document.getElementById("ssPick");if(!f)return;
-      function go(){var s=f.elements.state.value,g=f.elements.grade.value;
-        if(s&&g)location.href="/state-standards/"+s+"/grade-"+g+"/";}
-      f.addEventListener("submit",function(e){e.preventDefault();go();});
-      f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);})();</script>`;
+    ${ssScript}`;
 
 const ssDates = (st) => `<div class="ss-dates">
       <p><b>${st.title}</b>, published by the ${st.agency}.</p>
@@ -2099,21 +2095,45 @@ const ssGradeLinks = (st, g) => `<p class="ss-grades">${SS.GRADES.map((x) =>
   g != null && sameGrade(g, x) ? `<b>${gradeLabel(x)}</b>` : `<a href="${ssHref(st, x)}">${gradeLabel(x)}</a>`).join("")}</p>`;
 
 /* One subject's outline: strand heading, then cluster rows, then standards.
-   A lettered sub-standard sits under its parent's wording, shown once. */
-const ssSubject = (st, subj, g) => {
+   A lettered sub-standard sits under its parent's wording, shown once.
+   Paul, 2026-09-25: "different buttons to pick ... English science math ...
+   social studies. and then under English you could put reading and writing."
+   So each subject is a tab, and English (and the 6-8 social studies courses)
+   get a second row of buttons for their parts. Without JS everything shows. */
+const SS_TAB = { English: "English", Math: "Math", Science: "Science", History: "Social Studies" };
+const SS_ID  = { English: "english", Math: "math", Science: "science", History: "social-studies" };
+const SS_PART = {
+  "Reading": "Reading", "Reading Foundations": "Phonics",
+  "Reading Literary Text": "Literature", "Reading Informational Text": "Informational Text",
+  "Writing": "Writing", "Language": "Grammar and Spelling",
+  "Speaking/Listening": "Speaking and Listening", "Speaking and Listening": "Speaking and Listening",
+};
+const ssPill = (attr, val, label, on) =>
+  `<button type="button" class="plan-vb" ${attr}="${val}" aria-pressed="${on ? "true" : "false"}">${label}</button>`;
+
+const ssRows = (st, subj, g) => {
+  const band = Number(g) >= 6 && st.bands[subj.key];
+  return st.data().filter((r) => r.subject === subj.key &&
+    (band ? r.grade === "6-8" : r.grade === String(g)));
+};
+
+const ssSubject = (st, subj, g, first) => {
   const n = Number(g);
   const all = st.data();
   const band = n >= 6 && st.bands[subj.key];
   const rows = all.filter((r) => r.subject === subj.key &&
     (band ? r.grade === "6-8" : r.grade === String(g)));
   if (!rows.length) return "";
+  const partOf = (r) => subj.key === "English" ? (SS_PART[r.strand] || r.strand)
+    : r.course ? (st.courses[r.course] || r.courseName) : null;
   const groups = [];
   for (const r of rows) {
     const head = r.course ? (st.courses[r.course] || r.courseName) + ": " + r.strand : r.strand;
     let gp = groups[groups.length - 1];
-    if (!gp || gp.head !== head) groups.push((gp = { head, items: [] }));
+    if (!gp || gp.head !== head) groups.push((gp = { head, part: partOf(r), items: [] }));
     gp.items.push(r);
   }
+  const parts = [...new Set(groups.map((gp) => gp.part).filter(Boolean))];
   const body = groups.map((gp) => {
     let lastCl = null, lastStem = null;
     const lis = gp.items.map((r) => {
@@ -2123,30 +2143,116 @@ const ssSubject = (st, subj, g) => {
       return out + `<li class="std-row std-row-plain"><span class="std-code">${escT(r.code)}</span>` +
         `<span class="std-body"><span class="std-text">${escT(r.text)}</span></span></li>`;
     }).join("\n        ");
-    return `<h4 class="std-grp">${escT(gp.head)}</h4>
+    return `<div class="ss-grp"${gp.part ? ` data-part="${escT(gp.part)}"` : ""}>
+      <h4 class="std-grp">${escT(gp.head)}</h4>
       <ul class="std-list">
         ${lis}
-      </ul>`;
+      </ul></div>`;
   }).join("\n      ");
-  return `<section class="ss-subj" id="${gslug(subj.key)}">
+  return `<section class="ss-subj" id="${SS_ID[subj.key]}" data-subj="${SS_ID[subj.key]}">
       <h3 class="plan-sh">${subj.name} <em>${rows.length} standards</em></h3>
       ${band ? `<p class="std-course">${band}</p>` : ""}
+      ${parts.length > 1 ? `<div class="plan-views ss-parts" role="group" aria-label="${SS_TAB[subj.key]} parts">
+        ${ssPill("data-part-go", "all", "All", true)}
+        ${parts.map((p) => ssPill("data-part-go", escT(p),
+          escT(p) + " <small>" + groups.filter((gp) => gp.part === p).reduce((n, gp) => n + gp.items.length, 0) + "</small>",
+          false)).join("\n        ")}
+      </div>` : ""}
       ${body}
     </section>`;
 };
 
+/* ONE SCRIPT for the picker and the tabs. Paul, 2026-09-25: "when you select
+   like either the state or the grade the page will jump." A full page load
+   starts at the top, so a new grade is FETCHED and swapped into #ssBody in
+   place: same scroll, the address bar still changes (pushState) and Back works
+   (popstate). The subject tab rides in the hash, so Math stays Math.
+   ⚠️ initTabs re-runs after every swap - innerHTML never runs a script tag.
+   ⚠️ Plain string, no backticks: it sits inside a template literal. */
+const ssScript = `<script>(function(){
+  function initTabs(){
+    var tabs=document.querySelectorAll("[data-subj-go]"),secs=document.querySelectorAll(".ss-subj");
+    if(!tabs.length||!secs.length)return;
+    function show(id){var hit=false;
+      secs.forEach(function(s){var on=s.getAttribute("data-subj")===id;s.hidden=!on;if(on)hit=true;});
+      if(!hit){secs.forEach(function(s,i){s.hidden=i!==0;});id=secs[0].getAttribute("data-subj");}
+      tabs.forEach(function(t){t.setAttribute("aria-pressed",t.getAttribute("data-subj-go")===id?"true":"false");});}
+    tabs.forEach(function(t){t.addEventListener("click",function(){var id=t.getAttribute("data-subj-go");
+      show(id);if(history.replaceState)history.replaceState(history.state,"",location.pathname+"#"+id);});});
+    show((location.hash||"").slice(1));
+    secs.forEach(function(sec){var pills=sec.querySelectorAll("[data-part-go]"),grps=sec.querySelectorAll(".ss-grp");
+      pills.forEach(function(p){p.addEventListener("click",function(){var v=p.getAttribute("data-part-go");
+        grps.forEach(function(g){g.hidden=!(v==="all"||g.getAttribute("data-part")===v);});
+        pills.forEach(function(q){q.setAttribute("aria-pressed",q===p?"true":"false");});});});});
+    /* SEARCH across every subject. While a word is typed, every subject opens
+       and only matching standards show; clearing it puts the tabs back. */
+    var box=document.getElementById("ssFind"),found=document.getElementById("ssFound");
+    if(box){box.addEventListener("input",function(){
+      var q=box.value.trim().toLowerCase(),rows=document.querySelectorAll("#ssBody .std-row");
+      var heads=document.querySelectorAll("#ssBody .std-cl, #ssBody .std-stem");
+      var grps=document.querySelectorAll("#ssBody .ss-grp");
+      if(!q){rows.forEach(function(r){r.hidden=false;});heads.forEach(function(h){h.hidden=false;});
+        grps.forEach(function(g){g.hidden=false;});
+        document.querySelectorAll("#ssBody [data-part-go]").forEach(function(p){p.setAttribute("aria-pressed",p.getAttribute("data-part-go")==="all"?"true":"false");});
+        found.textContent="";show((location.hash||"").slice(1));return;}
+      var n=0;rows.forEach(function(r){var hit=r.textContent.toLowerCase().indexOf(q)>-1;r.hidden=!hit;if(hit)n++;});
+      heads.forEach(function(h){h.hidden=true;});
+      grps.forEach(function(g){g.hidden=!g.querySelector(".std-row:not([hidden])");});
+      secs.forEach(function(s){s.hidden=!s.querySelector(".std-row:not([hidden])");});
+      tabs.forEach(function(t){t.setAttribute("aria-pressed","false");});
+      found.textContent=n+(n===1?" standard matches":" standards match");});}
+  }
+  function swap(url,push){
+    fetch(url,{credentials:"same-origin"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){
+      var d=new DOMParser().parseFromString(h,"text/html"),nb=d.getElementById("ssBody"),ob=document.getElementById("ssBody");
+      if(!nb||!ob){location.href=url;return;}
+      ob.innerHTML=nb.innerHTML;document.title=d.title;
+      var h1=document.querySelector("h1"),n1=d.querySelector("h1");if(h1&&n1)h1.innerHTML=n1.innerHTML;
+      var c=document.querySelector(".crumb"),nc=d.querySelector(".crumb");if(c&&nc)c.innerHTML=nc.innerHTML;
+      var l=h1&&h1.nextElementSibling,nl=n1&&n1.nextElementSibling;
+      if(l&&nl&&l.tagName==="P"&&nl.tagName==="P")l.innerHTML=nl.innerHTML;
+      if(push)history.pushState({ss:1},"",url+location.hash);
+      initTabs();
+    }).catch(function(){location.href=url;});
+  }
+  var f=document.getElementById("ssPick");
+  function go(){var s=f.elements.state.value,g=f.elements.grade.value;
+    if(s&&g)swap("/state-standards/"+s+"/grade-"+g+"/",true);}
+  if(f){
+    f.addEventListener("submit",function(e){e.preventDefault();go();});
+    f.elements.grade.addEventListener("change",go);f.elements.state.addEventListener("change",go);
+  }
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".ss-grades a");
+    if(!a)return;e.preventDefault();var u=a.getAttribute("href"),m=u.split("grade-")[1];
+    if(m&&f)f.elements.grade.value=m.replace("/","");swap(u,true);});
+  window.addEventListener("popstate",function(){swap(location.pathname,false);});
+  /* The script sits ABOVE #ssBody (it rides with the picker), so on first load
+     the subjects do not exist yet. Wait for the DOM. */
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initTabs);else initTabs();
+})();</script>`;
+
 const ssGradeBody = (st, g) => `<div class="band"><div class="wrap">
     ${ssPicker(st, g)}
+    <div id="ssBody">
     ${ssGradeLinks(st, g)}
     ${ssDates(st)}
-    <p class="ss-jump">${st.subjects.map((s) => `<a href="#${gslug(s.key)}">${s.name}</a>`).join(" &middot; ")}</p>
-    ${st.subjects.map((s) => ssSubject(st, s, g)).join("\n    ")}
+    <div class="plan-views ss-tabs" role="group" aria-label="Subject">
+      ${st.subjects.map((s, i) => ssPill("data-subj-go", SS_ID[s.key],
+        SS_TAB[s.key] + " <small>" + ssRows(st, s, g).length + "</small>", i === 0)).join("\n      ")}
+    </div>
+    <div class="ss-find">
+      <input type="search" id="ssFind" placeholder="Search these standards, like fractions or commas" aria-label="Search these standards" autocomplete="off">
+      <span id="ssFound" aria-live="polite"></span>
+    </div>
+    ${st.subjects.map((s, i) => ssSubject(st, s, g, i === 0)).join("\n    ")}
+    </div>
   </div></div>`;
 
 const ssLandingBody = () => {
   const live = SS.STATES.filter((s) => s.live);
   return `<div class="band"><div class="wrap">
     ${ssPicker(null, null)}
+    <div id="ssBody">
     <p class="plan-note">Every state publishes its own learning standards: what a student is expected to
       know by the end of each grade. Pick your state and grade to read them in full. We are adding states
       one at a time; the ones marked coming soon are not up yet.</p>
@@ -2154,6 +2260,7 @@ const ssLandingBody = () => {
     ${ssGradeLinks(st, null)}
     ${ssDates(st)}
     <ul class="std-srclist">${st.sources.map((s) => `<li><a href="${s.href}" rel="noopener">${s.label}</a> (the state's file)</li>`).join("")}</ul>`).join("\n")}
+    </div>
   </div></div>`;
 };
 
