@@ -2075,7 +2075,7 @@ const ssPicker = (cur, g) => `<form class="ss-pick" id="ssPick" action="/state-s
       <label><span>Your State</span><select name="state">
         ${cur ? "" : `<option value="" selected disabled>Choose your state</option>`}
         ${SS.STATES.map((s) => `<option value="${s.slug}"${s.live ? ' data-std="1"' : ""}${
-          cur && cur.slug === s.slug ? " selected" : ""}>${s.name}${s.live ? " (all subjects)" : ""}</option>`).join("")}
+          cur && cur.slug === s.slug ? " selected" : ""}>${s.name}</option>`).join("")}
       </select></label>
     </form>
     ${ssScript}`;
