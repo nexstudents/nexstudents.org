@@ -187,6 +187,36 @@ const RESOURCES = [
     "The free account plays games and bots and opens some lessons and puzzles. Unlimited lessons, puzzles and " +
     "videos are Gold, which is paid. There are apps for iPhone and Android.",
 },
+{
+  slug: "typingclub",
+  cat: "games-elsewhere",
+  title: "TypingClub",
+  url: "https://www.typingclub.com/",
+  cost: "Free",
+  affiliate: false,
+  what: "A typing course in the browser, one short lesson at a time, with stars and badges for accuracy and speed.",
+  why:
+    "Typing is the skill every other subject quietly depends on once the writing moves to a screen. " +
+    "TypingClub teaches it properly, home row first, with hand position shown on screen, and the stars " +
+    "make fifteen minutes a day something a child will do without being chased. We use it every school day.",
+  note:
+    "No account needed to start, but make the free profile or the progress is not saved. There is a " +
+    "Jungle Junior track for younger children. Accuracy first, speed after.",
+},
+{
+  slug: "ztype",
+  cat: "games-elsewhere",
+  title: "ZType",
+  url: "https://zty.pe/",
+  cost: "Free",
+  affiliate: false,
+  what: "An arcade typing game: words fly down the screen as enemy ships, and typing each word shoots it.",
+  why:
+    "The best reward for typing practice is more typing, and this is the one children ask to play. " +
+    "It turns the speed TypingClub builds into something with a score on it, and every mistake costs " +
+    "you, so accuracy matters as much as speed.",
+  note: "Plays in the browser with nothing to sign up for. It needs a real keyboard, so it is a computer game, not a phone one.",
+},
 
 /* ═══════════════════════ Placement testing ═══════════════════════════════ */
 {
