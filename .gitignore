@@ -16,3 +16,6 @@ review/
 # growing. voice.json itself IS committed - it is small and the page needs it.
 lessons/**/voice/
 .cm.tmp
+
+# wrangler local state from the R2 upload
+.wrangler/
