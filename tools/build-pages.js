@@ -2358,7 +2358,7 @@ const ssStateBody = (st) => `<div class="band"><div class="wrap">
     ${st.live ? `<h3 class="plan-sh ss-center">Pick a Grade</h3>
     ${ssGradeLinks(st, null)}` : `<p class="plan-note ss-center">${st.name}'s grade-by-grade subjects are not up yet.
       We are adding states one at a time. The homeschool law for ${st.name} is below.</p>`}
-    ${ssMore(st, !st.live)}
+    ${ssMore(st, false)}
     </div>
   </div></div>`;
 
