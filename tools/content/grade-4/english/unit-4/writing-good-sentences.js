@@ -1,17 +1,17 @@
 /* english/writing-good-sentences
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 4 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry. */
 'use strict';
 module.exports = {
   id: "english/writing-good-sentences",
   slug: "writing-good-sentences",
   title: "Writing Good Sentences",
-  unit: "The Sentence · Revising Strategies",
+  unit: "Grammar · U4-L14",
   /* Houghton Mifflin's craft page right after Kinds of Sentences, book pages
      35-36. `seq` is the order; the `unit` string above is a label and is
      never parsed. */
-  seq: { unit: 1, unitTitle: "The Sentence", n: 2 },
-  shelf: { grades: [7], subject: "English",
+  seq: { unit: 4, unitTitle: "Grammar", n: 2 },
+  shelf: { grades: [4], subject: "English",
     blurb: "Two ways to make an already-correct sentence better: mixing up the types you use, and breaking apart the ones that ramble on too long.",
     contains: [
       "Teacher Notes written for whoever is teaching it",

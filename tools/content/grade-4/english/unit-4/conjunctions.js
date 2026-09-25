@@ -1,5 +1,5 @@
 /* english/conjunctions
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 4 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
    🚨 THE PROSE IS A DRAFT, NOT PAUL'S VOICE. Written 2026-09-24 on Opus from
@@ -19,8 +19,8 @@ module.exports = {
   id: "english/conjunctions",
   slug: "conjunctions",
   title: "Conjunctions",
-  unit: "The Sentence · U1-L7",
-  seq: { unit: 1, unitTitle: "The Sentence", n: 7 },
+  unit: "Grammar · U4-L13",
+  seq: { unit: 4, unitTitle: "Grammar", n: 1 },
   natural: "2026-09-24",
 
   plan: {
@@ -41,7 +41,7 @@ module.exports = {
     unclear: [],
   },
 
-  shelf: { grades: [7], subject: "English",
+  shelf: { grades: [4], subject: "English",
     blurb: "One small word decides whether the cook makes one bowl or two. And, but, or, and the pairs that hold ideas together even tighter.",
     contains: [
       "Teacher Notes written for whoever is teaching it",

@@ -417,7 +417,8 @@ const LESSONS = LESSON_SOURCES.flatMap(({ file, key }) => {
    exactly as they did. Locking is opt-in, per lesson, by adding `seq`. */
 LESSONS.forEach(l => {
   if (!l.seq) { l.needs = null; return; }
-  const prev = LESSONS.find(o => o.seq && o.subject === l.subject &&
+  /* Grade is part of the match - every grade now has a unit 4 (k8-plan.js). */
+  const prev = LESSONS.find(o => o.seq && o.subject === l.subject && String(o.grade) === String(l.grade) &&
                                  o.seq.unit === l.seq.unit && o.seq.n === l.seq.n - 1);
   l.needs = prev ? prev.id : null;   /* n:1 has no prerequisite, so it is always open */
 });
@@ -548,7 +549,7 @@ const gateTag = (locked) => locked
    drift apart. `eyebrow` is whatever label suits that shelf. */
 const oneCard = (l, eyebrow) => `<div class="card${l.thumb ? " has-thumb" : ""}" data-lesson="${l.id}"${
       l.needs ? ` data-needs="${l.needs}"` : ""}${
-      l.seq ? ` data-unit="${l.subject}|${l.seq.unit}" data-n="${l.seq.n}"` : ""}>
+      l.seq ? ` data-unit="${l.subject}|${l.grade}|${l.seq.unit}" data-n="${l.seq.n}"` : ""}>
       <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
       <a class="clink" href="${l.href}">
         <span class="cthumb">${l.thumb ? `<img src="${l.thumb}" alt="" loading="lazy" decoding="async">` : ""}</span>
@@ -620,6 +621,10 @@ const { COURSE2 } = require("./maths-units.js");
 const { LIFE } = require("./science-units.js");
 const { WORLD } = require("./history-units.js");
 const YEAR = require("./year-plan.js");
+/* K-8 plans from Missouri's standards. Required up here because the shelf rows
+   below are generated from it at load time → k8-plan.js. */
+const K8 = require("./k8-plan.js");
+const escT = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const MLS7 = require("./mls-grade-7.js");
 const { readingLogMarkup, readingLogScript } = require("./reading-log.js");
 
@@ -1183,8 +1188,8 @@ const progressScript = `<script>
     var g = c.dataset.unit;
     if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
     var parts = g.split("|");
-    var subject = parts[0];
-    var unit = parseInt(parts[1], 10); if (isNaN(unit)) unit = 0;
+    var subject = parts[0] + "|" + parts[1];   /* subject AND grade: one ring per course per grade */
+    var unit = parseInt(parts[2], 10); if (isNaN(unit)) unit = 0;
     var n = parseInt(c.dataset.n, 10); if (isNaN(n)) n = 0;
     var cur = groups[subject];
     if (!cur || unit < cur.unit || (unit === cur.unit && n < cur.n))
@@ -1356,7 +1361,20 @@ const resourcesIndex = () => {
    only plan page that exists. A link on every grade would be a link to nowhere on
    eight of them, and check-links.js would - correctly - fail the build.
    ⚠️ When grade 6 or 8 gets a plan, widen this test rather than copying the block. */
-const planRow = (g) => sameGrade(g, 7) ? `
+/* 2026-09-25: every grade K-8 now has a plan from Missouri's standards
+   (k8-plan.js), so every grade gets the link. Grade 7 keeps its own block below. */
+const planRow = (g) => !sameGrade(g, 7) ? (K8.GRADES.some((x) => sameGrade(x, g)) ? `
+<div class="wrap" style="padding-top:56px">
+  ${group("Start With the Year Plan",
+    "The whole year on real dates, four days a week, built from Missouri's standards. " +
+    "Read this first if you are teaching it.",
+    `<div class="subj-sub">
+      <a class="minibox" href="/grade-${gslug(g)}/plan/">
+        <b>The ${gradeLabel(g)} Year</b><span>36 weeks, Monday to Thursday</span>
+        <u>${K8.build(g).lessons} lessons in order &rarr;</u>
+      </a>
+    </div>`)}
+</div>` : "") : `
 <div class="wrap" style="padding-top:56px">
   ${group("Start With the Year Plan",
     "The whole year on real dates, four days a week, with the holidays already taken out. " +
@@ -1370,8 +1388,12 @@ const planRow = (g) => sameGrade(g, 7) ? `
         <b>What Missouri Expects</b><span>The state's 160 standards, checked against the plan</span>
         <u>See what is covered &rarr;</u>
       </a>
+      <a class="minibox" href="/grade-7/plan/missouri/">
+        <b>The Missouri Version</b><span>Every 7th grade standard as its own lesson</span>
+        <u>See the state's plan &rarr;</u>
+      </a>
     </div>`)}
-</div>` : "";
+</div>`;
 
 /* ── THE YEAR OUTLINE, a compact form of the plan ─────────────────────────
    Paul, 2026-09-04, asked for the outline to show on the lessons and worksheets
@@ -1539,14 +1561,14 @@ const COURSE_SHELVES = [
      is ever wanted again, give its units grade 6 rather than re-adding a mapping. */
   { grade: 7, subject: "History", course: "World History",
     units: () => historyPager(WORLD, 7) },  /* medieval onward */
-  { grade: 3, subject: "English", units: () => englishPager(GRADE3) },
-  { grade: 4, subject: "English", units: () => englishPager(GRADE4) },
-  /* Paul chose "English 7" on 2026-09-11. The book is Houghton Mifflin English,
-     which is a publisher title rather than a course name, so there was nothing to
-     take from it — and the units already name themselves ("The Sentence"), which
-     made leaving it bare a real option. He picked the plain one, matching Math 7. */
-  { grade: 7, subject: "English", course: "English 7",
-    units: () => englishPager(GRADE7) },
+  /* 🚨 2026-09-25: EVERY OTHER GRADE+SUBJECT SHELF IS THE MISSOURI PLAN.
+     Paul: "make cards for every grade and every subject ... placeholder cards
+     with unit name and lesson name. they will follow the same yearly lesson
+     plan you just made." Those rows are generated below from k8-plan.js.
+     ⚠️ The grade 3 (Harcourt) and grade 4 and 7 (Houghton Mifflin) English
+     outlines USED to drive these shelves. The grade 7 grammar course now lives
+     inside the Missouri plan, filed by grade → k8-attach.js. english-units.js
+     is kept: year-plan.js still reads GRADE7 for Kolten's current plan. */
   /* Grade 7 maths, Glencoe Course 2 - 14 chapters, structure only for now. Paul,
      2026-09-03: "for now i just want the strcuture". */
   /* 🚨 "Math 7", NOT "Pre-Algebra". Paul picked it on 2026-09-11 after asking what
@@ -1565,6 +1587,27 @@ const COURSE_SHELVES = [
   { grade: 7, subject: "Science", course: "Life Science",
     units: () => sciencePager(LIFE) },
 ];
+
+/* The Missouri plan as shelf units: same order as the year plan, one card per
+   slot. A built lesson becomes its real card (with its done tick); the rest are
+   placeholder slots naming the unit and the lesson. */
+const k8Pager = (g, sub) => {
+  const units = [];
+  for (const x of K8.queueFor(g, sub)) {
+    let u = units[units.length - 1];
+    if (!u || u.n !== x.unit) units.push((u = { n: x.unit, name: escT(x.unitTitle), items: [] }));
+    u.items.push({
+      label: "U" + x.unit + "-L" + x.label.split("-")[1],
+      title: escT(x.title),
+      slug: x.href ? x.slug : null,
+    });
+  }
+  return units;
+};
+for (const g of K8.GRADES) for (const sub of K8.SUBJECTS) {
+  if (COURSE_SHELVES.some((c) => sameGrade(c.grade, g) && c.subject === sub)) continue;
+  COURSE_SHELVES.push({ grade: g === "K" ? "K" : Number(g), subject: sub, units: () => k8Pager(g, sub) });
+}
 
 const courseFor = (g, sub) =>
   COURSE_SHELVES.find((c) => sameGrade(c.grade, g) && c.subject === sub) || null;
@@ -1830,8 +1873,51 @@ const prettyDate = (iso) => {
   return Number(p[2]) + " " + MONTHS[Number(p[1]) - 1];
 };
 
-const yearPlanBody = () => {
-  const plan = YEAR.build();
+/* A built lesson's title is a link, and its ::after stretches over the whole
+   row so the tap target is the row, not just the words. A todo slot stays text.
+   Paul, 2026-09-25: the plan must be clickable wherever a lesson exists. */
+const planTitle = (sl) => sl.href
+  ? '<a class="plan-a" href="' + sl.href + '">' + sl.title + '</a>'
+  : sl.title;
+
+/* 🚨 ONE RENDERER FOR EVERY GRADE'S PLAN. `plan` is year-plan.js (grade 7, the
+   real courses) or k8-plan.js (K-8, straight from Missouri's standards); both
+   hand back the same shape. `o.perDay` and `o.note` are the only differences. */
+const yearPlanBody = () => planBody(YEAR.build());
+
+/* The K-8 plans, one per grade, built from Missouri's standards → k8-plan.js.
+   Titles are the standard's own words, so they are escaped here. */
+const k8PlanBody = (g) => {
+  const plan = K8.build(g);
+  for (const w of plan.weeks) if (w.kind === "week") for (const d of w.days) for (const sl of d.slots) {
+    sl.title = escT(sl.title);
+    sl.unitTitle = escT(sl.unitTitle);
+  }
+  return planBody(plan, {
+    perDay: plan.perDay.toFixed(1),
+    note: "Built from Missouri's Learning Standards: one standard is one lesson, and every " +
+          "unit ends in a review. Until a textbook names them, the titles are the standard's " +
+          "own words. Each row says what a student does;",
+  });
+};
+const k8PlanPage = (g) => {
+  const name = gradeLabel(g);
+  const home = "/grade-" + gslug(g) + "/";
+  const seven = sameGrade(g, 7);
+  return {
+    dir: seven ? "grade-7/plan/missouri" : "grade-" + gslug(g) + "/plan",
+    active: null, pclass: "termshead",
+    title: name + (seven ? " Missouri Plan" : " Year Plan") + " | NexStudents",
+    desc: "The whole " + name + " year from Missouri's Learning Standards: every standard in English, History, Math and Science, dealt across 36 weeks.",
+    crumb: '<a href="' + home + '">' + name + '</a> &rsaquo; ' +
+           (seven ? '<a href="/grade-7/plan/">Year Plan</a> &rsaquo; Missouri' : 'Year Plan'),
+    h1: "The " + name + " Year, Week by Week.",
+    lead: "Every Missouri standard for " + name + ", in all four subjects, laid out across 36 weeks, Monday to Thursday." +
+          (seven ? " This is the state's version, beside the plan Kolten is on now." : ""),
+    body: k8PlanBody(g),
+  };
+};
+const planBody = (plan, o = {}) => {
   /* ⚠️ NO "paper" KEY, 2026-09-13. Paul: "we are not building paper pages ...
      we are taking his examples and building lessons on top of them along with
      the history book." A Leif reference is a SOURCE, not a deliverable
@@ -1857,9 +1943,10 @@ const yearPlanBody = () => {
       const rows = d.slots.map((sl) =>
         '<div class="plan-slot">' +
           '<span class="plan-tag t-' + SUBJ_ABBR[sl.subject] + '">' + SUBJ_ABBR[sl.subject] + '</span>' +
-          '<span class="plan-t">' + sl.title +
+          '<span class="plan-t">' + planTitle(sl) +
             '<span class="plan-m"><i class="plan-pip p-' + sl.state + '"></i>' +
               sl.subject + ' &middot; Unit ' + sl.unit + ' &middot; ' + sl.label +
+              (sl.code ? ' &middot; ' + sl.code : '') +
             '</span>' +
           '</span>' +
         '</div>').join("\n        ");
@@ -1902,7 +1989,7 @@ const yearPlanBody = () => {
       const rows = u.items.map((sl) =>
         '<li class="plan-ul"><i class="plan-pip p-' + sl.state + '"></i>' +
         '<span class="plan-ull">' + sl.label + '</span>' +
-        '<span>' + sl.title + '</span></li>').join("\n          ");
+        '<span>' + planTitle(sl) + '</span></li>').join("\n          ");
       return '<article class="plan-unit">' +
         '<div class="plan-uh">' +
           '<span class="plan-tag t-' + SUBJ_ABBR[subject] + '">' + SUBJ_ABBR[subject] + '</span>' +
@@ -1920,13 +2007,13 @@ const yearPlanBody = () => {
       <div class="plan-fig"><b>36</b><span>Teaching weeks</span></div>
       <div class="plan-fig"><b>${plan.schoolDays}</b><span>School days</span></div>
       <div class="plan-fig"><b>${state.built + state.todo}</b><span>Lessons</span></div>
-      <div class="plan-fig"><b>3.0</b><span>Lessons a day</span></div>
+      <div class="plan-fig"><b>${o.perDay || "3.0"}</b><span>Lessons a day</span></div>
     </div>
     <p class="plan-key">
       <span><i class="plan-pip p-built"></i>${state.built} built and ready</span>
       <span><i class="plan-pip p-todo"></i>${state.todo} still to write</span>
     </p>
-    <p class="plan-note">This is the plan, not the build. Each row says what a student does;
+    <p class="plan-note">${o.note || "This is the plan, not the build. Each row says what a student does;"}
       the dot says whether that page exists yet. Monday to Thursday, four days a week, from
       ${prettyDate(plan.firstDay)} 2026 to ${prettyDate(plan.lastDay)} 2027.</p>
 
@@ -2347,6 +2434,10 @@ const pages = [
     h1: "The 7th Grade Year, Week by Week.",
     lead: "Four subjects, 36 weeks, Monday to Thursday. Every lesson in the order it should be taught, with the holidays and breaks already taken out.",
     body: yearPlanBody() },
+
+  /* The K-8 plans from Missouri's standards, one per grade. Grade 7's sits
+     under its real plan until Paul decides which one Kolten follows. */
+  ...K8.GRADES.map(k8PlanPage),
 
   /* The standards check. Sits beside the year plan and answers the opposite
      question: not what a student does, but what the state expects and whether

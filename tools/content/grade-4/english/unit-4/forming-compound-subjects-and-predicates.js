@@ -1,5 +1,5 @@
 /* english/forming-compound-subjects-and-predicates
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 4 · english · unit 4. Its home is this folder.
    Built by tools/build-english.js. Edit the lesson here, not in the registry.
 
    🚨 THIS IS A REVISING LESSON, NOT A LABELLING LESSON. Houghton Mifflin runs
@@ -41,7 +41,7 @@ module.exports = {
   id: "english/forming-compound-subjects-and-predicates",
   slug: "forming-compound-subjects-and-predicates",
   title: "Forming Compound Subjects and Predicates",
-  unit: "The Sentence · Revising Strategies",
+  unit: "Grammar · U4-L15",
   eyebrow: "English 7",
   dek: "Two sentences that say almost the same thing can usually be one sentence. This is how you fold them together without losing anything.",
 
@@ -80,7 +80,7 @@ module.exports = {
   },
 
   shelf: {
-    grades: [7],
+    grades: [4],
     subject: "English",
     blurb: "Two sentences that repeat each other can usually become one. Learn the fold.",
     contains: [
@@ -92,7 +92,7 @@ module.exports = {
     ]
   },
 
-  seq: { unit: 1, unitTitle: "The Sentence", n: 5 },
+  seq: { unit: 4, unitTitle: "Grammar", n: 3 },
   /* 🚨 THE HOMEWORK SHEET. Paul, 2026-09-17: "I want another button to also add
      worksheets" and "we might even call them homework worksheets. because these
      are like ones to make sure that you actually understand what you are

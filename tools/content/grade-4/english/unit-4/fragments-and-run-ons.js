@@ -1,5 +1,5 @@
 /* english/fragments-and-run-ons
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 4 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
    🚨 THE PROSE IS A DRAFT, NOT PAUL'S VOICE. Written 2026-09-24 on Opus from
@@ -19,8 +19,8 @@ module.exports = {
   id: "english/fragments-and-run-ons",
   slug: "fragments-and-run-ons",
   title: "Fragments and Run-ons",
-  unit: "The Sentence · U1-L8",
-  seq: { unit: 1, unitTitle: "The Sentence", n: 8 },
+  unit: "Grammar · U4-L16",
+  seq: { unit: 4, unitTitle: "Grammar", n: 4 },
   natural: "2026-09-24",
 
   plan: {
@@ -42,7 +42,7 @@ module.exports = {
     unclear: [],
   },
 
-  shelf: { grades: [7], subject: "English",
+  shelf: { grades: [4], subject: "English",
     blurb: "A note on the fridge that leaves Mom with more questions than answers. Finding the missing piece of a fragment, and where a run-on should have stopped.",
     contains: [
       "Teacher Notes written for whoever is teaching it",

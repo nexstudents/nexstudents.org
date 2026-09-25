@@ -1,5 +1,5 @@
 /* english/complete-subjects-and-predicates
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 3 · english · unit 4. Its home is this folder.
    Built by tools/build-split.js. Edit the lesson here, not in the registry.
 
    🚨 THE TEACHING PROSE IS PAUL'S, WORD FOR WORD. He wrote `ground`, the story in
@@ -15,12 +15,12 @@ module.exports = {
   id: "english/complete-subjects-and-predicates",
   slug: "complete-subjects-and-predicates",
   title: "Complete Subjects and Predicates",
-  unit: "The Sentence · U1-L2",
+  unit: "Grammar · U4-L6",
   eyebrow: "English 7",
   dek: "Every sentence has two halves. One says who or what it is about, the other says something about it. Finding the line between them is the whole skill.",
 
   shelf: {
-    grades: [7],
+    grades: [3],
     subject: "English",
     blurb: "Where does the subject stop and the rest of the sentence start? Draw the line and find out.",
     contains: [
@@ -41,7 +41,7 @@ module.exports = {
      calls this Lesson 2, but Writing Good Sentences is a craft lesson between
      book 1 and book 2, so on the shelf this is the third card. The eyebrow keeps
      the book's own numbering; `seq` keeps the order the student walks. */
-  seq: { unit: 1, unitTitle: "The Sentence", n: 3 },
+  seq: { unit: 4, unitTitle: "Grammar", n: 1 },
   /* 🚨 A SECOND SHEET. The worksheet this lesson already links is its paper
      version and shares its sentences on purpose. This one is HOMEWORK and
      shares none of them: homework-sheet.js fails the build if it does.

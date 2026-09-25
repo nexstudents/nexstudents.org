@@ -1,5 +1,5 @@
 /* english/kinds-of-nouns
-   Grade 7 · english · unit 2. Its home is this folder.
+   Grade 2 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
    🚨 THE PROSE IS A DRAFT, NOT PAUL'S VOICE. Written 2026-09-24 on Opus from
@@ -20,8 +20,8 @@ module.exports = {
   id: "english/kinds-of-nouns",
   slug: "kinds-of-nouns",
   title: "Kinds of Nouns",
-  unit: "Nouns · U2-L1",
-  seq: { unit: 2, unitTitle: "Nouns", n: 1 },
+  unit: "Grammar · U4-L1",
+  seq: { unit: 4, unitTitle: "Grammar", n: 1 },
   natural: "2026-09-24",
 
   plan: {
@@ -41,7 +41,7 @@ module.exports = {
     unclear: [],
   },
 
-  shelf: { grades: [7], subject: "English",
+  shelf: { grades: [2], subject: "English",
     blurb: "A boy from Quincy, Illinois, a homemade radio, and an invention whose name you'll probably guess. Sorting every noun two ways.",
     contains: [
       "Teacher Notes written for whoever is teaching it",

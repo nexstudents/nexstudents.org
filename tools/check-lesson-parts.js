@@ -51,7 +51,15 @@ const SHARED = REQUIRED.filter(([n]) => /Homework/.test(n));
    than keeping a hand-written exception list means a lesson that joins a unit
    later is covered the same day, with nothing to remember. */
 const NAV_RE = REQUIRED.find(([n]) => /prev/.test(n))[1];
-const HAS_SEQ = new Set(footer.allLessons().map((L) => L.id));
+/* ⚠️ A LESSON ALONE IN ITS UNIT HAS NO NEIGHBOUR, so it has no arrows either.
+   Since 2026-09-25 a grade can hold one built lesson in a unit (grade 5 grammar),
+   and the footer rightly prints no row for it. Unit = subject + grade + unit. */
+const unitKey = (L) => [String(L.id).split('/')[0],
+  String((L.shelf && (L.shelf.grades ? L.shelf.grades[0] : L.shelf.grade))),
+  L.seq.unit].join('|');
+const perUnit = {};
+for (const L of footer.allLessons()) perUnit[unitKey(L)] = (perUnit[unitKey(L)] || 0) + 1;
+const HAS_SEQ = new Set(footer.allLessons().filter((L) => perUnit[unitKey(L)] > 1).map((L) => L.id));
 const ENGINE = [
   ['Teacher Notes',      /class="ground"|id="ground"/],
   ['results / score',    /id="score"|id="scorebar"/],

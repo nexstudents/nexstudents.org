@@ -1,5 +1,5 @@
 /* english/finding-the-subject
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 3 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
    🚨 REBUILT 2026-09-19 ON THE READING-LESSON ENGINE. The first version was drafted
@@ -26,8 +26,8 @@ module.exports = {
   id: "english/finding-the-subject",
   slug: "finding-the-subject",
   title: "Finding the Subject",
-  unit: "The Sentence · U1-L6",
-  seq: { unit: 1, unitTitle: "The Sentence", n: 6 },
+  unit: "Grammar · U4-L8",
+  seq: { unit: 4, unitTitle: "Grammar", n: 3 },
 
   plan: {
     objective: "Find the simple subject of a sentence when it comes after the verb: in an inverted sentence, in a question, and in a sentence that begins with here or there. Know that the subject of a command is you.",
@@ -47,7 +47,7 @@ module.exports = {
     unclear: [],
   },
 
-  shelf: { grades: [7], subject: "English",
+  shelf: { grades: [3], subject: "English",
     blurb: "Most sentences say the subject first, and then a sentence turns around and hides it. Find it anyway.",
     contains: [
       "Teacher Notes written for whoever is teaching it",

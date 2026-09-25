@@ -1,5 +1,5 @@
 /* english/collective-and-compound-nouns
-   Grade 7 · english · unit 2. Its home is this folder.
+   Grade 2 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
    🚨 THE PROSE IS A DRAFT, NOT PAUL'S VOICE. Written 2026-09-24 on Opus from
@@ -22,8 +22,8 @@ module.exports = {
   id: "english/collective-and-compound-nouns",
   slug: "collective-and-compound-nouns",
   title: "Collective and Compound Nouns",
-  unit: "Nouns · U2-L2",
-  seq: { unit: 2, unitTitle: "Nouns", n: 2 },
+  unit: "Grammar · U4-L3",
+  seq: { unit: 4, unitTitle: "Grammar", n: 2 },
   natural: "2026-09-24",
 
   plan: {
@@ -43,7 +43,7 @@ module.exports = {
     unclear: [],
   },
 
-  shelf: { grades: [7], subject: "English",
+  shelf: { grades: [2], subject: "English",
     blurb: "A crowd, a band and a crew watch the fastest ocean liner ever built leave New York. Words for groups, and words made of other words.",
     contains: [
       "Teacher Notes written for whoever is teaching it",

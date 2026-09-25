@@ -1,16 +1,16 @@
 /* english/kinds-of-sentences
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 3 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry. */
 'use strict';
 module.exports = {
   id: "english/kinds-of-sentences",
   slug: "kinds-of-sentences",
   title: "Kinds of Sentences",
-  unit: "The Sentence · U1-L1",
+  unit: "Grammar · U4-L14",
   /* Houghton Mifflin puts this first in Unit 1, The Sentence, at page 32.
      `seq` is the order; the `unit` string above is a label and is never parsed. */
-  seq: { unit: 1, unitTitle: "The Sentence", n: 1 },
-  shelf: { grades: [7], subject: "English",
+  seq: { unit: 4, unitTitle: "Grammar", n: 4 },
+  shelf: { grades: [3], subject: "English",
     blurb: "Four kinds of sentences, four different jobs, and the one case where the punctuation lies to you.",
     contains: [
       "Teacher Notes written for whoever is teaching it",

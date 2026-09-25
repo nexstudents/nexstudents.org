@@ -64,7 +64,8 @@ const HOLIDAYS = [
 const CYCLE = { Math: 7, Science: 8, English: 5, History: 5 };
 
 /* ── THE FOUR COURSES, FLATTENED INTO ORDERED LESSON LISTS ────────────────
-   Each entry: { subject, unit, unitTitle, label, title, state }
+   Each entry: { subject, unit, unitTitle, label, title, state, href }
+   `href` is set only when the lesson page exists on disk (hrefOf below).
    `state` is what EXISTS today, and it is the honest column:
      "built"    a real page under /lessons/
      "todo"     nothing exists yet
@@ -75,13 +76,23 @@ const BUILT = new Set(require("./lessons.js").LESSONS
   ? require("./lessons.js").LESSONS.map((l) => l.id)
   : []);
 
+/* A built slot links to its lesson. Paul, 2026-09-25: "I want that yearly plan
+   clickable ... right now I have to go back to the 7th grade page just to click
+   the lesson." The page on DISK is the test, not the slug alone, so a slug set
+   ahead of its build never ships a dead link. */
+const fs = require("fs");
+const path = require("path");
+const hrefOf = (slug) => slug &&
+  fs.existsSync(path.join(__dirname, "..", "lessons", slug, "index.html"))
+  ? "/lessons/" + slug + "/" : null;
+
 const flatten = {
   Science: () => LIFE.units.flatMap((u) => u.items
     .filter((i) => i.kind === "lesson" || i.kind === "review")
     .map((i) => ({
       subject: "Science", unit: u.n, unitTitle: u.title,
       label: i.label, title: i.title,
-      state: i.slug ? "built" : "todo",
+      state: i.slug ? "built" : "todo", href: hrefOf(i.slug),
     }))),
   History: () => WORLD.units.flatMap((u) => u.items.map((i) => ({
     subject: "History", unit: u.n, unitTitle: u.title,
@@ -102,12 +113,13 @@ const flatten = {
        examples from - exactly like `page` on a Merrill or Glencoe row. It is a
        SOURCE, not a state. History lessons are built from Leif's examples plus
        McDougal, the same way the other four units already are. */
-    state: i.slug ? "built" : "todo",
+    state: i.slug ? "built" : "todo", href: hrefOf(i.slug),
   }))),
   English: () => GRADE7.units.flatMap((u) => (u.lessons || u.items || []).map((l, idx) => ({
     subject: "English", unit: u.n, unitTitle: u.name || u.title,
     label: u.n + "-" + (idx + 1), title: typeof l === "string" ? l : l.title,
     state: (typeof l === "object" && l.slug) ? "built" : "todo",
+    href: hrefOf(typeof l === "object" && l.slug),
   }))),
   /* 🚨 THE END-OF-CHAPTER REVIEW IS SCHEDULED. THE HALFWAY CHECK IS NOT.
      Paul, 2026-09-04: "I still want to make it easy on him. but I also want him
@@ -131,7 +143,7 @@ const flatten = {
     .map((i) => ({
       subject: "Math", unit: u.n, unitTitle: u.title,
       label: i.label, title: i.title,
-      state: i.slug ? "built" : "todo",
+      state: i.slug ? "built" : "todo", href: hrefOf(i.slug),
     }))),
 };
 

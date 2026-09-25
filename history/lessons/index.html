@@ -49,7 +49,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=de43c949">
+<link rel="stylesheet" href="/assets/ns.css?v=ccbd7f72">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -130,7 +130,7 @@
     </div>
     <section class="unitpanel" data-unit="1" data-built="2" data-total="10" hidden>
       <div class="cardgrid">
-        <div class="card has-thumb" data-lesson="history/republic-to-empire" data-unit="History|1" data-n="1">
+        <div class="card has-thumb" data-lesson="history/republic-to-empire" data-unit="History|7|1" data-n="1">
       <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
       <a class="clink" href="/lessons/history/republic-to-empire/">
         <span class="cthumb"><img src="/lessons/history/republic-to-empire/thumb.jpg" alt="" loading="lazy" decoding="async"></span>
@@ -150,7 +150,7 @@
       </div>
       <span class="tick-score"></span>
     </div>
-        <div class="card has-thumb" data-lesson="history/roman-government" data-needs="history/republic-to-empire" data-unit="History|1" data-n="2">
+        <div class="card has-thumb" data-lesson="history/roman-government" data-needs="history/republic-to-empire" data-unit="History|7|1" data-n="2">
       <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
       <a class="clink" href="/lessons/history/roman-government/">
         <span class="cthumb"><img src="/lessons/history/roman-government/thumb.jpg" alt="" loading="lazy" decoding="async"></span>
@@ -776,8 +776,8 @@
     var g = c.dataset.unit;
     if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
     var parts = g.split("|");
-    var subject = parts[0];
-    var unit = parseInt(parts[1], 10); if (isNaN(unit)) unit = 0;
+    var subject = parts[0] + "|" + parts[1];   /* subject AND grade: one ring per course per grade */
+    var unit = parseInt(parts[2], 10); if (isNaN(unit)) unit = 0;
     var n = parseInt(c.dataset.n, 10); if (isNaN(n)) n = 0;
     var cur = groups[subject];
     if (!cur || unit < cur.unit || (unit === cur.unit && n < cur.n))

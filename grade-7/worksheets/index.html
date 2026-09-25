@@ -49,7 +49,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=de43c949">
+<link rel="stylesheet" href="/assets/ns.css?v=ccbd7f72">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -115,7 +115,7 @@
   <h1>7th Grade Worksheets.</h1>
   
   <p>Printables and term packets for working on paper. Answer keys are always included free.</p>
-  <p class="shelfcount"><a href="/grade-7/lessons/">60 lessons</a><i aria-hidden="true">&middot;</i><b>7 sheets</b></p>
+  <p class="shelfcount"><a href="/grade-7/lessons/">48 lessons</a><i aria-hidden="true">&middot;</i><b>7 sheets</b></p>
 </div>
 
 <div class="band"><div class="wrap">
@@ -390,8 +390,8 @@
     var g = c.dataset.unit;
     if (!g || c.classList.contains("is-done") || c.classList.contains("is-locked")) return;
     var parts = g.split("|");
-    var subject = parts[0];
-    var unit = parseInt(parts[1], 10); if (isNaN(unit)) unit = 0;
+    var subject = parts[0] + "|" + parts[1];   /* subject AND grade: one ring per course per grade */
+    var unit = parseInt(parts[2], 10); if (isNaN(unit)) unit = 0;
     var n = parseInt(c.dataset.n, 10); if (isNaN(n)) n = 0;
     var cur = groups[subject];
     if (!cur || unit < cur.unit || (unit === cur.unit && n < cur.n))

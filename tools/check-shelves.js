@@ -47,7 +47,11 @@ const pages = [];
             if (e.name === '.git' || e.name === 'node_modules') continue;
             if (depth === 0 && e.name === 'lessons') continue;
             walk(p, depth + 1);
-        } else if (e.name === 'index.html') pages.push(p);
+        } else if (e.name === 'index.html' &&
+                   /* A YEAR PLAN IS NOT A SHELF. /grade-7/plan/ is Kolten's
+                      schedule and still lists lessons that moved to grades 2-5
+                      on 2026-09-25; linking them there is the point of it. */
+                   !/[\\/]grade-[^\\/]+[\\/]plan[\\/]/.test(p)) pages.push(p);
     }
 })(ROOT, 0);
 

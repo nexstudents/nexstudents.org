@@ -236,12 +236,21 @@ function allLessons() {
    same rule build-lessons.js uses to decide the output folder. */
 function subjectOf(L) { return String(L.id).split('/')[0]; }
 
+/* 🚨 GRADE IS PART OF THE MATCH. Since 2026-09-25 every grade has a unit 4
+   (k8-plan.js), so "same subject, same unit number" alone would chain a grade 3
+   lesson to a grade 4 one. */
+function gradeOf(L) {
+  const s = L.shelf || {};
+  return String((s.grades && s.grades[0]) != null ? s.grades[0] : s.grade).toLowerCase();
+}
+
 function siblings(L) {
   if (!L.seq) return { prev: null, next: null };
   const mine = subjectOf(L);
   const at = (n) => allLessons().find((o) =>
     o.id !== L.id &&
     subjectOf(o) === mine &&
+    gradeOf(o) === gradeOf(L) &&
     o.seq.unit === L.seq.unit &&
     o.seq.n === n) || null;
   return { prev: at(L.seq.n - 1), next: at(L.seq.n + 1) };

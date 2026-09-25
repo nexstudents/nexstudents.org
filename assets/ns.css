@@ -3058,6 +3058,14 @@ nav{border-bottom:1px solid var(--line)}
 .plan-t{font-size:14px;line-height:1.35;min-width:0;overflow-wrap:break-word}
 .plan-m{display:block;margin-top:3px;font-size:11.5px;color:var(--dim)}
 .plan-m .plan-pip{margin-right:6px;vertical-align:middle}
+/* A built lesson: the title links, and ::after stretches the tap target over
+   the whole row. Colour is --a-text (text), never --a (a fill) → CLAUDE.md. */
+.plan-slot,.plan-ul{position:relative}
+.plan-a{color:var(--a-text,var(--a));text-decoration:none;font-weight:600}
+.plan-a::after{content:"";position:absolute;inset:0}
+.plan-slot:has(.plan-a):hover,.plan-ul:has(.plan-a):hover{background:var(--panel-2,var(--panel))}
+.plan-a:hover{text-decoration:underline}
+.plan-a:focus-visible{outline:2px solid var(--a);outline-offset:2px}
 .plan-off{font-size:13px;color:var(--dim);font-style:italic;margin:0}
 .plan-break{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;
   border:1px dashed var(--line);border-radius:4px;padding:14px 16px;margin:0 0 20px;color:var(--dim);font-size:13px}

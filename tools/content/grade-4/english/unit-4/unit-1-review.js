@@ -1,5 +1,5 @@
 /* english/unit-1-review
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 4 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
    🚨 A REVIEW IS A DIAGNOSTIC, NOT A TEST. Every hint names the lesson to go back
@@ -20,8 +20,8 @@ module.exports = {
   id: "english/unit-1-review",
   slug: "unit-1-review",
   title: "Unit 1 Review: The Sentence",
-  unit: "The Sentence · U1-L10",
-  seq: { unit: 1, unitTitle: "The Sentence", n: 10 },
+  unit: "Grammar · U4-L17",
+  seq: { unit: 4, unitTitle: "Grammar", n: 5 },
   natural: "2026-09-24",
 
   plan: {
@@ -39,7 +39,7 @@ module.exports = {
     unclear: [],
   },
 
-  shelf: { grades: [7], subject: "English",
+  shelf: { grades: [4], subject: "English",
     blurb: "A poster about wetlands full of mistakes. Fixing it takes every skill in the unit, one sentence at a time.",
     contains: [
       "Teacher Notes written for whoever is teaching it",

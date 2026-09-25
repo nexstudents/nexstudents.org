@@ -1,5 +1,5 @@
 /* english/simple-subjects-and-simple-predicates
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 3 · english · unit 4. Its home is this folder.
    Built by tools/build-english.js. Edit the lesson here, not in the registry.
 
    🚨 THE LESSON BEFORE THIS ONE IS THE METHOD, NARROWED. Complete Subjects and
@@ -22,7 +22,7 @@ module.exports = {
   id: "english/simple-subjects-and-simple-predicates",
   slug: "simple-subjects-and-simple-predicates",
   title: "Simple Subjects and Simple Predicates",
-  unit: "The Sentence · U1-L3",
+  unit: "Grammar · U4-L7",
   eyebrow: "English 7",
   dek: "You already split a sentence into two halves. Inside each half, one single word is doing the real work. This is how you find it.",
 
@@ -43,7 +43,7 @@ module.exports = {
   },
 
   shelf: {
-    grades: [7],
+    grades: [3],
     subject: "English",
     blurb: "One word runs the subject and one word runs the predicate. Find them both.",
     contains: [
@@ -55,7 +55,7 @@ module.exports = {
     ]
   },
 
-  seq: { unit: 1, unitTitle: "The Sentence", n: 4 },
+  seq: { unit: 4, unitTitle: "Grammar", n: 2 },
   /* 🚨 THE HOMEWORK SHEET. Its sentences are NOT these sentences:
      homework-sheet.js fails the build if any of them appear anywhere in this
      file. Paul, 2026-09-17: "this is a homework worksheet so it is a different

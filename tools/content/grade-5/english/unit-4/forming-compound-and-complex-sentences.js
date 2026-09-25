@@ -1,5 +1,5 @@
 /* english/forming-compound-and-complex-sentences
-   Grade 7 · english · unit 1. Its home is this folder.
+   Grade 5 · english · unit 4. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
    🚨 THE PROSE IS A DRAFT, NOT PAUL'S VOICE. Written 2026-09-24 on Opus from
@@ -23,8 +23,8 @@ module.exports = {
   id: "english/forming-compound-and-complex-sentences",
   slug: "forming-compound-and-complex-sentences",
   title: "Forming Compound and Complex Sentences",
-  unit: "The Sentence · U1-L9",
-  seq: { unit: 1, unitTitle: "The Sentence", n: 9 },
+  unit: "Grammar · U4-L9",
+  seq: { unit: 4, unitTitle: "Grammar", n: 1 },
   natural: "2026-09-24",
 
   plan: {
@@ -45,7 +45,7 @@ module.exports = {
     unclear: [],
   },
 
-  shelf: { grades: [7], subject: "English",
+  shelf: { grades: [5], subject: "English",
     blurb: "A campaign speech where every sentence is fine and the whole thing sounds like a robot. Joining short sentences so they sound like a person.",
     contains: [
       "Teacher Notes written for whoever is teaching it",
