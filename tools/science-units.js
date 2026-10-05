@@ -160,12 +160,12 @@ const LIFE = {
         { label: "5-1", title: "Why You Look Like Your Parents", book: "What Is Genetics?", page: 106, kind: "lesson", slug: "science/why-you-look-like-your-parents" },
         { label: "5-2", title: "What We Learned After Mendel", book: "Genetics Since Mendel", page: 114, kind: "lesson", slug: "science/what-we-learned-after-mendel" },
         { label: "5-3", title: "Traits, Disorders, and Human Genetics", book: "Human Genetics", page: 117, kind: "lesson", slug: "science/traits-disorders-and-human-genetics" },
-        { label: "5-4", title: "Mapping the Human Genome", book: "Science and Society: The Human Genome", page: 122, kind: "lesson" },
+        { label: "5-4", title: "Mapping the Human Genome", book: "Science and Society: The Human Genome", page: 122, kind: "lesson", slug: "science/mapping-the-human-genome" },
         { label: "PS", title: "Problem Solving: Boy or Girl?", page: 118, kind: "feature" },
         { label: "T", title: "Technology: Karyotyping", page: 120, kind: "feature" },
         { label: "5-1A", title: "Activity: Expected and Observed Results", page: 113, kind: "activity" },
         { label: "5-2A", title: "Activity: Determining Polygenic Inheritance", page: 124, kind: "activity" },
-        { label: "5-5", title: "Unit 5 Review: How Traits Pass Down", kind: "review" },
+        { label: "5-5", title: "Unit 5 Review: How Traits Pass Down", kind: "review", slug: "science/unit-5-review" },
       ],
     },
     {
@@ -174,7 +174,7 @@ const LIFE = {
         /* 🚨 THE CHAPTER THE SIDE-BY-SIDE RULE EXISTS FOR. Four sections, all of
            them the origin question in one form or another. Do not build any of
            these without re-reading BEHAVIOR.md first. */
-        { label: "6-1", title: "What Evolution Claims, and What It Rests On", book: "Mechanisms of Evolution", page: 130, kind: "lesson" },
+        { label: "6-1", title: "What Evolution Claims, and What It Rests On", book: "Mechanisms of Evolution", page: 130, kind: "lesson", slug: "science/what-evolution-claims" },
         { label: "6-2", title: "The Evidence, Examined Honestly", book: "Evidence for Evolution", page: 136, kind: "lesson" },
         { label: "6-3", title: "Extinction, and Caring for What Remains", book: "Science and Society: Plant and Animal Extinction", page: 144, kind: "lesson" },
         { label: "6-4", title: "Human Origins: Two Accounts, Side by Side", book: "Human Evolution", page: 146, kind: "lesson" },
