@@ -9,7 +9,7 @@ module.exports = {
   title: "Roman Government and Citizenship",
   unit: "World History &middot; U1-L2",
   /* The order is declared in history-units.js (labels 1-1..1-5); this mirrors it
-     so the prev/next arrows can find their neighbours. */
+     so the prev/next arrows can find their neighbors. */
   seq: { unit: 1, unitTitle: "Rome, and the Church That Outlived It", n: 2 },
   shelf: { grades: [7], subject: "History",
     /* Paul's ChatGPT-composed cover, made 2026-09-11, square at 1254px so it

@@ -53,12 +53,25 @@ const BAD = [
      word gets in, add every form of it, not the one that bit. */
   ['traveller', 'traveler'], ['travellers', 'travelers'], ['travelling', 'traveling'],
   ['cancelled', 'canceled'], ['whilst', 'while'],
+  /* added 2026-10-05: public-domain stories (Andersen, Jacobs, Saki, Frost)
+     carried these past a green check. Paul: "we're not supposed to make British
+     words", and that includes an author's own text, so it is converted, never
+     allow-listed. Every form, since  on both sides misses suffixes. */
+  ['towards', 'toward'], ['amongst', 'among'], ['learnt', 'learned'],
+  ['grey', 'gray'], ['greyish', 'grayish'], ['parlour', 'parlor'],
+  ['laboured', 'labored'], ['colours', 'colors'], ['coloured', 'colored'], ['colouring', 'coloring'],
+  ['honoured', 'honored'], ['favourites', 'favorites'], ['neighbours', 'neighbors'],
+  ['spelt', 'spelled'], ['dreamt', 'dreamed'], ['harbour', 'harbor'],
+  ['humour', 'humor'], ['rumour', 'rumor'], ['armour', 'armor'],
 ];
 
 /* Exact strings that are quotations and must survive verbatim. */
 const ALLOW = [
   "honour of kings",
   "they labour in vain that build it",   /* Psalm 127:1, KJV */
+  /* 🚨 KJV SCRIPTURE STAYS VERBATIM, British spelling and all. Paul, 2026-10-05:
+     "Bible verses can stay KJV don't correct those." Allow the verse, never edit it. */
+  "or one member be honoured, all the members rejoice with it",   /* 1 Corinthians 12:26, KJV */
 ];
 
 function walk(dir, out) {

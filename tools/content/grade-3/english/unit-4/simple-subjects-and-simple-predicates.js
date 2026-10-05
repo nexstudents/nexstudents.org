@@ -3,9 +3,9 @@
    Built by tools/build-english.js. Edit the lesson here, not in the registry.
 
    🚨 THE LESSON BEFORE THIS ONE IS THE METHOD, NARROWED. Complete Subjects and
-   Predicates draws a line down the middle of a sentence and colours the two
-   halves green and orange. This lesson keeps the identical two colours and
-   shrinks the target to ONE WORD inside each half. The colours are lifted from
+   Predicates draws a line down the middle of a sentence and colors the two
+   halves green and orange. This lesson keeps the identical two colors and
+   shrinks the target to ONE WORD inside each half. The colors are lifted from
    split/template.html rather than picked again, so green means the same thing
    in both lessons.
 
@@ -36,7 +36,7 @@ module.exports = {
       "Paul, 2026-09-15: \"we can just highlight them in the student notes in green for subject and orange for predicate\"",
       "Paul, 2026-09-15: \"6 multiple choice questions which word in the line is a simple subject and which is a simple predicate. section two 6 more lines where he has to actually find the word and tap on the correct one\""
     ],
-    method: "Keep the two colours from the previous lesson and shrink the target from a half to a single word. Offered words first, unaided hunting second.",
+    method: "Keep the two colors from the previous lesson and shrink the target from a half to a single word. Offered words first, unaided hunting second.",
     exampleOnly: ["airfield", "windsock", "trainer", "hangar", "mechanic", "instructor", "runway"],
     digitize: "Part A is the choose mechanic added to build-english.js on 2026-09-15; Part B is the existing tap-the-word part, whose index the build recomputes.",
     unclear: []

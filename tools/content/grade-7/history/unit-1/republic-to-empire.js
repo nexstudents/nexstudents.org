@@ -9,7 +9,7 @@ module.exports = {
   title: "From Republic to Empire",
   unit: "World History &middot; U1-L1",
   /* The order is declared in history-units.js (labels 1-1..1-5); this mirrors it
-     so the prev/next arrows can find their neighbours. */
+     so the prev/next arrows can find their neighbors. */
   seq: { unit: 1, unitTitle: "Rome, and the Church That Outlived It", n: 1 },
   /* `shelf` is what the site needs to put a card on a shelf. It lives here,
      beside the lesson, so a lesson is added in ONE file. It used to be a
@@ -117,7 +117,7 @@ module.exports = {
       choices: [
         "From Rome an emperor could ship soldiers, grain and tax money to any corner of the empire faster than an enemy could gather.",
         "Rome was ringed by mountains, so no army could ever reach the city.",
-        "Rome had no fresh water of its own, so it was forced to conquer its neighbours.",
+        "Rome had no fresh water of its own, so it was forced to conquer its neighbors.",
         "Rome was an island, which kept it safe from invasion by land."
       ], right: 0 },
     { q: "How does the Bible verse help you evaluate this history?", find: [27, 28],

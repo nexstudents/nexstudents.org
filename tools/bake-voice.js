@@ -128,7 +128,8 @@ function sentencesOf(parts) {
      voice. Third marker sharing this twin now - [ex], [verse], {{ }}. */
   const strip = (t) => {
     let x = t.indexOf("[ex] ") === 0 ? t.slice(5)
-          : t.indexOf("[verse] ") === 0 ? t.slice(8) : t;
+          : t.indexOf("[verse] ") === 0 ? t.slice(8)
+          : t.indexOf("[story] ") === 0 ? t.slice(8) : t;
     return x.split("{{").join("").split("}}").join("");
   };
   parts.forEach((p) => (p.s || []).forEach((t) => {

@@ -90,6 +90,18 @@ const rows = [];
 for (const file of files) {
   let L;
   try { L = require(file); } catch (e) { continue; }
+  /* 🚨 A [story] PARAGRAPH IS THE AUTHOR'S, NOT OURS. The marker sits on its first
+     line only, so drop every line from a [story] marker to the next blank line
+     before any measure runs. Kipling's dialogue is not our flat prose. */
+  if (L.parts) L = Object.assign({}, L, { parts: L.parts.map((p) => {
+    let inStory = false;
+    return Object.assign({}, p, { s: (p.s || []).filter((t) => {
+      const line = String(t).trim();
+      if (line.indexOf("[story] ") === 0) inStory = true;
+      else if (!line) inStory = false;
+      return !inStory;
+    }) });
+  }) });
   if (!L || !L.slug) continue;
 
   /* every line the student actually reads: the story, then the assignment.
@@ -130,7 +142,8 @@ for (const file of files) {
      treat it as a break like a blank line. */
   (L.parts || []).forEach(p => { (p.s || []).forEach(t => {
     const line = String(t).trim();
-    const marked = line.indexOf("[ex] ") === 0 || line.indexOf("[verse] ") === 0;
+    const marked = line.indexOf("[ex] ") === 0 || line.indexOf("[verse] ") === 0 ||
+                   line.indexOf("[story] ") === 0;
     if (line && !marked) run++; else { if (run) paras.push(run); run = 0; }
   }); if (run) { paras.push(run); run = 0; } });
   const perPara = paras.length ? (paras.reduce((a, b) => a + b, 0) / paras.length) : 0;

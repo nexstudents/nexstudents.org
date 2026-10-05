@@ -596,6 +596,17 @@ h2{
    were close enough to lose the band entirely at some themes. Lifting the band's
    own contrast here rather than changing --band keeps every other lesson alone. */
 .para.is-ex .sent.on,.para.is-verse .sent.on{box-shadow:0 0 0 2px var(--verdigris)}
+/* The story itself: same box as an example so it never reads as instructions,
+   but upright and flowing. Consecutive story paragraphs join into one column. */
+.para.is-story{
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  font-size:1.03em;
+  margin:0;padding:8px 18px;
+  border-left:3px solid var(--verdigris);
+  background:var(--surface-2);
+}
+.para.is-story + .para.is-story{padding-top:0}
+.para.is-story .sent.on{box-shadow:0 0 0 2px var(--verdigris)}
 
 /* ---------- the explainer ----------
    Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
@@ -1157,7 +1168,9 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
   padding:12px 14px;cursor:pointer;
   transition:border-color .15s,background .15s;
 }
-.choice:hover:not(:disabled){background:var(--surface);border-color:var(--rule)}
+/* 🚨 MOUSE ONLY. On a phone :hover sticks to the last choice touched, even while
+   scrolling, and it looked like a selected answer (Paul, 2026-10-05, screenshot). */
+@media (hover:hover){ .choice:hover:not(:disabled){background:var(--surface);border-color:var(--rule)} }
 .choice:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
 .choice:disabled{cursor:default}
 .choice.right{background:var(--laurel-soft);border-color:var(--laurel);color:var(--laurel);font-weight:600}
@@ -2555,6 +2568,13 @@ PARTS.forEach(function(part){
        reference together. */
     if (text.indexOf("[ex] ") === 0) { p.classList.add("is-ex"); text = text.slice(5); }
     else if (text.indexOf("[verse] ") === 0) { p.classList.add("is-verse"); text = text.slice(8); }
+    /* 🚨 [story] MARKS A PARAGRAPH OF THE STORY ITSELF. Paul, 2026-10-05: "the story
+       of Rikki Tikki should have also been an example. the idea is that examples
+       don't look like instructions so the user can tell what is what." Boxed like
+       an example, but upright and flowing, because a whole story in italic one-
+       line-per-sentence would be hard to read. Twinned in bake-voice.js,
+       build-lessons.js and check-prose.js. Change one, change all four. */
+    else if (text.indexOf("[story] ") === 0) { p.classList.add("is-story"); text = text.slice(8); }
 
     var i = SENT.length;
     var span = document.createElement("span");
@@ -4391,7 +4411,11 @@ if ((VISUALS.length || PANEL_SOON) && dbox){
      student's first sight of the page was a blank box rather than the story.
      ⚠️ A READER WHO OPENS IT STILL GETS IT BACK. The stored value wins; only the
      ABSENCE of a choice now means closed. */
-  setDemoOpen(load("demo", "0") === "1", "init");
+  /* 🚨 ALWAYS CLOSED ON LOAD, 2026-10-05. Paul: "the visual panel automatically
+     stays open the start of the lessons and it needs to be closed the user can
+     open it". It used to restore the last choice, and one open on a device made
+     every later lesson open. A reader opens it per lesson, for a video or a frame. */
+  setDemoOpen(false, "init");
   measureSticky();
   paintDemo(0);
   dboxX.addEventListener("click", function(){ setDemoOpen(!demoOpen()); });

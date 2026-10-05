@@ -30,7 +30,7 @@ module.exports = {
   title: "Social Class, Slavery, and Daily Life",
   unit: "World History &middot; U1-L5",
   /* The order is declared in history-units.js (labels 1-1..1-5); this mirrors it
-     so the prev/next arrows can find their neighbours. */
+     so the prev/next arrows can find their neighbors. */
   seq: { unit: 1, unitTitle: "Rome, and the Church That Outlived It", n: 5 },
   eyebrow: "World History",
   dek: "A Roman street looked like one crowd. It was four or five different worlds standing next to each other, and you couldn't tell them apart by looking.",

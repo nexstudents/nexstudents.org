@@ -224,7 +224,9 @@ h1{margin:0 0 6px}
 /* Hover is a lift, NOT an accent border: an accent border is what a chosen
    answer looks like, and a cursor resting over a choice while the page
    scrolls made one box look already picked. Paul, 2026-09-19. */
-.choice:hover:not(:disabled){background:var(--panel);border-color:var(--line)}
+/* 🚨 MOUSE ONLY. On a phone :hover sticks to the last choice touched, even while
+   scrolling, and it looked like a selected answer (Paul, 2026-10-05, screenshot). */
+@media (hover:hover){ .choice:hover:not(:disabled){background:var(--panel);border-color:var(--line)} }
 .choice:disabled{cursor:default}
 .choice.ok{background:var(--accent-soft);border-color:var(--free);color:var(--free);font-weight:700}
 .choice.wrong{border-color:#e5484d;color:#e5484d}

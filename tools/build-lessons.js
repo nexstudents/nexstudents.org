@@ -431,7 +431,7 @@ function requireGround(L) {
    kinds-of-sentences' Proverbs 25:11.
    ⚠️ BOTH requireBoxes AND requireVisuals match this way. Anything else added
    that compares a `when` against story text has to strip the same way. */
-const MARKERS = ["[ex] ", "[verse] "];
+const MARKERS = ["[ex] ", "[verse] ", "[story] "];
 const unmark = (s) => {
   let t = String(s).trim();
   MARKERS.forEach((m) => { if (t.indexOf(m) === 0) t = t.slice(m.length); });

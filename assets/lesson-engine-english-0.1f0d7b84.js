@@ -340,6 +340,13 @@ PARTS.forEach(function(part){
        reference together. */
     if (text.indexOf("[ex] ") === 0) { p.classList.add("is-ex"); text = text.slice(5); }
     else if (text.indexOf("[verse] ") === 0) { p.classList.add("is-verse"); text = text.slice(8); }
+    /* 🚨 [story] MARKS A PARAGRAPH OF THE STORY ITSELF. Paul, 2026-10-05: "the story
+       of Rikki Tikki should have also been an example. the idea is that examples
+       don't look like instructions so the user can tell what is what." Boxed like
+       an example, but upright and flowing, because a whole story in italic one-
+       line-per-sentence would be hard to read. Twinned in bake-voice.js,
+       build-lessons.js and check-prose.js. Change one, change all four. */
+    else if (text.indexOf("[story] ") === 0) { p.classList.add("is-story"); text = text.slice(8); }
 
     var i = SENT.length;
     var span = document.createElement("span");
@@ -2176,7 +2183,11 @@ if ((VISUALS.length || PANEL_SOON) && dbox){
      student's first sight of the page was a blank box rather than the story.
      ⚠️ A READER WHO OPENS IT STILL GETS IT BACK. The stored value wins; only the
      ABSENCE of a choice now means closed. */
-  setDemoOpen(load("demo", "0") === "1", "init");
+  /* 🚨 ALWAYS CLOSED ON LOAD, 2026-10-05. Paul: "the visual panel automatically
+     stays open the start of the lessons and it needs to be closed the user can
+     open it". It used to restore the last choice, and one open on a device made
+     every later lesson open. A reader opens it per lesson, for a video or a frame. */
+  setDemoOpen(false, "init");
   measureSticky();
   paintDemo(0);
   dboxX.addEventListener("click", function(){ setDemoOpen(!demoOpen()); });

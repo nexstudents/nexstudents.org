@@ -33,7 +33,7 @@ module.exports = {
   title: "Conquest, Provinces, and City Life",
   unit: "World History &middot; U1-L4",
   /* The order is declared in history-units.js (labels 1-1..1-5); this mirrors it
-     so the prev/next arrows can find their neighbours. */
+     so the prev/next arrows can find their neighbors. */
   seq: { unit: 1, unitTitle: "Rome, and the Church That Outlived It", n: 4 },
 
   plan: {
