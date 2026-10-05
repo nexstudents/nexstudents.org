@@ -1369,11 +1369,11 @@ const resourcesIndex = () => {
 const planRow = (g) => !sameGrade(g, 7) ? (K8.GRADES.some((x) => sameGrade(x, g)) ? `
 <div class="wrap" style="padding-top:56px">
   ${group("Start With the Year Plan",
-    "The whole year, Week 1 to Week 36, Monday to Thursday, built from Missouri's standards. " +
+    "The whole year, Week 1 to Week 36, Monday to Thursday. " +
     "Read this first if you are teaching it.",
     `<div class="subj-sub">
       <a class="minibox" href="/grade-${gslug(g)}/plan/">
-        <b>The ${gradeLabel(g)} Year</b><span>36 weeks, Monday to Thursday</span>
+        <b>${gradeLabel(g)} Lesson Year Plan</b><span>Week 1 to Week 36, Monday to Thursday</span>
         <u>${K8.build(g).lessons} lessons in order &rarr;</u>
       </a>
     </div>`)}
@@ -1921,9 +1921,8 @@ const k8PlanBody = (g) => {
   }
   return planBody(plan, {
     perDay: plan.perDay.toFixed(1),
-    note: "Built from Missouri's Learning Standards: one standard is one lesson, and every " +
-          "unit ends in a review. Until a textbook names them, the titles are the standard's " +
-          "own words. Each row says what a student does;",
+    note: "One lesson at a time, and every unit ends in a review. Until a textbook names them, " +
+          "some titles are placeholders. Each row says what a student does;",
   });
 };
 const k8PlanPage = (g) => {
@@ -1931,15 +1930,18 @@ const k8PlanPage = (g) => {
   const home = "/grade-" + gslug(g) + "/";
   const seven = sameGrade(g, 7);
   return {
-    dir: seven ? "grade-7/plan/missouri" : "grade-" + gslug(g) + "/plan",
+    /* 🚨 NexStudents is a LESSON PLANNER, not a curriculum. Paul, 2026-10-05:
+       "every grade will get a year lesson plan. we're just using Missouri
+       standards to figure out what actually goes in each of these lessons and
+       units ... it's only a lesson planner and that is what we will call it."
+       So: "<Grade> Lesson Year Plan", weeks 1-36, and no state named. */
+    dir: "grade-" + gslug(g) + "/plan",
     active: null, pclass: "termshead",
-    title: name + (seven ? " Missouri Plan" : " Year Plan") + " | NexStudents",
-    desc: "The whole " + name + " year from Missouri's Learning Standards: every standard in English, History, Math and Science, dealt across 36 weeks.",
-    crumb: '<a href="' + home + '">' + name + '</a> &rsaquo; ' +
-           (seven ? '<a href="/grade-7/plan/">Year Plan</a> &rsaquo; Missouri' : 'Year Plan'),
-    h1: "The " + name + " Year, Week by Week.",
-    lead: "Every Missouri standard for " + name + ", in all four subjects, laid out across 36 weeks, Monday to Thursday." +
-          (seven ? " This is the state's version, beside the plan Kolten is on now." : ""),
+    title: name + " Lesson Year Plan | NexStudents",
+    desc: "The " + name + " Lesson Year Plan: Week 1 to Week 36, Monday to Thursday, every lesson in order across English, History, Math and Science.",
+    crumb: '<a href="' + home + '">' + name + '</a> &rsaquo; Lesson Year Plan',
+    h1: name + " Lesson Year Plan.",
+    lead: "Four subjects, Week 1 to Week 36, Monday to Thursday. Every lesson in the order it is taught.",
     body: k8PlanBody(g),
   };
 };
@@ -1981,7 +1983,6 @@ const planBody = (plan, o = {}) => {
           '<span class="plan-t">' + planTitle(sl) +
             '<span class="plan-m"><i class="plan-pip p-' + sl.state + '"></i>' +
               sl.subject + ' &middot; Unit ' + sl.unit + ' &middot; ' + sl.label +
-              (sl.code ? ' &middot; ' + sl.code : '') +
             '</span>' +
             (sl.done ? '<span class="plan-done">Done</span>' : '') +
           '</span>' +
