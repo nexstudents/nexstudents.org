@@ -616,7 +616,7 @@ const lessonCards = (list, showSubject, slots) => {
    and each course supplies its own adapter below. Adding a course means
    writing an adapter, never touching the pager. */
 const { UNITS, BUILT } = require("./leif-units.js");
-const { GRADE3, GRADE4, GRADE7 } = require("./english-units.js");
+const { GRADE3, GRADE4, GRADE7, HOLT7 } = require("./english-units.js");
 const { COURSE2 } = require("./maths-units.js");
 const { LIFE } = require("./science-units.js");
 const { WORLD } = require("./history-units.js");
@@ -1369,7 +1369,7 @@ const resourcesIndex = () => {
 const planRow = (g) => !sameGrade(g, 7) ? (K8.GRADES.some((x) => sameGrade(x, g)) ? `
 <div class="wrap" style="padding-top:56px">
   ${group("Start With the Year Plan",
-    "The whole year on real dates, four days a week, built from Missouri's standards. " +
+    "The whole year, Week 1 to Week 36, Monday to Thursday, built from Missouri's standards. " +
     "Read this first if you are teaching it.",
     `<div class="subj-sub">
       <a class="minibox" href="/grade-${gslug(g)}/plan/">
@@ -1380,20 +1380,16 @@ const planRow = (g) => !sameGrade(g, 7) ? (K8.GRADES.some((x) => sameGrade(x, g)
 </div>` : "") : `
 <div class="wrap" style="padding-top:56px">
   ${group("Start With the Year Plan",
-    "The whole year on real dates, four days a week, with the holidays already taken out. " +
-    "Read this first if you are teaching it.",
+    "The whole year, Week 1 to Week 36, Monday to Thursday. Read this first if you are teaching it.",
+    /* 🚨 ONE PLAN, ONE BUTTON. Paul, 2026-10-05: "you only need one of these to
+       follow ... I want only one page. this is the page you will follow and build
+       out each unit." The Missouri Version (grade-7/plan/missouri) and What
+       Missouri Expects (grade-7/standards) pages are GONE. Do not bring back a
+       second grade 7 plan beside this one. */
     `<div class="subj-sub">
       <a class="minibox" href="/grade-7/plan/">
-        <b>The 7th Grade Year</b><span>36 weeks, Monday to Thursday</span>
-        <u>429 lessons in order &rarr;</u>
-      </a>
-      <a class="minibox" href="/grade-7/standards/">
-        <b>What Missouri Expects</b><span>The state's 160 standards, checked against the plan</span>
-        <u>See what is covered &rarr;</u>
-      </a>
-      <a class="minibox" href="/grade-7/plan/missouri/">
-        <b>The Missouri Version</b><span>Every 7th grade standard as its own lesson</span>
-        <u>See the state's plan &rarr;</u>
+        <b>7th Grade Lesson Year Plan</b><span>Week 1 to Week 36, Monday to Thursday</span>
+        <u>${Object.values(YEAR.build().totals).reduce((a, b) => a + b, 0)} lessons in order &rarr;</u>
       </a>
     </div>`)}
 </div>`;
@@ -1413,7 +1409,9 @@ const yearOutline = (g) => {
   for (const w of plan.weeks) {
     if (w.kind !== "week") continue;
     for (const d of w.days) for (const sl of d.slots) {
-      const k = sl.subject + "|" + sl.unit;
+      /* course in the key: English changes books at week 6, and HM Unit 1 and
+         Holt Unit 1 are different units that share a number. */
+      const k = sl.subject + "|" + (sl.course || "") + "|" + sl.unit;
       const u = (seen[k] = seen[k] || { subject: sl.subject, n: sl.unit,
         title: sl.unitTitle, first: w.n, last: w.n, count: 0 });
       u.first = Math.min(u.first, w.n);
@@ -1548,7 +1546,26 @@ const sheetsIn   = (g, sub) => sheetsByGrade(g).filter(w => w.subject === sub);
    have no settled course name - "Glencoe Course 2" is a publisher label, not a
    course - and Paul has not picked one. A shelf with no `course` prints the bare
    U1-L1 it printed before. Do not invent a name to fill the gap. */
+/* Grade 7 English, Holt Elements of Literature. Paul, 2026-10-05: "fill that
+   lesson plan in units and lessons for the new school year plan and the 7th
+   grade cards." The cards follow english-units.js HOLT7, the same list the year
+   plan deals from, so the shelf and the plan cannot disagree on what comes next.
+   Labels are positions (U1-L1), titles are OURS (the skill), never the story. */
+const holtPager = (course) => course.units.map((u) => ({
+  n: u.n,
+  name: u.focus ? u.name + ": " + u.focus : u.name,
+  items: u.lessons.map((l, i) => ({
+    label: uLPair(u.n + "-" + (i + 1)),
+    title: l.title, slug: l.slug || null, thumb: l.thumb || null,
+  })),
+}));
+
 const COURSE_SHELVES = [
+  /* 🚨 GRADE 7 ENGLISH IS HOLT, NOT THE MISSOURI PLACEHOLDERS, from 2026-10-05.
+     Listed here so the k8 loop below skips grade 7 English. The HM grammar
+     lessons already built stay on their own K-5 grade shelves (k8-attach.js). */
+  { grade: 7, subject: "English", course: "Literature 7",
+    units: () => holtPager(HOLT7) },
   /* 🚨 HISTORY MOVED OFF leif-units.js ON 2026-09-04 and onto OUR plan.
      Paul: "we're kind of merging did you together ... into our own lesson plan",
      then "we can build our own entirely but it still needs to be a full year."
@@ -1937,17 +1954,26 @@ const planBody = (plan, o = {}) => {
     for (const d of w.days) for (const sl of d.slots) state[sl.state]++;
   }
 
+  /* "Done", "3 of 13 done" or "Not started": Kolten's place, never a date. */
+  const weekDone = (w) => {
+    const all = w.days.flatMap((d) => d.slots);
+    const n = all.filter((sl) => sl.done).length;
+    return !all.length ? "" : n === all.length ? "Done" : n ? n + " of " + all.length + " done" : "Not started";
+  };
+  let doneCount = 0;
+  for (const w of plan.weeks) if (w.kind === "week") for (const d of w.days) for (const sl of d.slots) if (sl.done) doneCount++;
+
   const weeks = plan.weeks.map((w) => {
-    if (w.kind === "break") {
-      return '<div class="plan-break"><b>' + w.name + '</b>' +
-             '<span>week of ' + prettyDate(w.monday) + ' &middot; no school</span></div>';
-    }
+    /* Weeks 1-36 only: a break is calendar, and the plan has no calendar. */
+    if (w.kind === "break") return "";
     const days = w.days.map((d) => {
-      const head = '<p class="plan-dh"><span>' + d.day + '</span><span>' +
-                   prettyDate(d.date) + '</span></p>';
+      /* 🚨 NO DATES ON THE PLAN, 2026-10-05. Kolten runs on a WEEK NUMBER, and a
+         date beside it read as "this is due now" when he was weeks behind it.
+         Paul: "let's get rid of what confuses you." */
+      const head = '<p class="plan-dh"><span>' + d.day + '</span></p>';
       if (d.holiday) {
         return '<div class="plan-day">' + head +
-               '<p class="plan-off">' + d.holiday + ' &mdash; no school</p></div>';
+               '<p class="plan-off">No school</p></div>';
       }
       const rows = d.slots.map((sl) =>
         '<div class="plan-slot">' +
@@ -1957,14 +1983,14 @@ const planBody = (plan, o = {}) => {
               sl.subject + ' &middot; Unit ' + sl.unit + ' &middot; ' + sl.label +
               (sl.code ? ' &middot; ' + sl.code : '') +
             '</span>' +
+            (sl.done ? '<span class="plan-done">Done</span>' : '') +
           '</span>' +
         '</div>').join("\n        ");
       return '<div class="plan-day">' + head + rows + '</div>';
     }).join("\n      ");
     return '<section class="plan-week" id="week-' + w.n + '">' +
       '<div class="plan-wh"><span class="plan-wn">Week ' + w.n + '</span>' +
-      '<span class="plan-wd">' + prettyDate(w.days[0].date) + ' &ndash; ' +
-      prettyDate(w.days[w.days.length - 1].date) + '</span></div>' +
+      '<span class="plan-wd">' + weekDone(w) + '</span></div>' +
       '<div class="plan-days">' + days + '</div></section>';
   }).join("\n    ");
 
@@ -1998,7 +2024,8 @@ const planBody = (plan, o = {}) => {
       const rows = u.items.map((sl) =>
         '<li class="plan-ul"><i class="plan-pip p-' + sl.state + '"></i>' +
         '<span class="plan-ull">' + sl.label + '</span>' +
-        '<span>' + planTitle(sl) + '</span></li>').join("\n          ");
+        '<span>' + planTitle(sl) + '</span>' +
+        (sl.done ? '<span class="plan-done">Done</span>' : '') + '</li>').join("\n          ");
       return '<article class="plan-unit">' +
         '<div class="plan-uh">' +
           '<span class="plan-tag t-' + SUBJ_ABBR[subject] + '">' + SUBJ_ABBR[subject] + '</span>' +
@@ -2020,11 +2047,12 @@ const planBody = (plan, o = {}) => {
     </div>
     <p class="plan-key">
       <span><i class="plan-pip p-built"></i>${state.built} built and ready</span>
-      <span><i class="plan-pip p-todo"></i>${state.todo} still to write</span>
+      <span><i class="plan-pip p-todo"></i>${state.todo} still to write</span>${doneCount ? `
+      <span><span class="plan-done">Done</span>${doneCount} finished by Kolten</span>` : ""}
     </p>
     <p class="plan-note">${o.note || "This is the plan, not the build. Each row says what a student does;"}
-      the dot says whether that page exists yet. Monday to Thursday, four days a week, from
-      ${prettyDate(plan.firstDay)} 2026 to ${prettyDate(plan.lastDay)} 2027.</p>
+      the dot says whether that page exists yet. Monday to Thursday, four days a week,
+      36 weeks, counted by week number rather than by date.</p>
 
     <div class="plan-views" role="group" aria-label="How to read the plan">
       <button type="button" class="plan-vb" data-view="weeks" aria-pressed="true">By week</button>
@@ -2779,30 +2807,24 @@ const pages = [
      use — do not add a second rule for it. */
   /* The year plan. Linked from the grade 7 page; see yearPlanBody above. */
   { dir: "grade-7/plan", active: null, pclass: "termshead",
-    title: "7th Grade Year Plan | NexStudents",
-    desc: "The whole 7th grade year on real dates: 36 weeks, Monday to Thursday, every lesson in order across English, History, Math and Science.",
-    crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Year Plan',
-    h1: "The 7th Grade Year, Week by Week.",
-    lead: "Four subjects, 36 weeks, Monday to Thursday. Every lesson in the order it should be taught, with the holidays and breaks already taken out.",
+    title: "7th Grade Lesson Year Plan | NexStudents",
+    desc: "The 7th Grade Lesson Year Plan: Week 1 to Week 36, Monday to Thursday, every lesson in order across English, History, Math and Science.",
+    crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Lesson Year Plan',
+    /* Paul, 2026-10-05: "just call it something like 7th grade lesson year plan ...
+       we don't need one specific for each state ... I'm just using it as a
+       reference." Missouri informs WHAT is taught; no state is named on the page. */
+    h1: "7th Grade Lesson Year Plan.",
+    lead: "Four subjects, Week 1 to Week 36, Monday to Thursday. Every lesson in the order it is taught.",
     body: yearPlanBody() },
 
   /* The K-8 plans from Missouri's standards, one per grade. Grade 7's sits
      under its real plan until Paul decides which one Kolten follows. */
-  ...K8.GRADES.map(k8PlanPage),
+  ...K8.GRADES.filter((g) => !sameGrade(g, 7)).map(k8PlanPage),   /* grade 7 has ONE plan, /grade-7/plan/ */
 
   /* State Standards, the resource page → ssPages above. */
   ...ssPages(),
 
-  /* The standards check. Sits beside the year plan and answers the opposite
-     question: not what a student does, but what the state expects and whether
-     the plan meets it. See standardsBody above. */
-  { dir: "grade-7/standards", active: null, pclass: "termshead",
-    title: "What Missouri Expects | 7th Grade | NexStudents",
-    desc: "Every Missouri Learning Standard a 7th grader is measured against, in all four core subjects, checked against the year plan. Links to the state documents throughout.",
-    crumb: '<a href="/grade-7/">7th Grade</a> &rsaquo; Standards',
-    h1: "What Missouri Expects.",
-    lead: "All 160 Missouri Learning Standards for 7th grade, across English, History, Math and Science, lined up against the year plan so you can see the holes. Every subject links to the state document it came from.",
-    body: standardsBody() },
+  /* /grade-7/standards/ was removed 2026-10-05: one grade 7 plan page only. */
 
   { dir: "extras", active: "x", pclass: "termshead",
     title: "Extras | NexStudents",

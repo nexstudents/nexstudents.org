@@ -30,7 +30,18 @@
 
 const { LIFE } = require("./science-units.js");
 const { WORLD } = require("./history-units.js");
-const { GRADE7 } = require("./english-units.js");
+const { GRADE7, HOLT7 } = require("./english-units.js");
+
+/* 🚨 ENGLISH IS HOLT FROM WEEK 1. Paul, 2026-10-05: "don't start Kolten on
+   middle lesson units. he needs to start in the beginning ... build all previous
+   five weeks and start with him on the first week."
+   ⚠️ A first pass kept the Houghton Mifflin lessons he did in weeks 1-5 and
+   began Holt at week 6. Wrong: the plan is the COURSE, and the course begins at
+   Unit 1, Lesson 1 in week 1. Kolten simply starts English at week 1 while his
+   other subjects carry on where they are - being behind in one subject is fine
+   ("I don't mind that Kolten is behind"). HM stays in HG as his record.
+   Set above 1 only to keep HM lessons at the front again. */
+const HOLT_FROM_WEEK = 1;
 const { COURSE2 } = require("./maths-units.js");
 
 const D = (y, m, d) => new Date(Date.UTC(y, m - 1, d));
@@ -59,6 +70,14 @@ const HOLIDAYS = [
      is NOT listed here. Easter 2027 is 28 March - computed, not guessed. Check
      this every year; Easter moves and the break week may not follow it. */
 ];
+
+/* 🚨 WHAT KOLTEN HAS FINISHED, BY WEEK NUMBER - not by date. Paul, 2026-10-05:
+   "let's get rid of the dates. just Mark what is done and what is not done ...
+   what confuses you is that the date doesn't match what Kolten is on."
+   One number per subject: every lesson in that week or earlier is DONE. Bump it
+   when a week is graded in HomeschoolGrades. English is 0 because Holt starts
+   at Unit 1 on week 1; the Houghton Mifflin weeks he did are in HG, not here. */
+const DONE_THROUGH = { English: 0, History: 4, Math: 4, Science: 4 };
 
 /* Per two-week cycle. Change these four numbers to re-balance the year. */
 const CYCLE = { Math: 7, Science: 8, English: 5, History: 5 };
@@ -114,6 +133,11 @@ const flatten = {
        SOURCE, not a state. History lessons are built from Leif's examples plus
        McDougal, the same way the other four units already are. */
     state: i.slug ? "built" : "todo", href: hrefOf(i.slug),
+  }))),
+  Holt: () => HOLT7.units.flatMap((u) => u.lessons.map((l, idx) => ({
+    subject: "English", unit: u.n, unitTitle: u.name, course: "Holt",
+    label: u.n + "-" + (idx + 1), title: l.title, book: l.book, page: l.page,
+    state: l.slug ? "built" : "todo", href: hrefOf(l.slug),
   }))),
   English: () => GRADE7.units.flatMap((u) => (u.lessons || u.items || []).map((l, idx) => ({
     subject: "English", unit: u.n, unitTitle: u.name || u.title,
@@ -206,7 +230,17 @@ const patternFor = (weekNumber) => (weekNumber % 2 === 1 ? WEEK_A : WEEK_B);
 function build() {
   const weeks = calendar();
   const queue = {};
-  for (const s of Object.keys(flatten)) queue[s] = flatten[s]();
+  for (const s of Object.keys(flatten)) if (s !== "Holt") queue[s] = flatten[s]();
+
+  /* HM fills only the English slots before HOLT_FROM_WEEK; Holt takes the rest. */
+  let hmSlots = 0;
+  for (const w of weeks) {
+    if (w.kind !== "week" || w.n >= HOLT_FROM_WEEK) continue;
+    w.days.forEach((day, di) => {
+      if (!day.holiday) hmSlots += patternFor(w.n)[di].filter((x) => x === "English").length;
+    });
+  }
+  queue.English = queue.English.slice(0, hmSlots).concat(flatten.Holt());
 
   const totals = {};
   for (const s of Object.keys(queue)) totals[s] = queue[s].length;
@@ -222,6 +256,7 @@ function build() {
         const next = queue[subject][placed[subject]];
         if (!next) { unplaced++; continue; } /* course finished early */
         placed[subject]++;
+        next.done = w.n <= (DONE_THROUGH[subject] || 0);
         day.slots.push(next);
       }
     });
@@ -243,6 +278,12 @@ function build() {
   roomLast.reverse();
   let sweep = 0;
   for (const subject of Object.keys(queue)) {
+    /* 🚨 ENGLISH IS NEVER SWEPT. Holt is a full 36-week course and Kolten
+       starts it at week 6, so it is ~4 weeks longer than what is left of the
+       year. Sweeping crammed 11 English lessons into the final week. Paul,
+       2026-10-05: "I don't mind that Kolten is behind we can try to catch him
+       up." The overflow stays in `leftover` as catch-up, not a fake May week. */
+    if (subject === "English") continue;
     while (placed[subject] < queue[subject].length && sweep < roomLast.length) {
       const day = roomLast[sweep];
       if (day.slots.length >= 4) { sweep++; continue; }
@@ -265,7 +306,7 @@ function build() {
   };
 }
 
-module.exports = { build, calendar, CYCLE, WEEK_A, WEEK_B, patternFor, BREAK_WEEKS, HOLIDAYS,
+module.exports = { build, calendar, DONE_THROUGH, CYCLE, WEEK_A, WEEK_B, patternFor, BREAK_WEEKS, HOLIDAYS,
                    FIRST_MONDAY, TEACHING_WEEKS };
 
 if (require.main === module) {

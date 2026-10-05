@@ -3040,6 +3040,11 @@ nav{border-bottom:1px solid var(--line)}
 .plan-note{max-width:66ch;color:var(--dim);margin:0 0 30px}
 .plan-pip{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
 .p-built{background:#3fae74}.p-paper{background:#d5a03c}.p-todo{background:var(--line)}
+/* Kolten finished it. A FILL under white text, so #1f7a45 (5.4:1), not the
+   lighter --laurel (3.4:1 under white). Fixed on every theme on purpose. */
+.plan-done{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:999px;font-size:10px;
+  font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:#1f7a45;color:#fff;vertical-align:middle}
+.plan-key .plan-done{margin-left:0}
 
 .plan-week{border:1px solid var(--line);border-radius:4px;margin:0 0 20px;overflow:hidden;background:var(--panel)}
 .plan-wh{display:flex;gap:14px;align-items:baseline;padding:11px 16px;border-bottom:1px solid var(--line)}

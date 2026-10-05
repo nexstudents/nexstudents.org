@@ -640,6 +640,182 @@ const GRADE8 = {
   units: [],
 };
 
+/* ─────────────────────────────────────────────────────────────────────────
+   HOLT 7 — Holt, Elements of Literature, First Course, 2000.
+   `elementsoflitera0000unse_i0h7` · 920 leaves · BORROW-ONLY · Texas Annotated
+   Teacher's Edition. Printed page N is leaf N + 75 in Collection One.
+
+   ⭐ KOLTEN'S 7TH GRADE ENGLISH FROM WEEK 6 ON. Paul, 2026-10-05: the Houghton
+   Mifflin course above is grammar only and covered 3 of Missouri's 40 grade 7
+   ELA standards. Holt replaces it, numbered Unit 1 onward, "because I don't
+   want to start Kolten in a lesson that is in the middle."
+
+   🚨 THE STRUCTURE IS THE BOOK'S OWN, NOT MINE. Paul: "you should have read the
+   index how each unit is structured." Every collection opens with a Collection
+   Planning Guide, and its SKILLS FOCUS table lists one ROW per selection or
+   feature, each carrying seven strands: reading skill, element of literature,
+   language/grammar, vocabulary/spelling, writing, listening/speaking, viewing.
+   Transcribed row by row off those tables on 2026-10-05 (leaves 72, 178, 270,
+   352, 424, 510, 590, 690). So:
+     · A LESSON IS BUILT FROM A ROW. The element is the objective, the reading
+       skill is how he reads, and the row's grammar and vocabulary travel WITH
+       it. Nothing is pulled out of its row into a lesson of its own.
+       ⚠️ But not every row becomes a lesson: one lesson per row was 116 lessons,
+       too many for a year. Which rows made the cut, and why, is the comment below.
+     · `title` names the SKILL, `book` names the selection. Most selections are
+       copyrighted, and a lesson named after its story is the wrong lesson
+       (/teach-plan). The skill gets taught on a public-domain text instead.
+     · `pd: true` only where the text is known to be public domain. Unmarked
+       means CHECK before building, not "copyrighted".
+     · Rikki-tikki-tavi is split in two (pp. 2-10, 11-21). It is the longest read.
+     · Every unit ends in a Unit Review (BEHAVIOR: every unit ends with a review).
+   ───────────────────────────────────────────────────────────────────────── */
+/* ⭐ STANDARDS FIRST, BOOK SECOND. Paul, 2026-10-05: "look at the Missouri
+   standards what the student needs to cover ... match what needs to be learned
+   and fit it in our core lesson and unit structure ... don't give the student
+   too much to handle." So this is NOT one lesson per Skills Focus row (that
+   was 116 lessons, 46 weeks at our pace). It is the rows that teach Missouri's
+   grade 7 ELA standards (tools/mls-grade-7.js), fitted to the year shape:
+   5 English lessons per two weeks, 36 weeks, about 88 slots.
+
+   THE FOUR FOLDING RULES - each one follows the book's own pairing:
+     1. A one-page Reading Skills and Strategies or Elements of Literature
+        feature joins the selection after it. The book teaches the term on the
+        one page and practises it on the next selection.
+     2. The Sentence Workshop becomes the REVISE half of that collection's
+        Writer's Workshop. It sits on the page right after it in every unit.
+     3. Every Writer's Workshop is TWO lessons: plan and draft, then revise.
+        Missouri's writing standards (7.W.2) were all gaps.
+     4. No Questions Asked, most Reading for Life and Learning for Life rows
+        are dropped UNLESS they carry a gap standard (research, persuasion,
+        speaking). Independent reading (7.RL.3.D) is every lesson already.
+
+   `pages` is where to read when this lesson is BUILT. `std` is the Missouri
+   code it is there to cover. `title` names the SKILL, `book` the selection.
+   `pd: true` only where the text is known public domain; anything else gets
+   its skill taught on a public-domain text. The full row-by-row Skills Focus
+   transcription lives in Projects/kolten-homeschool/plans/holt-7-course-plan.md. */
+const L = (title, book, pages, std, o) => Object.assign({ title, book, pages, page: +String(pages).split("-")[0], std }, o || {});
+const REVIEW = (n, name) => ({ title: "Unit " + n + " Review: " + name, book: "Collection " + n + " review", review: true });
+
+const HOLT7 = {
+  grade: 7,
+  book: {
+    title: "Elements of Literature, First Course",
+    publisher: "Holt, Rinehart and Winston",
+    year: 2000,
+    archive: "elementsoflitera0000unse_i0h7",
+    leaves: 920,
+    access: "borrow-only",
+    edition: "Texas Annotated Teacher's Edition",
+  },
+  units: [
+    { n: 1, name: "Out Here on My Own", focus: "The Short Story", page: 1, lessons: [
+      L("What Conflict Is", "Rikki-tikki-tavi, part 1 (Kipling)", "2-10", ["7.RL.2.D", "7.RL.1.A"], { pd: true }),
+      L("Conflicts and the Hero", "Rikki-tikki-tavi, part 2; Language Link: Specific Verbs", "11-21", ["7.RL.2.D", "7.RL.2.C"], { pd: true }),
+      L("The Story Arc", "Elements of Literature: The Short Story", "22-23", ["7.RL.2.A", "7.RL.2.D"]),
+      L("What a Symbol Is", "The Runaway (Frost)", "24-27", ["7.RL.1.B"], { pd: true }),
+      L("Finding the Theme", "Song of the Trees (Mildred D. Taylor)", "28-44", ["7.RL.1.D"]),
+      L("Thinking About Your Reading", "RSS: Metacognition + The Smallest Dragonboy (McCaffrey)", "45-63", ["7.RL.3.D", "7.RL.2.D"]),
+      L("Suspense and Foreshadowing", "Three Skeleton Key (Toudouze)", "64-79", ["7.RL.2.A", "7.RL.1.A"]),
+      L("Reading a Character", "A Day's Wait (Hemingway)", "80-87", ["7.RL.1.A", "7.RL.2.D"]),
+      L("Writing a Short Story: Plan and Draft", "Writer's Workshop: Story", "94-97", ["7.W.2.A.a"]),
+      L("Writing a Short Story: Revise", "Writer's Workshop + Sentence Workshop: Fragments", "98-99", ["7.W.3.A.a", "7.W.3.A.c"]),
+      REVIEW(1, "The Short Story"),
+    ]},
+    { n: 2, name: "Who Am I?", focus: "Autobiography and Nonfiction", page: 102, lessons: [
+      L("Fact and Opinion in Autobiography", "from Homesick (Jean Fritz)", "104-120", ["7.RI.2.B", "7.RI.1.A", "7.RI.3.D"]),
+      L("Kinds of Nonfiction", "Elements of Literature: Nonfiction", "121-122", ["7.RI.2.B"]),
+      L("Comparing and Contrasting", "RSS: Comparing and Contrasting + from Barrio Boy (Galarza)", "123-133", ["7.RI.3.B", "7.RL.1.B"]),
+      L("Description and Word Choice", "Fish Cheeks (Amy Tan)", "134-143", ["7.RI.2.C"]),
+      L("Main Idea, Stated or Implied", "Names/Nombres (Julia Alvarez)", "144-151", ["7.RI.1.D"]),
+      L("Setting and Sensory Details", "The Naming of Names (Ray Bradbury)", "152-167", ["7.RL.2.D"]),
+      L("Figures of Speech", "I'm Nobody! (Emily Dickinson)", "168-171", ["7.RL.1.B", "7.RL.2.C"], { pd: true }),
+      L("Holding a Group Discussion", "Speaking and Listening Workshop: Group Discussion", "180-181", ["7.SL.1.A", "7.SL.1.C"]),
+      L("Writing About Your Life: Plan and Draft", "Writer's Workshop: Autobiographical Incident", "182-185", ["7.W.2.A.a"]),
+      L("Writing About Your Life: Revise", "Writer's Workshop + Sentence Workshop: Subordinate Clauses", "186-187", ["7.W.3.A.b"]),
+      REVIEW(2, "Autobiography and Nonfiction"),
+    ]},
+    { n: 3, name: "Do the Right Thing", focus: "Point of View and Argument", page: 190, lessons: [
+      L("Foreshadowing and Internal Conflict", "After Twenty Years (O. Henry)", "192-201", ["7.RL.2.A", "7.RL.1.A"], { pd: true }),
+      L("Point of View", "Elements of Literature: Point of View", "202-203", ["7.RL.2.B"]),
+      L("Predictions and Flashback", "RSS: Making Predictions + A Mason-Dixon Memory (Clifton Davis)", "204-215", ["7.RI.2.A", "7.RI.3.C"]),
+      L("Third-Person Limited Point of View", "The No-Guitar Blues (Gary Soto)", "216-225", ["7.RL.2.B"]),
+      L("Tone", "Madam and the Rent Man (Langston Hughes)", "226-229", ["7.RL.2.C"]),
+      L("First-Person Narrator and History", "Bargain (A. B. Guthrie)", "230-243", ["7.RL.2.B", "7.RL.3.B", "7.RL.3.C"]),
+      L("External and Internal Conflict", "Amigo Brothers (Piri Thomas)", "244-256", ["7.RL.2.D"]),
+      L("Judging a Persuasive Message", "Reading for Life: Evaluating a Persuasive Message", "266", ["7.RI.2.D", "7.SL.1.B"]),
+      L("Supporting a Position: Plan and Draft", "Writer's Workshop: Supporting a Position", "260-263", ["7.W.2.A.c"]),
+      L("Supporting a Position: Revise", "Writer's Workshop + Sentence Workshop: Run-on Sentences", "264-265", ["7.W.3.A.a", "7.W.3.A.c"]),
+      REVIEW(3, "Point of View and Argument"),
+    ]},
+    { n: 4, name: "We Rookies Have to Stick Together", focus: "Drama", page: 268, lessons: [
+      L("How a Play Works", "Elements of Literature: Drama", "270-271", ["7.RL.2.A"]),
+      L("Reading a Script", "RSS: Previewing the Text + Brian's Song, first half (William Blinn)", "272-300", ["7.RL.2.A", "7.RL.3.A", "7.RL.1.C"]),
+      L("Change and Conflict in a Drama", "Brian's Song, second half", "300-325", ["7.RL.2.D"]),
+      L("Reading Aloud with Expression", "Speaking and Listening Workshop: Oral Interpretation", "326-327", ["7.SL.2.A", "7.SL.2.B"]),
+      L("Writing a How-To Essay: Plan and Draft", "Writer's Workshop: How-To Essay", "328-331", ["7.W.2.A.b", "7.W.3.A.d"]),
+      L("Writing a How-To Essay: Revise", "Writer's Workshop + Sentence Workshop: Combining with And, But, Or", "332-333", ["7.W.3.A.b"]),
+      L("Reading a Manual", "Reading for Life: Reading a Manual", "334", ["7.RI.2.A", "7.RI.1.B", "7.RI.1.C"]),
+      L("Interviewing to Answer a Question", "Learning for Life: Conducting an Interview to Research a Question", "335", ["7.W.1.A.a", "7.SL.1.B"]),
+      REVIEW(4, "Drama"),
+    ]},
+    { n: 5, name: "Living in the Heart", focus: "Poetry", page: 336, lessons: [
+      L("Sound and Rhythm in a Narrative Poem", "EoL: Poetry: Sound Effects + The Highwayman (Alfred Noyes)", "338-349", ["7.RL.2.A", "7.RL.2.C", "7.RL.1.C"], { pd: true }),
+      L("Repetition", "Annabel Lee (Edgar Allan Poe)", "350-354", ["7.RL.2.A"], { pd: true }),
+      L("Character, Cause, and Effect", "EoL: Poetry: Images + User Friendly (T. Ernesto Bethancourt)", "355-366", ["7.RL.2.D", "7.RL.1.A"]),
+      L("Fact, Opinion, and a Valid Opinion", "RSS: Thinking Critically + Miss Awful (Arthur Cavanaugh)", "367-385", ["7.RI.2.D", "7.RL.1.A"]),
+      L("Motivation and Exaggeration", "The Only Girl in the World for Me (Bill Cosby)", "386-392", ["7.RL.2.D"]),
+      L("Mood and Personification", "Gold (Pat Mora)", "393-396", ["7.RL.2.C"]),
+      L("Simile, Metaphor, and Free Verse", "EoL: Figures of Speech + My Father Is a Simple Man / Mama Is a Sunrise", "397-403", ["7.RL.1.B", "7.RL.2.A"]),
+      L("Conducting an Interview", "Speaking and Listening Workshop: Interviewing", "408-409", ["7.SL.1.B", "7.SL.2.A"]),
+      L("Writing a Biographical Sketch: Plan and Draft", "Writer's Workshop: Biographical Sketch", "410-413", ["7.W.2.A.b"]),
+      L("Writing a Biographical Sketch: Revise", "Writer's Workshop + Sentence Workshop: Revising Wordy Sentences", "414-415", ["7.W.3.A.b"]),
+      REVIEW(5, "Poetry"),
+    ]},
+    { n: 6, name: "This Old Earth", focus: "Nonfiction and the Natural World", page: 418, lessons: [
+      L("Refrain and Call and Response", "The Creation (James Weldon Johnson)", "420-425", ["7.RL.2.A", "7.RL.3.C"], { pd: true }),
+      L("Origin Myths and Order of Events", "Sky Woman (Joseph Bruchac)", "426-432", ["7.RL.3.C", "7.RL.1.D"]),
+      L("Cause and Effect in Nonfiction", "RSS: Organizing Ideas + When the Earth Shakes (Patricia Lauber)", "433-442", ["7.RI.2.A", "7.RI.1.A", "7.RI.1.C"]),
+      L("Main Idea in Nonfiction", "EoL: Nonfiction + from Earthquakes (Simon) / from Survive the Savage Sea (Robertson)", "443-459", ["7.RI.1.D", "7.RI.3.B", "7.RI.3.D"]),
+      L("Rhyme, Style, and Personification", "maggie and milly and molly and may (Cummings) + I Am of the Earth / Early Song", "460-467", ["7.RL.2.C"]),
+      L("The Author's Purpose", "Antaeus (Borden Deal)", "468-481", ["7.RI.2.B", "7.RL.2.C"]),
+      L("Writing from Observation: Plan and Draft", "Writer's Workshop: Observational Writing", "486-489", ["7.W.2.A.b"]),
+      L("Writing from Observation: Revise", "Writer's Workshop + Sentence Workshop: Variety of Sentence Structures", "490-491", ["7.W.3.A.b"]),
+      L("Inductive and Deductive Reasoning", "Reading for Life: Inductive and Deductive Reasoning", "492", ["7.RI.2.D"]),
+      L("Researching a Science Question", "Learning for Life: Saving Our Planet: Science Research", "493", ["7.W.1.A.a", "7.W.1.A.b"]),
+      REVIEW(6, "Nonfiction and the Natural World"),
+    ]},
+    { n: 7, name: "Our Classic Heritage", focus: "Myths and Fables", page: 494, lessons: [
+      L("The Myths of Greece and Rome", "Elements of Literature: The Myths of Greece and Rome", "496-499", ["7.RL.3.C"]),
+      L("Causes and Conclusions in a Myth", "The Origin of the Seasons (Olivia Coolidge)", "500-511", ["7.RL.1.A"]),
+      L("Summarizing a Myth", "Orpheus, the Great Musician (Olivia Coolidge)", "512-520", ["7.RL.1.D"]),
+      L("Context Clues and Evidence", "RSS: Using Context Clues + Echo and Narcissus (Roger Lancelyn Green)", "521-529", ["7.RL.1.B", "7.RL.1.A"]),
+      L("The Moral of a Story", "The Flight of Icarus (Sally Benson)", "530-539", ["7.RL.1.D"]),
+      L("Irony", "King Midas and the Golden Touch (Pamela Oldfield)", "558-564", ["7.RL.2.C", "7.RL.2.D"]),
+      L("Fables and a Text's Purpose", "EoL: Fables + Aesop's Fables", "565-577", ["7.RL.1.D", "7.RL.2.A"], { pd: true }),
+      L("Writing an Evaluation: Plan and Draft", "Writer's Workshop: Evaluation", "582-585", ["7.W.2.A.c"]),
+      L("Writing an Evaluation: Revise", "Writer's Workshop + Sentence Workshop: Varying Sentence Length", "586-587", ["7.W.3.A.b"]),
+      L("Movies, Media, and Values", "Learning for Life: Investigating the Media and Values", "589", ["7.RL.3.A", "7.RI.3.A", "7.SL.1.B"]),
+      REVIEW(7, "Myths and Fables"),
+    ]},
+    { n: 8, name: "900 Cinderellas", focus: "Folk Tales and Research", page: 590, lessons: [
+      L("Motif and Main Idea", "Aschenputtel (Grimm, translated by Lucy Crane)", "592-606", ["7.RL.1.D", "7.RL.2.A"], { pd: true }),
+      L("Comparing Two Versions of a Tale", "The Algonquin Cinderella (Cox) + Yeh-Shen (Louie)", "607-624", ["7.RL.3.B", "7.RL.3.C"]),
+      L("Summarizing a Folk Tale", "EoL: Folk Tales + RSS: Summarizing", "625-627", ["7.RL.1.D"]),
+      L("The Hero", "Oni and the Great Bird (Abayomi Fuja)", "628-637", ["7.RL.2.D", "7.RL.3.C"]),
+      L("Metamorphosis and Predictions", "Master Frog (Lynette Dyer Vuong)", "638-648", ["7.RL.1.A"]),
+      L("Searching the Internet", "Reading for Life: Searching the Internet", "678", ["7.W.1.A.b", "7.W.3.A.e"]),
+      L("Writing a Report: Research and Notes", "Writer's Workshop: Informative Report", "672-674", ["7.W.1.A.a", "7.W.1.A.b"]),
+      L("Writing a Report: Draft and Cite Sources", "Writer's Workshop: Informative Report", "674-676", ["7.W.2.A.b", "7.W.1.A.a"]),
+      L("Writing a Report: Revise", "Writer's Workshop + Sentence Workshop: Parallel Structure", "676-677", ["7.W.3.A.a", "7.W.3.A.c"]),
+      L("Presenting Your Report", "Speaking and Listening Workshop: Speaking to Inform", "670-671", ["7.SL.2.A", "7.SL.2.B", "7.SL.2.C"]),
+      REVIEW(8, "Folk Tales and Research"),
+    ]},
+  ],
+};
+
+
 /* ── counts, so a miscount is caught rather than believed ───────────────── */
 /* ⚠️ TWO SHAPES ON PURPOSE. Harcourt nests unit > chapter > lesson; Houghton
    Mifflin has no chapter layer, just unit > lesson. Flattening HM into a fake
@@ -662,7 +838,7 @@ function tally(course) {
   return { units: course.units.length, chapters, lessons, reviews, built, gaps };
 }
 
-module.exports = { GRADE3, GRADE4, GRADE7, GRADE8, tally };
+module.exports = { GRADE3, GRADE4, GRADE7, GRADE8, HOLT7, tally };
 
 if (require.main === module) {
   for (const [name, c] of [["GRADE 3", GRADE3], ["GRADE 4", GRADE4], ["GRADE 7", GRADE7], ["GRADE 8", GRADE8]]) {
