@@ -248,11 +248,45 @@ function build() {
   const placed = { Math: 0, Science: 0, English: 0, History: 0 };
   let unplaced = 0;
 
+  /* 🚨 FROM WEEK 6 THE SUBJECTS ARE PACED, NOT PATTERNED. Paul, 2026-10-05:
+     "fix all of the math lessons on weeks 35 and 36 ... the rest is all math."
+     The fixed fortnight gave Math 7 slots per 8 days for 137 lessons, so 13
+     piled into the last two weeks while Science and History ran out early.
+     From PACE_FROM_WEEK on, each day keeps the pattern's SIZE (3, or 4 on the
+     long Thursday) but its subjects go to whoever is furthest behind an even
+     pace to the finish, so all four end in Week 36 together. Weeks before it
+     stay exactly as Kolten did them. */
+  const PACE_FROM_WEEK = 6;
+  const ORDER = ["Math", "Science", "English", "History"];
+  let pace = null;                           /* set on the first paced day */
+
   for (const w of weeks) {
     if (w.kind !== "week") continue;
     w.days.forEach((day, di) => {
       if (day.holiday) return;               /* no work on a holiday */
-      for (const subject of patternFor(w.n)[di]) {
+      let todays = patternFor(w.n)[di];
+      if (w.n >= PACE_FROM_WEEK) {
+        if (!pace) {
+          let slots = 0;
+          for (const w2 of weeks) if (w2.kind === "week" && w2.n >= PACE_FROM_WEEK)
+            w2.days.forEach((d2, i2) => { if (!d2.holiday) slots += patternFor(w2.n)[i2].length; });
+          pace = { slots, used: 0, start: {}, got: {} };
+          for (const s of ORDER) { pace.start[s] = queue[s].length - placed[s]; pace.got[s] = 0; }
+        }
+        const k = todays.length, pick = [];
+        pace.used += k;
+        /* behind = where an even pace says this subject should be by the end of
+           today, minus what it has had. Biggest gap first, one slot each. */
+        const behind = (s) => pace.start[s] * pace.used / pace.slots - pace.got[s];
+        const open = ORDER.filter((s) => placed[s] < queue[s].length)
+          .sort((a, b) => behind(b) - behind(a));
+        for (const s of open) if (pick.length < k) pick.push(s);
+        while (pick.length < k && open.length) pick.push(open[0]);   /* a short list late in the year */
+        pick.forEach((s) => pace.got[s]++);
+        todays = ORDER.filter((s) => pick.includes(s))
+          .flatMap((s) => Array(pick.filter((x) => x === s).length).fill(s));
+      }
+      for (const subject of todays) {
         const next = queue[subject][placed[subject]];
         if (!next) { unplaced++; continue; } /* course finished early */
         placed[subject]++;
