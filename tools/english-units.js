@@ -724,9 +724,9 @@ const HOLT7 = {
       Object.assign(REVIEW(1, "The Short Story"), { slug: "english/unit-1-review-the-short-story" }),
     ]},
     { n: 2, name: "Who Am I?", focus: "Autobiography and Nonfiction", page: 102, lessons: [
-      L("Fact and Opinion in Autobiography", "from Homesick (Jean Fritz)", "104-120", ["7.RI.2.B", "7.RI.1.A", "7.RI.3.D"]),
-      L("Kinds of Nonfiction", "Elements of Literature: Nonfiction", "121-122", ["7.RI.2.B"]),
-      L("Comparing and Contrasting", "RSS: Comparing and Contrasting + from Barrio Boy (Galarza)", "123-133", ["7.RI.3.B", "7.RL.1.B"]),
+      L("Fact and Opinion in Autobiography", "from Homesick (Jean Fritz)", "104-120", ["7.RI.2.B", "7.RI.1.A", "7.RI.3.D"], { slug: "english/fact-and-opinion-in-autobiography" }),
+      L("Kinds of Nonfiction", "Elements of Literature: Nonfiction", "121-122", ["7.RI.2.B"], { slug: "english/kinds-of-nonfiction" }),
+      L("Comparing and Contrasting", "RSS: Comparing and Contrasting + from Barrio Boy (Galarza)", "123-133", ["7.RI.3.B", "7.RL.1.B"], { slug: "english/comparing-and-contrasting" }),
       L("Description and Word Choice", "Fish Cheeks (Amy Tan)", "134-143", ["7.RI.2.C"]),
       L("Main Idea, Stated or Implied", "Names/Nombres (Julia Alvarez)", "144-151", ["7.RI.1.D"]),
       L("Setting and Sensory Details", "The Naming of Names (Ray Bradbury)", "152-167", ["7.RL.2.D"]),

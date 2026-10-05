@@ -149,7 +149,7 @@ const LIFE = {
         { label: "T", title: "Technology: The Bacteria Factory", page: 89, kind: "feature" },
         { label: "4-1A", title: "Activity: Mitosis in Plant and Animal Cells", page: 79, kind: "activity" },
         { label: "4-2A", title: "Activity: Making a Model", page: 94, kind: "activity" },
-        { label: "4-5", title: "Unit 4 Review: How Cells Make More Cells", kind: "review" },
+        { label: "4-5", title: "Unit 4 Review: How Cells Make More Cells", kind: "review", slug: "science/unit-4-review" },
       ],
     },
 
@@ -157,9 +157,9 @@ const LIFE = {
     {
       n: 5, page: 104, title: "How Traits Pass Down", book: "Heredity", bookUnit: 2, bookUnitTitle: "Heredity and Evolution",
       items: [
-        { label: "5-1", title: "Why You Look Like Your Parents", book: "What Is Genetics?", page: 106, kind: "lesson" },
-        { label: "5-2", title: "What We Learned After Mendel", book: "Genetics Since Mendel", page: 114, kind: "lesson" },
-        { label: "5-3", title: "Traits, Disorders, and Human Genetics", book: "Human Genetics", page: 117, kind: "lesson" },
+        { label: "5-1", title: "Why You Look Like Your Parents", book: "What Is Genetics?", page: 106, kind: "lesson", slug: "science/why-you-look-like-your-parents" },
+        { label: "5-2", title: "What We Learned After Mendel", book: "Genetics Since Mendel", page: 114, kind: "lesson", slug: "science/what-we-learned-after-mendel" },
+        { label: "5-3", title: "Traits, Disorders, and Human Genetics", book: "Human Genetics", page: 117, kind: "lesson", slug: "science/traits-disorders-and-human-genetics" },
         { label: "5-4", title: "Mapping the Human Genome", book: "Science and Society: The Human Genome", page: 122, kind: "lesson" },
         { label: "PS", title: "Problem Solving: Boy or Girl?", page: 118, kind: "feature" },
         { label: "T", title: "Technology: Karyotyping", page: 120, kind: "feature" },
