@@ -51,6 +51,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "use-a-graph-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Bar graphs, double bar graphs, line graphs and circle graphs, and what to check before you trust any of them. The numbers are made up for practice.",
     contains: [

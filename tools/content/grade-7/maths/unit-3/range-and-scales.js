@@ -48,6 +48,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "range-and-scales-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Eleven students report the hours they spend on the phone. How far apart the numbers are, and how to draw a number line that fits every one of them.",
     contains: [

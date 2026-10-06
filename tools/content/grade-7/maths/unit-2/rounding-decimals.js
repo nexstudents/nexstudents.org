@@ -45,6 +45,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "rounding-decimals-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "A roller coaster clocked at 64.77 mph, a sign that says 65, and the one digit that decides which way a number rounds.",
     contains: [

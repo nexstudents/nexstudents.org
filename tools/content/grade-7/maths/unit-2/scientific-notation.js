@@ -43,6 +43,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "scientific-notation-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Mercury is 36,000,000 miles from the sun, and nobody wants to count those zeros. Scientific notation, and back again.",
     contains: [

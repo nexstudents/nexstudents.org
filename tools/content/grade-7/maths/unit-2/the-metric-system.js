@@ -44,6 +44,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "the-metric-system-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "A runner's day is measured in meters, liters and grams, and each one comes in sizes that differ by 10, 100 and 1,000. Changing between them.",
     contains: [

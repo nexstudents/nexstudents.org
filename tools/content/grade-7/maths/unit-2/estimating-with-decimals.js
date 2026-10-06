@@ -45,6 +45,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "estimating-with-decimals-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "A self-checkout total that's off by more than twenty dollars, and the ten-second estimate that catches it.",
     contains: [

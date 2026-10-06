@@ -48,6 +48,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "make-a-table-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Twenty answers to one survey question arrive in no order at all. How to tally them, count them and read them in a frequency table.",
     contains: [

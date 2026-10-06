@@ -43,6 +43,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "rounding-quotients-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Four friends split a pizza and the calculator shows four decimal places. Rounding a quotient, and why money gets rounded up.",
     contains: [

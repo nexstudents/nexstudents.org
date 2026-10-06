@@ -38,6 +38,14 @@
      name     write the answer(s) on the rules.       item: { sentence, mark?, answers[] }
      combine  fold short sentences into one.          item: { given[], answer }
      own      write your own. NO KEY, by design.      item: { ask, markLabel }
+     solve    a Math problem, work lines, an answer.  item: { problem, answer, calc? }
+
+   🚨 `solve` (Math, 2026-10-05). Paul: "there is not full examples or questions
+   that put that into practice what he learned." A numeric answer carries `calc`,
+   the arithmetic that produces it, and the build FAILS when the two disagree, so
+   a wrong key cannot ship. calc is plain arithmetic plus r(x,n) to round to n
+   places, up(x,n) to round up, and down(x,n). A non-numeric answer ("yes, it is
+   reasonable") has no calc and says why in `answer`.
 
    `name` takes `labels: [...]` on the part, one per rule. `mark` underlines one
    half of the sentence with a rule, for a "name the half" question.
@@ -49,10 +57,13 @@ const { SPLIT } = require('./split-lessons.js');
 
 function fail(msg) { console.error('FAIL: ' + msg); process.exit(1); }
 
-/* A lesson may live in either registry, so look in both rather than making the
-   sheet declare which file its lesson happens to sit in. */
+/* A lesson may live in any registry, so look in all of them rather than making
+   the sheet declare which file its lesson happens to sit in. Math reading
+   lessons live in lessons.js, keyed by id ("maths/dividing-decimals"). */
 function lessonFor(slug) {
-  const L = ENGLISH.find((x) => x.slug === slug) || SPLIT.find((x) => x.slug === slug);
+  const { LESSONS } = require('./lessons.js');
+  const L = ENGLISH.find((x) => x.slug === slug) || SPLIT.find((x) => x.slug === slug) ||
+            LESSONS.find((x) => x.id === slug);
   if (!L) fail('homework sheet names a lesson that does not exist: ' + slug);
   return L;
 }
@@ -75,11 +86,33 @@ function checkFresh(s, L) {
   (L.examples || []).forEach((e) => note(Array.isArray(e) ? e[0] : e.sentence, 'a worked example'));
 
   const sentences = [];
+  const problems = [];
   (s.parts || []).forEach((part) => (part.items || []).forEach((it) => {
     if (it.sentence) sentences.push(it.sentence);
     (it.given || []).forEach((g) => sentences.push(g));
+    if (it.problem) problems.push(it.problem);
   }));
-  if (!sentences.length) fail(s.slug + ': the sheet has no sentences of its own');
+  if (!sentences.length && !problems.length) fail(s.slug + ': the sheet has no sentences of its own');
+
+  /* ⚠️ A Math problem is mostly digits, and norm() strips digits, so "0.7 ÷ 0.05"
+     and "3.2 ÷ 0.4" would both collapse to nothing. Problems are compared
+     with their numbers kept: same rule, the lesson's own example is not homework. */
+  const keep = (t) => String(t).toLowerCase().replace(/\[(ex|verse|story)\] /, '')
+    .replace(/\s+/g, ' ').trim();
+  const shown = new Set();
+  (L.parts || []).forEach((pt) => (pt.s || []).forEach((line) => shown.add(keep(line))));
+  (L.questions || []).forEach((q) => shown.add(keep(q.q)));
+  const localP = new Set();
+  const shownList = [...shown];
+  problems.forEach((p) => {
+    /* inside a line too: the lesson writes "[ex] 0.7 ÷ 0.05 = 14", the sheet "0.7 ÷ 0.05" */
+    const kp = keep(p);
+    if (shown.has(kp) || (/\d/.test(kp) && kp.length >= 5 && shownList.some((l) => l.includes(kp))))
+      fail(s.slug + ' prints a problem the lesson already worked:\n        ' + p +
+           '\n      Change the numbers. Homework that reprints the example tests memory, not the skill.');
+    if (localP.has(keep(p))) fail(s.slug + ': this problem is printed twice:\n        ' + p);
+    localP.add(keep(p));
+  });
 
   sentences.forEach((sent) => {
     const hit = seen.get(norm(sent));
@@ -95,6 +128,31 @@ function checkFresh(s, L) {
     if (local.has(k)) fail(s.slug + ': this sentence is printed twice on the sheet:\n        ' + sent);
     local.add(k);
   });
+}
+
+/* 🚨 THE KEY IS COMPUTED, NOT TRUSTED. `calc` is evaluated and must equal the
+   number in `answer` (commas, $ and units ignored). Only digits, operators,
+   brackets and the three rounding helpers are allowed through, so this can
+   never run anything but arithmetic. */
+function checkSolve(it, where) {
+  if (!it.problem || it.answer == null || String(it.answer).trim() === '')
+    fail(where + ': a solve item needs a problem and an answer for the key');
+  if (it.calc == null) return;
+  const src = String(it.calc);
+  if (!/^[0-9+\-*/(). ,]*$/.test(src.replace(/\b(r|up|down)\(/g, '(')))
+    fail(where + ': calc may only hold arithmetic and r()/up()/down(): ' + src);
+  const p = (n) => Math.pow(10, n);
+  const r = (x, n) => Math.round((x + Number.EPSILON) * p(n)) / p(n);
+  const up = (x, n) => Math.ceil(x * p(n) - 1e-9) / p(n);
+  const down = (x, n) => Math.floor(x * p(n) + 1e-9) / p(n);
+  let got;
+  try { got = Function('r', 'up', 'down', '"use strict"; return (' + src + ');')(r, up, down); }
+  catch (e) { fail(where + ': calc does not evaluate: ' + src); }
+  const m = String(it.answer).replace(/,/g, '').match(/-?\d*\.?\d+/);
+  if (!m) fail(where + ': calc is given but the answer has no number in it: ' + it.answer);
+  if (Math.abs(got - Number(m[0])) > 1e-9)
+    fail(where + ': the key says ' + it.answer + ' but ' + src + ' = ' + got +
+         '\n      Problem: ' + it.problem);
 }
 
 /* every answer word has to be findable, exactly once, in its own sentence, or
@@ -137,6 +195,7 @@ function checkItems(s) {
       fail(where + ': a name item needs its answers for the key');
     if (part.kind === 'combine' && (!it.given || it.given.length < 2 || !it.answer))
       fail(where + ': a combine item needs two or more given sentences and an answer');
+    if (part.kind === 'solve') checkSolve(it, where);
   }));
 }
 
@@ -195,7 +254,19 @@ function ownItem(it, n) {
          '</div></li>';
 }
 
+/* A problem, room to show the work, and one answer rule. `lines` on the part
+   sets how many work rules (2 by default; 0 for a quick one like a rounding). */
+function solveItem(it, n, part) {
+  const k = part.lines == null ? 2 : part.lines;
+  const work = Array.from({ length: k }, () => '<p class="ownline"><u></u></p>').join('');
+  return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' +
+         '<p class="sortsent">' + esc(it.problem) + '</p>' + work +
+         '<p class="ownhalf"><span class="olbl">' + esc(part.answerLabel || 'Answer') +
+         '</span><u></u></p></div></li>';
+}
+
 const RENDER = {
+  solve: { cls: 'owns', item: solveItem },
   divide: { cls: 'splits', item: divideItem },
   circle: { cls: 'splits', item: circleItem },
   /* ⚠️ `owns`, NOT `sorts`. A name item is built out of .ownrow and .ownhalf,
@@ -237,6 +308,7 @@ function keyHtml(part, i) {
     }
     if (part.kind === 'circle') return '<li>' + asList(it.words).map(esc).join(' &middot; ') + '</li>';
     if (part.kind === 'name') return '<li>' + asList(it.answers).map(esc).join(' &middot; ') + '</li>';
+    if (part.kind === 'solve') return '<li>' + esc(it.answer) + '</li>';
     return '<li>' + esc(it.answer) + '</li>';
   }).join('\n      ');
 

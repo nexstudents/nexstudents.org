@@ -48,6 +48,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "comparing-and-ordering-decimals-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "An Olympic medal decided in the thousandths, a tie for bronze, and the one habit that tells you which decimal is bigger.",
     contains: [

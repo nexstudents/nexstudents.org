@@ -44,6 +44,11 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). ⚠️ subject is the
+     FOLDER, "maths", not the label: homeworkCta lowercases it into the URL. */
+  sheet: { slug: "dividing-decimals-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "A painting's area and width are known and its height isn't. Dividing by a decimal, and why moving both points keeps the answer the same.",
     contains: [

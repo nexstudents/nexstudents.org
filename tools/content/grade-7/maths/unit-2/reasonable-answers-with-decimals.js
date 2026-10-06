@@ -47,6 +47,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "reasonable-answers-with-decimals-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Marcus has $70, thinks he'll have $15 left after shopping, and a quick round-and-add says otherwise. Using an estimate to catch an answer that can't be right.",
     contains: [

@@ -43,6 +43,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "powers-of-ten-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "The moon is 2.39 times ten to the fifth miles away. How to turn that into a number you can say, in your head, in one move.",
     contains: [

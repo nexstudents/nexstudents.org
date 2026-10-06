@@ -48,6 +48,10 @@ module.exports = {
     unclear: "",
   },
 
+  /* The practice half, on paper (tools/math-homework.js). subject is the FOLDER, "maths". */
+  sheet: { slug: "unit-2-review-homework", subject: "maths",
+    note: "Print it and work every problem on paper. No multiple choice this time." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Ten lessons, one habit. Every decimal tool from the unit, filed under the moment you use it: before you calculate, while you calculate, and after.",
     contains: [
