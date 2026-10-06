@@ -82,11 +82,17 @@ body{margin:0;background:var(--bg);color:var(--fg)}
    the title, and this drew a second hairline under itself, so Name and Date sat
    in a thin sandwich that belonged to neither the heading nor the first part.
    The heading rule is the divider; Name and Date hang beneath it. */
-.namebar{display:flex;gap:26px;flex-wrap:wrap;font-size:13px;
-  padding:13px 0 0;margin-bottom:30px}
+/* 🚨 NAME AND DATE ARE THE FIRST LINE OF THE PAGE, ABOVE THE TITLE. Paul,
+   2026-10-05: "name and date should be at the top of the page. you can look at
+   my new spelling test as a reference." His test reads Name ____ Date __/__/____
+   across the top, so every generated sheet now opens the same way. */
+.namebar{display:flex;gap:26px;flex-wrap:wrap;font-size:14px;font-weight:700;
+  padding:0 0 4px;margin-bottom:22px}
 .namebar span{display:flex;gap:8px;align-items:baseline}
 .namebar u{text-decoration:none;border-bottom:1px solid var(--line-ink);
   min-width:150px;display:inline-block}
+.namebar u.d2{min-width:30px}
+.namebar u.d4{min-width:48px}
 .sheet h2{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
   color:var(--dim);margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line);
   max-width:none}
@@ -624,6 +630,14 @@ body.print-all .wk+.wk{page-break-before:always}
 .owns .ownhalf{margin-left:18px}
 .owns .olbl{font-size:.78rem;color:var(--dim);white-space:nowrap;min-width:118px}
 .owns u{text-decoration:none;flex:1;border-bottom:1px solid var(--line-ink);min-height:1.7em}
+/* Math `solve` rows: problem and answer rule share one line (homework-sheet.js). */
+.owns .hwq{flex:0 1 auto;max-width:64%}
+.owns .hwq:empty{display:none}
+.owns .olbl.hwa{min-width:0}
+.owns .hwnl{display:block;max-width:560px;margin:4px 0 6px}
+.owns .hwtab{border-collapse:collapse;margin:4px 0 10px;font-size:.92rem}
+.owns .hwtab th,.owns .hwtab td{border:1px solid var(--line-ink);padding:3px 12px;text-align:left}
+.owns .hwtab th{font-weight:700}
 
 /* ── the grading block ────────────────────────────────────────────────────
    🚨 A SHEET SOMEBODY MARKS BY HAND NEEDS SOMEWHERE TO MARK.

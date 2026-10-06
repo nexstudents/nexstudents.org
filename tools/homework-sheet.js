@@ -91,6 +91,7 @@ function checkFresh(s, L) {
     if (it.sentence) sentences.push(it.sentence);
     (it.given || []).forEach((g) => sentences.push(g));
     if (it.problem) problems.push(it.problem);
+    (it.sub || []).forEach((q) => q.q && problems.push(q.q));
   }));
   if (!sentences.length && !problems.length) fail(s.slug + ': the sheet has no sentences of its own');
 
@@ -195,7 +196,11 @@ function checkItems(s) {
       fail(where + ': a name item needs its answers for the key');
     if (part.kind === 'combine' && (!it.given || it.given.length < 2 || !it.answer))
       fail(where + ': a combine item needs two or more given sentences and an answer');
-    if (part.kind === 'solve') checkSolve(it, where);
+    if (part.kind === 'solve' && it.sub) {
+      if (!it.problem) fail(where + ': a lettered set needs its stem in `problem`');
+      it.sub.forEach((q, k) => checkSolve({ problem: q.q, answer: q.answer, calc: q.calc },
+        where + String.fromCharCode(97 + k)));
+    } else if (part.kind === 'solve') checkSolve(it, where);
   }));
 }
 
@@ -254,16 +259,59 @@ function ownItem(it, n) {
          '</div></li>';
 }
 
-/* A problem, room to show the work, and one answer rule. `lines` on the part
-   sets how many work rules (2 by default; 0 for a quick one like a rounding). */
-function solveItem(it, n, part) {
-  const k = part.lines == null ? 2 : part.lines;
-  const work = Array.from({ length: k }, () => '<p class="ownline"><u></u></p>').join('');
-  return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' +
-         '<p class="sortsent">' + esc(it.problem) + '</p>' + work +
-         '<p class="ownhalf"><span class="olbl">' + esc(part.answerLabel || 'Answer') +
-         '</span><u></u></p></div></li>';
+/* 🚨 COMPACT BY DEFAULT. Paul, 2026-10-05: "you dont need to give so many lines
+   for the answers ... you have alot of wasted space just for lines." A problem
+   and its answer rule share ONE row. Work rules are added only where `lines`
+   is set, on the item or the part, for the multi-step ones that need room. */
+const workLines = (k) => Array.from({ length: k || 0 }, () => '<p class="ownline"><u></u></p>').join('');
+const answerRow = (text, label) =>
+  '<p class="ownline"><span class="hwq">' + esc(text) + '</span>' +
+  '<span class="olbl hwa">' + esc(label || 'Answer') + '</span><u></u></p>';
+
+/* A blank number line to plot on. Geometry only, so it is SVG; every label is
+   real text (a font), never drawn glyphs. Ticks every `step`, a label on each
+   tick while there are 11 or fewer, otherwise on every other one. */
+function numberLine(nl) {
+  const n = Math.round((nl.to - nl.from) / nl.step);
+  const dp = Math.max(0, (String(nl.step).split('.')[1] || '').length);
+  const W = 600, L = 20, R = 580, every = n > 10 ? 2 : 1;
+  let ticks = '';
+  for (let i = 0; i <= n; i++) {
+    const x = L + (R - L) * i / n;
+    ticks += '<line x1="' + x + '" y1="18" x2="' + x + '" y2="32" stroke="#000" stroke-width="1"/>';
+    if (i % every === 0)
+      ticks += '<text x="' + x + '" y="48" font-size="12" text-anchor="middle">' +
+               (nl.from + nl.step * i).toFixed(dp) + '</text>';
+  }
+  return '<svg class="hwnl" viewBox="0 0 ' + W + ' 56" width="100%" role="img" aria-label="number line from ' +
+         nl.from + ' to ' + nl.to + '"><line x1="' + (L - 12) + '" y1="25" x2="' + (R + 12) +
+         '" y2="25" stroke="#000" stroke-width="1.5"/>' + ticks + '</svg>';
 }
+
+/* A small data table for an Applications set. Thin rules only (black and
+   white printer), no fills. */
+function dataTable(rows) {
+  return '<table class="hwtab">' + rows.map((r, i) => '<tr>' +
+    r.map((c) => (i === 0 ? '<th>' : '<td>') + esc(c) + (i === 0 ? '</th>' : '</td>')).join('') +
+    '</tr>').join('') + '</table>';
+}
+
+function solveItem(it, n, part) {
+  const lines = it.lines != null ? it.lines : part.lines;
+  let body;
+  if (it.sub) {
+    body = '<p class="sortsent">' + esc(it.problem) + '</p>' + (it.table ? dataTable(it.table) : '') +
+      it.sub.map((q, k) => answerRow(String.fromCharCode(97 + k) + '. ' + q.q, part.answerLabel) +
+        workLines(q.lines != null ? q.lines : lines)).join('');
+  } else if (it.numberline) {
+    body = '<p class="sortsent">' + esc(it.problem) + '</p>' + numberLine(it.numberline) +
+      answerRow('', part.answerLabel);
+  } else {
+    body = answerRow(it.problem, part.answerLabel) + workLines(lines);
+  }
+  return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' + body + '</div></li>';
+}
+const weight = (it) => (it.sub ? it.sub.length : 1);
 
 const RENDER = {
   solve: { cls: 'owns', item: solveItem },
@@ -285,7 +333,7 @@ function partHtml(part, i) {
   if (!r) fail('unknown homework part kind: ' + part.kind);
   const items = (part.items || []).map((it, n) => r.item(it, n, part)).join('\n    ');
   return `
-  <h2 class="scored">Part ${LETTER[i]} &mdash; ${part.heading} <span class="pts"><u></u> / ${part.items.length}</span></h2>
+  <h2 class="scored">Part ${LETTER[i]} &mdash; ${part.heading} <span class="pts"><u></u> / ${part.items.reduce((t, it) => t + weight(it), 0)}</span></h2>
   <p class="inst">${part.note}</p>
   <ul class="${r.cls}">
     ${items}
@@ -308,6 +356,8 @@ function keyHtml(part, i) {
     }
     if (part.kind === 'circle') return '<li>' + asList(it.words).map(esc).join(' &middot; ') + '</li>';
     if (part.kind === 'name') return '<li>' + asList(it.answers).map(esc).join(' &middot; ') + '</li>';
+    if (part.kind === 'solve' && it.sub)
+      return '<li>' + it.sub.map((q, k) => '<b>' + String.fromCharCode(97 + k) + '.</b> ' + esc(q.answer)).join(' &nbsp; ') + '</li>';
     if (part.kind === 'solve') return '<li>' + esc(it.answer) + '</li>';
     return '<li>' + esc(it.answer) + '</li>';
   }).join('\n      ');
@@ -339,7 +389,7 @@ function homeworkSheetBody(s) {
   checkItems(s);
   if (s.parts.length > LETTER.length) fail(s.slug + ': more parts than there are letters for them');
 
-  const total = s.parts.reduce((n, p) => n + p.items.length, 0);
+  const total = s.parts.reduce((n, p) => n + p.items.reduce((t, it) => t + weight(it), 0), 0);
 
   return s.parts.map(partHtml).join('') +
     gradingBlock(total) +

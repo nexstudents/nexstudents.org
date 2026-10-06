@@ -24,6 +24,16 @@ if (!fs.existsSync(path.join(ROOT, "assets/ns.css"))) {
   process.exit(1);
 }
 
+/* 🚨 THE FIRST LINE OF EVERY GENERATED SHEET: Name, then Date as __ / __ / ____.
+   Paul, 2026-10-05: "name and date should be at the top of the page", from his
+   own Weekly Spelling Test. One function so the three page shapes cannot drift.
+   A function declaration, not a const, so it is callable from anywhere above. */
+function namebar(extra) {
+  return '<div class="namebar">\n    <span>Name <u></u></span>\n' +
+    '    <span>Date <u class="d2"></u> / <u class="d2"></u> / <u class="d4"></u></span>' +
+    (extra ? '\n    ' + extra : '') + '\n  </div>';
+}
+
 /* Cache buster, same scheme as build-pages.js.
    BOTH stylesheets go into the hash. It used to hash ns.css alone and stamp
    that same ?v= on the worksheet.css link too, so a change to worksheet.css
@@ -613,15 +623,12 @@ ${navMarkup("w")}
 
 <div class="sheet">
 
+  ${namebar('')}
+
   <div class="head">
     <p class="eyebrow">${s.subject} &middot; ${s.eyebrow}</p>
     <h1>${s.title}</h1>
     <p class="dek">${s.dek}</p>
-  </div>
-
-  <div class="namebar">
-    <span>Name <u></u></span>
-    <span>Date <u></u></span>
   </div>
 ${body}
   <p class="signoff"><em>${s.signoff}</em>
@@ -676,16 +683,12 @@ ${navMarkup("w")}
 
 <div class="sheet">
 
+  ${namebar('<span>Week # <u style="min-width:58px"></u></span>')}
+
   <div class="head">
     <p class="eyebrow">${s.subject} &middot; ${s.eyebrow}</p>
     <h1>${s.title}</h1>
     <p class="dek">${s.dek}</p>
-  </div>
-
-  <div class="namebar">
-    <span>Name <u></u></span>
-    <span>Date <u></u></span>
-    <span>Week # <u style="min-width:58px"></u></span>
   </div>
 
   <h2 class="scored">${s.heading} <span class="pts"><u></u> / ${s.count}</span></h2>
@@ -894,16 +897,12 @@ ${navMarkup("w")}
 
 <div class="sheet">
 
+  ${namebar('<span>Score <u></u></span>')}
+
   <div class="head">
     <p class="eyebrow">${s.subject} &middot; Grade ${s.grade} &middot; Worksheet</p>
     <h1>${s.title}</h1>
     <p class="dek">${s.dek}</p>
-  </div>
-
-  <div class="namebar">
-    <span>Name <u></u></span>
-    <span>Date <u></u></span>
-    <span>Score <u></u></span>
   </div>
 ${s.art ? `
   <figure class="art">
