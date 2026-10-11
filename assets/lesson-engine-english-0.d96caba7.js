@@ -2,13 +2,17 @@
 (function(){
 "use strict";
 
+/* ═══════════ THIS LESSON'S OWN DATA — everything above the engine ═══════════
+   🚨 KEEP EVERY PER-LESSON `var` IN THIS ONE BLOCK, and keep the block here at
+   the top. build-lessons.js rewrites these lines by name, and the build then
+   lifts the ENGINE BELOW into a shared /assets/ file that every lesson of the
+   same shape links instead of inlining. That only works while the changing part
+   is one contiguous run at the top: a `var` left down in the engine makes the
+   engine differ per lesson, and the page goes back to carrying its own copy.
+   ⚠️ `voice-player.js` slices this template between section markers. If you move
+   a marker, fix it there too — it fails the build rather than slicing wrong. */
 
-/* Defaults for hosts that do not define these. See voice-player.js. */
-if (typeof ART === 'undefined')      { var ART = {}; }
-if (typeof VISUALS === 'undefined')  { var VISUALS = []; }
-if (typeof WORK === 'undefined')     { var WORK = []; }
-if (typeof WORDS === 'undefined')    { var WORDS = []; }
-if (typeof QUESTIONS === 'undefined'){ var QUESTIONS = []; }
+
 
 /* ---------- saved settings and progress ----------
    Keys are shared site-wide on purpose:
@@ -343,6 +347,24 @@ PARTS.forEach(function(part){
        line-per-sentence would be hard to read. Twinned in bake-voice.js,
        build-lessons.js and check-prose.js. Change one, change all four. */
     else if (text.indexOf("[story] ") === 0) { p.classList.add("is-story"); text = text.slice(8); }
+    /* 🚨 [walk] AND [step] ARE THE WORKED EXAMPLE, SHOWN ONE LINE AT A TIME.
+       Paul, 2026-10-11: "in the past we built actual explainer videos how to do
+       the work and i think we moved away from that just telling stories". The
+       integers walkthrough is the model: the work appears as the voice reaches it.
+       [walk] is the problem. Each [step] is "what you say || the line of work";
+       only the part before || is a sentence, so only it enters SENT and the voice.
+       The work line is drawn under it, hidden until that step is reached by the
+       voice or by the Next Step button. Twinned in bake-voice.js, build-lessons.js,
+       lesson-instructions.js and check-prose.js. Change one, change all. */
+    var stepShow = null;
+    if (text.indexOf("[walk] ") === 0) { p.classList.add("is-walk"); text = text.slice(7); }
+    else if (text.indexOf("[step] ") === 0) {
+      p.classList.add("is-walk");
+      text = text.slice(7);
+      var bar = text.indexOf(" || ");
+      stepShow = bar < 0 ? "" : text.slice(bar + 4);
+      if (bar >= 0) text = text.slice(0, bar);
+    }
 
     var i = SENT.length;
     var span = document.createElement("span");
@@ -413,8 +435,26 @@ PARTS.forEach(function(part){
       offsets.push({ el: ws, start: cursor, end: cursor + w.length });
       cursor += w.length;
     });
-    p.appendChild(span);
-    p.appendChild(document.createTextNode(" "));
+    if (stepShow !== null) {
+      var stepEl = document.createElement("span");
+      stepEl.className = "wk-step";
+      var num = document.createElement("span");
+      num.className = "wk-n";
+      num.textContent = "Step " + (p.querySelectorAll(".wk-step").length + 1);
+      stepEl.appendChild(num);
+      stepEl.appendChild(span);
+      if (stepShow) {
+        var show = document.createElement("span");
+        show.className = "wk-show";
+        show.textContent = stepShow;
+        stepEl.appendChild(show);
+      }
+      p.appendChild(stepEl);
+    } else {
+      if (p.classList.contains("is-walk") && !p.querySelector(".wk-step")) span.classList.add("wk-ask");
+      p.appendChild(span);
+      p.appendChild(document.createTextNode(" "));
+    }
     SENT.push({ text: text, el: span, words: offsets });
     SENTPARA.push(paraNo);
   });
@@ -471,8 +511,179 @@ PARTS.forEach(function(part){
     sec.appendChild(box);
   }
 
+  /* A block game, after the part's paragraphs (buildBlocks, just below). */
+  if (part.blocks) sec.appendChild(buildBlocks(part.blocks));
+
   storyEl.appendChild(sec);
 });
+
+/* ── THE BLOCK GAMES ────────────────────────────────────────────────────────
+   Paul, 2026-10-11: "a good visual would be to seperate them into differnt
+   blocks heights like a game and doing the other things like median and mode
+   too". One game per measure, each played by TAPPING (never dragging, which is
+   what breaks on a phone):
+     mean    tap a stack to pick up its top block, tap another to drop it,
+             until every stack is level. The level height is the mean.
+     median  Line Them Up sorts the stacks, then tap an END stack to knock it
+             off, one from each side, until the middle is left.
+     mode    tap the height you see most.
+   Data: { kind, title, stacks: [numbers], ask }. Every message the game says
+   is built from those numbers, so a lesson cannot ship a game whose words
+   disagree with its own stacks. Text nodes only, never innerHTML. */
+function buildBlocks(B){
+  var root = document.createElement("div");
+  root.className = "bk";
+  root.setAttribute("data-kind", B.kind);
+  var h = document.createElement("p");
+  h.className = "bk-h";
+  h.textContent = B.title || "Try It With Blocks";
+  root.appendChild(h);
+  var ask = document.createElement("p");
+  ask.className = "bk-ask";
+  root.appendChild(ask);
+  var row = document.createElement("div");
+  row.className = "bk-row";
+  root.appendChild(row);
+  var msg = document.createElement("p");
+  msg.className = "bk-msg";
+  msg.setAttribute("aria-live", "polite");
+  root.appendChild(msg);
+  var bar = document.createElement("div");
+  bar.className = "bk-bar";
+  root.appendChild(bar);
+
+  var start = B.stacks.slice();
+  var h0, held, sorted, gone, done, offL, offR;
+  var total = start.reduce(function(a, b){ return a + b; }, 0);
+
+  function btn(label, fn, cls){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "bk-btn" + (cls ? " " + cls : ""); b.textContent = label;
+    b.addEventListener("click", fn);
+    bar.appendChild(b);
+    return b;
+  }
+  function say(t, good){ msg.textContent = t; msg.classList.toggle("good", !!good); }
+
+  function draw(){
+    row.textContent = "";
+    var tallest = Math.max.apply(null, h0.concat([1]));
+    h0.forEach(function(n, k){
+      var col = document.createElement("button");
+      col.type = "button";
+      col.className = "bk-col";
+      col.setAttribute("data-k", k);
+      col.setAttribute("aria-label", "Stack " + (k + 1) + ", " + n + " blocks");
+      if (held === k) col.classList.add("is-held");
+      if (gone && gone[k]) col.classList.add("is-gone");
+      if (done && done.glow && done.glow.indexOf(k) > -1) col.classList.add("is-glow");
+      var pile = document.createElement("span");
+      pile.className = "bk-pile";
+      pile.style.minHeight = (tallest * 22) + "px";
+      for (var i = 0; i < n; i++){
+        var b = document.createElement("span"); b.className = "bk-b"; pile.appendChild(b);
+      }
+      col.appendChild(pile);
+      var lab = document.createElement("span");
+      lab.className = "bk-n";
+      lab.textContent = String(n);
+      col.appendChild(lab);
+      col.addEventListener("click", function(){ tap(k); });
+      row.appendChild(col);
+    });
+  }
+
+  function reset(){
+    h0 = start.slice(); held = -1; sorted = false; gone = h0.map(function(){ return false; }); done = null; offL = 0; offR = 0;
+    if (B.kind === "mean") say("Tap a tall stack to pick up its top block, then tap a short stack to drop it there. Keep going until every stack is the same height.");
+    if (B.kind === "median") say("First press Line Them Up, so the stacks go from shortest to tallest.");
+    if (B.kind === "mode") say("Tap a stack whose height you see more often than any other.");
+    if (lineBtn) lineBtn.disabled = false;
+    draw();
+  }
+
+  /* MEAN: only reachable when the total splits evenly; the lesson data guards it. */
+  function meanTap(k){
+    if (done) return;
+    if (held < 0){
+      if (!h0[k]) { say("That stack is empty. Pick up a block from a taller one."); return; }
+      held = k; say("Now tap the stack you want to drop it on."); draw(); return;
+    }
+    if (held === k){ held = -1; say("Put it back. Tap a tall stack to pick up a block."); draw(); return; }
+    h0[held]--; h0[k]++; held = -1;
+    var level = h0.every(function(x){ return x === h0[0]; });
+    if (level){
+      done = { glow: h0.map(function(_, i){ return i; }) };
+      say("Every stack is " + h0[0] + " blocks high. That's the mean: " + total + " blocks shared " + h0.length + " ways, and " + total + " ÷ " + h0.length + " = " + h0[0] + ".", true);
+    } else {
+      say("Keep going. You have " + total + " blocks across " + h0.length + " stacks.");
+    }
+    draw();
+  }
+
+  function ends(){
+    var left = [], k;
+    for (k = 0; k < h0.length; k++) if (!gone[k]) left.push(k);
+    return left;
+  }
+  function medianTap(k){
+    if (done) return;
+    if (!sorted){ say("Line them up first. The middle only means something once they're in order."); return; }
+    var left = ends();
+    if (gone[k]) return;
+    if (k !== left[0] && k !== left[left.length - 1]){ say("Knock off an END stack, the shortest or the tallest one still standing."); return; }
+    /* One from each side, in turn, or the stack left standing is not the middle. */
+    var fromLeft = (k === left[0]);
+    if (fromLeft && offL > offR){ say("You took one off the short end already. Now knock one off the tall end."); return; }
+    if (!fromLeft && offR > offL){ say("You took one off the tall end already. Now knock one off the short end."); return; }
+    if (fromLeft) offL++; else offR++;
+    gone[k] = true;
+    left = ends();
+    if (left.length === 1){
+      done = { glow: left };
+      say("One stack is left in the middle, so the median is " + h0[left[0]] + ".", true);
+    } else if (left.length === 2 && start.length % 2 === 0){
+      done = { glow: left };
+      var a = h0[left[0]], b = h0[left[1]];
+      say("Two stacks are left in the middle, " + a + " and " + b + ", so the median is halfway between them: (" + a + " + " + b + ") ÷ 2 = " + ((a + b) / 2) + ".", true);
+    } else {
+      say("Good. Now knock one off the other end, so the same number go from each side.");
+    }
+    draw();
+  }
+  function modeTap(k){
+    if (done) return;
+    var n = h0[k], count = {}, best = 0;
+    h0.forEach(function(x){ count[x] = (count[x] || 0) + 1; if (count[x] > best) best = count[x]; });
+    var tops = Object.keys(count).filter(function(x){ return count[x] === best; });
+    if (count[n] === best && tops.length === 1){
+      done = { glow: h0.map(function(x, i){ return x === n ? i : -1; }).filter(function(i){ return i > -1; }) };
+      say("Yes. " + best + " stacks are " + n + " blocks high, more than any other height, so the mode is " + n + ". Remember: the mode is the " + n + ", not the " + best + ".", true);
+    } else {
+      say("Only " + count[n] + " " + (count[n] === 1 ? "stack is" : "stacks are") + " " + n + " high. Look for a height that shows up more often.");
+    }
+    draw();
+  }
+  function tap(k){
+    if (B.kind === "mean") meanTap(k);
+    else if (B.kind === "median") medianTap(k);
+    else modeTap(k);
+  }
+
+  var lineBtn = null;
+  if (B.kind === "median"){
+    lineBtn = btn("Line Them Up", function(){
+      h0.sort(function(a, b){ return a - b; });
+      sorted = true; lineBtn.disabled = true;
+      say("Now tap the shortest or the tallest stack to knock it off, then one from the other end.");
+      draw();
+    }, "bk-go");
+  }
+  btn("Start Over", reset);
+  ask.textContent = B.ask || "";
+  reset();
+  return root;
+}
 
 /* ---------- read aloud ---------- */
 /* Two engines.
@@ -1383,6 +1594,7 @@ function buildWork(){
   WORKED.hidden = false;
 
   WORK.forEach(function(W, wi){
+    if (W.steps) { buildTry(W, wi); return; }
     var box = document.createElement("div");
     box.className = "work";
 
@@ -1488,7 +1700,146 @@ function buildWork(){
     WORKED.appendChild(box);
   });
 }
+
+/* ── YOUR TURN: ANY NUMBER OF STEPS, EACH ONE TYPED AND CHECKED ─────────────
+   Paul, 2026-10-11: the lessons "need to be good enough he is actually learning
+   what he is taking in." The four-step problem above only fits Explore/Plan/
+   Solve/Examine; this is the same box for any method - order the data, find
+   the middle, add, divide. A step opens only when the one before is right, and
+   a wrong answer is never replaced with the right one.
+   A step's answer is a number, or a LIST of numbers ("3, 5, 8") checked in
+   order. `tol` as in near(). */
+function wlist(v){
+  var parts = String(v).split(/[,;\s]+/).filter(function(x){ return x !== ""; });
+  var out = [];
+  for (var k = 0; k < parts.length; k++){ var n = wnum(parts[k]); if (n === null) return null; out.push(n); }
+  return out;
+}
+function buildTry(W, wi){
+  var box = document.createElement("div");
+  box.className = "work";
+  var h = document.createElement("p");
+  h.className = "work-h";
+  h.textContent = "Your Turn · " + W.title;
+  box.appendChild(h);
+  var ask = document.createElement("p");
+  ask.className = "work-ask";
+  ask.textContent = W.ask;
+  box.appendChild(ask);
+
+  var made = [];
+  W.steps.forEach(function(S, k){
+    var d = wstep(box, "s" + k, "Step " + (k + 1), S.ask);
+    var row = document.createElement("div"); row.className = "wrow";
+    if (S.pre) wtext(row, S.pre);
+    var b = wbox(row, Array.isArray(S.answer) ? "16ch" : null);
+    if (Array.isArray(S.answer)) b.inputMode = "text";
+    if (S.unit) { var u = wtext(row, S.unit); u.className = "wunit"; }
+    d.appendChild(row);
+    var note = wnote(d);
+    made.push({ d: d, b: b, note: note, S: S });
+  });
+
+  made.forEach(function(m, k){
+    function check(){
+      var ok;
+      if (Array.isArray(m.S.answer)) {
+        var got = wlist(m.b.value);
+        if (!got || !got.length) return;
+        ok = got.length === m.S.answer.length && got.every(function(x, j){ return near(x, m.S.answer[j], m.S.tol); });
+      } else {
+        var v = wnum(m.b.value);
+        if (v === null) return;
+        ok = near(v, m.S.answer, m.S.tol);
+      }
+      m.b.classList.toggle("is-right", ok); m.b.classList.toggle("is-wrong", !ok);
+      say(m.note, ok ? (m.S.why || "Right.") : (m.S.hint || "Not yet. Look back at the walkthrough and try again."), ok);
+      if (ok && made[k + 1]) openStep(made[k + 1].d);
+    }
+    m.b.addEventListener("change", check);
+    m.b.addEventListener("blur", check);
+    m.b.addEventListener("keydown", function(e){ if (e.key === "Enter") check(); });
+  });
+  if (made[0]) openStep(made[0].d);
+  WORKED.appendChild(box);
+}
 buildWork();
+
+/* ── WATCH IT EXPLAINED: one short video, loaded only when pressed ──────────
+   Paul, 2026-10-11: "i dont know if you also want to refernce some youtube
+   videos to help also". A second teacher saying it a second way. Nothing from
+   YouTube loads until the button is pressed (youtube-nocookie), so the page
+   costs nothing and tracks nothing for a reader who skips it. Every id is
+   checked with oEmbed before it goes in a lesson. */
+/* 🚨 THE VIDEO PLAYS IN THE VISUAL PANEL, NOT IN A BOX OF ITS OWN. Paul,
+   2026-10-11: "then you can embed a video in the panel". This card is only the
+   way in: it switches the panel to the video and brings the panel on screen.
+   The player itself is built further down, beside the panel code. */
+(function(){
+  if (!VIDEO || !VIDEO.id || !WORKED) return;
+  WORKED.hidden = false;
+  var box = document.createElement("div");
+  box.className = "work vid";
+  var h = document.createElement("p");
+  h.className = "work-h";
+  h.textContent = "Watch It Explained";
+  box.appendChild(h);
+  var p = document.createElement("p");
+  p.className = "work-ask";
+  p.textContent = VIDEO.why || "";
+  box.appendChild(p);
+  var well = document.createElement("div");
+  well.className = "vid-well";
+  var go = document.createElement("button");
+  go.type = "button";
+  go.className = "vid-go";
+  go.textContent = "▶  Watch in the Visual Panel: " + VIDEO.title + (VIDEO.channel ? " (" + VIDEO.channel + ")" : "");
+  go.addEventListener("click", function(){
+    if (typeof vidShow === "function") vidShow(true);
+  });
+  well.appendChild(go);
+  box.appendChild(well);
+  WORKED.insertBefore(box, WORKED.firstChild);
+})();
+
+/* ── THE WALKTHROUGH: reveal each step's work as it is reached ──────────────
+   By the voice (nsOnSentence, chained, never clobbered) or by Next Step for a
+   reader reading silently. A step once shown stays shown. */
+(function(){
+  var walks = document.querySelectorAll(".para.is-walk");
+  if (!walks.length) return;
+  function showUpTo(p, step){
+    p.querySelectorAll(".wk-step").forEach(function(s, k){ if (k <= step) s.classList.add("is-shown"); });
+    var left = p.querySelectorAll(".wk-step:not(.is-shown)").length;
+    var nb = p.querySelector(".wk-next");
+    if (nb) { nb.disabled = !left; nb.textContent = left ? "Next Step" : "All Steps Shown"; }
+  }
+  walks.forEach(function(p){
+    var bar = document.createElement("span");
+    bar.className = "wk-bar";
+    var nb = document.createElement("button");
+    nb.type = "button"; nb.className = "wk-next"; nb.textContent = "Next Step";
+    nb.addEventListener("click", function(){
+      var steps = p.querySelectorAll(".wk-step");
+      for (var k = 0; k < steps.length; k++) if (!steps[k].classList.contains("is-shown")) { showUpTo(p, k); break; }
+    });
+    var ab = document.createElement("button");
+    ab.type = "button"; ab.className = "wk-all"; ab.textContent = "Show All";
+    ab.addEventListener("click", function(){ showUpTo(p, 999); });
+    bar.appendChild(nb); bar.appendChild(ab);
+    p.appendChild(bar);
+  });
+  var prevWalk = window.nsOnSentence;
+  window.nsOnSentence = function(i){
+    if (typeof prevWalk === "function") { try { prevWalk(i); } catch(e){} }
+    var s = SENT[i] && SENT[i].el;
+    var st = s && s.parentNode && s.parentNode.classList && s.parentNode.classList.contains("wk-step") ? s.parentNode : null;
+    if (!st) return;
+    var p = st.parentNode;
+    var all = Array.prototype.indexOf.call(p.querySelectorAll(".wk-step"), st);
+    showUpTo(p, all);
+  };
+})();
 
 /* ── THE EXPLAINER ────────────────────────────────────────────────────────
    Paul, 2026-09-04: "explaining how these sentences worked as it was reading it
@@ -2117,6 +2468,8 @@ function setDemoOpen(on, why){
      press is a choice. Found 2026-09-14: the default was changed to closed and
      the panel still came up open. */
   if (why !== "init") store("demo", on ? "1" : "0");
+  /* closing the panel stops a playing video (vidReset, beside the panel code) */
+  if (!on && typeof vidReset === "function") vidReset();
   /* 🚨 REPAINT IMMEDIATELY. The highlight rules read demoOpen(), so without this
      the band or the lit word stays exactly as it was until the reader happens to
      move to the next sentence - which on a slow line is several seconds of the
@@ -2154,7 +2507,9 @@ function setDemoOpen(on, why){
    that sat empty would read as broken, and one that invented a diagram would be
    worse than either. */
 var PANEL_SOON = !VISUALS.length;
-if (PANEL_SOON && dbox){
+/* A lesson with a video but no frames is not "coming soon": the video is what
+   the panel is for, so it rests on the video's poster instead (vidShow below). */
+if (PANEL_SOON && dbox && !(VIDEO && VIDEO.id)){
   dbox.classList.add("is-soon");
   dbox.classList.remove("is-blank");
   var soon = document.createElement("p");
@@ -2165,6 +2520,69 @@ if (PANEL_SOON && dbox){
   soonNote.textContent = "The sentence being read shows above. The drawing for this lesson is not built yet.";
   var inBox = dbox.querySelector(".dbox-in");
   if (inBox){ inBox.textContent = ""; inBox.appendChild(soon); inBox.appendChild(soonNote); }
+}
+
+/* ── THE VIDEO, IN THE VISUAL PANEL ─────────────────────────────────────────
+   Paul, 2026-10-11. The panel's art well was built 16:9 on purpose so a video
+   could drop in later (see the .dbox-art notes above); this is that later.
+   `is-video` hides the frames and shows the player, and the sentence bar keeps
+   running above it. Nothing loads from YouTube until Play is pressed
+   (youtube-nocookie). 🚨 Closing the panel REMOVES the iframe, or the video
+   would keep talking inside a collapsed panel with no way to see it. */
+var vidHost = null, vidWell = null;
+/* 🚨 THE PLAYER IS ALREADY THERE, READY TO PLAY. Paul, 2026-10-11: "you have
+   this small text in the visual panel to open the video it should already be
+   open and ready to play." No poster button: the YouTube player itself sits in
+   the panel. loading=lazy keeps it from downloading while the panel is shut. */
+function vidPoster(){
+  if (!vidWell) return;
+  vidWell.textContent = "";
+  vidWell.classList.add("on");
+  var f = document.createElement("iframe");
+  f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(VIDEO.id) + "?rel=0";
+  f.title = VIDEO.title;
+  f.loading = "lazy";
+  f.allow = "encrypted-media; picture-in-picture; fullscreen";
+  f.allowFullscreen = true;
+  vidWell.appendChild(f);
+}
+/* a fresh player is the only reliable way to stop a cross-origin video */
+function vidReset(){ if (vidWell) vidPoster(); }
+function vidShow(open){
+  if (!vidHost || !dbox) return;
+  dbox.classList.add("is-video");
+  if (open && typeof setDemoOpen === "function") setDemoOpen(true);
+}
+function vidHide(){
+  if (!dbox) return;
+  vidReset();
+  dbox.classList.remove("is-video");
+  curVis = -2;
+  if (typeof paintDemo === "function") paintDemo(typeof idx === "number" ? idx : 0);
+}
+if (VIDEO && VIDEO.id && dbox){
+  vidHost = document.createElement("div");
+  vidHost.className = "dbox-vid";
+  var vk = document.createElement("p");
+  vk.className = "dbox-kind";
+  vk.textContent = "Watch It Explained" + (VIDEO.channel ? " · " + VIDEO.channel : "");
+  vidHost.appendChild(vk);
+  vidWell = document.createElement("div");
+  vidWell.className = "vid-well";
+  vidHost.appendChild(vidWell);
+  vidPoster();
+  /* Only a lesson WITH frames needs a way back to them. */
+  if (VISUALS.length){
+    var back = document.createElement("button");
+    back.type = "button";
+    back.className = "vid-back";
+    back.textContent = "Back to the Reading";
+    back.addEventListener("click", vidHide);
+    vidHost.appendChild(back);
+  }
+  var inEl = dbox.querySelector(".dbox-in");
+  dbox.insertBefore(vidHost, inEl);
+  if (!VISUALS.length) dbox.classList.add("is-video");
 }
 
 if ((VISUALS.length || PANEL_SOON) && dbox){
@@ -2968,446 +3386,565 @@ scrub.addEventListener("keydown", function(e){
   });
 })();
 
-
-/* ── practice ─────────────────────────────────────────────────────────────
-   Click the word. Every word is a target so the layout gives nothing away,
-   and a wrong click is not fatal: it says WHY it is wrong and lets him go
-   again. Paul's standing rule for this site is no punishment for wrong.
-   Progress is stored per lesson so closing the tab does not lose the work. */
-var KEY = "prog:" + LESSON_ID;
-var state = {};
-try { state = JSON.parse(load(KEY, "{}")) || {}; } catch (e) { state = {}; }
-
-var cwrap = document.getElementById("chooses");
-var wrap  = document.getElementById("problems");
-var kwrap = document.getElementById("kinds");
-var bar   = document.getElementById("scorebar");
-
-/* 🚨 THE SHELF CARD CANNOT COUNT THIS LESSON'S PARTS, so the lesson has to say so
-   itself. `state` is keyed a0..aN and b0..bN, which means nothing to a card that
-   does not know how many of each there are — so a FINISHED English lesson sat at
-   "part done" forever and never got its green tick. Writing `complete` here, the
-   same shape maths and integers already write, lets one rule on the card cover
-   every lesson type. Found 2026-09-08, on lessons Kolten had actually finished. */
-function save(){
-  var a = 0, b = 0, c = 0, i;
-  for (i = 0; i < PRACTICE.length; i++) if (state["a" + i]) a++;
-  for (i = 0; i < SORT.length; i++)     if (state["b" + i]) b++;
-  /* 🚨 "c" KEYS, NOT "a". The choose part and the find part ask different
-     questions about similar sentences, so sharing a prefix would mark one done
-     because the other was answered. Same reason a and b are prefixed. */
-  for (i = 0; i < CHOOSE.length; i++)   if (state["c" + i]) c++;
-  state.done     = a + b + c;
-  state.total    = PRACTICE.length + SORT.length + CHOOSE.length;
-  state.complete = state.total > 0 && state.done === state.total;
-  store(KEY, JSON.stringify(state));
-}
-
-/* ⚠️ Part A and Part B are stored under PREFIXED keys, "a3" and "b3", not bare
-   numbers. Two parts sharing one number would mark a Part B answer as a solved
-   Part A sentence, and the score would count work nobody did. */
-/* One entry point. Each part draws only if its container is on the page, so a
-   lesson using two of the three shapes needs no flag to say which two. */
-function render(){
-  renderChoose();
-  renderFind();
-  renderKinds();
-  score();
-}
-
-/* ── THE CHOOSE PART. The words are laid out; pick the right one. ──────────
-   🚨 THE OPTIONS ARE ALWAYS WORDS FROM THE SENTENCE, never invented ones, and
-   the build refuses any that are not. An option that is not in the line teaches
-   him to scan the buttons instead of reading the sentence, which is the exact
-   habit the find part then has to undo. */
-function renderChoose(){
-  if (!cwrap) return;
-  cwrap.innerHTML = "";
-  CHOOSE.forEach(function(p, n){
-    var done = state["c" + n] === true;
-    var box = document.createElement("div");
-    box.className = "prob" + (done ? " solved" : "");
-
-    var head = document.createElement("div");
-    head.className = "probhead";
-    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' +
-      (done ? LABELS.tagChooseDone : LABELS.tagChoose) + '</span>';
-    box.appendChild(head);
-
-    var line = document.createElement("p");
-    line.className = "cline";
-    line.textContent = p.sentence;
-    box.appendChild(line);
-
-    var ask = document.createElement("p");
-    ask.className = "cline";
-    ask.innerHTML = LABELS.askPrefix + ' <span class="askfor ' + p.ask + '">' +
-      (p.ask === "subject" ? LABELS.askSubject : LABELS.askPredicate) + '</span>?';
-    box.appendChild(ask);
-
-    var nudge = document.createElement("p");
-    nudge.className = "nudge";
-
-    var row = document.createElement("div");
-    row.className = "choices";
-    p.options.forEach(function(word){
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "choice"; b.textContent = word;
-      if (done) {
-        b.disabled = true;
-        if (word === p.word) b.classList.add("ok");
-      } else {
-        b.onclick = function(){
-          if (word === p.word) {
-            state["c" + n] = true; save();
-            render();
-            var fresh = cwrap.children[n].querySelector(".nudge");
-            if (fresh) fresh.textContent = p.why;
-          } else {
-            /* A reason, never a buzzer. Paul's standing rule for this site. */
-            b.classList.add("wrong");
-            nudge.classList.add("warn");
-            nudge.textContent = p.ask === "subject" ? LABELS.wrongSubject : LABELS.wrongPredicate;
-          }
-        };
-      }
-      row.appendChild(b);
-    });
-    box.appendChild(row);
-    if (done) { nudge.textContent = p.why; }
-    box.appendChild(nudge);
-    cwrap.appendChild(box);
+/* ---------- word cards ---------- */
+var cardsEl = document.getElementById("cards");
+WORDS.forEach(function(pair){
+  var b = document.createElement("button");
+  b.className = "card";
+  b.type = "button";
+  b.innerHTML = '<span class="term"></span><span class="prompt">What is it?</span><span class="def"></span>';
+  b.querySelector(".term").textContent = pair[0];
+  b.querySelector(".def").textContent = pair[1];
+  /* 🚨 `read` STICKS, `open` DOES NOT. Paul, 2026-09-04: "if you clicked on the
+     vocab section they turn green outline too to show you read them."
+     Opening a card is a toggle - he will close it again - but having read it is
+     not something that un-happens. So the green outline is a separate class that
+     is only ever added, and it survives closing the card. It is a record of what
+     he has looked at, which is exactly what a parent scanning the row wants. */
+  b.addEventListener("click", function(){
+    b.classList.toggle("open");
+    b.classList.add("read");
   });
+
+  /* 🚨 A WORD CARD CAN SEND THE STUDENT TO THE SENTENCE THAT EXPLAINS IT.
+     Paul, 2026-09-14, asked for the cards to do what the questions already do.
+     The third entry on a word is a list of sentence indexes, validated at build
+     time by checkWordFinds(); a word without one gets no button, so this is
+     additive and no existing lesson breaks.
+     ⚠️ THE BUTTON IS INSIDE THE CARD, WHICH IS ITSELF A BUTTON. A click on it
+     would bubble up and toggle the card shut under the student's finger, so it
+     stops propagation. Nested interactive elements are invalid HTML, so this is
+     a <span role="button"> with a real keyboard handler, not a <button>. */
+  if (pair[2] && pair[2].length) {
+    var find = document.createElement("span");
+    find.className = "cardfind";
+    find.setAttribute("role", "button");
+    find.setAttribute("tabindex", "0");
+    find.textContent = "Find it in the story";
+    var go = function(ev){
+      ev.stopPropagation();
+      ev.preventDefault();
+      /* Only ONE word is shown at a time. Leaving the last one lit means the
+         story slowly fills with highlights and none of them means anything. */
+      SENT.forEach(function(s){ s.el.classList.remove("wordshown"); });
+      pair[2].forEach(function(k){ if (SENT[k]) SENT[k].el.classList.add("wordshown"); });
+      b.classList.add("read");
+      if (SENT[pair[2][0]]) nsReveal(SENT[pair[2][0]].el);
+    };
+    find.addEventListener("click", go);
+    find.addEventListener("keydown", function(ev){
+      if (ev.key === "Enter" || ev.key === " ") go(ev);
+    });
+    b.appendChild(find);
+  }
+
+  cardsEl.appendChild(b);
+});
+
+/* 🚨 THE WORD COUNT IS DERIVED, THE SAME WAY THE QUESTION COUNT IS. The note
+   above these cards used to read "Four words from the reading" on every lesson
+   and had been wrong on every lesson carrying five or more - Unit 1 Review has
+   ten. Written from WORDS now, so it cannot go stale. Spelled out to ten,
+   digits past it, matching day1Note(). */
+(function wordsNote(){
+  var el = document.getElementById("wordsnote");
+  if (!el || !WORDS.length) return;
+  var words = ["", "One", "Two", "Three", "Four", "Five",
+               "Six", "Seven", "Eight", "Nine", "Ten"];
+  var n = WORDS.length;
+  var count = n <= 10 ? words[n] : String(n);
+  el.textContent = count + " word" + (n === 1 ? "" : "s") +
+    " this lesson uses. Tap a card to see what it means, then come back to " +
+    "them whenever a question uses one.";
+})();
+
+/* ---------- questions ---------- */
+var hunt = null;            // { qi, tries }
+var huntBar = document.getElementById("huntbar");
+var huntLabel = document.getElementById("huntlabel");
+var answered = [];
+var hunted = [];    // questions where Find was actually used
+var foundFirstTry = 0, huntTotal = 0;
+var qEl1 = document.getElementById("questions1");
+var qEl2 = document.getElementById("questions2");
+
+/* 🚨 THE QUESTION COUNT IS DERIVED. The note above questions used to say "Four
+   questions" on every lesson regardless - true of the science and history
+   lessons, wrong by six on Kinds of Sentences. Written from the data now, so it
+   cannot go stale. Spelled out to ten because a sentence reads better that way,
+   then digits beyond it. */
+(function day1Note(){
+  var el = document.getElementById("day1note");
+  if (!el) return;
+  var n = QUESTIONS.filter(function(q){ return q.day === 1; }).length;
+  if (!n) return;
+  var words = ["", "One", "Two", "Three", "Four", "Five",
+               "Six", "Seven", "Eight", "Nine", "Ten"];
+  var count = n <= 10 ? words[n] : String(n);
+  el.textContent = count + " question" + (n === 1 ? "" : "s") +
+    " about the story you just read. Pick your answer straight off, or press " +
+    "Find it in the story if you would rather hunt for the sentence first.";
+})();
+
+QUESTIONS.forEach(function(Q, qi){
+  if (Q.find) huntTotal++;
+  var card = document.createElement("div");
+  card.className = "q";          // never locked: answering is the default path
+  card.id = "q" + qi;
+
+  var num = document.createElement("div");
+  num.className = "qnum";
+  num.textContent = "Question " + (qi + 1);
+  card.appendChild(num);
+
+  var qt = document.createElement("div");
+  qt.className = "qtext";
+  qt.innerHTML = Q.q;   // our own strings; italics in vocabulary questions are intentional
+  card.appendChild(qt);
+
+  var stage = document.createElement("div");
+  stage.className = "stage";
+  card.appendChild(stage);
+
+  if (Q.find){
+    stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
+    var go = document.createElement("button");
+    go.className = "btn ghost";
+    go.type = "button";
+    go.textContent = "Find it in the story";
+    go.style.marginTop = "9px";
+    go.addEventListener("click", function(){ startHunt(qi); });
+    stage.appendChild(go);
+  } else {
+    stage.innerHTML = "<strong>No hunting on this one.</strong> " + Q.note;
+  }
+
+  var ch = document.createElement("div");
+  ch.className = "choices";
+  Q.choices.forEach(function(text, ci){
+    var b = document.createElement("button");
+    b.className = "choice";
+    b.type = "button";
+    b.textContent = text;
+    b.addEventListener("click", function(){ answer(qi, ci); });
+    ch.appendChild(b);
+  });
+  card.appendChild(ch);
+
+  var v = document.createElement("div");
+  v.className = "verdict";
+  card.appendChild(v);
+
+  (Q.day === 2 ? qEl2 : qEl1).appendChild(card);
+});
+
+/* Bring back the answers he already gave, so coming back to a lesson shows the
+   page he left rather than a blank one. Runs right after the cards are built.
+   ⚠️ EVERY INDEX IS RANGE-CHECKED against the lesson as it stands today. A
+   rebuilt lesson can have fewer questions or fewer choices than the record was
+   written against, and a stale pick must be dropped rather than painted onto
+   whatever now sits at that index. Nothing else is assumed about the record:
+   an old one with no `a` simply restores nothing, exactly as before. */
+(function restoreAnswers(){
+  var rec = null;
+  try { rec = JSON.parse(load("prog:" + LESSON_ID, "null")); } catch (e){}
+  if (!rec || !rec.a || !rec.a.length) return;
+  var any = false;
+  rec.a.forEach(function(ci, i){
+    var Q = QUESTIONS[i];
+    if (ci === null || ci === undefined || !Q || !Q.choices) return;
+    if (ci < 0 || ci >= Q.choices.length) return;
+    answered[i] = ci;
+    paintAnswer(i, ci);
+    any = true;
+  });
+  (rec.h || []).forEach(function(v, i){ if (v && QUESTIONS[i]) hunted[i] = true; });
+  if (typeof rec.ff === "number") foundFirstTry = rec.ff;
+  if (!any) return;
+  paintProgress();
+  /* ⚠️ A day with NO questions has done === total === 0, which would show a
+     score on a lesson nobody has touched. Count the day only if it has any. */
+  var d1 = dayStats(1), d2 = dayStats(2);
+  if ((d1.total && d1.done === d1.total) || (d2.total && d2.done === d2.total)) showScore();
+})();
+
+function startHunt(qi){
+  hunted[qi] = true;
+  hunt = { qi: qi, tries: 0 };
+  if (playing){ playing = false; gen++; if (supported) synth.cancel(); clearWords(); paint(); }
+  document.body.classList.add("hunting");
+  storyEl.classList.add("hunting");
+  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
+  huntLabel.innerHTML = "<b>Question " + (qi + 1) + ".</b> Tap the sentence that answers it.";
+  huntBar.classList.add("show");
+  /* 🚨 SCROLL TO THE PARAGRAPH, NOT THE STORY TOP AND NOT THE SENTENCE.
+     Paul, 2026-09-04: "i think find in story should give you the top of the
+     paragraph not the direct place but does put you in the region to find it."
+
+     It used to reveal storyEl itself, which dumps the student at the very top of
+     the reading and makes him scan the whole lesson - fine when the story was
+     six sentences, useless at fifty-five. Revealing the target SENTENCE would be
+     the opposite mistake: it hands him the answer and there is nothing left to
+     hunt for.
+
+     The paragraph is the honest middle. He lands in the right region and still
+     has to read to find the line.
+     ⚠️ Falls back to the story top when a sentence has no .para parent, which is
+     the state during a render, not a normal one. */
+  var first = SENT[QUESTIONS[qi].find[0]];
+  var region = (first && first.el.closest) ? first.el.closest(".para") : null;
+  nsReveal(region || storyEl, "start");
 }
 
-function renderFind(){
-  if (!wrap) return;
-  wrap.innerHTML = "";
-  PRACTICE.forEach(function(p, n){
-    var done = state["a" + n] === true;
-    var box = document.createElement("div");
-    box.className = "prob" + (done ? " solved" : "");
+function endHunt(){
+  hunt = null;
+  document.body.classList.remove("hunting");
+  storyEl.classList.remove("hunting");
+  huntBar.classList.remove("show");
+}
 
-    var head = document.createElement("div");
-    head.className = "probhead";
-    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' + (done ? LABELS.tagFindDone : LABELS.tagFind) + '</span>';
-    box.appendChild(head);
+document.getElementById("huntcancel").addEventListener("click", endHunt);
 
-    /* 🚨 WHEN A LESSON ALTERNATES WHAT IT ASKS FOR, THE ITEM HAS TO SAY WHICH.
-       Without this the student sees six sentences under one heading and has to
-       remember which half question four wanted. */
-    if (p.ask) {
-      var fask = document.createElement("p");
-      fask.className = "cline";
-      fask.innerHTML = LABELS.askPrefix + ' <span class="askfor ' + p.ask + '">' +
-        (p.ask === "subject" ? LABELS.askSubject : LABELS.askPredicate) + '</span>?';
-      box.appendChild(fask);
+storyEl.addEventListener("click", function(e){
+  var target = e.target.closest ? e.target.closest(".sent") : null;
+  if (!target) return;
+  var i = parseInt(target.getAttribute("data-i"), 10);
+
+  if (!hunt){
+    // not hunting: tap a sentence to read from there
+    playing = true;
+    speak(i);
+    return;
+  }
+
+  var Q = QUESTIONS[hunt.qi];
+  var card = document.getElementById("q" + hunt.qi);
+  var stage = card.querySelector(".stage");
+  hunt.tries++;
+
+  if (Q.find.indexOf(i) !== -1){
+    target.classList.add("hit");
+    if (hunt.tries === 1) foundFirstTry++;
+    stage.innerHTML = '<strong>Found it.</strong> Now say it in your own words &mdash; pick the choice that matches the sentence you found.';
+    endHunt();
+    nsReveal(card);
+  } else if (hunt.tries >= 3){
+    target.classList.add("miss");
+    Q.find.forEach(function(k){ SENT[k].el.classList.add("shown"); });
+    stage.innerHTML = '<strong>Here it is.</strong> The highlighted sentence is the one. Read it again, then pick your answer below.';
+    endHunt();
+    nsReveal(SENT[Q.find[0]].el);
+  } else {
+    target.classList.add("miss");
+    huntLabel.innerHTML = "<b>Not that one.</b> " + Q.hint;
+  }
+});
+
+function answer(qi, ci){
+  if (answered[qi] !== undefined) return;
+  answered[qi] = ci;
+  paintAnswer(qi, ci);
+  paintProgress();
+  saveProg();
+
+  // Show the running score as soon as EITHER day is finished, because the two
+  // days happen on different days and he should not have to wait until Day 2
+  // to see how Day 1 went.
+  var d1 = dayStats(1), d2 = dayStats(2);
+  if (d1.done === d1.total || d2.done === d2.total) showScore();
+}
+
+/* 🚨 PAINTING AN ANSWER IS SPLIT OUT OF GIVING ONE, so restoring a saved answer
+   draws EXACTLY what answering it drew. Two painters is how a reloaded page
+   starts looking different from the page the student left. */
+function paintAnswer(qi, ci){
+  var Q = QUESTIONS[qi];
+  var card = document.getElementById("q" + qi);
+  var btns = card.querySelectorAll(".choice");
+
+  btns.forEach(function(b, k){
+    b.disabled = true;
+    if (k === Q.right) b.classList.add("right");
+    else if (k === ci) b.classList.add("wrong");
+  });
+
+  /* 🚨 THE VERDICT EXPLAINS, IT DOES NOT SET HOMEWORK. Paul, 2026-09-04:
+     "if they get the question right the correct Correct. Write that into your
+     notebook in your own words. this needs to be correct becaue there is not
+     notebook. just explain why its correct ... if wrong say incorrect making
+     everything red and show the right one."
+
+     He is right twice over. The old line told every student to write the answer
+     into a notebook, which was a leftover from the printed Rome workbook and is
+     not true of anyone using the site. And a verdict that says only "Correct"
+     teaches nothing - the WHY is the teaching.
+
+     ⚠️ `why` EXISTS ONLY ON THE ENGLISH LESSON TODAY. The four science and two
+     history lessons have none, so the text degrades to plain Correct/Incorrect
+     rather than printing "undefined". Add `why` to a question and the
+     explanation appears with no code change. */
+  var v = card.querySelector(".verdict");
+  v.className = "verdict show " + (ci === Q.right ? "good" : "bad");
+  var why = (Q.why || "").trim();
+  v.textContent = ci === Q.right
+    ? (why ? "Correct. " + why : "Correct.")
+    : (why
+        ? "Incorrect. The right answer is marked above. " + why
+        : "Incorrect. The right answer is marked above.");
+}
+
+/* A light progress record on every answer, so the lesson card on the shelf knows
+   how far in he is without the lesson having to be finished first.
+
+   🚨 IT CARRIES THE ANSWERS THEMSELVES NOW. They used to live only in the
+   `answered` array, in memory, so a reload - or a phone dropping the tab out of
+   memory - wiped every answer while the shelf card still read "4 of 8 answered".
+   The student came back to a blank page with no way to see what he had done.
+   ⚠️ nsProgPush keeps `detail` VERBATIM, so writing them HERE is also what sends
+   them to the account: a parent can see from another device what has been
+   answered, and a cleared cache comes back on the next sign-in. Adding a field
+   to this record needs no change in nav.js. */
+function saveProg(){
+  var d1p = dayStats(1), d2p = dayStats(2);
+  var picks = [], hunts = [];
+  QUESTIONS.forEach(function(Q, i){
+    picks[i] = answered[i] === undefined ? null : answered[i];
+    hunts[i] = !!hunted[i];
+  });
+  store("prog:" + LESSON_ID, JSON.stringify({
+    done: d1p.done + d2p.done, total: d1p.total + d2p.total,
+    d1: d1p.done, d1t: d1p.total, d2: d2p.done, d2t: d2p.total,
+    a: picks, h: hunts, ff: foundFirstTry
+  }));
+}
+
+function dayStats(day){
+  var total = 0, right = 0, done = 0;
+  QUESTIONS.forEach(function(Q, i){
+    if ((Q.day || 1) !== day) return;
+    total++;
+    if (answered[i] !== undefined) done++;
+    if (answered[i] === Q.right) right++;
+  });
+  return { total: total, right: right, done: done,
+           pct: total ? Math.round(right / total * 100) : 0 };
+}
+
+function paintProgress(){
+  /* The teacher line follows every answer and every reset. One call site, so it
+     cannot fall out of step with the progress bars. */
+  paintTeacherScore();
+  [1, 2].forEach(function(day){
+    var st = dayStats(day);
+    var label = document.getElementById("prog" + day);
+    var bar = document.getElementById("bar" + day);
+    if (label){
+      label.textContent = st.done + " of " + st.total + (st.done === st.total && st.total ? " — done" : " answered");
+      label.classList.toggle("done", st.total > 0 && st.done === st.total);
     }
-
-    var row = document.createElement("div");
-    row.className = "words";
-    var nudge = document.createElement("p");
-    nudge.className = "nudge";
-
-    /* 🚨 A COMPOUND ANSWER IS NOT FINISHED ON THE FIRST RIGHT TAP. The found
-       ones are remembered per question so a reload does not lose half a pair,
-       which is the same reason the answers themselves are in ns:prog at all. */
-    var want = p.answer;
-    var got  = state["af" + n] || [];
-    p.sentence.split(" ").forEach(function(word, wi){
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "pw"; b.textContent = word;
-      var isTarget = want.indexOf(wi) >= 0;
-      if (done) {
-        b.disabled = true;
-        if (isTarget) b.classList.add("ok");
-      } else {
-        if (isTarget && got.indexOf(wi) >= 0) { b.classList.add("ok"); b.disabled = true; }
-        b.onclick = function(){
-          if (isTarget) {
-            if (got.indexOf(wi) < 0) got.push(wi);
-            state["af" + n] = got;
-            b.classList.add("ok"); b.disabled = true;
-            if (got.length >= want.length) {
-              state["a" + n] = true; save();
-              render();
-              /* keep the explanation on screen after the re-render */
-              var fresh = wrap.children[n].querySelector(".nudge");
-              if (fresh) fresh.textContent = p.why;
-              score();
-            } else {
-              save();
-              nudge.classList.remove("warn");
-              /* ⚠️ Say how many are LEFT, not how many are done. A student who
-                 taps one word of a pair and gets silence reads it as a bug. */
-              nudge.textContent = "That one is right. " +
-                (want.length - got.length) + " more to find in this sentence.";
-            }
-          } else {
-            b.classList.add("wrong");
-            nudge.classList.add("warn");
-            nudge.textContent = wrongWhy(word, p);
-          }
-        };
-      }
-      row.appendChild(b);
-    });
-
-    box.appendChild(row);
-    if (done) { nudge.textContent = p.why; }
-    box.appendChild(nudge);
-    wrap.appendChild(box);
+    if (bar) bar.style.width = (st.total ? (st.done / st.total * 100) : 0) + "%";
   });
 }
 
-/* ── PART B. Which kind of verb is it? ────────────────────────────────────
-   The verb is already underlined here on purpose. Part A was "which word";
-   asking it again would test the same thing twice and hide the actual
-   question, which is what that word DOES. */
-function renderKinds(){
-  if (!kwrap) return;
-  kwrap.innerHTML = "";
-  SORT.forEach(function(p, n){
-    var done = state["b" + n] === true;
-    var box = document.createElement("div");
-    box.className = "prob" + (done ? " solved" : "");
+function showScore(){
+  var d1 = dayStats(1), d2 = dayStats(2);
+  var right = d1.right + d2.right;
+  var total = d1.total + d2.total;
+  var pct = Math.round(right / total * 100);
+  var missed = QUESTIONS.filter(function(Q){ return Q.find; }).length - hunted.filter(Boolean).length;
 
-    var head = document.createElement("div");
-    head.className = "probhead";
-    head.innerHTML = '<span class="probnum">Sentence ' + (n + 1) + '</span>' +
-      '<span class="tag' + (done ? " done" : "") + '">' + (done ? LABELS.tagKindDone : LABELS.tagKind) + '</span>';
-    box.appendChild(head);
+  var el = document.getElementById("score");
+  el.innerHTML =
+    '<div class="big">' + right + ' / ' + total + '</div>' +
+    '<div class="pct">' + pct + '%</div>' +
+    '<div class="split">' +
+      '<span><b>Part One</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>' +
+      '<span><b>Part Two</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>' +
+    '</div>' +
+    '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
+    ' &middot; answered without hunting: ' + missed + '.<br>' +
+    'Use Print Answer Sheet for a record of this attempt.</div>';
+  el.classList.add("show");
 
-    /* the sentence, with the verb underlined */
-    var line = document.createElement("div");
-    line.className = "words";
-    p.sentence.split(" ").forEach(function(word, wi){
-      if (wi > 0) line.appendChild(document.createTextNode(" "));
-      var sp = document.createElement("span");
-      if (wi === p.at) sp.className = "kverb";
-      sp.textContent = word;
-      line.appendChild(sp);
-    });
-    box.appendChild(line);
-
-    var nudge = document.createElement("p");
-    nudge.className = "nudge";
-
-    var pick = document.createElement("div");
-    pick.className = "kpick";
-    [LABELS.kindAKey, LABELS.kindBKey].forEach(function(kind){
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "kbtn";
-      b.textContent = kind === LABELS.kindAKey ? LABELS.kindA : LABELS.kindB;
-      if (done) {
-        b.disabled = true;
-        if (kind === p.kind) b.classList.add("ok");
-      } else {
-        b.onclick = function(){
-          if (kind === p.kind) {
-            state["b" + n] = true; save();
-            render();
-            var fresh = kwrap.children[n].querySelector(".nudge");
-            if (fresh) fresh.textContent = p.why;
-            score();
-          } else {
-            /* Same rule as Part A: a reason, never a buzzer. */
-            b.classList.add("wrong");
-            nudge.classList.add("warn");
-            nudge.textContent = kind === LABELS.kindAKey ? LABELS.wrongKindA : LABELS.wrongKindB;
-          }
-        };
-      }
-      pick.appendChild(b);
-    });
-    box.appendChild(pick);
-    if (done) { nudge.textContent = p.why; }
-    box.appendChild(nudge);
-    kwrap.appendChild(box);
-  });
-}
-
-/* A wrong answer gets a reason, not a buzzer. The two reasons cover the two
-   mistakes this lesson is actually about. */
-function wrongWhy(word, p){
-  /* The being-verb trap is real on a verbs lesson and meaningless on any other,
-     so a lesson asks for it rather than every lesson inheriting it. */
-  /* The refusal follows the half being asked for, when the lesson alternates. */
-  if (p && p.ask) return p.ask === "subject" ? LABELS.wrongSubject : LABELS.wrongPredicate;
-  if (!LABELS.beingCheck) return LABELS.wrongFind;
-  var clean = word.replace(/[^A-Za-z']/g, "").toLowerCase();
-  var being = ["am","is","are","was","were","be","been","being"];
-  if (being.indexOf(clean) >= 0)
-    return "“" + clean + "” is a being verb, but it is not the one doing the work here. Try the time test again.";
-  return "Not that one. Put “Yesterday” at the front and read it again — which word has to change shape?";
-}
-
-/* One score across BOTH parts, and it says the split, because "8 / 16" hides
-   whether he can find verbs and cannot name them, or the other way round.
-   Paul's rule from the quizzes: show the score AND the percentage. */
-/* 🚨 THE SPLIT IS COUNTED OFF THE PARTS THAT ARE ON THE PAGE, not off two fixed
-   arrays. It used to read PRACTICE and SORT by name, so the first lesson to use
-   a third shape scored "1 / 6, Part A 1/6, Part B 0/0" - it showed the find part
-   under Part A's label, counted the choose part nowhere, and divided by half the
-   real total. A student who had answered two questions was told he had answered
-   one of six when he had answered two of twelve.
-   ⚠️ The label is the part's OWN heading, so the score and the worksheet cannot
-   disagree about which part is which. */
-function partsOnPage(){
-  var out = [];
-  if (CHOOSE.length)   out.push({ key: "c", n: CHOOSE.length });
-  if (PRACTICE.length) out.push({ key: "a", n: PRACTICE.length });
-  if (SORT.length)     out.push({ key: "b", n: SORT.length });
-  var heads = document.querySelectorAll(".wspart .ws-head");
-  for (var i = 0; i < out.length; i++) {
-    /* "Part A. Find The Verb." becomes "Part A" */
-    out[i].label = heads[i] ? heads[i].textContent.split(".")[0].trim() : "Part " + (i + 1);
+  // A lesson counts as complete only when BOTH days are answered. Finishing
+  // Day 1 saves progress, it does not finish the lesson.
+  var complete = (d1.done === d1.total) && (d2.done === d2.total);
+  var prev = readDone();
+  var better = !prev || right > prev.score;
+  // never let a part-finished retake overwrite a completed record
+  if (better || (complete && !(prev && prev.complete))){
+    store("done:" + LESSON_ID, JSON.stringify({
+      score: right, total: total, pct: pct, complete: complete,
+      d1: d1.right, d1t: d1.total, d2: d2.right, d2t: d2.total,
+      d1done: d1.done === d1.total, d2done: d2.done === d2.total,
+      found: foundFirstTry, hunts: huntTotal,
+      at: new Date().toISOString()
+    }));
   }
-  return out;
+  paintStatus();
+  /* 🚨 ONLY JUMP TO THE SCORE WHEN THE LESSON IS ACTUALLY OVER. Paul, 2026-09-05:
+     "after i answer the first section of questions down to the vocab ... it jumps
+     to the bottom for the results but im not finished and i dont like how it
+     jumps to the bottom like that."
+     showScore() is called when EITHER day finishes (see the || at its call site),
+     because finishing Day 1 should record progress and update the box. But the
+     scroll treated that as the end of the lesson and threw the reader past the
+     vocabulary cards and the last four questions - the exact work still in front
+     of them. The box still updates either way; it just no longer drags the page
+     down to itself until both days are done. */
+  if (complete) nsReveal(el);
 }
 
-function countDone(){
-  var parts = partsOnPage(), got = 0, all = 0, bits = [], i, j, n;
-  for (i = 0; i < parts.length; i++) {
-    n = 0;
-    for (j = 0; j < parts[i].n; j++) if (state[parts[i].key + j]) n++;
-    got += n; all += parts[i].n;
-    bits.push(parts[i].label + " " + n + "/" + parts[i].n);
-  }
-  return { got: got, all: all, bits: bits };
+/* ---------- completed / retake ---------- */
+function readDone(){
+  try { return JSON.parse(load("done:" + LESSON_ID, "null")); } catch(e){ return null; }
 }
 
-function score(){
-  paintTeacherScore();          /* the teacher line moves with the student's */
-  var c = countDone();
-  var pct = c.all ? Math.round((c.got / c.all) * 100) : 0;
-  bar.innerHTML = "<b>" + c.got + " / " + c.all + "</b> \u00b7 " + pct + "%" +
-    " <span class=\"tag\">" + c.bits.join(" \u00b7 ") + "</span>" +
-    (c.all && c.got === c.all ? " \u2014 all of them. Write the score in your notes." : "");
-  var dn = document.getElementById("lessondone");
-  if (dn) {
-    if (c.all && c.got === c.all) {
-      dn.hidden = false;
-      dn.innerHTML = "<b>Lesson complete</b>" + c.got + " of " + c.all + " right (" + pct + "%). " +
-        "Print the answer sheet, or retake the lesson to go again.";
-    } else { dn.hidden = true; dn.innerHTML = ""; }
-  }
+function paintStatus(){
+  var d = readDone();
+  var box = document.getElementById("status");
+  if (!d){ box.classList.remove("show"); return; }
+  var when = "";
+  try {
+    when = new Date(d.at).toLocaleDateString(undefined, { month:"short", day:"numeric" });
+  } catch(e){}
+  var done = d.complete !== false;
+  box.classList.toggle("partial", !done || d.pct < 60);
+  document.getElementById("statusMark").textContent = !done ? "…" : (d.pct < 60 ? "!" : "✓");
+  document.getElementById("statusText").innerHTML =
+    (done
+      ? "<b>Lesson completed</b> &middot; best score " + d.score + " / " + d.total + " (" + d.pct + "%)"
+      : "<b>" + (d.d1done ? "Part One finished" : "Part Two finished") + "</b> &middot; " +
+        d.score + " / " + d.total + " so far, the other part is still to do") +
+    "<small>" + (when ? "Last worked " + when + ". " : "") +
+    "Retaking keeps your best score.</small>";
+  box.classList.add("show");
 }
 
-/* Print Answer Sheet: one page of what was asked and what the answers are. The
-   sheet is built at click time and appended to <body> itself, because the print
-   rule hides every other body child and display on a descendant of a hidden
-   parent does nothing. */
-function plainWord(w){ return String(w).replace(/[.,?!;:]+$/, ""); }
-function buildSheet(){
-  var ps = document.getElementById("psheet"), c = countDone(), h = "", i, n = 0;
-  var pct = c.all ? Math.round((c.got / c.all) * 100) : 0;
-  h += "<h1>" + document.title.replace(/ \| .*/, "") + " \u2014 Answer Sheet</h1>";
-  h += "<div class=\"pl\"><span>Name</span><span>Date</span></div>";
-  h += "<p class=\"k\">Score: " + c.got + " / " + c.all + " (" + pct + "%)</p>";
-  function list(title, items, fn){
-    if (!items.length) return;
-    h += "<h2 style=\"font-size:15px;margin:12px 0 4px\">" + title + "</h2><ol>";
-    for (i = 0; i < items.length; i++) h += "<li>" + fn(items[i]) + "</li>";
-    h += "</ol>";
-  }
-  list("Part A", CHOOSE, function(q){ return q.sentence + " \u2014 <span class=\"k\">" + q.word + "</span>"; });
-  list(CHOOSE.length ? "Part B" : "Part A", PRACTICE, function(q){
-    var words = String(q.sentence).split(" "), a = [].concat(q.answer).map(function(k){ return plainWord(words[k]); });
-    return q.sentence + " \u2014 <span class=\"k\">" + a.join(" and ") + "</span>";
-  });
-  ps.innerHTML = h;
-}
-document.getElementById("printKey").onclick = function(){
-  buildSheet();
-  document.body.classList.add("printing");
-  window.print();
-  setTimeout(function(){ document.body.classList.remove("printing"); }, 500);
-};
-document.getElementById("retake").onclick = function(){
-  if (!window.confirm("Start this lesson over? Your answers will be cleared.")) return;
-  state = {}; save(); render(); score(); paintTeacherScore();
-  window.scrollTo(0, 0);
-};
+/* ── THE TEACHER'S SCORE LINE ──────────────────────────────────────────────
+   🚨 IT REPORTS, IT DOES NOT MARK. The percentage is computed from `answered`
+   against the dealt `right` for every question in the lesson, both days
+   together, because a parent wants one number for the sitting.
 
-/* The teacher's line and reset, in Teacher Notes. Mirrors the history template so
-   both read the same on the page and in a screenshot for HomeschoolGrades.
-   🚨 THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE — 8 right out of 8
-   answered is not 100% when the lesson has 16. It is a lesson still in progress
-   and the line says so rather than flattering the number.
-   ⚠️ This lesson is retry-until-right, so a finished one IS full marks. Say
-   "practised to mastery" rather than printing a bare 100% that reads like a test
-   result it never was. */
+   ⚠️ THE DENOMINATOR IS EVERY QUESTION, NOT EVERY ANSWERED ONE. Nine right out
+   of ten answered is not 90% if the lesson has fourteen - it is a lesson still
+   in progress, and the line says so rather than flattering the number.
+   ⚠️ Locking is not done here. answer() already refuses a second attempt at an
+   answered question; this only shows what that lock has produced. */
 function paintTeacherScore(){
   var line = document.getElementById("gscoreline");
-  var btn  = document.getElementById("greset");
+  var btn = document.getElementById("greset");
   if (!line) return;
-  var c = countDone(), total = c.all, done = c.got;
-  line.className = "gscore-line" + (done === 0 ? "" : done === total ? " good" : " part");
-  line.textContent = done === 0
-    ? "Not started yet."
-    : done === total
-      ? "Completed · " + total + "/" + total + " (100%) · practiced to mastery"
-      : done + " of " + total + " answered · still in progress";
-  if (btn) btn.hidden = done === 0;
+  var total = QUESTIONS.length;
+  var done = 0, right = 0;
+  QUESTIONS.forEach(function(Q, i){
+    if (answered[i] === undefined) return;
+    done++;
+    if (answered[i] === Q.right) right++;
+  });
+  if (btn) btn.hidden = (done === 0);
+  if (!done){ line.textContent = "Not started yet."; line.className = "gscore-line"; return; }
+  var pct = Math.round((right / total) * 100);
+  if (done < total){
+    line.textContent = right + " right out of " + done + " answered, " +
+      (total - done) + " still to do.";
+    line.className = "gscore-line part";
+  } else {
+    line.textContent = "Score " + pct + "%  ·  " + right + " out of " + total + " correct.";
+    line.className = "gscore-line " + (pct >= 80 ? "good" : pct >= 60 ? "part" : "bad");
+  }
 }
 
-document.getElementById("greset").onclick = function(){
-  state = {}; save(); render(); score(); paintTeacherScore();
-};
-document.getElementById("reveal").onclick = function(){
-  var i, j;
-  /* ⚠️ Reveal has to cover EVERY part on the page. It walked one list once, and
-     after the first split that silently left half the worksheet unanswered. */
-  if (cwrap) {
-    var cboxes = cwrap.children;
-    for (i = 0; i < CHOOSE.length; i++) {
-      if (state["c" + i]) continue;
-      var cb = cboxes[i].querySelectorAll(".choice");
-      for (j = 0; j < cb.length; j++) {
-        cb[j].disabled = true;
-        if (cb[j].textContent === CHOOSE[i].word) cb[j].classList.add("reveal");
-      }
-      var cnd = cboxes[i].querySelector(".nudge");
-      cnd.classList.remove("warn");
-      cnd.textContent = CHOOSE[i].why;
-    }
-  }
-  if (!wrap) return;
-  var boxes = wrap.children;
-  for (i = 0; i < PRACTICE.length; i++) {
-    if (state["a" + i]) continue;
-    var ws = boxes[i].querySelectorAll(".pw");
-    for (j = 0; j < ws.length; j++) {
-      ws[j].disabled = true;
-      /* ⚠️ A compound answer is a LIST, so this is a membership test. Comparing
-         j against the list itself lit nothing at all, which would have shipped
-         a Show Me The Answers button that answers nothing. */
-      if (PRACTICE[i].answer.indexOf(j) >= 0) ws[j].classList.add("reveal");
-    }
-    var nd = boxes[i].querySelector(".nudge");
-    nd.classList.remove("warn");
-    nd.textContent = PRACTICE[i].why;
-  }
-  if (!kwrap) return;
-  var kboxes = kwrap.children;
-  for (i = 0; i < SORT.length; i++) {
-    if (state["b" + i]) continue;
-    var kb = kboxes[i].querySelectorAll(".kbtn");
-    for (j = 0; j < kb.length; j++) {
-      kb[j].disabled = true;
-      /* 🚨 The two kinds come from the lesson, the same as the buttons above.
-         Hardcoding action/being here meant a subject/predicate lesson revealed
-         nothing, while the buttons themselves were already generic. */
-      if ((j === 0 ? LABELS.kindAKey : LABELS.kindBKey) === SORT[i].kind) kb[j].classList.add("reveal");
-    }
-    var knd = kboxes[i].querySelector(".nudge");
-    knd.classList.remove("warn");
-    knd.textContent = SORT[i].why;
-  }
-};
+/* The reset the teacher owns. Same wipe as the retake button at the foot of the
+   lesson, so there is one behaviour and not two that drift. */
+function resetAttempt(){
+  document.getElementById("retake").click();
+}
+(function wireTeacherReset(){
+  var btn = document.getElementById("greset");
+  if (btn) btn.addEventListener("click", resetAttempt);
+})();
 
-render();
+document.getElementById("retake").addEventListener("click", function(){
+  // Wipe the attempt, keep the record. Nothing about the saved score changes.
+  if (playing){ playing = false; stopEngines(); clearWords(); paint(); }
+  answered = [];
+  hunted = [];
+  drop("prog:" + LESSON_ID);
+  foundFirstTry = 0;
+  endHunt();
+  SENT.forEach(function(s){ s.el.classList.remove("hit","miss","shown"); });
+  document.getElementById("score").classList.remove("show");
+  QUESTIONS.forEach(function(Q, qi){
+    var card = document.getElementById("q" + qi);
+    card.querySelector(".verdict").className = "verdict";
+    [].forEach.call(card.querySelectorAll(".choice"), function(b){
+      b.disabled = false;
+      b.classList.remove("right","wrong");
+    });
+    var stage = card.querySelector(".stage");
+    if (Q.find){
+      stage.innerHTML = '<strong>Stuck?</strong> Find the sentence in the story that answers it. Or just pick your answer below.';
+    var go = document.createElement("button");
+    go.className = "btn ghost";
+    go.type = "button";
+    go.textContent = "Find it in the story";
+    go.style.marginTop = "9px";
+    go.addEventListener("click", function(){ startHunt(qi); });
+    stage.appendChild(go);
+    }
+  });
+  paintProgress();
+  nsReveal(document.getElementById("q0"));
+});
+
+/* ---------- printable answer sheet ----------
+   Proof the work was done: the five questions, what he answered, whether it was
+   right, and the score. Not the story - this is the record, not the lesson. */
+
+document.getElementById("printKey").addEventListener("click", function(){
+  var d = readDone();
+  var right = 0;
+  QUESTIONS.forEach(function(Q, i){ if (answered[i] === Q.right) right++; });
+  var attempted = answered.filter(function(a){ return a !== undefined; }).length;
+  var pct = attempted ? Math.round(right / QUESTIONS.length * 100) : 0;
+  var now = new Date();
+  var dateStr = now.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
+
+  var rows = QUESTIONS.map(function(Q, i){
+    var pick = answered[i];
+    var ok = pick === Q.right;
+    var given = pick === undefined ? "(not answered)" : Q.choices[pick];
+    var mark = pick === undefined ? "–" : (ok ? "✓" : "✗");
+    var corrected = (pick !== undefined && !ok)
+      ? '<div class="a" style="margin-top:2mm"><span class="mk">→</span>Correct answer: ' + Q.choices[Q.right] + '</div>'
+      : "";
+    return '<li><div class="q">' + Q.q + '</div>' +
+           '<div class="a"><span class="mk">' + mark + '</span>' + given + '</div>' +
+           corrected + '</li>';
+  }).join("");
+
+  document.getElementById("sheet").innerHTML =
+    '<div class="scorebox"><div class="n">' + right + '/' + QUESTIONS.length + '</div>' +
+      '<div class="p">' + pct + '%</div></div>' +
+    '<h1>' + LESSON_TITLE + '</h1>' +
+    '<p class="sub">' + LESSON_UNIT + '</p>' +
+    '<div class="idline">' +
+      '<span><b>Student:</b> ______________________</span>' +
+      '<span><b>Completed:</b> ' + (d && d.at ? new Date(d.at).toLocaleDateString() : dateStr) + '</span>' +
+      '<span><b>Printed:</b> ' + dateStr + '</span>' +
+    '</div>' +
+    '<ol>' + rows + '</ol>' +
+    '<div class="foot">Sentences found in the text on the first try: ' + foundFirstTry + ' of ' + huntTotal +
+      '.  Answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find;}).length - hunted.filter(Boolean).length) + '.' +
+      (d ? '  Best recorded score: ' + d.score + '/' + d.total + ' (' + d.pct + '%).' : '') +
+    '</div>' +
+    '<div class="sign">Parent signature:<span></span></div>';
+
+  window.print();
+});
+
+paintStatus();
+paintProgress();
+paint();
 })();

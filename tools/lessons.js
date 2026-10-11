@@ -67,6 +67,7 @@ const LESSONS = [
   require('./content/grade-7/maths/unit-3/use-a-graph'),
   require('./content/grade-7/maths/unit-3/make-a-table'),
   require('./content/grade-7/maths/unit-3/range-and-scales'),
+  require('./content/grade-7/maths/unit-3/mean-median-and-mode'),
   require('./content/grade-3/english/unit-4/kinds-of-sentences'),
   require('./content/grade-4/english/unit-4/writing-good-sentences'),
   require('./content/grade-3/english/unit-4/finding-the-subject'),

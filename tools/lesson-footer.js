@@ -87,6 +87,10 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
 .lfoot-hw.is-off{opacity:.42;border-style:dashed;cursor:default;font-weight:500}
 .lfoot-hw small{display:block;font-weight:400;font-size:.8rem;color:var(--lf-d);
   margin-top:2px}
+/* the saved homework score (lfootHwScript); green is "done", never the accent */
+.lfoot-hwst{display:block;margin-top:6px;font-weight:700;font-size:.88rem}
+.lfoot-hwst:empty{display:none}
+.lfoot-hwst.is-done{color:var(--laurel, #1c7a4a)}
 
 /* ── prev / next ──────────────────────────────────────────────────────────
    🚨 SMALL ARROWS, NOT CARDS. Paul, 2026-09-19: "i want a smaller jump to the
@@ -187,7 +191,23 @@ function homeworkCta(L, ROOT, subjectHint) {
   const note = sheet.note
     ? '<small>' + esc(sheet.note) + '</small>'
     : '<small>Print it and do it on paper.</small>';
-  return '<a class="lfoot-hw" href="' + href + '">Open The Homework Sheet' + note + '</a>';
+  /* 🚨 THE LESSON SHOWS THE HOMEWORK SCORE. Paul, 2026-10-11: "saved and
+     confirmed with lesson that its complete and has the score on the lesson
+     page." The sheet's Check My Answers writes ns:done:hw/<slug> (homework-
+     sheet.js onlineBlock), synced to the student like every lesson record;
+     this reads it. Nothing shows until the sheet has been checked.
+     ⚠️ Spliced by plain .replace into five templates: no dollar sign, no
+     backtick anywhere in it. */
+  const hw = 'hw/' + sheet.slug;
+  return '<a class="lfoot-hw" href="' + href + '">Open The Homework Sheet' + note +
+    '<span class="lfoot-hwst" data-hw="' + esc(hw) + '"></span></a>' + lfootHwScript();
+}
+function lfootHwScript() {
+  return '<script>(function(){var e=document.querySelector(".lfoot-hwst");if(!e)return;var r=null;' +
+    'try{r=JSON.parse(localStorage.getItem("ns:done:"+e.getAttribute("data-hw")));}catch(x){}' +
+    'if(!r||typeof r.score!=="number")return;' +
+    'e.textContent=(r.complete?"\\u2713 Homework done: ":"Homework checked so far: ")+r.score+" of "+r.total+" right ("+r.pct+"%)";' +
+    'e.className="lfoot-hwst"+(r.complete?" is-done":"");})();</script>';
 }
 
 /* ── WHO IS NEXT, ACROSS ALL FIVE REGISTRIES ──────────────────────────────

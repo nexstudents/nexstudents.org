@@ -1164,6 +1164,114 @@ sheet({
   ],
 }),
 
+sheet({
+  slug: "mean-median-and-mode-homework", lesson: "maths/mean-median-and-mode",
+  includedWith: "maths/mean-median-and-mode",
+  online: true,   /* type-in-and-check on screen, 2026-10-11 pilot (homework-sheet.js onlineBlock) */
+  title: "Mean, Median, and Mode: Homework",
+  /* REBUILT 2026-10-11 to follow the lesson's new order (Paul: "redo the worksheet
+     with the new lesson understanding"): the mean as evening out block stacks, then
+     the median (odd, then even), then the mode (the number, not the count), then all
+     three, traps, real data, and choosing the measure that fits.
+     REAL DATA: days in each month of a non-leap year (calendar fact), and players per
+     side on the field or court: baseball 9, basketball 5, soccer 11, American football
+     11, ice hockey 6 (goalie included), volleyball 6. Everything else is made up.
+     Answers lead with the computed number; any second measure in the same answer, and
+     every answer with no calc, was checked BY HAND (Opus, 2026-10-11). */
+  dek: "Even it out for the mean, line it up for the median, and look for repeats for the mode.",
+  blurb: "Homework for the Mean, Median, and Mode lesson. Block stacks to even out, medians with one middle and with two, modes that trip people up, real calendar and sports data, choosing the right measure, and an answer key.",
+  contains: [
+    "Block stacks to draw and even out, then means to work out",
+    "Medians with one middle number and with two",
+    "Modes, including no mode, two modes, and the classic trap",
+    "The real number of days in every month, and players on six sports teams",
+    "Choosing the measure that tells the truth, and an answer key",
+  ],
+  eyebrow: "Math 7 &middot; U3-L5",
+  signoff: "Mean: add them all, divide by how many. Median: put them in order, find the middle. Mode: the number you see most.",
+  parts: [
+    { kind: "solve", heading: "The Mean: Even It Out",
+      note: "For 1 to 3, even out the stacks so they're all the same height (sketch the blocks beside the problem if it helps). For all of them: add the numbers, count how many there are, and divide the total by that count.",
+      key: "the mean.",
+      items: [
+        q("Even out stacks of 3, 5 and 7 blocks. How tall is each stack?", "5. 3 + 5 + 7 = 15 blocks, and 15 ÷ 3 = 5.", "(3+5+7)/3"),
+        q("Even out stacks of 1, 4, 4 and 7 blocks. How tall is each stack?", "4. 1 + 4 + 4 + 7 = 16 blocks, and 16 ÷ 4 = 4.", "(1+4+4+7)/4"),
+        q("Even out stacks of 6, 2, 9 and 3 blocks. How tall is each stack?", "5. 6 + 2 + 9 + 3 = 20 blocks, and 20 ÷ 4 = 5.", "(6+2+9+3)/4"),
+        q("Find the mean: 12, 18, 15, 11", "14", "(12+18+15+11)/4"),
+        q("Find the mean: 40, 55, 70, 35, 50", "50", "(40+55+70+35+50)/5"),
+        q("Find the mean: 2.4, 3.1, 1.8, 2.7", "2.5", "(2.4+3.1+1.8+2.7)/4"),
+        q("Find the mean: 105, 98, 112, 101, 94, 110. Round to the nearest hundredth.", "103.33 (620 ÷ 6)", "r(620/6,2)"),
+      ] },
+    { kind: "solve", heading: "The Median: Find the Middle",
+      note: "Put the numbers in order first, every time. If two numbers are left in the middle, the median is halfway between them.",
+      key: "the median.",
+      items: [
+        Object.assign(q("13, 7, 21, 9, 15", "13. In order: 7, 9, 13, 15, 21."), { check: 13 }),
+        Object.assign(q("44, 38, 51, 47, 40, 39, 50", "44. In order: 38, 39, 40, 44, 47, 50, 51."), { check: 44 }),
+        q("6, 11, 3, 8", "7. In order: 3, 6, 8, 11, and halfway between 6 and 8 is 7.", "(6+8)/2"),
+        q("25, 30, 20, 35, 40, 45", "32.5. In order: 20, 25, 30, 35, 40, 45, and halfway between 30 and 35 is 32.5.", "(30+35)/2"),
+        q("1.5, 0.9, 2.2, 1.1", "1.3. In order: 0.9, 1.1, 1.5, 2.2, and halfway between 1.1 and 1.5 is 1.3.", "(1.1+1.5)/2"),
+        q("60, 61, 60, 75", "60.5. In order: 60, 60, 61, 75, and halfway between 60 and 61 is 60.5.", "(60+61)/2"),
+      ] },
+    { kind: "solve", heading: "The Mode: The One You See Most",
+      note: "Write the mode. Some sets have no mode, and some have two.",
+      key: "the mode.",
+      items: [
+        Object.assign(q("5, 3, 5, 8, 2, 5", "5. It appears three times."), { check: 5 }),
+        Object.assign(q("14, 12, 17, 12, 14, 19", "Two modes, 12 and 14. Each appears twice."), { check: [12,14] }),
+        Object.assign(q("21, 34, 18, 27", "No mode. Every number appears once."), { check: "none" }),
+        Object.assign(q("Favorite colors in a class: red, blue, blue, green, red, blue", "Blue. A mode works on words too, not only numbers."), { check: "blue" }),
+        Object.assign(q("In 2, 9, 9, 9, 9, 4 a student writes 4 for the mode, because 9 showed up four times. What is the real mode?", "9. The mode is the number that repeats, not how many times it repeats."), { check: 9 }),
+      ] },
+    { kind: "solve", heading: "All Three, and the Traps",
+      note: "For 1 to 3, find the mean, the median and the mode. For 4 to 7, each problem has a trap in it, so read carefully.",
+      key: "for 1 to 3, the mean first, then the median and the mode; for 4 to 7, the answer.",
+      items: [
+        Object.assign(q("9, 4, 6, 4, 7", "6 (mean). Median 6, mode 4.", "(9+4+6+4+7)/5"), { check: {"Mean":6,"Median":6,"Mode":4} }),
+        Object.assign(q("16, 22, 18, 16, 25, 23", "20 (mean). Median 20, mode 16.", "(16+22+18+16+25+23)/6"), { check: {"Mean":20,"Median":20,"Mode":16} }),
+        Object.assign(q("3.5, 2.0, 4.0, 2.5, 3.0", "3 (mean). Median 3.0, no mode.", "(3.5+2+4+2.5+3)/5"), { check: {"Mean":3,"Median":3,"Mode":"none"} }),
+        q("Find the mean of 0, 10, 0, 20, 5. Do the zeros count?", "7. Yes, each 0 is a value, so you divide by 5, not 3.", "(0+10+0+20+5)/5"),
+        q("A student says the median of 11, 4, 8, 2, 6, 15 is 8, because 8 is in the middle of the list as written. What is the real median?", "7. In order it is 2, 4, 6, 8, 11, 15, and halfway between 6 and 8 is 7.", "(6+8)/2"),
+        q("Five scores have a mean of 12. Four of them are 10, 14, 9 and 15. What is the fifth score?", "12. Five scores with a mean of 12 add to 60, and 10 + 14 + 9 + 15 = 48.", "12*5-(10+14+9+15)"),
+        q("Can the median be a number that isn't in the set? Give an example.", "Yes. In 1, 2, 3, 4 the two middle numbers are 2 and 3, so the median is 2.5, which isn't in the set."),
+      ] },
+    { kind: "solve", heading: "Real Numbers, and Which One Fits",
+      note: "The calendar and the teams are real. For the last two, give the numbers and name the measure you'd use.",
+      key: "the answers.",
+      items: [
+        { problem: "The number of days in each month of a year that is not a leap year:",
+          table: [["Month", "Days"], ["January", "31"], ["February", "28"], ["March", "31"], ["April", "30"], ["May", "31"], ["June", "30"], ["July", "31"], ["August", "31"], ["September", "30"], ["October", "31"], ["November", "30"], ["December", "31"]],
+          sub: [
+            { q: "What is the mean number of days in a month? Round to the nearest hundredth.", answer: "30.42 (365 ÷ 12)", calc: "r(365/12,2)" },
+            { q: "What is the median? (There are 12 months, so there are two middle values.)", answer: "31. In order, the 6th and 7th values are both 31.", calc: "(31+31)/2" },
+            { check: {"Mode":31,"Month":"february"}, q: "What is the mode, and which month pulls the mean below 31?", answer: "31 is the mode. February, with 28 days, pulls the mean down." },
+          ] },
+        { problem: "How many players each team has on the field or court at once:",
+          table: [["Sport", "Players per side"], ["Baseball", "9"], ["Basketball", "5"], ["Soccer", "11"], ["American football", "11"], ["Ice hockey", "6"], ["Volleyball", "6"]],
+          sub: [
+            { q: "Find the mean.", answer: "8 (48 ÷ 6)", calc: "(9+5+11+11+6+6)/6" },
+            { q: "Find the median.", answer: "7.5. In order it is 5, 6, 6, 9, 11, 11, and halfway between 6 and 9 is 7.5.", calc: "(6+9)/2" },
+            { check: [6,11], q: "What is the mode?", answer: "There are two modes, 6 and 11." },
+          ] },
+        Object.assign(q("Maya's last five bowling scores were 110, 115, 112, 118 and 40, the night she hurt her wrist. Find the mean and the median. Which one better describes how she usually bowls?",
+          "99 (mean). The median is 112. The median describes her usual bowling better, because the one bad night pulls the mean down but doesn't move the middle.", "(110+115+112+118+40)/5"), { check: {"Mean":99,"Median":112,"Which one":"median"} }),
+        Object.assign(q("A shoe store is deciding which size to order the most of. Should it look at the mean, the median or the mode of the sizes it sold?",
+          "The mode, because the store wants the size people actually buy most often. A mean like 7.6 isn't even a size you can order."), { check: "mode" }),
+      ] },
+    { kind: "solve", heading: "Critical Thinking",
+      note: "Write a set of numbers that fits each rule. The last one is yours to make up.",
+      key: "one correct answer, and what a good explanation says.",
+      items: [
+        q("Write a set of five whole numbers where the mean, the median and the mode are all the same number.",
+          "Answers vary. One that works is 4, 5, 5, 5, 6: the mode and median are 5, and the total is 25, so the mean is 25 ÷ 5 = 5. Numbers that balance evenly around the middle keep the mean on the median."),
+        q("Write a set of five whole numbers where the mean is bigger than the median. What kind of number makes that happen?",
+          "Answers vary. One is 1, 2, 3, 4, 20: the median is 3 and the mean is 30 ÷ 5 = 6. One very large number pulls the mean up but doesn't move the median."),
+        q("Collect six real numbers from your own week, such as minutes spent reading each day. Find the mean, median and mode, and say which one describes your week best.",
+          "Answers vary. A good answer puts the six numbers in order, takes the halfway number between the two middle values for the median, divides the total by 6 for the mean, and picks the measure that isn't thrown off by one unusual day."),
+      ] },
+  ],
+}),
+
 ];
 
 module.exports = { MATH_HOMEWORK };

@@ -56,6 +56,10 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
 .lfoot-hw.is-off{opacity:.42;border-style:dashed;cursor:default;font-weight:500}
 .lfoot-hw small{display:block;font-weight:400;font-size:.8rem;color:var(--lf-d);
   margin-top:2px}
+/* the saved homework score (lfootHwScript); green is "done", never the accent */
+.lfoot-hwst{display:block;margin-top:6px;font-weight:700;font-size:.88rem}
+.lfoot-hwst:empty{display:none}
+.lfoot-hwst.is-done{color:var(--laurel, #1c7a4a)}
 
 /* ── prev / next ──────────────────────────────────────────────────────────
    🚨 SMALL ARROWS, NOT CARDS. Paul, 2026-09-19: "i want a smaller jump to the

@@ -129,7 +129,10 @@ function sentencesOf(parts) {
   const strip = (t) => {
     let x = t.indexOf("[ex] ") === 0 ? t.slice(5)
           : t.indexOf("[verse] ") === 0 ? t.slice(8)
-          : t.indexOf("[story] ") === 0 ? t.slice(8) : t;
+          : t.indexOf("[story] ") === 0 ? t.slice(8)
+          : t.indexOf("[walk] ") === 0 ? t.slice(7)
+          /* [step] "said || work": only the part before || is spoken (twin of the page) */
+          : t.indexOf("[step] ") === 0 ? t.slice(7).split(" || ")[0] : t;
     return x.split("{{").join("").split("}}").join("");
   };
   parts.forEach((p) => (p.s || []).forEach((t) => {

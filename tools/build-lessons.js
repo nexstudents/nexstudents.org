@@ -184,7 +184,10 @@ function checkSpread(L, qs) {
   }
 }
 
-const esc = (s) => String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+/* Newlines too: a [step] work line can be several rows (2026-10-11, the block
+   stacks), and a raw newline inside a "..." literal kills the whole page script. */
+const esc = (s) => String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"')
+  .replace(/\r/g, "\\r").replace(/\n/g, "\\n");
 const jsArr = (a) => "[\n    " + a.map((x) => '"' + esc(x) + '"').join(",\n    ") + "\n  ]";
 
 /* Replace the ONE line that starts with `marker`. Fails loudly on none or on
@@ -431,10 +434,12 @@ function requireGround(L) {
    kinds-of-sentences' Proverbs 25:11.
    ⚠️ BOTH requireBoxes AND requireVisuals match this way. Anything else added
    that compares a `when` against story text has to strip the same way. */
-const MARKERS = ["[ex] ", "[verse] ", "[story] "];
+const MARKERS = ["[ex] ", "[verse] ", "[story] ", "[walk] ", "[step] "];
 const unmark = (s) => {
   let t = String(s).trim();
   MARKERS.forEach((m) => { if (t.indexOf(m) === 0) t = t.slice(m.length); });
+  /* a [step] line is "said || work"; only the said half is a sentence */
+  if (t.indexOf(" || ") > -1) t = t.split(" || ")[0];
   /* {{term}} marks a tappable word; the braces are never part of the sentence */
   return t.split("{{").join("").split("}}").join("").trim();
 };
@@ -721,6 +726,32 @@ function requireWork(L) {
 
   W.forEach((w, i) => {
     const at = L.id + ": work[" + i + "]";
+    /* 🚨 A YOUR TURN PROBLEM (`steps`) - every step typed and checked. Each key is
+       recomputed from `calc` where one is given, so a wrong key cannot ship; a
+       key with no calc (an ordered list, a mode) is checked BY HAND at review. */
+    if (w.steps) {
+      if (!w.title || !w.ask || !Array.isArray(w.steps) || !w.steps.length) {
+        console.error("FAIL: " + at + " needs `title`, `ask` and a non-empty `steps`"); process.exit(1);
+      }
+      w.steps.forEach((s, k) => {
+        const sa = at + ".steps[" + k + "]";
+        const okAns = typeof s.answer === "number" ||
+          (Array.isArray(s.answer) && s.answer.length && s.answer.every((x) => typeof x === "number"));
+        if (!s.ask || !okAns) {
+          console.error("FAIL: " + sa + " needs `ask` and a numeric `answer` (or a list of numbers)"); process.exit(1);
+        }
+        if (s.calc != null) {
+          if (!/^[\d\s+\-*/().]+$/.test(s.calc)) {
+            console.error("FAIL: " + sa + ".calc may hold only numbers, + - * / and brackets"); process.exit(1);
+          }
+          const v = Function('"use strict";return (' + s.calc + ");")();
+          if (Math.abs(v - s.answer) > (s.tol != null ? s.tol : 0.01)) {
+            console.error("FAIL: " + sa + ": answer " + s.answer + " but calc " + s.calc + " = " + v); process.exit(1);
+          }
+        }
+      });
+      return;
+    }
     ["title", "ask", "estimate", "solve", "examine"].forEach((k) => {
       if (!w[k]) { console.error("FAIL: " + at + " has no `" + k + "`"); process.exit(1); }
     });
@@ -768,6 +799,27 @@ function requireWork(L) {
   });
 }
 
+/* 🚨 A BLOCK GAME MUST BE WINNABLE. Paul, 2026-10-11: the games have to
+   actually work, so a broken one fails here, before a student can meet it:
+   a mean game whose blocks cannot level out evenly, a mode game with a tie,
+   a stack too tall to draw. (lesson-template.html, buildBlocks) */
+function blocksLiteral(B, id) {
+  const bad = (m) => { console.error("FAIL: " + id + ": blocks: " + m); process.exit(1); };
+  if (["mean", "median", "mode"].indexOf(B.kind) < 0) bad("kind must be mean, median or mode");
+  const S = B.stacks;
+  if (!Array.isArray(S) || S.length < 2 || S.length > 9) bad("2 to 9 stacks");
+  if (!S.every((n) => Number.isInteger(n) && n >= 0 && n <= 12)) bad("each stack a whole number 0 to 12");
+  const tot = S.reduce((a, b) => a + b, 0);
+  if (B.kind === "mean" && tot % S.length) bad(tot + " blocks cannot level out over " + S.length + " stacks");
+  if (B.kind === "mean" && S.every((n) => n === S[0])) bad("the stacks are already level");
+  if (B.kind === "mode") {
+    const c = {}; S.forEach((n) => { c[n] = (c[n] || 0) + 1; });
+    const best = Math.max(...Object.values(c));
+    if (best < 2 || Object.values(c).filter((x) => x === best).length !== 1) bad("needs exactly one height that appears most");
+  }
+  return JSON.stringify({ kind: B.kind, title: B.title || "", ask: B.ask || "", stacks: S }).replace(/</g, "\\u003c");
+}
+
 function workLiteral(W) {
   if (!W || !W.length) return "[]";
   const step = (s) =>
@@ -777,7 +829,13 @@ function workLiteral(W) {
     (s.intro ? ', intro: "' + esc(s.intro) + '"' : "") +
     (s.hint ? ', hint: "' + esc(s.hint) + '"' : "") +
     ', why: "' + esc(s.why) + '" }';
-  return "[\n" + W.map((w) =>
+  return "[\n" + W.map((w) => w.steps
+    ? "  " + JSON.stringify({ title: w.title, ask: w.ask, steps: w.steps.map((s) => {
+        const o = { ask: s.ask, answer: s.answer };
+        ["pre", "unit", "tol", "hint", "why"].forEach((k) => { if (s[k] != null) o[k] = s[k]; });
+        return o;
+      }) }).replace(/</g, "\\u003c")
+    :
     '  { title: "' + esc(w.title) + '", ask: "' + esc(w.ask) + '",\n' +
     "    given: [" + w.given.map((g) => '["' + esc(g[0]) + '", "' + esc(g[1]) + '"]').join(", ") + "],\n" +
     "    estimate: { lo: " + w.estimate.lo + ", hi: " + w.estimate.hi +
@@ -841,10 +899,16 @@ function serialise(L) {
   requireVisuals(L);
   requireWork(L);
   const work = "var WORK = " + workLiteral(L.work) + ";";
+  if (L.video && !/^[A-Za-z0-9_-]{11}$/.test(L.video.id || "")) {
+    console.error("FAIL: " + L.id + ": video.id must be an 11-character YouTube id"); process.exit(1);
+  }
+  const video = "var VIDEO = " + (L.video ? JSON.stringify({ id: L.video.id, title: L.video.title,
+    channel: L.video.channel, why: L.video.why }).replace(/</g, "\\u003c") : "null") + ";";
   const visuals = "var VISUALS = " + visualsLiteral(L.visuals) + ";";
   const parts = "var PARTS = [\n" + partsFor(L).map((p) =>
     '  { title: "' + esc(p.title) + '", s: ' + jsArr(p.s) +
-    (p.box ? ", box: " + boxLiteral(p.box) : "") + ' }').join(",\n") + "\n];";
+    (p.box ? ", box: " + boxLiteral(p.box) : "") +
+    (p.blocks ? ", blocks: " + blocksLiteral(p.blocks, L.id) : "") + ' }').join(",\n") + "\n];";
 
   /* 🚨 A WORD MAY CARRY A THIRD ENTRY: WHERE IT IS EXPLAINED IN THE STORY.
      Paul, 2026-09-14, asked for the word cards to do what the questions already
@@ -876,7 +940,7 @@ function serialise(L) {
     "    choices: " + jsArr(q.choices) + ",\n" +
     "    right: " + q.right + "\n  }").join(",\n") + "\n];";
 
-  return { parts, words, questions, qs, visuals, work };
+  return { parts, words, questions, qs, visuals, work, video };
 }
 
 function swapBlock(html, startMarker, endLine, replacement) {
@@ -898,6 +962,7 @@ for (const L of LESSONS) {
      hunting for the next "\n];" would stop in the wrong place. */
   h = replaceLine(h, "var VISUALS = ", S.visuals, L.slug);
   h = replaceLine(h, "var WORK = ", S.work, L.slug);
+  h = replaceLine(h, "var VIDEO = ", S.video, L.slug);
   h = swapBlock(h, "var WORDS = [", "\n];", S.words);
   h = swapBlock(h, "var QUESTIONS = [", "\n];", S.questions);
 

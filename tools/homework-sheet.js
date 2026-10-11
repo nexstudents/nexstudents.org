@@ -264,9 +264,45 @@ function ownItem(it, n) {
    and its answer rule share ONE row. Work rules are added only where `lines`
    is set, on the item or the part, for the multi-step ones that need room. */
 const workLines = (k) => Array.from({ length: k || 0 }, () => '<p class="ownline"><u></u></p>').join('');
-const answerRow = (text, label) =>
-  '<p class="ownline"><span class="hwq">' + esc(text) + '</span>' +
-  '<span class="olbl hwa">' + esc(label || 'Answer') + '</span><u></u></p>';
+
+/* ── TYPE IT IN AND CHECK IT (2026-10-11) ───────────────────────────────────
+   Paul: "i would even test you to make interactive worksheets ... saves me on
+   paper. but i dont want to spend hours trying to make sure the interactive
+   sheet actually work". So the PRINT page is the online page too: every blank
+   that has a checkable answer is a box, and Check My Answers marks each one.
+   Printed, the boxes are just the blanks they replaced. One page, one source.
+   An item's check is `check` if it has one, otherwise the number its `calc`
+   produces. A check is a number, a list of numbers (any order), a word
+   ("none" also takes "no"), or { Label: check, ... } for several boxes.
+   An item with neither is checked BY HIM against the key, and the score says so. */
+const calcValue = (src) => {
+  const p = (n) => Math.pow(10, n);
+  const r = (x, n) => Math.round((x + Number.EPSILON) * p(n)) / p(n);
+  const up = (x, n) => Math.ceil(x * p(n) - 1e-9) / p(n);
+  const down = (x, n) => Math.floor(x * p(n) + 1e-9) / p(n);
+  return Function('r', 'up', 'down', '"use strict"; return (' + src + ');')(r, up, down);
+};
+let ONLINE = false;   /* set per sheet in homeworkSheetBody: only `online: true` sheets get boxes */
+function checkFor(it) {
+  if (!ONLINE) return null;
+  if (it.check != null) return it.check;
+  if (it.calc != null) return calcValue(String(it.calc));
+  return null;
+}
+const attr = (s) => esc(s).replace(/"/g, '&quot;');
+function blank(check, aria) {
+  if (check == null) return '<u></u>';
+  return '<u class="hwu"><input class="hwin" type="text" autocomplete="off" spellcheck="false" placeholder="Type here" aria-label="' +
+    attr(aria) + '" data-check="' + attr(JSON.stringify(check)) + '"></u>';
+}
+const answerRow = (text, label, check) => {
+  const head = '<p class="ownline' + (!ONLINE ? '' : check != null ? ' hwitem' : ' hwself') + '"><span class="hwq">' + esc(text) + '</span>';
+  if (check != null && typeof check === 'object' && !Array.isArray(check)) {
+    return head + Object.keys(check).map((k) =>
+      '<span class="olbl hwa">' + esc(k) + '</span>' + blank(check[k], k)).join('') + '</p>';
+  }
+  return head + '<span class="olbl hwa">' + esc(label || 'Answer') + '</span>' + blank(check, label || 'Answer') + '</p>';
+};
 
 /* A blank number line to plot on. Geometry only, so it is SVG; every label is
    real text (a font), never drawn glyphs. Ticks every `step`, a label on each
@@ -301,13 +337,13 @@ function solveItem(it, n, part) {
   let body;
   if (it.sub) {
     body = '<p class="sortsent">' + esc(it.problem) + '</p>' + (it.table ? dataTable(it.table) : '') +
-      it.sub.map((q, k) => answerRow(String.fromCharCode(97 + k) + '. ' + q.q, part.answerLabel) +
+      it.sub.map((q, k) => answerRow(String.fromCharCode(97 + k) + '. ' + q.q, part.answerLabel, checkFor(q)) +
         workLines(q.lines != null ? q.lines : lines)).join('');
   } else if (it.numberline) {
     body = '<p class="sortsent">' + esc(it.problem) + '</p>' + numberLine(it.numberline) +
-      answerRow('', part.answerLabel);
+      answerRow('', part.answerLabel, checkFor(it));
   } else {
-    body = answerRow(it.problem, part.answerLabel) + workLines(lines);
+    body = answerRow(it.problem, part.answerLabel, checkFor(it)) + workLines(lines);
   }
   return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' + body + '</div></li>';
 }
@@ -383,6 +419,122 @@ function gradingBlock(total) {
 `;
 }
 
+/* ── the online half: Check My Answers, the score, the key behind a button,
+   and the record that tells the lesson it's done (2026-10-11).
+   Paul: "can we have it saved and confirmed with lesson that its complete and
+   has the score on the lesson page and create an auto score in the worksheet if
+   he prints it out it will show."
+   - SAVED: every keystroke goes to ns:hwdraft:<slug> on this device, so he can
+     leave and come back.
+   - CHECKED: Check My Answers writes ns:done:hw/<slug> {complete, score, total,
+     pct, answers, at}. nav.js syncs every ns:done record to the student's
+     account (migration 017), so the score follows Kolten to any device, and
+     lesson-footer.js reads the same record to show it under the Homework button.
+     complete = no checked box left blank.
+   - PRINTED: each checked box prints a ✓ or ✗ beside it, and an Auto Score line
+     prints above the hand Total. The hand Total and the signature stay: the
+     write-your-own items are still marked by a person.
+   The key hides on screen once the script runs, so with no JavaScript the page
+   is exactly the paper sheet.
+   ⚠️ No backticks in this script, and never the u-word the build greps for. */
+function onlineBlock(slug) {
+  const id = 'hw/' + slug;
+  return `
+  <div class="hwcheck" id="hwcheck" data-hw="${id}" data-draft="ns:hwdraft:${slug}">
+    <p class="hwc-h">Done? Check your answers.</p>
+    <p class="hwc-p">Wrong ones turn red, so you can fix them and check again. Your answers save as you type, and your score goes on the lesson page.</p>
+    <div class="hwc-bar">
+      <button type="button" class="btn" id="hwgo">Check My Answers</button>
+      <button type="button" class="btn ghost" id="hwkey" aria-expanded="false">Show Answer Key</button>
+    </div>
+    <p class="hwc-score" id="hwscore" aria-live="polite"></p>
+  </div>
+  <script>
+  (function(){
+    var box = document.getElementById("hwcheck");
+    if (!box) return;
+    document.body.classList.add("hwon");
+    var KEY = "ns:done:" + box.getAttribute("data-hw"), DRAFT = box.getAttribute("data-draft");
+    var ins = document.querySelectorAll(".hwin"), rows = document.querySelectorAll(".hwitem");
+    function get(k){ try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+    function put(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    function values(){ var a = []; for (var i = 0; i < ins.length; i++) a.push(ins[i].value); return a; }
+    function nums(t){ return (String(t).replace(/,/g, "").match(/-?\\d*\\.?\\d+/g) || []).map(Number); }
+    function same(v, c){
+      v = String(v).trim().toLowerCase();
+      if (!v) return null;
+      if (typeof c === "number"){ var n = nums(v); return n.length > 0 && Math.abs(n[0] - c) <= 0.01; }
+      if (Array.isArray(c)){
+        var got = nums(v).sort(function(a, b){ return a - b; });
+        var want = c.slice().sort(function(a, b){ return a - b; });
+        return got.length === want.length && got.every(function(x, i){ return Math.abs(x - want[i]) <= 0.01; });
+      }
+      var w = String(c).toLowerCase();
+      if (w === "none") return /^(none|no|no mode|there is no mode|there's no mode)\\.?$/.test(v);
+      return v.replace(/[^a-z ]/g, "").split(" ").indexOf(w) > -1 || v.replace(/[^a-z]/g, "") === w.replace(/[^a-z]/g, "");
+    }
+    /* the ✓ / ✗ beside each box: on screen AND on paper */
+    function mark(inp, r){
+      var m = inp.parentNode.nextSibling;
+      if (!m || !m.classList || !m.classList.contains("hwmark")){
+        m = document.createElement("span"); m.className = "hwmark";
+        inp.parentNode.parentNode.insertBefore(m, inp.parentNode.nextSibling);
+      }
+      m.textContent = r === true ? "\\u2713" : r === false ? "\\u2717" : "";
+      m.className = "hwmark" + (r === true ? " is-right" : r === false ? " is-wrong" : "");
+    }
+    /* the line that prints above the hand Total */
+    function autoLine(t){
+      var g = document.querySelector(".grading");
+      if (!g) return;
+      var p = document.getElementById("hwauto");
+      if (!p){ p = document.createElement("p"); p.id = "hwauto"; p.className = "gauto"; g.insertBefore(p, g.firstChild); }
+      p.textContent = t;
+    }
+    function check(save){
+      var right = 0, blank = 0;
+      for (var i = 0; i < rows.length; i++){
+        var bx = rows[i].querySelectorAll(".hwin"), all = true, any = false;
+        for (var k = 0; k < bx.length; k++){
+          var r = same(bx[k].value, JSON.parse(bx[k].getAttribute("data-check")));
+          bx[k].classList.toggle("is-right", r === true);
+          bx[k].classList.toggle("is-wrong", r === false);
+          mark(bx[k], r);
+          if (r !== null) any = true;
+          if (r !== true) all = false;
+        }
+        if (!any) blank++;
+        if (all) right++;
+      }
+      var self = document.querySelectorAll(".hwself").length, total = rows.length;
+      var pct = total ? Math.round(right / total * 100) : 0;
+      var when = new Date();
+      document.getElementById("hwscore").textContent = right + " of " + total + " right (" + pct + "%)" +
+        (blank ? ". " + blank + " still blank." : ".") +
+        (self ? " Check the other " + self + " yourself against the answer key." : "");
+      autoLine("Auto score: " + right + " of " + total + " checked answers right (" + pct + "%)" +
+        (blank ? ", " + blank + " left blank" : "") + (self ? ". " + self + " more to mark by hand" : "") +
+        ". Checked " + when.toLocaleDateString() + ".");
+      if (save) put(KEY, { complete: blank === 0, score: right, total: total, pct: pct, answers: values(), at: when.toISOString() });
+    }
+    /* bring back what he typed: the checked record first, then any newer draft */
+    var rec = get(KEY), draft = get(DRAFT);
+    var back = (draft && draft.length === ins.length) ? draft : (rec && rec.answers && rec.answers.length === ins.length ? rec.answers : null);
+    if (back) for (var i = 0; i < ins.length; i++) ins[i].value = back[i] || "";
+    if (rec && rec.answers) check(false);
+    for (var j = 0; j < ins.length; j++) ins[j].addEventListener("input", function(){ put(DRAFT, values()); });
+    document.getElementById("hwgo").addEventListener("click", function(){ check(true); });
+    var kb = document.getElementById("hwkey");
+    kb.addEventListener("click", function(){
+      var on = document.body.classList.toggle("hwkey-open");
+      kb.textContent = on ? "Hide Answer Key" : "Show Answer Key";
+      kb.setAttribute("aria-expanded", on ? "true" : "false");
+    });
+  })();
+  </script>
+`;
+}
+
 function homeworkSheetBody(s) {
   const L = lessonFor(s.lesson);
   checkFresh(s, L);
@@ -391,7 +543,15 @@ function homeworkSheetBody(s) {
 
   const total = s.parts.reduce((n, p) => n + p.items.reduce((t, it) => t + weight(it), 0), 0);
 
-  return s.parts.map(partHtml).join('') +
+  ONLINE = !!s.online;
+  const partsHtml = s.parts.map(partHtml).join('');
+  const online = ONLINE ? onlineBlock(s.slug) : '';
+  ONLINE = false;
+
+  /* the way in, at the TOP: Paul could not tell the blanks took typing */
+  const top = online ? '\n  <div class="hwtop"><b>Doing it on screen?</b>Tap or click a box and type your answer. ' +
+    'When you&rsquo;re done, press Check My Answers at the bottom of the sheet.</div>\n' : '';
+  return top + partsHtml + online +
     gradingBlock(total) +
     '\n  <div class="key">\n    <h2>Answer key</h2>\n    ' +
     s.parts.map(keyHtml).join('\n    ') +

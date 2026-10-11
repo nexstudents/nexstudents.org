@@ -133,7 +133,7 @@ const COURSE2 = {
       LAB("3-2B", "Mathematics Lab: Data Base", 96),
       L("3-3", "Range and Scales", 98, "maths/range-and-scales"),
       L("3-4", "Line Plots", 101),
-      L("3-5", "Mean, Median, and Mode", 104),
+      L("3-5", "Mean, Median, and Mode", 104, "maths/mean-median-and-mode"),
       REV("Mid-Chapter Review", 107),
       LAB("3-5B", "Mathematics Lab: Are You Average?", 108),
       L("3-6", "Stem-and-Leaf Plots", 109),

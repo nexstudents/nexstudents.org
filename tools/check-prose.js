@@ -109,7 +109,7 @@ for (const file of files) {
      purpose, and counting it let me wave off a real warning as "the example
      boxes skew it". Now the numbers are about the prose and nothing else, so
      a warning here is always about sentences I wrote. */
-  const isMarked = (t) => /^\[(?:ex|verse)\] /.test(String(t).trim());
+  const isMarked = (t) => /^\[(?:ex|verse|walk|step)\] /.test(String(t).trim());
   const lines = [];
   (L.parts || []).forEach(p => (p.s || []).forEach(t => {
     if (isMarked(t)) return;
@@ -143,7 +143,8 @@ for (const file of files) {
   (L.parts || []).forEach(p => { (p.s || []).forEach(t => {
     const line = String(t).trim();
     const marked = line.indexOf("[ex] ") === 0 || line.indexOf("[verse] ") === 0 ||
-                   line.indexOf("[story] ") === 0;
+                   line.indexOf("[story] ") === 0 || line.indexOf("[walk] ") === 0 ||
+                   line.indexOf("[step] ") === 0;
     if (line && !marked) run++; else { if (run) paras.push(run); run = 0; }
   }); if (run) { paras.push(run); run = 0; } });
   const perPara = paras.length ? (paras.reduce((a, b) => a + b, 0) / paras.length) : 0;

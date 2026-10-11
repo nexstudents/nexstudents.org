@@ -658,6 +658,50 @@ body.print-all .wk+.wk{page-break-before:always}
   .owns > li{break-inside:avoid;page-break-inside:avoid}
 }
 
+/* ── ON-SCREEN ANSWERS (homework-sheet.js, onlineBlock) 2026-10-11 ──────────
+   The box sits INSIDE the answer rule, so on paper it is the same blank. Right
+   and wrong are --laurel and --porphyry where they exist, never the accent. */
+.owns .hwitem{flex-wrap:wrap}
+.owns u.hwu{display:flex;min-width:6ch}
+/* 🚨 ON SCREEN IT MUST LOOK LIKE A BOX. Paul, 2026-10-11: "you cant type it in"
+   - it could be typed in, but a bare rule gave no sign of it. Shaded, bordered,
+   text cursor; on paper (print, below) it goes back to the plain blank. */
+.owns u.hwu{border-bottom:0}
+.hwin{flex:1;width:100%;min-width:0;font:inherit;color:var(--fg);padding:5px 8px;outline:none;
+  border:1.5px solid var(--line-ink);border-radius:6px;background:rgba(127,127,127,.10);cursor:text}
+.hwin::placeholder{color:var(--dim);opacity:.8}
+.hwin:hover{border-color:var(--fg)}
+.hwin:focus-visible,.hwin:focus{border-color:var(--a, #E8822F);box-shadow:0 0 0 2px rgba(232,130,47,.35)}
+.hwin.is-right{color:var(--laurel, #1c7a4a);font-weight:700;background:rgba(28,122,74,.10)}
+.hwin.is-wrong{color:var(--porphyry, #a3312b);font-weight:700;background:rgba(163,49,43,.10)}
+/* On a phone the question takes the whole first line, so each label stays with its box. */
+@media (max-width:560px){ .owns .hwitem .hwq{flex:1 1 100%;max-width:none} }
+.hwcheck{margin:8px 0 26px;padding:16px 18px;border:1px solid var(--line-ink);border-radius:10px}
+.hwc-h{margin:0 0 4px;font-weight:800}
+.hwc-p{margin:0 0 12px;font-size:.92rem;color:var(--dim)}
+.hwc-bar{display:flex;gap:10px;flex-wrap:wrap}
+.hwc-score{margin:12px 0 0;font-weight:700;min-height:1.4em}
+.hwon .key{display:none}
+.hwon.hwkey-open .key{display:block}
+@media print{
+  .hwcheck{display:none!important}
+  .hwon .key{display:block}
+  .hwin,.hwin.is-right,.hwin.is-wrong{color:#000;background:none;font-weight:400;border:0;border-radius:0;box-shadow:none;padding:0 6px}
+  .owns u.hwu{border-bottom:1px solid #000}
+  .hwtop{display:none!important}
+  .hwin::placeholder{color:transparent}
+}
+/* ✓ / ✗ beside a checked box, and the Auto Score line above the hand Total.
+   Both PRINT (Paul: "if he prints it out it will show"), in black on paper. */
+.hwmark{font-weight:800;font-size:1.1rem;min-width:1.1em;text-align:center}
+.hwmark:empty{display:none}
+.hwmark.is-right{color:var(--laurel, #1c7a4a)}
+.hwmark.is-wrong{color:var(--porphyry, #a3312b)}
+.grading .gauto{margin:0 0 13px;font-weight:700;font-size:.95rem}
+@media print{ .hwmark,.hwmark.is-right,.hwmark.is-wrong,.grading .gauto{color:#000} }
+.hwtop{margin:0 0 18px;padding:12px 16px;border:1.5px solid var(--a, #E8822F);border-radius:10px;font-size:.95rem}
+.hwtop b{display:block;margin-bottom:2px}
+
 /* ── PRODUCT PAGE: the Lizzie Peirce shape (ROADMAP 38) ─────────────────────
    Paul picked lizziepeirce.com/free-stuff on 2026-09-09. 🚨 MATCH IT: image
    left on a pale tile, then title, price, description, caps headings, and the

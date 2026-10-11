@@ -190,7 +190,8 @@ function checkOneSentence(L, where) {
   if (ONE_SENTENCE_EXEMPT[L.id]) return;
   const split = /[.!?]["'”’]?\s+["'“‘]?[A-Z]/g;
   const look = (label, list) => (list || []).forEach((line, i) => {
-    const t = String(line);
+    /* a [step] line is "said || work"; the work half is not prose */
+    const t = String(line).split(" || ")[0];
     if (!t.trim()) return;
     /* Walk every candidate break and keep the first that is not an abbreviation. */
     split.lastIndex = 0;
