@@ -646,6 +646,8 @@ function nsProgHandOff(from,to){
 }
 function nsProgRepaint(only){
   var onLesson=location.pathname.indexOf("/lessons/")===0;
+  
+  if(!onLesson&&window.nsRepaintShelf){ window.nsRepaintShelf(); return; }
   if(only){
     var hit=Object.keys(only).some(function(l){
       return (onLesson&&location.pathname.indexOf("/lessons/"+l+"/")===0)||
@@ -673,22 +675,35 @@ function nsProgArrive(id){
 function nsProgBoot(){
   if(!window.NSAccount||!NSAccount.isSignedIn()) return;
   var id=NSAccount.who();
-  function go(){
-    if(!nsIsStudent(id)) return;
-    NSAccount.progressRows(id).then(function(rows){
-      var server=nsSnapFromRows(rows),local=nsProgSnap(),merged=nsMerge(local,server,nsPushedGet(id));
-      try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
-      if(nsSame(merged,local)){ nsProgPush(); return; }
-      nsProgWrite(merged); nsProgPush();
-      var last=0; try{ last=+sessionStorage.getItem("ns:reloaded:"+id)||0; }catch(e){}
-      if(Date.now()-last>8000){
-        try{ sessionStorage.setItem("ns:reloaded:"+id,String(Date.now())); }catch(e){}
-        nsProgRepaint(nsChanged(local,merged));
-      }
-    }).catch(function(){ nsProgPush(); });
+  if(id!=="parent"){
+  var shelf=!(location.pathname.indexOf("/lessons/")===0)&&document.querySelector("[data-lesson]");
+  var note=null;
+  if(shelf){
+    note=document.createElement("p"); note.className="nsprog-load";
+    var nm=(adKid(id)||{}).name;
+    note.textContent="Loading "+(nm?nm+"’s ":"")+"Progress…";
+    note.style.cssText="margin:0 0 10px;font-size:.8rem;font-weight:700;opacity:.75;text-align:center";
+    var at=document.querySelector(".unitpager")||shelf.parentNode;
+    at.parentNode.insertBefore(note,at);
   }
-  if(id!=="parent"&&adKids===null) NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; go(); }).catch(function(){});
-  else go();
+  var done=function(){ if(note&&note.parentNode) note.parentNode.removeChild(note); };
+  var kidsP=(adKids===null)?NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[];
+    var nm2=(adKid(id)||{}).name; if(note&&nm2) note.textContent="Loading "+nm2+"’s Progress…"; }):Promise.resolve();
+  Promise.all([kidsP,NSAccount.progressRows(id)]).then(function(r){
+    done();
+    if(!nsIsStudent(id)) return;
+    var server=nsSnapFromRows(r[1]),local=nsProgSnap(),merged=nsMerge(local,server,nsPushedGet(id));
+    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
+    if(nsSame(merged,local)){ nsProgPush(); return; }
+    nsProgWrite(merged); nsProgPush();
+    if(shelf&&window.nsRepaintShelf){ window.nsRepaintShelf(); return; }
+    var last=0; try{ last=+sessionStorage.getItem("ns:reloaded:"+id)||0; }catch(e){}
+    if(Date.now()-last>8000){
+      try{ sessionStorage.setItem("ns:reloaded:"+id,String(Date.now())); }catch(e){}
+      nsProgRepaint(nsChanged(local,merged));
+    }
+  }).catch(function(){ done(); nsProgPush(); });
+  }
   addEventListener("pagehide",function(){ nsProgPush(); });
   document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") nsProgPush(); });
   setInterval(function(){ if(document.visibilityState==="visible") nsProgPush(); },45000);

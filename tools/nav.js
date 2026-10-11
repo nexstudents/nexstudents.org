@@ -1602,6 +1602,11 @@ function nsProgRepaint(only){
      passes the lessons it changed, and only a page showing one of them
      reloads - a student halfway through a lesson is not thrown back to the
      top because a DIFFERENT lesson was reset on another device. */
+  /* 🚨 A SHELF REPAINTS IN PLACE (2026-10-11). Reloading cost a second page
+     load, and the 8-second guard below could skip it, leaving Paul looking at
+     a shelf with none of Kolten's checks. build-pages' progressScript exposes
+     the painter; only a lesson page still reloads. */
+  if(!onLesson&&window.nsRepaintShelf){ window.nsRepaintShelf(); return; }
   if(only){
     var hit=Object.keys(only).some(function(l){
       return (onLesson&&location.pathname.indexOf("/lessons/"+l+"/")===0)||
@@ -1637,22 +1642,41 @@ function nsProgArrive(id){
 function nsProgBoot(){
   if(!window.NSAccount||!NSAccount.isSignedIn()) return;
   var id=NSAccount.who();
-  function go(){
-    if(!nsIsStudent(id)) return;
-    NSAccount.progressRows(id).then(function(rows){
-      var server=nsSnapFromRows(rows),local=nsProgSnap(),merged=nsMerge(local,server,nsPushedGet(id));
-      try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
-      if(nsSame(merged,local)){ nsProgPush(); return; }
-      nsProgWrite(merged); nsProgPush();
-      var last=0; try{ last=+sessionStorage.getItem("ns:reloaded:"+id)||0; }catch(e){}
-      if(Date.now()-last>8000){
-        try{ sessionStorage.setItem("ns:reloaded:"+id,String(Date.now())); }catch(e){}
-        nsProgRepaint(nsChanged(local,merged));
-      }
-    }).catch(function(){ nsProgPush(); });
+  /* ⚡ FASTER (2026-10-11). It used to wait for the profile list, THEN ask for
+     the progress: two round trips back to back before a single check showed.
+     Both requests go out together now; the list only confirms afterwards
+     that the one who is on is a student. */
+  if(id!=="parent"){
+  var shelf=!(location.pathname.indexOf("/lessons/")===0)&&document.querySelector("[data-lesson]");
+  var note=null;
+  if(shelf){
+    /* "Loading Kolten's Progress…" while the account answers, so a parent
+       knows the checks are on their way rather than missing. */
+    note=document.createElement("p"); note.className="nsprog-load";
+    var nm=(adKid(id)||{}).name;
+    note.textContent="Loading "+(nm?nm+"’s ":"")+"Progress…";
+    note.style.cssText="margin:0 0 10px;font-size:.8rem;font-weight:700;opacity:.75;text-align:center";
+    var at=document.querySelector(".unitpager")||shelf.parentNode;
+    at.parentNode.insertBefore(note,at);
   }
-  if(id!=="parent"&&adKids===null) NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[]; go(); }).catch(function(){});
-  else go();
+  var done=function(){ if(note&&note.parentNode) note.parentNode.removeChild(note); };
+  var kidsP=(adKids===null)?NSAccount.students().then(function(k){ if(adKids===null) adKids=k||[];
+    var nm2=(adKid(id)||{}).name; if(note&&nm2) note.textContent="Loading "+nm2+"’s Progress…"; }):Promise.resolve();
+  Promise.all([kidsP,NSAccount.progressRows(id)]).then(function(r){
+    done();
+    if(!nsIsStudent(id)) return;
+    var server=nsSnapFromRows(r[1]),local=nsProgSnap(),merged=nsMerge(local,server,nsPushedGet(id));
+    try{ localStorage.setItem("ns:pushed:"+id,JSON.stringify(server)); }catch(e){}
+    if(nsSame(merged,local)){ nsProgPush(); return; }
+    nsProgWrite(merged); nsProgPush();
+    if(shelf&&window.nsRepaintShelf){ window.nsRepaintShelf(); return; }
+    var last=0; try{ last=+sessionStorage.getItem("ns:reloaded:"+id)||0; }catch(e){}
+    if(Date.now()-last>8000){
+      try{ sessionStorage.setItem("ns:reloaded:"+id,String(Date.now())); }catch(e){}
+      nsProgRepaint(nsChanged(local,merged));
+    }
+  }).catch(function(){ done(); nsProgPush(); });
+  }
   /* Push on the way out AND every 45s while the page is open: pagehide alone
      can lose the last save if the tab is killed. Nothing changed = no request.
      A push that fails leaves ns:pushed untouched, so the next one retries. */
