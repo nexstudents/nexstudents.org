@@ -116,6 +116,14 @@ const LESSONS = [
   require('./content/grade-7/science/unit-5/mapping-the-human-genome'),
   require('./content/grade-7/science/unit-5/unit-5-review'),
   require('./content/grade-7/science/unit-6/what-evolution-claims'),
+  require('./content/grade-7/science/unit-6/the-evidence-examined'),
+  require('./content/grade-7/science/unit-6/extinction-and-caring'),
+  require('./content/grade-7/science/unit-6/human-origins-two-accounts'),
+  require('./content/grade-7/science/unit-6/unit-6-review'),
+  require('./content/grade-7/science/unit-7/why-we-sort-living-things'),
+  require('./content/grade-7/science/unit-7/how-scientists-classify-today'),
+  require('./content/grade-7/science/unit-7/the-rain-forest'),
+  require('./content/grade-7/science/unit-7/identifying-an-organism'),
 ];
 
 module.exports = { LESSONS };
