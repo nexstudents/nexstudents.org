@@ -725,8 +725,8 @@
 
   /* 🚨 OPEN ON THE UNIT HE IS WORKING ON. Paul, 2026-10-11: Kolten's finished
      Unit 2 lesson was "not in the 7th grade lessons" because the shelf reopened
-     on the last unit viewed, Unit 1. It now opens on the first unit with an
-     unfinished built lesson, every load. The test used to read ns:done only,
+     on the last unit viewed, Unit 1. It now opens on the unit he is working
+     on, every load (see currentIdx). The test used to read ns:done only,
      which maths and English never write, so every maths unit looked unfinished.
      Same four shapes as finished() in progressScript.
      ⚠️ NO BACKTICKS IN THIS COMMENT - this script is a template literal. */
@@ -738,14 +738,21 @@
     if (pr.complete === true) return true;
     return typeof pr.done === "number" && typeof pr.total === "number" && pr.total > 0 && pr.done >= pr.total;
   }
+  /* ⚠️ FROM HIS FURTHEST FINISHED LESSON, NOT THE FIRST GAP. Kolten's live
+     record has U1-L1..L10 empty (done before profiles) and U1-L11..U2-L6
+     finished, so "first unfinished" landed on Unit 1 again. The shelf opens
+     on the first unfinished built lesson AFTER the furthest finished one;
+     nothing finished at all means the first unit. */
   function currentIdx(){
-    for (var i = 0; i < panels.length; i++){
-      var cards = panels[i].querySelectorAll("[data-lesson]");
-      for (var j = 0; j < cards.length; j++) if (!fin(cards[j].dataset.lesson)) return i;
-    }
-    /* everything built is finished: the last unit that has a built lesson */
-    for (var k = panels.length - 1; k >= 0; k--) if (panels[k].querySelector("[data-lesson]")) return k;
-    return 0;
+    var list = [];
+    panels.forEach(function(p, i){
+      [].forEach.call(p.querySelectorAll("[data-lesson]"), function(c){ list.push({ i: i, f: fin(c.dataset.lesson) }); });
+    });
+    var last = -1;
+    for (var a = 0; a < list.length; a++) if (list[a].f) last = a;
+    if (last < 0) return 0;
+    for (var b = last + 1; b < list.length; b++) if (!list[b].f) return list[b].i;
+    return list[last].i;
   }
   var touched = false;
   showIdx(currentIdx());
