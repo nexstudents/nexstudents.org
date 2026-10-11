@@ -904,5 +904,6 @@ const SHEETS = [
 
 /* The Math practice sheets live in their own file (14+ sheets, all one shape). */
 SHEETS.push(...require("./math-homework.js").MATH_HOMEWORK);
+SHEETS.push(...require("./reading-homework.js").READING_HOMEWORK);
 
 module.exports = { SHEETS };

@@ -64,6 +64,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "identifying-an-organism-homework", subject: "science",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "wpKulkADzBk", title: "Dichotomous Keys: Identification Achievement Unlocked", channel: "Amoeba Sisters",
     why: "Works a key one pair at a time with drawings, which is the exact skill this lesson teaches, so it's worth watching right before the questions." },
 

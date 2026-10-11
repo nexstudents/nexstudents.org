@@ -46,6 +46,9 @@ module.exports = {
   natural: "2026-10-11",
   findsAt: 34,
 
+  sheet: { slug: "writing-about-your-life-revise-homework", subject: "english",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "sAo6LbCUAQo", title: "Dependent and independent clauses", channel: "Khan Academy",
     why: "Two teachers on the difference between a clause that stands alone and one that can't, with examples of the words that make a clause lean on another. Worth a watch before the questions." },
 

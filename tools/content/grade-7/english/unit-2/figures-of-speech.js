@@ -47,6 +47,9 @@ module.exports = {
   natural: "2026-10-11",
   findsAt: 51,
 
+  sheet: { slug: "figures-of-speech-homework", subject: "english",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "NegoYIuXoEA", title: "Metaphor, Simile, Personification, Hyperbole", channel: "Mineola Creative Content",
     why: "A quick tour of the same figures with different examples, including the two extras this lesson only mentions. Worth a watch after the walkthroughs." },
 

@@ -45,6 +45,9 @@ module.exports = {
   natural: "2026-10-11",
   findsAt: 46,
 
+  sheet: { slug: "holding-a-group-discussion-homework", subject: "english",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "YY2yjEEoB3U", title: "How to discuss a topic in a group", channel: "engVid",
     why: "A different teacher on the same skill, with phrases for agreeing, disagreeing and keeping a group on track. It's aimed at adult English learners, but the habits are the same." },
 

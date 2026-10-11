@@ -54,6 +54,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "why-we-sort-living-things-homework", subject: "science",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "kfRBJqpavU0", title: "Taxonomy: How Scientists Classify Living Things", channel: "Miacademy",
     why: "A quick tour of how living things get sorted and named, with the levels drawn out, which helps before the next lesson goes deeper." },
 

@@ -48,6 +48,9 @@ module.exports = {
   natural: "2026-10-11",
   findsAt: 52,
 
+  sheet: { slug: "setting-and-sensory-details-homework", subject: "english",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "ttVT7YMtQmo", title: "Telling a Story: Using Sensory Details", channel: "Miacademy",
     why: "Another teacher showing how a few sensory details turn a flat sentence into a place you can feel. Worth watching once before the questions." },
 

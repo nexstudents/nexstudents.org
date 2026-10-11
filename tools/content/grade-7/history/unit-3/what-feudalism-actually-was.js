@@ -57,6 +57,9 @@ module.exports = {
     digitize: "The existing reading engine and one Watch It Worked that reads the chain from the king to the serf and states what each owes. Questions ask why feudalism grew, what the words lord, vassal, fief and serf mean, and what each side gave.",
     unclear: "",
   },
+  sheet: { slug: "what-feudalism-actually-was-homework", subject: "history",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "ewcSyGyKysk", title: "Exploring Feudalism and Manorialism During the Middle Ages", channel: "Lesson Boosters",
     why: "The same order explained with a different picture of the pyramid, and a first look at the manor that the next lessons cover." },
   shelf: { grades: [7], subject: "History",

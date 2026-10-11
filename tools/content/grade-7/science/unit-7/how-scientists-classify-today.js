@@ -65,6 +65,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "how-scientists-classify-today-homework", subject: "science",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "DVouQRAKxYo", title: "Classification", channel: "Amoeba Sisters",
     why: "Walks down the levels from the biggest group to a single species with drawings, which helps if the order of the seven levels keeps slipping." },
 

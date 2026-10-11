@@ -54,6 +54,9 @@ module.exports = {
     digitize: "The existing reading engine and one Watch It Worked that finds Constantinople from its coordinates step by step. Questions ask what latitude and longitude measure, which map answers which question, which landform is where, and how to read a new coordinate.",
     unclear: "",
   },
+  sheet: { slug: "reading-the-map-homework", subject: "history",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "cJt5Yi48oQ0", title: "European Geography Made Easy", channel: "Miacademy",
     why: "A quick tour of Europe's mountains, seas and rivers. It helps to see the whole shape once before you place the cities on it." },
   shelf: { grades: [7], subject: "History",

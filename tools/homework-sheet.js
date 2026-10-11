@@ -138,6 +138,21 @@ function checkFresh(s, L) {
 function checkSolve(it, where) {
   if (!it.problem || it.answer == null || String(it.answer).trim() === '')
     fail(where + ': a solve item needs a problem and an answer for the key');
+  /* 🚨 A WORD CHECK MUST AGREE WITH ITS KEY (2026-10-11). The box is marked
+     against `check`, the printed key shows `answer`; if one of check's words
+     is not in the answer, the two say different things and one of them is
+     wrong. Same matcher the page uses: whole words, "a|b" = either. */
+  const sp = (x) => String(x).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/ +/g, ' ').trim();
+  const words = (c) => (typeof c === 'string' ? [c] : c && typeof c === 'object' && !Array.isArray(c)
+    ? Object.values(c).filter((x) => typeof x === 'string') : []);
+  words(it.check).forEach((c) => {
+    if (c === 'none') return;
+    const alts = c.split('|').map(sp);
+    if (alts.some((a) => !a)) fail(where + ': an empty alternative in check "' + c + '"');
+    const t = ' ' + sp(it.answer) + ' ';
+    if (!alts.some((a) => t.indexOf(' ' + a + ' ') > -1))
+      fail(where + ': check "' + c + '" does not appear in the key answer "' + it.answer + '"');
+  });
   if (it.calc == null) return;
   const src = String(it.calc);
   if (!/^[0-9+\-*/(). ,]*$/.test(src.replace(/\b(r|up|down)\(/g, '(')))
@@ -198,7 +213,7 @@ function checkItems(s) {
       fail(where + ': a combine item needs two or more given sentences and an answer');
     if (part.kind === 'solve' && it.sub) {
       if (!it.problem) fail(where + ': a lettered set needs its stem in `problem`');
-      it.sub.forEach((q, k) => checkSolve({ problem: q.q, answer: q.answer, calc: q.calc },
+      it.sub.forEach((q, k) => checkSolve({ problem: q.q, answer: q.answer, calc: q.calc, check: q.check },
         where + String.fromCharCode(97 + k)));
     } else if (part.kind === 'solve') checkSolve(it, where);
   }));
@@ -471,7 +486,16 @@ function onlineBlock(slug) {
       }
       var w = String(c).toLowerCase();
       if (w === "none") return /^(none|no|no mode|there is no mode|there's no mode)\\.?$/.test(v);
-      return v.replace(/[^a-z ]/g, "").split(" ").indexOf(w) > -1 || v.replace(/[^a-z]/g, "") === w.replace(/[^a-z]/g, "");
+      /* "a|b" = any of these; a phrase matches as whole words inside the answer
+         (2026-10-11, the Science/History/English sheets) */
+      /* a plural "s" never makes an answer wrong: serfs = serf (words over 3 letters) */
+      var sp = function(s){ return s.replace(/[^a-z0-9 ]/g, " ").replace(/ +/g, " ").trim()
+        .split(" ").map(function(x){ return x.length > 3 ? x.replace(/s$/, "") : x; }).join(" "); };
+      var t = " " + sp(v) + " ";
+      return w.split("|").some(function(a){
+        a = sp(a);
+        return !!a && (t.indexOf(" " + a + " ") > -1 || t.replace(/ /g, "") === a.replace(/ /g, ""));
+      });
     }
     /* the ✓ / ✗ beside each box: on screen AND on paper */
     function mark(inp, r){

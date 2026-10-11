@@ -53,6 +53,9 @@ module.exports = {
     digitize: "The existing reading engine. Questions ask who the Franks were, what Clovis did, how Charlemagne governed, what happened at Christmas 800, what he did and didn't get right, and why the empire split.",
     unclear: "",
   },
+  sheet: { slug: "the-franks-and-charlemagne-homework", subject: "history",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "ygW2TWlSrmg", title: "Charlemagne For Kids", channel: "Bedtime History",
     why: "A gentle retelling of the same life, with a few details this lesson skips. Worth a watch if the order of the rulers got tangled." },
   shelf: { grades: [7], subject: "History",

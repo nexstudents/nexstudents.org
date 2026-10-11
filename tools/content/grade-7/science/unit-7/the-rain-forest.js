@@ -59,6 +59,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "the-rain-forest-homework", subject: "science",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "3vijLre760w", title: "Rainforests 101", channel: "National Geographic",
     why: "Shows what the rain forest looks like and why so many kinds of living things pack into it, which is hard to picture from words alone." },
 

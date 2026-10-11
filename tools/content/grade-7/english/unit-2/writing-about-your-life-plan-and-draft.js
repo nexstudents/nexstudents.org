@@ -51,6 +51,9 @@ module.exports = {
   natural: "2026-10-11",
   findsAt: 42,
 
+  sheet: { slug: "writing-about-your-life-plan-and-draft-homework", subject: "english",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "nBQ8dU0KPtg", title: "Writing a Personal Narrative, Episode 2: Making a Plan", channel: "Teaching Without Frills",
     why: "A teacher walking through the planning step of a personal narrative. Worth watching before you start your own plan." },
 

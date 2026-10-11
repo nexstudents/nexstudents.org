@@ -60,6 +60,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "human-origins-two-accounts-homework", subject: "science",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "BpnlS_ach-0", title: "Primates: What is a Primate?", channel: "Odyssey Earth",
     why: "A short look at what makes an animal a primate, with real footage. It sticks to the animals themselves and doesn't take a side on origins." },
 

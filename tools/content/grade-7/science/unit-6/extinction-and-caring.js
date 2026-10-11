@@ -53,6 +53,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "extinction-and-caring-homework", subject: "science",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "AUsxbO-59cE", title: "Why do animals become endangered?", channel: "Mystery Science",
     why: "Shows what actually pushes an animal toward the edge, with pictures, which makes the causes easier to keep straight." },
 

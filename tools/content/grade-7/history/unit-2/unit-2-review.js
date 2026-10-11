@@ -41,6 +41,9 @@ module.exports = {
     digitize: "The existing reading engine, no new mechanic.",
     unclear: "",
   },
+  sheet: { slug: "history-unit-2-review-homework", subject: "history",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   video: { id: "Okph9wt8I0A", title: "The rise and fall of the Byzantine Empire", channel: "TED-Ed",
     why: "A short animated retelling of the empire that opened this unit. Good as a final look at the East before the unit's other worlds." },
   shelf: { grades: [7], subject: "History",
