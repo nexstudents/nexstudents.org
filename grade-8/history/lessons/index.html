@@ -1147,13 +1147,25 @@
      finished, so "first unfinished" landed on Unit 1 again. The shelf opens
      on the first unfinished built lesson AFTER the furthest finished one;
      nothing finished at all means the first unit. */
+  /* ⚠️ AND BY DATE, NOT BY POSITION. His two Integers lessons are the book's
+     Unit 7, done in August, so "furthest along the shelf" opened Unit 7. The
+     anchor is the MOST RECENTLY finished lesson (its saved "at"); position
+     only breaks a tie or stands in when nothing carries a date. */
+  function when(id){
+    var d = rd("ns:done:" + id), pr = rd("ns:prog:" + id);
+    var t = Date.parse((d && d.at) || (pr && pr.at) || "");
+    return isNaN(t) ? 0 : t;
+  }
   function currentIdx(){
     var list = [];
     panels.forEach(function(p, i){
-      [].forEach.call(p.querySelectorAll("[data-lesson]"), function(c){ list.push({ i: i, f: fin(c.dataset.lesson) }); });
+      [].forEach.call(p.querySelectorAll("[data-lesson]"), function(c){
+        var f = fin(c.dataset.lesson);
+        list.push({ i: i, f: f, t: f ? when(c.dataset.lesson) : 0 });
+      });
     });
     var last = -1;
-    for (var a = 0; a < list.length; a++) if (list[a].f) last = a;
+    for (var a = 0; a < list.length; a++) if (list[a].f && (last < 0 || list[a].t >= list[last].t)) last = a;
     if (last < 0) return 0;
     for (var b = last + 1; b < list.length; b++) if (!list[b].f) return list[b].i;
     return list[last].i;
