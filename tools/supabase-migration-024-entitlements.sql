@@ -27,7 +27,8 @@
 -- Entitlements belong to the ACCOUNT (the parent), never a student: every
 -- student under the account shares what the family bought.
 --
--- Applied: (not yet)
+-- Applied: 2026-10-12 in the SQL editor (Paul pressed Run). Verified: a signed-out
+-- select returns [] (RLS), and Paul's account opens the gated sheet through /sheet.
 -- ============================================================================
 
 create table if not exists public.entitlements (
