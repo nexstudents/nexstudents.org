@@ -30,6 +30,13 @@ const sheet = (o) => Object.assign({
 
 /* one problem, one answer; calc is the arithmetic the build checks it against */
 const q = (problem, answer, calc) => (calc ? { problem, answer, calc } : { problem, answer });
+/* a line plot as rows of X over a number line (same drawing as the Line Plots lesson) */
+const plot = (counts, lo, step) => {
+  const h = Math.max(...counts), rows = [];
+  for (let r = h; r >= 1; r--) rows.push(counts.map((c) => (c >= r ? "X" : " ").padEnd(3)).join("").trimEnd());
+  rows.push(counts.map((_, i) => String(lo + i * step).padEnd(3)).join("").trimEnd());
+  return rows.join("\n");
+};
 
 const MATH_HOMEWORK = [
 
@@ -1291,6 +1298,27 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L4",
   signoff: "Sort the data, find the range, draw every number on the line, and put one X over it for every value.",
+  howTo: {
+    steps: [
+      "Put the numbers in order from least to greatest, writing out every repeat.",
+      "Find the range: the greatest number minus the least number.",
+      "Draw a number line from the least number to the greatest. Count by 1s when the numbers are small, or by 5s or 10s when they're big. Keep every number on the line, even ones nobody picked.",
+      "Put one X above a number for every time it shows up in the list. Repeats stack up.",
+      "Count the Xs. You should have exactly as many Xs as the list had numbers.",
+      "Read it: the tallest stack is the mode, a group of Xs sitting close together is a cluster, and a lone X far from the rest is an outlier.",
+    ],
+    example: {
+      problem: "Eli asked 15 kids how many books they read last month: 4, 2, 3, 2, 5, 3, 2, 4, 3, 12, 3, 2, 4, 3, 1. Make a line plot.",
+      work: [
+        ["Sort the list.", "1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 12"],
+        ["Find the range.", "12 - 1 = 11"],
+        ["The numbers are small, so the line counts by 1s from 0 to 12.", ""],
+        ["Put one X over each number. Nobody picked 6 through 11, but they stay on the line.", plot([0,1,4,5,3,1,0,0,0,0,0,0,1], 0, 1)],
+        ["Count the Xs to check.", "1 + 4 + 5 + 3 + 1 + 1 = 15, and the list had 15 numbers"],
+        ["Read it.", "Mode = 3 (the tallest stack). Cluster = 2 to 4. Outlier = 12."],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Range and the Number Line",
       note: "The range is the greatest value minus the least. A number line has to reach both ends.",

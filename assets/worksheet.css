@@ -72,7 +72,9 @@ body{margin:0;background:var(--bg);color:var(--fg)}
   border:1px solid var(--line);border-radius:var(--r);padding:38px 44px;
   box-shadow:0 2px 10px rgba(8,11,15,.16);
 }
-.head{border-bottom:2px solid var(--fg);padding-bottom:14px;margin-bottom:8px}
+/* No rule under the title (Paul, 2026-10-11: "we dont need extra lines unless they are actually
+   serving a purpose"). Name and Date moved above the title on 10-05, so it divided nothing. */
+.head{padding-bottom:6px;margin-bottom:14px}
 .eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
   color:var(--dim);margin:0}
 .sheet h1{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1.12;margin:9px 0 6px}
@@ -174,7 +176,7 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
   .sheet h1{font-size:19pt}
   .sheet h2,.eyebrow,.dek,.passage,.key .kv,.note{color:#000}
   .sheet h2{border-color:#000}
-  .head,.key{border-color:#000}
+  .key{border-color:#000}
   .note{background:transparent;border-left:2px solid #000}
   .art{border:1px solid #999;page-break-inside:avoid}
   .art img{max-height:150mm;width:auto;margin:0 auto}
@@ -666,7 +668,13 @@ body.print-all .wk+.wk{page-break-before:always}
 /* 🚨 ON SCREEN IT MUST LOOK LIKE A BOX. Paul, 2026-10-11: "you cant type it in"
    - it could be typed in, but a bare rule gave no sign of it. Shaded, bordered,
    text cursor; on paper (print, below) it goes back to the plain blank. */
-.owns u.hwu{border-bottom:0}
+.owns u.hwu{border-bottom:0;flex:0 0 auto}
+.hwin:not(.hwtext){flex:0 0 auto;max-width:100%}
+/* a sentence answer: 3 rows on ruled lines (2.1em apart), the same on screen and paper */
+.hwwrite{margin:4px 0 12px}
+.hwin.hwtext{display:block;resize:none;box-sizing:border-box;height:6.3em;line-height:2.1em;padding:0 8px;border:0;border-radius:0;
+  background-image:repeating-linear-gradient(transparent 0 calc(2.1em - 1px),var(--line-ink) calc(2.1em - 1px) 2.1em);
+  background-attachment:local;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .hwin{flex:1;width:100%;min-width:0;font:inherit;color:var(--fg);padding:5px 8px;outline:none;
   border:1.5px solid var(--line-ink);border-radius:6px;background:rgba(127,127,127,.10);cursor:text}
 .hwin::placeholder{color:var(--dim);opacity:.8}
@@ -687,7 +695,7 @@ body.print-all .wk+.wk{page-break-before:always}
   .hwcheck{display:none!important}
   .hwon .key{display:block}
   .hwin,.hwin.is-right,.hwin.is-wrong{color:#000;background:none;font-weight:400;border:0;border-radius:0;box-shadow:none;padding:0 6px}
-  .owns u.hwu{border-bottom:1px solid #000}
+  .owns u.hwu{border-bottom:1px solid #000;flex:1}
   .hwtop{display:none!important}
   .hwin::placeholder{color:transparent}
 }
@@ -701,6 +709,18 @@ body.print-all .wk+.wk{page-break-before:always}
 @media print{ .hwmark,.hwmark.is-right,.hwmark.is-wrong,.grading .gauto{color:#000} }
 .hwtop{margin:0 0 18px;padding:12px 16px;border:1.5px solid var(--a, #E8822F);border-radius:10px;font-size:.95rem}
 .hwtop b{display:block;margin-bottom:2px}
+/* How To Do It: steps + a worked example, so a parent can help. Prints. */
+.hwhow{margin:0 0 22px;padding:14px 18px;font-size:.95rem;line-height:1.45;background:var(--panel-2);border-radius:var(--r)}
+.hwhow h2{margin:0 0 8px;padding:0;border:0}
+.howsteps{margin:0;padding-left:1.3em}
+.howsteps li{margin:3px 0}
+.howex{margin-top:12px}
+.howex b{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.howex p{margin:4px 0 6px}
+.howex ol{margin:0;padding-left:1.3em}
+.howex li{margin:6px 0}
+.howex pre{margin:4px 0 0;font:600 .9rem/1.35 ui-monospace,Consolas,monospace;white-space:pre;overflow-x:auto}
+@media print{ .hwhow{background:transparent;padding:0;page-break-inside:avoid} .hwhow,.howex b{color:#000} }
 
 /* ── PRODUCT PAGE: the Lizzie Peirce shape (ROADMAP 38) ─────────────────────
    Paul picked lizziepeirce.com/free-stuff on 2026-09-09. 🚨 MATCH IT: image
@@ -845,3 +865,23 @@ body.print-all .wk+.wk{page-break-before:always}
      down with the page until I get to a certain point." It scrolls with the
      page like the rest of the reference does. */
 }
+@media print{
+  .hwin.hwtext{background-image:repeating-linear-gradient(transparent 0 calc(2.1em - 1px),#000 calc(2.1em - 1px) 2.1em);resize:none;padding:0}
+}
+/* Answers line up (Paul, 2026-10-11: "symmetry is key"): question left, answer column right,
+   same left edge all the way down. Phones stack them. */
+.owns .ownline.hwrow{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:24px;align-items:center}
+.owns .hwrow .hwq{max-width:none;display:block}
+.owns .hwrow .hwq:empty{display:block}
+.hwans{grid-column:2;display:flex;gap:6px 8px;align-items:center;justify-content:flex-end;min-width:0;padding-right:12px}
+.hwans .olbl.hwa{min-width:4.6em;text-align:right;line-height:1}
+@media (max-width:560px){ .owns .ownline.hwrow{grid-template-columns:minmax(0,1fr)} .hwans{grid-column:1;justify-content:flex-start;flex-wrap:wrap} .owns .hwrow .hwq:empty{display:none} }
+/* paper: the answer column gets real width so the handwriting blanks are long enough */
+@media print{ .owns .ownline.hwrow{grid-template-columns:minmax(0,1fr) 40%} .hwans{justify-content:flex-start} }
+/* two boxes on one question sit side by side, each label beside its box */
+.hwans:has(.hwpair){gap:14px}
+.hwpair{display:flex;gap:8px;align-items:center}
+.hwans .hwpair .olbl.hwa{min-width:0;line-height:1;align-self:center}
+/* figures sit centered: the drawn plot in a worked example, and data tables */
+.howex pre.fig{width:max-content;max-width:100%;margin:8px auto 4px}
+.owns .hwtab{margin:6px auto 12px}

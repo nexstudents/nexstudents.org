@@ -305,18 +305,31 @@ function checkFor(it) {
   return null;
 }
 const attr = (s) => esc(s).replace(/"/g, '&quot;');
+/* a box as wide as the answer it holds, plus room for a typo. Paul, 2026-10-11: "allow the
+   amount of space that fits the answer". On paper the blank stays full width for handwriting. */
+function fitWidth(check) {
+  const len = Array.isArray(check) ? check.join(', ').length + 4
+    : typeof check === 'string' ? Math.max(...check.split('|').map((a) => a.length), check === 'none' ? 7 : 0)
+    : String(check).length;
+  return Math.min(40, Math.max(11, len + 4));
+}
 function blank(check, aria) {
   if (check == null) return '<u></u>';
-  return '<u class="hwu"><input class="hwin" type="text" autocomplete="off" spellcheck="false" placeholder="Type here" aria-label="' +
+  return '<u class="hwu"><input class="hwin" style="width:' + fitWidth(check) + 'ch" type="text" autocomplete="off" spellcheck="false" placeholder="Type here" aria-label="' +
     attr(aria) + '" data-check="' + attr(JSON.stringify(check)) + '"></u>';
 }
+/* 🚨 ANSWERS LINE UP. Paul, 2026-10-11: "make each answer stay in line of each other ...
+   symmetry is key". Every row is two columns, question then answer, so the boxes (and the
+   paper blanks) start at the same place all the way down a part. */
 const answerRow = (text, label, check) => {
-  const head = '<p class="ownline' + (!ONLINE ? '' : check != null ? ' hwitem' : ' hwself') + '"><span class="hwq">' + esc(text) + '</span>';
-  if (check != null && typeof check === 'object' && !Array.isArray(check)) {
-    return head + Object.keys(check).map((k) =>
-      '<span class="olbl hwa">' + esc(k) + '</span>' + blank(check[k], k)).join('') + '</p>';
-  }
-  return head + '<span class="olbl hwa">' + esc(label || 'Answer') + '</span>' + blank(check, label || 'Answer') + '</p>';
+  const kind = !ONLINE ? '' : check != null ? ' hwitem' : ' hwself';
+  const multi = check != null && typeof check === 'object' && !Array.isArray(check);
+  const ans = multi
+    ? Object.keys(check).map((k) => '<span class="hwpair"><span class="olbl hwa">' + esc(k) + '</span>' + blank(check[k], k) + '</span>').join('')
+    : '<span class="olbl hwa">' + esc(label || 'Answer') + '</span>' + blank(check, label || 'Answer');
+  /* two or more boxes stack in the answer column, beside the question like every other row */
+  return '<p class="ownline hwrow' + kind + '"><span class="hwq">' + esc(text) +
+    '</span><span class="hwans">' + ans + '</span></p>';
 };
 
 /* A blank number line to plot on. Geometry only, so it is SVG; every label is
@@ -347,6 +360,11 @@ function dataTable(rows) {
     '</tr>').join('') + '</table>';
 }
 
+/* hand-marked AND written out: "Answers vary" in the key, a part that asks for a sentence,
+   or `write: true` on the item or part. A short notation answer stays one blank. */
+const writesSentences = (it, part) => it.check == null && it.calc == null &&
+  (it.write || part.write || /^answers vary/i.test(String(it.answer || '')) || /sentence/i.test(part.note || ''));
+
 function solveItem(it, n, part) {
   const lines = it.lines != null ? it.lines : part.lines;
   let body;
@@ -357,6 +375,14 @@ function solveItem(it, n, part) {
   } else if (it.numberline) {
     body = '<p class="sortsent">' + esc(it.problem) + '</p>' + numberLine(it.numberline) +
       answerRow('', part.answerLabel, checkFor(it));
+  } else if (writesSentences(it, part)) {
+    /* a sentence answer gets room to write. Paul, 2026-10-11: "write in a sentence or two
+       and there is no room for the two sentences". Paper: 3 ruled lines. Screen: a 3-line
+       box drawn on the same rules, so typed text sits where the pencil would. */
+    body = '<p class="sortsent">' + esc(it.problem) + '</p>' + (ONLINE
+      ? '<div class="hwwrite hwself"><textarea class="hwin hwtext" rows="3" spellcheck="true" placeholder="Type here" aria-label="' +
+        attr(it.problem) + '"></textarea></div>'
+      : workLines(3));
   } else {
     body = answerRow(it.problem, part.answerLabel, checkFor(it)) + workLines(lines);
   }
@@ -559,6 +585,33 @@ function onlineBlock(slug) {
 `;
 }
 
+/* ── How To Do It: plain steps + one worked example, at the top, on screen AND paper.
+   Paul, 2026-10-11: "instructions and examples are always a good call even if we make
+   less work problems", written so a parent who doesn't know the material can help.
+   howTo: { steps: [...], example: { problem, work: [[what you do, what it looks like], ...] } } */
+function howToHtml(h) {
+  if (!h) return '';
+  if (!(h.steps || []).length || !h.example || !(h.example.work || []).length)
+    fail('howTo needs steps AND a worked example');
+  const work = h.example.work.map(([say, show]) =>
+    '<li>' + esc(say) + (show ? '<pre' + (show.includes('\n') ? ' class="fig"' : '') + '>' + esc(show) + '</pre>' : '') + '</li>').join('\n      ');
+  return `
+  <div class="hwhow">
+    <h2>How To Do It</h2>
+    <ol class="howsteps">
+      ${h.steps.map((t) => '<li>' + esc(t) + '</li>').join('\n      ')}
+    </ol>
+    <div class="howex">
+      <b>Worked Example</b>
+      <p>${esc(h.example.problem)}</p>
+      <ol>
+      ${work}
+      </ol>
+    </div>
+  </div>
+`;
+}
+
 function homeworkSheetBody(s) {
   const L = lessonFor(s.lesson);
   checkFresh(s, L);
@@ -575,7 +628,7 @@ function homeworkSheetBody(s) {
   /* the way in, at the TOP: Paul could not tell the blanks took typing */
   const top = online ? '\n  <div class="hwtop"><b>Doing it on screen?</b>Tap or click a box and type your answer. ' +
     'When you&rsquo;re done, press Check My Answers at the bottom of the sheet.</div>\n' : '';
-  return top + partsHtml + online +
+  return top + howToHtml(s.howTo) + partsHtml + online +
     gradingBlock(total) +
     '\n  <div class="key">\n    <h2>Answer key</h2>\n    ' +
     s.parts.map(keyHtml).join('\n    ') +
