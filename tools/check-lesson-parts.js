@@ -19,8 +19,9 @@
           the drift has started again. There is no reason for it ever to fail.
 
    OWED — the pieces each engine has to build for itself, because it scores its
-          own work: the student-facing Print Answer Sheet and Retake. Reading and
-          English have them; maths, integers and split do not yet. These are
+          own work: the student-facing Print Answer Sheet. Reading and
+          English have it; maths, integers and split do not yet. (The Retake is
+          gone from the bottom of every lesson: the reset lives in Teacher Notes.) These are
           LISTED, not failed, so the gap is visible on every build instead of
           being rediscovered by Paul. Delete a line from OWED_KNOWN the day that
           engine grows the button, and the guard starts failing if it regresses.
@@ -64,19 +65,24 @@ const ENGINE = [
   ['Teacher Notes',      /class="ground"|id="ground"/],
   ['results / score',    /id="score"|id="scorebar"/],
   ['Print Answer Sheet', /id="printKey"/],
-  ['Retake',             /id="retake"/],
+  /* 2026-10-12: the reset lives ONLY in Teacher Notes (Reset Test, #greset). The bottom
+     Retake is hidden on every engine, so the guard asks for the reset INSIDE the notes. */
+  ['Teacher Notes reset', /class="ground"[\s\S]*?id="greset"/],
 ];
+/* A #retake button may stay in the page (the reset code clicks it) but must never be
+   visible. Matches any #retake tag that does not carry the hidden attribute. */
+const VISIBLE_RETAKE = /<[a-z]+\b[^>]*\bid="retake"(?![^>]*\bhidden\b)[^>]*>/i;
 
 /* 🚨 EVERY LINE HERE IS A DEBT, NOT AN EXEMPTION, and it is dated so it cannot
    quietly become permanent. These five lessons run on engines that score typed
-   work rather than multiple choice, so their Print Answer Sheet and Retake have
+   work rather than multiple choice, so their Print Answer Sheet has
    to be written against that engine - it is not a slot that can be filled. */
 const OWED_KNOWN = {
-  'maths/long-division':            ['Print Answer Sheet', 'Retake'],
-  'maths/long-division-remainders': ['Print Answer Sheet', 'Retake'],
-  'maths/adding-integers':          ['Print Answer Sheet', 'Retake'],
-  'maths/subtracting-integers':     ['Print Answer Sheet', 'Retake'],
-  'english/complete-subjects-and-predicates': ['Print Answer Sheet', 'Retake'],
+  'maths/long-division':            ['Print Answer Sheet'],
+  'maths/long-division-remainders': ['Print Answer Sheet'],
+  'maths/adding-integers':          ['Print Answer Sheet'],
+  'maths/subtracting-integers':     ['Print Answer Sheet'],
+  'english/complete-subjects-and-predicates': ['Print Answer Sheet'],
 
   /* 🚨 CONTENT DEBT, NOT STRUCTURE, found by this guard on the day it was written
      (2026-09-19) and confirmed by Paul: "i think sonet forgot to put the teacher
@@ -85,8 +91,8 @@ const OWED_KNOWN = {
      per lesson - goal, key concepts, where a student gets stuck - so they cannot
      be filled by a slot. They are listed here rather than failed so a
      two-lesson gap from August does not block every build made since. */
-  'history/republic-to-empire': ['Teacher Notes'],
-  'history/roman-government':   ['Teacher Notes'],
+  'history/republic-to-empire': ['Teacher Notes', 'Teacher Notes reset'],
+  'history/roman-government':   ['Teacher Notes', 'Teacher Notes reset'],
 };
 
 if (!fs.existsSync(DIR)) {
@@ -117,6 +123,7 @@ for (const p of pages) {
     failures.push(p.id + ' is in a numbered unit but has no prev / next arrows');
   }
   const known = OWED_KNOWN[p.id] || [];
+  if (VISIBLE_RETAKE.test(html)) failures.push(p.id + ' shows a bottom Retake button. The reset lives only in Teacher Notes.');
   for (const [name, re] of ENGINE) {
     if (re.test(html)) {
       /* 🚨 THE POSITIVE SIDE OF THE DEBT LIST. A lesson that GAINS a piece it was

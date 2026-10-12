@@ -15,7 +15,7 @@
      | Teacher Notes      |     Y*      |     Y      |      Y      |      Y      |    Y     |
      | results / score    |     Y       |     Y      |      Y      |      Y      |    Y     |
      | Print Answer Sheet |     Y       |     Y      |      .      |      .      |    .     |
-     | Retake             |     Y       |     Y      |      .      |      .      |    .     |
+     | Retake (hidden)    |     Y       |     Y      |      .      |      .      |    .     |
      | Homework button    |     .       |     Y      |      .      |      .      |    Y     |
      | prev / next        |     Y       |     Y      |      .      |      .      |    .     |
 
@@ -51,6 +51,8 @@
 
 const fs = require('fs');
 const path = require('path');
+/* Teacher Notes: per-student videos and the PIN, one definition for all five engines. */
+const notes = require('./lesson-notes.js');
 
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -155,7 +157,7 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
 .wrap .scorebar, .wrapx .scorebar,
 .wrap .dbox,     .wrapx .dbox,
 .wrap .lfoot-hw, .wrapx .lfoot-hw{ border-radius:var(--lf-r,10px) }
-`;
+` + notes.notesCss();
 }
 
 /* ── the homework button ──────────────────────────────────────────────────
@@ -319,7 +321,7 @@ function lessonFoot(L, opts) {
   return '<div class="lfoot">\n  ' +
     homeworkCta(L, o.root, o.subject) + '\n  ' +
     unitNav(sib.prev, sib.next, o.unitTitle || (L.seq && L.seq.unitTitle)) +
-    '\n</div>';
+    '\n</div>\n' + notes.notesScript();
 }
 
 /* 🚨 WHAT EVERY BUILT LESSON PAGE MUST CARRY. check-lesson-parts.js reads this
@@ -329,7 +331,9 @@ const REQUIRED = [
   ['Teacher Notes',      /class="ground"|id="ground"/],
   ['results / score',    /id="score"|id="scorebar"/],
   ['Print Answer Sheet', /id="printKey"/],
-  ['Retake',             /id="retake"/],
+  /* The reset lives ONLY in Teacher Notes (2026-10-12). The bottom Retake is hidden on
+     every engine; check-lesson-parts.js also fails a #retake that is still visible. */
+  ['Teacher Notes reset', /class="ground"[\s\S]*?id="greset"/],
   ['Homework button',    /class="lfoot-hw/],
   ['prev \/ next',       /class="lfoot-nav"/],
 ];

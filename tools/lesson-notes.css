@@ -1,0 +1,54 @@
+/* ── Teacher Notes: the videos section and the PIN pad (lesson-notes.js) ──────
+   Shared by all five templates. The colours chain the same way lesson-footer.js
+   does (reading palette, then English palette, then a literal), so this cannot go
+   invisible on a template nobody remembered to update.
+   The bottom Retake button is hidden on every engine: the reset lives ONLY in
+   Teacher Notes (Reset Test). The element stays because the reset code clicks it. */
+.ground, .gpin{
+  --gn-l: var(--rule,    var(--line,    rgba(255,255,255,.16)));
+  --gn-p: var(--surface, var(--panel,   rgba(255,255,255,.04)));
+  --gn-i: var(--ink,     var(--fg,      #f2f4f7));
+  --gn-d: var(--ink-soft,var(--dim,     rgba(255,255,255,.62)));
+  --gn-a: var(--verdigris, var(--a,     #7fd1c1));
+}
+#retake, #retake[hidden]{display:none!important}
+
+.gv{margin:6px 0 4px}
+.gv-note{margin:0 0 9px;color:var(--gn-d);line-height:1.55}
+.gv-note a, .gv-who a{color:var(--gn-i);text-decoration:underline;text-underline-offset:2px}
+.gv-kid{border:1px solid var(--gn-l);border-radius:10px;padding:12px 14px;margin:0 0 12px}
+.gv-who{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-weight:700}
+.gv-av{flex:0 0 auto;width:30px;height:30px;border-radius:7px;display:grid;place-items:center;
+  font-style:normal;font-weight:800;font-size:.9rem;color:#fff;background:#8a8f98}
+.gv-list{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:8px}
+.gv-item{display:flex;align-items:center;gap:10px;min-width:0}
+.gv-item img{flex:0 0 auto;width:96px;height:54px;object-fit:cover;border-radius:6px;background:#000}
+.gv-lab{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-rm{flex:0 0 auto}
+.gv-add{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center}
+.gv-add input{box-sizing:border-box;width:100%;min-width:0;padding:9px 10px;font:inherit;font-size:16px;
+  color:var(--gn-i);background:transparent;border:1px solid var(--gn-l);border-radius:8px}
+.gv-add input:focus{outline:none;border-color:var(--gn-a)}
+.gv-msg{min-height:1.2em;margin:8px 0 0;font-size:.88rem;color:var(--gn-d)}
+@media (max-width:560px){
+  .gv-add{grid-template-columns:1fr}
+  .gv-add .btn{justify-self:start}
+}
+
+/* The PIN pad: the same shape as the account panel's (four boxes over one real input,
+   so a phone shows its number keyboard). It sits just under the Teacher Notes bar. */
+.gpin{margin:8px 0 4px;padding:14px;border:1px solid var(--gn-l);border-radius:10px;
+  background:var(--gn-p);text-align:center}
+.gpin-t{margin:0 0 4px;color:var(--gn-i);line-height:1.5}
+.gpin-box{position:relative;display:flex;justify-content:center;gap:12px;margin:14px auto 0;width:max-content}
+.gpin-box span{width:48px;height:56px;border:1.5px solid var(--gn-l);border-radius:8px;display:grid;place-items:center}
+.gpin-box span.is-on::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--gn-i)}
+.gpin-box span.is-cur{border-color:var(--gn-i)}
+.gpin-box input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;font-size:16px}
+.gpin-box.is-shake{animation:gpinShake .32s}
+@keyframes gpinShake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.gpin-box.is-shake{animation:none}}
+.gpin-msg{min-height:1.3em;margin:10px 0 0;font-size:.9rem;color:var(--porphyry, #a3312b)}
+.gpin-x{background:none;border:0;padding:8px 10px;font:inherit;font-size:.9rem;cursor:pointer;
+  color:var(--gn-d);text-decoration:underline;text-underline-offset:2px}
+@media print{ .gpin, .gv{display:none!important} }

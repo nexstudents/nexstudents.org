@@ -369,7 +369,8 @@ __NAV__
   <div class="lessondone" id="lessondone" hidden></div>
   <div class="actions endbtns">
     <button class="tab act" type="button" id="printKey">Print Answer Sheet</button>
-    <button class="tab act" type="button" id="retake">Retake Lesson</button>
+    <!-- The reset lives ONLY in Teacher Notes (Reset Test, 2026-10-12). Kept, hidden, for the scripts that click it. -->
+    <button class="tab act" type="button" id="retake" hidden>Retake Lesson</button>
   </div>
   __LESSONFOOT__
 </div>
@@ -714,7 +715,7 @@ function score(){
     if (c.all && c.got === c.all) {
       dn.hidden = false;
       dn.innerHTML = "<b>Lesson complete</b>" + c.got + " of " + c.all + " right (" + pct + "%). " +
-        "Print the answer sheet, or retake the lesson to go again.";
+        "Print the answer sheet. A teacher can reset it from Teacher Notes to go again.";
     } else { dn.hidden = true; dn.innerHTML = ""; }
   }
 }

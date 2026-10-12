@@ -1079,6 +1079,17 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 .vid-back{display:block;margin:4px auto 0;font:600 13px/1.2 "IBM Plex Sans",system-ui,sans-serif;
   background:none;border:0;color:var(--ink-soft);cursor:pointer;padding:8px 10px}
 .vid-back:hover{color:var(--ink)}
+/* several saved videos: numbered tiles to pick from (ROADMAP 92), then the player with a way back */
+.vid-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:2px 0 6px}
+.vid-tile{position:relative;display:block;margin:0;padding:0;text-align:left;cursor:pointer;overflow:hidden;
+  background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;color:var(--ink);font:inherit}
+.vid-tile:hover, .vid-tile:focus-visible{border-color:var(--verdigris)}
+.vid-tile img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#000}
+.vid-tile .n{position:absolute;top:6px;left:6px;min-width:22px;height:22px;padding:0 6px;box-sizing:border-box;border-radius:11px;
+  display:grid;place-items:center;background:rgba(0,0,0,.74);color:#fff;font:700 12px/1 "IBM Plex Sans",system-ui,sans-serif}
+.vid-tile .l{display:block;padding:7px 9px;font-size:.85rem;line-height:1.3;overflow-wrap:anywhere}
+.dbox-vid.is-tiles .vid-well, .dbox-vid.is-tiles .vid-all{display:none}
+.dbox-vid:not(.is-tiles) .vid-tiles{display:none}
 :root:not([data-theme="light"]) .wbox.is-right{border-color:#3f9d6d}
 :root:not([data-theme="light"]) .wnote.good{color:#7fc9a1}
 :root[data-theme="dark"] .wbox.is-right{border-color:#3f9d6d}
@@ -2059,6 +2070,61 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
 .wrap .dbox,     .wrapx .dbox,
 .wrap .lfoot-hw, .wrapx .lfoot-hw{ border-radius:var(--lf-r,10px) }
 
+/* ── Teacher Notes: the videos section and the PIN pad (lesson-notes.js) ──────
+   Shared by all five templates. The colours chain the same way lesson-footer.js
+   does (reading palette, then English palette, then a literal), so this cannot go
+   invisible on a template nobody remembered to update.
+   The bottom Retake button is hidden on every engine: the reset lives ONLY in
+   Teacher Notes (Reset Test). The element stays because the reset code clicks it. */
+.ground, .gpin{
+  --gn-l: var(--rule,    var(--line,    rgba(255,255,255,.16)));
+  --gn-p: var(--surface, var(--panel,   rgba(255,255,255,.04)));
+  --gn-i: var(--ink,     var(--fg,      #f2f4f7));
+  --gn-d: var(--ink-soft,var(--dim,     rgba(255,255,255,.62)));
+  --gn-a: var(--verdigris, var(--a,     #7fd1c1));
+}
+#retake, #retake[hidden]{display:none!important}
+
+.gv{margin:6px 0 4px}
+.gv-note{margin:0 0 9px;color:var(--gn-d);line-height:1.55}
+.gv-note a, .gv-who a{color:var(--gn-i);text-decoration:underline;text-underline-offset:2px}
+.gv-kid{border:1px solid var(--gn-l);border-radius:10px;padding:12px 14px;margin:0 0 12px}
+.gv-who{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-weight:700}
+.gv-av{flex:0 0 auto;width:30px;height:30px;border-radius:7px;display:grid;place-items:center;
+  font-style:normal;font-weight:800;font-size:.9rem;color:#fff;background:#8a8f98}
+.gv-list{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:8px}
+.gv-item{display:flex;align-items:center;gap:10px;min-width:0}
+.gv-item img{flex:0 0 auto;width:96px;height:54px;object-fit:cover;border-radius:6px;background:#000}
+.gv-lab{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-rm{flex:0 0 auto}
+.gv-add{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center}
+.gv-add input{box-sizing:border-box;width:100%;min-width:0;padding:9px 10px;font:inherit;font-size:16px;
+  color:var(--gn-i);background:transparent;border:1px solid var(--gn-l);border-radius:8px}
+.gv-add input:focus{outline:none;border-color:var(--gn-a)}
+.gv-msg{min-height:1.2em;margin:8px 0 0;font-size:.88rem;color:var(--gn-d)}
+@media (max-width:560px){
+  .gv-add{grid-template-columns:1fr}
+  .gv-add .btn{justify-self:start}
+}
+
+/* The PIN pad: the same shape as the account panel's (four boxes over one real input,
+   so a phone shows its number keyboard). It sits just under the Teacher Notes bar. */
+.gpin{margin:8px 0 4px;padding:14px;border:1px solid var(--gn-l);border-radius:10px;
+  background:var(--gn-p);text-align:center}
+.gpin-t{margin:0 0 4px;color:var(--gn-i);line-height:1.5}
+.gpin-box{position:relative;display:flex;justify-content:center;gap:12px;margin:14px auto 0;width:max-content}
+.gpin-box span{width:48px;height:56px;border:1.5px solid var(--gn-l);border-radius:8px;display:grid;place-items:center}
+.gpin-box span.is-on::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--gn-i)}
+.gpin-box span.is-cur{border-color:var(--gn-i)}
+.gpin-box input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;font-size:16px}
+.gpin-box.is-shake{animation:gpinShake .32s}
+@keyframes gpinShake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.gpin-box.is-shake{animation:none}}
+.gpin-msg{min-height:1.3em;margin:10px 0 0;font-size:.9rem;color:var(--porphyry, #a3312b)}
+.gpin-x{background:none;border:0;padding:8px 10px;font:inherit;font-size:.9rem;cursor:pointer;
+  color:var(--gn-d);text-decoration:underline;text-underline-offset:2px}
+@media print{ .gpin, .gv{display:none!important} }
+
 </style>
 </head>
 <body>
@@ -2285,6 +2351,7 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
   <span class="lfoot-hw is-off" aria-disabled="true">Homework Sheet: Unavailable<small>There is no homework sheet for this lesson yet.</small></span>
   <div class="lfoot-nav" role="navigation" aria-label="Lesson navigation"><a class="next" href="/lessons/english/simple-subjects-and-simple-predicates/" aria-label="Next lesson: Simple Subjects and Simple Predicates" title="Next: Simple Subjects and Simple Predicates"><span class="t">Simple Subjects and Simple Predicates</span><span class="ar">&rarr;</span></a></div>
 </div>
+<script src="/assets/lesson-shared.0835d0ba.js"></script>
 </div>
 
 <div class="player" id="player">
@@ -4246,9 +4313,16 @@ buildWork();
    2026-10-11: "then you can embed a video in the panel". This card is only the
    way in: it switches the panel to the video and brings the panel on screen.
    The player itself is built further down, beside the panel code. */
-(function(){
-  if (!VIDEO || !VIDEO.id || !WORKED) return;
+/* 🚨 THE CARD IS REBUILT BY vidSync() (further down), because the list it points at
+   can change after the page loads: a signed-in parent's saved videos for the active
+   student arrive late (Teacher Notes, ROADMAP 92) and take priority over VIDEO. */
+function vidCard(){
+  if (!WORKED) return;
+  var old = WORKED.querySelector(".work.vid");
+  if (old) old.parentNode.removeChild(old);
+  if (!vidItems.length) { if (!WORKED.children.length) WORKED.hidden = true; return; }
   WORKED.hidden = false;
+  var one = vidItems.length === 1 ? vidItems[0] : null;
   var box = document.createElement("div");
   box.className = "work vid";
   var h = document.createElement("p");
@@ -4257,21 +4331,23 @@ buildWork();
   box.appendChild(h);
   var p = document.createElement("p");
   p.className = "work-ask";
-  p.textContent = VIDEO.why || "";
+  p.textContent = one ? (one.why || "") : "Your teacher picked these videos for you. Choose one in the Visual Panel.";
   box.appendChild(p);
   var well = document.createElement("div");
   well.className = "vid-well";
   var go = document.createElement("button");
   go.type = "button";
   go.className = "vid-go";
-  go.textContent = "▶  Watch in the Visual Panel: " + VIDEO.title + (VIDEO.channel ? " (" + VIDEO.channel + ")" : "");
+  go.textContent = "▶  Watch in the Visual Panel: " + (one
+    ? one.label + (one.channel ? " (" + one.channel + ")" : "")
+    : vidItems.length + " videos");
   go.addEventListener("click", function(){
     if (typeof vidShow === "function") vidShow(true);
   });
   well.appendChild(go);
   box.appendChild(well);
   WORKED.insertBefore(box, WORKED.firstChild);
-})();
+}
 
 /* ── THE WALKTHROUGH: reveal each step's work as it is reached ──────────────
    By the voice (nsOnSentence, chained, never clobbered) or by Next Step for a
@@ -5000,25 +5076,55 @@ if (PANEL_SOON && dbox && !(VIDEO && VIDEO.id)){
    running above it. Nothing loads from YouTube until Play is pressed
    (youtube-nocookie). 🚨 Closing the panel REMOVES the iframe, or the video
    would keep talking inside a collapsed panel with no way to see it. */
-var vidHost = null, vidWell = null;
-/* 🚨 THE PLAYER IS ALREADY THERE, READY TO PLAY. Paul, 2026-10-11: "you have
-   this small text in the visual panel to open the video it should already be
-   open and ready to play." No poster button: the YouTube player itself sits in
-   the panel. loading=lazy keeps it from downloading while the panel is shut. */
+/* 🚨 WHAT THE PANEL PLAYS IS A LIST, NOT ONE VIDEO (ROADMAP 92, 2026-10-12).
+   vidItems is the lesson's baked VIDEO (kept as the fallback for now) until the
+   signed-in parent's saved videos for the ACTIVE student arrive from Teacher Notes
+   (lesson-notes-client.js sets window.NSLessonVideos and fires ns:videos). Saved
+   videos take priority. None saved, or signed out, = exactly the old behaviour.
+   ONE item = the player, full size. SEVERAL = numbered tiles the student picks from,
+   in the order the parent added them, with a way back to the tiles. */
+var vidHost = null, vidWell = null, vidTiles = null, vidKind = null, vidCur = -1;
+function vidBaked(){
+  return (VIDEO && VIDEO.id)
+    ? [{ id: VIDEO.id, start: 0, label: VIDEO.title, channel: VIDEO.channel || "", why: VIDEO.why || "" }]
+    : [];
+}
+var vidItems = vidBaked();
+/* The player for vidItems[vidCur]. Already in place and ready to play, lazy-loaded. */
 function vidPoster(){
-  if (!vidWell) return;
+  if (!vidWell || !vidItems[vidCur]) return;
+  var it = vidItems[vidCur];
   vidWell.textContent = "";
   vidWell.classList.add("on");
   var f = document.createElement("iframe");
-  f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(VIDEO.id) + "?rel=0";
-  f.title = VIDEO.title;
+  f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(it.id) + "?rel=0" +
+    (it.start ? "&start=" + (it.start | 0) : "");
+  f.title = it.label;
   f.loading = "lazy";
   f.allow = "encrypted-media; picture-in-picture; fullscreen";
   f.allowFullscreen = true;
   vidWell.appendChild(f);
 }
+/* Back to the tiles: the old iframe goes, so nothing keeps playing unseen. */
+function vidAll(){
+  if (!vidHost || vidItems.length < 2) return;
+  vidCur = -1;
+  if (vidWell) { vidWell.textContent = ""; vidWell.classList.remove("on"); }
+  vidHost.classList.add("is-tiles");
+  if (vidKind) vidKind.textContent = "Watch It Explained";
+}
+function vidPlay(i){
+  if (!vidHost || !vidItems[i]) return;
+  vidCur = i;
+  vidHost.classList.remove("is-tiles");
+  if (vidKind) vidKind.textContent = "Watch It Explained · " + vidItems[i].label;
+  vidPoster();
+}
 /* a fresh player is the only reliable way to stop a cross-origin video */
-function vidReset(){ if (vidWell) vidPoster(); }
+function vidReset(){
+  if (!vidWell) return;
+  if (vidItems.length > 1) vidAll(); else vidPoster();
+}
 function vidShow(open){
   if (!vidHost || !dbox) return;
   dbox.classList.add("is-video");
@@ -5031,17 +5137,58 @@ function vidHide(){
   curVis = -2;
   if (typeof paintDemo === "function") paintDemo(typeof idx === "number" ? idx : 0);
 }
-if (VIDEO && VIDEO.id && dbox){
+/* (Re)build the panel's video from vidItems and refresh the card that points at it. */
+function vidSync(){
+  if (!dbox) return;
+  if (vidHost && vidHost.parentNode) vidHost.parentNode.removeChild(vidHost);
+  vidHost = vidWell = vidTiles = vidKind = null;
+  vidCur = -1;
+  vidCard();
+  if (!vidItems.length) { dbox.classList.remove("is-video"); return; }
   vidHost = document.createElement("div");
   vidHost.className = "dbox-vid";
-  var vk = document.createElement("p");
-  vk.className = "dbox-kind";
-  vk.textContent = "Watch It Explained" + (VIDEO.channel ? " · " + VIDEO.channel : "");
-  vidHost.appendChild(vk);
+  vidKind = document.createElement("p");
+  vidKind.className = "dbox-kind";
+  vidKind.textContent = "Watch It Explained" + (vidItems.length === 1 && vidItems[0].channel ? " · " + vidItems[0].channel : "");
+  vidHost.appendChild(vidKind);
   vidWell = document.createElement("div");
   vidWell.className = "vid-well";
   vidHost.appendChild(vidWell);
-  vidPoster();
+  if (vidItems.length > 1) {
+    vidTiles = document.createElement("div");
+    vidTiles.className = "vid-tiles";
+    vidItems.forEach(function(it, i){
+      var t = document.createElement("button");
+      t.type = "button";
+      t.className = "vid-tile";
+      var img = document.createElement("img");
+      img.src = "https://i.ytimg.com/vi/" + encodeURIComponent(it.id) + "/mqdefault.jpg";
+      img.alt = "";
+      img.loading = "lazy";
+      t.appendChild(img);
+      var n = document.createElement("b");
+      n.className = "n";
+      n.textContent = String(i + 1);
+      t.appendChild(n);
+      var l = document.createElement("span");
+      l.className = "l";
+      l.textContent = it.label;
+      t.appendChild(l);
+      t.addEventListener("click", function(){ vidPlay(i); });
+      vidTiles.appendChild(t);
+    });
+    vidHost.appendChild(vidTiles);
+    var all = document.createElement("button");
+    all.type = "button";
+    all.className = "vid-back vid-all";
+    all.textContent = "Back to the Videos";
+    all.addEventListener("click", vidAll);
+    vidHost.appendChild(all);
+    vidAll();
+  } else {
+    vidCur = 0;
+    vidPoster();
+  }
   /* Only a lesson WITH frames needs a way back to them. */
   if (VISUALS.length){
     var back = document.createElement("button");
@@ -5055,6 +5202,20 @@ if (VIDEO && VIDEO.id && dbox){
   dbox.insertBefore(vidHost, inEl);
   if (!VISUALS.length) dbox.classList.add("is-video");
 }
+/* Saved videos for the active student, from Teacher Notes. An empty list falls back
+   to the lesson's own VIDEO. Normalised here so a malformed row can never reach the
+   player: an id has to be 11 characters of the YouTube alphabet. */
+function vidSaved(d){
+  var rows = (d && d.items) || [];
+  var ok = rows.filter(function(r){ return r && /^[A-Za-z0-9_-]{11}$/.test(r.id || ""); }).map(function(r, i){
+    return { id: r.id, start: r.start | 0, label: String(r.label || ("Video " + (i + 1))), channel: "", why: "" };
+  });
+  vidItems = ok.length ? ok : vidBaked();
+  vidSync();
+}
+document.addEventListener("ns:videos", function(e){ vidSaved(e.detail); });
+vidSync();
+if (window.NSLessonVideos) vidSaved(window.NSLessonVideos);
 
 if ((VISUALS.length || PANEL_SOON) && dbox){
   dbox.hidden = false;
@@ -6208,7 +6369,7 @@ if (!liftDefBox()) requestAnimationFrame(function(){ liftDefBox(); });
 </script>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
-<script src="/assets/ns-account.js?v=79acc1f3"></script>
-<script src="/assets/lesson-shared.e7dd16d0.js"></script>
+<script src="/assets/ns-account.js?v=fd546fc9"></script>
+<script src="/assets/lesson-shared.a7a94982.js"></script>
 </body>
 </html>

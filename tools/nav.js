@@ -2687,6 +2687,11 @@ function adSettings(H){
   try{ dev.highlight=localStorage.getItem("ns:highlight")||""; }catch(e){}
   var cur={voice:s.voice||(dev.voice==="female"?"female":"male"),speed:s.speed||dev.speed||"0.85",lesson:s.lesson||dev.lesson||"graphite",
            highlight:s.highlight!=null?s.highlight:(dev.highlight||"")};
+  /* 🔒 ASK FOR THE PIN TO OPEN TEACHER NOTES (ROADMAP 92, 2026-10-12). The ACCOUNT
+     HOLDER's setting, kept in their settings with the rest; ON unless it says false.
+     lesson-notes-client.js reads it off the bootstrap user. A household courtesy,
+     not security: the same as the profile PIN. */
+  cur.pinnotes=s.notesPin===false?"off":"on";
   /* 🎨 THEME COLOR LIVES HERE, AND ONLY HERE. Paul, 2026-09-11: "we just need
      it in the settings only." The account holder's is in user_metadata and
      gets DEFAULT (the red box, no accent); a row's is on the row. */
@@ -2717,6 +2722,9 @@ function adSettings(H){
     adCap("Reading Highlight"," · <span data-hname>"+adEsc(hlName(cur.highlight))+"</span>",
       "The color that marks the words as a lesson is read aloud.")+
     hlTiles+
+    (a===null?adCap("Ask for the PIN to Open Teacher Notes","",
+      "With a PIN set, Teacher Notes asks for it before it opens, so a student can&#39;t reach the reset or the answer notes. Turn it off to let anyone open Teacher Notes.")+
+      chips("pinnotes",[["on","On"],["off","Off"]],"Ask for the PIN to open Teacher Notes"):"")+
     adCap("Display","","Switches the whole site between a dark and a light look. It&#39;s kept on this device.")+
     "<div class='ad-kv'><span>Light or Dark</span>"+
     "<button class='mswitch' type='button' data-mode-toggle aria-label='Switch between day and night'>"+
@@ -2733,6 +2741,7 @@ function adSettings(H){
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(x){ x.setAttribute("aria-pressed",x===btn); });
     if(attr==="highlight") H.body.querySelector("[data-hname]").textContent=hlName(v);
     var next={voice:cur.voice,speed:cur.speed,highlight:cur.highlight};
+    if(a===null) next.notesPin=cur.pinnotes!=="off";
     nsApplySettings(next);
     /* Signed out there is no profile to keep it on; the device still has it. */
     if(!NSAccount.isSignedIn()){ msg.textContent="Saved on this device."; return; }
@@ -2744,7 +2753,7 @@ function adSettings(H){
       msg.textContent="Saved.";
     }).catch(function(e){ msg.textContent=e.message||"Could not save that."; });
   }
-  ["voice","speed","highlight"].forEach(function(attr){
+  ["voice","speed","highlight","pinnotes"].forEach(function(attr){
     H.body.querySelectorAll("[data-"+attr+"]").forEach(function(b){
       b.onclick=function(){ var v=b.getAttribute("data-"+attr); if(v!==cur[attr]) pick(attr,v,b); };
     });

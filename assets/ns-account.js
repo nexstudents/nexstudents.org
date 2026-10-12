@@ -518,6 +518,32 @@
         .then(function (r) { if (!r.ok) throw new Error("Could not save progress."); return rows; });
     });
   }
+  /* ── PARENT-ADDED VIDEOS (2026-10-12, migration 021) ──────────────────────
+     A lesson no longer ships a YouTube video; the parent adds them PER STUDENT
+     in Teacher Notes. Rows are {id, student_id, lesson_id, video_id, start_s,
+     label, position}. RLS ("own lesson videos") limits every call to this
+     account's own students, so lessonVideos() returns all of them at once.
+     ⚠️ Until the migration is applied every call fails with a relation error;
+     callers must degrade quietly (videosOff() recognises that failure). */
+  function lessonVideos(lessonId) {
+    return rest("GET", "/lesson_videos?lesson_id=eq." + encodeURIComponent(lessonId) +
+      "&select=id,student_id,lesson_id,video_id,start_s,label,position,created_at&order=position.asc,created_at.asc",
+      null, "Could not load videos.").then(function (d) { return d || []; });
+  }
+  function addLessonVideo(studentId, lessonId, videoId, startS, label, position) {
+    return rest("POST", "/lesson_videos", { student_id: studentId, lesson_id: lessonId, video_id: videoId,
+      start_s: Math.max(0, parseInt(startS, 10) || 0), label: label ? String(label).trim().slice(0, 80) : null,
+      position: position || 0 }, "Could not save that video.").then(function (d) { return d && d[0]; });
+  }
+  function deleteLessonVideo(id) {
+    return rest("DELETE", "/lesson_videos?id=eq." + encodeURIComponent(id), null, "Could not remove that video.")
+      .then(function () { return true; });
+  }
+  /* True when a failure means the table is not there yet (migration 021 not run). */
+  function videosOff(err) {
+    var m = (err && ((err.raw && (err.raw.message || err.raw.code)) || err.message)) || "";
+    return /lesson_videos|PGRST20[45]|42P01|404|relation/i.test(String(m));
+  }
   /* lessonId null = EVERY lesson for that student (the full reset). */
   function deleteProgress(studentId, lessonId) {
     return rest("DELETE", "/progress?student_id=eq." + encodeURIComponent(studentId) +
@@ -929,6 +955,7 @@
     students: students, addStudent: addStudent, updateStudent: updateStudent, deleteStudent: deleteStudent, saveOwn: saveOwn,
     setProfileKind: setProfileKind, swapAccountHolder: swapAccountHolder,
     progressRows: progressRows, upsertProgress: upsertProgress, deleteProgress: deleteProgress,
+    lessonVideos: lessonVideos, addLessonVideo: addLessonVideo, deleteLessonVideo: deleteLessonVideo, videosOff: videosOff,
     pinMap: pinMap, checkPin: checkPin, setPin: setPin, clearPin: clearPin,
     bootstrap: bootstrap,
     isSignedIn: function () { return !!session; },
