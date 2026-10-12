@@ -34,7 +34,7 @@
 -- The page degrades quietly until this is run: Teacher Notes says "Videos
 -- aren't switched on yet." and the Visual Panel behaves as it always did.
 --
--- Applied: not yet
+-- Applied: 2026-10-12 in the SQL editor (Paul pressed Run). Verified: REST answers 200, a signed-out insert is refused by RLS.
 -- ============================================================================
 
 create table if not exists public.lesson_videos (
