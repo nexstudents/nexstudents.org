@@ -49,6 +49,18 @@
 
    `name` takes `labels: [...]` on the part, one per rule. `mark` underlines one
    half of the sentence with a rule, for a "name the half" question.
+
+   📖 `passage` (reading sheets, 2026-10-12). Paul: "can this worksheet hold up on
+   its own without a lesson ... a parent trying to help a student would be
+   confused." A reading sheet carries its own story, { title, paras: [...] }, and
+   every question is answered INSIDE it. Each item names its paragraph, `from: n`,
+   and the key prints it. 🚨 A written answer must be in the story WORD FOR WORD:
+   a sentence item carries `quote`, and the build fails unless that exact text is
+   in paragraph `from`. Paul: "nearly make it obvious this part is for that
+   question but just subtle enough it doesnt just point out itself."
+   A solve item may carry `choices: [...]` (multiple choice, check = the letter)
+   or be a True or False item (check "true" / "false"). Balance after Merrill's
+   own Chapter Review: about half quick checks, half written.
    ───────────────────────────────────────────────────────────────────────── */
 'use strict';
 
@@ -216,7 +228,31 @@ function checkItems(s) {
       it.sub.forEach((q, k) => checkSolve({ problem: q.q, answer: q.answer, calc: q.calc, check: q.check },
         where + String.fromCharCode(97 + k)));
     } else if (part.kind === 'solve') checkSolve(it, where);
+    if (it.choices) {
+      if (it.choices.length < 3 || it.choices.length > 4) fail(where + ': multiple choice needs 3 or 4 choices');
+      if (!/^[a-d]\|/.test(String(it.check))) fail(where + ': a choice item checks its letter, "b|the choice"');
+    }
+    if (s.passage) checkFromStory(s, it, part, where);
   }));
+}
+
+/* 📖 THE STORY HOLDS EVERY ANSWER. On a sheet with a passage, every item names
+   the paragraph its answer is in, and a written answer must be in that paragraph
+   word for word (`quote`). A question whose answer is nowhere in the story is a
+   question a parent cannot help with, which is the whole reason for the story. */
+function checkFromStory(s, it, part, where) {
+  const paras = s.passage.paras || [];
+  const n = it.from;
+  if (!(n >= 1 && n <= paras.length))
+    fail(where + ': every question on a story sheet needs `from`, the paragraph (1-' + paras.length + ') its answer is in');
+  const flat = (t) => String(t).replace(/\s+/g, ' ').toLowerCase();
+  /* `choose`: the student picks a side and says why (Paul, 2026-10-12: "show what both
+     sides say and let the student choose"). His own view is not in the story, so no quote. */
+  if (writesSentences(it, part) && !it.choose) {
+    if (!it.quote) fail(where + ': a written answer needs `quote`, the words in the story that answer it');
+    if (flat(paras[n - 1]).indexOf(flat(it.quote)) < 0)
+      fail(where + ': the quote is not in paragraph ' + n + ' word for word:\n        ' + it.quote);
+  }
 }
 
 /* ── the parts ──────────────────────────────────────────────────────────── */
@@ -298,6 +334,7 @@ const calcValue = (src) => {
   return Function('r', 'up', 'down', '"use strict"; return (' + src + ');')(r, up, down);
 };
 let ONLINE = false;   /* set per sheet in homeworkSheetBody: only `online: true` sheets get boxes */
+let PARTW = 0;        /* set per part in partHtml: every single box in a part is this wide */
 function checkFor(it) {
   if (!ONLINE) return null;
   if (it.check != null) return it.check;
@@ -308,14 +345,15 @@ const attr = (s) => esc(s).replace(/"/g, '&quot;');
 /* a box as wide as the answer it holds, plus room for a typo. Paul, 2026-10-11: "allow the
    amount of space that fits the answer". On paper the blank stays full width for handwriting. */
 function fitWidth(check) {
+  if (typeof check === 'string' && /^[a-d]\|/.test(check)) return 11;   /* a letter, every choice item alike */
   const len = Array.isArray(check) ? check.join(', ').length + 4
     : typeof check === 'string' ? Math.max(...check.split('|').map((a) => a.length), check === 'none' ? 7 : 0)
     : String(check).length;
   return Math.min(40, Math.max(11, len + 4));
 }
-function blank(check, aria) {
+function blank(check, aria, own) {
   if (check == null) return '<u></u>';
-  return '<u class="hwu"><input class="hwin" style="width:' + fitWidth(check) + 'ch" type="text" autocomplete="off" spellcheck="false" placeholder="Type here" aria-label="' +
+  return '<u class="hwu"><input class="hwin" style="width:' + ((!own && PARTW) || fitWidth(check)) + 'ch" type="text" autocomplete="off" spellcheck="false" placeholder="Type here" aria-label="' +
     attr(aria) + '" data-check="' + attr(JSON.stringify(check)) + '"></u>';
 }
 /* 🚨 ANSWERS LINE UP. Paul, 2026-10-11: "make each answer stay in line of each other ...
@@ -325,7 +363,7 @@ const answerRow = (text, label, check) => {
   const kind = !ONLINE ? '' : check != null ? ' hwitem' : ' hwself';
   const multi = check != null && typeof check === 'object' && !Array.isArray(check);
   const ans = multi
-    ? Object.keys(check).map((k) => '<span class="hwpair"><span class="olbl hwa">' + esc(k) + '</span>' + blank(check[k], k) + '</span>').join('')
+    ? Object.keys(check).map((k) => '<span class="hwpair"><span class="olbl hwa">' + esc(k) + '</span>' + blank(check[k], k, true) + '</span>').join('')
     : '<span class="olbl hwa">' + esc(label || 'Answer') + '</span>' + blank(check, label || 'Answer');
   /* two or more boxes stack in the answer column, beside the question like every other row */
   return '<p class="ownline hwrow' + kind + '"><span class="hwq">' + esc(text) +
@@ -372,6 +410,11 @@ function solveItem(it, n, part) {
     body = '<p class="sortsent">' + esc(it.problem) + '</p>' + (it.table ? dataTable(it.table) : '') +
       it.sub.map((q, k) => answerRow(String.fromCharCode(97 + k) + '. ' + q.q, part.answerLabel, checkFor(q)) +
         workLines(q.lines != null ? q.lines : lines)).join('');
+  } else if (it.choices) {
+    /* multiple choice: circle the letter on paper, type it on screen */
+    body = '<p class="sortsent">' + esc(it.problem) + '</p><ul class="hwchoices">' +
+      it.choices.map((c, k) => '<li><b>' + String.fromCharCode(97 + k) + '.</b> ' + esc(c) + '</li>').join('') +
+      '</ul>' + answerRow('', part.answerLabel || 'Letter', checkFor(it));
   } else if (it.numberline) {
     body = '<p class="sortsent">' + esc(it.problem) + '</p>' + numberLine(it.numberline) +
       answerRow('', part.answerLabel, checkFor(it));
@@ -408,7 +451,17 @@ const LETTER = ['A', 'B', 'C', 'D', 'E', 'F'];
 function partHtml(part, i) {
   const r = RENDER[part.kind];
   if (!r) fail('unknown homework part kind: ' + part.kind);
+  /* 🚨 ONE BOX WIDTH PER PART, the widest answer's. Each row is its own grid and the
+     boxes sit right, so boxes sized one by one start at ragged places (Paul, 2026-10-12,
+     the first story sheet). A single-word box beside a split pair keeps its own size. */
+  const singles = [];
+  (part.items || []).forEach((it) => [it].concat(it.sub || []).forEach((x) => {
+    const c = ONLINE ? checkFor(x) : null;
+    if (c != null && !(typeof c === 'object' && !Array.isArray(c))) singles.push(fitWidth(c));
+  }));
+  PARTW = singles.length ? Math.max(...singles) : 0;
   const items = (part.items || []).map((it, n) => r.item(it, n, part)).join('\n    ');
+  PARTW = 0;
   return `
   <h2 class="scored">Part ${LETTER[i]} &mdash; ${part.heading} <span class="pts"><u></u> / ${part.items.reduce((t, it) => t + weight(it), 0)}</span></h2>
   <p class="inst">${part.note}</p>
@@ -435,7 +488,8 @@ function keyHtml(part, i) {
     if (part.kind === 'name') return '<li>' + asList(it.answers).map(esc).join(' &middot; ') + '</li>';
     if (part.kind === 'solve' && it.sub)
       return '<li>' + it.sub.map((q, k) => '<b>' + String.fromCharCode(97 + k) + '.</b> ' + esc(q.answer)).join(' &nbsp; ') + '</li>';
-    if (part.kind === 'solve') return '<li>' + esc(it.answer) + '</li>';
+    if (part.kind === 'solve') return '<li>' + esc(it.answer) +
+      (it.from ? ' <i class="kfrom">(Paragraph ' + it.from + ')</i>' : '') + '</li>';
     return '<li>' + esc(it.answer) + '</li>';
   }).join('\n      ');
 
@@ -612,6 +666,19 @@ function howToHtml(h) {
 `;
 }
 
+/* 📖 the story, numbered by paragraph so the key can say where each answer is */
+function passageHtml(p) {
+  if (!p) return '';
+  if (!p.title || !(p.paras || []).length) fail('a passage needs a title and paragraphs');
+  return `
+  <h2>Read the Story: ${esc(p.title)}</h2>
+  <p class="inst">Every answer is in this story. Find the sentence that answers each question, then answer from it. On paper, write the question's number in the margin beside the sentence you found.</p>
+  <div class="passage hwpass">
+    ${p.paras.map((t, i) => '<p><b class="pn">' + (i + 1) + '</b>' + esc(t) + '</p>').join('\n    ')}
+  </div>
+`;
+}
+
 function homeworkSheetBody(s) {
   const L = lessonFor(s.lesson);
   checkFresh(s, L);
@@ -631,7 +698,7 @@ function homeworkSheetBody(s) {
   const top = online ? '\n  <div class="hwtop"><b>Fill it out online or print it.</b>' +
     'On screen, tap a box, type your answer, and press Check My Answers at the bottom. ' +
     'On paper, press Print at the top and write on the lines.</div>\n' : '';
-  return top + howToHtml(s.howTo) + partsHtml + online +
+  return top + howToHtml(s.howTo) + passageHtml(s.passage) + partsHtml + online +
     gradingBlock(total) +
     '\n  <div class="key">\n    <h2>Answer key</h2>\n    ' +
     s.parts.map(keyHtml).join('\n    ') +

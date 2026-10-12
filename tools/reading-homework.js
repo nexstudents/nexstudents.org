@@ -12,8 +12,14 @@
    🚨 FACTS ONLY FROM THE LESSON. A made-up practice case is fine; a new fact is not.
    🚨 `check` is the typed word or phrase, `a|b` for alternatives. Every check
    must appear in that item's `answer`, or the build fails.
-   🚨 SIDE BY SIDE (Science U6): ask what each account CLAIMS, never which is true.
-   No Scripture on any sheet.
+   ✝️ BOTH SIDES, THE STUDENT CHOOSES (Paul 2026-10-12): "what the world
+   understands and what God tells us", then "show what both sides say and let the
+   student choose." Origins get both, named that way; never state deep time or
+   common descent as plain fact. A `choose` item asks which he believes and why.
+   Scripture may go on a sheet (overrules the old "no Scripture" note).
+   📖 STORY SHEETS (2026-10-12): a sheet with `passage` stands alone, every answer is
+   in the story, a written answer word for word. extinction-and-caring is the model;
+   the other sheets still have the old shape until Paul approves it.
    ───────────────────────────────────────────────────────────────────────── */
 'use strict';
 
@@ -31,6 +37,18 @@ const hand = (problem, answer) => ({ problem, answer: "Answers vary. " + answer 
 const set = (problem, rows, table) => Object.assign({ problem },
   table ? { table } : {},
   { sub: rows.map(([q, answer, check]) => ({ q, answer, check })) });
+
+/* 📖 story-sheet items (2026-10-12): each names the paragraph its answer is in */
+const at = (from, it) => Object.assign(it, { from });
+/* multiple choice: the letter, or the words of the choice, marks the box */
+const mc = (problem, choices, letter, from) => {
+  const pick = choices[letter.charCodeAt(0) - 97];
+  return { problem, choices, answer: letter + ". " + pick[0].toUpperCase() + pick.slice(1) + ".", check: letter + "|" + pick, from };
+};
+const tf = (problem, isTrue, why, from) =>
+  ({ problem, answer: isTrue ? "True." : "False. " + why, check: isTrue ? "true" : "false", from });
+/* a written answer whose words are in the story word for word (the build checks `quote`) */
+const told = (problem, answer, quote, from) => ({ problem, answer, quote, from, write: true });
 
 const A = (note, items) => ({ kind: "solve", heading: "Key Words", note, key: "the answers.", items });
 const B = (note, items) => ({ kind: "solve", heading: "Show What You Know", note, key: "the answers.", items });
@@ -90,49 +108,86 @@ sheet({
 }),
 
 /* ── SCIENCE 6-3 ───────────────────────────────────────────────────────── */
+/* 📖 THE FIRST STORY SHEET (2026-10-12). Paul: "can this worksheet hold up on its
+   own without a lesson". It carries its own story, every answer is in it, and a
+   written answer is in it word for word. The whooping crane is added from the
+   record, like Martha in the lesson: a real bird saved by BOTH of the book's rescues.
+   ✝️ Paul, same day: "teach Kolten as what the world understands and what God tells
+   us", and "christians know birds didnt come from dinos". Paragraph 3 sets the two
+   side by side; paragraph 9 carries Genesis 2:15. */
 sheet({
   subject: "Science", slug: "extinction-and-caring-homework", lesson: "science/extinction-and-caring",
   includedWith: "science/extinction-and-caring",
   title: "Extinction, and Caring for What Remains: Homework",
-  dek: "Tell natural extinction from the kind people speed up, and match a rescue to a wetland bird in trouble.",
-  blurb: "Homework for the extinction lesson. Key words, cause and effect, a new wetland bird to rescue, and an answer key.",
+  dek: "Read the story of a bird that almost disappeared, then show what it teaches about extinction, what the world says and what God tells us, and the two ways to save a species.",
+  blurb: "A one-page story of the whooping crane, then multiple choice, true or false, key words, a world-or-God sort and written answers. Answer key included.",
   contains: [
-    "Key words for habitats and endangered species",
-    "Cause-and-effect questions on why species disappear",
-    "A new wetland bird to match to the two rescues",
-    "An answer key",
+    "A one-page story of the whooping crane, and of Martha, the last passenger pigeon",
+    "What the world says about the dinosaurs, and what God tells us",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
   ],
   eyebrow: "Life Science &middot; U6-L3",
   signoff: "Protect the place, breed the animals, and do both at once.",
+  passage: { title: "The Bird That Came Back", paras: [
+    "On a September day in 1914, a bird named Martha died at the Cincinnati Zoo. She was the last passenger pigeon on earth. A hundred years earlier, flocks of passenger pigeons had darkened the sky for hours, and now there wasn't a single one left to lay an egg. That is what extinction means: the dying out of a species, when the last one is gone and nobody is left to have young.",
+    "Not every extinction is somebody's fault. Environments keep changing, as climates warm and cool, rivers move, and food supplies rise and fall. The species that can adapt to the change keep going, and the ones that can't slowly die out. The dinosaurs are the best-known example of a whole group that died out: their bones are found in the rock layers, and not one is alive today.",
+    "Here what the world understands and what God tells us part ways. Many scientists say the dinosaurs died out millions of years before there were any people, and that birds like the crane in this story came from dinosaurs. The Bible tells us something different. God made the birds on the fifth day of creation, each after its kind, and the land animals on the sixth day, the same day He made the first man and woman. So Christians know birds didn't come from dinosaurs, and many who study creation think most dinosaurs were buried in the Flood of Noah's day, which is why so many of their bones lie in rock laid down by water.",
+    "What's different today is the speed. People have pushed the rate of extinction far above the natural one, mostly by destroying habitats, the places where living things make their homes, and by destroying the food those living things eat. When a forest is cleared or a marsh is drained, the animals living there can't adapt in a single season. A species whose numbers have fallen so low that it's in danger of dying out is called an endangered species.",
+    "The whooping crane nearly went the way of Martha. It's the tallest bird in North America, white with black wingtips, and it lives in marshes. As those marshes were drained for farms and towns, the cranes had fewer places to feed and nest, and by 1941 only about 21 of them were left in the wild.",
+    "The first rescue was to protect the place. The cranes spent every winter in one stretch of marsh on the coast of Texas, and that marsh was made a wildlife refuge, so no one could drain it or build on it. Protecting the place where a species still lives gives it food and shelter and a chance to rebuild.",
+    "The second rescue was to breed cranes in captivity and release the young. Scientists raised chicks in pens, and the keepers wore white crane costumes so the chicks wouldn't grow up thinking people were their parents. Zoos have found other ways to breed rare animals, too. In in vitro fertilization, an egg and a sperm are joined in a test tube, and the embryo is placed inside a different female to grow. That is how a Bengal tiger cub was once born to a Siberian tiger.",
+    "Neither rescue would have worked alone. Breeding cranes in pens does nothing if there's no marsh left to release them into, and protecting a marsh does little for a bird that's down to a handful. Doing both at once is what worked, and today there are several hundred whooping cranes, every one of them descended from the few that were left in 1941.",
+    "Whatever a person believes about the dinosaurs, the work of caring for living things is the same, and the Bible tells us where that work began. Genesis 2:15 says, “And the LORD God took the man, and put him into the garden of Eden to dress it and to keep it.” To dress the garden means to work it, and to keep it means to guard it, so saving a bird like the whooping crane is part of the job God gave people from the very beginning.",
+  ] },
   parts: [
-    A("Type the word that fits each clue.", [
-      c("A marsh is drained and the birds lose the place where they make their homes. What word names that kind of place?", "Habitat.", "habitat|habitats"),
-      c("No passenger pigeon is alive anywhere. What word names what happened to the species?", "Extinction. The species is extinct.", "extinct|extinction"),
-      c("A species has so few left that it could die out soon. What is it called?", "An endangered species.", "endangered"),
-      c("An egg and a sperm are joined in a test tube, and the embryo grows in a different female. What is the method called?", "In vitro fertilization.", "in vitro fertilization|in vitro"),
-    ]),
-    B("Short answers. Think about why.", [
-      c("The fossil record shows big extinctions long before people lived. What is the best-known example?", "The dinosaurs.", "dinosaur|dinosaurs"),
-      c("Environments change and some species die out naturally. What can't those species do?", "Adapt to the change.", "adapt"),
-      c("People have raised the rate of extinction far above the natural one. How, mostly?", "By destroying habitats and food supplies.", "habitat|habitats|food"),
-      c("A zoo breeds a rare animal, but no wild land is left. Why does the breeding fall short?", "There's nowhere to release the young.", "nowhere|release|no place"),
-      c("Protecting land alone does little for an animal that has dropped to a handful. Why?", "Too few survivors are left to rebuild.", "few|survivors|handful"),
-    ]),
-    C("A new wetland bird, and the two rescues.", [
-      set("A wetland bird has only forty pairs left after a marsh was drained for a parking lot.", [
-        ["What is the bird's status now?", "An endangered species.", "endangered"],
-        ["Which rescue protects the marsh that's left: protect the place, or breed and release?", "Protect the place.", "protect"],
-        ["A zoo hatches twelve chicks. Which rescue is that?", "Breeding in captivity, to release later.", "breed|breeding|captivity"],
-        ["Why will the zoo chicks still be in trouble if the rest of the marsh is paved over?", "They'd have no habitat to be released into.", "habitat|nowhere|release"],
-        ["Which rescue should the book recommend for this bird?", "Both at once.", "both"],
-      ]),
-    ]),
-    D([
-      hand("Why do the two rescues work better as a pair than alone?",
-        "A good answer says breeding keeps the animals alive now while protected land gives them somewhere to go afterward, so each one needs the other."),
-      hand("Name one thing people do that harms a habitat, and match it to one of the two rescues.",
-        "A good answer names a harm (clearing a forest, draining a wetland) and then a rescue that answers it (protect the natural area, or breed and release)."),
-    ]),
+    { kind: "solve", heading: "Check What You Read", answerLabel: "Letter",
+      note: "Choose the best answer. Circle the letter on paper, or type it on screen.", key: "the answers.", items: [
+      mc("____ is the dying out of a species.", ["adaptation", "extinction", "a habitat", "a refuge"], "b", 1),
+      mc("On which day of creation does the Bible say God made the birds?", ["the first day", "the third day", "the fifth day", "the seventh day"], "c", 3),
+      mc("People raise the rate of extinction mostly by destroying ____.", ["fossils", "zoos", "climates", "habitats and food"], "d", 4),
+      mc("Why did the keepers wear white crane costumes?", ["so the chicks wouldn't think people were their parents", "to keep warm in the marsh", "to scare away foxes", "so visitors could spot them"], "a", 7),
+      mc("In in vitro fertilization, an egg and a sperm are joined ____.", ["in a nest", "in a test tube", "in the wild", "in a marsh"], "b", 7),
+    ] },
+    { kind: "solve", heading: "True or False", answerLabel: "True or False",
+      note: "Write True or False. If it's false, the story tells you what's really true.", key: "the answers.", items: [
+      tf("Every extinction is caused by people.", false, "Some species die out because they can't adapt when their environment changes.", 2),
+      tf("A species that can adapt to a change keeps going.", true, "", 2),
+      tf("By 1941, only about 21 whooping cranes were left in the wild.", true, "", 5),
+      tf("The cranes' winter marsh in Texas was drained to build a town.", false, "It was made a wildlife refuge, so no one could drain it.", 6),
+    ] },
+    { kind: "solve", heading: "Key Words", note: "Find the word in the story and type it.", key: "the answers.", items: [
+      at(4, c("What word names the places where living things make their homes?", "Habitats.", "habitat|habitats")),
+      at(4, c("What is a species called when so few are left that it's in danger of dying out?", "An endangered species.", "endangered")),
+      at(6, set("The story names two rescues for the whooping crane.", [
+        ["What was the first rescue?", "Protect the place, by making the marsh a wildlife refuge.", "protect|refuge|place"],
+        ["What was the second rescue?", "Breed cranes in captivity and release the young.", "breed|captivity|release"],
+      ])),
+    ] },
+    { kind: "solve", heading: "What the World Says, What God Tells Us", answerLabel: "Found, World or God",
+      note: "Paragraphs 2 and 3 have what you need.", key: "the answers.", items: [
+      at(3, set("Write FOUND if anyone can dig it up and look at it, WORLD if it's what many scientists say, or GOD if it's what the Bible tells us.", [
+        ["Dinosaur bones are found in the rock layers.", "FOUND. Anyone can dig them up and look at them.", "found"],
+        ["Birds came from dinosaurs.", "WORLD. Many scientists say so.", "world"],
+        ["God made the birds on the fifth day, each after its kind.", "GOD. The Bible tells us so.", "god"],
+        ["The dinosaurs died out millions of years before there were any people.", "WORLD. Many scientists say so.", "world"],
+      ])),
+    ] },
+    { kind: "solve", heading: "Think It Through", key: "what a good answer says.",
+      note: "Answer each one in a sentence or two, using the story's own words. You mark these yourself against the key.", items: [
+      told("Why wouldn't breeding cranes in pens have been enough by itself?",
+        "Because breeding cranes in pens does nothing if there's no marsh left to release them into.",
+        "Breeding cranes in pens does nothing if there's no marsh left to release them into", 8),
+      told("Why isn't every extinction somebody's fault?",
+        "Because environments keep changing on their own. The species that can adapt to the change keep going, and the ones that can't slowly die out.",
+        "The species that can adapt to the change keep going, and the ones that can't slowly die out", 2),
+      told("What does saving a bird like the whooping crane have to do with Genesis 2:15?",
+        "God put the man in the garden to dress it and to keep it, to work it and guard it, so saving a bird like the whooping crane is part of the job God gave people from the very beginning.",
+        "saving a bird like the whooping crane is part of the job God gave people from the very beginning", 9),
+      { problem: "Paragraph 3 gives two answers about where birds came from. Which one do you believe, and why?",
+        answer: "Answers vary. A good answer names one side, what many scientists say or what the Bible tells us, says it in the story's words, and gives a reason.",
+        from: 3, choose: true, write: true },
+    ] },
   ],
 }),
 

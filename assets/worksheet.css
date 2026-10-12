@@ -723,6 +723,16 @@ body.print-all .wk+.wk{page-break-before:always}
 .howex li{margin:6px 0}
 .howex pre{margin:4px 0 0;font:600 .9rem/1.35 ui-monospace,Consolas,monospace;white-space:pre;overflow-x:auto}
 @media print{ .hwhow{background:transparent;padding:0;page-break-inside:avoid} .hwhow,.howex b{color:#000} }
+/* The story on a reading sheet, numbered so the key can name the paragraph.
+   Multiple choice sits in two columns like the textbook's, one on a phone. */
+.hwpass p{position:relative;padding-left:1.8em}
+.hwpass .pn{position:absolute;left:0;top:.1em;font-family:Arial,Helvetica,sans-serif;font-size:.8rem;font-weight:700;color:var(--muted)}
+.hwchoices{list-style:none;margin:2px 0 4px;padding:0 0 0 1.4em;display:grid;grid-template-columns:1fr 1fr;gap:2px 24px}
+.hwchoices li{padding-left:1.4em;text-indent:-1.4em}
+.hwchoices b{font-weight:700;display:inline-block;width:1.4em;text-indent:0}
+.key .kfrom{color:var(--muted);font-size:.85em}
+@media (max-width:560px){ .hwchoices{grid-template-columns:1fr} }
+@media print{ .hwpass .pn,.key .kfrom{color:#000} }
 
 /* ── PRODUCT PAGE: the Lizzie Peirce shape (ROADMAP 38) ─────────────────────
    Paul picked lizziepeirce.com/free-stuff on 2026-09-09. 🚨 MATCH IT: image

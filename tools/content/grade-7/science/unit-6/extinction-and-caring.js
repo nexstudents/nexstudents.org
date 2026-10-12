@@ -82,7 +82,7 @@ module.exports = {
         "Students will define extinction, separate natural causes from the ones people add, and describe two ways endangered species are saved: protecting the places they live and breeding them in captivity."
       ]},
       { h: "A Note on the Side-by-Side Rule", p: [
-        "This lesson isn't an origins argument, so there's no sorting of observed against claimed. The fossil record's natural extinctions are stated plainly, and the caring at the end is described as the same work whichever account of origins a student holds.",
+        "This lesson isn't an origins argument, but it never states deep time as plain fact. Where the dinosaurs come up, it gives what many scientists say and what the Bible tells us, and the student chooses. The caring at the end is described as the same work whichever account of origins a student holds.",
         "The lesson doesn't use extinction to argue for either account."
       ]},
       { h: "Key Concepts", p: [
@@ -113,7 +113,7 @@ module.exports = {
     { title: "A Natural Event", s: [
       "Environments keep changing, with climates warming and cooling and rivers shifting and food supplies rising and falling.",
       "When that happens, the species that can adapt keep going, and the ones that can't slowly die out.",
-      "The fossil record shows big extinctions long before people were around to cause them, and the dinosaurs are the best-known example.",
+      "The best-known example is the dinosaurs, whose bones lie in the rock layers, though many scientists say they died out millions of years before people, while the Bible tells us God made the land animals on the same day as the first man.",
       "So the book says extinction isn't always bad, since a species disappearing because its surroundings changed is part of how the living world works."
     ]},
 
