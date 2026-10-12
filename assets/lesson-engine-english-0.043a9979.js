@@ -2674,6 +2674,11 @@ function vidSaved(d){
   });
   vidItems = ok.length ? ok : vidBaked();
   vidSync();
+  /* 🚨 A PARENT'S VIDEO OPENS THE PANEL, EVEN ON A LESSON WITH FRAMES. Paul, 2026-10-12,
+     testing it: "I added the video ... but it didn't add it to the visual panel." The
+     frames were showing and the video waited behind a card. The parent chose it for this
+     child, so it comes first; "Back to the Reading" still reaches the frames. */
+  if (ok.length && dbox) dbox.classList.add("is-video");
 }
 document.addEventListener("ns:videos", function(e){ vidSaved(e.detail); });
 vidSync();
