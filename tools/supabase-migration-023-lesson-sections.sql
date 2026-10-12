@@ -36,7 +36,7 @@
 -- The page degrades quietly until this is run: Teacher Notes says "Lesson
 -- sections aren't switched on yet." and the lesson shows everything.
 --
--- Applied: not yet
+-- Applied: 2026-10-12 in the SQL editor (Paul pressed Run). Verified: select answers 200, a signed-out insert is refused by RLS.
 -- ============================================================================
 
 create table if not exists public.student_sections (
