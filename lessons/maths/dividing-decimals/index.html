@@ -146,6 +146,7 @@
       <h3>Where Students Get Stuck</h3>
       <p>🚨 Moving only one point. The divisor's point and the dividend's point have to move the same number of places, or the problem has changed.</p>
       <p>Forgetting to add a zero. In 0.7 divided by 0.05 the dividend has only one digit after the point, so it needs a zero tacked on before it can move two places.</p>
+      <p>One zero too many or too few, like 63,000 instead of 6,300 for 18.9 divided by 0.003. Have your student count each hop out loud, then check the answer against an estimate.</p>
       <h3>Teaching Suggestion</h3>
       <p>Do 0.4 divided by 0.5 once with squares: shade 40 squares in 5 columns and count 8 squares in each column, which is 0.8. That picture is the reason the moving works, and it's worth doing once by hand.</p>
       <h3>Key Vocabulary</h3>
@@ -411,7 +412,7 @@
   </div>
 
 <div class="lfoot" data-ns-subject-key="grade-7/maths" data-ns-subject="Math" data-ns-grade="7th Grade">
-  <a class="lfoot-hw" href="/worksheets/maths/dividing-decimals-homework/print/">Open The Homework Sheet<small>Print it and work every problem on paper. No multiple choice this time.</small><span class="lfoot-hwst" data-hw="hw/dividing-decimals-homework"></span></a><script>(function(){var e=document.querySelector(".lfoot-hwst");if(!e)return;var r=null;try{r=JSON.parse(localStorage.getItem("ns:done:"+e.getAttribute("data-hw")));}catch(x){}if(!r||typeof r.score!=="number")return;e.textContent=(r.complete?"\u2713 Homework done: ":"Homework checked so far: ")+r.score+" of "+r.total+" right ("+r.pct+"%)";e.className="lfoot-hwst"+(r.complete?" is-done":"");})();</script>
+  <a class="lfoot-hw" href="/worksheets/maths/dividing-decimals-homework/print/">Open The Homework Sheet<small>Type your answers on screen and check them, or print it and work it on paper.</small><span class="lfoot-hwst" data-hw="hw/dividing-decimals-homework"></span></a><script>(function(){var e=document.querySelector(".lfoot-hwst");if(!e)return;var r=null;try{r=JSON.parse(localStorage.getItem("ns:done:"+e.getAttribute("data-hw")));}catch(x){}if(!r||typeof r.score!=="number")return;e.textContent=(r.complete?"\u2713 Homework done: ":"Homework checked so far: ")+r.score+" of "+r.total+" right ("+r.pct+"%)";e.className="lfoot-hwst"+(r.complete?" is-done":"");})();</script>
   <div class="lfoot-nav" role="navigation" aria-label="Lesson navigation"><a class="prev" href="/lessons/maths/scientific-notation/" aria-label="Previous lesson: Scientific Notation" title="Previous: Scientific Notation"><span class="ar">&larr;</span><span class="t">Scientific Notation</span></a><a class="next" href="/lessons/maths/rounding-quotients/" aria-label="Next lesson: Rounding Quotients" title="Next: Rounding Quotients"><span class="t">Rounding Quotients</span><span class="ar">&rarr;</span></a></div>
 </div>
 <script src="/assets/lesson-shared.3ef7502b.js"></script>
@@ -494,8 +495,11 @@ var VISUALS = [
   { at: 18, kind: "Example", body: "0.7 ÷ 0.05" },
   { at: 19, kind: "Example", body: "0.70 ÷ 0.05 = 70 ÷ 5" },
   { at: 20, kind: "Example", body: "70 ÷ 5 = 14" },
-  { at: 25, kind: "Example", body: "199.68 ÷ 9.6 = 1,996.8 ÷ 96 = 20.8" },
-  { at: 29, kind: "Example", body: "0.5 x 0.8 = 0.4" }
+  { at: 23, kind: "Example", body: "4.2 ÷ 0.006" },
+  { at: 24, kind: "Example", body: "4.200 ÷ 0.006 = 4,200 ÷ 6" },
+  { at: 25, kind: "Example", body: "4,200 ÷ 6 = 700" },
+  { at: 30, kind: "Example", body: "199.68 ÷ 9.6 = 1,996.8 ÷ 96 = 20.8" },
+  { at: 35, kind: "Example", body: "0.5 x 0.8 = 0.4" }
 ];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
@@ -539,7 +543,15 @@ var PARTS = [
     "[ex] 0.70 ÷ 0.05 = 70 ÷ 5",
     "[ex] 70 ÷ 5 = 14",
     "",
-    "Adding a zero to the end of 0.7 doesn't change its value, so you aren't breaking anything, and the answer, 14, makes sense because 0.05 fits into 0.7 a lot of times."
+    "Adding a zero to the end of 0.7 doesn't change its value, so you aren't breaking anything, and the answer, 14, makes sense because 0.05 fits into 0.7 a lot of times.",
+    "",
+    "The zeros need the most care when the divisor needs three or more hops, so count every hop and write one zero for each hop the dividend can't make with its own digits.",
+    "",
+    "[ex] 4.2 ÷ 0.006",
+    "[ex] 4.200 ÷ 0.006 = 4,200 ÷ 6",
+    "[ex] 4,200 ÷ 6 = 700",
+    "",
+    "The point in 0.006 hopped three times, so the point in 4.2 hops three times too, once past the 2 and twice more onto zeros you wrote, which makes 4,200 and not 42,000."
   ] },
   { title: "A Bigger One, and the Estimate", s: [
     "The same steps work on larger numbers, and an estimate protects you from putting the point in the wrong place.",
@@ -549,7 +561,8 @@ var PARTS = [
     "[ex] 199.68 ÷ 9.6 = 1,996.8 ÷ 96 = 20.8",
     "",
     "Round the problem to 200 divided by 10 and you get 20, which is close to 20.8, so the point is in the right place.",
-    "If you'd gotten 2.08 or 208, the estimate would have told you something was wrong before anyone else did."
+    "If you'd gotten 2.08 or 208, the estimate would have told you something was wrong before anyone else did.",
+    "That same check catches a zero you added or dropped by mistake, because one zero too many makes the answer ten times too big, and one too few makes it ten times too small."
   ] },
   { title: "Back to the Painting", s: [
     "Now check the painting the way you'd check any division, by multiplying back.",
@@ -564,7 +577,7 @@ var PARTS = [
     "four word cards sit at the top of the page, then Eight questions, then four more questions about those words, Twelve questions in all.",
     "For every problem, move both points the same number of places before you divide, and check your answer against an estimate.",
     "If the annex question trips you up, read When the Digits Run Out again.",
-    "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+    "Last, open the Homework Sheet from the button at the bottom of the page, and type your answers on screen or print it and do it on paper."
   ] }
 ];
 
@@ -657,7 +670,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "Round 199.68 ÷ 9.6 to 200 ÷ 10. What does the estimate tell you about the quotient?",
-    find: [26, 27],
+    find: [31, 32],
     hint: "Read A Bigger One, and the Estimate.",
     choices: [
     "It should be about 20.",
@@ -670,7 +683,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "How can you check that the painting's height is 0.8 meter?",
-    find: [28, 30],
+    find: [34, 36],
     hint: "Read Back to the Painting.",
     choices: [
     "Add 0.5 and 0.8.",

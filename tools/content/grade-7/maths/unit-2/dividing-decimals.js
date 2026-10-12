@@ -47,7 +47,7 @@ module.exports = {
   /* The practice half, on paper (tools/math-homework.js). ⚠️ subject is the
      FOLDER, "maths", not the label: homeworkCta lowercases it into the URL. */
   sheet: { slug: "dividing-decimals-homework", subject: "maths",
-    note: "Print it and work every problem on paper. No multiple choice this time." },
+    note: "Type your answers on screen and check them, or print it and work it on paper." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "A painting's area and width are known and its height isn't. Dividing by a decimal, and why moving both points keeps the answer the same.",
@@ -67,7 +67,8 @@ module.exports = {
       ]},
       { h: "Where Students Get Stuck", p: [
         "🚨 Moving only one point. The divisor's point and the dividend's point have to move the same number of places, or the problem has changed.",
-        "Forgetting to add a zero. In 0.7 divided by 0.05 the dividend has only one digit after the point, so it needs a zero tacked on before it can move two places."
+        "Forgetting to add a zero. In 0.7 divided by 0.05 the dividend has only one digit after the point, so it needs a zero tacked on before it can move two places.",
+        "One zero too many or too few, like 63,000 instead of 6,300 for 18.9 divided by 0.003. Have your student count each hop out loud, then check the answer against an estimate."
       ]},
       { h: "Teaching Suggestion", p: [
         "Do 0.4 divided by 0.5 once with squares: shade 40 squares in 5 columns and count 8 squares in each column, which is 0.8. That picture is the reason the moving works, and it's worth doing once by hand."
@@ -115,7 +116,15 @@ module.exports = {
       "[ex] 0.70 ÷ 0.05 = 70 ÷ 5",
       "[ex] 70 ÷ 5 = 14",
       "",
-      "Adding a zero to the end of 0.7 doesn't change its value, so you aren't breaking anything, and the answer, 14, makes sense because 0.05 fits into 0.7 a lot of times."
+      "Adding a zero to the end of 0.7 doesn't change its value, so you aren't breaking anything, and the answer, 14, makes sense because 0.05 fits into 0.7 a lot of times.",
+      "",
+      "The zeros need the most care when the divisor needs three or more hops, so count every hop and write one zero for each hop the dividend can't make with its own digits.",
+      "",
+      "[ex] 4.2 ÷ 0.006",
+      "[ex] 4.200 ÷ 0.006 = 4,200 ÷ 6",
+      "[ex] 4,200 ÷ 6 = 700",
+      "",
+      "The point in 0.006 hopped three times, so the point in 4.2 hops three times too, once past the 2 and twice more onto zeros you wrote, which makes 4,200 and not 42,000."
     ]},
 
     { title: "A Bigger One, and the Estimate", s: [
@@ -126,7 +135,8 @@ module.exports = {
       "[ex] 199.68 ÷ 9.6 = 1,996.8 ÷ 96 = 20.8",
       "",
       "Round the problem to 200 divided by 10 and you get 20, which is close to 20.8, so the point is in the right place.",
-      "If you'd gotten 2.08 or 208, the estimate would have told you something was wrong before anyone else did."
+      "If you'd gotten 2.08 or 208, the estimate would have told you something was wrong before anyone else did.",
+      "That same check catches a zero you added or dropped by mistake, because one zero too many makes the answer ten times too big, and one too few makes it ten times too small."
     ]},
 
     { title: "Back to the Painting", s: [
@@ -146,7 +156,7 @@ module.exports = {
     ["Annex", "To write extra zeros on the end of a decimal so there are enough digits.", 16]
   ],
 
-  findsAt: 32,
+  findsAt: 38,
   questions: [
     { tag: "The Setup", q: "How does the gallery worker find the painting's height?",
       find: [1],
@@ -204,7 +214,7 @@ module.exports = {
       choices: ["1.4", "14", "140", "0.14"], right: 1 },
 
     { tag: "The Estimate", q: "Round 199.68 ÷ 9.6 to 200 ÷ 10. What does the estimate tell you about the quotient?",
-      find: [26, 27],
+      find: [31, 32],
       hint: "Read A Bigger One, and the Estimate.",
       choices: [
         "It should be about 2.",
@@ -214,7 +224,7 @@ module.exports = {
       ], right: 2 },
 
     { tag: "Checking", q: "How can you check that the painting's height is 0.8 meter?",
-      find: [28, 30],
+      find: [34, 36],
       hint: "Read Back to the Painting.",
       choices: [
         "Divide 0.8 by 0.5 again.",
@@ -240,6 +250,6 @@ module.exports = {
       "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "For every problem, move both points the same number of places before you divide, and check your answer against an estimate.",
       "If the annex question trips you up, read When the Digits Run Out again.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet from the button at the bottom of the page, and type your answers on screen or print it and do it on paper."
   ] }
 };
