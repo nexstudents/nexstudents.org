@@ -483,7 +483,7 @@ function onlineBlock(slug) {
   return `
   <div class="hwcheck" id="hwcheck" data-hw="${id}" data-draft="ns:hwdraft:${slug}">
     <p class="hwc-h">Done? Check your answers.</p>
-    <p class="hwc-p">Wrong ones turn red, so you can fix them and check again. Your answers save as you type, and your score goes on the lesson page.</p>
+    <p class="hwc-p">Wrong ones turn red, so you can fix them and check again. Your answers save as you type, and your score goes on the lesson page. Did it on paper instead? Press Show Answer Key and mark it by hand.</p>
     <div class="hwc-bar">
       <button type="button" class="btn" id="hwgo">Check My Answers</button>
       <button type="button" class="btn ghost" id="hwkey" aria-expanded="false">Show Answer Key</button>
@@ -626,8 +626,11 @@ function homeworkSheetBody(s) {
   ONLINE = false;
 
   /* the way in, at the TOP: Paul could not tell the blanks took typing */
-  const top = online ? '\n  <div class="hwtop"><b>Doing it on screen?</b>Tap or click a box and type your answer. ' +
-    'When you&rsquo;re done, press Check My Answers at the bottom of the sheet.</div>\n' : '';
+  /* both ways, said up front (Paul, 2026-10-11: the sheets used to say print it out, "now we
+     have them also as an option to do them online") */
+  const top = online ? '\n  <div class="hwtop"><b>Fill it out online or print it.</b>' +
+    'On screen, tap a box, type your answer, and press Check My Answers at the bottom. ' +
+    'On paper, press Print at the top and write on the lines.</div>\n' : '';
   return top + howToHtml(s.howTo) + partsHtml + online +
     gradingBlock(total) +
     '\n  <div class="key">\n    <h2>Answer key</h2>\n    ' +

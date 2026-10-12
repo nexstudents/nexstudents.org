@@ -243,6 +243,6 @@ module.exports = {
       "A bakery sign, a bar graph and a flyer all turned out to be misleading in a different way, and the rest of this page is your turn to catch them.",
       "First work through Your Turn below the reading, typing each step, and watch the video if you want to see more graphs that bend the truth.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
 };

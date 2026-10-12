@@ -212,6 +212,6 @@ module.exports = {
       "A walled city and a Europe with almost no walls are the two ends of this review, so keep both in mind as you go.",
       "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "Every hint names the lesson to go back to, so when you miss one, reopen that lesson instead of guessing again.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
 };

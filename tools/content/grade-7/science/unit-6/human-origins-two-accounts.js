@@ -187,7 +187,7 @@ module.exports = {
       "Under the heading Found or Measured, write four things from the lesson that a person could dig up, measure or date.",
       "Under the heading Claims About Origins, write the two accounts, each in a sentence and each in its own words.",
       "There's no answer key, and nobody is asking you which account to hold, only whether you can say clearly what each one claims.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 
   words: [

@@ -163,7 +163,7 @@ module.exports = {
       "Then, in your notebook, write what each side of the You Decide question would say, one paragraph for each, in complete sentences.",
       "After that, write a third paragraph saying what you think should be done and why, using at least one fact from the lesson.",
       "There's no answer key, and you'll be marked on whether your reasons are clear and take both sides seriously.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 
   words: [

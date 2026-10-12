@@ -203,7 +203,7 @@ module.exports = {
       "Choose three of the five kinds of evidence and put each one on its own row, writing a full sentence in each column.",
       "In the second column, give both readings, common descent and creation, each in its own words.",
       "There's no answer key, and nobody is asking which reading to hold, only whether you can say clearly what each one claims.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 
   words: [

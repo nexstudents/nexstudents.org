@@ -302,6 +302,6 @@ module.exports = {
     "Then work through the {c} word cards at the top of the page, {q} questions about the poem, and {v} more questions about those words. {T} questions in all.",
     "When you're finished, write two sentences on paper about the thing you picked: one simile that uses like or as, and one metaphor that says it simply is something else.",
     "If you get stuck on a question, tap Find It in the Story and read the line the page shows you.",
-    "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+    "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 };

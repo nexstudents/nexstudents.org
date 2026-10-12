@@ -164,7 +164,8 @@ module.exports = {
       "In your notebook, write one paragraph of complete sentences that explains what natural selection is and gives one thing it has been seen doing.",
       "Then make a table with a column headed Found or Measured and a column headed Claimed About Origins, and give three rows for each from across the unit.",
       "In the second column, put both accounts, common descent and creation, each in its own words.",
-      "There's no answer key, and nobody is asking which account to hold, only whether you can say clearly what was found and what each account claims."
+      "There's no answer key, and nobody is asking which account to hold, only whether you can say clearly what was found and what each account claims.",
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 
   words: [

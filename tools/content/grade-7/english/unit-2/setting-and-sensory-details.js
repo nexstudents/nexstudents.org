@@ -279,6 +279,6 @@ module.exports = {
     "Then work through the {c} word cards at the top of the page, {q} questions about the story, and {v} more questions about those words. {T} questions in all.",
     "When you're finished, write five lines on paper about the place you picked, one for each sense, and add the time of day to your first line so the setting is complete.",
     "If you get stuck on a question, tap Find It in the Story and read the line the page shows you.",
-    "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+    "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 };

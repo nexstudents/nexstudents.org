@@ -250,6 +250,6 @@ module.exports = {
       "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "None of them asks for a date, so read for who did what and why.",
       "If the rulers get tangled, read A Family of Strong Men and Three Grandsons, One Empire again and trace who was whose son.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
 };

@@ -247,6 +247,6 @@ module.exports = {
       "Eli's chairs turned into primes, trees and a ladder of divisions, and the rest of this page is your turn to break numbers down yourself.",
       "First work through Your Turn below the reading, typing each step, and watch the video if keeping track of which branches are finished feels hard.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
 };

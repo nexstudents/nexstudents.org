@@ -184,7 +184,7 @@ module.exports = {
       "When a question asks which kingdom something belongs in, run the sorting questions from the lesson in order and don't guess.",
       "Then, in your notebook, pick an animal or plant that lives near you, and write its kingdom and as many of the seven levels as you can find in a book or on a trusted website.",
       "Write them in order from kingdom down to species in complete sentences, and say which level was the hardest to find.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 
   words: [

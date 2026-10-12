@@ -233,6 +233,6 @@ module.exports = {
       "Sixteen jump-rope scores turned into one tidy picture, and the rest of this page is your turn to build one yourself.",
       "First work through Your Turn below the reading, typing each step, and watch the video if keeping the leaves in order still feels like a lot to track.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
 };

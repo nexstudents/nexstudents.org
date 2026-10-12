@@ -299,6 +299,6 @@ module.exports = {
     "When you're finished, hold the discussion, choosing a moderator and a recorder first and saying the goal out loud before anyone gives an opinion.",
     "Afterward, write on paper one thing the group did well and one thing you'd do differently next time.",
     "If you get stuck on a question, tap Find It in the Story and read the line the page shows you.",
-    "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+    "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 };

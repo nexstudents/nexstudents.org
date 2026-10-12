@@ -243,6 +243,6 @@ module.exports = {
       "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "None of them asks you to draw a map, so read for how to find a place and what each landform did.",
       "If the coordinates trip you up, read Finding Constantinople again and put your two fingers on the lines.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
 };

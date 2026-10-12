@@ -164,7 +164,7 @@ module.exports = {
       "Then, in your notebook, pick one endangered animal or plant that lives in your own state or one you're curious about.",
       "Write three or four complete sentences about it, saying what's threatening it and which of the two rescues you think would help it most, and why.",
       "There's no answer key for this part, and you'll be marked on whether your reasons are clear and use what the lesson taught.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+      "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] },
 
   words: [
