@@ -527,13 +527,17 @@
      callers must degrade quietly (videosOff() recognises that failure). */
   function lessonVideos(lessonId) {
     return rest("GET", "/lesson_videos?lesson_id=eq." + encodeURIComponent(lessonId) +
-      "&select=id,student_id,lesson_id,video_id,start_s,label,position,created_at&order=position.asc,created_at.asc",
+      "&select=*&order=position.asc,created_at.asc",
       null, "Could not load videos.").then(function (d) { return d || []; });
   }
-  function addLessonVideo(studentId, lessonId, videoId, startS, label, position) {
-    return rest("POST", "/lesson_videos", { student_id: studentId, lesson_id: lessonId, video_id: videoId,
+  /* kind (migration 022): youtube, vimeo, drive or file. Sent only when it isn't
+     youtube, so a YouTube save never depends on the newer column. */
+  function addLessonVideo(studentId, lessonId, videoId, startS, label, position, kind) {
+    var row = { student_id: studentId, lesson_id: lessonId, video_id: videoId,
       start_s: Math.max(0, parseInt(startS, 10) || 0), label: label ? String(label).trim().slice(0, 80) : null,
-      position: position || 0 }, "Could not save that video.").then(function (d) { return d && d[0]; });
+      position: position || 0 };
+    if (kind && kind !== "youtube") row.kind = kind;
+    return rest("POST", "/lesson_videos", row, "Could not save that video.").then(function (d) { return d && d[0]; });
   }
   function deleteLessonVideo(id) {
     return rest("DELETE", "/lesson_videos?id=eq." + encodeURIComponent(id), null, "Could not remove that video.")

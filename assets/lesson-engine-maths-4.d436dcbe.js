@@ -2872,10 +2872,14 @@ if (PANEL_SOON && dbox && !(VIDEO && VIDEO.id)){
   dbox.classList.remove("is-blank");
   var soon = document.createElement("p");
   soon.className = "dbox-soon";
-  soon.textContent = "Visual panel coming soon";
+  /* 🚨 NO MORE DRAWINGS (Paul, 2026-10-12: "we won't do the drawings anymore .. it just
+     takes out way too much time ... for now on it'll just be ... videos the parent or
+     teacher can add"). So an empty panel no longer promises a drawing; it says where a
+     video comes from. */
+  soon.textContent = "No video for this lesson yet";
   var soonNote = document.createElement("p");
   soonNote.className = "dbox-soonnote";
-  soonNote.textContent = "The sentence being read shows above. The drawing for this lesson is not built yet.";
+  soonNote.textContent = "A parent or teacher can add one in Teacher Notes, and it will play here.";
   var inBox = dbox.querySelector(".dbox-in");
   if (inBox){ inBox.textContent = ""; inBox.appendChild(soon); inBox.appendChild(soonNote); }
 }
@@ -2897,7 +2901,7 @@ if (PANEL_SOON && dbox && !(VIDEO && VIDEO.id)){
 var vidHost = null, vidWell = null, vidTiles = null, vidKind = null, vidCur = -1;
 function vidBaked(){
   return (VIDEO && VIDEO.id)
-    ? [{ id: VIDEO.id, start: 0, label: VIDEO.title, channel: VIDEO.channel || "", why: VIDEO.why || "" }]
+    ? [{ kind: "youtube", id: VIDEO.id, start: 0, label: VIDEO.title, channel: VIDEO.channel || "", why: VIDEO.why || "" }]
     : [];
 }
 var vidItems = vidBaked();
@@ -2907,9 +2911,26 @@ function vidPoster(){
   var it = vidItems[vidCur];
   vidWell.textContent = "";
   vidWell.classList.add("on");
+  /* 🎬 ANY VIDEO (2026-10-12): a file plays in the browser's own player; YouTube, Vimeo
+     and Google Drive play in theirs. vidSaved() has already checked every shape. */
+  if (it.kind === "file") {
+    var v = document.createElement("video");
+    v.src = it.id; v.controls = true; v.preload = "metadata";
+    v.setAttribute("playsinline", "");
+    vidWell.appendChild(v);
+    return;
+  }
   var f = document.createElement("iframe");
-  f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(it.id) + "?rel=0" +
-    (it.start ? "&start=" + (it.start | 0) : "");
+  if (it.kind === "vimeo") {
+    var vp = it.id.split("/");
+    f.src = "https://player.vimeo.com/video/" + encodeURIComponent(vp[0]) + "?dnt=1" +
+      (vp[1] ? "&h=" + encodeURIComponent(vp[1]) : "") + (it.start ? "#t=" + (it.start | 0) + "s" : "");
+  } else if (it.kind === "drive") {
+    f.src = "https://drive.google.com/file/d/" + encodeURIComponent(it.id) + "/preview";
+  } else {
+    f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(it.id) + "?rel=0" +
+      (it.start ? "&start=" + (it.start | 0) : "");
+  }
   f.title = it.label;
   f.loading = "lazy";
   f.allow = "encrypted-media; picture-in-picture; fullscreen";
@@ -2975,11 +2996,14 @@ function vidSync(){
       var t = document.createElement("button");
       t.type = "button";
       t.className = "vid-tile";
-      var img = document.createElement("img");
-      img.src = "https://i.ytimg.com/vi/" + encodeURIComponent(it.id) + "/mqdefault.jpg";
-      img.alt = "";
-      img.loading = "lazy";
-      t.appendChild(img);
+      /* only YouTube hands out a picture by address; the rest show the number alone */
+      if (it.kind === "youtube") {
+        var img = document.createElement("img");
+        img.src = "https://i.ytimg.com/vi/" + encodeURIComponent(it.id) + "/mqdefault.jpg";
+        img.alt = "";
+        img.loading = "lazy";
+        t.appendChild(img);
+      }
       var n = document.createElement("b");
       n.className = "n";
       n.textContent = String(i + 1);
@@ -3021,8 +3045,17 @@ function vidSync(){
    player: an id has to be 11 characters of the YouTube alphabet. */
 function vidSaved(d){
   var rows = (d && d.items) || [];
-  var ok = rows.filter(function(r){ return r && /^[A-Za-z0-9_-]{11}$/.test(r.id || ""); }).map(function(r, i){
-    return { id: r.id, start: r.start | 0, label: String(r.label || ("Video " + (i + 1))), channel: "", why: "" };
+  var SHAPE = {
+    youtube: /^[A-Za-z0-9_-]{11}$/,
+    vimeo: /^[0-9]{6,12}(\/[0-9a-f]{6,20})?$/,
+    drive: /^[A-Za-z0-9_-]{20,80}$/,
+    file: /^https:\/\/[^\s"'<>]{4,800}\.(mp4|webm|m4v|mov)(\?[^\s"'<>]*)?$/i
+  };
+  var ok = rows.filter(function(r){
+    var k = r && (r.kind || "youtube");
+    return r && SHAPE[k] && SHAPE[k].test(r.id || "");
+  }).map(function(r, i){
+    return { kind: r.kind || "youtube", id: r.id, start: r.start | 0, label: String(r.label || ("Video " + (i + 1))), channel: "", why: "" };
   });
   vidItems = ok.length ? ok : vidBaked();
   vidSync();

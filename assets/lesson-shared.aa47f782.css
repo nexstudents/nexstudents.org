@@ -180,3 +180,6 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
   color:var(--gn-d);text-decoration:underline;text-underline-offset:2px}
 @media print{ .gpin, .gv{display:none!important} }
 
+/* a non-YouTube video has no picture to borrow: a plain play box the same size */
+.gv-play{display:grid;place-items:center;width:96px;height:54px;border-radius:6px;background:var(--surface, #222);color:var(--ink-soft, #aaa);font-size:18px;flex:none}
+

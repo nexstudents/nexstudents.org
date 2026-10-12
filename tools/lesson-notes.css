@@ -52,3 +52,6 @@
 .gpin-x{background:none;border:0;padding:8px 10px;font:inherit;font-size:.9rem;cursor:pointer;
   color:var(--gn-d);text-decoration:underline;text-underline-offset:2px}
 @media print{ .gpin, .gv{display:none!important} }
+
+/* a non-YouTube video has no picture to borrow: a plain play box the same size */
+.gv-play{display:grid;place-items:center;width:96px;height:54px;border-radius:6px;background:var(--surface, #222);color:var(--ink-soft, #aaa);font-size:18px;flex:none}

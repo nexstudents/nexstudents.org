@@ -63,7 +63,48 @@ function parseYouTube(raw){
     return null;
   }
   if (!/^[A-Za-z0-9_\-]{11}$/.test(id)) return null;
-  return { id: id, start: parseStart(u.searchParams.get("t") || u.searchParams.get("start")) };
+  return { kind: "youtube", id: id, start: parseStart(u.searchParams.get("t") || u.searchParams.get("start")) };
+}
+
+/* 🎬 ANY VIDEO, NOT ONLY YOUTUBE (Paul, 2026-10-12: "technically I think it can be any kind
+   of video not just YouTube videos"). What a parent is likely to have: YouTube, Vimeo, a
+   Google Drive file shared as "anyone with the link", or a direct link to a video file.
+   -> { kind, id, start } or null. `id` is what the player needs for that kind; for a
+   "file" it is the whole https address. The database re-checks every shape (migration 022). */
+function parseVideo(raw){
+  var yt = parseYouTube(raw);
+  if (yt) return yt;
+  var s = String(raw == null ? "" : raw).trim();
+  if (!s) return null;
+  if (!/^[a-z][a-z0-9+.\-]*:\/\//i.test(s)) s = "https://" + s;
+  var u;
+  try { u = new URL(s); } catch (e) { return null; }
+  if (u.protocol !== "https:") return null;
+  var host = u.hostname.toLowerCase().replace(/^www\./, "");
+  var m;
+  if (host === "vimeo.com" || host === "player.vimeo.com") {
+    /* vimeo.com/123456789, vimeo.com/123456789/abcdef1234 (unlisted), player.vimeo.com/video/123456789?h=abc */
+    m = /^\/(?:video\/)?(\d{6,12})(?:\/([0-9a-f]{6,20}))?\/?$/.exec(u.pathname);
+    if (!m) return null;
+    var h = m[2] || u.searchParams.get("h") || "";
+    if (h && !/^[0-9a-f]{6,20}$/.test(h)) h = "";
+    return { kind: "vimeo", id: m[1] + (h ? "/" + h : ""), start: parseStart((u.hash.match(/t=([0-9hms]+)/) || [])[1]) };
+  }
+  if (host === "drive.google.com") {
+    m = /^\/file\/d\/([A-Za-z0-9_\-]{20,80})/.exec(u.pathname);
+    var did = m ? m[1] : (u.searchParams.get("id") || "");
+    if (!/^[A-Za-z0-9_\-]{20,80}$/.test(did)) return null;
+    return { kind: "drive", id: did, start: 0 };
+  }
+  if (/\.(mp4|webm|m4v|mov)$/i.test(u.pathname) && s.length <= 800 && !/[\s"'<>]/.test(s))
+    return { kind: "file", id: u.href, start: 0 };
+  return null;
+}
+
+/* The picture for a tile or a list row. Only YouTube hands one out by address; the rest
+   get a plain play box (CSS), so nothing is fetched from a host the page doesn't use. */
+function thumbFor(kind, id){
+  return kind === "youtube" || !kind ? "https://i.ytimg.com/vi/" + id + "/mqdefault.jpg" : "";
 }
 
 /* "subject/slug" from the page address, the same id progress uses. */
@@ -81,7 +122,7 @@ function videosForActive(rows, profiles, activeId){
   var items = (rows || []).filter(function(r){ return r.student_id === kid.id; })
     .sort(function(a, b){ return (a.position - b.position) || String(a.created_at || "").localeCompare(String(b.created_at || "")); })
     .map(function(r, i){
-      return { id: r.video_id, start: r.start_s || 0, label: r.label || ("Video " + (i + 1)), rowId: r.id };
+      return { kind: r.kind || "youtube", id: r.video_id, start: r.start_s || 0, label: r.label || ("Video " + (i + 1)), rowId: r.id };
     });
   return { student: kid, items: items };
 }
@@ -105,7 +146,7 @@ function needsPin(info){
   return { ask: false, key: null };
 }
 
-var api = { parseYouTube: parseYouTube, parseStart: parseStart, lessonIdFrom: lessonIdFrom,
+var api = { parseYouTube: parseYouTube, parseVideo: parseVideo, thumbFor: thumbFor, parseStart: parseStart, lessonIdFrom: lessonIdFrom,
             videosForActive: videosForActive, needsPin: needsPin, VIDEO_CAP: VIDEO_CAP };
 if (typeof module !== "undefined" && module.exports) { module.exports = api; }
 if (typeof document === "undefined") { return; }
@@ -181,9 +222,12 @@ function paintKid(host, k){
     var ul = el("ul", "gv-list");
     rows.forEach(function(r){
       var li = el("li", "gv-item");
-      var img = el("img"); img.src = "https://i.ytimg.com/vi/" + r.id + "/mqdefault.jpg";
-      img.alt = ""; img.width = 96; img.height = 54; img.loading = "lazy";
-      li.appendChild(img);
+      var src = thumbFor(r.kind, r.id);
+      if (src) {
+        var img = el("img"); img.src = src;
+        img.alt = ""; img.width = 96; img.height = 54; img.loading = "lazy";
+        li.appendChild(img);
+      } else li.appendChild(el("span", "gv-play", "▶"));
       li.appendChild(el("span", "gv-lab", r.label));
       var rm = el("button", "btn ghost gv-rm", "Remove"); rm.type = "button";
       rm.setAttribute("aria-label", "Remove " + r.label + " for " + k.name);
@@ -200,7 +244,7 @@ function paintKid(host, k){
     box.appendChild(ul);
   }
   var add = el("div", "gv-add");
-  var url = el("input"); url.type = "text"; url.placeholder = "Paste a YouTube link";
+  var url = el("input"); url.type = "text"; url.placeholder = "Paste a video link";
   url.setAttribute("aria-label", "YouTube link for " + k.name); url.autocomplete = "off"; url.spellcheck = false;
   var lab = el("input"); lab.type = "text"; lab.placeholder = "Label (optional)"; lab.maxLength = 80;
   lab.setAttribute("aria-label", "Label for the video"); lab.autocomplete = "off";
@@ -208,13 +252,13 @@ function paintKid(host, k){
   var msg = el("p", "gv-msg"); msg.setAttribute("aria-live", "polite");
   add.appendChild(url); add.appendChild(lab); add.appendChild(go);
   go.onclick = function(){
-    var p = parseYouTube(url.value);
-    if (!p) { msg.textContent = "That doesn't look like a YouTube link. Copy one from youtube.com or youtu.be and paste it here."; return; }
+    var p = parseVideo(url.value);
+    if (!p) { msg.textContent = "That link didn't work. Paste a YouTube, Vimeo or Google Drive video link, or a link that ends in .mp4."; return; }
     if (rows.length >= VIDEO_CAP) { msg.textContent = "That's the most, " + VIDEO_CAP + " videos for one lesson. Remove one to add another."; return; }
     var pos = S.videos.filter(function(r){ return r.student_id === k.id; })
       .reduce(function(m, r){ return Math.max(m, r.position || 0); }, 0) + 1;
     go.disabled = true; msg.textContent = "Saving...";
-    acct().addLessonVideo(k.id, LESSON, p.id, p.start, lab.value.trim(), pos).then(function(row){
+    acct().addLessonVideo(k.id, LESSON, p.id, p.start, lab.value.trim(), pos, p.kind).then(function(row){
       if (row) S.videos.push(row);
       paint(); publish();
     }).catch(function(e){
