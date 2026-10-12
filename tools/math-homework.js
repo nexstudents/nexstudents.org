@@ -670,6 +670,7 @@ sheet({
 sheet({
   slug: "dividing-decimals-homework", lesson: "maths/dividing-decimals",
   includedWith: "maths/dividing-decimals",
+  online: true,   /* typing boxes, Paul 2026-10-12: "i want this sheet to have typing boxes but also i want it printable" */
   title: "Dividing Decimals: Homework",
   /* REAL DATA, checked 2026-10-05. Densities in g/cm^3 (pure metals at room temperature):
      aluminum 2.70, iron 7.87, gold 19.32 (https://www.engineersedge.com/materials/densities_of_metals_and_elements_table_13976.htm
@@ -748,7 +749,7 @@ sheet({
           sub: [
             { q: "How many dimes weigh 45.36 grams?", answer: "20 dimes", calc: "45.36/2.268" },
             { q: "How many quarters weigh 283.5 grams?", answer: "50 quarters", calc: "283.5/5.67" },
-            { q: "One pound is about 453.6 grams. How many dimes weigh a pound? How much money is that?", answer: "200 dimes, which is $20.00", calc: "453.6/2.268" },
+            { q: "One pound is about 453.6 grams. How many dimes weigh a pound? How much money is that?", answer: "200 dimes, which is $20.00", calc: "453.6/2.268", check: {"Dimes":200,"Money":20} },
           ] },
       ] },
     { kind: "solve", heading: "Critical Thinking", lines: 2,
