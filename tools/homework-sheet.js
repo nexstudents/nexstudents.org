@@ -250,8 +250,16 @@ function checkFromStory(s, it, part, where) {
      sides say and let the student choose"). His own view is not in the story, so no quote. */
   if (writesSentences(it, part) && !it.choose) {
     if (!it.quote) fail(where + ': a written answer needs `quote`, the words in the story that answer it');
-    if (flat(paras[n - 1]).indexOf(flat(it.quote)) < 0)
-      fail(where + ': the quote is not in paragraph ' + n + ' word for word:\n        ' + it.quote);
+    if (paras[n - 1].indexOf(it.quote) < 0)
+      fail(where + ': the quote is not in paragraph ' + n + ' word for word (it gets bold italic there):\n        ' + it.quote);
+    /* 📖 THE ANSWER IS ONE WHOLE SENTENCE (Paul, 2026-10-12: "let's just hand the students the
+       answer to copy and write"). A fragment copied out ("the best ones are small") isn't an
+       answer anyone can write down and make sense of, so the marked text must be a complete
+       sentence of the story, start to finish. */
+    const bare = (t) => flat(t).replace(/[.!?”"]+$/, '').trim();
+    const sentences = paras[n - 1].split(/(?<=[.!?][”"]?)\s+(?=[A-Z“"])/).map(bare);
+    if (sentences.indexOf(bare(it.quote)) < 0)
+      fail(where + ': the marked answer must be ONE WHOLE SENTENCE of paragraph ' + n + ', not part of one:\n        ' + it.quote);
   }
 }
 
@@ -298,6 +306,12 @@ function checkStorySheet(s) {
   told.forEach((x) => {
     if (String(x.it.problem).toLowerCase().indexOf(String(x.it.quote).toLowerCase()) >= 0)
       why('a question gives its own answer away: "' + x.it.problem + '"');
+  });
+  /* "Found, World or God" read as two choices to Paul. Three or more choices are a plain list. */
+  s.parts.forEach((part) => {
+    const lab = String(part.answerLabel || '');
+    if (lab.indexOf(',') >= 0 && / or /.test(lab))
+      why('part "' + part.heading + '": list three or more choices with commas only ("Found, World, God"), not "' + lab + '"');
   });
   const cited = new Set(items.map((x) => x.it.from));
   if (cited.size * 2 < n) why('the questions only reach paragraphs ' + [...cited].sort((a, b) => a - b).join(', ') +
@@ -477,7 +491,9 @@ function solveItem(it, n, part) {
     /* a sentence answer gets room to write. Paul, 2026-10-11: "write in a sentence or two
        and there is no room for the two sentences". Paper: 3 ruled lines. Screen: a 3-line
        box drawn on the same rules, so typed text sits where the pencil would. */
-    body = '<p class="sortsent">' + esc(it.problem) + '</p>' + (ONLINE
+    /* the paragraph goes after the question (Paul, 2026-10-12: "put paragraph 2, or 3, or 5") */
+    const where = it.quote && it.from ? ' <b class="hwpara">(Paragraph ' + it.from + ')</b>' : '';
+    body = '<p class="sortsent">' + esc(it.problem) + where + '</p>' + (ONLINE
       ? '<div class="hwwrite hwself"><textarea class="hwin hwtext" rows="3" spellcheck="true" placeholder="Type here" aria-label="' +
         attr(it.problem) + '"></textarea></div>'
       : workLines(3));
@@ -722,14 +738,30 @@ function howToHtml(h) {
 }
 
 /* 📖 the story, numbered by paragraph so the key can say where each answer is */
-function passageHtml(p) {
+/* 📖 THE WRITTEN ANSWERS ARE MARKED IN THE STORY (Paul, 2026-10-12, after reading the sheets:
+   "there is no direct way to see what the answer is ... let's just hand the students the answer
+   to copy and write. Let's bold and italic the text in the paragraphs"). Each written answer's
+   sentence is bold italic in its paragraph, and the question names the paragraph. */
+function markQuotes(text, quotes) {
+  let html = esc(text);
+  quotes.forEach((q) => {
+    const e = esc(q);
+    const at = html.indexOf(e);
+    if (at >= 0) html = html.slice(0, at) + '<strong class="hwmark"><em>' + e + '</em></strong>' + html.slice(at + e.length);
+  });
+  return html;
+}
+
+function passageHtml(p, s) {
   if (!p) return '';
   if (!p.title || !(p.paras || []).length) fail('a passage needs a title and paragraphs');
+  const quotes = (n) => [].concat(...s.parts.map((pt) => pt.items))
+    .filter((it) => it.quote && it.from === n).map((it) => it.quote);
   return `
   <h2>Read the Story: ${esc(p.title)}</h2>
-  <p class="inst">Every answer is in this story. Find the sentence that answers each question, then answer from it. On paper, write the question's number in the margin beside the sentence you found.</p>
+  <p class="inst">Every answer is in this story. The answers you write out are in <strong><em>bold italic</em></strong>, and each question tells you which paragraph to look in.</p>
   <div class="passage hwpass">
-    ${p.paras.map((t, i) => '<p><b class="pn">' + (i + 1) + '</b>' + esc(t) + '</p>').join('\n    ')}
+    ${p.paras.map((t, i) => '<p><b class="pn">' + (i + 1) + '</b>' + markQuotes(t, quotes(i + 1)) + '</p>').join('\n    ')}
   </div>
 `;
 }
@@ -754,7 +786,7 @@ function homeworkSheetBody(s) {
   const top = online ? '\n  <div class="hwtop"><b>Fill it out online or print it.</b>' +
     'On screen, tap a box, type your answer, and press Check My Answers at the bottom. ' +
     'On paper, press Print at the top and write on the lines.</div>\n' : '';
-  return top + howToHtml(s.howTo) + passageHtml(s.passage) + partsHtml + online +
+  return top + howToHtml(s.howTo) + passageHtml(s.passage, s) + partsHtml + online +
     gradingBlock(total) +
     '\n  <div class="key">\n    <h2>Answer key</h2>\n    ' +
     s.parts.map(keyHtml).join('\n    ') +
