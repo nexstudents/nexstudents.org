@@ -887,6 +887,9 @@ body.print-all .wk+.wk{page-break-before:always}
 .owns .hwrow .hwq:empty{display:block}
 .hwans{grid-column:2;display:flex;gap:6px 8px;align-items:center;justify-content:flex-end;min-width:0;padding-right:12px}
 .hwans .olbl.hwa{min-width:4.6em;text-align:right;line-height:1}
+/* a paper-only sheet's blank is an EMPTY <u>; in the screen's auto column it shrank to 0px and
+   the line vanished (Paul, 2026-10-12). Online sheets hold an input, so :empty skips them. */
+.hwans u:empty{min-width:12em}
 @media (max-width:560px){ .owns .ownline.hwrow{grid-template-columns:minmax(0,1fr)} .hwans{grid-column:1;justify-content:flex-start;flex-wrap:wrap} .owns .hwrow .hwq:empty{display:none} }
 /* paper: the answer column gets real width so the handwriting blanks are long enough */
 @media print{ .owns .ownline.hwrow{grid-template-columns:minmax(0,1fr) 40%} .hwans{justify-content:flex-start} }
