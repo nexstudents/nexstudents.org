@@ -15,7 +15,7 @@
 -- Existing rows are all YouTube and take the default. The page reads select=* and
 -- sends `kind` only when it isn't youtube, so YouTube saves never depended on this.
 --
--- Applied: not yet
+-- Applied: 2026-10-12 in the SQL editor (Paul pressed Run). Verified: select=kind answers 200.
 -- ─────────────────────────────────────────────────────────────────────────────
 
 alter table public.lesson_videos add column if not exists kind text not null default 'youtube';
