@@ -255,6 +255,61 @@ function checkFromStory(s, it, part, where) {
   }
 }
 
+/* 📖 THE STORY-SHEET SHAPE, CHECKED (Paul, 2026-10-12: build a rule "so they always come out
+   looking like this and it's less work on me to make sure you are doing it correctly").
+   Every sheet marked `story` (all of reading-homework.js) must have this shape, and each
+   line below names the reason, so a failure says WHY the sheet would not sell:
+   - a story, about one page: the sheet must work with no lesson beside it, for a parent
+     who never saw the lesson. 6 to 10 paragraphs, 450 to 900 words.
+   - multiple choice (4+, the answer letters spread out): quick checks a 12 year old can
+     do, and a parent can mark from the key. A key that is all "b" teaches guessing.
+   - True or False (3+, some of each): makes him read the sentence closely, and a false
+     one tells him what is really true.
+   - written answers (2+, word for word in the story): he hunts for the sentence, which is
+     the reading skill, and the parent can check it against the paragraph the key names.
+   - the questions reach across the story (half the paragraphs or more): a sheet that only
+     asks about paragraph 1 isn't checking the reading.
+   - no How To Do It box: on a reading sheet it retells the lesson and gives the answers away.
+   - origins: if the story gives what the world says (millions of years, evolved, ancestor),
+     it also gives what God tells us (the Bible) and a `choose` question. Both sides, the
+     student chooses. */
+function checkStorySheet(s) {
+  const why = (msg) => fail(s.slug + ': ' + msg);
+  const p = s.passage;
+  if (!p) why('a reading sheet needs its own story (`passage`), so it works without the lesson');
+  if (s.howTo) why('no How To Do It box on a story sheet; it retells the lesson and gives the answers away');
+  const n = p.paras.length;
+  const words = p.paras.join(' ').split(/\s+/).length;
+  if (n < 6 || n > 10) why('the story has ' + n + ' paragraphs; 6 to 10 keeps it about one page');
+  if (words < 450 || words > 900) why('the story is ' + words + ' words; 450 to 900 keeps it about one page');
+
+  const items = [];
+  s.parts.forEach((part) => part.items.forEach((it) => items.push({ it, part })));
+  const mcs = items.filter((x) => x.it.choices);
+  const tfs = items.filter((x) => x.it.check === 'true' || x.it.check === 'false');
+  const told = items.filter((x) => x.it.quote);
+  if (mcs.length < 4) why('needs 4 or more multiple choice questions (has ' + mcs.length + ')');
+  const letters = new Set(mcs.map((x) => x.it.check[0]));
+  if (letters.size < 3) why('the multiple choice answers are only ' + [...letters].join(', ') + '; spread them over 3 or more letters');
+  if (tfs.length < 3) why('needs 3 or more True or False questions (has ' + tfs.length + ')');
+  if (!tfs.some((x) => x.it.check === 'true') || !tfs.some((x) => x.it.check === 'false'))
+    why('the True or False questions need some true and some false');
+  if (told.length < 2) why('needs 2 or more written answers taken word for word from the story (has ' + told.length + ')');
+  told.forEach((x) => {
+    if (String(x.it.problem).toLowerCase().indexOf(String(x.it.quote).toLowerCase()) >= 0)
+      why('a question gives its own answer away: "' + x.it.problem + '"');
+  });
+  const cited = new Set(items.map((x) => x.it.from));
+  if (cited.size * 2 < n) why('the questions only reach paragraphs ' + [...cited].sort((a, b) => a - b).join(', ') +
+    '; ask about half the story or more');
+
+  const text = p.paras.join(' ');
+  if (/millions of years|billions? of years|billion years|evolv|ancestor/i.test(text)) {
+    if (!/\bBible\b/.test(text)) why('the story gives what the world says about origins but not what God tells us (the Bible)');
+    if (!items.some((x) => x.it.choose)) why('origins come up, so the sheet needs a `choose` question: which do you believe, and why?');
+  }
+}
+
 /* ── the parts ──────────────────────────────────────────────────────────── */
 const spaced = (sentence) =>
   sentence.split(' ').map((w) => '<span>' + esc(w) + '</span>').join('');
@@ -683,6 +738,7 @@ function homeworkSheetBody(s) {
   const L = lessonFor(s.lesson);
   checkFresh(s, L);
   checkItems(s);
+  if (s.story) checkStorySheet(s);
   if (s.parts.length > LETTER.length) fail(s.slug + ': more parts than there are letters for them');
 
   const total = s.parts.reduce((n, p) => n + p.items.reduce((t, it) => t + weight(it), 0), 0);
