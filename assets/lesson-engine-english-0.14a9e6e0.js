@@ -3628,6 +3628,13 @@ var huntLabel = document.getElementById("huntlabel");
 var answered = [];
 var hunted = [];    // questions where Find was actually used
 var foundFirstTry = 0, huntTotal = 0;
+/* 🚨 SECTION SWITCHES (ROADMAP 92, Paul 2026-10-12: "if the teacher only wants the first set
+   of questions but not the second or even to turn the worksheets off"). `secOff` holds the
+   keys a parent turned Off for the ACTIVE student: set1 = Part One, set2 = Part Two, vocab,
+   work, plus homework which the footer script owns. EMPTY = today's lesson exactly. Declared
+   up here because dayStats() reads it and restoreAnswers() runs before the switches arrive. */
+var secOff = {};
+function qOn(Q){ return !secOff["set" + (Q.day || 1)]; }
 var qEl1 = document.getElementById("questions1");
 var qEl2 = document.getElementById("questions2");
 
@@ -3814,7 +3821,9 @@ function answer(qi, ci){
   // days happen on different days and he should not have to wait until Day 2
   // to see how Day 1 went.
   var d1 = dayStats(1), d2 = dayStats(2);
-  if (d1.done === d1.total || d2.done === d2.total) showScore();
+  /* A switched-off set is not "finished", it is absent: without the secOff test its 0 === 0
+     would show the score after the first answer in the other set. */
+  if ((!secOff.set1 && d1.done === d1.total) || (!secOff.set2 && d2.done === d2.total)) showScore();
 }
 
 /* 🚨 PAINTING AN ANSWER IS SPLIT OUT OF GIVING ONE, so restoring a saved answer
@@ -3881,8 +3890,15 @@ function saveProg(){
   }));
 }
 
+/* Hunts that are still in play: the Find It count in the score box and on the sheet. */
+function huntCount(){ return QUESTIONS.filter(function(Q){ return Q.find && qOn(Q); }).length; }
+
 function dayStats(day){
   var total = 0, right = 0, done = 0;
+  /* 🚨 A SET THAT IS OFF HAS NO QUESTIONS AS FAR AS ANY SCORE IS CONCERNED: not in the total,
+     not required to finish. Every number below (bars, score box, saved record, Teacher Notes
+     line) reads through here, so this one line is the whole rule. */
+  if (secOff["set" + day]) return { total: 0, right: 0, done: 0, pct: 0 };
   QUESTIONS.forEach(function(Q, i){
     if ((Q.day || 1) !== day) return;
     total++;
@@ -3909,38 +3925,124 @@ function paintProgress(){
   });
 }
 
+/* ── SECTION SWITCHES: THE PAGE HALF (ROADMAP 92) ──────────────────────────────
+   Paul, 2026-10-12: a teacher may want "the first set of questions but not the second or
+   even to turn the worksheets off", and what the STUDENT sees is just less page: a set that
+   is Off disappears, no note. Teacher Notes (lesson-notes-client.js, shared by all five
+   engines) owns the switches and the storage; this engine only answers two questions:
+   which sections does THIS lesson have, and what happens when some are Off.
+
+   KEYS ARE GENERIC SO ONE SETTING COVERS A WHOLE SUBJECT: set1 and set2 are the question
+   sets in page order (Part One, Part Two), vocab the word cards, work the Your Turn and
+   worked-problem boxes. homework is the footer button, which the client hides itself.
+   🚨 NOTHING IS REMOVED, ONLY HIDDEN (data-ns-off, display:none in lesson-notes.css), so
+   every card keeps its index and a saved answer still lands on its question.
+   🚨 EMPTY LIST = NOTHING CHANGES. apply() returns before touching anything when the list
+   is the one already in force, so a lesson with nothing Off scores exactly as it always did.
+   ⚠️ The "Watch It Explained" card (.vid) is NOT the work section: the videos are their own
+   per-student setting and stay. */
+function secNodes(key){
+  if (key === "set1") return [document.getElementById("day1")];
+  if (key === "set2") return [document.getElementById("day2")];
+  if (key === "vocab") return [document.getElementById("day0")];
+  if (key === "work") return [].slice.call(document.querySelectorAll("#worked > .work:not(.vid)"));
+  return [];
+}
+function secLabel(key){
+  var n = secNodes(key)[0];
+  if (!n) return key;
+  if (key === "work") {
+    var heads = [].map.call(secNodes(key), function(b){ var h = b.querySelector(".work-h"); return h ? h.textContent : ""; });
+    return heads.length && heads.every(function(t){ return t.indexOf("Your Turn") === 0; }) ? "Your Turn" : "Worked Problems";
+  }
+  var tag = n.querySelector(".daytag"), head = n.querySelector(".section-head");
+  var h2 = head ? head.textContent.trim() : key;
+  return tag && key !== "vocab" ? tag.textContent.trim() + ": " + h2 : h2;
+}
+/* The sections THIS lesson has, in page order. A set with no questions, no word cards or
+   no worked boxes is not a section, so Teacher Notes never offers a switch that does nothing. */
+function secList(){
+  var out = [];
+  if (secNodes("work").length) out.push("work");
+  if (WORDS && WORDS.length) out.push("vocab");
+  if (QUESTIONS.some(function(Q){ return (Q.day || 1) === 1; })) out.push("set1");
+  if (QUESTIONS.some(function(Q){ return Q.day === 2; })) out.push("set2");
+  /* page order: worked problems, the Words, Part One, Part Two */
+  return out.map(function(k){ return { key: k, label: secLabel(k) }; });
+}
+function secNumber(){
+  /* "Question N" counts what is on the page, so a student without Part One starts at 1. */
+  var n = 0;
+  QUESTIONS.forEach(function(Q, qi){
+    var el = document.querySelector("#q" + qi + " .qnum");
+    if (!el) return;
+    if (qOn(Q)) n++;
+    el.textContent = "Question " + (secOff.set1 || secOff.set2 ? n : qi + 1);
+  });
+}
+function applySections(list){
+  var want = {};
+  var valid = secList().map(function(x){ return x.key; });
+  (list || []).forEach(function(k){ if (valid.indexOf(k) !== -1) want[k] = true; });
+  if (Object.keys(want).sort().join() === Object.keys(secOff).sort().join()) return;
+  secOff = want;
+  ["vocab", "work", "set1", "set2"].forEach(function(k){
+    secNodes(k).forEach(function(n){ if (secOff[k]) n.setAttribute("data-ns-off", ""); else n.removeAttribute("data-ns-off"); });
+  });
+  endHunt();
+  secNumber();
+  paintProgress();
+  var sc = document.getElementById("score");
+  if (sc) sc.classList.remove("show");
+  var d1 = dayStats(1), d2 = dayStats(2);
+  var any = answered.some(function(a){ return a !== undefined; });
+  if (any) saveProg();
+  /* the score box and the saved best only come back if a set still On is finished */
+  if ((d1.total && d1.done === d1.total) || (d2.total && d2.done === d2.total)) showScore();
+  else paintStatus();
+}
+window.NSLessonSections = { list: secList, apply: applySections, off: function(){ return Object.keys(secOff); } };
+document.addEventListener("ns:sections", function(e){ applySections(e && e.detail && e.detail.hidden); });
+if (window.NSHiddenSections) applySections(window.NSHiddenSections);
+
 function showScore(){
   var d1 = dayStats(1), d2 = dayStats(2);
   var right = d1.right + d2.right;
   var total = d1.total + d2.total;
-  var pct = Math.round(right / total * 100);
-  var missed = QUESTIONS.filter(function(Q){ return Q.find; }).length - hunted.filter(Boolean).length;
+  var pct = total ? Math.round(right / total * 100) : 0;
+  var hc = huntCount();
+  var missed = QUESTIONS.filter(function(Q){ return Q.find && qOn(Q); }).length - hunted.filter(function(h, i){ return h && qOn(QUESTIONS[i]); }).length;
 
   var el = document.getElementById("score");
   el.innerHTML =
     '<div class="big">' + right + ' / ' + total + '</div>' +
     '<div class="pct">' + pct + '%</div>' +
     '<div class="split">' +
-      '<span><b>Part One</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>' +
-      '<span><b>Part Two</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>' +
+      (secOff.set1 ? '' : '<span><b>Part One</b> story questions<i>' + d1.right + ' / ' + d1.total + '</i></span>') +
+      (secOff.set2 ? '' : '<span><b>Part Two</b> vocabulary<i>' + d2.right + ' / ' + d2.total + '</i></span>') +
     '</div>' +
-    '<div class="line">Sentences found on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-    ' &middot; answered without hunting: ' + missed + '.<br>' +
+    '<div class="line">' + (hc || !secOff.set1
+      ? 'Sentences found on the first try: ' + foundFirstTry + ' of ' + hc +
+        ' &middot; answered without hunting: ' + missed + '.<br>'
+      : '') +
     'Use Print Answer Sheet for a record of this attempt.</div>';
   el.classList.add("show");
 
   // A lesson counts as complete only when BOTH days are answered. Finishing
   // Day 1 saves progress, it does not finish the lesson.
-  var complete = (d1.done === d1.total) && (d2.done === d2.total);
+  /* A set that is Off is not waiting to be finished. */
+  var complete = (secOff.set1 || d1.done === d1.total) && (secOff.set2 || d2.done === d2.total);
   var prev = readDone();
-  var better = !prev || right > prev.score;
+  /* A best score from before a switch has a different total, so compare percentages then.
+     Same total (every lesson with nothing switched) is the old test exactly. */
+  var better = !prev || (prev.total === total ? right > prev.score : pct > prev.pct);
   // never let a part-finished retake overwrite a completed record
   if (better || (complete && !(prev && prev.complete))){
     store("done:" + LESSON_ID, JSON.stringify({
       score: right, total: total, pct: pct, complete: complete,
       d1: d1.right, d1t: d1.total, d2: d2.right, d2t: d2.total,
-      d1done: d1.done === d1.total, d2done: d2.done === d2.total,
-      found: foundFirstTry, hunts: huntTotal,
+      d1done: !secOff.set1 && d1.done === d1.total, d2done: !secOff.set2 && d2.done === d2.total,
+      found: foundFirstTry, hunts: hc,
       at: new Date().toISOString()
     }));
   }
@@ -3998,10 +4100,11 @@ function paintTeacherScore(){
   var line = document.getElementById("gscoreline");
   var btn = document.getElementById("greset");
   if (!line) return;
-  var total = QUESTIONS.length;
+  /* Only the sets left On count, in the total and in the answers. */
+  var total = QUESTIONS.filter(qOn).length;
   var done = 0, right = 0;
   QUESTIONS.forEach(function(Q, i){
-    if (answered[i] === undefined) return;
+    if (!qOn(Q) || answered[i] === undefined) return;
     done++;
     if (answered[i] === Q.right) right++;
   });
@@ -4068,13 +4171,16 @@ document.getElementById("retake").addEventListener("click", function(){
 document.getElementById("printKey").addEventListener("click", function(){
   var d = readDone();
   var right = 0;
-  QUESTIONS.forEach(function(Q, i){ if (answered[i] === Q.right) right++; });
-  var attempted = answered.filter(function(a){ return a !== undefined; }).length;
-  var pct = attempted ? Math.round(right / QUESTIONS.length * 100) : 0;
+  /* the sheet lists only the sets left On, numbered from 1 */
+  var onQs = QUESTIONS.map(function(Q, i){ return i; }).filter(function(i){ return qOn(QUESTIONS[i]); });
+  onQs.forEach(function(i){ if (answered[i] === QUESTIONS[i].right) right++; });
+  var attempted = onQs.filter(function(i){ return answered[i] !== undefined; }).length;
+  var pct = attempted ? Math.round(right / onQs.length * 100) : 0;
   var now = new Date();
   var dateStr = now.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
 
-  var rows = QUESTIONS.map(function(Q, i){
+  var rows = onQs.map(function(i){
+    var Q = QUESTIONS[i];
     var pick = answered[i];
     var ok = pick === Q.right;
     var given = pick === undefined ? "(not answered)" : Q.choices[pick];
@@ -4088,7 +4194,7 @@ document.getElementById("printKey").addEventListener("click", function(){
   }).join("");
 
   document.getElementById("sheet").innerHTML =
-    '<div class="scorebox"><div class="n">' + right + '/' + QUESTIONS.length + '</div>' +
+    '<div class="scorebox"><div class="n">' + right + '/' + onQs.length + '</div>' +
       '<div class="p">' + pct + '%</div></div>' +
     '<h1>' + LESSON_TITLE + '</h1>' +
     '<p class="sub">' + LESSON_UNIT + '</p>' +
@@ -4098,8 +4204,8 @@ document.getElementById("printKey").addEventListener("click", function(){
       '<span><b>Printed:</b> ' + dateStr + '</span>' +
     '</div>' +
     '<ol>' + rows + '</ol>' +
-    '<div class="foot">Sentences found in the text on the first try: ' + foundFirstTry + ' of ' + huntTotal +
-      '.  Answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find;}).length - hunted.filter(Boolean).length) + '.' +
+    '<div class="foot">Sentences found in the text on the first try: ' + foundFirstTry + ' of ' + huntCount() +
+      '.  Answered without hunting: ' + (QUESTIONS.filter(function(Q){return Q.find && qOn(Q);}).length - hunted.filter(function(h, i){ return h && qOn(QUESTIONS[i]); }).length) + '.' +
       (d ? '  Best recorded score: ' + d.score + '/' + d.total + ' (' + d.pct + '%).' : '') +
     '</div>' +
     '<div class="sign">Parent signature:<span></span></div>';

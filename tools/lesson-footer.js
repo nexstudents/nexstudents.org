@@ -266,6 +266,25 @@ function gradeOf(L) {
   return String((s.grades && s.grades[0]) != null ? s.grades[0] : s.grade).toLowerCase();
 }
 
+/* 🚨 WHAT TEACHER NOTES NEEDS TO OFFER "EVERY MATH LESSON IN 7TH GRADE" (ROADMAP 92).
+   Read from the lesson's own data, never guessed from the page: the subject folder is the
+   first segment of the id, the grade is shelf.grades[0], the label is shelf.subject
+   ("Math" for the maths folder). No grade, no subject scope: the attributes are left off
+   and Teacher Notes offers "This Lesson Only" alone. */
+function scopeAttrs(L) {
+  const s = L.shelf || {};
+  const g = s.grades && s.grades.length ? s.grades[0] : s.grade;
+  if (g == null || g === '') return '';
+  const ORD = { 0: 'Kindergarten', 1: '1st', 2: '2nd', 3: '3rd' };
+  const n = String(g).toLowerCase() === 'k' ? 0 : parseInt(g, 10);
+  if (isNaN(n)) return '';
+  const gradeName = n === 0 ? 'Kindergarten' : (ORD[n] || n + 'th') + ' Grade';
+  const subj = subjectOf(L);
+  const label = s.subject || subj.charAt(0).toUpperCase() + subj.slice(1);
+  return ' data-ns-subject-key="' + esc('grade-' + (n === 0 ? 'k' : n) + '/' + subj) + '"' +
+    ' data-ns-subject="' + esc(label) + '" data-ns-grade="' + esc(gradeName) + '"';
+}
+
 function siblings(L) {
   if (!L.seq) return { prev: null, next: null };
   const mine = subjectOf(L);
@@ -318,7 +337,7 @@ function lessonFoot(L, opts) {
   const sib = (o.prev !== undefined || o.next !== undefined)
     ? { prev: o.prev || null, next: o.next || null }
     : siblings(L);
-  return '<div class="lfoot">\n  ' +
+  return '<div class="lfoot"' + scopeAttrs(L) + '>\n  ' +
     homeworkCta(L, o.root, o.subject) + '\n  ' +
     unitNav(sib.prev, sib.next, o.unitTitle || (L.seq && L.seq.unitTitle)) +
     '\n</div>\n' + notes.notesScript();
@@ -338,4 +357,4 @@ const REQUIRED = [
   ['prev \/ next',       /class="lfoot-nav"/],
 ];
 
-module.exports = { footerCss, homeworkCta, unitNav, lessonFoot, siblings, allLessons, REQUIRED, esc };
+module.exports = { scopeAttrs, footerCss, homeworkCta, unitNav, lessonFoot, siblings, allLessons, REQUIRED, esc };

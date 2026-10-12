@@ -2143,6 +2143,23 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
 /* a non-YouTube video has no picture to borrow: a plain play box the same size */
 .gv-play{display:grid;place-items:center;width:96px;height:54px;border-radius:6px;background:var(--surface, #222);color:var(--ink-soft, #aaa);font-size:18px;flex:none}
 
+/* ── Lesson Sections (ROADMAP 92, migration 023) ─────────────────────────────
+   🚨 data-ns-off IS HOW A SECTION "JUST DISAPPEARS" for a student whose parent turned it Off
+   (Paul, 2026-10-12): no placeholder, no note. display:none and nothing else, so the cards
+   keep their place in the page and a saved answer still lands on its question. !important
+   because several section wrappers set their own display. */
+[data-ns-off]{display:none!important}
+
+.gv-sec{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--gn-l)}
+.gv-sub{margin:0 0 6px;font-weight:700;color:var(--gn-i)}
+.gv-secs{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:6px}
+.gv-sec-i{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.gv-chk{display:inline-flex;align-items:center;gap:9px;cursor:pointer;line-height:1.4;min-height:32px}
+.gv-chk input{flex:0 0 auto;width:18px;height:18px;margin:0;accent-color:var(--gn-a)}
+.gv-sec-n{color:var(--gn-d);font-size:.84rem}
+.gv-scope{display:grid;gap:4px;margin:0 0 10px}
+.gv-sec .gv-go{margin-top:2px}
+
 </style>
 </head>
 <body>
@@ -2360,11 +2377,11 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
        ⚠️ Filled by build-split.js, which FAILS the build on a missing sheet. Do
        NOT name the slot token in prose above the markup: the generator fills
        slots with a plain .replace, which takes the FIRST match. -->
-  <div class="lfoot">
+  <div class="lfoot" data-ns-subject-key="grade-3/english" data-ns-subject="English" data-ns-grade="3rd Grade">
   <span class="lfoot-hw is-off" aria-disabled="true">Homework Sheet: Unavailable<small>There is no homework sheet for this lesson yet.</small></span>
   <div class="lfoot-nav" role="navigation" aria-label="Lesson navigation"><a class="next" href="/lessons/english/simple-subjects-and-simple-predicates/" aria-label="Next lesson: Simple Subjects and Simple Predicates" title="Next: Simple Subjects and Simple Predicates"><span class="t">Simple Subjects and Simple Predicates</span><span class="ar">&rarr;</span></a></div>
 </div>
-<script src="/assets/lesson-shared.d22b07a4.js"></script>
+<script src="/assets/lesson-shared.b0cf11e2.js"></script>
 </div>
 
 <div class="player" id="player">
@@ -6451,7 +6468,7 @@ if (!liftDefBox()) requestAnimationFrame(function(){ liftDefBox(); });
 </script>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
-<script src="/assets/ns-account.js?v=58969f9f"></script>
+<script src="/assets/ns-account.js?v=375d70c1"></script>
 <script src="/assets/lesson-shared.a7a94982.js"></script>
 </body>
 </html>

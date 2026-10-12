@@ -548,6 +548,43 @@
     var m = (err && ((err.raw && (err.raw.message || err.raw.code)) || err.message)) || "";
     return /lesson_videos|PGRST20[45]|42P01|404|relation/i.test(String(m));
   }
+  /* ── LESSON SECTION SWITCHES (2026-10-12, migration 023) ──────────────────
+     A parent turns sections Off per student: scope "lesson" (scope_key = the lesson
+     id) or "subject" (scope_key "grade-7/maths"). RLS limits every call to this
+     account's own students, so one read returns every student's rows for the two keys.
+     ⚠️ Until 023 is applied every call fails with a relation error; sectionsOff()
+     recognises that and callers degrade quietly (the lesson shows everything). */
+  function sectionPrefs(lessonKey, subjectKey) {
+    var keys = [lessonKey, subjectKey].filter(Boolean).map(function (k) { return '"' + String(k).replace(/"/g, "") + '"'; });
+    if (!keys.length) return Promise.resolve([]);
+    return rest("GET", "/student_sections?scope_key=in.(" + encodeURIComponent(keys.join(",")) + ")&select=*",
+      null, "Could not load lesson sections.").then(function (d) { return d || []; });
+  }
+  function saveSectionPrefs(studentId, scope, scopeKey, hidden) {
+    var row = { student_id: studentId, scope: scope, scope_key: scopeKey,
+      hidden: (hidden || []).slice(0, 12), updated_at: new Date().toISOString() };
+    return refreshIfNeeded().then(function (s) {
+      if (!s) throw new Error("Please sign in again.");
+      var h = headers(true); h["Prefer"] = "resolution=merge-duplicates,return=representation";
+      return fetch(REST + "/student_sections?on_conflict=student_id,scope,scope_key", { method: "POST", headers: h, body: JSON.stringify(row) })
+        .then(function (r) {
+          return r.text().then(function (t) {
+            var d = null; try { d = t ? JSON.parse(t) : null; } catch (e) {}
+            if (!r.ok) { var e2 = new Error("Could not save those sections."); e2.raw = d; throw e2; }
+            return d && d[0] ? d[0] : row;
+          });
+        });
+    });
+  }
+  function deleteSectionPrefs(studentId, scope, scopeKey) {
+    return rest("DELETE", "/student_sections?student_id=eq." + encodeURIComponent(studentId) +
+      "&scope=eq." + encodeURIComponent(scope) + "&scope_key=eq." + encodeURIComponent(scopeKey),
+      null, "Could not clear that setting.").then(function () { return true; });
+  }
+  function sectionsOff(err) {
+    var m = (err && ((err.raw && (err.raw.message || err.raw.code)) || err.message)) || "";
+    return /student_sections|PGRST20[45]|42P01|404|relation/i.test(String(m));
+  }
   /* lessonId null = EVERY lesson for that student (the full reset). */
   function deleteProgress(studentId, lessonId) {
     return rest("DELETE", "/progress?student_id=eq." + encodeURIComponent(studentId) +
@@ -960,6 +997,7 @@
     setProfileKind: setProfileKind, swapAccountHolder: swapAccountHolder,
     progressRows: progressRows, upsertProgress: upsertProgress, deleteProgress: deleteProgress,
     lessonVideos: lessonVideos, addLessonVideo: addLessonVideo, deleteLessonVideo: deleteLessonVideo, videosOff: videosOff,
+    sectionPrefs: sectionPrefs, saveSectionPrefs: saveSectionPrefs, deleteSectionPrefs: deleteSectionPrefs, sectionsOff: sectionsOff,
     pinMap: pinMap, checkPin: checkPin, setPin: setPin, clearPin: clearPin,
     bootstrap: bootstrap,
     isSignedIn: function () { return !!session; },

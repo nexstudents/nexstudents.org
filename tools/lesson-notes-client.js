@@ -9,6 +9,11 @@
       window.NSLessonVideos and the document event "ns:videos". The reading engine
       listens and shows them in the Visual Panel. Nothing here touches the panel.
    3. THE PIN. Opening Teacher Notes asks for the teacher PIN, see needsPin() below.
+   4. LESSON SECTIONS (ROADMAP 92, migration 023). Per student, a checkbox for each section
+      the lesson has (question sets, word cards, Your Turn, homework), saved for THIS lesson
+      or for EVERY lesson of the subject at that grade. The active STUDENT's Off sections are
+      handed to the engine (window.NSLessonSections, event "ns:sections") which hides them and
+      scores only what is left. A lesson row beats a subject row, see effectiveHidden().
 
    HOW IT IS BUILT
    This is a plain file, read off disk by lesson-notes.js. It is NOT a template literal, so
@@ -23,7 +28,8 @@
    signed out, or no PIN set, or the teacher turned the setting off = Teacher Notes
    opens freely.
 
-   ⚠️ Until migration 021 is applied every videos call fails. That is expected: the
+   ⚠️ Until migration 021 is applied every videos call fails (and 023 for sections: "Lesson
+   sections aren't switched on yet.", the lesson shows everything). That is expected: the
    Teacher Notes section says "Videos aren't switched on yet." and the panel behaves as
    it always did. */
 (function(root){
@@ -146,7 +152,42 @@ function needsPin(info){
   return { ask: false, key: null };
 }
 
-var api = { parseYouTube: parseYouTube, parseVideo: parseVideo, thumbFor: thumbFor, parseStart: parseStart, lessonIdFrom: lessonIdFrom,
+/* ── lesson sections: pure helpers ──────────────────────────────────────────
+   Keys are generic across a subject: set1..set9 question sets in page order, vocab, work,
+   homework. Anything else is ignored, which is also what the database check enforces. */
+var SECTION_KEY = /^(set[1-9]|vocab|work|homework)$/;
+function cleanKeys(list){
+  var seen = {}, out = [];
+  (list || []).forEach(function(k){
+    k = String(k);
+    if (SECTION_KEY.test(k) && !seen[k]) { seen[k] = true; out.push(k); }
+  });
+  return out.slice(0, 12);
+}
+
+/* What is Off for ONE student in THIS lesson, and where that came from.
+   🚨 A LESSON ROW OVERRIDES THE SUBJECT ROW WHOLE (Paul: "only to this lesson or this entire
+   subject"). A lesson row that says [] means "everything On here" even when the subject row
+   hides something: that is how a parent exempts one lesson. -> { hidden, from } with from
+   "lesson", "subject" or null. */
+function effectiveHidden(rows, studentId, lessonKey, subjectKey){
+  var mine = (rows || []).filter(function(r){ return r.student_id === studentId; });
+  var les = mine.filter(function(r){ return r.scope === "lesson" && r.scope_key === lessonKey; })[0];
+  if (les) return { hidden: cleanKeys(les.hidden), from: "lesson" };
+  var sub = subjectKey ? mine.filter(function(r){ return r.scope === "subject" && r.scope_key === subjectKey; })[0] : null;
+  if (sub) return { hidden: cleanKeys(sub.hidden), from: "subject" };
+  return { hidden: [], from: null };
+}
+
+/* What the page hides right now: only when the ACTIVE profile is a student. The account
+   holder and a second parent see the whole lesson, so they can always undo a switch. */
+function hiddenForActive(rows, profiles, activeId, lessonKey, subjectKey){
+  var kid = (profiles || []).filter(function(p){ return p.id === activeId && p.kind === "student"; })[0];
+  return kid ? effectiveHidden(rows, kid.id, lessonKey, subjectKey).hidden : [];
+}
+
+var api = { cleanKeys: cleanKeys, effectiveHidden: effectiveHidden, hiddenForActive: hiddenForActive,
+            parseYouTube: parseYouTube, parseVideo: parseVideo, thumbFor: thumbFor, parseStart: parseStart, lessonIdFrom: lessonIdFrom,
             videosForActive: videosForActive, needsPin: needsPin, VIDEO_CAP: VIDEO_CAP };
 if (typeof module !== "undefined" && module.exports) { module.exports = api; }
 if (typeof document === "undefined") { return; }
@@ -154,7 +195,7 @@ if (typeof document === "undefined") { return; }
 /* ── the page half ──────────────────────────────────────────────────────── */
 
 var LESSON = lessonIdFrom(location.pathname);
-var S = { signedIn: false, ready: false, failed: false, off: false, me: null, profiles: [], pins: {}, videos: [], unlocked: false, loading: null };
+var S = { secRows: [], secOff: false, draft: {}, secMsg: {}, signedIn: false, ready: false, failed: false, off: false, me: null, profiles: [], pins: {}, videos: [], unlocked: false, loading: null };
 
 function acct(){ return window.NSAccount || null; }
 function el(tag, cls, text){
@@ -171,6 +212,113 @@ function publish(){
   var v = videosForActive(S.videos, S.profiles, activeId());
   window.NSLessonVideos = v;
   try { document.dispatchEvent(new CustomEvent("ns:videos", { detail: v })); } catch (e) {}
+}
+
+/* ── lesson sections: what the page offers and what it hides ────────────── */
+function scopeInfo(){
+  var f = document.querySelector(".lfoot");
+  var key = f && f.getAttribute("data-ns-subject-key");
+  if (!key) return null;
+  return { key: key, subject: f.getAttribute("data-ns-subject") || "", grade: f.getAttribute("data-ns-grade") || "" };
+}
+/* The engine knows its sections (window.NSLessonSections, reading lessons only). The homework
+   button belongs to the footer, so it is added here, and only when a real sheet is linked. */
+function sectionList(){
+  var eng = window.NSLessonSections;
+  if (!eng || !eng.list) return null;
+  var out = eng.list().slice();
+  if (document.querySelector(".lfoot-hw:not(.is-off)")) out.push({ key: "homework", label: "Homework Sheet" });
+  return out;
+}
+function publishSections(){
+  var eng = window.NSLessonSections;
+  var si = scopeInfo();
+  var hidden = eng ? hiddenForActive(S.secRows, S.profiles, activeId(), LESSON, si && si.key) : [];
+  window.NSHiddenSections = hidden;
+  var hw = document.querySelector(".lfoot-hw");
+  if (hw) { if (hidden.indexOf("homework") !== -1) hw.setAttribute("data-ns-off", ""); else hw.removeAttribute("data-ns-off"); }
+  try { document.dispatchEvent(new CustomEvent("ns:sections", { detail: { hidden: hidden } })); } catch (e) {}
+}
+
+function paintSections(box, k){
+  var wrap = el("div", "gv-sec");
+  wrap.appendChild(el("p", "gv-sub", "Lesson Sections"));
+  box.appendChild(wrap);
+  if (S.secOff) { wrap.appendChild(el("p", "gv-note", "Lesson sections aren't switched on yet.")); return; }
+  var list = sectionList();
+  if (!list) { wrap.appendChild(el("p", "gv-note", "Section switches work on reading lessons.")); return; }
+  var si = scopeInfo();
+  var eff = effectiveHidden(S.secRows, k.id, LESSON, si && si.key);
+  /* The draft keeps unsaved ticks alive when the notes repaint (a video was added meanwhile). */
+  var draft = S.draft[k.id] || (S.draft[k.id] = { hidden: eff.hidden.slice(), scope: eff.from === "subject" ? "subject" : "lesson" });
+  var where = eff.from === "subject" ? "every " + si.subject + " lesson in " + si.grade : "this lesson only";
+  wrap.appendChild(el("p", "gv-note", "Turn a section off and " + k.name + " won't see it, and it won't count toward the score."));
+  var ul = el("ul", "gv-secs");
+  list.forEach(function(sec){
+    var li = el("li", "gv-sec-i");
+    var lab = el("label", "gv-chk");
+    var cb = el("input"); cb.type = "checkbox"; cb.checked = draft.hidden.indexOf(sec.key) === -1;
+    lab.appendChild(cb); lab.appendChild(el("span", null, sec.label));
+    li.appendChild(lab);
+    /* Which scope a saved Off comes from, so the parent knows what Save will change. */
+    function why(){ return cb.checked ? "" : (eff.hidden.indexOf(sec.key) !== -1 ? "Off for " + where : "Off"); }
+    var note = el("small", "gv-sec-n", why());
+    li.appendChild(note);
+    cb.onchange = function(){
+      var i = draft.hidden.indexOf(sec.key);
+      if (cb.checked && i !== -1) draft.hidden.splice(i, 1);
+      if (!cb.checked && i === -1) draft.hidden.push(sec.key);
+      note.textContent = why();
+    };
+    ul.appendChild(li);
+  });
+  wrap.appendChild(ul);
+  if (si) {
+    var sc = el("div", "gv-scope");
+    sc.setAttribute("role", "radiogroup"); sc.setAttribute("aria-label", "Where this applies");
+    [["lesson", "This Lesson Only"], ["subject", "Every " + si.subject + " Lesson in " + si.grade]].forEach(function(o){
+      var lab = el("label", "gv-chk");
+      var r = el("input"); r.type = "radio"; r.name = "gs-scope-" + k.id; r.value = o[0]; r.checked = draft.scope === o[0];
+      r.onchange = function(){ if (r.checked) draft.scope = o[0]; };
+      lab.appendChild(r); lab.appendChild(el("span", null, o[1]));
+      sc.appendChild(lab);
+    });
+    wrap.appendChild(sc);
+  } else draft.scope = "lesson";
+  var save = el("button", "btn gv-go", "Save"); save.type = "button";
+  var msg = el("p", "gv-msg"); msg.setAttribute("aria-live", "polite");
+  msg.textContent = S.secMsg[k.id] || "";
+  delete S.secMsg[k.id];
+  save.onclick = function(){
+    var scope = draft.scope === "subject" && si ? "subject" : "lesson";
+    var scopeKey = scope === "subject" ? si.key : LESSON;
+    function isRow(r, sc2, key){ return r.student_id === k.id && r.scope === sc2 && r.scope_key === key; }
+    /* Keys this lesson doesn't have (a subject row can hold more) are kept as they were. */
+    var old = S.secRows.filter(function(r){ return isRow(r, scope, scopeKey); })[0];
+    var keep = ((old && old.hidden) || []).filter(function(h){ return !list.some(function(x){ return x.key === h; }); });
+    var hidden = cleanKeys(keep.concat(draft.hidden.filter(function(h){ return list.some(function(x){ return x.key === h; }); })));
+    save.disabled = true; msg.textContent = "Saving...";
+    acct().saveSectionPrefs(k.id, scope, scopeKey, hidden).then(function(row){
+      S.secRows = S.secRows.filter(function(r){ return !isRow(r, scope, scopeKey); });
+      S.secRows.push(row);
+      /* Saved for the whole subject from this page: this lesson's own row would still win and the
+         save would look like it did nothing here, so it goes. */
+      var own = scope === "subject" && S.secRows.some(function(r){ return isRow(r, "lesson", LESSON); });
+      if (!own) return null;
+      return acct().deleteSectionPrefs(k.id, "lesson", LESSON).then(function(){
+        S.secRows = S.secRows.filter(function(r){ return !isRow(r, "lesson", LESSON); });
+      });
+    }).then(function(){
+      delete S.draft[k.id];
+      S.secMsg[k.id] = "Saved.";
+      paint(); publishSections();
+    }).catch(function(e){
+      save.disabled = false;
+      if (acct().sectionsOff && acct().sectionsOff(e)) { S.secOff = true; paint(); publishSections(); return; }
+      msg.textContent = (e && e.message) || "Could not save that.";
+    });
+  };
+  wrap.appendChild(save); wrap.appendChild(msg);
 }
 
 /* ── Teacher Notes: the videos section ──────────────────────────────────── */
@@ -218,6 +366,7 @@ function paintKid(host, k){
   var a = el("a", null, k.name); a.href = "/account/";
   who.appendChild(a);
   box.appendChild(who);
+  if (S.off) { paintSections(box, k); host.appendChild(box); return; }
   if (rows.length) {
     var ul = el("ul", "gv-list");
     rows.forEach(function(r){
@@ -268,6 +417,7 @@ function paintKid(host, k){
     });
   };
   box.appendChild(add); box.appendChild(msg);
+  paintSections(box, k);
   host.appendChild(box);
 }
 
@@ -275,14 +425,14 @@ function paint(){
   var h = mountHost();
   if (!h) return;
   h.textContent = "";
-  h.appendChild(el("h3", null, "Videos For Your Students"));
+  h.appendChild(el("h3", null, "Videos And Sections For Your Students"));
   if (!S.signedIn) return line(h, "Sign in to add videos for your students.", "/account/", "Sign in");
   if (!S.ready) return line(h, "Loading your students...");
   if (S.failed) return line(h, "Couldn't load your students right now. Try again in a minute.");
-  if (S.off) return line(h, "Videos aren't switched on yet.");
   var kids = students();
   if (!kids.length) return line(h, "Add a student profile to give them videos.", "/account/", "Add a student profile");
-  line(h, "Each student sees their own videos in the Visual Panel, in the order you add them.");
+  if (S.off) line(h, "Videos aren't switched on yet.");
+  else line(h, "Each student sees their own videos in the Visual Panel, in the order you add them.");
   kids.forEach(function(k){ paintKid(h, k); });
 }
 
@@ -366,15 +516,21 @@ function boot(){
     S.me = b.me; S.profiles = b.profiles || []; S.pins = b.pins || {};
   }).catch(function(){ S.failed = true; }).then(function(){
     if (S.failed || !LESSON) return;
-    return a.lessonVideos(LESSON).then(function(rows){ S.videos = rows || []; }, function(e){
+    var si = scopeInfo();
+    var vids = a.lessonVideos(LESSON).then(function(rows){ S.videos = rows || []; }, function(e){
       /* Table missing (migration 021 not run): switched off, quietly. Any other failure leaves the list empty. */
       S.off = !!(a.videosOff && a.videosOff(e));
     });
+    var secs = a.sectionPrefs ? a.sectionPrefs(LESSON, si && si.key).then(function(rows){ S.secRows = rows || []; }, function(e){
+      /* Same quiet rule for migration 023: switched off, and the lesson shows everything. */
+      S.secOff = !!(a.sectionsOff && a.sectionsOff(e));
+    }) : Promise.resolve();
+    return Promise.all([vids, secs]);
   }).then(function(){
-    S.ready = true; paint(); publish();
+    S.ready = true; paint(); publish(); publishSections();
   });
-  /* Another profile became active: the panel shows THEIR videos. */
-  document.addEventListener("ns:who", function(){ if (S.ready) publish(); });
+  /* Another profile became active: the panel shows THEIR videos, and the page hides THEIR Off sections. */
+  document.addEventListener("ns:who", function(){ if (S.ready) { publish(); publishSections(); } });
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 
