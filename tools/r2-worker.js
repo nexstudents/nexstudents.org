@@ -169,6 +169,7 @@ export default {
     if (url.pathname === "/checkout")      return checkout(request, env);
     if (url.pathname === "/free-receipt")  return freeReceipt(request, env);
     if (url.pathname === "/admin-file")    return adminFile(request, env, url);
+    if (url.pathname === "/sheet")         return ownedSheet(request, env, url);
     if (url.pathname === "/stripe-webhook") return stripeWebhook(request, env);
 
     /* ── AND THE SAME TWO THINGS FOR PAYPAL ─────────────────────────────────
@@ -655,6 +656,45 @@ async function adminFile(request, env, url) {
   h.set("content-type", "application/pdf");
   h.set("cache-control", "private, no-store");
   h.set("content-disposition", 'inline; filename="' + slug + '.pdf"');
+  return new Response(obj.body, { status: 200, headers: h });
+}
+
+/* ── /sheet?slug=<slug> — A GATED SHEET, ONLY TO AN ACCOUNT THAT OWNS IT ─────
+   ROADMAP 42, first slice, 2026-10-12. The sheet's real page (questions, typing
+   boxes, answer key) lives at paid/sheets/<slug>.html, never in the public repo.
+   The public /print/ page is a small gate that calls this with the parent's
+   Supabase token and writes the page in when it comes back.
+   🚨 OWNERSHIP IS READ WITH THE CALLER'S OWN TOKEN, so RLS (migration 024)
+   returns only that account's rows; a bad or expired token gets no rows from
+   PostgREST and lands here as 404. The worker holds no privileged key.
+   paid/sheets/<slug>.scopes beside it lists every scope that covers it
+   ("grade:7,grade:7.maths,unit:grade-7/maths/2,lesson:...,sheet:..."), plus
+   "all" here. Owning any one opens it. 404 for every refusal, as /download.
+   (A sidecar file, because wrangler's upload can't set custom metadata.) */
+async function ownedSheet(request, env, url) {
+  const h = cors();
+  h.set("access-control-allow-headers", "content-type, authorization");
+  h.set("access-control-allow-methods", "GET, OPTIONS");
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: h });
+  const no = (s) => new Response(s || "Not found", { status: 404, headers: h });
+  const slug = String(url.searchParams.get("slug") || "");
+  const auth = request.headers.get("authorization") || "";
+  if (!/^[a-z0-9-]{1,120}$/.test(slug) || !/^Bearer\s+\S+/.test(auth)) return no();
+  const key = PAID + "sheets/" + slug + ".html";
+  const sc = await env.MEDIA.get(PAID + "sheets/" + slug + ".scopes");
+  if (!sc) return no();
+  const covers = new Set(["all"].concat((await sc.text()).trim().split(",").filter(Boolean)));
+  let owned = [];
+  try {
+    const r = await fetch(env.SUPABASE_URL + "/rest/v1/entitlements?select=scope",
+      { headers: { apikey: env.SUPABASE_KEY, Authorization: auth } });
+    if (r.ok) owned = await r.json();
+  } catch (e) { /* treated as owning nothing */ }
+  if (!Array.isArray(owned) || !owned.some((row) => covers.has(row.scope))) return no("Not owned");
+  const obj = await env.MEDIA.get(key);
+  if (!obj) return no();
+  h.set("content-type", "text/html; charset=utf-8");
+  h.set("cache-control", "private, no-store");
   return new Response(obj.body, { status: 200, headers: h });
 }
 

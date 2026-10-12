@@ -932,6 +932,20 @@
       if (win) win.location = u; else location.href = u;
     }).catch(function (e) { if (win) win.close(); throw e; });
   }
+  /* A GATED sheet's page (ROADMAP 42): the worker returns its HTML only when
+     this account owns a scope covering it (migration 024). Resolves to the
+     HTML, or to null with the reason: "signin" (no session) or "locked". */
+  function ownedSheet(slug) {
+    return refreshIfNeeded().then(function (s) {
+      if (!s) return { html: null, why: "signin" };
+      return fetch(WORKER + "/sheet?slug=" + encodeURIComponent(slug),
+                   { headers: { "Authorization": "Bearer " + s.access_token } })
+        .then(function (r) {
+          if (!r.ok) return { html: null, why: "locked" };
+          return r.text().then(function (t) { return { html: t, why: "" }; });
+        });
+    });
+  }
 
   /* The pill: bottom left, on every page that loads this file, for the admin
      only. It flips Admin view and Guest view and links the admin page. */
@@ -999,7 +1013,7 @@
     lessonVideos: lessonVideos, addLessonVideo: addLessonVideo, deleteLessonVideo: deleteLessonVideo, videosOff: videosOff,
     sectionPrefs: sectionPrefs, saveSectionPrefs: saveSectionPrefs, deleteSectionPrefs: deleteSectionPrefs, sectionsOff: sectionsOff,
     pinMap: pinMap, checkPin: checkPin, setPin: setPin, clearPin: clearPin,
-    bootstrap: bootstrap,
+    bootstrap: bootstrap, ownedSheet: ownedSheet,
     isSignedIn: function () { return !!session; },
     uid: uid,
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,

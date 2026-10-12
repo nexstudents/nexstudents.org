@@ -19,3 +19,4 @@ lessons/**/voice/
 
 # wrangler local state from the R2 upload
 .wrangler/
+.private/

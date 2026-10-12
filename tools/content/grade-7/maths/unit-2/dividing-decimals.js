@@ -68,7 +68,7 @@ module.exports = {
       { h: "Where Students Get Stuck", p: [
         "🚨 Moving only one point. The divisor's point and the dividend's point have to move the same number of places, or the problem has changed.",
         "Forgetting to add a zero. In 0.7 divided by 0.05 the dividend has only one digit after the point, so it needs a zero tacked on before it can move two places.",
-        "One zero too many or too few, like 63,000 instead of 6,300 for 18.9 divided by 0.003. Have your student count each hop out loud, then check the answer against an estimate."
+        "One zero too many or too few, like 42,000 instead of 4,200 when 4.2 is divided by 0.006. Have your student count each hop out loud, then check the answer against an estimate."
       ]},
       { h: "Teaching Suggestion", p: [
         "Do 0.4 divided by 0.5 once with squares: shade 40 squares in 5 columns and count 8 squares in each column, which is 0.8. That picture is the reason the moving works, and it's worth doing once by hand."

@@ -255,6 +255,52 @@ function priceText(p) {
    --pages 2` makes them. A free sheet with no cover starts on page 1.
    ⚠️ Scroll-snap does the work, so it still swipes with JavaScript off; the
    script only drives the arrows and the dots. */
+/* 🔒 Every scope that covers a gated sheet, widest first. Owning ANY one opens
+   it (worker /sheet, migration 024). The unit comes from the eyebrow's U<n>. */
+function gatedScopes(s) {
+  const subj = subjSlug(s.subject), g = String(s.grade);
+  const unit = (String(s.eyebrow || "").match(/U(\d+)-L/) || [])[1];
+  const out = ["grade:" + g, "grade:" + g + "." + subj];
+  if (unit) out.push("unit:grade-" + g + "/" + subj + "/" + unit);
+  if (s.includedWith) out.push("lesson:" + s.includedWith);
+  out.push("sheet:" + s.slug);
+  return out;
+}
+/* The public print/ page of a gated sheet: the real page's head (styles, title,
+   the two account scripts) and a body that fetches the real page and writes it
+   in. Signed out or not owned, it says so and points at the store page. */
+function gatePage(s, full) {
+  const head = (full.match(/<head>([\s\S]*?)<\/head>/) || [])[1];
+  if (!head) { console.error("FAIL: no head to copy for gate " + s.slug); process.exit(1); }
+  const scripts = (full.match(/<script src="\/assets\/(supabase-config|ns-account)\.js\?v=[a-z0-9]+"><\/script>/g) || []);
+  if (scripts.length < 2) { console.error("FAIL: gate " + s.slug + " needs supabase-config and ns-account"); process.exit(1); }
+  const store = `/worksheets/${subjSlug(s.subject)}/${s.slug}/`;
+  const order = ["supabase-config", "ns-account"].map((n) => scripts.find((t) => t.includes("/" + n + ".js"))).join("\n");
+  return `<!doctype html>
+<html lang="en"><head>${head}</head>
+<body>
+<div class="wrap" id="gate" style="padding:48px 16px;max-width:560px;margin:0 auto">
+  <h1 style="font-size:1.4rem">${s.title}</h1>
+  <p id="gatemsg">Opening your sheet...</p>
+</div>
+${order}
+<script>
+(function(){
+  var msg = document.getElementById("gatemsg");
+  function say(t, link, label){
+    msg.textContent = t + " ";
+    if (link){ var a = document.createElement("a"); a.href = link; a.textContent = label; msg.appendChild(a); }
+  }
+  if (!window.NSAccount || !NSAccount.ownedSheet){ say("This sheet couldn't load. Try again in a moment."); return; }
+  NSAccount.ownedSheet(${JSON.stringify(s.slug)}).then(function(r){
+    if (r.html){ document.open(); document.write(r.html); document.close(); return; }
+    if (r.why === "signin") say("Sign in to open this homework. It comes with its lesson.", "/account/", "Sign In");
+    else say("This homework comes with its lesson, or you can get it on its own.", ${JSON.stringify(store)}, "See This Sheet");
+  }).catch(function(){ say("This sheet couldn't load. Check your connection and try again."); });
+})();
+</script>
+</body></html>`;
+}
 function previewFiles(s) {
   const dirAbs = path.join(ROOT, "worksheets", subjSlug(s.subject), s.slug);
   const files = [];
@@ -1350,7 +1396,21 @@ for (const s of SHEETS) {
     fs.mkdirSync(printDir, { recursive: true });
     const base = `<base href="/worksheets/${subjSlug(s.subject)}/${s.slug}/">`;
     if (!html.includes("<head>")) { console.error("FAIL: no <head> to put <base> in for " + s.slug); process.exit(1); }
-    fs.writeFileSync(path.join(printDir, "index.html"), html.replace("<head>", "<head>\n" + base), "utf8");
+    const full = html.replace("<head>", "<head>\n" + base);
+    if (s.gated) {
+      /* 🔒 GATED (ROADMAP 42, first slice 2026-10-12). The real page, answers and
+         all, goes to .private/sheets/ (gitignored, never served by Pages) and is
+         uploaded to R2 paid/sheets/<slug>.html by tools/upload-gated.js. The public
+         print/ page is a gate: it asks the worker's /sheet with the parent's token
+         and writes the real page in when this account owns it. */
+      const priv = path.join(ROOT, ".private", "sheets");
+      fs.mkdirSync(priv, { recursive: true });
+      fs.writeFileSync(path.join(priv, s.slug + ".html"), full, "utf8");
+      fs.writeFileSync(path.join(priv, s.slug + ".scopes"), gatedScopes(s).join(","), "utf8");
+      fs.writeFileSync(path.join(printDir, "index.html"), gatePage(s, full), "utf8");
+    } else {
+      fs.writeFileSync(path.join(printDir, "index.html"), full, "utf8");
+    }
     const product = paidSheetHtml(s);
     if (product.includes("undefined")) { console.error("FAIL: undefined in product page " + s.slug); process.exit(1); }
     fs.writeFileSync(path.join(dir, "index.html"), product, "utf8");

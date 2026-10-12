@@ -672,6 +672,7 @@ sheet({
   includedWith: "maths/dividing-decimals",
   online: true,   /* typing boxes, Paul 2026-10-12: "i want this sheet to have typing boxes but also i want it printable" */
   thumb: true,    /* cover = its own printed page 1, tools/make-cover.js (2026-10-12) */
+  gated: true,    /* 🔒 ROADMAP 42 first slice: owners only, through the worker's /sheet */
   title: "Dividing Decimals: Homework",
   /* REAL DATA, checked 2026-10-05. Densities in g/cm^3 (pure metals at room temperature):
      aluminum 2.70, iron 7.87, gold 19.32 (https://www.engineersedge.com/materials/densities_of_metals_and_elements_table_13976.htm
