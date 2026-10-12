@@ -69,6 +69,15 @@
 .gv-sec-i{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .gv-chk{display:inline-flex;align-items:center;gap:9px;cursor:pointer;line-height:1.4;min-height:32px}
 .gv-chk input{flex:0 0 auto;width:18px;height:18px;margin:0;accent-color:var(--gn-a)}
-.gv-sec-n{color:var(--gn-d);font-size:.84rem}
-.gv-scope{display:grid;gap:4px;margin:0 0 10px}
+/* This Lesson [switch] This Subject. Both sides are a real choice, so the track stays neutral
+   and only the knob and the chosen word carry the accent. */
+.gv-scope{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 10px}
+.gv-sw-l{cursor:pointer;color:var(--gn-d);font-size:.95rem}
+.gv-sw-l.is-on{color:var(--gn-i);font-weight:700}
+.gv-sw{position:relative;flex:0 0 auto;width:46px;height:26px;padding:0;border-radius:999px;cursor:pointer;
+  border:1px solid var(--gn-l);background:var(--gn-p)}
+.gv-sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--gn-a);transition:transform .15s ease}
+.gv-sw[aria-checked="true"]::after{transform:translateX(20px)}
+.gv-sw:focus-visible{outline:2px solid var(--gn-a);outline-offset:2px}
 .gv-sec .gv-go{margin-top:2px}

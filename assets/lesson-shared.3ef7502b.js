@@ -252,40 +252,57 @@ function paintSections(box, k){
   var eff = effectiveHidden(S.secRows, k.id, LESSON, si && si.key);
   /* The draft keeps unsaved ticks alive when the notes repaint (a video was added meanwhile). */
   var draft = S.draft[k.id] || (S.draft[k.id] = { hidden: eff.hidden.slice(), scope: eff.from === "subject" ? "subject" : "lesson" });
-  var where = eff.from === "subject" ? "every " + si.subject + " lesson in " + si.grade : "this lesson only";
-  wrap.appendChild(el("p", "gv-note", "Turn a section off and " + k.name + " won't see it, and it won't count toward the score."));
-  var ul = el("ul", "gv-secs");
-  list.forEach(function(sec){
-    var li = el("li", "gv-sec-i");
-    var lab = el("label", "gv-chk");
-    var cb = el("input"); cb.type = "checkbox"; cb.checked = draft.hidden.indexOf(sec.key) === -1;
-    lab.appendChild(cb); lab.appendChild(el("span", null, sec.label));
-    li.appendChild(lab);
-    /* Which scope a saved Off comes from, so the parent knows what Save will change. */
-    function why(){ return cb.checked ? "" : (eff.hidden.indexOf(sec.key) !== -1 ? "Off for " + where : "Off"); }
-    var note = el("small", "gv-sec-n", why());
-    li.appendChild(note);
-    cb.onchange = function(){
-      var i = draft.hidden.indexOf(sec.key);
-      if (cb.checked && i !== -1) draft.hidden.splice(i, 1);
-      if (!cb.checked && i === -1) draft.hidden.push(sec.key);
-      note.textContent = why();
-    };
-    ul.appendChild(li);
-  });
-  wrap.appendChild(ul);
+  /* The toggle sits on top: This Lesson | This Subject. It opens on whichever row is in force,
+     so a subject-wide setting shows as This Subject on every lesson of that subject. Flipping it
+     loads that scope's saved boxes. No On/Off text: an unticked box already says it. */
+  function rowFor(scope){
+    var key = scope === "subject" ? si && si.key : LESSON;
+    return S.secRows.filter(function(r){ return r.student_id === k.id && r.scope === scope && r.scope_key === key; })[0];
+  }
   if (si) {
     var sc = el("div", "gv-scope");
-    sc.setAttribute("role", "radiogroup"); sc.setAttribute("aria-label", "Where this applies");
-    [["lesson", "This Lesson Only"], ["subject", "Every " + si.subject + " Lesson in " + si.grade]].forEach(function(o){
-      var lab = el("label", "gv-chk");
-      var r = el("input"); r.type = "radio"; r.name = "gs-scope-" + k.id; r.value = o[0]; r.checked = draft.scope === o[0];
-      r.onchange = function(){ if (r.checked) draft.scope = o[0]; };
-      lab.appendChild(r); lab.appendChild(el("span", null, o[1]));
-      sc.appendChild(lab);
-    });
+    var sw = el("button", "gv-sw"); sw.type = "button"; sw.setAttribute("role", "switch");
+    sw.setAttribute("aria-label", "Apply to every " + si.subject + " lesson in " + si.grade);
+    sw.title = "Every " + si.subject + " lesson in " + si.grade;
+    var lessonLab = el("span", "gv-sw-l", "This Lesson"), subjLab = el("span", "gv-sw-l", "This Subject");
+    lessonLab.onclick = function(){ if (draft.scope !== "lesson") flip(); };
+    subjLab.onclick = function(){ if (draft.scope !== "subject") flip(); };
+    function showScope(){
+      var on = draft.scope === "subject";
+      sw.setAttribute("aria-checked", on ? "true" : "false");
+      lessonLab.classList.toggle("is-on", !on); subjLab.classList.toggle("is-on", on);
+    }
+    function flip(){
+      draft.scope = draft.scope === "subject" ? "lesson" : "subject";
+      var row = rowFor(draft.scope) || (draft.scope === "lesson" ? rowFor("subject") : null);
+      draft.hidden = row ? cleanKeys(row.hidden) : [];
+      showScope(); boxes();
+    }
+    sw.onclick = flip;
+    sc.appendChild(lessonLab); sc.appendChild(sw); sc.appendChild(subjLab);
     wrap.appendChild(sc);
+    showScope();
   } else draft.scope = "lesson";
+  wrap.appendChild(el("p", "gv-note", "Untick a section and " + k.name + " won't see it, and it won't count toward the score."));
+  var ul = el("ul", "gv-secs");
+  function boxes(){
+    ul.textContent = "";
+    list.forEach(function(sec){
+      var li = el("li", "gv-sec-i");
+      var lab = el("label", "gv-chk");
+      var cb = el("input"); cb.type = "checkbox"; cb.checked = draft.hidden.indexOf(sec.key) === -1;
+      lab.appendChild(cb); lab.appendChild(el("span", null, sec.label));
+      li.appendChild(lab);
+      cb.onchange = function(){
+        var i = draft.hidden.indexOf(sec.key);
+        if (cb.checked && i !== -1) draft.hidden.splice(i, 1);
+        if (!cb.checked && i === -1) draft.hidden.push(sec.key);
+      };
+      ul.appendChild(li);
+    });
+  }
+  boxes();
+  wrap.appendChild(ul);
   var save = el("button", "btn gv-go", "Save"); save.type = "button";
   var msg = el("p", "gv-msg"); msg.setAttribute("aria-live", "polite");
   msg.textContent = S.secMsg[k.id] || "";
