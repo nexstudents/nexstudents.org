@@ -63,8 +63,6 @@ module.exports = {
   sheet: { slug: "science-unit-6-review-homework", subject: "science",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "7VM9YxmULuo", title: "Natural Selection", channel: "Amoeba Sisters",
-    why: "The one part of the unit that can be watched, explained with drawings. It's worth another look if natural selection still feels slippery." },
 
   shelf: { grades: [7], subject: "Science",
     blurb: "The whole unit in one pass: what natural selection does, how rock and bones are dated, why species die out, and what's been found about primates, with what was found kept apart from what it's taken to mean.",

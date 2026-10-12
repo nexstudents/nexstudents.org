@@ -6,7 +6,7 @@
    The Franks and the Carolingian World) and McDougal Littell World History: Medieval and
    Early Modern Times Ch9 Lesson 1, pp290-297 (the Franks, Clovis, Charlemagne, the
    division of 843 and the raiders), via the week 8-9 packet (paraphrased notes). The
-   video is noted in `video`.
+   video is now added per student in Teacher Notes.
 
    🚨 FACTS ADDED FROM THE RECORD, worth a glance from Paul. The California edition's pages
    are short on the Franks, and the packet notes that it doesn't name the Treaty of
@@ -56,8 +56,6 @@ module.exports = {
   sheet: { slug: "the-franks-and-charlemagne-homework", subject: "history",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "ygW2TWlSrmg", title: "Charlemagne For Kids", channel: "Bedtime History",
-    why: "A gentle retelling of the same life, with a few details this lesson skips. Worth a watch if the order of the rulers got tangled." },
   shelf: { grades: [7], subject: "History",
     blurb: "A king who may have struggled to write his own name ruled most of western Europe, and the empire came apart almost as soon as he was gone. Clovis, Charlemagne and the split of 843.",
     contains: [

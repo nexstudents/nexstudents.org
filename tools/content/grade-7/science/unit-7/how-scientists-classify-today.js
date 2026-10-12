@@ -68,8 +68,6 @@ module.exports = {
   sheet: { slug: "how-scientists-classify-today-homework", subject: "science",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "DVouQRAKxYo", title: "Classification", channel: "Amoeba Sisters",
-    why: "Walks down the levels from the biggest group to a single species with drawings, which helps if the order of the seven levels keeps slipping." },
 
   shelf: { grades: [7], subject: "Science",
     blurb: "A music store sorts its albums by type, then artist, then title, and scientists sort living things the same way. Five kingdoms, seven levels, and one wolf taken all the way down.",

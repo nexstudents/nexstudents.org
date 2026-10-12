@@ -48,8 +48,6 @@ module.exports = {
   sheet: { slug: "mean-median-and-mode-homework", subject: "maths",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "B1HEzNTGeZ4", title: "Mean, Median and Mode", channel: "Math Antics",
-    why: "The same three measures explained by a different teacher, with different numbers. Worth watching once before Your Turn, or again if the median with two middle numbers didn't click." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "Eli says his average is about 90 and his report card says 84, and both are telling the truth. Mean, median and mode, worked one line at a time.",
@@ -277,7 +275,7 @@ module.exports = {
 
   todo: { title: "What To Do Now", s: [
       "Eli's report card question turned out to be three different measures, and the rest of this page is your turn to find all three yourself.",
-      "First work through Your Turn below the reading, typing each step, and watch the video if the median with two middle numbers still feels shaky.",
+      "First work through Your Turn below the reading, typing each step.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

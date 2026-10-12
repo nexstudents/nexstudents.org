@@ -50,8 +50,6 @@ module.exports = {
   sheet: { slug: "line-plots-homework", subject: "maths",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "c3qiERbLAuQ", title: "Creating a Line Plot with Whole Numbers", channel: "Math with Mr. J",
-    why: "A different teacher builds a line plot from a messy list, in the same order you just used. Watch it once before Your Turn, or again if the empty numbers on the number line felt strange." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "Fifteen kids, fifteen answers, and one list nobody can read. A line plot turns it into a picture in about a minute.",
@@ -252,7 +250,7 @@ module.exports = {
 
   todo: { title: "What To Do Now", s: [
       "Eli's list of fifteen numbers turned into a picture, and the rest of this page is your turn to make one yourself.",
-      "First work through Your Turn below the reading, typing each step, and watch the video if the empty numbers on the number line still feel strange.",
+      "First work through Your Turn below the reading, typing each step.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

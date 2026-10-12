@@ -44,8 +44,6 @@ module.exports = {
   sheet: { slug: "misleading-statistics-homework", subject: "maths",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "E91bGT9BjYk", title: "How to spot a misleading graph", channel: "TED-Ed",
-    why: "A different set of misleading graphs, including bars that start at the wrong place. It builds on the first check in this lesson and adds a few more tricks." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "A bakery sign says the average pay is $49,000, and nobody who works there makes that much. How numbers and graphs can tell the truth and still mislead.",
@@ -241,7 +239,7 @@ module.exports = {
 
   todo: { title: "What To Do Now", s: [
       "A bakery sign, a bar graph and a flyer all turned out to be misleading in a different way, and the rest of this page is your turn to catch them.",
-      "First work through Your Turn below the reading, typing each step, and watch the video if you want to see more graphs that bend the truth.",
+      "First work through Your Turn below the reading, typing each step.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

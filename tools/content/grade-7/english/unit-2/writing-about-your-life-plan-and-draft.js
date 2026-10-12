@@ -5,7 +5,7 @@
    ⚠️ DRAFT PROSE, CLAUDE'S, 2026-10-11. Written on Sonnet to the /teach-plan block in
    `plan` below and given the /natural pass. Paul has not read it. Sources: Holt Elements
    of Literature, First Course, Writer's Workshop "Autobiographical Incident" pp182-185
-   via the week 8-9 packet (paraphrased notes); the video noted in `video`.
+   via the week 8-9 packet (paraphrased notes); the video (now added per student in Teacher Notes).
 
    The STORY is Frederick Douglass, Narrative of the Life of Frederick Douglass, an
    American Slave (1845), Chapter VII, public domain (Project Gutenberg #23). Short
@@ -54,8 +54,6 @@ module.exports = {
   sheet: { slug: "writing-about-your-life-plan-and-draft-homework", subject: "english",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "nBQ8dU0KPtg", title: "Writing a Personal Narrative, Episode 2: Making a Plan", channel: "Teaching Without Frills",
-    why: "A teacher walking through the planning step of a personal narrative. Worth watching before you start your own plan." },
 
   shelf: { grades: [7], subject: "English",
     blurb: "A boy in Baltimore hides a book and a piece of bread on his errands. How to pick one event from your own life, plan it in four parts and write the first draft.",

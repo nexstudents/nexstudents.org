@@ -6,7 +6,7 @@
    Geography of Europe, North Africa, and Southwest Asia) and McDougal Littell World
    History: Medieval and Early Modern Times Ch1 Lessons 1 and 2 (pp8-21) and the Skillbuilder
    "Reading a Map" (pp22-23), via the week 8-9 packet (paraphrased notes). The video is
-   noted in `video`.
+   now added per student in Teacher Notes.
 
    🚨 THE BOOK'S PAGES ARE GENERAL, NOT REGIONAL. The packet notes that Ch1 teaches the
    map skills (latitude and longitude, physical, political and thematic maps, the five
@@ -57,8 +57,6 @@ module.exports = {
   sheet: { slug: "reading-the-map-homework", subject: "history",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "cJt5Yi48oQ0", title: "European Geography Made Easy", channel: "Miacademy",
-    why: "A quick tour of Europe's mountains, seas and rivers. It helps to see the whole shape once before you place the cities on it." },
   shelf: { grades: [7], subject: "History",
     blurb: "Two numbers can put a finger on any city on earth. Latitude and longitude, three kinds of maps, and the mountains, rivers and seas that shaped Europe, North Africa and Southwest Asia.",
     contains: [

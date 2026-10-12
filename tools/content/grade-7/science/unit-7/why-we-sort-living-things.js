@@ -57,8 +57,6 @@ module.exports = {
   sheet: { slug: "why-we-sort-living-things-homework", subject: "science",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "kfRBJqpavU0", title: "Taxonomy: How Scientists Classify Living Things", channel: "Miacademy",
-    why: "A quick tour of how living things get sorted and named, with the levels drawn out, which helps before the next lesson goes deeper." },
 
   shelf: { grades: [7], subject: "Science",
     blurb: "A trip to the zoo raises a problem nobody can answer without a system: is it a bird or an insect, a monkey or a bear? How people learned to sort living things, and how every organism got a two-word name.",

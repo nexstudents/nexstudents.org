@@ -56,8 +56,6 @@ module.exports = {
   sheet: { slug: "unit-3-review-homework", subject: "maths",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "e3uY2LraXts", title: "Mean, Median, Mode, and Range", channel: "Math with Mr. J",
-    why: "A quick refresher on the middle of the unit, with the range thrown in, in case the numbers went fuzzy." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "One basketball team, one season of numbers, and every Unit 3 tool: scales, line plots, stem-and-leaf plots, mean, median, mode, predictions and spotting a misleading average.",

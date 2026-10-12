@@ -6,7 +6,7 @@
    The Feudal Order) and McDougal Littell World History: Medieval and Early Modern Times
    Ch9 Lesson 1 pp295-297 (feudalism, lords, vassals, fiefs, knights, serfs) and Lesson 2
    p298 and p304 (serfs bound to the soil), via the week 8-9 packet (paraphrased notes).
-   The video is noted in `video`.
+   The video is now added per student in Teacher Notes.
 
    🚨 THE SPINE IS THE BOOK'S: feudalism grew out of the violent, unstable time after
    Charlemagne's empire split, as a way for kings and nobles to hold land and power. A lord
@@ -60,8 +60,6 @@ module.exports = {
   sheet: { slug: "what-feudalism-actually-was-homework", subject: "history",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "ewcSyGyKysk", title: "Exploring Feudalism and Manorialism During the Middle Ages", channel: "Lesson Boosters",
-    why: "The same order explained with a different picture of the pyramid, and a first look at the manor that the next lessons cover." },
   shelf: { grades: [7], subject: "History",
     blurb: "When no king could protect you, you needed somebody who could. Lord, vassal, fief, knight and serf, and the deal that tied them together.",
     contains: [

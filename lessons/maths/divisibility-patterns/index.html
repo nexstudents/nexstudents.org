@@ -495,7 +495,7 @@ var VISUALS = [];
 var WORK = [
   {"title":"Mia's Sticker Book","ask":"Mia's sticker book has 5,148 stickers. Test it against 2, 3, 4, 5, 6, 9 and 10, one step at a time.","steps":[{"ask":"What is the ones digit?","answer":8,"hint":"It's the digit on the far right.","why":"8 is even, so 5,148 passes for 2, and since it isn't 0 or 5 it fails for 5 and 10."},{"ask":"What is the digit sum?","answer":18,"hint":"Add all four digits.","why":"18 divides by 3 and by 9, so 5,148 passes both."},{"ask":"Take the last two digits and divide by 4. What do you get?","answer":12,"hint":"The last two digits are 48.","why":"48 ÷ 4 = 12 with no remainder, so 5,148 passes for 4."},{"ask":"Now list every divisor from 2, 3, 4, 5, 6, 9 and 10 that divides 5,148. Type them with commas.","answer":[2,3,4,6,9],"hint":"6 passes because 5,148 passed both 2 and 3. Which two fail?","why":"2, 3, 4, 6 and 9 pass, and 5 and 10 fail."}]}
 ];
-var VIDEO = {"id":"uiSDZ3zB_d4","title":"Divisibility Rules for 2, 3, 4, 5, 6, 7, 8, 9, & 10","channel":"Tutoring Hour","why":"The same rules, plus tests for 7 and 8, which the book leaves out. Worth watching once the seven rules in the lesson feel easy."};
+var VIDEO = null;
 
 var PARTS = [
   { title: "Equal Piles", s: [
@@ -558,11 +558,11 @@ var PARTS = [
   ] },
   { title: "When There Is No Rule", s: [
     "The book gives rules for 2, 3, 4, 5, 6, 9 and 10, and none for 7 or 8, so for those you simply divide with a calculator and look for a remainder of zero.",
-    "There are tests for 7 and 8 too, and the video shows them, but they take longer than just dividing."
+    "There are tests for 7 and 8 too, but they take longer than just dividing."
   ] },
   { title: "What To Do Now", s: [
     "Eli's box of cards turned into seven quick tests, and the rest of this page is your turn to try them on numbers of your own.",
-    "First work through Your Turn below the reading, typing each step, and watch the video if you want to see the tests for 7 and 8 too.",
+    "First work through Your Turn below the reading, typing each step.",
     "Then come four word cards, then Eight questions, then four more questions about those words, Twelve questions in all.",
     "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

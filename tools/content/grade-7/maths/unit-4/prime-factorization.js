@@ -44,8 +44,6 @@ module.exports = {
   sheet: { slug: "prime-factorization-homework", subject: "maths",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "XGbOiYhHY2c", title: "Prime Factorization", channel: "Math Antics",
-    why: "The same factor trees and the same dividing method, from a different teacher with different numbers. Worth a look if you lose track of which branches are finished." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "Eli has 24 chairs and can set them out four ways, and 29 chairs only one way. Prime and composite numbers, factor trees, and breaking any number into primes.",
@@ -245,7 +243,7 @@ module.exports = {
 
   todo: { title: "What To Do Now", s: [
       "Eli's chairs turned into primes, trees and a ladder of divisions, and the rest of this page is your turn to break numbers down yourself.",
-      "First work through Your Turn below the reading, typing each step, and watch the video if keeping track of which branches are finished feels hard.",
+      "First work through Your Turn below the reading, typing each step.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

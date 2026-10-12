@@ -5,7 +5,7 @@
    ⚠️ DRAFT PROSE, CLAUDE'S, 2026-10-11. Written on Sonnet to the /teach-plan block in
    `plan` below and given the /natural pass. Paul has not read it. Sources: Holt Elements
    of Literature, First Course, Speaking and Listening Workshop pp180-181 via the week 8-9
-   packet (paraphrased notes); the video noted in `video`. The scripture (Proverbs 15:22)
+   packet (paraphrased notes); the video (now added per student in Teacher Notes). The scripture (Proverbs 15:22)
    is a suggestion, his call.
 
    The STORY is OURS: a short model discussion in which four students (Maya, Jonah, Priya
@@ -48,8 +48,6 @@ module.exports = {
   sheet: { slug: "holding-a-group-discussion-homework", subject: "english",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "YY2yjEEoB3U", title: "How to discuss a topic in a group", channel: "engVid",
-    why: "A different teacher on the same skill, with phrases for agreeing, disagreeing and keeping a group on track. It's aimed at adult English learners, but the habits are the same." },
 
   shelf: { grades: [7], subject: "English",
     blurb: "Four students, one story and fifteen minutes to agree on what it means. The five steps that turn four opinions into one answer.",

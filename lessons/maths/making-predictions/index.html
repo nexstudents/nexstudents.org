@@ -495,7 +495,7 @@ var VISUALS = [];
 var WORK = [
   {"title":"Noah Joins the Mile","ask":"Noah, a friend of Eli's, ran the mile in 15 minutes in week 1, 13.5 in week 2, 12 in week 3 and 10.5 in week 4. Predict his time and test the trend, one step at a time.","steps":[{"ask":"How many steps are there between week 1 and week 4?","answer":3,"hint":"Steps are the gaps between the weeks, not the weeks themselves.","why":"Three steps, which is one fewer than the four data points."},{"ask":"What's the change per week? Use a negative number because his time is falling.","answer":-1.5,"hint":"Last time minus first time, then divide by the number of steps.","why":"Noah drops 1.5 minutes every week."},{"ask":"Predict his time in week 6.","answer":7.5,"hint":"Week 6 is two steps past week 4. Add the change twice to 10.5.","why":"About 7.5 minutes, if the trend holds."},{"ask":"At this rate, in which week would his time reach zero minutes?","answer":11,"hint":"He starts at 15 and loses 1.5 a week. How many weeks to lose all 15? Then add that to week 1.","why":"Ten weeks of dropping takes him from week 1 to week 11, and a mile time of zero is impossible, so the trend must stop before that."}]}
 ];
-var VIDEO = {"id":"2L72K16bzOc","title":"Making Predictions from Line Graphs","channel":"Andrew Armstead","why":"A line graph of a store's sales with a dashed line for the prediction. It's the same move you use here, describe the trend and then extend it, on a different graph."};
+var VIDEO = null;
 
 var PARTS = [
   { title: "Where Will He Be by Week Eight?", s: [
@@ -549,7 +549,7 @@ var PARTS = [
   ] },
   { title: "What To Do Now", s: [
     "Eli's mile times gave you two skills, extending a trend and noticing when it breaks, and the rest of this page is your turn to use both.",
-    "First work through Your Turn below the reading, typing each step, and watch the video if finding the change per step still feels slippery.",
+    "First work through Your Turn below the reading, typing each step.",
     "Then come four word cards, then Eight questions, then four more questions about those words, Twelve questions in all.",
     "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

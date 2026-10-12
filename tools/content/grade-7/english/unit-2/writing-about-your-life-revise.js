@@ -5,7 +5,7 @@
    ⚠️ DRAFT PROSE, CLAUDE'S, 2026-10-11. Written on Sonnet to the /teach-plan block in
    `plan` below and given the /natural pass. Paul has not read it. Sources: Holt Elements
    of Literature, First Course, Writer's Workshop pp186 and Sentence Workshop p187 via the
-   week 8-9 packet (paraphrased notes); the video noted in `video`, whose transcript was
+   week 8-9 packet (paraphrased notes); the video (now added per student in Teacher Notes), whose transcript was
    read for the teaching order only (nothing copied). The scripture (Habakkuk 2:2) is a
    suggestion, his call.
 
@@ -49,8 +49,6 @@ module.exports = {
   sheet: { slug: "writing-about-your-life-revise-homework", subject: "english",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "sAo6LbCUAQo", title: "Dependent and independent clauses", channel: "Khan Academy",
-    why: "Two teachers on the difference between a clause that stands alone and one that can't, with examples of the words that make a clause lean on another. Worth a watch before the questions." },
 
   scripture: {
     ref: "Habakkuk 2:2",

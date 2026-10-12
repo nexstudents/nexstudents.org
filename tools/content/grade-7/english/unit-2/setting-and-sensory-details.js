@@ -6,7 +6,7 @@
    `plan` below and given the /natural pass. Paul has not read it. Sources: Holt Elements
    of Literature, First Course, Collection 2, pp152-167 via the week 8-9 packet
    (paraphrased notes); Jack London, "To Build a Fire", from Lost Face (1910), Project
-   Gutenberg #2429; the video noted in `video`.
+   Gutenberg #2429; the video (now added per student in Teacher Notes).
 
    The STORY is Jack London's "To Build a Fire" (public domain), five short excerpts
    chosen for setting and sensory detail. It is London's wording with these changes only:
@@ -51,8 +51,6 @@ module.exports = {
   sheet: { slug: "setting-and-sensory-details-homework", subject: "english",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "ttVT7YMtQmo", title: "Telling a Story: Using Sensory Details", channel: "Miacademy",
-    why: "Another teacher showing how a few sensory details turn a flat sentence into a place you can feel. Worth watching once before the questions." },
 
   shelf: { grades: [7], subject: "English",
     blurb: "A man walks into seventy-five below zero and doesn't think much of it. Setting, the five senses, and how a place can push a story along.",

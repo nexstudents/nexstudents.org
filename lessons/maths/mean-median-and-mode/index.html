@@ -495,7 +495,7 @@ var VISUALS = [];
 var WORK = [
   {"title":"Eli's Spelling Tests","ask":"Eli's last six spelling tests: 80, 100, 70, 95, 80, 85. Find the mode, the median and the mean, one step at a time.","steps":[{"ask":"Put the six scores in order from least to greatest. Type them with commas between.","answer":[70,80,80,85,95,100],"hint":"Start with the smallest score and keep going up. Both 80s go in.","why":"Right. Everything else is easier now that they're in a line."},{"ask":"What's the mode?","answer":80,"hint":"Which score shows up more than once?","why":"80 is the only score that appears twice."},{"ask":"Six scores means two in the middle. What is the median?","answer":82.5,"hint":"The two middle scores are the 3rd and the 4th. Add them and divide by 2.","why":"Halfway between 80 and 85 is 82.5, and like Eli's science median it isn't one of his scores."},{"ask":"Add all six scores. What's the total?","answer":510,"hint":"Add them two at a time if that's easier.","why":"510. One more step."},{"ask":"How many scores did you add? That count is what you divide by.","answer":6,"hint":"Count the scores in the list.","why":"Six scores, so the total gets split into six equal parts."},{"ask":"Now divide the total by that count. What's the mean?","answer":85,"hint":"There are six scores.","why":"85. So his median is 82.5 and his mean is 85, and this time the 100 pulled the mean up."}]}
 ];
-var VIDEO = {"id":"B1HEzNTGeZ4","title":"Mean, Median and Mode","channel":"Math Antics","why":"The same three measures explained by a different teacher, with different numbers. Worth watching once before Your Turn, or again if the median with two middle numbers didn't click."};
+var VIDEO = null;
 
 var PARTS = [
   { title: "One Number for a Pile of Scores", s: [
@@ -571,7 +571,7 @@ var PARTS = [
   ] },
   { title: "What To Do Now", s: [
     "Eli's report card question turned out to be three different measures, and the rest of this page is your turn to find all three yourself.",
-    "First work through Your Turn below the reading, typing each step, and watch the video if the median with two middle numbers still feels shaky.",
+    "First work through Your Turn below the reading, typing each step.",
     "Then come four word cards, then Nine questions, then four more questions about those words, Thirteen questions in all.",
     "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

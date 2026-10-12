@@ -62,8 +62,6 @@ module.exports = {
   sheet: { slug: "the-rain-forest-homework", subject: "science",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "3vijLre760w", title: "Rainforests 101", channel: "National Geographic",
-    why: "Shows what the rain forest looks like and why so many kinds of living things pack into it, which is hard to picture from words alone." },
 
   shelf: { grades: [7], subject: "Science",
     blurb: "Fifty acres of rain forest are cut down every minute, and most of what lives there has never been named. What's being lost, who depends on it, and a hard question with two real sides.",

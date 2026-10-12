@@ -41,8 +41,6 @@ module.exports = {
   sheet: { slug: "stem-and-leaf-plots-homework", subject: "maths",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "ai7nJBiQVgw", title: "How to Make a Stem-and-Leaf Plot (2-Digits)", channel: "Math with Mr. J",
-    why: "Another teacher builds the same plot from ages, and sorts the numbers before he starts. Worth a look if keeping the leaves in order felt like a lot to track." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "Sixteen kids jumped rope for a minute. A stem-and-leaf plot shows every score and the shape of the whole group in one little picture.",
@@ -231,7 +229,7 @@ module.exports = {
 
   todo: { title: "What To Do Now", s: [
       "Sixteen jump-rope scores turned into one tidy picture, and the rest of this page is your turn to build one yourself.",
-      "First work through Your Turn below the reading, typing each step, and watch the video if keeping the leaves in order still feels like a lot to track.",
+      "First work through Your Turn below the reading, typing each step.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

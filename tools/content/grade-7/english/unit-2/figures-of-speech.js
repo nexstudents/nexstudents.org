@@ -5,7 +5,7 @@
    ⚠️ DRAFT PROSE, CLAUDE'S, 2026-10-11. Written on Sonnet to the /teach-plan block in
    `plan` below and given the /natural pass. Paul has not read it. Sources: Holt Elements
    of Literature, First Course, pp168-171 via the week 8-9 packet (paraphrased notes); the
-   video noted in `video`, whose transcript was read for the teaching order only (nothing
+   video (now added per student in Teacher Notes), whose transcript was read for the teaching order only (nothing
    copied).
 
    The STORY is Emily Dickinson's "I'm Nobody! Who are you?", the full eight lines,
@@ -50,8 +50,6 @@ module.exports = {
   sheet: { slug: "figures-of-speech-homework", subject: "english",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "NegoYIuXoEA", title: "Metaphor, Simile, Personification, Hyperbole", channel: "Mineola Creative Content",
-    why: "A quick tour of the same figures with different examples, including the two extras this lesson only mentions. Worth a watch after the walkthroughs." },
 
   shelf: { grades: [7], subject: "English",
     blurb: "A poet says it's dreary to be somebody, and compares fame to a frog. Simile, metaphor, and how to tell them apart.",

@@ -64,8 +64,6 @@ module.exports = {
   sheet: { slug: "the-evidence-examined-homework", subject: "science",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "-AUS6OoCoqE", title: "Geologic Time Scales, Rock Strata, Absolute vs Relative Dating", channel: "Cognito",
-    why: "The same two kinds of dating, shown with drawings of the layers, which helps if the order of the rock is hard to picture." },
 
   shelf: { grades: [7], subject: "Science",
     blurb: "A couple on a Texas lakeshore pick up an odd rock, and it turns out to be a monster's skull. What the rocks, bones and DNA show, and what people take them to mean.",

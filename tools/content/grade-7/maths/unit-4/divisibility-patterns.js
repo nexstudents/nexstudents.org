@@ -42,8 +42,6 @@ module.exports = {
   sheet: { slug: "divisibility-patterns-homework", subject: "maths",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "uiSDZ3zB_d4", title: "Divisibility Rules for 2, 3, 4, 5, 6, 7, 8, 9, & 10", channel: "Tutoring Hour",
-    why: "The same rules, plus tests for 7 and 8, which the book leaves out. Worth watching once the seven rules in the lesson feel easy." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "Eli wants to split his baseball cards into equal piles without doing any division. Seven quick tests tell you which piles will come out even.",
@@ -144,7 +142,7 @@ module.exports = {
 
     { title: "When There Is No Rule", s: [
       "The book gives rules for 2, 3, 4, 5, 6, 9 and 10, and none for 7 or 8, so for those you simply divide with a calculator and look for a remainder of zero.",
-      "There are tests for 7 and 8 too, and the video shows them, but they take longer than just dividing."
+      "There are tests for 7 and 8 too, but they take longer than just dividing."
     ]}
   ],
 
@@ -257,7 +255,7 @@ module.exports = {
 
   todo: { title: "What To Do Now", s: [
       "Eli's box of cards turned into seven quick tests, and the rest of this page is your turn to try them on numbers of your own.",
-      "First work through Your Turn below the reading, typing each step, and watch the video if you want to see the tests for 7 and 8 too.",
+      "First work through Your Turn below the reading, typing each step.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }

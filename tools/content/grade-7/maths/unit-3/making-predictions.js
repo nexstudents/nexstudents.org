@@ -43,8 +43,6 @@ module.exports = {
   sheet: { slug: "making-predictions-homework", subject: "maths",
     note: "Do it on screen or print it. Your score shows here once you check it." },
 
-  video: { id: "2L72K16bzOc", title: "Making Predictions from Line Graphs", channel: "Andrew Armstead",
-    why: "A line graph of a store's sales with a dashed line for the prediction. It's the same move you use here, describe the trend and then extend it, on a different graph." },
 
   shelf: { grades: [7], subject: "Math",
     blurb: "Eli can run the mile a bit faster every week, so how fast will he be by week 8? And why can't it go on forever? Reading a trend and extending it.",
@@ -231,7 +229,7 @@ module.exports = {
 
   todo: { title: "What To Do Now", s: [
       "Eli's mile times gave you two skills, extending a trend and noticing when it breaks, and the rest of this page is your turn to use both.",
-      "First work through Your Turn below the reading, typing each step, and watch the video if finding the change per step still feels slippery.",
+      "First work through Your Turn below the reading, typing each step.",
       "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
