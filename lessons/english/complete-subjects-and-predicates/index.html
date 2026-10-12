@@ -1095,7 +1095,15 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 .vid-tile .n{position:absolute;top:6px;left:6px;min-width:22px;height:22px;padding:0 6px;box-sizing:border-box;border-radius:11px;
   display:grid;place-items:center;background:rgba(0,0,0,.74);color:#fff;font:700 12px/1 "IBM Plex Sans",system-ui,sans-serif}
 .vid-tile .l{display:block;padding:7px 9px;font-size:.85rem;line-height:1.3;overflow-wrap:anywhere}
-.dbox-vid.is-tiles .vid-well, .dbox-vid.is-tiles .vid-all{display:none}
+.dbox-vid.is-tiles .vid-well, .dbox-vid.is-tiles .vid-all, .dbox-vid.is-tiles .vid-nav{display:none}
+/* 🚨 SWITCH VIDEOS WITHOUT LEAVING THE PLAYER. Paul, 2026-10-12: "when one video is open
+   there's no direct way to select another video." A numbered row sits above the player,
+   the one playing is filled, and All Videos goes back to the tiles. */
+.vid-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:0 0 8px}
+.vid-nav button{appearance:none;cursor:pointer;min-width:36px;height:32px;padding:0 10px;border-radius:16px;
+  border:1px solid var(--rule);background:transparent;color:var(--ink);font:600 13px/1 "IBM Plex Sans",system-ui,sans-serif}
+.vid-nav button:hover{border-color:var(--verdigris)}
+.vid-nav button.on{background:var(--verdigris);border-color:var(--verdigris);color:var(--surface, #fff)}
 .dbox-vid:not(.is-tiles) .vid-tiles{display:none}
 :root:not([data-theme="light"]) .wbox.is-right{border-color:#3f9d6d}
 :root:not([data-theme="light"]) .wnote.good{color:#7fc9a1}
@@ -5144,6 +5152,11 @@ function vidPlay(i){
   vidCur = i;
   vidHost.classList.remove("is-tiles");
   if (vidKind) vidKind.textContent = "Watch It Explained · " + vidItems[i].label;
+  vidHost.querySelectorAll(".vid-nav [data-i]").forEach(function(b){
+    var on = +b.getAttribute("data-i") === i;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  });
   vidPoster();
 }
 /* a fresh player is the only reliable way to stop a cross-origin video */
@@ -5180,6 +5193,28 @@ function vidSync(){
   vidKind.className = "dbox-kind";
   vidKind.textContent = "Watch It Explained" + (vidItems.length === 1 && vidItems[0].channel ? " · " + vidItems[0].channel : "");
   vidHost.appendChild(vidKind);
+  if (vidItems.length > 1) {
+    var nav = document.createElement("div");
+    nav.className = "vid-nav";
+    nav.setAttribute("role", "group");
+    nav.setAttribute("aria-label", "Pick a video");
+    vidItems.forEach(function(it, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = String(i + 1);
+      b.title = it.label;
+      b.setAttribute("aria-label", "Video " + (i + 1) + ": " + it.label);
+      b.setAttribute("data-i", String(i));
+      b.addEventListener("click", function(){ vidPlay(i); });
+      nav.appendChild(b);
+    });
+    var allB = document.createElement("button");
+    allB.type = "button";
+    allB.textContent = "All Videos";
+    allB.addEventListener("click", vidAll);
+    nav.appendChild(allB);
+    vidHost.appendChild(nav);
+  }
   vidWell = document.createElement("div");
   vidWell.className = "vid-well";
   vidHost.appendChild(vidWell);
@@ -5216,12 +5251,7 @@ function vidSync(){
       vidTiles.appendChild(t);
     });
     vidHost.appendChild(vidTiles);
-    var all = document.createElement("button");
-    all.type = "button";
-    all.className = "vid-back vid-all";
-    all.textContent = "Back to the Videos";
-    all.addEventListener("click", vidAll);
-    vidHost.appendChild(all);
+    /* "All Videos" in the numbered row above the player is the way back to the tiles. */
     vidAll();
   } else {
     vidCur = 0;
