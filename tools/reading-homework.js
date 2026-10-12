@@ -56,6 +56,25 @@ sheet({
   ],
   eyebrow: "Life Science &middot; U6-L2",
   signoff: "Ask two things about every piece of evidence: what was found, and what is it taken to mean?",
+  howTo: {
+    steps: [
+      "A fossil is any trace of life from an earlier time, like bones, leaf imprints, casts or insects in amber. Most are found in sedimentary rock, which forms when mud and sand settle out of water and pack down in layers.",
+      "Relative dating: in undisturbed rock, the lower layers were laid down first, so a lower fossil is older. It gives an order, not an age in years.",
+      "Radioactive dating gives numbers. A radioactive element changes into a stable product at a steady rate, like uranium into lead, so more of the product means an older rock.",
+      "That clock takes three things for granted: the rate stayed the same, the rock started with none of the product (or a known amount), and nothing was added or lost.",
+      "For every kind of evidence, ask two things: what was found or measured, and what is it taken to mean? Both accounts accept the finds as real.",
+      "Common descent reads the likenesses between living things as shared ancestors. Creation reads them as one Designer using good plans again and again. Say what each one claims, never which is true.",
+    ],
+    example: {
+      problem: "Rock A has a lot of lead beside a little uranium. Rock B has mostly uranium and only a little lead. Which rock is older?",
+      work: [
+        ["Find the clue. Uranium changes into lead, so the lead is the new product.", ""],
+        ["Recall the rule from the lesson. Each radioactive element changes at its own steady rate, so more lead beside the uranium means the clock has run longer.", "More lead = older rock"],
+        ["Apply it. Rock A has more lead.", "Rock A is older"],
+        ["Name what the answer takes for granted. The clock assumes the rate stayed the same, and that the rock started with none of the lead or a known amount.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("You find the outline of a leaf pressed into mud that hardened long ago. What do we call a trace of life like this?", "Fossil. An imprint counts.", "fossil|fossils"),
@@ -104,6 +123,25 @@ sheet({
   ],
   eyebrow: "Life Science &middot; U6-L3",
   signoff: "Protect the place, breed the animals, and do both at once.",
+  howTo: {
+    steps: [
+      "Extinction is the dying out of a species: the last one is gone, and nobody is left to have young. An endangered species has so few left that it could die out soon.",
+      "Some extinction is natural. Environments change, and species that can't adapt die out. The fossil record shows big extinctions long before people, and the dinosaurs are the best-known example.",
+      "People have raised the rate far above the natural one, mostly by destroying habitats (the places living things make their homes) and food supplies.",
+      "Rescue one is to protect the natural areas where the species still lives, so it has food and shelter and a chance to rebuild.",
+      "Rescue two is to breed endangered animals in captivity, like in zoos, and later release the young. In vitro fertilization joins an egg and a sperm in a test tube, then the embryo grows inside a different female.",
+      "The book's conclusion is to do both at once. Breeding needs a place to release the young, and protected land alone does little for a species down to a handful.",
+    ],
+    example: {
+      problem: "A Bengal tiger cub was born to a Siberian tiger acting as a foster mother. How did that happen?",
+      work: [
+        ["Find the clue. The cub is a different kind of tiger from the mother, so the cub didn't start growing in her the usual way.", ""],
+        ["Recall the method from the lesson. An egg and a sperm are joined in a test tube.", "In vitro fertilization"],
+        ["The tiny embryo is then placed inside a different female, who carries it until the cub is born.", "The Siberian tiger was the foster mother"],
+        ["Say which rescue it belongs to. It's breeding in captivity, so the young can be released later.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("A marsh is drained and the birds lose the place where they make their homes. What word names that kind of place?", "Habitat.", "habitat|habitats"),
@@ -151,6 +189,25 @@ sheet({
   ],
   eyebrow: "Life Science &middot; U6-L4",
   signoff: "Say what was found, say what is claimed, and say who claims it.",
+  howTo: {
+    steps: [
+      "Primates are the monkeys, apes and humans. The book names three traits they all share: an opposable thumb that crosses the palm, binocular vision (both eyes face forward), and flexible shoulders and forelimbs that can rotate.",
+      "The DNA of chimpanzees, gorillas and humans is very similar, and so are some proteins, like hemoglobin. Scientists lined up the code and counted the matches, and anyone can repeat the count.",
+      "The textbook says hominids split off 4 to 6 million years ago. They were humanlike primates that walked upright and had a bigger brain than other great apes.",
+      "The bones people point to are Dart's skull (early 1920s), Lucy (1974), Homo habilis with stone tools beside it, and Homo sapiens, which the book dates at about 300,000 years.",
+      "Sort every statement. It's FOUND if anyone can look at it, measure it or date it. It's a CLAIM if it's about the distant past, which nobody watched and nothing can repeat.",
+      "Common descent says people and the apes share an ancestor and the fossils are steps along the way. Creation says God made people on purpose, in his own image. Both accept that the bones were really found. Say what each claims, never which is true.",
+    ],
+    example: {
+      problem: "A monkey swings from branch to branch. Which of the three primate traits makes that possible?",
+      work: [
+        ["Find the clue. The question is about swinging from branch to branch.", ""],
+        ["Recall the three traits all primates share.", "1. An opposable thumb\n2. Binocular vision (eyes face forward)\n3. Flexible shoulders and forelimbs that can rotate"],
+        ["Match the clue to a trait. Swinging needs arms that can rotate.", "Flexible shoulders"],
+        ["Write the answer in a sentence.", "A monkey can swing because its shoulders and forelimbs are flexible and can rotate."],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("A thumb crosses the palm and touches the tip of each finger. What kind of thumb is it?", "An opposable thumb.", "opposable"),
@@ -198,6 +255,25 @@ sheet({
   ],
   eyebrow: "Life Science &middot; U6-L5",
   signoff: "For every statement in this unit, ask whether it was found or measured, or whether it is a claim about the past.",
+  howTo: {
+    steps: [
+      "Variation and natural selection: members of a population differ (variation), and the ones with helpful variations leave more young. Genes, not habits, are what get inherited.",
+      "Fossils and dating: relative dating orders fossils by their layers, with the lower ones older in undisturbed rock. Radioactive dating gives numbers and assumes the rate and the starting amount never changed.",
+      "Extinction: some is natural, but people raised the rate by destroying habitats. The two rescues are to protect natural areas and to breed in captivity, and the book says do both.",
+      "Primates and fossils: all primates share a thumb, forward-facing eyes and flexible shoulders. Know Dart's skull, Lucy, Homo habilis and Homo sapiens.",
+      "For every statement, ask: was it found or measured, or is it a claim about the distant past that nobody watched?",
+      "Common descent and creation each read the likenesses their own way. Say what each one claims, never which is true.",
+    ],
+    example: {
+      problem: "A human arm, a dolphin's flipper, a bat's wing and a bird's wing hold nearly the same bones. Is that found or is it a claim?",
+      work: [
+        ["Ask the sorting question. Could you point at it, measure it or repeat it?", ""],
+        ["Anyone can lay the bones side by side and compare them. That makes it a find.", "FOUND (homologous structures)"],
+        ["Now look at what comes after. What the likeness says about where living things came from is about the distant past, which nobody watched and no experiment can repeat.", "That part is a claim"],
+        ["Write the answer. The bones are found. What they mean about the beginning is a separate question.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("Birds in one flock differ from each other in things like beak depth. What word names those differences?", "Variation.", "variation|variations"),
@@ -247,6 +323,24 @@ sheet({
   ],
   eyebrow: "Life Science &middot; U7-L1",
   signoff: "Genus first with a capital, species second in lowercase, and no two living things share a name.",
+  howTo: {
+    steps: [
+      "To classify is to group things by how they're alike. Taxonomy is the science of grouping and naming living things. The largest group is a kingdom.",
+      "Aristotle put living things into two kingdoms, plants and animals, and split the animals by where they live: on land, in water or in the air. It broke down because of exceptions, like a frog that lives in water as a tadpole and on land as an adult.",
+      "Linnaeus grouped living things by their body structures instead of where they live. He also gave every organism a two-part name, called binomial nomenclature.",
+      "The first word is the genus, a group of similar species, with a capital letter. The second word is the species, the smallest and most specific group, in lowercase. Both are written in italics or underlined.",
+      "Two living things with the same genus are close relatives. The white oak (Quercus alba) and the red oak (Quercus rubra) share the genus Quercus.",
+      "Linnaeus used Latin because scholars everywhere understood it and its words don't change. No two organisms may share a scientific name.",
+    ],
+    example: {
+      problem: "Aristotle put plants in groups by their size and structure, so an apple tree and a maple tree went together. Why did that cause trouble?",
+      work: [
+        ["Find the clue. He grouped plants by size and structure, not by how closely related they are.", ""],
+        ["Recall the lesson. Trees aren't all closely related. An apple tree is more like a rose bush than like a maple tree.", "apple tree is closer to a rose bush than to a maple"],
+        ["Write the answer. Grouping by size, or by where something lives, was too rough, so people went looking for something better.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("A store puts milk and cheese together because they are alike. What do we call grouping things this way?", "To classify them.", "classify|classifying|classification"),
@@ -294,6 +388,27 @@ sheet({
   ],
   eyebrow: "Life Science &middot; U7-L2",
   signoff: "Four questions find the kingdom, and seven levels narrow it down to one species.",
+  howTo: {
+    steps: [
+      "Today scientists look at more than what they can see. They use chemical makeup, genes, body structures, fossils and how the embryo develops. DNA can separate two species that look exactly alike.",
+      "Four questions place almost any living thing in one of five kingdoms: does it have a nucleus, is it one cell or many, does it make its own food, and does it move?",
+      "No organized nucleus means a prokaryote, and that's the Monera (bacteria). Every other kingdom is made of eukaryotes, cells with a true nucleus.",
+      "Protists are eukaryotes of one or many cells, a catch-all group. Fungi don't move and can't make their own food. Plants are many-celled, don't move and make their own food. Animals are many-celled, move and eat.",
+      "Inside a kingdom there are seven levels, always in this order: kingdom, phylum, class, order, family, genus, species. Remember it as King Philip Came Over For Good Soup. Each step down holds fewer organisms with more in common.",
+      "Many books count six kingdoms by splitting the bacteria in two. The questions and the levels still work.",
+    ],
+    example: {
+      problem: "Classify the Arctic wolf, starting from the biggest group and working down.",
+      work: [
+        ["Use the four questions. The wolf has a nucleus, has many cells, can't make its own food and moves. That's an animal.", "Kingdom: Animalia"],
+        ["Go one level down. Animals with a backbone.", "Phylum: Chordata"],
+        ["Hairy animals that feed their young milk.", "Class: Mammalia"],
+        ["Meat-eating mammals, then the dog family inside them.", "Order: Carnivora\nFamily: Canidae"],
+        ["Wolves, dogs and their closest kin, then the wolf itself. That gives the two-word name.", "Genus: Canis\nSpecies: Canis lupus"],
+        ["Check that it narrowed at every step. The wolf's closest relative in the book is the dog, in the same genus.", "Canis lupus (wolf) and Canis familiaris (dog)"],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("A bacterium's cell has no organized nucleus. What is a cell like that called?", "A prokaryote.", "prokaryote|prokaryotes|prokaryotic"),
@@ -339,6 +454,24 @@ sheet({
   ],
   eyebrow: "Life Science &middot; U7-L3",
   signoff: "A farmer has to be part of any answer that works.",
+  howTo: {
+    steps: [
+      "Deforestation is the destruction of forests. The book says more than 50 acres of tropical forest in South America are cleared every minute. These are the textbook's own 1994 estimates.",
+      "Species diversity is the great variety of plants and animals in a place. A rain forest has more of it than almost anywhere, and only about 15 percent of the species there have even been identified.",
+      "Clearing has two dangerous effects. One is on the air, because there are fewer plants to take in carbon dioxide and give off oxygen. The other is on the weather.",
+      "Rain forest soil is poor. Most nutrients are held in the living plants, not the ground, so a cleared patch can be farmed for only a few years. Then the farmers cut new forest.",
+      "The farmers aren't villains. Native people depend on farming and cutting the land to feed their families, so they have to be part of any answer that works.",
+      "The hard question is whether the United States should buy the land and keep it from being cleared. One side says the forest matters to everyone. The other says the local people should decide, and the world should help them find another way to live. Say what each side says, never which is right.",
+    ],
+    example: {
+      problem: "The book warns about the species of the world if the clearing doesn't slow. What could the world lose, and in how long?",
+      work: [
+        ["Find the clue. The question asks for a share of the species and a length of time.", ""],
+        ["Recall the lesson. If the clearing doesn't slow, the world could lose a fourth of all the species alive today in about 30 years.", "1/4 of all species, in about 30 years"],
+        ["Write the answer, and remember these numbers are the textbook's own 1994 estimates, a snapshot and not today's count.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("A forest is cleared for farms or lumber. What is the destruction of forests called?", "Deforestation.", "deforestation"),
@@ -384,6 +517,26 @@ sheet({
   ],
   eyebrow: "Life Science &middot; U7-L4",
   signoff: "Start at pair 1, choose one of exactly two, and stop when you land on a name.",
+  howTo: {
+    steps: [
+      "A common name, like robin, changes from place to place. A scientific name (genus, then species) belongs to only one kind of organism, so it avoids mistakes and lets scientists file what's known. Common names can mislead: a starfish isn't a fish.",
+      "A field guide is a book for identifying living things. Many have a dichotomous key. Dichotomous means divided into two parts, so every step gives exactly two choices.",
+      "A key is a numbered list of pairs, each with two statements labeled a and b, like 1a and 1b. Always start at pair 1, never in the middle.",
+      "Pick the statement that matches the animal in front of you. It ends in either a name or the words go to a number. Follow the go-tos until you land on a name.",
+      "Say the name as two words, genus first. Stop as soon as you reach a name.",
+      "A key works only for the group it was built for. To make one, split a group in two by one trait at a time, then test it by asking someone else to use it.",
+    ],
+    example: {
+      problem: "A small gray animal has fourteen legs and curls into a ball. The key: 1a has legs, go to pair 2. 1b no legs, go to pair 4. 2a six legs, black garden ant. 2b more than six legs, go to pair 3. 3a eight legs, garden spider. 3b fourteen legs, pill bug.",
+      work: [
+        ["Begin at pair 1, the only place you can begin. Does it have legs?", "1a: has legs, go to pair 2\n1b: no legs, go to pair 4"],
+        ["It has legs, so choose 1a and go to pair 2.", ""],
+        ["Count the legs. Fourteen is more than six, so 2b fits.", "2a: six legs, ant\n2b: more than six legs, go to pair 3"],
+        ["At pair 3 the count is fourteen, so 3b fits. It ends in a name, so stop.", "3a: eight legs, garden spider\n3b: fourteen legs, pill bug"],
+        ["Say the name as two words, genus first.", "Armadillidium vulgare"],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("The everyday name for a living thing changes from town to town. What kind of name is it?", "A common name.", "common name|common"),
@@ -431,6 +584,25 @@ sheet({
   ],
   eyebrow: "World History &middot; U2-L8",
   signoff: "Counts, inspectors, laws and schools held the empire together, and only while one man was alive to run them.",
+  howTo: {
+    steps: [
+      "The Franks were a Germanic people who built a strong kingdom in what's now France. Their leader Clovis became a Christian around 507, and most of his subjects followed, which tied the Franks to the church of Rome.",
+      "Charlemagne's father was Pepin the Short, who took the crown in 751. Pope Leo III crowned Charlemagne emperor in Rome on Christmas Day in the year 800.",
+      "Charlemagne spread Christianity by conquest and sometimes forced conversion. After a Saxon rebellion he ordered thousands of captives executed at Verden in 782.",
+      "To hold a huge land together with no postal system, he used counts over the regions, inspectors sent in pairs to report back, laws written down, and a court school with scholars.",
+      "He died in 814, and the empire had been held together by one man's will. In 843 his grandsons divided it in the Treaty of Verdun, a written agreement between rulers.",
+      "A divided empire was weaker. Vikings, Muslim raiders and Magyars struck from three directions.",
+    ],
+    example: {
+      problem: "Charlemagne could hardly write. Why did he gather scholars at his court in Aachen?",
+      work: [
+        ["Find the clue. He couldn't write well himself, yet he brought in scholars.", ""],
+        ["Recall the lesson. He understood that an empire needs people who can write. Alcuin, an English monk, ran the court school and taught the sons of nobles.", "Scholars at Aachen, led by Alcuin"],
+        ["Add what the monasteries did. They were asked to copy books and open schools throughout the empire.", ""],
+        ["Write the answer in a sentence.", "An empire needs people who can write, so Charlemagne built a court school."],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("What was the name of the Germanic people who built a strong kingdom in what is now France?", "The Franks.", "franks|frank"),
@@ -476,6 +648,25 @@ sheet({
   ],
   eyebrow: "World History &middot; U2-L9",
   signoff: "Latitude first, longitude second, and the land explains a lot of the story.",
+  howTo: {
+    steps: [
+      "Geography is the study of the earth's features and of how people live with them. Land decides a lot: mountains slow armies, rivers carry traders, deserts keep people moving, and a harbor makes a city rich.",
+      "Pick the map that fits the question. A physical map shows mountains, rivers, deserts and seas. A political map shows borders, countries and capitals. A thematic map shows one kind of information, like climate or trade routes.",
+      "Latitude lines run east and west and measure how far north or south of the equator a place is, up to 90 degrees. Longitude lines run through the poles and measure how far east or west of the prime meridian a place is, up to 180 degrees.",
+      "A coordinate gives the latitude first and the longitude second, each with a letter: N or S, then E or W. Where the two lines cross is one exact place.",
+      "To find a place, count from the equator to the latitude, then from the prime meridian to the longitude. Where your two fingers meet is the answer.",
+    ],
+    example: {
+      problem: "A pilot has only two numbers to find a city: 41° N, 29° E. Which city is it?",
+      work: [
+        ["Start at the equator, 0 degrees of latitude, and count north up to 41. The N says north.", "0° (equator) up to 41° N"],
+        ["Put a finger on that line. It runs east and west across southern Europe.", ""],
+        ["Start at the prime meridian, 0 degrees of longitude, and count east over to 29. The E says east.", "0° (Greenwich) over to 29° E"],
+        ["Put a second finger on that line. It runs north and south through the Black Sea and Turkey.", ""],
+        ["Where your two fingers meet is the place. It's the narrow strait where Europe and Asia touch.", "41° N, 29° E = Constantinople (Istanbul)"],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("These lines run east and west and measure how far north or south of the equator a place is. What are they?", "Latitude.", "latitude"),
@@ -523,6 +714,25 @@ sheet({
   ],
   eyebrow: "World History &middot; U2-L10",
   signoff: "Three worlds each tried to hold themselves together, and the land helped explain how.",
+  howTo: {
+    steps: [
+      "Constantinople sat on a narrow strait where Europe meets Asia, safe behind its sea and double wall. Justinian gathered Rome's laws into one Code. The Ottoman Turks broke through its walls in 1453.",
+      "One church became two. In July of 1054 a cardinal named Humbert laid a letter on the altar of Hagia Sophia, and the schism split the church into the Roman Catholic and the Eastern Orthodox.",
+      "Islam began with Muhammad, and the Hijrah was in 622. The Abbasids founded Baghdad in 762 as a marketplace for the world, and the Mongols ended its golden age in 1258.",
+      "In Spain, Cordoba became a city where Muslims, Jews and Christians shared books. The Pyrenees marked the line between the Franks and Muslim Spain.",
+      "In the West, monks kept books alive. Charlemagne held a land together with counts, inspectors and a court school, but his grandsons split it in 843 and raiders struck from every side.",
+      "To place a new fact, ask which of the three worlds it belongs to (Byzantine, Islamic or Frankish) and what happened just before it. The land often helps explain the event.",
+    ],
+    example: {
+      problem: "The Seljuk Turks pressed on the Byzantines in the east. What did the Byzantines do in 1095?",
+      work: [
+        ["Find the clue. The question names the Seljuk Turks and the Byzantines, the people of the Eastern empire in Constantinople.", ""],
+        ["Recall the lesson. In the east the Seljuk Turks pressed on the Byzantines.", ""],
+        ["Find what the Byzantines did about it in 1095.", "They sent a call for help to the West"],
+        ["Place it in the right story. This belongs to the Byzantine world, asking the Western world for help.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("In 1054 the church split into the Roman Catholic and the Eastern Orthodox. What is such an official split called?", "A schism.", "schism"),
@@ -568,6 +778,25 @@ sheet({
   ],
   eyebrow: "World History &middot; U3-L1",
   signoff: "Everyone owed someone above him, and the one at the bottom owed the most and held the least power.",
+  howTo: {
+    steps: [
+      "Feudalism was a system in which land was given in return for loyalty and service. It grew up after Charlemagne's empire split, when the kings were too weak to protect people.",
+      "A lord was a powerful noble with more land than he could farm or defend. He gave a piece of it, a fief, to a lesser noble, his vassal, who was bound to serve him. Many vassals were knights.",
+      "An oath made it binding. The vassal knelt and swore to be loyal. Almost nobody could write, so a man's word was the only contract there was.",
+      "The deal ran both ways. The vassal owed service in the lord's army and court, plus taxes. The lord owed the vassal land and protection.",
+      "Stacked up, it's a pyramid: the king on top, then church officials and great nobles, then knights, and the serfs at the bottom. A vassal can be a lord to someone below him.",
+      "A serf lived and worked on a lord's land, gave up much of what he grew, and got a roof and protection. He was bound to the soil and couldn't leave. He owed the most and held the least power.",
+    ],
+    example: {
+      problem: "In the 880s, wealth was land and not coins. Why?",
+      work: [
+        ["Find the clue. The question asks why wealth changed from coins to land.", ""],
+        ["Recall the lesson. Trade had shrunk and the cities were small, so wealth was no longer coins in a city.", ""],
+        ["Recall what land gave a powerful man: farms, forests and streams that could feed an army.", ""],
+        ["Write the answer in a sentence. With trade shrunk, wealth was land, and land could feed soldiers. Land given for protection is what historians call feudalism.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("Land was given in return for loyalty and service. What was this system called?", "Feudalism.", "feudalism|feudal system|feudal"),
@@ -615,6 +844,25 @@ sheet({
   ],
   eyebrow: "English 7 &middot; U2-L6",
   signoff: "Ask which part of your body would notice it, and give both the when and the where.",
+  howTo: {
+    steps: [
+      "The setting is the time and place where a story happens. That means both when and where. Weather counts too. Always give both halves.",
+      "Sensory details are things you could see, hear, touch, smell or taste if you were there.",
+      "To sort a detail, ask: which part of my body would notice this? Eyes are sight, ears are hearing, skin is touch, nose is smell and mouth is taste.",
+      "Some details come from the same cause but belong to different senses. In the story, the cold makes spit crackle (hearing) and makes cheeks go numb (touch).",
+      "A writer rarely uses all five senses at once. She picks the ones that fit the moment.",
+      "A setting can act on a character, and it gives a feeling called mood. Pull the man out of the Yukon and drop him in Florida, and the story disappears.",
+    ],
+    example: {
+      problem: "Which senses does this line use? \"The kitchen smelled of burnt toast, and the radio crackled in the corner.\"",
+      work: [
+        ["Take one detail at a time. For each, ask which part of your body would notice it.", ""],
+        ["Burnt toast is something you notice with your nose.", "burnt toast = SMELL"],
+        ["A crackling radio is something you notice with your ears.", "crackled = HEARING"],
+        ["The line never says how the kitchen looks. A writer picks the senses that fit the moment.", "Two senses: smell and hearing"],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("What is the time and place where a story happens called?", "The setting.", "setting"),
@@ -662,6 +910,25 @@ sheet({
   ],
   eyebrow: "English 7 &middot; U2-L7",
   signoff: "Find the two things, look for like or as, then name it and say what it makes you see.",
+  howTo: {
+    steps: [
+      "Literally means exactly what the words say. A figure of speech describes one thing in terms of something very different, so the words aren't literally true but the picture is.",
+      "Use three moves on any figure of speech. First, find the two things being compared.",
+      "Second, look between them for the word like or as.",
+      "Third, name it. A simile uses like or as. A metaphor skips the little word and says one thing is the other.",
+      "Then ask what the two things have in common. A metaphor only works if the reader can find something they share.",
+      "Two more figures: personification gives human feelings to something that isn't human, and hyperbole stretches the truth on purpose. Don't stop at the name. Say what the comparison makes you see.",
+    ],
+    example: {
+      problem: "Name the figure of speech: \"The classroom was a zoo before the bell rang.\"",
+      work: [
+        ["Find the two things being compared.", "the classroom and a zoo"],
+        ["Look between them for like or as. There's neither. The sentence just says it was a zoo.", ""],
+        ["No like or as means it's a metaphor.", "METAPHOR"],
+        ["Ask what they have in common. A zoo is loud, crowded and a little wild.", "the room was loud, crowded and wild"],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("Words mean exactly what they say, with nothing figured. What word describes that way of speaking?", "Literally.", "literally|literal"),
@@ -709,6 +976,25 @@ sheet({
   ],
   eyebrow: "English 7 &middot; U2-L8",
   signoff: "Roles, a goal, a fair brainstorm, a consensus, and a report that gives the decision first.",
+  howTo: {
+    steps: [
+      "A group works only if it's organized. A good discussion has five steps: roles, goal, brainstorm, consensus and present.",
+      "Step one, choose roles. The moderator keeps the discussion moving, makes sure everyone gets a turn and brings people back to the topic. The recorder writes down the ideas and decisions.",
+      "Step two, state the goal out loud. The recorder writes it at the top of the page.",
+      "Step three, brainstorm. Pour out as many ideas as you can before anybody judges them. Start with a quiet minute of writing, then go around the circle. Nobody laughs at an idea.",
+      "Step four, reach a consensus, which is a general agreement everyone can live with. It's different from a vote, because the group keeps talking until the last person has been heard. The recorder reads the decision back.",
+      "Step five, present. A good report gives the decision first, then the reasons or the evidence, and it's short.",
+    ],
+    example: {
+      problem: "Maya asks, \"Does everyone agree, or does anyone want to change a word?\" Sam asks to change \"leads to danger\" to \"leads to disaster.\" Everyone nods, and Jonah, the recorder, changes it. Which step is this?",
+      work: [
+        ["Find the clue. The group is checking that everyone agrees and settling on one wording.", ""],
+        ["Recall the five steps: roles, goal, brainstorm, consensus, present. Which one is about a decision everyone can live with?", ""],
+        ["Match it. The group reached a general agreement.", "Step four: reach a consensus"],
+        ["Check the roles. The moderator asked the question, and the recorder wrote down the decision.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("Who keeps a discussion moving and makes sure everyone gets a turn?", "The moderator.", "moderator"),
@@ -755,6 +1041,25 @@ sheet({
   ],
   eyebrow: "English 7 &middot; U2-L9",
   signoff: "Opening, background, events in order, and why it mattered.",
+  howTo: {
+    steps: [
+      "An autobiographical incident is a true story about one event in your own life that mattered to you. Small is best: one game, one argument, one afternoon.",
+      "You write it in three jobs, in order: prewriting (planning), drafting, then revising.",
+      "Pick the event, then test it with three questions. Does it mean something special to me? Do I remember it well enough to describe it? Am I willing to share it?",
+      "Plan four parts: an opening that grabs attention (a line of dialogue, a question, a surprising statement or a vivid description), the background, the events in order, and why it mattered.",
+      "Draft straight through, writing on every other line so there's room to fix it later. Don't stop to polish a sentence.",
+      "The ending isn't another event. It says why the event mattered to you.",
+    ],
+    example: {
+      problem: "Frederick Douglass wrote about teaching himself to read as a boy. Sort his pages into the four parts.",
+      work: [
+        ["Opening: a short, plain statement that makes you want to know how.", "\"During this time, I succeeded in learning to read and write.\""],
+        ["Background: what stood in his way. His mistress had been told to stop teaching him.", "she \"ceased to instruct\""],
+        ["Events, in the order they happened.", "1. friends in the street\n2. book on errands\n3. bread for lessons"],
+        ["Why it mattered. This isn't a new event. It explains what all the earlier ones added up to.", "given the inch, no one could stop him taking the ell"],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("A true story about one event in your own life that mattered to you has what name?", "An autobiographical incident.", "autobiographical incident|incident"),
@@ -802,6 +1107,25 @@ sheet({
   ],
   eyebrow: "English 7 &middot; U2-L10",
   signoff: "Hold the draft up to the six checks, then fold short sentences together with a time word.",
+  howTo: {
+    steps: [
+      "To revise is to improve a draft by changing what doesn't work. Proofreading is a different job, because it only fixes mistakes.",
+      "Put the draft aside first, so it reads more like a stranger's.",
+      "Hold it up to six checks: one incident, an opening that grabs, enough background, events in an order a reader can follow, descriptive details, and what it meant to you. Mark every no.",
+      "A partner doing a peer review answers four questions. Does the beginning grab me? Is anything missing or unnecessary? Where do I want more detail? Do I understand why this mattered?",
+      "An independent clause has a subject and a verb and can stand alone, like I fell off. A subordinate clause starts with a word like after, before, until, when, whenever, while, where or wherever, and can't stand alone.",
+      "To combine two short sentences, turn the one that tells when into a subordinate clause with a time word. If that clause comes first, put a comma after it. Don't combine everything, because a few short sentences are good.",
+    ],
+    example: {
+      problem: "Combine these two choppy sentences: \"I found out my brother had signed me up for the race.\" \"I groaned.\"",
+      work: [
+        ["Decide which sentence is the main action and which one tells when. The groan is the main action.", "MAIN: I groaned.\nTIME: I found out my brother had signed me up for the race."],
+        ["Put a time word at the front of the timing sentence. That makes it a subordinate clause.", "When I found out my brother had signed me up for the race"],
+        ["Join it to the main action. The clause comes first, so put a comma after it.", "When I found out my brother had signed me up for the race, I groaned."],
+        ["Read it aloud and check that the clause isn't left alone as a fragment.", ""],
+      ],
+    },
+  },
   parts: [
     A("Type the word that fits each clue.", [
       c("To improve a draft after you've written it, by changing what doesn't work, is to do what?", "To revise.", "revise|revising"),
