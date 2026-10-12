@@ -276,7 +276,9 @@ function carousel(s, dir, art) {
   if (s.thumb) slides.push(`<figure class="p-slide"><img src="${art}" alt="${s.title}, cover" width="800" height="1035"></figure>`);
   previewFiles(s).forEach((f, i) => slides.push(
     `<figure class="p-slide"><img src="${dir}${f}" alt="${s.title}, page ${i + 1}${paid ? " preview" : ""}" width="900" height="1165"${slides.length ? ' loading="lazy"' : ""}></figure>`));
-  if (paid) slides.push(`<figure class="p-slide p-hidden"><div><span class="p-lock" aria-hidden="true">&#128274;</span>
+  /* homework too, free or not: its previews stop before the key, and the tile says why
+     (Paul, 2026-10-12: "they hide the answer key") */
+  if (paid || s.kind === "homework") slides.push(`<figure class="p-slide p-hidden"><div><span class="p-lock" aria-hidden="true">&#128274;</span>
         <b>Answer Key</b><span>Hidden From Preview</span></div></figure>`);
   const dots = slides.map((_, i) =>
     `<button type="button" aria-label="Image ${i + 1} of ${slides.length}"${i ? "" : ' class="on"'}></button>`).join("");
