@@ -997,6 +997,11 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 /* the video inside the Visual Panel: is-video swaps the frames for the player */
 .dbox-vid{display:none}
 .dbox.is-video .dbox-vid{display:block}
+/* 🚨 ONE FULLSCREEN AT A TIME. Paul, 2026-10-12: "a problem we have with the full screen
+   with our and the YouTube full screen I can't close it." Ours fullscreens the PAGE and
+   YouTube's fullscreens its IFRAME on top, so leaving one left him inside the other. On a
+   video, YouTube's own button is the fullscreen; ours steps aside. */
+.dbox.is-video .dbox-full{display:none}
 .dbox.is-video .dbox-in{display:none}
 .dbox.is-video.is-shut .dbox-vid{display:none}
 .dbox-vid .vid-well{padding:0;margin:0 0 6px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;

@@ -2744,8 +2744,11 @@ function vidReset(){
   if (!vidWell) return;
   if (vidItems.length > 1) vidAll(); else vidPoster();
 }
+/* Our page fullscreen must be off before a video shows (see .is-video .dbox-full). */
+function vidFullOff(){ if (dbox && dbox.classList.contains("is-full")) setDboxFull(false); }
 function vidShow(open){
   if (!vidHost || !dbox) return;
+  vidFullOff();
   dbox.classList.add("is-video");
   if (open && typeof setDemoOpen === "function") setDemoOpen(true);
 }
@@ -2819,7 +2822,7 @@ function vidSync(){
   }
   var inEl = dbox.querySelector(".dbox-in");
   dbox.insertBefore(vidHost, inEl);
-  if (!VISUALS.length) dbox.classList.add("is-video");
+  if (!VISUALS.length) { vidFullOff(); dbox.classList.add("is-video"); }
 }
 /* Saved videos for the active student, from Teacher Notes. An empty list falls back
    to the lesson's own VIDEO. Normalised here so a malformed row can never reach the
@@ -2835,7 +2838,7 @@ function vidSaved(d){
      testing it: "I added the video ... but it didn't add it to the visual panel." The
      frames were showing and the video waited behind a card. The parent chose it for this
      child, so it comes first; "Back to the Reading" still reaches the frames. */
-  if (ok.length && dbox) dbox.classList.add("is-video");
+  if (ok.length && dbox) { vidFullOff(); dbox.classList.add("is-video"); }
 }
 document.addEventListener("ns:videos", function(e){ vidSaved(e.detail); });
 vidSync();
