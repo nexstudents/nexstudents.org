@@ -64,6 +64,25 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L1",
   signoff: "A longer decimal is not a bigger one. Add zeros on the end until both numbers are the same length, then compare.",
+  howTo: {
+    steps: [
+      "Write the two numbers in a stack with the decimal points lined up, so every digit sits above the digit in the same place.",
+      "If one number is shorter, write zeros on the end of it until both have the same number of places. The zeros don't change its value.",
+      "Read down the columns from the left. Stop at the first place where the digits are different.",
+      "The number with the bigger digit in that place is the greater number. If every place matches, the numbers are equal.",
+      "For the symbols, the open side of < or > faces the bigger number.",
+      "To put a list in order, compare two numbers at a time until every number has its spot. Numbers that are equal share a spot.",
+    ],
+    example: {
+      problem: "Which is greater, 19.9 or 19.875?",
+      work: [
+        ["Stack them with the decimal points lined up.", "19.9\n19.875"],
+        ["19.9 is shorter, so write zeros on the end until both have three places.", "19.900\n19.875"],
+        ["Read down from the left. The tens match and the ones match. In the tenths place, 9 is bigger than 8.", ""],
+        ["Stop there. The longer number was not the bigger one.", "19.9 > 19.875"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Plot and Compare",
       note: "For 1 and 2, put a dot on the number line for each decimal, then write which is greater using > or <. For 3 to 12, write <, > or =.",
@@ -154,6 +173,24 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L2",
   signoff: "Underline the place, circle the digit to its right, and decide: 0 to 4 stays, 5 to 9 goes up. A 9 that goes up turns into a 0 and carries.",
+  howTo: {
+    steps: [
+      "Find the place you're rounding to, like the ones, tenths or hundredths. That's your digit.",
+      "Look at the one digit just to its right. That digit alone decides.",
+      "If it's 0, 1, 2, 3 or 4, your digit stays the same.",
+      "If it's 5, 6, 7, 8 or 9, your digit goes up by 1. A 9 becomes 0 and carries 1 to the digit on its left.",
+      "Drop everything to the right of your place. Keep a zero on the end if the place calls for it, like 14.30.",
+    ],
+    example: {
+      problem: "Round 64.77 to the nearest tenth.",
+      work: [
+        ["The tenths place is the first digit after the decimal point.", "64.77: the tenths digit is 7"],
+        ["Look at the digit just to its right.", "It's 7"],
+        ["7 is 5 or more, so the tenths digit goes up by 1.", "7 + 1 = 8"],
+        ["Drop everything to the right of the tenths place.", "64.8"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Plot and Round",
       note: "For 1 and 2, put a dot on the number line, then round. For 3 to 12, write the rounded number.",
@@ -243,6 +280,23 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L3",
   signoff: "An estimate is the answer you should expect. If the exact answer lands far from it, go back and check.",
+  howTo: {
+    steps: [
+      "An estimate is a quick, rounded answer that shows what the exact answer should be close to.",
+      "If all the numbers sit close to one value, pretend each one equals that value and multiply. This is called clustering.",
+      "If they don't, round each number to its greatest place value, which is the place of its first digit on the left. Then add, subtract or multiply the rounded numbers.",
+      "For division, round the divisor, then pick a nearby dividend that divides evenly.",
+      "Compare your estimate with the exact answer. If they're far apart, something went wrong.",
+    ],
+    example: {
+      problem: "Cheese costs $4.19 a pound and you buy 3.8 pounds. About how much is that?",
+      work: [
+        ["Round each number to its greatest place value.", "3.8 rounds to 4\n4.19 rounds to 4"],
+        ["Multiply the rounded numbers.", "4 x 4 = 16"],
+        ["The cheese should cost about $16. If the label says $1.60 or $160, the decimal point is in the wrong place.", ""],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Estimate It",
       note: "Round each number to its greatest place value, then do the easy arithmetic. For a list that bunches near one number, cluster. For division, pick numbers that divide evenly.",
@@ -330,6 +384,24 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L4",
   signoff: "Count the decimal places in BOTH numbers. That total is how many places the product has. A zero on the very end can be dropped.",
+  howTo: {
+    steps: [
+      "Ignore the decimal points and multiply the digits like whole numbers.",
+      "Count the decimal places in both numbers you multiplied. Those are the digits to the right of each point. Add the two counts together.",
+      "Start at the right end of your answer and count in that many places. Put the decimal point there.",
+      "If you run out of digits, write zeros on the left to make room.",
+      "Check with an estimate. Round both numbers and see if your answer is about that size.",
+    ],
+    example: {
+      problem: "A piano string vibrates 440 times a second. The next key up vibrates 1.06 times as fast. Find 440 x 1.06.",
+      work: [
+        ["Ignore the decimal point and multiply.", "440 x 106 = 46640"],
+        ["Count the decimal places. 440 has none and 1.06 has two.", "0 + 2 = 2 places"],
+        ["Count 2 places in from the right of 46640 and put the point there.", "466.40"],
+        ["Check it. 1.06 is a little more than 1, so the answer should be a little more than 440.", "466.40 is a little more than 440"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Multiply",
       note: "Multiply, then count the decimal places. Use the margin for your work.",
@@ -413,6 +485,23 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L5",
   signoff: "Count the zeros in 10, 100 and 1,000, or read the exponent. That many places: right to multiply, left to divide.",
+  howTo: {
+    steps: [
+      "A power of ten is 10, 100, 1,000 and so on. Count its zeros. With an exponent, 10⁵ means five zeros.",
+      "Multiplying by a power of ten moves the decimal point to the right, one place for every zero.",
+      "The digits never change. Only the point moves.",
+      "If the point runs out of digits, write zeros to fill the empty places.",
+      "The answer should always get bigger. If it got smaller, the point went the wrong way.",
+    ],
+    example: {
+      problem: "How far did three astronauts travel to the moon? It's 2.39 x 10⁵ miles.",
+      work: [
+        ["Count the zeros in the power of ten. 10⁵ is 100,000.", "5 zeros, so move the point 5 places right"],
+        ["Move the point right one place at a time. After two moves it's past the 9, so each of the last three moves needs a zero.", "2.39 x 10⁵ = 239,000"],
+        ["Check that the answer got bigger.", "239,000 is bigger than 2.39"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Move the Point",
       note: "Write the answer. Add zeros as placeholders when the point runs out of digits.",
@@ -497,6 +586,24 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L6",
   signoff: "The first number must be at least 1 and less than 10. The exponent is how many places the point moved.",
+  howTo: {
+    steps: [
+      "Scientific notation writes a number as two pieces multiplied together: a number that's at least 1 but less than 10, and a power of ten.",
+      "Move the decimal point to the left until only one digit is in front of it. A whole number's point sits at its far right end.",
+      "Count how many places the point moved. That count is the exponent on the 10.",
+      "If the front number is long, round it to the hundredths place.",
+      "To go back to the long form, move the point right as many places as the exponent says, writing zeros as you need them.",
+    ],
+    example: {
+      problem: "Mercury is 36,000,000 miles from the sun. Write that in scientific notation.",
+      work: [
+        ["Move the point left until one digit is in front of it.", "3.6"],
+        ["Count the places the point moved.", "7 places"],
+        ["Write the front number times 10 with that exponent.", "36,000,000 = 3.6 x 10⁷"],
+        ["Check by going backward. Move the point 7 places right.", "3.6 x 10⁷ = 36,000,000"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Convert",
       note: "For 1 to 5, write the number in scientific notation. For 6 to 10, write it in standard form.",
@@ -581,6 +688,24 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L7",
   signoff: "Make the divisor a whole number by moving its point, and move the dividend's point the same number of places. Then divide as usual.",
+  howTo: {
+    steps: [
+      "Look at the divisor, the number you're dividing by. If it has a decimal point, move the point right until the divisor is a whole number.",
+      "Move the point in the dividend, the number being divided, the same number of places. Write zeros on the end if you run out of digits.",
+      "Divide as whole numbers. Put the decimal point in your answer straight above the point in the dividend.",
+      "Estimate to check where the point goes. Round both numbers to easy ones and divide.",
+      "Check by multiplying your answer by the divisor. You should get the dividend back.",
+    ],
+    example: {
+      problem: "A painting covers 0.4 square meter and is 0.5 meter wide. Its height is 0.4 ÷ 0.5.",
+      work: [
+        ["The divisor 0.5 has a point. Move it one place right to make 5.", "0.5 becomes 5"],
+        ["Move the point in 0.4 the same one place.", "0.4 becomes 4"],
+        ["Divide as whole numbers.", "4 ÷ 5 = 0.8"],
+        ["Check by multiplying back.", "0.5 x 0.8 = 0.4"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Divide",
       note: "Write the quotient. Check each one by multiplying back.",
@@ -664,6 +789,24 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L8",
   signoff: "Divide one place past where you are rounding, then round. When the answer must COVER something, like a bill, round up.",
+  howTo: {
+    steps: [
+      "Divide until you've found the digit one place past the place you're rounding to.",
+      "Look at that digit. If it's 0 to 4, the digit before it stays. If it's 5 to 9, the digit before it goes up by 1.",
+      "Don't stop dividing too early. Stopping one digit short is the most common mistake.",
+      "When money is being shared, round up to the next cent, even if the usual rule says to round down. That way the bill is covered.",
+      "Check by multiplying one share by the number of people. It should cover the total.",
+    ],
+    example: {
+      problem: "Four friends split a $14.65 pizza bill evenly. How much does each pay?",
+      work: [
+        ["Divide 14.65 by 4, and keep going past the hundredths.", "14.65 ÷ 4 = 3.6625"],
+        ["Cents are hundredths, so the next digit decides. It's 2, so the usual rounding gives this.", "3.66"],
+        ["Check by multiplying back.", "4 x 3.66 = 14.64, which is a cent short"],
+        ["Shared money rounds up to the next cent.", "4 x 3.67 = 14.68, so each pays $3.67"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Divide and Round",
       note: "Divide, then round to the place asked.",
@@ -750,6 +893,23 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L9",
   signoff: "Going to a smaller unit makes the number bigger, so multiply. Going to a bigger unit makes the number smaller, so divide.",
+  howTo: {
+    steps: [
+      "There are three basic units. The meter measures length, the gram measures mass, and the liter measures how much a container holds.",
+      "Every other unit is a basic unit with a prefix. From biggest to smallest: kilo (1,000), hecto (100), deka (10), the basic unit, deci (one tenth), centi (one hundredth), milli (one thousandth).",
+      "Ask first: is the unit you're changing to smaller or bigger than the one you started with?",
+      "Going to a smaller unit, you need more of them, so multiply. Going to a larger unit, you need fewer, so divide.",
+      "Count how many places apart the two units are on the list. Multiply or divide by 10 for one place, 100 for two places, 1,000 for three. That moves the decimal point.",
+    ],
+    example: {
+      problem: "Dana's run is 5 kilometers. How many meters is that?",
+      work: [
+        ["A meter is smaller than a kilometer, so you need more of them. Multiply.", ""],
+        ["From kilo to the basic unit is three places, so multiply by 1,000.", "5 x 1,000 = 5,000"],
+        ["Write the new unit.", "5 km = 5,000 m"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Convert",
       note: "Write the answer with its unit.",
@@ -835,6 +995,24 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L10",
   signoff: "If the estimate and the claim are farther apart than rounding could explain, the claim is not reasonable.",
+  howTo: {
+    steps: [
+      "A word problem has four steps: Explore, Plan, Solve and Examine.",
+      "Examine is the last step, and it's the one people skip. You ask if the answer makes sense.",
+      "Round every number to an easy one, like a price to the nearest dollar or five dollars, and work the problem in your head.",
+      "Compare your estimate with the answer or claim. If they're farther apart than rounding could explain, it isn't reasonable.",
+      "Also look for a decimal point in the wrong place, or an answer too big for the situation.",
+    ],
+    example: {
+      problem: "Marcus has $70. He buys two hoodies at $24.99 and two caps at $9.50. He says he'll have about $15 left. Is that reasonable?",
+      work: [
+        ["Round each price to an easy number.", "$24.99 is about $25\n$9.50 is about $10"],
+        ["Estimate the total.", "2 x $25 + 2 x $10 = $70"],
+        ["About $70 spent out of $70 leaves about nothing, so $15 left is far off. Rounding can't explain a gap that big.", ""],
+        ["Check with the exact prices.", "2 x 24.99 + 2 x 9.50 = 68.98\n70 - 68.98 = 1.02"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Estimate, Solve, Check", lines: 1,
       note: "Every price, weight and bill here is made up for practice. Estimate first and write it down, then find the exact answer, then say whether the two agree.",
@@ -903,6 +1081,25 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U2-L11",
   signoff: "Each problem is tagged with its lesson. A miss tells you which lesson to reopen.",
+  howTo: {
+    steps: [
+      "Comparing and rounding: line up the decimal points and compare place by place from the left. To round, the digit just to the right of your place decides, and 5 or more rounds up.",
+      "Estimating: round every number to an easy one so you know about where the answer should land.",
+      "Multiplying, powers of ten and scientific notation: multiply the digits first, then place the point. Multiplying by 10, 100 or 1,000 slides the point right. Scientific notation is one digit in front times a power of ten.",
+      "Dividing: move the divisor's point right until it's whole, move the dividend's point the same number of places, then divide.",
+      "Rounding quotients and metric units: divide one place past, and round shared money up. To a smaller unit you multiply, to a larger unit you divide.",
+      "Last, check every answer against your estimate. An answer nobody has checked is only a guess.",
+    ],
+    example: {
+      problem: "Multiply 0.6 x 0.07.",
+      work: [
+        ["Ignore the points and multiply the digits.", "6 x 7 = 42"],
+        ["Count the decimal places in both numbers.", "0.6 has 1 and 0.07 has 2, so 1 + 2 = 3 places"],
+        ["Count 3 places in from the right of 42. There are only 2 digits, so write a zero on the left to make room.", "0.042"],
+        ["Check it. 0.6 is less than 1, so the answer has to be smaller than 0.07.", "0.042 is smaller than 0.07"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Lessons 1 to 5",
       note: "Each problem says which lesson it came from. Write the answer.",
@@ -976,6 +1173,25 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L1",
   signoff: "Read the title, the labels and the scale before you read a single bar. Then work out what the question really asks.",
+  howTo: {
+    steps: [
+      "Read the title first. It tells you what the graph is about.",
+      "Read the labels on both sides and the scale. Check what each gridline stands for.",
+      "On a double bar or double line graph, read the key. It tells you what each color means.",
+      "Read the actual values, then do the arithmetic the question asks for, like subtracting to find how many more.",
+      "A line graph shows a trend over time. A circle graph shows a whole split into parts, and the parts should add up to 100 percent.",
+      "Check your answer. Did you read the scale right, use the key, and subtract the right two values?",
+    ],
+    example: {
+      problem: "A bar graph is titled Speakers of Five Languages, in Millions. The bars read Mandarin 920, Spanish 480, English 380, Hindi 340 and Arabic 310. How many more speakers does Spanish have than Arabic?",
+      work: [
+        ["Read the title and the side labels. The numbers are in millions.", ""],
+        ["Find the two bars the question asks about and read each value.", "Spanish 480\nArabic 310"],
+        ["\"How many more\" means subtract.", "480 - 310 = 170"],
+        ["Say the answer with its unit.", "170 million more speakers"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Sketch It, Then Read It", lines: 1,
       note: "Each graph is described in words, and the numbers are made up. Sketch the graph on scrap paper first, then answer.",
@@ -1041,6 +1257,26 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L2",
   signoff: "Label the columns, fill in the first few rows, and look for what changes from row to row. That change is the rule.",
+  howTo: {
+    steps: [
+      "A frequency table gathers every copy of an answer into one row, so you can count them.",
+      "List each different answer once down the left side. Leave room for a tally and a frequency beside each one.",
+      "Go through the raw list one answer at a time and make one tally mark in that answer's row. Draw every fifth mark across the four before it.",
+      "Count the tally marks in each row and write that number in the frequency column.",
+      "Add up all the frequencies. The total should match the number of answers you started with.",
+      "Read the table. The biggest frequency is the most popular answer.",
+    ],
+    example: {
+      problem: "Twenty students guessed the year the telephone was patented: 1876, 1850, 1898, 1876, 1862, 1876, 1825, 1850, 1876, 1898, 1862, 1876, 1850, 1876, 1854, 1876, 1862, 1898, 1876, 1850. Make a frequency table.",
+      work: [
+        ["List each different answer once, smallest first.", "1825, 1850, 1854, 1862, 1876, 1898"],
+        ["Go through the list and make one tally mark per answer.", "1825: |\n1850: ||||\n1854: |\n1862: |||\n1876: |||| |||\n1898: |||"],
+        ["Count each row's marks. That's its frequency.", "1825: 1\n1850: 4\n1854: 1\n1862: 3\n1876: 8\n1898: 3"],
+        ["Add the frequencies to check.", "1 + 4 + 1 + 3 + 8 + 3 = 20, and 20 students answered"],
+        ["Read it. The biggest frequency is the most popular answer.", "1876, with a frequency of 8"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Build a Table", lines: 1,
       note: "Every problem here is made up for practice. Draw a table on scrap paper for each one, label the columns, and fill it in row by row.",
@@ -1106,6 +1342,26 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L3",
   signoff: "Range is the greatest number minus the least. A good scale starts below the least, ends above the greatest, and every step is the same size.",
+  howTo: {
+    steps: [
+      "Find the least number and the greatest number in the data.",
+      "The range is the greatest minus the least. It tells you how spread out the data is.",
+      "A scale is the set of numbers along the number line. It has to start below the least number and end above the greatest, so nothing gets cut off.",
+      "Split the scale into equal steps, called intervals. Pick a size that fits the spread: small when the data sits close together.",
+      "Check three things: the least number fits, the greatest number fits, and every step is the same size.",
+      "More than one scale can be right, as long as all the data fits and the steps are equal.",
+    ],
+    example: {
+      problem: "Eleven classmates spend this many hours a week on the phone: 6.5, 9, 7.5, 13, 8, 10.5, 9.5, 11, 7, 8.5, 10. Build a number line.",
+      work: [
+        ["Find the least and the greatest.", "least 6.5, greatest 13"],
+        ["Subtract for the range.", "13 - 6.5 = 6.5"],
+        ["Pick a scale that starts below the least and ends above the greatest.", "6 to 14"],
+        ["Pick equal steps. Intervals of 1 fit this data.", "6, 7, 8, 9, 10, 11, 12, 13, 14"],
+        ["Check it. 6.5 and 13 both fit on the line, and every step is the same size.", ""],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Plot, Range and Scale",
       note: "For 1 and 2, put a dot on the number line for each data value, then find the range. For 3 to 11, write the answer.",
@@ -1196,6 +1452,27 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L5",
   signoff: "Mean: add them all, divide by how many. Median: put them in order, find the middle. Mode: the number you see most.",
+  howTo: {
+    steps: [
+      "The mean is the average. Add up all the numbers, then divide by how many numbers you added.",
+      "Divide by the count of numbers you started with, never by a number that just splits the total nicely. A mean doesn't have to be a whole number.",
+      "The median is the middle number. Put the numbers in order from least to greatest first, then cross off the lowest and highest together until one is left.",
+      "If two numbers are left in the middle, the median is halfway between them. Add them and divide by 2.",
+      "The mode is the number that shows up most. Answer with the number, not how many times it showed up. A set can have no mode, or two.",
+      "Check the mean. It always lands between the lowest and the highest number.",
+    ],
+    example: {
+      problem: "Eli's seven quiz scores are 72, 91, 88, 90, 64, 90 and 93. Find the mean, median and mode.",
+      work: [
+        ["Mean: add all seven scores.", "72 + 91 + 88 + 90 + 64 + 90 + 93 = 588"],
+        ["Divide the total by how many scores there are, which is 7.", "588 ÷ 7 = 84"],
+        ["Median: put the scores in order.", "64, 72, 88, 90, 90, 91, 93"],
+        ["Cross off the lowest and highest in pairs. The one left in the middle is the median.", "Median = 90"],
+        ["Mode: the score that shows up most. 90 appears twice and the rest appear once.", "Mode = 90"],
+        ["Check that the mean is between the lowest and the highest.", "64 < 84 < 93"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "The Mean: Even It Out",
       note: "For 1 to 3, even out the stacks so they're all the same height (sketch the blocks beside the problem if it helps). For all of them: add the numbers, count how many there are, and divide the total by that count.",
@@ -1398,6 +1675,26 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L6",
   signoff: "The tens digit is the stem, the ones digit is the leaf, and every empty stem stays on the plot.",
+  howTo: {
+    steps: [
+      "Split each number into a stem, which is the tens digit, and a leaf, which is the ones digit. The number 34 has stem 3 and leaf 4. A single-digit number like 8 has a stem of 0.",
+      "Find the least and the greatest number. They tell you which stems you need. Write the stems in a column from least to greatest, with a line to their right.",
+      "Go down the list and write each number's leaf next to its stem. Every repeat gets its own leaf.",
+      "Rewrite each row with its leaves in order, least to greatest.",
+      "Add a key, like 4 | 1 means 41, so a reader knows how to read it.",
+      "Count the leaves. There should be one for every number on the list. Keep a stem even when it has no leaves, because the gap tells a story.",
+    ],
+    example: {
+      problem: "Sixteen kids jumped rope. Their jump counts were 34, 47, 52, 38, 45, 41, 52, 29, 38, 44, 61, 38, 47, 33, 52 and 46. Make a stem-and-leaf plot.",
+      work: [
+        ["Find the least and greatest. They decide the stems.", "Least = 29, greatest = 61, so the stems are 2, 3, 4, 5 and 6"],
+        ["Go down the list and drop each leaf onto its stem, in the order the numbers appear.", "2 | 9\n3 | 4 8 8 8 3\n4 | 7 5 1 4 7 6\n5 | 2 2 2\n6 | 1"],
+        ["Rewrite each row with the leaves in order.", "2 | 9\n3 | 3 4 8 8 8\n4 | 1 4 5 6 7 7\n5 | 2 2 2\n6 | 1"],
+        ["Add a key.", "Key: 4 | 1 means 41"],
+        ["Count the leaves to check.", "1 + 5 + 6 + 3 + 1 = 16 leaves, and there were 16 scores"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Stems and Leaves",
       note: "The tens digit is the stem and the ones digit is the leaf. A single-digit number has a stem of 0.",
@@ -1479,6 +1776,25 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L7",
   signoff: "Find the change per step, add it once for every step you go past the data, and ask whether it can really happen.",
+  howTo: {
+    steps: [
+      "Describe the trend first. Are the numbers going up, going down or staying level?",
+      "Find the change per step: the last value minus the first value, divided by the number of steps between them. Steps are the gaps, so five values only have 4 steps.",
+      "Keep adding that change, one step at a time, until you reach the step you want. A negative change means the numbers go down.",
+      "Say \"about\" when you give your prediction. It's a good guess, not a fact.",
+      "Check that the answer makes sense. A trend followed far past the data can give nonsense, like a negative time.",
+    ],
+    example: {
+      problem: "Eli ran the mile in 12, 11.5, 11, 10.5 and 10 minutes in weeks 1 to 5. Predict his time in week 8.",
+      work: [
+        ["Describe the trend.", "The times are going down"],
+        ["Find the change per step. Weeks 1 to 5 have 4 steps, not 5.", "(10 - 12) ÷ 4 = -0.5 minutes per week"],
+        ["Keep adding the change, one week at a time.", "Week 6: 10 - 0.5 = 9.5\nWeek 7: 9.5 - 0.5 = 9\nWeek 8: 9 - 0.5 = 8.5"],
+        ["Check with a jump. Week 8 is 3 steps past week 5.", "10 + 3 x (-0.5) = 8.5"],
+        ["Say it with \"about\".", "Eli will run about 8.5 minutes in week 8"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Change per Step",
       note: "Last value minus first value, divided by the number of steps between them. A falling pattern has a negative change.",
@@ -1553,6 +1869,24 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L8",
   signoff: "Where does the scale start? Is there an outlier? Who was counted?",
+  howTo: {
+    steps: [
+      "A graph or number can be made of true facts and still send you the wrong way. Ask three questions each time.",
+      "Where does the scale start? If a bar graph doesn't start at 0, a small difference looks huge. Compare the real numbers, not just the bar heights.",
+      "Is there an outlier, a value far from all the others? One outlier drags the mean, so find the median too.",
+      "For the mean, add all the values and divide by how many. For the median, put them in order and take the middle one, or halfway between the two middle ones.",
+      "Who was counted? A fair poll asks a mix of people. Ask how many were asked, how they were picked and who was left out.",
+    ],
+    example: {
+      problem: "A bakery sign says the average pay is $49,000. The eight pay amounts, in thousands of dollars, are 24, 26, 28, 28, 30, 32, 34 and 190.",
+      work: [
+        ["Mean: add all eight and divide by 8.", "24 + 26 + 28 + 28 + 30 + 32 + 34 + 190 = 392\n392 ÷ 8 = 49, so $49,000"],
+        ["Spot the outlier. The owner's 190 is far from all the others, and 7 of the 8 people earn less than the mean.", ""],
+        ["Median: the halfway point between the two middle values.", "(28 + 30) ÷ 2 = 29, so $29,000"],
+        ["The median describes a typical worker much better. The sign's number is true, but it misleads.", ""],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Where Does the Scale Start?",
       note: "A bar rises above the starting line of the axis. Compare how tall the bars look with how different the numbers really are.",
@@ -1631,6 +1965,26 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U3-L9",
   signoff: "Each problem is tagged with its lesson. A miss tells you which lesson to reopen.",
+  howTo: {
+    steps: [
+      "Set up: the range is the greatest value minus the least. Pick a scale that holds both ends and an interval that gives a handful of marks.",
+      "Line plot: use it for small numbers that repeat. Put one X over each value and keep the empty numbers on the line.",
+      "Stem-and-leaf plot: use it for two-digit numbers. The tens digit is the stem and the ones digit is the leaf. Add a key and count the leaves.",
+      "Describe: the mean is the total divided by how many. The median is the middle once the numbers are in order. The mode is the value that shows up most.",
+      "Predict: the change per step is the last value minus the first, divided by the number of steps, not points. Add it again and again, then ask if the trend can really go on.",
+      "Check: where does the scale start, is there an outlier, and who was counted? One outlier drags the mean, so look at the median.",
+    ],
+    example: {
+      problem: "The Hawks scored 42, 35, 51, 28, 44, 35, 60, 38 and 35 points in nine games. Find the mean, median and mode.",
+      work: [
+        ["Put the scores in order.", "28, 35, 35, 35, 38, 42, 44, 51, 60"],
+        ["Mode: the score that shows up most.", "Mode = 35"],
+        ["Median: with nine scores, the middle one is the fifth.", "Median = 38"],
+        ["Mean: add all the scores and divide by 9 games.", "368 ÷ 9 = about 40.9"],
+        ["Check that the mean is between the lowest and the highest.", "28 < 40.9 < 60"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Lessons 1 to 4",
       note: "Each problem says which lesson it came from. Write the answer.",
@@ -1707,6 +2061,26 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U4-L1",
   signoff: "Ones digit for 2, 5 and 10. Digit sum for 3 and 9. Last two digits for 4. Both 2 and 3 for 6.",
+  howTo: {
+    steps: [
+      "A number is divisible by another when it divides with nothing left over. The one you divide by is a factor.",
+      "For 2, the ones digit is even (0, 2, 4, 6 or 8). For 5, the ones digit is 0 or 5. For 10, the ones digit is 0.",
+      "For 3 and 9, add up all the digits. If that sum divides by 3, the number does too. If the sum divides by 9, the number does too.",
+      "For 4, look at the last two digits. If that two-digit number divides by 4, the whole number does.",
+      "For 6, the number has to pass both the rule for 2 and the rule for 3.",
+      "There's no quick rule here for 7 or 8. Just divide and look for a remainder of zero.",
+    ],
+    example: {
+      problem: "Test 1,764 for 2, 3, 4, 5, 6, 9 and 10.",
+      work: [
+        ["Look at the ones digit, 4. It's even, so it passes for 2. It isn't 0 or 5, so it fails for 5 and 10.", "2: yes   5: no   10: no"],
+        ["Add all the digits and test the sum for 3 and 9.", "1 + 7 + 6 + 4 = 18\n3: yes   9: yes"],
+        ["Take the last two digits, 64, and test them for 4.", "64 ÷ 4 = 16, so 4: yes"],
+        ["For 6, the number needs both 2 and 3, and it passed both.", "6: yes"],
+        ["Collect the ones that passed.", "1,764 is divisible by 2, 3, 4, 6 and 9"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Digit Sums and Last Digits",
       note: "Find the number each rule asks for, then answer.",
@@ -1783,6 +2157,27 @@ sheet({
   ],
   eyebrow: "Math 7 &middot; U4-L2",
   signoff: "Prime means exactly two factors. Break a composite number down until every piece is prime, and use an exponent for repeats.",
+  howTo: {
+    steps: [
+      "A prime number has exactly two factors, 1 and itself. A composite number has more than two. The number 1 is neither.",
+      "To test a number, try the divisibility rules for small numbers like 2, 3 and 5 first. Any factor besides 1 and itself makes it composite.",
+      "To find the prime factors with a factor tree, split the number into any two factors. Keep splitting every branch that isn't prime, and stop when every branch ends in a prime.",
+      "Or divide by the smallest prime that works (2, then 3, then 5 and so on) until the quotient is a prime.",
+      "Write the primes you ended with, multiplied together. Use an exponent for repeats, like 2³.",
+      "Check by multiplying the primes back together. You should get the number you started with.",
+    ],
+    example: {
+      problem: "Find the prime factors of 168 by dividing.",
+      work: [
+        ["168 is even, so divide by 2.", "168 ÷ 2 = 84"],
+        ["84 is even, so divide by 2 again.", "84 ÷ 2 = 42"],
+        ["42 is still even, so divide by 2 once more.", "42 ÷ 2 = 21"],
+        ["21 is odd. Its digits add to 3, so divide by 3.", "21 ÷ 3 = 7"],
+        ["7 is prime, so stop. The answer is every divisor you used, plus that last 7.", "168 = 2 x 2 x 2 x 3 x 7 = 2³ x 3 x 7"],
+        ["Check by multiplying back.", "8 x 3 x 7 = 168"],
+      ],
+    },
+  },
   parts: [
     { kind: "solve", heading: "Prime or Composite?",
       note: "Type prime or composite.",
