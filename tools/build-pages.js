@@ -4455,6 +4455,9 @@ newHome = newHome.replace(/(\/assets\/ns\.css\?v=)[a-f0-9]+/g, "$1" + CSS_V);
      Removing it here means a rebuild always leaves exactly one. */
   newHome = newHome.replace(/\n?\/\* Day and night\. Default is dark[\s\S]*?(?=<\/script>)/, "\n");
 
+  /* the removal above leaves the block's trailing newline behind, so every
+     build used to add one blank line here (2026-10-12: hundreds had piled up) */
+  newHome = newHome.replace(/\s*<\/body>/, "\n</body>");
   newHome = newHome.replace(/<\/body>/,
     S_OPEN + "\n" + navScript() + "\n" + S_END + "\n</body>");
 
