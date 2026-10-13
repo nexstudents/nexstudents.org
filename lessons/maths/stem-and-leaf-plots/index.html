@@ -505,10 +505,16 @@ var PARTS = [
     "A stem-and-leaf plot answers both, and it does it by splitting every number into two pieces."
   ] },
   { title: "Splitting a Number in Two", s: [
+    "You already know that a number like 34 means 3 tens and 4 ones, the same way 34 cents is 3 dimes and 4 pennies.",
     "In a {{stem-and-leaf plot}}, every number is cut into its tens digit and its ones digit, and the tens digit becomes the {{stem}} while the ones digit becomes the {{leaf}}.",
     "The number 34 has a 3 in the tens place and a 4 in the ones place, so its stem is 3 and its leaf is 4.",
     "The number 61 has a stem of 6 and a leaf of 1, and a number like 8, which has no tens digit at all, gets a stem of 0 and a leaf of 8.",
-    "A good way to picture it is a plant: the stem is the tall part that holds the leaves up, and every leaf hangs off the stem it belongs to."
+    "A good way to picture it is a plant: the stem is the tall part that holds the leaves up, and every leaf hangs off the stem it belongs to.",
+    "",
+    "[walk] Split three numbers into a stem and a leaf.",
+    "[step] Start with 34, which is 3 tens and 4 ones, so the stem is 3 and the leaf is 4. || ┌────────┬──────┬──────┐\n│ Number │ Stem │ Leaf │\n├────────┼──────┼──────┤\n│ 34     │ 3    │ 4    │\n└────────┴──────┴──────┘",
+    "[step] Next is 61, which is 6 tens and 1 one, so the stem is 6 and the leaf is 1. || ┌────────┬──────┬──────┐\n│ Number │ Stem │ Leaf │\n├────────┼──────┼──────┤\n│ 34     │ 3    │ 4    │\n│ 61     │ 6    │ 1    │\n└────────┴──────┴──────┘",
+    "[step] Last is 8, which has no tens at all, so the stem is 0 and the leaf is 8. || ┌────────┬──────┬──────┐\n│ Number │ Stem │ Leaf │\n├────────┼──────┼──────┤\n│ 34     │ 3    │ 4    │\n│ 61     │ 6    │ 1    │\n│ 8      │ 0    │ 8    │\n└────────┴──────┴──────┘"
   ] },
   { title: "Build the Plot", s: [
     "The first move is to look at the least and the greatest number on the list, because those tell you which stems you need.",
@@ -529,8 +535,10 @@ var PARTS = [
   { title: "Reading the Plot", s: [
     "A finished plot is a table and a graph at once, since turning it on its side gives you the same shape as a bar graph, but every score is still there in the leaves.",
     "The row with the most leaves shows where most of the kids landed, and here that's the 40s, with six leaves.",
-    "Because the leaves are in order, the mode is easy to see, since it's the leaf that repeats on one stem, and here three 8s on the 30s row make 38 a mode while three 2s on the 50s row make 52 a mode too, so this list has two modes, 38 and 52.",
-    "The median is the middle score, so count in from both ends until you reach the middle of the leaves.",
+    "Remember that the mode is the score that shows up most, the median is the middle score once they're in order, and the range is the greatest minus the least.",
+    "Because the leaves are in order, the mode is easy to see, since it's the leaf that repeats on one stem.",
+    "Here three 8s on the 30s row make 38 a mode, and three 2s on the 50s row make 52 a mode too, so this list has two modes, 38 and 52.",
+    "To find the median, count in from both ends until you reach the middle of the leaves.",
     "",
     "[walk] Read the median off the jump-rope plot.",
     "[step] There are 16 leaves, which is an even number, so there will be two in the middle. || 16 scores, so the 8th and 9th are the middle pair",
@@ -561,17 +569,17 @@ var PARTS = [
 ];
 
 var WORDS = [
-  ["Stem-and-leaf plot", "A way to show data by splitting each number into a stem, the tens digit, and a leaf, the ones digit.", [4]],
-  ["Stem", "The tens digit of a number in a stem-and-leaf plot. All the numbers with that tens digit share one row.", [4]],
-  ["Leaf", "The ones digit of a number in a stem-and-leaf plot. Every data value gets its own leaf.", [4]],
-  ["Key", "A note on the plot that shows how to read it, such as 4 | 1 means 41.", [18]]
+  ["Stem-and-leaf plot", "A way to show data by splitting each number into a stem, the tens digit, and a leaf, the ones digit.", [5]],
+  ["Stem", "The tens digit of a number in a stem-and-leaf plot. All the numbers with that tens digit share one row.", [5]],
+  ["Leaf", "The ones digit of a number in a stem-and-leaf plot. Every data value gets its own leaf.", [5]],
+  ["Key", "A note on the plot that shows how to read it, such as 4 | 1 means 41.", [23]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
     q: "What does a stem-and-leaf plot show that a plain list of scores doesn't?",
-    find: [20],
+    find: [25],
     hint: "Read Reading the Plot.",
     choices: [
     "The mean, without any adding.",
@@ -584,7 +592,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "What are the stem and the leaf of the number 47?",
-    find: [5],
+    find: [6],
     hint: "The tens digit is the stem and the ones digit is the leaf.",
     choices: [
     "Stem 4, leaf 7",
@@ -597,7 +605,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "A key says 2 | 5 means 25. What number does the row entry 7 | 1 mean?",
-    find: [16, 18],
+    find: [21, 23],
     hint: "The stem is the tens digit and the leaf is the ones digit.",
     choices: [
     "7.1",
@@ -610,7 +618,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "Which stems do you need for the data 12, 35, 48 and 27?",
-    find: [9],
+    find: [14],
     hint: "Look at the tens digit of the least and of the greatest, and include everything in between.",
     choices: [
     "12, 27, 35 and 48",
@@ -623,7 +631,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "The data is 8, 21, 24, 35 and 52. Which stems have no leaves but still have to be written?",
-    find: [35, 36],
+    find: [36, 38],
     hint: "The stems run from 0 to 5.",
     choices: [
     "1 and 4",
@@ -636,7 +644,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "The numbers 38, 38 and 38 all show up in a list. How many leaves go on the 3 stem for them?",
-    find: [14],
+    find: [19],
     hint: "Every data value gets its own leaf.",
     choices: [
     "Eight",
@@ -649,7 +657,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "One row of a plot reads 4 | 7 2 9 3 when it is first built. How should that row end up?",
-    find: [15, 19],
+    find: [20, 24],
     hint: "The last step is to put the leaves in order.",
     choices: [
     "4 | 2 3 7 9",
@@ -662,7 +670,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "Why does a stem-and-leaf plot need a key?",
-    find: [18],
+    find: [23],
     hint: "Read Build the Plot, just after the steps.",
     choices: [
     "So the plot has a title.",

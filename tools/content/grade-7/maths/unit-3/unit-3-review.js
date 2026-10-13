@@ -6,6 +6,15 @@
    reviews: every hint names the lesson to go back to, so a wrong answer sends
    him somewhere.
 
+   🚨 REWRITTEN 2026-10-13 (Sonnet, to be checked by Opus) after Kolten said the lessons
+   don't explain well. An audit graded the 2026-10-11 version B: eight lessons were
+   compressed with little re-teaching. Kept: the Hawks, every walk, the block game and
+   the Your Turn. ADDED: a toolbox walk that names the five jobs (set it up, show it,
+   describe it, predict it, check it) and their tools in a drawn table, a drawn number
+   line for the scale step, and a walk that matches the mean, median and mode to the
+   question each one answers. No number or question changed, only where each
+   question points.
+
    ⚠️ DRAFT PROSE, CLAUDE'S, 2026-10-11. Written on Sonnet from the eight Unit 3
    lessons in this folder and Glencoe Course 2 Chapter 3 Study Guide and Review,
    pp120-122, via the week 8-9 packet (paraphrased notes). The video (Mr. J, mean,
@@ -25,13 +34,42 @@ const plot = (counts, lo, step) => {
   return rows.join("\n");
 };
 
+/* draws a small table with a header row; rows is a list of equal-length lists */
+const table = (rows) => {
+  const n = rows[0].length, w = [];
+  for (let i = 0; i < n; i++) w[i] = Math.max(...rows.map((r) => [...r[i]].length)) + 2;
+  const line = (l, m, r) => l + w.map((x) => "─".repeat(x)).join(m) + r;
+  const row = (r) => "│" + r.map((c, i) => " " + c + " ".repeat(w[i] - 1 - [...c].length)).join("│") + "│";
+  return [line("┌", "┬", "┐"), row(rows[0]), line("├", "┼", "┤")]
+    .concat(rows.slice(1).map(row), [line("└", "┴", "┘")]).join("\n");
+};
+
+/* the five jobs and the tools for each */
+const TOOLS = [
+  ["Job", "Tools"],
+  ["Set it up", "range, scale, interval"],
+  ["Show it", "line plot, stem-and-leaf plot"],
+  ["Describe it", "mean, median, mode"],
+  ["Predict it", "trend, change per step"],
+  ["Check it", "outlier, scale start, who was counted"],
+];
+/* the three measures: what each one asks and how to get it */
+const MEASURES = [
+  ["Measure", "It answers", "How you get it"],
+  ["Mean", "What if everyone got the same?", "Add them all, then divide by how many"],
+  ["Median", "What's in the middle?", "Put them in order, then take the middle one"],
+  ["Mode", "What shows up most?", "Find the value that repeats the most"],
+];
+/* a number line from 0 to 70 counting by 10: each label starts under its tick */
+const LINE0_70 = "├─────┼─────┼─────┼─────┼─────┼─────┼─────┤\n0     10    20    30    40    50    60    70";
+
 module.exports = {
   id: "maths/unit-3-review",
   slug: "unit-3-review",
   title: "Unit 3 Review: Statistics and Data Analysis",
   unit: "Math 7 &middot; U3-L9",
   seq: { unit: 3, unitTitle: "Statistics and Data Analysis", n: 9 },
-  natural: "2026-10-11",
+  natural: "2026-10-13",
 
   /* ── /teach-plan, 2026-10-11. Glencoe Course 2, Chapter 3 Study Guide and
         Review pp120-122, and the eight built Unit 3 lessons. ── */
@@ -48,7 +86,7 @@ module.exports = {
       "WORLD: the Hawks, a youth basketball team. Every number is made up for practice, and nothing in the lesson depends on the team.",
       "The book's own review numbers are not copied, since the packet only sampled that page.",
     ],
-    digitize: "Reading engine plus one mean block game. Five short Watch It Worked walkthroughs, one Your Turn that mixes three skills, and a video behind a button. Every hint names the lesson to reopen.",
+    digitize: "Reading engine plus one mean block game. Eight short Watch It Worked walkthroughs (a toolbox table, a number line, a measures table and the five tool walks), one Your Turn that mixes three skills, and a video behind a button. Every hint names the lesson to reopen.",
     unclear: "",
   },
 
@@ -91,7 +129,15 @@ module.exports = {
       "The Hawks, a youth basketball team, keep a notebook where the coach writes down everything from points scored to fouls committed in each game.",
       "By the end of the season that notebook is full of numbers, and nobody on the team could tell you what any of them mean.",
       "The tools from this unit are how you turn a full notebook into a few clear answers about what the team is really like.",
-      "Which tool do you reach for first when a pile of numbers lands on your desk?"
+      "",
+      "[walk] Fill the toolbox, one job at a time.",
+      "[step] First you set the data up, which means working out how long the number line has to be. || " + table(TOOLS.slice(0, 2)),
+      "[step] Then you show it, which means drawing the numbers as a picture. || " + table(TOOLS.slice(0, 3)),
+      "[step] Then you describe it, which means boiling the whole pile down to a single number. || " + table(TOOLS.slice(0, 4)),
+      "[step] Then you predict from it, which means following the pattern to a number you don't have yet. || " + table(TOOLS.slice(0, 5)),
+      "[step] Last you check it, which means asking whether the numbers are telling the truth. || " + table(TOOLS),
+      "",
+      "Those five jobs come in that order, and the rest of this review takes them one at a time."
     ]},
 
     { title: "Read It and Set It Up", s: [
@@ -102,7 +148,7 @@ module.exports = {
       "[walk] Set up a number line for the Hawks' points in nine games: 42, 35, 51, 28, 44, 35, 60, 38 and 35.",
       "[step] Find the least and the greatest points scored. || Least = 28, greatest = 60",
       "[step] Subtract to get the range. || Range = 60 - 28 = 32",
-      "[step] Pick a scale that holds both ends and an interval that gives a handful of marks, which here is 0 to 70 counting by 10. || 0, 10, 20, 30, 40, 50, 60, 70"
+      "[step] Pick a scale that holds both ends and an interval that gives a handful of marks, which here is 0 to 70 counting by 10. || " + LINE0_70
     ]},
 
     { title: "Show It: Line Plots",
@@ -132,6 +178,11 @@ module.exports = {
       s: [
       "Now describe the whole season with three single numbers, and remember that each one answers a different question.",
       "The {{mean}} evens everything out, the {{median}} is the middle once the data is in order, and the mode is the value that shows up most.",
+      "",
+      "[walk] Match each measure to the question it answers.",
+      "[step] The mean answers what would happen if every game had the same score, and you get it by adding and dividing. || " + table(MEASURES.slice(0, 2)),
+      "[step] The median answers what's in the middle, and you get it by putting the scores in order and picking the middle one. || " + table(MEASURES.slice(0, 3)),
+      "[step] The mode answers what shows up most, and you get it by finding the score that repeats. || " + table(MEASURES),
       "",
       "[walk] Find the mean, median and mode of the Hawks' nine points totals.",
       "[step] The mode is the score that shows up most, which is easy to see in the sorted list. || 28, 35, 35, 35, 38, 42, 44, 51, 60\nMode = 35",
@@ -171,63 +222,63 @@ module.exports = {
   ],
 
   words: [
-    ["Range", "The greatest value minus the least value in a set of data.", 5],
-    ["Interval", "The amount you count by on a number line.", 5],
-    ["Outlier", "A value far away from the rest of the data.", 39],
-    ["Mean", "The sum of the values divided by how many values there are.", 24],
-    ["Median", "The middle value when the data is in order.", 24],
-    ["Trend", "The direction a set of data is heading.", 29],
+    ["Range", "The greatest value minus the least value in a set of data.", 11],
+    ["Interval", "The amount you count by on a number line.", 11],
+    ["Outlier", "A value far away from the rest of the data.", 49],
+    ["Mean", "The sum of the values divided by how many values there are.", 30],
+    ["Median", "The middle value when the data is in order.", 30],
+    ["Trend", "The direction a set of data is heading.", 39],
   ],
 
-  findsAt: 46,
+  findsAt: 56,
   questions: [
     { tag: "Set It Up", q: "The Hawks scored between 28 and 60 points in a game. What is the range?",
-      find: [5, 9],
+      find: [11,14],
       hint: "Greatest minus least. Go back to Range and Scales.",
       choices: ["88", "32", "60", "28"], right: 1 },
 
     { tag: "Set It Up", q: "Which number line fits data that runs from 28 to 60?",
-      find: [10],
+      find: [16],
       hint: "It has to reach both ends and count by an even step. Go back to Range and Scales.",
       choices: ["0 to 30, counting by 5", "0 to 70, counting by 10", "30 to 50, counting by 10", "0 to 100, counting by 1"], right: 1 },
 
     { tag: "Show It", q: "In the fouls 2, 3, 3, 3, 4, 4, 5, 11, which value is the outlier?",
-      find: [16],
+      find: [22],
       hint: "Which one sits far from the rest? Go back to Line Plots.",
       choices: ["11", "3", "5", "2"], right: 0 },
 
     { tag: "Show It", q: "A row of a plot reads 4 | 1 3 3 8, and the key says 4 | 1 means 41. How many scores are in the 40s?",
-      find: [21],
+      find: [27],
       hint: "Every leaf is one score. Go back to Stem-and-Leaf Plots.",
       choices: ["3", "5", "4", "41"], right: 2 },
 
     { tag: "Describe It", q: "What is the mean of 20, 24, 30, 26 and 25?",
-      find: [28],
+      find: [38],
       hint: "Add them, then divide by how many there are. Go back to Mean, Median, and Mode.",
       choices: ["25", "20", "125", "26"], right: 0 },
 
     { tag: "Describe It", q: "What is the median of 6, 9, 3 and 12?",
-      find: [24],
+      find: [37],
       hint: "Put them in order first, then find the number halfway between the two middle values. Go back to Mean, Median, and Mode.",
       choices: ["7.5", "6", "9", "7"], right: 0 },
 
     { tag: "Describe It", q: "What is the mode of 7, 7, 9, 9, 9, 4?",
-      find: [26],
+      find: [36],
       hint: "The mode is the number that repeats most, not the count. Go back to Mean, Median, and Mode.",
       choices: ["3", "7", "9", "4"], right: 2 },
 
     { tag: "Predict It", q: "The Hawks made 8, 10, 12 and 14 free throws in weeks 1 to 4. About how many in week 6?",
-      find: [32, 33],
+      find: [42,43],
       hint: "Find the change per week, then add it twice to week 4. Go back to Making Predictions.",
       choices: ["18", "16", "20", "17"], right: 0 },
 
     { tag: "Check It", q: "A poster says the team's average pay is high, but one coach earns far more than everyone else. Which number is fairer?",
-      find: [35, 41],
+      find: [49,51],
       hint: "Look for the outlier. Go back to Misleading Statistics.",
       choices: ["The mean", "The median", "The sum", "The largest value"], right: 1 },
 
     { tag: "Check It", q: "A bar graph's scale starts at 50 and the bars show 55 and 65. How many times taller does the second bar look?",
-      find: [35],
+      find: [45],
       hint: "Compare the heights above 50. Go back to Misleading Statistics.",
       choices: ["3", "1.18", "10", "5"], right: 0 }
   ],

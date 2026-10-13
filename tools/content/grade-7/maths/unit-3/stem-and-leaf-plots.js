@@ -8,16 +8,36 @@
    was read for its teaching order; it sorts the data first, the book builds the rows
    first and sorts the leaves after, and this lesson follows the book and says so.
 
+   🚨 CHECKED 2026-10-13 (Sonnet) against the explain-from-zero brief after Kolten said
+   the lessons don't explain well. LIGHT TOUCH, because the lesson already had two
+   walks, a Your Turn and the mode fix. Added: a place-value picture before the
+   split (34 is 3 tens and 4 ones, like 3 dimes and 4 pennies), a small walk that
+   splits three numbers in a drawn table, and a one-line recap of mode, median and
+   range before the lesson uses them. The long mode sentence is split in two.
+   Nothing cut, no number changed.
+
    ⚠️ ONE WORLD: a field day, jumping rope for one minute. Our numbers, never the
    book's (the presidents' ages and the March temperatures are left out). */
 'use strict';
+
+/* draws a small table with a header row; rows is a list of equal-length lists */
+const table = (rows) => {
+  const n = rows[0].length, w = [];
+  for (let i = 0; i < n; i++) w[i] = Math.max(...rows.map((r) => [...r[i]].length)) + 2;
+  const line = (l, m, r) => l + w.map((x) => "─".repeat(x)).join(m) + r;
+  const row = (r) => "│" + r.map((c, i) => " " + c + " ".repeat(w[i] - 1 - [...c].length)).join("│") + "│";
+  return [line("┌", "┬", "┐"), row(rows[0]), line("├", "┼", "┤")]
+    .concat(rows.slice(1).map(row), [line("└", "┴", "┘")]).join("\n");
+};
+const split = (rows) => table([['Number', 'Stem', 'Leaf']].concat(rows));
+
 module.exports = {
   id: "maths/stem-and-leaf-plots",
   slug: "stem-and-leaf-plots",
   title: "Stem-and-Leaf Plots",
   unit: "Math 7 &middot; U3-L6",
   seq: { unit: 3, unitTitle: "Statistics and Data Analysis", n: 6 },
-  natural: "2026-10-11",
+  natural: "2026-10-13",
 
   /* ── /teach-plan, 2026-10-11. Glencoe Course 2 pp109-111. ── */
   plan: {
@@ -79,10 +99,16 @@ module.exports = {
     ]},
 
     { title: "Splitting a Number in Two", s: [
+      "You already know that a number like 34 means 3 tens and 4 ones, the same way 34 cents is 3 dimes and 4 pennies.",
       "In a {{stem-and-leaf plot}}, every number is cut into its tens digit and its ones digit, and the tens digit becomes the {{stem}} while the ones digit becomes the {{leaf}}.",
       "The number 34 has a 3 in the tens place and a 4 in the ones place, so its stem is 3 and its leaf is 4.",
       "The number 61 has a stem of 6 and a leaf of 1, and a number like 8, which has no tens digit at all, gets a stem of 0 and a leaf of 8.",
-      "A good way to picture it is a plant: the stem is the tall part that holds the leaves up, and every leaf hangs off the stem it belongs to."
+      "A good way to picture it is a plant: the stem is the tall part that holds the leaves up, and every leaf hangs off the stem it belongs to.",
+      "",
+      "[walk] Split three numbers into a stem and a leaf.",
+      "[step] Start with 34, which is 3 tens and 4 ones, so the stem is 3 and the leaf is 4. || " + split([["34", "3", "4"]]),
+      "[step] Next is 61, which is 6 tens and 1 one, so the stem is 6 and the leaf is 1. || " + split([["34", "3", "4"], ["61", "6", "1"]]),
+      "[step] Last is 8, which has no tens at all, so the stem is 0 and the leaf is 8. || " + split([["34", "3", "4"], ["61", "6", "1"], ["8", "0", "8"]])
     ]},
 
     { title: "Build the Plot", s: [
@@ -105,8 +131,10 @@ module.exports = {
     { title: "Reading the Plot", s: [
       "A finished plot is a table and a graph at once, since turning it on its side gives you the same shape as a bar graph, but every score is still there in the leaves.",
       "The row with the most leaves shows where most of the kids landed, and here that's the 40s, with six leaves.",
-      "Because the leaves are in order, the mode is easy to see, since it's the leaf that repeats on one stem, and here three 8s on the 30s row make 38 a mode while three 2s on the 50s row make 52 a mode too, so this list has two modes, 38 and 52.",
-      "The median is the middle score, so count in from both ends until you reach the middle of the leaves.",
+      "Remember that the mode is the score that shows up most, the median is the middle score once they're in order, and the range is the greatest minus the least.",
+      "Because the leaves are in order, the mode is easy to see, since it's the leaf that repeats on one stem.",
+      "Here three 8s on the 30s row make 38 a mode, and three 2s on the 50s row make 52 a mode too, so this list has two modes, 38 and 52.",
+      "To find the median, count in from both ends until you reach the middle of the leaves.",
       "",
       "[walk] Read the median off the jump-rope plot.",
       "[step] There are 16 leaves, which is an even number, so there will be two in the middle. || 16 scores, so the 8th and 9th are the middle pair",
@@ -133,16 +161,16 @@ module.exports = {
   ],
 
   words: [
-    ["Stem-and-leaf plot", "A way to show data by splitting each number into a stem, the tens digit, and a leaf, the ones digit.", 4],
-    ["Stem", "The tens digit of a number in a stem-and-leaf plot. All the numbers with that tens digit share one row.", 4],
-    ["Leaf", "The ones digit of a number in a stem-and-leaf plot. Every data value gets its own leaf.", 4],
-    ["Key", "A note on the plot that shows how to read it, such as 4 | 1 means 41.", 18],
+    ["Stem-and-leaf plot", "A way to show data by splitting each number into a stem, the tens digit, and a leaf, the ones digit.", 5],
+    ["Stem", "The tens digit of a number in a stem-and-leaf plot. All the numbers with that tens digit share one row.", 5],
+    ["Leaf", "The ones digit of a number in a stem-and-leaf plot. Every data value gets its own leaf.", 5],
+    ["Key", "A note on the plot that shows how to read it, such as 4 | 1 means 41.", 23],
   ],
 
-  findsAt: 38,
+  findsAt: 45,
   questions: [
     { tag: "The Setup", q: "What does a stem-and-leaf plot show that a plain list of scores doesn't?",
-      find: [20],
+      find: [25],
       hint: "Read Reading the Plot.",
       choices: [
         "The shape of the data, with every score still in it.",
@@ -152,37 +180,37 @@ module.exports = {
       ], right: 0 },
 
     { tag: "Use It", q: "What are the stem and the leaf of the number 47?",
-      find: [5],
+      find: [6],
       hint: "The tens digit is the stem and the ones digit is the leaf.",
       choices: ["Stem 7, leaf 4", "Stem 4, leaf 7", "Stem 47, leaf 0", "Stem 4, leaf 4"], right: 1 },
 
     { tag: "Use It", q: "A key says 2 | 5 means 25. What number does the row entry 7 | 1 mean?",
-      find: [16, 18],
+      find: [21,23],
       hint: "The stem is the tens digit and the leaf is the ones digit.",
       choices: ["8", "17", "71", "7.1"], right: 2 },
 
     { tag: "Use It", q: "Which stems do you need for the data 12, 35, 48 and 27?",
-      find: [9],
+      find: [14],
       hint: "Look at the tens digit of the least and of the greatest, and include everything in between.",
       choices: ["1, 2 and 4", "1, 2, 3 and 4", "12, 27, 35 and 48", "2, 3 and 4"], right: 1 },
 
     { tag: "Use It", q: "The data is 8, 21, 24, 35 and 52. Which stems have no leaves but still have to be written?",
-      find: [35, 36],
+      find: [36,38],
       hint: "The stems run from 0 to 5.",
       choices: ["1 and 4", "None, empty stems are left out.", "0 and 5", "2 and 3"], right: 0 },
 
     { tag: "Careful", q: "The numbers 38, 38 and 38 all show up in a list. How many leaves go on the 3 stem for them?",
-      find: [14],
+      find: [19],
       hint: "Every data value gets its own leaf.",
       choices: ["One", "Three", "Eight", "Two"], right: 1 },
 
     { tag: "Careful", q: "One row of a plot reads 4 | 7 2 9 3 when it is first built. How should that row end up?",
-      find: [15, 19],
+      find: [20,24],
       hint: "The last step is to put the leaves in order.",
       choices: ["4 | 9 7 3 2", "4 | 2 3 7 9", "4 | 7 2 9 3", "4 | 2 3 7"], right: 1 },
 
     { tag: "Careful", q: "Why does a stem-and-leaf plot need a key?",
-      find: [18],
+      find: [23],
       hint: "Read Build the Plot, just after the steps.",
       choices: [
         "So the reader knows how a stem and leaf make a number, such as 4 | 1 meaning 41.",

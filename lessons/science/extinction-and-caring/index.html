@@ -142,17 +142,17 @@
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
       <h3>Lesson Goal</h3>
-      <p>Students will define extinction, separate natural causes from the ones people add, and describe two ways endangered species are saved: protecting the places they live and breeding them in captivity.</p>
+      <p>Your student defines extinction, separates natural causes from the ones people add, and describes two ways endangered species are saved: protecting the places they live and breeding them in captivity.</p>
       <h3>A Note on the Side-by-Side Rule</h3>
-      <p>This lesson isn't an origins argument, but it never states deep time as plain fact. Where the dinosaurs come up, it gives what many scientists say and what the Bible tells us, and the student chooses. The caring at the end is described as the same work whichever account of origins a student holds.</p>
+      <p>This lesson isn't an origins argument, and it states no ages and no claims about how long ago anything lived. The only fossil it mentions is the mosasaur from the last lesson. The caring at the end is described as the same work whichever account of origins a student holds.</p>
       <p>The lesson doesn't use extinction to argue for either account.</p>
       <h3>Key Concepts</h3>
       <p>Extinction is natural, but the rate matters. People have raised it by destroying habitat and food supplies, so most of what's being lost today is lost faster than a species can adapt.</p>
-      <p>There are two kinds of rescue: save the place, or breed the animals and release them. The book says to do both.</p>
+      <p>There are two kinds of rescue: save the place, or breed the animals and release them. The textbook says to do both.</p>
       <h3>Added From the Record</h3>
-      <p>The dodo and the last passenger pigeon are added from the historical record. The tiger numbers and the estimate of a fourth of all species are the 1994 book's own figures, and the lesson says they're dated. The book's own parts are the definition, the natural and human causes, the Nature Conservancy and the tiger embryo transfer.</p>
+      <p>The passenger pigeon and Martha are added from the historical record. The tiger count is from 1994 and the lesson says it has changed. The textbook's own parts are the definition, the natural and human causes, the Nature Conservancy and the zoo breeding. The in vitro tiger paragraph and the dated estimate about a fourth of all species are left out on purpose.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Extinction</dt><dd>The dying out of a species, so that none are left alive.</dd><dt>Endangered species</dt><dd>A species with so few left that it is in danger of dying out.</dd><dt>Habitat</dt><dd>The place where a living thing makes its home and finds food and shelter.</dd><dt>In vitro fertilization</dt><dd>Joining an egg and a sperm in a test tube instead of inside the body.</dd></dl>
+      <dl><dt>Extinction</dt><dd>The dying out of a whole species, so that none are left alive.</dd><dt>Habitat</dt><dd>The place where a living thing makes its home and finds food and shelter.</dd><dt>Endangered species</dt><dd>A species with so few left that it is in danger of dying out.</dd></dl>
     </div>
   </details>
 
@@ -491,7 +491,7 @@ var ART = {
 };
 
 var VISUALS = [
-  { at: 30, kind: "Scripture", body: "Genesis 2:15 says, “And the LORD God took the man, and put him into the garden of Eden to dress it and to keep it.”" }
+  { at: 33, kind: "Scripture", body: "Genesis 2:15 says, “And the LORD God took the man, and put him into the garden of Eden to dress it and to keep it.”" }
 ];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
@@ -501,45 +501,49 @@ var VIDEO = null;
 
 var PARTS = [
   { title: "Martha", s: [
-    "In 1914 a bird named Martha died in the Cincinnati Zoo, and with her the passenger pigeon, once among the most common birds in North America, was gone forever.",
-    "A hundred years earlier flocks of them had darkened the sky for hours, so how does a bird that common disappear in a lifetime?",
-    "The book you're studying from asks a larger version of the same question, because it says that by the time you finish reading one paragraph a kind of living thing may have died out somewhere on earth.",
-    "Some scientists at the time it was written guessed that a fourth of all plants and animals could be gone within 25 years, and that number is the book's own, from 1994."
+    "In 1914 a bird named Martha died in the Cincinnati Zoo, and with her the passenger pigeon was gone forever.",
+    "A hundred years earlier, flocks of passenger pigeons had darkened the sky for hours.",
+    "So how does a bird that common disappear in one lifetime, and could it happen to other living things?"
   ] },
   { title: "What Extinction Is", s: [
-    "{{Extinction}} is the dying out of a species, which means the last one is gone and there's nobody left to have young.",
-    "The dodo, a bird that couldn't fly and lived on one island, was last seen in the 1600s, and Martha was the end of her whole kind.",
-    "It sounds like a tragedy every time, and sometimes it is, but the book makes a point that may surprise you: extinction is also a natural event."
+    "Last lesson you read about fossils, like the mosasaur skull, and no one has ever found a living mosasaur.",
+    "A species is one kind of living thing, like the passenger pigeon or the Bengal tiger.",
+    "{{Extinction}} is the dying out of a whole species, which means the last one is gone and there's nobody left to have young.",
+    "It sounds like a tragedy every time, and sometimes it is, but extinction is also something that happens on its own."
   ] },
-  { title: "A Natural Event", s: [
-    "Environments keep changing, with climates warming and cooling and rivers shifting and food supplies rising and falling.",
-    "When that happens, the species that can adapt keep going, and the ones that can't slowly die out.",
-    "The best-known example is the dinosaurs, whose bones lie in the rock layers, though many scientists say they died out millions of years before people, while the Bible tells us God made the land animals on the same day as the first man.",
-    "So the book says extinction isn't always bad, since a species disappearing because its surroundings changed is part of how the living world works."
+  { title: "Some Extinction Is Natural", s: [
+    "Surroundings keep changing, with climates warming and cooling, rivers shifting, and food supplies rising and falling.",
+    "When that happens, the living things that can adapt keep going, and to adapt just means to adjust to new surroundings.",
+    "The ones that can't adapt slowly die out, the way a fish can't adapt when its pond dries up.",
+    "So extinction isn't always bad, since a species disappearing because its surroundings changed is part of how the living world works."
   ] },
   { title: "What People Added", s: [
-    "The trouble today is the speed, because people have raised the rate of extinction far above the natural one.",
-    "We do it mostly by destroying {{habitats}}, the places where living things make their homes, and by destroying their food supplies.",
-    "When a forest becomes a parking lot or a wetland is drained, the animals that lived there can't adapt in a season, and the species that were already few are the ones that go first.",
-    "A species whose numbers have fallen so low that it's in danger of dying out has a name, and the name is an {{endangered species}}."
+    "The trouble today is the speed, because people have made extinction happen much faster than it does on its own.",
+    "We do it mostly by destroying {{habitats}}, which are the places where living things make their homes, and by destroying their food.",
+    "When a forest becomes a parking lot or a wetland is drained, the animals that lived there can't adapt in a single season.",
+    "A species with so few left that it's in danger of dying out is called an {{endangered species}}.",
+    "",
+    "[walk] Sort four causes by asking whether people added them.",
+    "[step] A river shifts and a wetland dries up on its own, which nobody caused. || river shifts  →  NATURAL",
+    "[step] A forest is cleared to make a parking lot, which people did. || forest cleared  →  ADDED BY PEOPLE",
+    "[step] The climate cools slowly over many years with no help from anyone. || climate cools  →  NATURAL",
+    "[step] A wetland is drained for farmland, which people did. || wetland drained  →  ADDED BY PEOPLE"
   ] },
-  { title: "Rescue One: Save the Place", s: [
-    "The book names two ways to save an endangered species, and the first is to protect the natural areas where it still lives.",
-    "If a patch of wild land is left alone, the animals have food and shelter, and a population that was shrinking gets a chance to rebuild.",
-    "Groups like the Nature Conservancy buy and protect land for exactly this reason.",
-    "It's the simplest rescue, and it also protects every other plant and animal living in the same place."
+  { title: "Two Ways to Rescue a Species", s: [
+    "There are two main ways to save an endangered species, and you can build them into a table one row at a time.",
+    "",
+    "[walk] Match each rescue to what it does.",
+    "[step] The first is to protect the natural areas where the animals still live, so they have food and shelter and their numbers can grow again. || ┌────────────────┬─────────────────────┐\n│ Rescue         │ What it does        │\n├────────────────┼─────────────────────┤\n│ Save the place │ Keeps the home safe │\n└────────────────┴─────────────────────┘",
+    "[step] The second is to breed the animals in zoos and later let their young go back to the wild. || ┌───────────────────┬───────────────────────┐\n│ Rescue            │ What it does          │\n├───────────────────┼───────────────────────┤\n│ Save the place    │ Keeps the home safe   │\n│ Breed and release │ Raises young in a zoo │\n└───────────────────┴───────────────────────┘",
+    "[step] Together they work as a pair, because the animals need both a safe place and enough of them left to fill it. || ┌───────────────────┬───────────────────────────┐\n│ Rescue            │ What it does              │\n├───────────────────┼───────────────────────────┤\n│ Save the place    │ Keeps the home safe       │\n│ Breed and release │ Raises young in a zoo     │\n│ Do both           │ Animals and a place to go │\n└───────────────────┴───────────────────────────┘",
+    "",
+    "Groups like the Nature Conservancy buy and protect land for the first kind of rescue.",
+    "In 1994 only 3,000 to 5,000 Bengal tigers were left in the wild, and zoos have bred them too, though the number in the wild has changed since."
   ] },
-  { title: "Rescue Two: Breed and Release", s: [
-    "The second way is to breed endangered animals in captivity, in zoos, and later let their young go back to the wild.",
-    "Bengal tigers are the book's example, and in 1994 it said only 3,000 to 5,000 were left in the wild.",
-    "Zoos tried something new called {{in vitro fertilization}}, in which an egg and a sperm are joined in a test tube, and then the tiny embryo is placed inside a different female to grow.",
-    "That's how a Bengal tiger cub was born to a Siberian tiger acting as a foster mother, and scientists hoped to use the same method for other species.",
-    "The book's conclusion is to do both things at once, protect what's left of the wild and breed in captivity, to slow extinction."
-  ] },
-  { title: "Why Both Rescues Are Needed", s: [
-    "Breeding animals in a zoo does nothing if there's no place left to release them.",
-    "Protecting land does little for an animal that has already dropped to a handful of survivors, which is why the two ideas work as a pair.",
-    "Think of it as a lifeboat and a harbor, where one keeps the animals alive for now and the other gives them somewhere to go afterward.",
+  { title: "Why Both Are Needed", s: [
+    "Breeding animals in a zoo does nothing if there's no safe place left to release them.",
+    "Protecting land does little for an animal that has already dropped to a handful of survivors.",
+    "Think of a lifeboat and a harbor, where the lifeboat keeps the animals alive for now and the harbor gives them somewhere to go afterward.",
     "Neither is cheap, and neither works without people who are willing to spend years on it."
   ] },
   { title: "Looking After What You've Been Given", s: [
@@ -552,8 +556,8 @@ var PARTS = [
     "The questions below check what you've learned, and the notebook part asks you to think about one species yourself."
   ] },
   { title: "What To Do Now", s: [
-    "A bird in a zoo, a tiger cub with the wrong mother and a question about what we owe the living things around us, and now it's your turn.",
-    "Start with the questions, Nine of them, and then the vocabulary check at the bottom, four questions on the word cards at the top of the page.",
+    "A bird in a zoo, a table of two rescues and a question about what we owe the living things around us, and now it's your turn.",
+    "Start with the questions, Nine of them, and then the vocabulary check at the bottom, three questions on the word cards at the top of the page.",
     "When a question asks about a cause, check whether the lesson called it natural or something people added.",
     "Then, in your notebook, pick one endangered animal or plant that lives in your own state or one you're curious about.",
     "Write three or four complete sentences about it, saying what's threatening it and which of the two rescues you think would help it most, and why.",
@@ -563,62 +567,65 @@ var PARTS = [
 ];
 
 var WORDS = [
-  ["Extinction", "The dying out of a species, so that none are left alive.", [4]],
-  ["Endangered species", "A species with so few left that it is in danger of dying out.", [14]],
+  ["Extinction", "The dying out of a whole species, so that none are left alive.", [5]],
   ["Habitat", "The place where a living thing makes its home and finds food and shelter.", [12]],
-  ["In vitro fertilization", "Joining an egg and a sperm in a test tube instead of inside the body.", [21]]
+  ["Endangered species", "A species with so few left that it is in danger of dying out.", [14]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
     q: "What is extinction?",
-    find: [4],
+    find: [5],
     hint: "Read What Extinction Is.",
+    why: "Extinction is when the last one is gone.",
     choices: [
-    "The dying out of a species, with none left to have young.",
-    "A change in an animal's color.",
-    "Moving to a new habitat.",
-    "A species being kept in a zoo."
+    "A change in an animal's color",
+    "Moving to a new habitat",
+    "The dying out of a whole species, with none left to have young",
+    "A species being kept in a zoo"
+  ],
+    right: 2
+  },
+  {
+    day: 1,
+    q: "Why does the lesson say extinction isn't always bad?",
+    find: [10],
+    hint: "Read Some Extinction Is Natural.",
+    why: "A species that can't adapt to new surroundings slowly dies out, and that's natural.",
+    choices: [
+    "Because it happens on its own when surroundings change, as part of how the living world works",
+    "Because extinct animals come back",
+    "Because people never cause it",
+    "Because only plants go extinct"
   ],
     right: 0
   },
   {
     day: 1,
-    q: "Why does the book say extinction isn't always bad?",
-    find: [6, 10],
-    hint: "Read A Natural Event.",
+    q: "Which of these is a cause people added?",
+    find: [17],
+    hint: "Read the sorting walk in What People Added.",
+    why: "A parking lot is something people built.",
     choices: [
-    "Because extinct animals come back.",
-    "Because it is part of how the living world works when surroundings change.",
-    "Because people never cause it.",
-    "Because only plants go extinct."
+    "A fish can't adapt when its pond dries up",
+    "A river shifts and a wetland dries up on its own",
+    "A forest is cleared to make a parking lot",
+    "The climate cools slowly over many years"
   ],
-    right: 1
+    right: 2
   },
   {
     day: 1,
-    q: "Which is an example of a large natural extinction shown by the fossil record?",
-    find: [9],
-    hint: "Read A Natural Event.",
-    choices: [
-    "The dinosaurs.",
-    "A forest turned into a parking lot.",
-    "The passenger pigeon.",
-    "The Bengal tiger."
-  ],
-    right: 0
-  },
-  {
-    day: 1,
-    q: "How have people raised the rate of extinction?",
+    q: "How have people made extinction happen faster than it does on its own?",
     find: [12],
     hint: "Read What People Added.",
+    why: "Losing their homes and food is what hurts living things most.",
     choices: [
-    "By counting species.",
-    "By buying land.",
-    "By building zoos.",
-    "By destroying habitats and food supplies."
+    "By counting species",
+    "By buying land",
+    "By building zoos",
+    "By destroying habitats and food supplies"
   ],
     right: 3
   },
@@ -627,63 +634,94 @@ var QUESTIONS = [
     q: "What is an endangered species?",
     find: [14],
     hint: "Read What People Added.",
+    why: "Endangered means it could die out soon.",
     choices: [
-    "A species that lives in a zoo.",
-    "A species that is dangerous to people.",
-    "A species whose numbers are so low it is in danger of dying out.",
-    "A species that has already died out."
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "What is the first way the book says endangered species can be saved?",
-    find: [15],
-    hint: "Read Rescue One: Save the Place.",
-    choices: [
-    "Breed them in captivity.",
-    "Protect the natural areas where they live so the population can rebuild.",
-    "Move them to another country.",
-    "Stop counting them."
+    "A species that lives in a zoo",
+    "A species with so few left that it's in danger of dying out",
+    "A species that is dangerous to people",
+    "A species that has already died out"
   ],
     right: 1
   },
   {
     day: 1,
-    q: "How was a Bengal tiger cub born to a Siberian tiger?",
-    find: [21, 22],
-    hint: "Read Rescue Two: Breed and Release.",
+    q: "What is the first way to rescue an endangered species?",
+    find: [22],
+    hint: "Read Two Ways to Rescue a Species.",
+    why: "Save the place keeps the home safe.",
     choices: [
-    "A zoo bought the cub from a hunter.",
-    "Two tigers of different kinds mated in the wild.",
-    "A Siberian tiger adopted a wild Bengal cub.",
-    "A Bengal embryo made in a test tube was placed in a Siberian tiger acting as a foster mother."
+    "Breed them in a zoo",
+    "Move them to another country",
+    "Protect the natural areas where they live so their numbers can grow",
+    "Stop counting them"
+  ],
+    right: 2
+  },
+  {
+    day: 1,
+    q: "What is the second way to rescue an endangered species?",
+    find: [23],
+    hint: "Read Two Ways to Rescue a Species.",
+    why: "Breed and release raises young in a zoo.",
+    choices: [
+    "Give them names",
+    "Move all the animals to a city",
+    "Stop people from visiting zoos",
+    "Breed them in zoos and later let the young go back to the wild"
   ],
     right: 3
   },
   {
     day: 1,
     q: "Why does the lesson say both rescues are needed together?",
-    find: [24],
-    hint: "Read Why Both Rescues Are Needed.",
+    find: [27, 28],
+    hint: "Read Why Both Are Needed.",
+    why: "The lifeboat keeps them alive and the harbor gives them somewhere to go.",
     choices: [
-    "Breeding animals makes them extinct faster.",
-    "Protected land always has too many animals.",
-    "Breeding needs a place to release the animals, and protected land does little for an animal down to a few survivors.",
-    "Zoos are cheaper than protecting land."
+    "Breeding animals makes them extinct faster",
+    "Breeding needs a safe place to release the animals, and protected land does little for an animal down to a handful of survivors",
+    "Protected land always has too many animals",
+    "Zoos are cheaper than protecting land"
   ],
-    right: 2
+    right: 1
   },
   {
     day: 1,
     q: "What does the lesson say about the work of caring for the living things that are left?",
-    find: [28],
+    find: [31],
     hint: "Read Looking After What You've Been Given.",
+    why: "People on both sides can stand in the same wetland and agree on what it takes to save the birds.",
     choices: [
-    "It is not needed, since extinction is natural.",
-    "It looks the same whichever account of origins a person holds.",
-    "It is the job of zoos alone.",
-    "It is only for people who hold one account of origins."
+    "It looks the same whichever account of origins a person holds",
+    "It isn't needed, since extinction is natural",
+    "It is the job of zoos alone",
+    "It is only for people who hold one account of origins"
+  ],
+    right: 0
+  },
+  {
+    day: 2,
+    q: "What is <i>extinction</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "A change in a species' diet",
+    "A rise in a species' numbers",
+    "A species moving to a new place",
+    "The dying out of a whole species, so that none are left alive"
+  ],
+    right: 3
+  },
+  {
+    day: 2,
+    q: "What is a <i>habitat</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "A zoo cage only",
+    "The place where a living thing makes its home and finds food and shelter",
+    "A fossil bed",
+    "A kind of food"
   ],
     right: 1
   },
@@ -693,49 +731,10 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A species with so few left that it is in danger of dying out.",
-    "A species found only in rain forests.",
-    "A species that is very large.",
-    "A species that can't be bred in a zoo."
-  ],
-    right: 0
-  },
-  {
-    day: 2,
-    q: "What is a <i>habitat</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "A zoo enclosure only.",
-    "A fossil bed.",
-    "A kind of food.",
-    "The place where a living thing makes its home and finds food and shelter."
-  ],
-    right: 3
-  },
-  {
-    day: 2,
-    q: "What is <i>in vitro fertilization</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "Moving a tiger to a new zoo.",
-    "Planting seeds in a greenhouse.",
-    "Joining an egg and a sperm in a test tube.",
-    "Feeding a mother tiger extra food."
-  ],
-    right: 2
-  },
-  {
-    day: 2,
-    q: "What is <i>extinction</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "The dying out of a species, so that none are left alive.",
-    "A rise in a species' numbers.",
-    "A change in a species' diet.",
-    "A species moving to a new place."
+    "A species with so few left that it is in danger of dying out",
+    "A species that is very large",
+    "A species that can't be bred in a zoo",
+    "A species found only in rain forests"
   ],
     right: 0
   }

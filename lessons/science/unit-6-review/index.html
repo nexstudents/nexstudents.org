@@ -142,18 +142,19 @@
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
       <h3>Lesson Goal</h3>
-      <p>Bring the four Unit 6 lessons together, check which parts hold and which need a second read, and finish by writing out what was found and what each account claims, in the student's own words.</p>
+      <p>Bring the four Unit 6 lessons together, check which parts hold and which need a second read, and finish by writing out what was found and what each account claims, in your student's own words.</p>
       <h3>Side by Side, Not Blended</h3>
-      <p>The review keeps the rule of the unit. Findings are stated as findings, and the claim about where living things and people came from is stated as a claim, with both accounts in their own words: common descent, and creation.</p>
-      <p>No question has a side for its right answer. The notebook work asks the student to say what each claims, and never which one to hold.</p>
+      <p>The review keeps the rule of the unit. Findings are stated as findings, and the claim about where living things and people came from is stated as a claim, with both answers in their own words under the labels what the world says and what God tells us.</p>
+      <p>No question has a side for its right answer. The notebook work asks your student to say what each claims, and never which one to hold.</p>
       <h3>Key Concepts</h3>
-      <p>Every question here is tied to one of the four lessons and the hint says which one, so a wrong answer is directions to the right page and not a mark against the student.</p>
+      <p>Every question here is tied to one of the four lessons and the hint says which one, so a wrong answer is directions to the right page and not a mark against your student.</p>
       <p>The key idea is the sort. A measurement and an interpretation can sit on the same page, and an honest student can tell them apart.</p>
       <h3>Where Students Get Stuck</h3>
       <p>🚨 Treating a finding as if it settled the origin question. A fossil in a layer is a finding. What it says about ancestors is the part the two accounts answer differently.</p>
       <p>Treating natural selection and common descent as the same thing. The first has been watched, in the finches. The second is the claim about the distant past.</p>
+      <p>Forgetting what a rock clock takes for granted. The candle picture is the quickest way back: the starting amount, nothing added or lost, and a steady speed.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Species</dt><dd>A group of living things that can breed together and have fertile young.</dd><dt>Population</dt><dd>A group of one species living in one area.</dd><dt>Variation</dt><dd>The differences between individuals of the same kind.</dd><dt>Natural selection</dt><dd>The process in which individuals with helpful variations survive and reproduce more, so those variations become more common.</dd><dt>Fossil</dt><dd>Any trace or remains of life from an earlier time.</dd><dt>Relative dating</dt><dd>Putting fossils in order by their layers: in undisturbed rock, lower layers are older.</dd><dt>Radioactive elements</dt><dd>Elements whose atoms change to a stable product at a steady rate, used to estimate an age.</dd><dt>Homologous structures</dt><dd>Body parts built on the same plan, like the bones in a human arm and a bat's wing.</dd><dt>Extinction</dt><dd>The dying out of a species, so that none are left alive.</dd><dt>Endangered species</dt><dd>A species with so few left that it is in danger of dying out.</dd><dt>Primates</dt><dd>The group of mammals that includes monkeys, apes and humans.</dd><dt>Hominids</dt><dd>In the textbook, humanlike primates that walk upright and have a bigger brain than other great apes.</dd><dt>Homo sapiens</dt><dd>The scientific name for modern humans, meaning wise human.</dd></dl>
+      <dl><dt>Variation</dt><dd>The differences between individuals of the same kind, like kittens in a litter.</dd><dt>Natural selection</dt><dd>The process in which individuals with helpful variations survive and reproduce more, so those variations become more common.</dd><dt>Fossil</dt><dd>Any trace of a living thing from long ago.</dd><dt>Relative dating</dt><dd>Putting fossils in order by their layers: in undisturbed rock, lower layers are older.</dd><dt>Radioactive element</dt><dd>An element whose atoms change into a different kind of atom at a steady speed, like a clock.</dd><dt>Extinction</dt><dd>The dying out of a whole species, so that none are left alive.</dd><dt>Endangered species</dt><dd>A species with so few left that it is in danger of dying out.</dd><dt>Primates</dt><dd>The group of mammals that includes monkeys, apes and people.</dd></dl>
     </div>
   </details>
 
@@ -492,7 +493,7 @@ var ART = {
 };
 
 var VISUALS = [
-  { at: 25, kind: "Scripture", body: "Proverbs 25:2 says, “It is the glory of God to conceal a thing: but the honour of kings is to search out a matter.”" }
+  { at: 62, kind: "Scripture", body: "Proverbs 25:2 says, “It is the glory of God to conceal a thing: but the honour of kings is to search out a matter.”" }
 ];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
@@ -504,105 +505,151 @@ var PARTS = [
   { title: "One Question, Four Ways", s: [
     "Think back to the pumpkin that held seventy seeds, the skull on a Texas lakeshore, a bird named Martha and a skeleton called Lucy.",
     "They look like four separate stories, but each one was a way of asking where living things came from and what's happened to them since.",
-    "So when a statement shows up in this review, how do you decide whether it was found and measured, or whether it's a claim about the past?"
+    "So when a statement shows up in this review, you need a way to decide whether it was found and measured, or whether it's a claim about the past.",
+    "",
+    "[walk] Say each lesson in one line.",
+    "[step] The first lesson was about what can be watched, and the big idea was natural selection. || ┌──────────────────────────┬──────────────────────────────────┐\n│ Lesson                   │ The big idea                     │\n├──────────────────────────┼──────────────────────────────────┤\n│ 1  What evolution claims │ Natural selection can be watched │\n└──────────────────────────┴──────────────────────────────────┘",
+    "[step] The second lesson was about what's dug up, and the big idea was that layers and clocks put finds in order. || ┌──────────────────────────┬──────────────────────────────────────┐\n│ Lesson                   │ The big idea                         │\n├──────────────────────────┼──────────────────────────────────────┤\n│ 1  What evolution claims │ Natural selection can be watched     │\n│ 2  The evidence          │ Layers and clocks put finds in order │\n└──────────────────────────┴──────────────────────────────────────┘",
+    "[step] The third lesson was about what's lost and saved, and the big idea was that species die out and two rescues help. || ┌──────────────────────────┬───────────────────────────────────────┐\n│ Lesson                   │ The big idea                          │\n├──────────────────────────┼───────────────────────────────────────┤\n│ 1  What evolution claims │ Natural selection can be watched      │\n│ 2  The evidence          │ Layers and clocks put finds in order  │\n│ 3  Extinction            │ Species die out, and two rescues help │\n└──────────────────────────┴───────────────────────────────────────┘",
+    "[step] The fourth lesson was about ourselves, and the big idea was bones and DNA with two accounts of what they mean. || ┌──────────────────────────┬───────────────────────────────────────┐\n│ Lesson                   │ The big idea                          │\n├──────────────────────────┼───────────────────────────────────────┤\n│ 1  What evolution claims │ Natural selection can be watched      │\n│ 2  The evidence          │ Layers and clocks put finds in order  │\n│ 3  Extinction            │ Species die out, and two rescues help │\n│ 4  Human origins         │ Bones and DNA, and two accounts       │\n└──────────────────────────┴───────────────────────────────────────┘",
+    "",
+    "Keep that question in mind, because the rest of the review keeps asking it.",
+    "The answer is always the same test, which is whether anybody could have watched it or measured it."
   ] },
   { title: "What Can Be Watched", s: [
-    "The first lesson drew a line between two meanings of one word, and the small meaning is the part nobody argues about.",
-    "Individuals in a {{population}} differ, which is {{variation}}, and more are born than can survive, so the ones with helpful variations leave more young, and that's {{natural selection}}.",
-    "The finches of Daphne Major are the proof, since after the drought of 1977 the average beak in the next generation was measurably deeper.",
-    "Lamarck's idea that a parent's acquired traits are passed on was set aside, because genes and not habits are what get inherited."
+    "Start with the lesson about what can be watched, because that's the part nobody argues about.",
+    "Kittens in a litter differ from each other, and those differences are called {{variation}}.",
+    "More are born than can survive, so the ones with helpful differences leave more young, and that sorting is {{natural selection}}.",
+    "Lamarck's idea that a parent's muscles are passed on to its young was set aside, because genes, not habits, are what get inherited.",
+    "",
+    "[walk] Replay the finches of 1977 in four steps.",
+    "[step] Before the drought, the finches ate small, soft seeds, and their beaks varied a little. || soft seeds plentiful\nbeaks vary a little",
+    "[step] A drought left mostly big, hard seeds, and only the deeper beaks could crack them. || hard seeds left\ndeep beak  →  cracks them",
+    "[step] The deep-beaked finches survived in greater numbers, so they had more young. || deep beak  →  survives  →  more young",
+    "[step] The next generation's average beak was measurably deeper. || next generation:\naverage beak deeper",
+    "",
+    "Natural selection is the part of this unit that has been seen and measured.",
+    "Both answers to the origin question accept it, and they part ways only on what it adds up to over a very long time."
   ] },
-  { title: "Rock and Bones", s: [
-    "The second lesson was about what's dug up, starting with a {{fossil}}, which is any trace of life from an earlier time.",
-    "Most are found in sedimentary rock, and {{relative dating}} orders them by their layers, with the lower ones older in undisturbed rock.",
-    "{{Radioactive elements}} give numbers, because an atom changes to a stable product at a steady rate that has been measured, and the method assumes that rate and the starting amount never changed.",
-    "Add the {{homologous structures}} in an arm, a flipper and a wing, the look-alike embryos, and the DNA matches, and you have the book's five kinds of evidence, all of them things people found and measured."
+  { title: "Rock Layers and Clocks", s: [
+    "The second lesson was about what's dug up, and a {{fossil}} is any trace of a living thing from long ago.",
+    "Fossils sit in layers of rock, and in layers nobody has tipped over, the bottom layer is the oldest, which is called {{relative dating}}.",
+    "",
+    "[walk] Order a new stack, with fern prints on top, snail shells in the middle and clam shells at the bottom.",
+    "[step] Draw the stack just the way you found it. ||   ┌──────────────┐\ntop     │ fern prints  │\n  ├──────────────┤\nmiddle  │ snail shells │\n  ├──────────────┤\nbottom  │ clam shells  │\n  └──────────────┘",
+    "[step] The bottom layer settled first, so number the layers going up. ||   ┌──────────────┐\n3rd     │ fern prints  │\n  ├──────────────┤\n2nd     │ snail shells │\n  ├──────────────┤\n1st     │ clam shells  │\n  └──────────────┘",
+    "[step] Read the numbers in order, and you have the oldest to the youngest. || oldest  →  clam shells\n           snail shells\nyoungest  →  fern prints",
+    "",
+    "Layers give an order, but they can't tell you how long ago.",
+    "A {{radioactive element}} can give a number, because its atoms change at a steady speed, like a candle burning down.",
+    "",
+    "[walk] A candle started 30 centimeters tall and burns 5 centimeters an hour, and now it's 10 centimeters tall.",
+    "[step] Subtract to find how much has burned away. || 30 - 10 = 20 centimeters burned",
+    "[step] Divide by how much burns each hour. || 20 ÷ 5 = 4 hours",
+    "[step] So the candle has been lit for 4 hours. || lit for 4 hours",
+    "",
+    "A rock clock needs the same three things the candle does, which are the starting amount, nothing added or lost, and a steady speed in the past.",
+    "Nobody can check those three by looking at the dial, which is why the ages are always the ages scientists give."
   ] },
   { title: "What's Lost, and What's Saved", s: [
-    "The third lesson turned to the living things that are disappearing, and began with {{extinction}}, the dying out of a species.",
-    "Some extinction is natural, since the fossil record shows large ones such as the dinosaurs, but people have raised the rate by destroying habitats and food supplies.",
-    "An {{endangered species}} has so few left that it may die out, and the book names two rescues: protect the natural areas where it lives, and breed it in captivity and release the young.",
-    "The Bengal tiger cub born to a Siberian foster mother was the example, and the point was to do both at once."
+    "The third lesson turned to {{extinction}}, the dying out of a whole species.",
+    "Some extinction is natural, because surroundings change and the living things that can't adapt die out, but people have sped it up by destroying habitats and food supplies.",
+    "A species with so few left that it may die out is an {{endangered species}}.",
+    "",
+    "[walk] Match the two rescues.",
+    "[step] The first rescue is to protect the natural areas where the animals still live. || ┌────────────────┬─────────────────────┐\n│ Rescue         │ What it does        │\n├────────────────┼─────────────────────┤\n│ Save the place │ Keeps the home safe │\n└────────────────┴─────────────────────┘",
+    "[step] The second rescue is to breed the animals in zoos and let the young go back to the wild. || ┌───────────────────┬───────────────────────┐\n│ Rescue            │ What it does          │\n├───────────────────┼───────────────────────┤\n│ Save the place    │ Keeps the home safe   │\n│ Breed and release │ Raises young in a zoo │\n└───────────────────┴───────────────────────┘",
+    "",
+    "Think of a lifeboat and a harbor, because the animals need both a way to stay alive now and a safe place to go afterward.",
+    "That's why the lesson said to do both rescues at once."
   ] },
-  { title: "Primates and the Fossils", s: [
-    "The fourth lesson looked at ourselves, beginning with the {{primates}}, the monkeys, apes and humans, who share an opposable thumb, forward-facing eyes and flexible shoulders.",
-    "Their DNA and their proteins, hemoglobin among them, are very much alike, which is a count anyone can repeat.",
-    "Then came the digs, Dart's skull in the early 1920s, Lucy in 1974, the Leakeys' Homo habilis with stone tools beside it, and the {{hominids}} the book says branched off 4 to 6 million years ago.",
-    "The book gives the age of {{Homo sapiens}} as about 300,000 years, and puts the Neanderthals and the Cro-Magnons before and beside us."
+  { title: "Primates and the Bones", s: [
+    "The fourth lesson began with the {{primates}}, the monkeys, apes and people, who share an opposable thumb, eyes that face forward and loose shoulders.",
+    "Their DNA is very much alike, which is a count anyone can repeat.",
+    "Then came the digs, with Dart's skull in the early 1920s, Lucy in 1974, and the Leakeys' Homo habilis with stone tools lying beside it.",
+    "Lucy's age is given as 2.9 to 3.4 million years, and Homo habilis as 1.5 to 2 million, and those are the ages scientists give from clocks that take a few things for granted."
   ] },
   { title: "The Sort", s: [
     "Here's the sort one more time, for the whole unit.",
-    "Found or measured: a finch's beak after a drought, a fossil in a layer, a decay rate, the same bones in four limbs, the DNA of a chimpanzee and a person, a skull's size and a stone tool beside a fossil.",
-    "Claimed about the distant past: that all living things share one ancestor, and that people are the end of a line that began in the primates.",
-    "Nobody watched either of those, and no experiment can repeat them, which is why they're a different kind of question."
+    "The test for each statement is the same, which is whether anybody could dig it up, measure it or watch it.",
+    "",
+    "[walk] Sort four statements by asking whether you could dig it up, measure it or watch it.",
+    "[step] A decay speed was measured in a laboratory, so it's something a person can check. || decay speed  →  FOUND",
+    "[step] Lucy's leg bones were dug up, so anyone can look at them. || Lucy's leg bones  →  FOUND",
+    "[step] People and the apes share an ancestor, which nobody was there to watch. || shared ancestor  →  CLAIM",
+    "[step] People were made on purpose in God's image, which nobody was there to watch either. || made in God's image  →  CLAIM",
+    "",
+    "The first two are findings, and the last two are claims.",
+    "Nobody watched either of those claims, and no experiment can repeat them, which is why they're a different kind of question."
   ] },
   { title: "Two Accounts, One Last Time", s: [
-    "Common descent is the first answer, and it's the view of the textbook: living things and people share ancestors, the fossils are steps along the way, and the likenesses are the sign of a family tree.",
-    "Creation is the second, the account in the Bible's first book: God made living things each after their kind and made people in his own image, so the likenesses show one Designer, and the layers are read as a record that was laid down fast.",
+    "People have given two answers to the bigger question, and they're laid out side by side one more time.",
+    "Each answer is given in its own words, and the rows show where they differ.",
+    "",
+    "[walk] Read the question two ways.",
+    "[step] Start with where living things came from. || ┌───────────────────────────────┬────────────────────────────────────┬────────────────────────────┐\n│ The question                  │ What the world says                │ What God tells us          │\n├───────────────────────────────┼────────────────────────────────────┼────────────────────────────┤\n│ Where living things came from │ Shared ancestors, over a long time │ Made each “after his kind” │\n└───────────────────────────────┴────────────────────────────────────┴────────────────────────────┘",
+    "[step] Add where people came from. || ┌───────────────────────────────┬────────────────────────────────────┬────────────────────────────┐\n│ The question                  │ What the world says                │ What God tells us          │\n├───────────────────────────────┼────────────────────────────────────┼────────────────────────────┤\n│ Where living things came from │ Shared ancestors, over a long time │ Made each “after his kind” │\n│ Where people came from        │ An ancestor shared with the apes   │ Made in God's image        │\n└───────────────────────────────┴────────────────────────────────────┴────────────────────────────┘",
+    "[step] Add why living things look alike. || ┌───────────────────────────────┬────────────────────────────────────┬────────────────────────────┐\n│ The question                  │ What the world says                │ What God tells us          │\n├───────────────────────────────┼────────────────────────────────────┼────────────────────────────┤\n│ Where living things came from │ Shared ancestors, over a long time │ Made each “after his kind” │\n│ Where people came from        │ An ancestor shared with the apes   │ Made in God's image        │\n│ Why living things look alike  │ A family tree                      │ One Designer's plans       │\n└───────────────────────────────┴────────────────────────────────────┴────────────────────────────┘",
     "",
     "[verse] Proverbs 25:2 says, “It is the glory of God to conceal a thing: but the honour of kings is to search out a matter.”",
     "",
-    "Searching out a matter means looking at the evidence in front of you and saying exactly what it is, and that's what this unit has trained you to do, so use the questions below to see how well it stuck."
+    "Searching out a matter means looking at the evidence in front of you and saying exactly what it is.",
+    "That's what this unit has trained you to do, so use the questions below to see how well it stuck."
   ] },
   { title: "What To Do Now", s: [
-    "Start with the questions, Eleven of them, and if one is hard the hint tells you which lesson to go back to.",
-    "After that comes the vocabulary check at the bottom, five questions on the word cards at the top of the page.",
+    "Start with the questions, Ten of them, and if one is hard the hint tells you which lesson to go back to.",
+    "After that comes the vocabulary check at the bottom, eight questions on the word cards at the top of the page.",
     "Then the part that matters most, and it happens on paper.",
     "In your notebook, write one paragraph of complete sentences that explains what natural selection is and gives one thing it has been seen doing.",
     "Then make a table with a column headed Found or Measured and a column headed Claimed About Origins, and give three rows for each from across the unit.",
-    "In the second column, put both accounts, common descent and creation, each in its own words.",
-    "There's no answer key, and nobody is asking which account to hold, only whether you can say clearly what was found and what each account claims.",
+    "In the second column, put both answers, what the world says and what God tells us, each in its own words.",
+    "There's no answer key, and nobody is asking which answer to hold, only whether you can say clearly what was found and what each answer claims.",
     "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
 ];
 
 var WORDS = [
-  ["Species", "A group of living things that can breed together and have fertile young.", [11]],
-  ["Population", "A group of one species living in one area.", [4]],
-  ["Variation", "The differences between individuals of the same kind.", [4]],
-  ["Natural selection", "The process in which individuals with helpful variations survive and reproduce more, so those variations become more common.", [4]],
-  ["Fossil", "Any trace or remains of life from an earlier time.", [7]],
-  ["Relative dating", "Putting fossils in order by their layers: in undisturbed rock, lower layers are older.", [8]],
-  ["Radioactive elements", "Elements whose atoms change to a stable product at a steady rate, used to estimate an age.", [9]],
-  ["Homologous structures", "Body parts built on the same plan, like the bones in a human arm and a bat's wing.", [10]],
-  ["Extinction", "The dying out of a species, so that none are left alive.", [11]],
-  ["Endangered species", "A species with so few left that it is in danger of dying out.", [13]],
-  ["Primates", "The group of mammals that includes monkeys, apes and humans.", [15]],
-  ["Hominids", "In the textbook, humanlike primates that walk upright and have a bigger brain than other great apes.", [17]],
-  ["Homo sapiens", "The scientific name for modern humans, meaning wise human.", [18]]
+  ["Variation", "The differences between individuals of the same kind, like kittens in a litter.", [11]],
+  ["Natural selection", "The process in which individuals with helpful variations survive and reproduce more, so those variations become more common.", [12]],
+  ["Fossil", "Any trace of a living thing from long ago.", [21]],
+  ["Relative dating", "Putting fossils in order by their layers: in undisturbed rock, lower layers are older.", [22]],
+  ["Radioactive element", "An element whose atoms change into a different kind of atom at a steady speed, like a clock.", [28]],
+  ["Extinction", "The dying out of a whole species, so that none are left alive.", [35]],
+  ["Endangered species", "A species with so few left that it is in danger of dying out.", [37]],
+  ["Primates", "The group of mammals that includes monkeys, apes and people.", [43]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
     q: "What is natural selection?",
-    find: [4],
-    hint: "Go back to What Evolution Claims, and What It Rests On, Natural Selection.",
+    find: [12],
+    hint: "Go back to What Evolution Claims, and What It Rests On, Darwin's Four Ideas.",
     choices: [
+    "Individuals with helpful differences survive and have more young, so those differences become more common.",
     "A change in an animal's habits during its life.",
     "A person choosing which animals to breed.",
-    "Individuals with helpful variations survive and reproduce more, so those variations become more common.",
     "A way of dating fossils."
   ],
-    right: 2
+    right: 0
   },
   {
     day: 1,
     q: "What happened to the finches' beaks after the 1977 drought?",
-    find: [5],
+    find: [18],
     hint: "Go back to What Evolution Claims, and What It Rests On, Beaks in a Drought.",
     choices: [
     "The finches left the island.",
+    "The average beak in the next generation was measurably deeper.",
     "The finches grew bigger wings.",
-    "Nothing changed.",
-    "The average beak in the next generation was measurably deeper."
+    "Nothing changed."
   ],
-    right: 3
+    right: 1
   },
   {
     day: 1,
     q: "Why was Lamarck's idea set aside?",
-    find: [6],
+    find: [13],
     hint: "Go back to What Evolution Claims, and What It Rests On, An Idea That Didn't Survive.",
     choices: [
     "Because genes, not habits, are what get inherited.",
@@ -614,157 +661,105 @@ var QUESTIONS = [
   },
   {
     day: 1,
-    q: "In undisturbed rock, what does relative dating say about a fossil in a lower layer?",
-    find: [8],
+    q: "A rock has clam shells in the bottom layer, snail shells in the middle and fern prints on top, and nobody has tipped it. Which is the order from oldest to youngest?",
+    find: [26],
     hint: "Go back to The Evidence, Examined Honestly, Reading the Layers.",
     choices: [
-    "It is younger than the fossils above it.",
-    "It is the same age as the fossils above it.",
-    "It is older than the fossils above it.",
-    "Its age can't be compared."
+    "Fern prints, snail shells, clam shells.",
+    "Snail shells, clam shells, fern prints.",
+    "Clam shells, snail shells, fern prints.",
+    "Fern prints, clam shells, snail shells."
   ],
     right: 2
   },
   {
     day: 1,
-    q: "What does radioactive dating assume, according to the unit?",
-    find: [9],
-    hint: "Go back to The Evidence, Examined Honestly, What the Clock Takes For Granted.",
+    q: "A candle started 40 centimeters tall and burns 8 centimeters an hour. Now it's 16 centimeters tall. How long has it been lit?",
+    find: [30, 31],
+    hint: "Go back to The Evidence, Examined Honestly, A Clock in the Rock. Subtract, then divide.",
     choices: [
-    "That the layers never form.",
-    "That nobody has measured the rate.",
-    "That every fossil is the same age.",
-    "That the rate of change stayed the same and the starting amount is known."
-  ],
-    right: 3
-  },
-  {
-    day: 1,
-    q: "Which of these is an example of homologous structures?",
-    find: [10],
-    hint: "Go back to The Evidence, Examined Honestly, The Same Bones in Four Limbs.",
-    choices: [
-    "An insect trapped in resin.",
-    "The bones in a human arm, a dolphin's flipper, a bat's wing and a bird's wing.",
-    "A leaf imprint in limestone.",
-    "A tail on an early embryo only."
-  ],
-    right: 1
-  },
-  {
-    day: 1,
-    q: "How does the book say extinction is both natural and something people have raised?",
-    find: [12],
-    hint: "Go back to Extinction, and Caring for What Remains, A Natural Event and What People Added.",
-    choices: [
-    "Large natural ones show in the fossil record, and people raised the rate by destroying habitats and food supplies.",
-    "It never happens in nature.",
-    "It is caused only by zoos.",
-    "It is always caused by people."
+    "3 hours",
+    "24 hours",
+    "2 hours",
+    "5 hours"
   ],
     right: 0
   },
   {
     day: 1,
-    q: "What are the two ways the book says endangered species can be saved?",
-    find: [13],
-    hint: "Go back to Extinction, and Caring for What Remains, Rescue One and Rescue Two.",
+    q: "What does a rock clock have to take for granted?",
+    find: [33],
+    hint: "Go back to The Evidence, Examined Honestly, What the Clock Takes for Granted.",
     choices: [
-    "Moving them to the city and feeding them.",
-    "Protecting the natural areas where they live, and breeding them in captivity to release later.",
-    "Counting them and giving them names.",
-    "Hunting them and selling them."
+    "That nobody has measured the speed.",
+    "That the speed of change stayed the same, and nothing was added or lost.",
+    "That every fossil is the same age.",
+    "That the layers never form."
   ],
     right: 1
   },
   {
     day: 1,
-    q: "Which of these is one of the three traits that all primates share?",
-    find: [15],
-    hint: "Go back to Human Origins, What Primates Share.",
+    q: "Which of these is a cause of extinction that people added?",
+    find: [36],
+    hint: "Go back to Extinction, and Caring for What Remains, What People Added.",
     choices: [
-    "Forward-facing eyes that judge distance.",
+    "The climate cools slowly over many years.",
+    "A fish can't adapt when its pond dries up.",
+    "A wetland is drained for farmland.",
+    "A river shifts on its own."
+  ],
+    right: 2
+  },
+  {
+    day: 1,
+    q: "What are the two ways to rescue an endangered species?",
+    find: [39, 40],
+    hint: "Go back to Extinction, and Caring for What Remains, Two Ways to Rescue a Species.",
+    choices: [
+    "Moving them to the city and feeding them.",
+    "Counting them and giving them names.",
+    "Hunting them and selling them.",
+    "Protecting the places they live, and breeding them in zoos to release later."
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "Which of these is one of the things all primates share?",
+    find: [43],
+    hint: "Go back to Human Origins, Three Things Primates Share.",
+    choices: [
     "A tail.",
+    "Eyes that face forward.",
     "Gills.",
     "Wings."
   ],
-    right: 0
-  },
-  {
-    day: 1,
-    q: "What did Donald Johanson find in 1974?",
-    find: [17],
-    hint: "Go back to Human Origins, Lucy.",
-    choices: [
-    "A set of Neanderthal tools.",
-    "A cave painting in France.",
-    "A mosasaur skull.",
-    "A nearly complete Australopithecus skeleton, nicknamed Lucy."
-  ],
-    right: 3
+    right: 1
   },
   {
     day: 1,
     q: "Which of these is a claim about the distant past, and not something found or measured?",
-    find: [21],
+    find: [52],
     hint: "Go back to Human Origins, Found, and Claimed, and to The Evidence, Examined Honestly.",
     choices: [
-    "All living things share one ancestor.",
-    "A finch's average beak got deeper after a drought.",
+    "A fossil sits in a lower layer of rock.",
     "Chimpanzee DNA is very like human DNA.",
-    "A fossil sits in a lower layer of rock."
-  ],
-    right: 0
-  },
-  {
-    day: 2,
-    q: "What is a <i>population</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "A kind of fossil.",
-    "A group of one species living in one area.",
-    "A type of rock.",
-    "A single animal."
-  ],
-    right: 1
-  },
-  {
-    day: 2,
-    q: "What is <i>extinction</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "A species moving to a new place.",
-    "A change in a species' diet.",
-    "The dying out of a species, so that none are left alive.",
-    "A species being kept in a zoo."
+    "People and the apes share an ancestor.",
+    "A finch's average beak got deeper after a drought."
   ],
     right: 2
   },
   {
     day: 2,
-    q: "What are <i>primates</i>?",
+    q: "What is <i>variation</i>?",
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "Animals with wings.",
-    "Animals that live only in trees.",
-    "Animals that hunt only at night.",
-    "The group of mammals that includes monkeys, apes and humans."
-  ],
-    right: 3
-  },
-  {
-    day: 2,
-    q: "What does <i>relative dating</i> do?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "Measures the amount of lead in a rock.",
-    "Puts fossils in order by their layers, since lower layers in undisturbed rock are older.",
-    "Asks a relative how old a fossil is.",
-    "Counts the rings in a tree."
+    "A type of rock.",
+    "The differences between individuals of the same kind.",
+    "A group of one species in one place.",
+    "A kind of fossil."
   ],
     right: 1
   },
@@ -774,10 +769,88 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A person choosing which animals to breed.",
     "A change in a person's habits.",
-    "Individuals with helpful variations survive and reproduce more, so those variations become more common.",
-    "A way of counting seeds."
+    "A way of counting seeds.",
+    "A person choosing which animals to breed.",
+    "Individuals with helpful differences survive and have more young, so those differences become more common."
+  ],
+    right: 3
+  },
+  {
+    day: 2,
+    q: "What is a <i>fossil</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "Any trace of a living thing from long ago.",
+    "A living animal that never changes.",
+    "A rock made from lava.",
+    "A tool for digging."
+  ],
+    right: 0
+  },
+  {
+    day: 2,
+    q: "What does <i>relative dating</i> do?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "Measures the amount of lead in a rock.",
+    "Asks a relative how old a fossil is.",
+    "Counts the rings in a tree.",
+    "Puts fossils in order by their layers, since lower layers in undisturbed rock are older."
+  ],
+    right: 3
+  },
+  {
+    day: 2,
+    q: "What is a <i>radioactive element</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "An element that glows in the dark.",
+    "An element whose atoms change into a different kind of atom at a steady speed.",
+    "An element that never changes.",
+    "A kind of fossil."
+  ],
+    right: 1
+  },
+  {
+    day: 2,
+    q: "What is <i>extinction</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "The dying out of a whole species, so that none are left alive.",
+    "A species moving to a new place.",
+    "A change in a species' diet.",
+    "A species being kept in a zoo."
+  ],
+    right: 0
+  },
+  {
+    day: 2,
+    q: "What is an <i>endangered species</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "A species that lives in a zoo.",
+    "A species that has already died out.",
+    "A species that is dangerous to people.",
+    "A species with so few left that it is in danger of dying out."
+  ],
+    right: 3
+  },
+  {
+    day: 2,
+    q: "What are <i>primates</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "Animals that live only in trees.",
+    "Animals that hunt only at night.",
+    "The group of mammals that includes monkeys, apes and people.",
+    "Animals with wings."
   ],
     right: 2
   }

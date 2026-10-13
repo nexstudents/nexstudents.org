@@ -150,7 +150,7 @@
       <h3>Teaching Suggestion</h3>
       <p>Have the student multiply the primes back together at the end of every problem. If the product doesn't match the number he started with, a prime went missing.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Prime</dt><dd>A whole number greater than 1 with exactly two factors, 1 and itself.</dd><dt>Composite</dt><dd>A whole number greater than 1 with more than two factors.</dd><dt>Factor tree</dt><dd>A diagram that splits a number into factors, then splits each factor, until every branch ends in a prime.</dd><dt>Prime factorization</dt><dd>A number written as a product of primes, such as 12 = 2 × 2 × 3.</dd></dl>
+      <dl><dt>Prime</dt><dd>A whole number greater than 1 with exactly two factors, 1 and itself.</dd><dt>Composite</dt><dd>A whole number greater than 1 with more than two factors.</dd><dt>Factor tree</dt><dd>A diagram that splits a number into factors, then splits each factor, until every branch ends in a prime.</dd><dt>Prime factorization</dt><dd>A number written as a product of primes, such as 12 = 2 × 2 × 3.</dd><dt>Exponent</dt><dd>A small raised number that says how many times to multiply a number by itself, so 2³ means 2 × 2 × 2.</dd></dl>
     </div>
   </details>
 
@@ -493,7 +493,7 @@ var VISUALS = [];
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
    build-lessons.js rewrites each ONE line. */
 var WORK = [
-  {"title":"Ninety Folding Chairs","ask":"The fellowship hall has 90 folding chairs. Break 90 into primes by dividing by the least prime, one step at a time.","steps":[{"ask":"90 is even, so divide by 2. What's the quotient?","answer":45,"hint":"Half of 90.","why":"45, which is odd, so 2 is done."},{"ask":"45 is odd and its digit sum is 9, so divide by 3. What's the quotient?","answer":15,"hint":"45 divided by 3.","why":"15."},{"ask":"15 is still divisible by 3. Divide again. What's the quotient?","answer":5,"hint":"15 divided by 3.","why":"5, and 5 is prime, so you can stop."},{"ask":"List every prime you divided by, plus the last quotient, from least to greatest. Type them with commas.","answer":[2,3,3,5],"hint":"You divided by 2, then 3, then 3, and the last quotient was 5.","why":"90 = 2 × 3 × 3 × 5, which is 2 × 3² × 5. Multiply to check: 2 × 3 × 3 × 5 is 90."}]}
+  {"title":"Ninety Folding Chairs","ask":"The fellowship hall has 90 folding chairs. Break 90 into primes by dividing by the least prime, one step at a time.","steps":[{"ask":"90 is even, so divide by 2. What's the quotient?","answer":45,"hint":"Half of 90.","why":"45, which is odd, so 2 is done."},{"ask":"45 is odd and its digit sum is 9, so divide by 3. What's the quotient?","answer":15,"hint":"45 divided by 3.","why":"15."},{"ask":"15 is still divisible by 3. Divide again. What's the quotient?","answer":5,"hint":"15 divided by 3.","why":"5, and 5 is prime, so you can stop."},{"ask":"List every prime you divided by, plus the last quotient, from least to greatest. Type them with commas.","answer":[2,3,3,5],"hint":"You divided by 2, then 3, then 3, and the last quotient was 5.","why":"90 = 2 × 3 × 3 × 5. Multiply to check: 2 × 3 × 3 × 5 is 90."},{"ask":"In 2 × 3 × 3 × 5, how many times does 3 appear? That number is the exponent on the 3.","answer":2,"hint":"Count the 3s in the list.","why":"Two 3s, so the exponent is 2 and 90 = 2 × 3² × 5."}]}
 ];
 var VIDEO = null;
 
@@ -501,17 +501,30 @@ var PARTS = [
   { title: "Chairs in Rows", s: [
     "Eli's church is having a supper, and he's been asked to set out chairs in tidy rectangles, with the same number in every row.",
     "With 24 chairs he can make 1 row of 24, 2 rows of 12, 3 rows of 8 or 4 rows of 6, so he has a choice of four shapes.",
-    "With 29 chairs he's stuck, because the only rectangle that works is 1 row of 29, and he can't make 2 rows or 3 rows without leftovers.",
+    "",
+    "[walk] Set out 24 chairs in rectangles.",
+    "[step] One long row holds all 24, and two rows hold 12 each. || ┌──────┬────────────────────┐\n│ Rows │ Chairs in each row │\n├──────┼────────────────────┤\n│ 1    │ 24                 │\n│ 2    │ 12                 │\n└──────┴────────────────────┘",
+    "[step] Three rows hold 8 each, and four rows hold 6 each. || ┌──────┬────────────────────┐\n│ Rows │ Chairs in each row │\n├──────┼────────────────────┤\n│ 1    │ 24                 │\n│ 2    │ 12                 │\n│ 3    │ 8                  │\n│ 4    │ 6                  │\n└──────┴────────────────────┘",
+    "[step] Here is the four-rows shape, drawn as dots. || ● ● ● ● ● ●\n● ● ● ● ● ●\n● ● ● ● ● ●\n● ● ● ● ● ●",
+    "",
+    "With 29 chairs he's stuck, and the next walk shows why.",
+    "",
+    "[walk] Try to set out 29 chairs in even rows.",
+    "[step] Two rows of 14 use 28 chairs and leave 1 over. || 2 × 14 = 28, and 1 chair is left",
+    "[step] Three rows of 9 use 27 chairs and leave 2 over. || 3 × 9 = 27, and 2 chairs are left",
+    "[step] Nothing works except one long row of 29. || 1 × 29 = 29, the only rectangle",
+    "",
     "That difference is the whole idea of this lesson: some numbers break into smaller factors, and some refuse to."
   ] },
   { title: "Prime or Composite?", s: [
+    "Remember that a factor is a number that divides another number evenly, so 4 is a factor of 24.",
     "A {{prime}} number is a whole number greater than 1 with exactly two factors, 1 and itself, and so 29 is prime because nothing else divides it.",
     "A {{composite}} number is a whole number greater than 1 with more than two factors, and 24 is composite because it has eight of them, 1, 2, 3, 4, 6, 8, 12 and 24.",
     "The number 1 is neither prime nor composite, since it has only one factor, and 0 is neither as well.",
     "The primes up to 20 are 2, 3, 5, 7, 11, 13, 17 and 19, and 2 is the only even prime, because every other even number can be divided by 2.",
     "",
     "[walk] Decide whether 51 is prime or composite.",
-    "[step] Look for a small factor using the divisibility rules, because that's faster than trying every number. || 51: ones digit 1, so not 2, 5 or 10",
+    "[step] Look for a small factor using the divisibility rules from the last lesson, because that's faster than trying every number. || 51: ones digit 1, so not 2, 5 or 10",
     "[step] Add the digits to test for 3. || 5 + 1 = 6, and 6 is divisible by 3",
     "[step] Divide by 3 to find the other factor. || 51 ÷ 3 = 17, so 51 = 3 × 17",
     "[step] A number with a factor other than 1 and itself is composite. || 51 is composite",
@@ -520,98 +533,110 @@ var PARTS = [
     "The habit that saves you is checking the rule for 3 before you decide, and then 7 and 11 for bigger numbers."
   ] },
   { title: "Grow a Factor Tree", s: [
-    "To write a composite number as a product of primes, you can grow a {{factor tree}}, which splits the number into two factors and keeps splitting every branch that isn't prime.",
+    "To write a composite number as a product of primes, you can grow a {{factor tree}}.",
+    "A product is just the answer to a multiplication, and a factor tree splits a number into two factors and keeps splitting every branch that isn't prime.",
     "You can start with any two factors that multiply to the number, and you stop when every branch ends in a prime.",
     "",
-    "[walk] Build a factor tree for 120.",
-    "[step] Split 120 into any two factors, such as 12 and 10, since 12 × 10 = 120. || 120\n├ 12\n└ 10",
-    "[step] Neither 12 nor 10 is prime, so split each one again. || 12 → 3 × 4\n10 → 2 × 5",
-    "[step] The 4 is still composite, so split it into 2 × 2, and now every branch ends in a prime. || 120 → 3 × (2 × 2) × 2 × 5",
-    "[step] Collect the primes at the ends of the branches, in order from least to greatest. || 2, 2, 2, 3, 5",
+    "[walk] Grow a factor tree for 120.",
+    "[step] Put 120 at the top. ||            120",
+    "[step] Split 120 into any two factors, such as 12 and 10, since 12 × 10 = 120. ||            120\n       ┌────┴─────┐\n       12         10",
+    "[step] Neither 12 nor 10 is prime, so split each one again, 12 into 3 and 4, and 10 into 2 and 5. ||            120\n       ┌────┴─────┐\n       12         10\n    ┌──┴──┐     ┌─┴─┐\n    3     4     2   5",
+    "[step] The 4 is still composite, so split it into 2 and 2, and now every branch ends in a prime. ||            120\n       ┌────┴─────┐\n       12         10\n    ┌──┴──┐     ┌─┴─┐\n    3     4     2   5\n        ┌─┴─┐\n        2   2",
+    "[step] Collect the primes at the ends of the branches, in order from least to greatest. || primes at the ends:  3, 2, 2, 2, 5\nin order:  2, 2, 2, 3, 5",
     "[step] Multiply them back together to check. || 2 × 2 × 2 × 3 × 5 = 120",
     "",
     "A branch that ends in 4 or 10 isn't finished, so keep asking of every branch whether it's prime before you stop.",
     "If a friend starts with 8 × 15 instead of 12 × 10, the tree looks completely different, but you'll find the same five primes at the end of it, and that's one of the surprising facts about numbers."
   ] },
   { title: "Divide by the Least Prime", s: [
-    "There's a second way that doesn't need a picture, and it's just a ladder of divisions: divide by 2 as long as you can, then by 3, then by 5, and keep going until the quotient is a prime.",
+    "There's a second way that doesn't need a tree, and it's just a ladder of divisions.",
+    "Divide by 2 as long as you can, then by 3, then by 5, and keep going until what's left is a prime.",
     "It works because you always take out the smallest factor first, so you can't miss one.",
     "",
     "[walk] Find the prime factors of 168 by dividing.",
-    "[step] The ones digit is even, so divide by 2. || 168 ÷ 2 = 84",
-    "[step] 84 is even too, so divide by 2 again. || 84 ÷ 2 = 42",
-    "[step] 42 is still even, so divide by 2 once more. || 42 ÷ 2 = 21",
-    "[step] 21 is odd, so try 3, and the digit sum 3 says it works. || 21 ÷ 3 = 7",
-    "[step] The quotient 7 is prime, so you're done, and the answer is every divisor you used plus that last quotient. || 168 = 2 × 2 × 2 × 3 × 7",
+    "[step] The ones digit is even, so divide by 2. || 2 │ 168\n  │  84",
+    "[step] 84 is even too, so divide by 2 again. || 2 │ 168\n2 │  84\n  │  42",
+    "[step] 42 is still even, so divide by 2 once more. || 2 │ 168\n2 │  84\n2 │  42\n  │  21",
+    "[step] 21 is odd, so try 3, and the digit sum 3 says it works. || 2 │ 168\n2 │  84\n2 │  42\n3 │  21\n  │   7",
+    "[step] What's left is 7, which is prime, so you're done, and the answer is every divisor you used plus that last number. || 168 = 2 × 2 × 2 × 3 × 7",
     "",
-    "Those two methods always agree, because of a fact the book states plainly: every composite number can be written as a product of primes in exactly one way, if you ignore the order.",
+    "Those two methods always agree, because every composite number can be written as a product of primes in exactly one way, if you ignore the order.",
     "That product of primes is called the {{prime factorization}}, and it's like a fingerprint for the number."
   ] },
   { title: "Short Ways to Write It", s: [
-    "When the same prime shows up more than once, you write it with an exponent, which counts how many times it appears.",
-    "The factorization 2 × 2 × 2 × 3 × 7 has three 2s, so it's written 2³ × 3 × 7.",
-    "And the factorization of 120, with its three 2s, one 3 and one 5, is written 2³ × 3 × 5.",
+    "In an earlier lesson you met powers, and the small raised number is called an {{exponent}}.",
+    "An exponent says how many times to multiply a number by itself, so 2³ means 2 × 2 × 2, which is 8.",
+    "When the same prime shows up more than once in a factorization, you can use an exponent to count the repeats.",
+    "",
+    "[walk] Write 2 × 2 × 2 × 3 × 7 with an exponent.",
+    "[step] Count how many times each prime appears. || ┌───────┬──────────────────┐\n│ Prime │ Times it appears │\n├───────┼──────────────────┤\n│ 2     │ 3                │\n│ 3     │ 1                │\n│ 7     │ 1                │\n└───────┴──────────────────┘",
+    "[step] A prime that appears more than once gets a small raised number that says how many times. || 2 appears 3 times, so 2³",
+    "[step] A prime that appears only once doesn't need one. || 2³ × 3 × 7",
+    "[step] Multiply it back out to check that nothing changed. || 2³ = 2 × 2 × 2 = 8\n8 × 3 × 7 = 168",
+    "",
+    "The factorization of 120, with its three 2s, one 3 and one 5, is written 2³ × 3 × 5.",
     "Only the primes get written in the final answer, so never leave a 4 or a 6 in a prime factorization."
   ] },
   { title: "What To Do Now", s: [
     "Eli's chairs turned into primes, trees and a ladder of divisions, and the rest of this page is your turn to break numbers down yourself.",
     "First work through Your Turn below the reading, typing each step.",
-    "Then come four word cards, then Eight questions, then four more questions about those words, Twelve questions in all.",
+    "Then come five word cards, then Nine questions, then five more questions about those words, Fourteen questions in all.",
     "Last, open the Homework Sheet with the button at the bottom of the page, and either fill it out right on the screen or print it and do it on paper."
   ] }
 ];
 
 var WORDS = [
-  ["Prime", "A whole number greater than 1 with exactly two factors, 1 and itself.", [4]],
-  ["Composite", "A whole number greater than 1 with more than two factors.", [5]],
-  ["Factor tree", "A diagram that splits a number into factors, then splits each factor, until every branch ends in a prime.", [15]],
-  ["Prime factorization", "A number written as a product of primes, such as 12 = 2 × 2 × 3.", [34]]
+  ["Prime", "A whole number greater than 1 with exactly two factors, 1 and itself.", [13]],
+  ["Composite", "A whole number greater than 1 with more than two factors.", [14]],
+  ["Factor tree", "A diagram that splits a number into factors, then splits each factor, until every branch ends in a prime.", [24]],
+  ["Prime factorization", "A number written as a product of primes, such as 12 = 2 × 2 × 3.", [46]],
+  ["Exponent", "A small raised number that says how many times to multiply a number by itself, so 2³ means 2 × 2 × 2.", [47]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
     q: "Why can Eli set out 24 chairs in several rectangles but 29 chairs in only one?",
-    find: [2, 3],
+    find: [1, 6],
     hint: "Read Chairs in Rows.",
     choices: [
+    "24 has many factors, and 29 is prime so it only has two.",
     "29 has more factors than 24.",
     "29 is an even number.",
-    "24 is a prime number.",
-    "24 has many factors, and 29 is prime so it only has two."
+    "24 is a prime number."
   ],
-    right: 3
+    right: 0
   },
   {
     day: 1,
     q: "Which of these numbers is prime?",
-    find: [4],
+    find: [13],
     hint: "Look for a factor other than 1 and itself.",
     choices: [
     "21",
-    "39",
     "31",
+    "39",
     "27"
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "Which of these numbers is composite?",
-    find: [5, 13],
-    hint: "A composite number has a factor other than 1 and itself.",
-    choices: [
-    "17",
-    "51",
-    "2",
-    "13"
   ],
     right: 1
   },
   {
     day: 1,
+    q: "Which of these numbers is composite?",
+    find: [14, 20],
+    hint: "A composite number has a factor other than 1 and itself.",
+    choices: [
+    "17",
+    "2",
+    "13",
+    "51"
+  ],
+    right: 3
+  },
+  {
+    day: 1,
     q: "Why isn't 1 a prime number?",
-    find: [6],
+    find: [15],
     hint: "A prime has exactly two factors.",
     choices: [
     "It has only one factor, itself.",
@@ -624,7 +649,7 @@ var QUESTIONS = [
   {
     day: 1,
     q: "Which is the prime factorization of 36?",
-    find: [26, 32],
+    find: [32],
     hint: "Every factor has to be prime.",
     choices: [
     "2 × 18",
@@ -637,39 +662,52 @@ var QUESTIONS = [
   {
     day: 1,
     q: "Which is the prime factorization of 60?",
-    find: [28, 29],
+    find: [40, 44],
     hint: "Divide by 2 as long as you can, then 3, then 5.",
     choices: [
-    "2 × 2 × 3 × 5",
     "2 × 3 × 10",
     "4 × 15",
-    "2 × 2 × 15"
-  ],
-    right: 0
-  },
-  {
-    day: 1,
-    q: "A student's factor tree for 40 ends with 4 and 10 at the bottom. Why isn't it finished?",
-    find: [23],
-    hint: "Read Grow a Factor Tree.",
-    choices: [
-    "It is finished, 4 and 10 are prime.",
-    "Trees must end in 1.",
-    "40 can't be split.",
-    "4 and 10 aren't prime, so they have to be split again."
+    "2 × 2 × 15",
+    "2 × 2 × 3 × 5"
   ],
     right: 3
   },
   {
     day: 1,
+    q: "A student's factor tree for 40 ends with 4 and 10 at the bottom. Why isn't it finished?",
+    find: [31, 34],
+    hint: "Read Grow a Factor Tree.",
+    choices: [
+    "4 and 10 aren't prime, so they have to be split again.",
+    "It is finished, 4 and 10 are prime.",
+    "Trees must end in 1.",
+    "40 can't be split."
+  ],
+    right: 0
+  },
+  {
+    day: 1,
     q: "One student makes a tree for 30 that starts with 2 × 15, and another starts with 5 × 6. Do they end up with different prime factorizations?",
-    find: [24, 33],
+    find: [35, 45],
     hint: "Read Divide by the Least Prime.",
     choices: [
-    "No, both end in 2 × 3 × 5.",
     "Yes, so one of them is wrong.",
     "No, but only one tree can work.",
-    "Yes, 2 × 15 gives more primes."
+    "Yes, 2 × 15 gives more primes.",
+    "No, both end in 2 × 3 × 5."
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "Which is 2 × 2 × 2 × 5 written with an exponent?",
+    find: [51, 52],
+    hint: "Read Short Ways to Write It. Count the 2s.",
+    choices: [
+    "2³ × 5",
+    "3² × 5",
+    "8 × 5",
+    "2 × 3 × 5"
   ],
     right: 0
   },
@@ -679,9 +717,9 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "Any odd number.",
-    "A whole number greater than 1 with exactly two factors, 1 and itself.",
     "The number 1.",
+    "A whole number greater than 1 with exactly two factors, 1 and itself.",
+    "Any odd number.",
     "A number with many factors."
   ],
     right: 1
@@ -693,11 +731,11 @@ var QUESTIONS = [
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
     "The number 0.",
-    "A number with exactly two factors.",
     "Any even number.",
-    "A whole number greater than 1 with more than two factors."
+    "A whole number greater than 1 with more than two factors.",
+    "A number with exactly two factors."
   ],
-    right: 3
+    right: 2
   },
   {
     day: 2,
@@ -718,12 +756,25 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
+    "3 × 4",
     "12 × 1",
-    "2 × 6",
     "2 × 2 × 3",
-    "3 × 4"
+    "2 × 6"
   ],
     right: 2
+  },
+  {
+    day: 2,
+    q: "What does the exponent in <i>2³</i> tell you?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "That the answer is 6",
+    "How many times 2 is multiplied by itself, which is 3",
+    "That 2 is a composite number",
+    "That you add 2 and 3"
+  ],
+    right: 1
   }
 ];
 var LESSON_TITLE = "Prime Factorization";

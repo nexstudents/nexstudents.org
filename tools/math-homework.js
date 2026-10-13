@@ -783,7 +783,7 @@ sheet({
   dek: "Divide, find the place you are rounding to, and ask what the answer is FOR. A bill rounds up; a batting average rounds to the nearest.",
   blurb: "Homework for the Rounding Quotients lesson. Divide and round to every place, traps where money must round up, real batting averages and Olympic speeds, a critical thinking puzzle, and an answer key.",
   contains: [
-    "Ten divisions rounded to a place, nearest or down",
+    "Eight divisions rounded to the nearest place asked",
     "Traps: rounding twice, rounding up for a bill, and rounding up for vans",
     "Real batting averages, hits divided by at bats",
     "Real speeds for Bolt's world records, distance divided by time",
@@ -821,8 +821,6 @@ sheet({
         q("8.3 ÷ 9, to the nearest hundredth", "0.92", "r(8.3/9,2)"),
         q("45 ÷ 11, to the nearest tenth", "4.1", "r(45/11,1)"),
         q("2.7 ÷ 0.7, to the nearest hundredth", "3.86", "r(2.7/0.7,2)"),
-        q("52.8 ÷ 6, to its greatest place value", "9", "r(52.8/6,0)"),
-        q("4 ÷ 9, rounded DOWN to the hundredth", "0.44", "down(4/9,2)"),
         q("31 ÷ 4.5, to the nearest tenth", "6.9", "r(31/4.5,1)"),
         q("1 ÷ 12, to the nearest thousandth", "0.083", "r(1/12,3)"),
       ] },

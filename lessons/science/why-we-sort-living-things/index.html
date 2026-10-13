@@ -142,16 +142,16 @@
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
       <h3>Lesson Goal</h3>
-      <p>Students will explain why living things are classified, describe Aristotle's system and where it failed, and build a scientific name using genus and species.</p>
+      <p>Your student explains why living things are classified, describes Aristotle's system and where it failed, and builds a scientific name using genus and species.</p>
       <h3>A Note on the Side-by-Side Rule</h3>
       <p>This lesson isn't about origins, so there's no sorting of observed against claimed. The textbook says a genus is a group of similar species with common ancestors. This lesson says only similar species, and the question of what the groupings mean about ancestry is taken up in the next lesson, where both accounts are given in their own words.</p>
       <h3>Key Concepts</h3>
-      <p>A classification system is only useful if everyone uses it the same way. That's why the two-word name is fixed: genus first with a capital letter, species second in lowercase.</p>
+      <p>A classification system is only useful if everyone uses it the same way. That's why the two-word name is fixed: genus first with a capital letter, species second in lowercase, both in italics or underlined.</p>
       <p>Aristotle's grouping by habitat was a real attempt, and it failed on the animals that don't fit, like the frog.</p>
       <h3>Added From the Record</h3>
-      <p>The dates for Linnaeus are added from the record. The book's own parts are the zoo and the dairy aisle, Aristotle's system and its two exceptions, Linnaeus's two-word names, the house cat, the reasons for Latin and the oak species.</p>
+      <p>The dates for Linnaeus are added from the record, and the family-name picture and the cow, fish and eagle are made up as pictures. The textbook's own parts are the zoo and the dairy aisle, Aristotle's system and its two exceptions, Linnaeus's two-word names, the house cat, the reasons for Latin and the oak species. The words binomial nomenclature and taxonomy are left out to keep the lesson to the ideas.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Classify</dt><dd>To group ideas, information or objects by how they are alike.</dd><dt>Taxonomy</dt><dd>The science of grouping and naming living things.</dd><dt>Kingdom</dt><dd>The largest group in a classification system.</dd><dt>Binomial nomenclature</dt><dd>A two-word naming system, with the genus first and the species second.</dd><dt>Genus</dt><dd>A group of similar species. Its name is the first word of a scientific name.</dd><dt>Species</dt><dd>The smallest, most specific group. Its name is the second word of a scientific name.</dd></dl>
+      <dl><dt>Classify</dt><dd>To group things by how they are alike.</dd><dt>Kingdom</dt><dd>The largest group in a classification system.</dd><dt>Scientific name</dt><dd>The two-word name every living thing gets, with the genus first and the species second.</dd><dt>Genus</dt><dd>A group of similar species. Its name is the first word of a scientific name.</dd><dt>Species</dt><dd>The smallest, most specific group. Its name is the second word of a scientific name.</dd></dl>
     </div>
   </details>
 
@@ -490,7 +490,7 @@ var ART = {
 };
 
 var VISUALS = [
-  { at: 29, kind: "Scripture", body: "Genesis 2:19 says, “And out of the ground the LORD God formed every beast of the field, and every fowl of the air; and brought them unto Adam to see what he would call them: and whatsoever Adam called every living creature, that was the name thereof.”" }
+  { at: 36, kind: "Scripture", body: "Genesis 2:19 says, “And out of the ground the LORD God formed every beast of the field, and every fowl of the air; and brought them unto Adam to see what he would call them: and whatsoever Adam called every living creature, that was the name thereof.”" }
 ];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
@@ -507,41 +507,49 @@ var PARTS = [
   { title: "Sorting Is Everywhere", s: [
     "To classify is to group things by how they're alike, and you already do it every day.",
     "A grocery store puts the milk, cheese and yogurt in one aisle and the cereal in another, so you can find what you need without checking every shelf.",
-    "Scientists need the same thing on a bigger scale, and the science of grouping and naming living things is called {{taxonomy}}."
+    "Scientists need the same thing for living things, only bigger, because there are millions of kinds."
   ] },
   { title: "Aristotle's Two Kingdoms", s: [
     "The first person we know of who tried it was Aristotle, a Greek philosopher who lived more than 2,000 years ago.",
     "He put every living thing into one of two big groups, plants and animals, and the largest group in a classification system is called a {{kingdom}}.",
-    "Then he split the animals by where they live, on land, in water or in the air, and he split the plants into three groups by their size and structure."
+    "Then he split the animals by where they live, on land, in water or in the air.",
+    "",
+    "[walk] Sort four animals the way Aristotle did.",
+    "[step] A cow lives on land, so it goes in the land group. || ┌────────┬───────────────────┐\n│ Animal │ Aristotle's group │\n├────────┼───────────────────┤\n│ Cow    │ Land              │\n└────────┴───────────────────┘",
+    "[step] A fish lives in water, so it goes in the water group. || ┌────────┬───────────────────┐\n│ Animal │ Aristotle's group │\n├────────┼───────────────────┤\n│ Cow    │ Land              │\n│ Fish   │ Water             │\n└────────┴───────────────────┘",
+    "[step] An eagle flies in the air, so it goes in the air group. || ┌────────┬───────────────────┐\n│ Animal │ Aristotle's group │\n├────────┼───────────────────┤\n│ Cow    │ Land              │\n│ Fish   │ Water             │\n│ Eagle  │ Air               │\n└────────┴───────────────────┘",
+    "[step] A frog starts life in the water as a tadpole and ends up on land as an adult, so which group does it belong in? || ┌────────┬───────────────────┐\n│ Animal │ Aristotle's group │\n├────────┼───────────────────┤\n│ Cow    │ Land              │\n│ Fish   │ Water             │\n│ Eagle  │ Air               │\n│ Frog   │ Water or land?    │\n└────────┴───────────────────┘"
   ] },
   { title: "Where It Broke Down", s: [
-    "It was a good start, but the exceptions piled up.",
-    "A frog lives in water as a tadpole and on land as an adult, so which group does it belong in?",
-    "Plants gave him trouble as well, because trees aren't all closely related, and an apple tree turns out to be more like a rose bush than like a maple tree, though the apple and the maple are both trees.",
+    "The frog is the problem, because the system has no good place for an animal that lives in two places.",
+    "Plants gave him trouble too, since an apple tree turns out to be more like a rose bush than like a maple tree, though the apple and the maple are both trees.",
     "Grouping by where something lives or how big it is turned out to be too rough, and people went looking for something better."
   ] },
   { title: "Linnaeus", s: [
     "In the 1700s a Swedish doctor and naturalist named Carolus Linnaeus came up with a system that scientists still use.",
-    "He grouped living things by their body structures, their size, shape and color, and the way they get their food, instead of by where they live.",
-    "He also did something simple that made it work, which was to give every organism a name made of two words."
+    "He grouped living things by their body structures and the way they get their food, instead of by where they live.",
+    "He also did something simple that made it work, which was to give every living thing its own name made of two words, called its {{scientific name}}."
   ] },
   { title: "Two Names for Everything", s: [
-    "A name with two parts is called {{binomial nomenclature}}, and “binomial” means two names.",
-    "The first word is the {{genus}}, a group of similar species, and it's written with a capital letter.",
-    "The second word is the {{species}}, the smallest and most specific group, and it's written in lowercase, and both words are written in italics or underlined.",
-    "Your house cat is Felis catus, and the white oak is Quercus alba, which shares a genus with the red oak, Quercus rubra, so you know right away the two trees are close relatives."
-  ] },
-  { title: "Watch It Worked: Building a Scientific Name", s: [
-    "[walk] Build the scientific name for the white oak, a tree in the oak genus.",
-    "[step] Start with the genus, the name of the group of similar species the tree belongs to, which for every oak is Quercus. || Genus: Quercus",
-    "[step] Add the species, the second and more specific name, which for the white oak is alba. || Species: alba",
-    "[step] Capitalize the genus and keep the species in lowercase, because the rule is never to capitalize both. || Quercus alba",
-    "[step] Mark both words as italic or underline them, and then check that no other living thing carries the same two-word name. || Quercus alba  (italic or underlined)\nThe red oak is Quercus rubra: same genus, different species"
+    "Think about your own name, which has two parts: a family name that says which family you belong to, and a first name that picks you out of that family.",
+    "A scientific name works the same way, except the family part comes first.",
+    "The first word is the {{genus}}, a group of similar species, and you already know a {{species}} is one kind of living thing, the smallest and most specific group.",
+    "Your house cat is Felis catus, which means Felis is its group and catus picks out the house cat.",
+    "Now build one from scratch, a rule at a time, for the white oak tree.",
+    "",
+    "[walk] Build the scientific name for the white oak.",
+    "[step] Start with the genus, the name of the group of similar species the tree belongs to, which for every oak is Quercus. || ┌─────────┬─────────────────────────────────────┬──────────────────────┐\n│ Word    │ What it is                          │ How you write it     │\n├─────────┼─────────────────────────────────────┼──────────────────────┤\n│ Quercus │ The genus, the group all oaks share │ Capital first letter │\n└─────────┴─────────────────────────────────────┴──────────────────────┘",
+    "[step] Add the species, the second and more specific word, which for the white oak is alba. || ┌─────────┬─────────────────────────────────────┬──────────────────────┐\n│ Word    │ What it is                          │ How you write it     │\n├─────────┼─────────────────────────────────────┼──────────────────────┤\n│ Quercus │ The genus, the group all oaks share │ Capital first letter │\n│ alba    │ The species, the white oak itself   │ All lowercase        │\n└─────────┴─────────────────────────────────────┴──────────────────────┘",
+    "[step] Put the genus first and the species second, and give only the genus a capital letter. || Quercus alba   (right)\nquercus Alba   (wrong)\nQuercus Alba   (wrong)",
+    "[step] Mark both words as italic or underline them, because that is how a scientific name is always printed. || Quercus alba   (italic or underlined)",
+    "[step] Check the name against a close relative, the red oak, which shares the genus and has a different species word. || Quercus alba    white oak\nQuercus rubra   red oak\nsame genus, different species",
+    "",
+    "So the name itself tells you the two oaks are close relatives."
   ] },
   { title: "Why Latin", s: [
     "Linnaeus wrote the names in Latin, and there's a good reason for it.",
     "Latin was understood by scholars everywhere, so a name meant the same thing in every country, and since no one speaks it every day, its words don't change.",
-    "No two organisms may share a scientific name, which means that when a scientist in Texas and one in Japan write Felis catus, they're talking about exactly the same animal."
+    "No two living things may share a scientific name, which means that when a scientist in Texas and one in Japan write Felis catus, they're talking about exactly the same animal."
   ] },
   { title: "Naming", s: [
     "Giving names to living things is a very old job, and the Bible's second chapter describes the first time it was done.",
@@ -553,7 +561,7 @@ var PARTS = [
   ] },
   { title: "What To Do Now", s: [
     "A zoo, a dairy aisle and a Swedish doctor with a two-word system, and now it's your turn to sort and name.",
-    "Start with the questions, Nine of them, and then the vocabulary check at the bottom, four questions on the word cards at the top of the page.",
+    "Start with the questions, Nine of them, and then the vocabulary check at the bottom, five questions on the word cards at the top of the page.",
     "When a question asks you to write a scientific name, remember the genus comes first with a capital letter and the species second in lowercase.",
     "Then, in your notebook, find ten things in your house or yard and sort them into groups by how they're alike.",
     "Write the name of each group and what makes the things in it alike, in complete sentences.",
@@ -563,12 +571,11 @@ var PARTS = [
 ];
 
 var WORDS = [
-  ["Classify", "To group ideas, information or objects by how they are alike.", [2]],
-  ["Taxonomy", "The science of grouping and naming living things.", [5]],
+  ["Classify", "To group things by how they are alike.", [2]],
   ["Kingdom", "The largest group in a classification system.", [7]],
-  ["Binomial nomenclature", "A two-word naming system, with the genus first and the species second.", [16]],
-  ["Genus", "A group of similar species. Its name is the first word of a scientific name.", [17]],
-  ["Species", "The smallest, most specific group. Its name is the second word of a scientific name.", [18]]
+  ["Scientific name", "The two-word name every living thing gets, with the genus first and the species second.", [19]],
+  ["Genus", "A group of similar species. Its name is the first word of a scientific name.", [22]],
+  ["Species", "The smallest, most specific group. Its name is the second word of a scientific name.", [22]]
 ];
 
 var QUESTIONS = [
@@ -578,12 +585,12 @@ var QUESTIONS = [
     find: [3],
     hint: "Read Sorting Is Everywhere.",
     choices: [
+    "To group things by how they're alike.",
     "To throw out what doesn't fit.",
     "To give something a nickname.",
-    "To count how many there are.",
-    "To group things by how they're alike."
+    "To count how many there are."
   ],
-    right: 3
+    right: 0
   },
   {
     day: 1,
@@ -614,8 +621,8 @@ var QUESTIONS = [
   {
     day: 1,
     q: "Why does the frog cause a problem for Aristotle's system?",
-    find: [10],
-    hint: "Read Where It Broke Down.",
+    find: [13, 14],
+    hint: "Read the walk in Aristotle's Two Kingdoms.",
     choices: [
     "It lives in water as a tadpole and on land as an adult, so it doesn't fit one group.",
     "It is a plant.",
@@ -627,11 +634,11 @@ var QUESTIONS = [
   {
     day: 1,
     q: "What made Linnaeus's system different from Aristotle's?",
-    find: [14],
+    find: [18],
     hint: "Read Linnaeus.",
     choices: [
     "He used only one-word names.",
-    "He grouped by body structures, size, shape, color and how they get food, and he gave each a two-word name.",
+    "He grouped by body structures and how they get food, and gave each living thing a two-word name.",
     "He grouped by where living things live.",
     "He sorted only plants."
   ],
@@ -639,68 +646,68 @@ var QUESTIONS = [
   },
   {
     day: 1,
-    q: "In a scientific name, which word is written with a capital letter?",
-    find: [17],
-    hint: "Read Two Names for Everything.",
+    q: "In the scientific name Felis catus, which word is the genus?",
+    find: [23],
+    hint: "Read Two Names for Everything. The family part comes first.",
     choices: [
-    "Both words.",
-    "The species.",
-    "The genus.",
-    "Neither word."
+    "catus",
+    "Both words",
+    "Neither word",
+    "Felis"
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "Which of these is a correctly written scientific name?",
+    find: [28],
+    hint: "Read the white oak walk and use the Show All button.",
+    choices: [
+    "QUERCUS alba",
+    "quercus Alba",
+    "Quercus alba",
+    "Quercus Alba"
   ],
     right: 2
   },
   {
     day: 1,
-    q: "Which of these is a correctly written scientific name?",
-    find: [19, 23],
-    hint: "Read Watch It Worked and use the Show All button.",
-    choices: [
-    "Quercus alba",
-    "QUERCUS alba",
-    "quercus Alba",
-    "Quercus Alba"
-  ],
-    right: 0
-  },
-  {
-    day: 1,
     q: "Quercus alba and Quercus rubra are two kinds of oak. What does the name tell you about them?",
-    find: [19],
-    hint: "Read Two Names for Everything.",
+    find: [30],
+    hint: "Read the white oak walk.",
     choices: [
+    "They share a genus, so they're close relatives but different species.",
     "They are from different kingdoms.",
-    "They share a genus, so they're close relatives and different species.",
     "They are both animals.",
     "They are the same species."
   ],
-    right: 1
+    right: 0
   },
   {
     day: 1,
     q: "Why did Linnaeus use Latin for the names?",
-    find: [26],
+    find: [33],
     hint: "Read Why Latin.",
     choices: [
-    "Because it meant the same thing in every country and its words don't change.",
     "Because Latin is the easiest to spell.",
     "Because only Swedish people could read it.",
+    "Because it meant the same thing in every country and its words don't change.",
     "Because animals respond to Latin."
   ],
-    right: 0
+    right: 2
   },
   {
     day: 2,
-    q: "What is <i>taxonomy</i>?",
+    q: "What does <i>classify</i> mean?",
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A type of kingdom.",
-    "A kind of fossil.",
-    "A tax on animals.",
-    "The science of grouping and naming living things."
+    "To hide them.",
+    "To group things by how they are alike.",
+    "To make them bigger.",
+    "To count them."
   ],
-    right: 3
+    right: 1
   },
   {
     day: 2,
@@ -709,24 +716,24 @@ var QUESTIONS = [
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
     "A small group of similar species.",
-    "The largest group in a classification system.",
     "A place where animals live.",
-    "A country with a king."
+    "A country with a king.",
+    "The largest group in a classification system."
   ],
-    right: 1
+    right: 3
   },
   {
     day: 2,
-    q: "What is <i>binomial nomenclature</i>?",
+    q: "What is a <i>scientific name</i>?",
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A two-word naming system, genus first and species second.",
-    "A way to count animals.",
-    "A system of one-word names.",
-    "A list of kingdoms."
+    "A name that changes in every country.",
+    "The two-word name every living thing gets, with the genus first and the species second.",
+    "The name a farmer uses.",
+    "A nickname."
   ],
-    right: 0
+    right: 1
   },
   {
     day: 2,
@@ -734,12 +741,25 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
+    "The first word, a group of similar species, written with a capital letter.",
     "The common name.",
     "The place where it lives.",
-    "The first word, a group of similar species, written with a capital letter.",
     "The second word, in lowercase."
   ],
-    right: 2
+    right: 0
+  },
+  {
+    day: 2,
+    q: "In a scientific name, what is the <i>species</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "The first word, with a capital letter.",
+    "The second word, the smallest and most specific group, written in lowercase.",
+    "The place where it lives.",
+    "The kingdom."
+  ],
+    right: 1
   }
 ];
 var LESSON_TITLE = "Why We Sort Living Things";

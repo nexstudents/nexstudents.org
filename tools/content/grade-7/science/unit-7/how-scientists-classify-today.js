@@ -3,32 +3,41 @@
    shelved as "Sorting and Naming Living Things"), lesson 2. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
-   🚨 THE PROSE IN `parts` IS A DRAFT, NOT PAUL'S VOICE. DRAFT PROSE, CLAUDE'S,
-   2026-10-11, Sonnet. Written from Merrill Life Science pp160-163 (Section 7-2,
-   Modern Classification) via the week 8-9 packet (paraphrased notes) and the
-   week 8-9 plan. Structure copied from science/what-evolution-claims.
+   🚨 REWRITTEN 2026-10-13 (Sonnet, to be checked by Opus) after Kolten said the
+   lessons don't explain anything. An audit graded the 2026-10-11 version C: nucleus,
+   prokaryote, five kingdoms, seven levels and phylogeny all in one lesson, with
+   the levels as one sentence and a mnemonic. This one: opens with a short recap of
+   the last lesson (genus, species, kingdom); teaches the nucleus as a cell's
+   "control room"; runs the four sorting questions on a mushroom in a walk; builds
+   the five kingdoms as a drawn table one row at a time; teaches the seven levels as
+   a ladder (the music store gives the picture) and sorts one animal, the Arctic
+   wolf, down it in a walk that builds a drawn table row by row.
+   CUT: phylogeny (the word and its card), and the white rhino sentence. The
+   rhino claim ("white rhinos in North and South Africa are genetically the same")
+   is dated: northern and southern white rhinos are now treated as distinct, so
+   the sentence is removed and DNA is described in general terms instead. Word
+   cards stay at 4: Phylogeny is replaced by Nucleus (Prokaryote, Eukaryote and
+   Phylum stay).
 
    🚨 THIS LESSON TOUCHES THE ORIGINS RULE ONCE (BEHAVIOR.md, side by side). The
-   book defines phylogeny as an organism's evolutionary history and says
-   scientists use it to classify. The lesson teaches the five kingdoms and the
-   seven levels as a tool for sorting and finding, which both accounts use. It
-   names the textbook's reading of the groups (a family tree) and the other
-   reading (one Designer's patterns, with the Bible's "kinds" not matching one
-   level) in one paragraph, side by side, never blended, and never asks the
-   student which to hold.
+   lesson teaches the five kingdoms and the seven levels as a tool for sorting and
+   finding, which both accounts use. It names the usual science-course reading of
+   the groups (a family tree) and the other reading (one Designer's patterns, with
+   the Bible's "kinds" not matching one level) in one short section, side by side,
+   never blended, and never asks the student which to hold.
 
-   ⚠️ ADDED FROM THE RECORD, worth a glance from Paul:
+   ⚠️ ADDED FROM THE RECORD, worth a glance from Paul (all kept from the draft):
    · That many books today use six kingdoms (the monerans split into two) or
-     three domains. The plan asks for this to be said. The packet gives only
-     the 1994 five-kingdom system.
+     three domains. The packet gives only the 1994 five-kingdom system.
    · The middle levels of the Arctic wolf's classification (Animalia, Chordata,
      Mammalia, Carnivora, Canidae). The packet gives only the genus and species,
      Canis lupus. The dog as the wolf's closest relative (Canis familiaris) is
      from the book's Chapter 7 Review.
-   · That some single-celled fungi exist (yeast). The book's table says fungi
-     are many-celled; the lesson says "mostly".
+   · That some single-celled fungi exist (yeast). The lesson says "mostly".
    · One sentence on how people who hold creation read the "kinds" of Genesis
      against the seven levels, stated as a difference among them, not argued.
+   · The nucleus as a cell's "control room" is an everyday picture, not a fact
+     from the packet.
    ⚠️ The book's Activity 7-2 (using a jay key), Technology feature on DNA and
    the Connect to Chemistry box are not in this lesson (the jay key is taught in
    7-4).
@@ -36,32 +45,62 @@
    🚨 THE VERSE IS A WORKING CHOICE, NOT PAUL'S. Psalm 104:24, about the many
    works of God. Choosing the scripture is his, so it goes in the review queue. */
 'use strict';
+
+/* draws a small table with a header row; rows is a list of equal-length lists */
+const table = (rows) => {
+  const n = rows[0].length, w = [];
+  for (let i = 0; i < n; i++) w[i] = Math.max(...rows.map((r) => [...r[i]].length)) + 2;
+  const line = (l, m, r) => l + w.map((x) => "─".repeat(x)).join(m) + r;
+  const row = (r) => "│" + r.map((c, i) => " " + c + " ".repeat(w[i] - 1 - [...c].length)).join("│") + "│";
+  return [line("┌", "┬", "┐"), row(rows[0]), line("├", "┼", "┤")]
+    .concat(rows.slice(1).map(row), [line("└", "┴", "┘")]).join("\n");
+};
+
+const KINGDOMS = [
+  ["Kingdom", "Cells", "How it lives"],
+  ["Monera", "One cell, no nucleus", "Bacteria. Some make their own food, others absorb it"],
+  ["Protists", "One or many cells, with a nucleus", "A catch-all group for what fits nowhere else"],
+  ["Fungi", "Mostly many cells, with a nucleus", "Mushrooms. They don't move and get food from other things"],
+  ["Plants", "Many cells, with a nucleus", "They don't move and make their own food"],
+  ["Animals", "Many cells, with a nucleus", "They move and eat plants or other animals"],
+];
+const WOLF = [
+  ["Level", "Group"],
+  ["Kingdom", "Animalia"],
+  ["Phylum", "Chordata"],
+  ["Class", "Mammalia"],
+  ["Order", "Carnivora"],
+  ["Family", "Canidae"],
+  ["Genus", "Canis"],
+  ["Species", "Canis lupus"],
+];
+
 module.exports = {
   id: "science/how-scientists-classify-today",
   slug: "how-scientists-classify-today",
   title: "How Scientists Classify Today",
   unit: "Life Science &middot; U7-L2",
   seq: { unit: 7, unitTitle: "Sorting and Naming Living Things", n: 2 },
-  natural: "2026-10-11",
+  natural: "2026-10-13",
 
-  /* ── /teach-plan, 2026-10-11. Merrill Life Science pp160-163. ── */
+  /* ── /teach-plan, rewritten 2026-10-13. Merrill Life Science pp160-163. ── */
   plan: {
     objective: "Name the five kingdoms and how each is told apart, tell prokaryotes from eukaryotes, and sort one animal down through the seven levels from kingdom to species.",
     markers: [
       "BOOK (paraphrased), Objectives: name the five kingdoms, identify the characteristics and members of each, and list the groups within each kingdom.",
-      "BOOK (paraphrased): Aristotle and Linnaeus used traits you can see. Modern scientists also use chemical makeup, genes, body structures, fossils and embryo development to work out phylogeny, an organism's evolutionary history.",
-      "BOOK (paraphrased), Beyond Appearances: DNA shows how close two organisms are and separates look-alike species. White rhinos in North and South Africa, 2,000 miles apart, are genetically the same, and the gray foxes on islands off California differ from each other.",
+      "BOOK (paraphrased): Aristotle and Linnaeus used traits you can see. Modern scientists also use chemical makeup, genes, body structures, fossils and embryo development. DNA shows how close two organisms are and separates look-alike species.",
       "BOOK (paraphrased): the five kingdoms are Animal, Plant, Fungi, Protist and Monera, told apart by four questions: does it have a nucleus, is it one cell or many, does it make its own food, does it move.",
       "BOOK (paraphrased): Monera are one-celled and simple, such as bacteria, with no organized nucleus, and they are prokaryotes. Everything else has a nucleus and membrane-bound parts, and is a eukaryote.",
       "BOOK (paraphrased), Table 7-1: Monera are prokaryotic and one-celled. Protists are eukaryotic, one- or many-celled. Fungi are eukaryotic, do not move, and get their food from other organisms. Plants are eukaryotic, many-celled, do not move and make their own food. Animals are eukaryotic, many-celled, move and eat plants or other animals.",
       "BOOK (paraphrased): each kingdom has six smaller groups in order: phylum (division in plants and fungi), class, order, family, genus, species. Each level has more in common and fewer organisms. The Arctic wolf is genus Canis, species Canis lupus.",
     ],
-    method: "FOUR QUESTIONS, THEN SEVEN LEVELS. The kingdoms are sorted by four yes-or-no questions, so the student can place an organism himself. The levels are taught as a funnel that gets narrower with more in common at each step, using the music store (type, then artist, then title), and the walk sorts one animal, the Arctic wolf, from kingdom to species with a reason at each step. Where the book says the groups show evolutionary history, the lesson states that reading and the other one side by side.",
+    method: "FOUR QUESTIONS, THEN SEVEN LEVELS, EACH DRAWN. The kingdoms are sorted by four yes-or-no questions, run on a mushroom, and the five kingdoms are built into a table one row at a time. The levels are taught as a ladder that gets narrower, with more in common at each step, using the music store (type, then artist, then title), and the walk sorts one animal, the Arctic wolf, from kingdom to species with a table that grows a row at each step.",
     exampleOnly: [
-      "The music store and the Arctic wolf. WORLD: a music store sorted by type, artist and title. The title and objective don't name them.",
-      "⚠️ Six kingdoms or three domains, the wolf's middle levels and the sentence on the Genesis 'kinds' are added from the record, see the header.",
+      "The music store, the mushroom and the Arctic wolf. WORLD: a music store sorted by type, artist and title. The title and objective don't name them.",
+      "⚠️ Six kingdoms or three domains, the wolf's middle levels, the yeast note, the nucleus as a control room and the sentence on the Genesis 'kinds' are added from the record, see the header.",
+      "Left out on purpose: the word phylogeny, and the dated white rhino claim.",
     ],
-    digitize: "The reading engine plus one Watch It Worked that classifies the Arctic wolf down the seven levels. Questions place organisms in kingdoms by the four questions and put the levels in order. The one question about meaning asks what each account says, not which is right.",
+    digitize: "The reading engine plus three Watch It Worked walkthroughs with drawn tables: the four questions run on a mushroom, the five kingdoms built a row at a time, and the Arctic wolf sorted down the seven levels. Questions place organisms in kingdoms by the four questions and put the levels in order. The one question about meaning asks what each account says, not which is right.",
     unclear: "",
   },
 
@@ -72,10 +111,10 @@ module.exports = {
   shelf: { grades: [7], subject: "Science",
     blurb: "A music store sorts its albums by type, then artist, then title, and scientists sort living things the same way. Five kingdoms, seven levels, and one wolf taken all the way down.",
     contains: [
-      "A story-form reading, read aloud with the words highlighted",
       "Four questions that sort living things into five kingdoms",
-      "Cells with a nucleus and cells without one",
-      "Watch It Worked: classifying one animal down the seven levels",
+      "What a nucleus is, and cells with one and without one",
+      "The five kingdoms in a table, built a row at a time",
+      "The seven levels as a ladder, with one wolf sorted down it",
       "Two readings of what the groups mean, side by side",
       "A note on how today's books sometimes count the kingdoms differently",
     ] },
@@ -90,18 +129,18 @@ module.exports = {
   ground: {
     sections: [
       { h: "Lesson Goal", p: [
-        "Students will name the five kingdoms and the questions that tell them apart, tell prokaryotes from eukaryotes, and sort one animal through the seven levels from kingdom to species."
+        "Your student names the five kingdoms and the questions that tell them apart, tells prokaryotes from eukaryotes, and sorts one animal through the seven levels from kingdom to species."
       ]},
       { h: "Side by Side, Not Blended", p: [
-        "Classification is a tool for sorting and finding, and both accounts of origins use it the same way. The textbook also treats the groups as a record of evolutionary history, which it calls phylogeny. The lesson states that reading in one paragraph and states the other reading beside it: the same patterns of likeness read as one Designer's plan.",
-        "The student is not asked which to hold. The questions are about the kingdoms and the levels."
+        "Classification is a tool for sorting and finding, and both accounts of origins use it the same way. Most science courses also treat the groups as a family tree. The lesson states that reading in one short section and states the other reading beside it: the same patterns of likeness read as one Designer's plan.",
+        "Your student is not asked which to hold. The questions are about the kingdoms and the levels."
       ]},
       { h: "Key Concepts", p: [
         "A kingdom is decided by four questions: does it have a nucleus, is it one cell or many, does it make its own food, and does it move.",
-        "The seven levels run from the broadest, kingdom, to the narrowest, species. Each step down has more in common and fewer organisms."
+        "The seven levels run from the broadest, kingdom, to the narrowest, species. Each step down has more in common and fewer kinds of living thing."
       ]},
       { h: "Added From the Record", p: [
-        "That many books today count six kingdoms or three domains, the wolf's middle levels, that some fungi are single-celled, and one sentence on how people who hold creation fit the Bible's kinds against the seven levels are added from the record. The book's own parts are the four questions, the five kingdoms, the prokaryote and eukaryote split, the seven levels and the wolf's genus and species."
+        "That many books today count six kingdoms or three domains, the wolf's middle levels, that some fungi are single-celled, the nucleus described as a control room, and one sentence on how people who hold creation fit the Bible's kinds against the seven levels are added from the record. The word phylogeny and the white rhino example are left out on purpose: the rhino claim is out of date, since northern and southern white rhinos are now treated as distinct."
       ]},
       { h: "Key Vocabulary", vocab: true }
     ]
@@ -110,69 +149,91 @@ module.exports = {
   parts: [
     { title: "The Music Store", s: [
       "Walk into a music store and nothing is thrown on the shelves at random.",
-      "The albums are sorted by type of music first, then by the artist inside each type, and then by the title of each album, so you can find one song in a few seconds out of thousands.",
-      "Scientists sort living things the same way, narrowing from a huge group to a single kind, and this lesson shows you the steps."
+      "The albums are sorted by type of music first, then by the artist inside each type, and then by the title of each album.",
+      "That way you can find one song in a few seconds out of thousands, and scientists sort living things the same way."
     ]},
 
-    { title: "More Than What You Can See", s: [
-      "Aristotle and Linnaeus used the traits they could see with their own eyes, like size, shape and where something lives.",
-      "Today scientists look at those and a lot more, including the chemical makeup of an organism, its genes, its body structures, its fossils and how its embryo develops.",
-      "The book uses the word {{phylogeny}} for an organism's evolutionary history, and says scientists use it to work out where each group belongs.",
-      "DNA has settled some puzzles, because it can separate two species that look the same, and it showed that white rhinos in North and South Africa, 2,000 miles apart, are genetically the same."
+    { title: "Where We Left Off", s: [
+      "Last lesson you learned that Linnaeus gave every living thing a two-word name, with the genus first and the species second.",
+      "You also learned that a kingdom is the largest group, and a species is the smallest.",
+      "This lesson fills in the steps between them, starting with how a living thing gets into a kingdom."
     ]},
 
     { title: "Four Questions", s: [
-      "You can place almost any living thing into one of five kingdoms by asking four questions about it.",
-      "Does it have a nucleus, which is the part of a cell that holds its genetic material?",
-      "Is it made of one cell or many, does it make its own food, and does it move?",
-      "The answers send it to the Animal, Plant, Fungi, Protist or Monera kingdom, and the walk below shows how an animal gets there."
+      "Aristotle and Linnaeus sorted by what they could see, but today scientists also look at genes, fossils and DNA.",
+      "You can place almost any living thing in one of five kingdoms by asking four questions about it.",
+      "First, does it have a {{nucleus}}, which is the control room of a cell, the part that holds its instructions?",
+      "Second, is it made of one cell or many, third, does it make its own food, and fourth, does it move?",
+      "",
+      "[walk] Run the four questions on a mushroom.",
+      "[step] A mushroom answers yes to the first question, because its cells have a nucleus. || nucleus?  YES",
+      "[step] A mushroom is mostly many cells, so the second answer is many. || nucleus?  YES\ncells?  MANY",
+      "[step] It does not make its own food, because it gets food from other living or dead things. || nucleus?  YES\ncells?  MANY\nown food?  NO",
+      "[step] It does not move, because it stays where it grows. || nucleus?  YES\ncells?  MANY\nown food?  NO\nmoves?  NO",
+      "[step] A many-celled living thing with a nucleus that can't make its own food or move belongs in the Fungi. || kingdom:  FUNGI"
     ]},
 
     { title: "With a Nucleus and Without", s: [
-      "The Monera are the simplest, one-celled living things like bacteria, and their cells have no organized nucleus and none of the membrane-bound parts you met in the cell units.",
-      "Cells like that are called {{prokaryotes}}, which comes from words meaning “before kernel.”",
-      "Every other kingdom is made of {{eukaryotes}}, cells with a true nucleus and parts wrapped in a membrane, which comes from words meaning “true kernel.”",
+      "Some cells have no walled-off control room at all, and their instructions just float inside.",
+      "Cells like that are called {{prokaryotes}}, which comes from words meaning “before kernel,” and bacteria are the example.",
+      "Every other living thing is made of {{eukaryotes}}, cells with a true nucleus and parts wrapped in a thin skin, which comes from words meaning “true kernel.”",
       "Nearly everything you can see without a microscope is made of eukaryotic cells."
     ]},
 
     { title: "The Five Kingdoms", s: [
-      "The Monera kingdom holds the bacteria, which are one-celled and prokaryotic, and some make their own food while others absorb it from what's around them.",
-      "The Protists are eukaryotes that may be one-celled or many-celled, and the book treats them as a catch-all group for living things that fit nowhere else.",
-      "The Fungi, such as mushrooms, are eukaryotes that don't move and can't make their own food, and they get it from other living or dead things.",
-      "The Plants are many-celled eukaryotes that don't move and make their own food, and the Animals are many-celled eukaryotes that move and eat plants or other animals."
+      "Now you can fill in the whole list, and each row follows from the four questions.",
+      "Read each row as the answers to those questions for one kingdom, and watch the table grow.",
+      "",
+      "[walk] Build the table of the five kingdoms.",
+      "[step] Monera are the simplest, one-celled living things like bacteria, with no nucleus. || " + table(KINGDOMS.slice(0, 2)),
+      "[step] Protists may be one-celled or many-celled, and they are a catch-all group for living things that fit nowhere else. || " + table(KINGDOMS.slice(0, 3)),
+      "[step] Fungi, like mushrooms, mostly have many cells, and they don't move and get their food from other things. || " + table(KINGDOMS.slice(0, 4)),
+      "[step] Plants have many cells, and they don't move and make their own food. || " + table(KINGDOMS.slice(0, 5)),
+      "[step] Animals have many cells, and they move and eat plants or other animals. || " + table(KINGDOMS),
+      "",
+      "Some fungi, like the yeast used to bake bread, are single cells, which is why the table says mostly.",
+      "Almost every group has a few exceptions like that, so the table gives the usual case."
     ]},
 
     { title: "Not Everyone Counts Five", s: [
-      "The five-kingdom system is the one this textbook uses, and it was a standard one in 1994.",
+      "The five-kingdom system is the one this course follows, and it was a standard one in 1994.",
       "Many books today count six kingdoms by splitting the bacteria into two, and others put the kingdoms inside three even bigger groups called domains.",
-      "The sorting questions still work, and the levels inside each kingdom are the same, so what you learn here carries over to whichever count your next book uses."
+      "The sorting questions still work, so what you learn here carries over to whichever count your next book uses."
     ]},
 
     { title: "Seven Levels Down", s: [
-      "Inside every kingdom there are smaller groups, always in the same order.",
-      "The order is kingdom, {{phylum}}, class, order, family, genus and species, with the phylum called a division in plants and fungi.",
-      "A student's trick is to remember it as King Philip Came Over For Good Soup, taking the first letter of each level.",
-      "Each step down holds fewer organisms and each has more in common, like the music store narrowing from type to artist to title."
+      "Inside every kingdom there are smaller groups, always in the same order, like the music store narrowing from type to artist to title.",
+      "The order is kingdom, {{phylum}}, class, order, family, genus and species, and in plants and fungi the phylum is called a division.",
+      "A trick to remember it is King Philip Came Over For Good Soup, taking the first letter of each level.",
+      "Each step down holds fewer kinds of living thing, and the ones left have more in common."
     ]},
 
-    { title: "Watch It Worked: One Wolf, Seven Levels", s: [
-      "[walk] Classify the Arctic wolf, starting from the biggest group and working down.",
-      "[step] Use the four questions to find the kingdom: the wolf has a nucleus, many cells, can't make its own food and moves, so it is an animal. || Kingdom: Animalia",
-      "[step] Go one level down to the phylum, and the wolf is placed with the animals that have a backbone. || Phylum: Chordata",
-      "[step] The class is the group of hairy animals that feed their young milk, which is the mammals. || Class: Mammalia",
-      "[step] The order is the meat-eating mammals, and the family is the dog family inside it. || Order: Carnivora\nFamily: Canidae",
-      "[step] The genus is the group of wolves, dogs and their closest kin, and the species is the wolf itself, which gives the two-word name. || Genus: Canis\nSpecies: Canis lupus",
-      "[step] Check that the funnel narrowed at every step, ending with the wolf's closest relative in the book, the dog, Canis familiaris, in the same genus. || Canis lupus (wolf) and Canis familiaris (dog)"
+    { title: "One Wolf, Seven Levels", s: [
+      "Now sort one animal all the way down, starting from the biggest group.",
+      "At every step the group gets smaller, so the table will gain a row each time.",
+      "",
+      "[walk] Classify the Arctic wolf, and watch the ladder grow a row at each step.",
+      "[step] The wolf has a nucleus, many cells, can't make its own food and moves, so its kingdom is the animals. || " + table(WOLF.slice(0, 2)),
+      "[step] Go one level down, and the wolf is placed with the animals that have a backbone. || " + table(WOLF.slice(0, 3)),
+      "[step] The next group is the hairy animals that feed their young milk, which is the mammals. || " + table(WOLF.slice(0, 4)),
+      "[step] Then comes the meat-eating mammals. || " + table(WOLF.slice(0, 5)),
+      "[step] Inside them is the dog family. || " + table(WOLF.slice(0, 6)),
+      "[step] The genus is the group of wolves, dogs and their closest kin. || " + table(WOLF.slice(0, 7)),
+      "[step] The species is the wolf itself, which gives it the two-word name you learned last lesson. || " + table(WOLF),
+      "",
+      "Check that the ladder narrowed at every step, ending with the wolf's closest relative, the dog, Canis familiaris, in the same genus.",
+      "The wolf and the dog share every level down to the genus, and only the species word is different."
     ]},
 
     { title: "What the Groups Mean", s: [
       "The levels are a tool for sorting and finding, and a person who holds either account of origins uses them the same way.",
-      "The book also reads the groups as a family tree, with each level closer to a shared ancestor, so animals in the same genus are closer relatives than animals in the same order.",
-      "People who hold creation read the same patterns of likeness as one Designer using a good plan again and again, and they don't all agree on where the Bible's “kinds” fit among the seven levels.",
+      "What the world says is that the groups are a family tree, with each level closer to a shared ancestor, so animals in the same genus are closer relatives than animals in the same order.",
+      "What God tells us is that the same patterns of likeness show one Designer using a good plan again and again, and people who hold this view don't all agree on where the Bible's “kinds” fit among the seven levels.",
       "",
       "[verse] Psalm 104:24 says, “O LORD, how manifold are thy works! in wisdom hast thou made them all: the earth is full of thy riches.”",
       "",
-      "Both sides count the same kingdoms, the same levels and the same wolf, and the questions below only ask you to do the sorting."
+      "Both sides count the same kingdoms, the same levels and the same wolf, and the questions below only ask you to do the sorting.",
+      "The sorting is the same job whichever account you hold."
     ]}
   ],
 
@@ -186,13 +247,13 @@ module.exports = {
   ] },
 
   words: [
-    ["Phylogeny", "In the textbook, an organism's evolutionary history, used to help decide where it belongs in a classification.", 5],
-    ["Prokaryote", "An organism whose cells have no organized nucleus, such as a bacterium.", 12],
-    ["Eukaryote", "An organism whose cells have a true nucleus and membrane-bound parts.", 13],
-    ["Phylum", "The level just below kingdom. In plants and fungi it is called a division.", 23]
+    ["Nucleus", "The control room of a cell, the part that holds its instructions.", 8],
+    ["Prokaryote", "A living thing whose cells have no walled-off nucleus, such as a bacterium.", 17],
+    ["Eukaryote", "A living thing whose cells have a true nucleus and parts wrapped in a thin skin.", 18],
+    ["Phylum", "The level just below kingdom. In plants and fungi it is called a division.", 34]
   ],
 
-  findsAt: 38,
+  findsAt: 55,
   questions: [
     { q: "Which of these is one of the four questions used to sort living things into kingdoms?",
       find: [9],
@@ -204,59 +265,79 @@ module.exports = {
         "How big is it?"
       ], right: 1 },
 
+    { q: "What is the nucleus of a cell?",
+      find: [8],
+      hint: "Read Four Questions.",
+      choices: [
+        "The outside skin of the cell",
+        "The control room that holds the cell's instructions",
+        "A kind of food",
+        "A group of cells"
+      ], right: 1 },
+
     { q: "What is a prokaryote?",
-      find: [12],
+      find: [17],
       hint: "Read With a Nucleus and Without.",
       choices: [
-        "An organism whose cells have a true nucleus.",
-        "A kind of fungus.",
-        "An organism whose cells have no organized nucleus, such as a bacterium.",
-        "A group of related animals."
+        "A living thing whose cells have a true nucleus",
+        "A kind of fungus",
+        "A living thing whose cells have no walled-off nucleus, such as a bacterium",
+        "A group of related animals"
       ], right: 2 },
 
-    { q: "A mushroom doesn't move and can't make its own food. Which kingdom is it in?",
-      find: [17],
-      hint: "Read The Five Kingdoms.",
+    { q: "A tree has many cells with a nucleus, it doesn't move, and it makes its own food. Which kingdom is it in?",
+      find: [26],
+      hint: "Look at the table in The Five Kingdoms.",
       choices: [
-        "Plant",
-        "Animal",
+        "Animals",
+        "Fungi",
+        "Monera",
+        "Plants"
+      ], right: 3 },
+
+    { q: "A mushroom doesn't move and can't make its own food. Which kingdom is it in?",
+      find: [15],
+      hint: "Read the mushroom walk in Four Questions.",
+      choices: [
+        "Plants",
+        "Animals",
         "Monera",
         "Fungi"
       ], right: 3 },
 
-    { q: "Which kingdom holds many-celled eukaryotes that don't move and make their own food?",
-      find: [18],
-      hint: "Read The Five Kingdoms.",
-      choices: [
-        "Plant",
-        "Animal",
-        "Fungi",
-        "Protist"
-      ], right: 0 },
-
     { q: "What does the lesson say about the five-kingdom system?",
-      find: [20],
+      find: [30],
       hint: "Read Not Everyone Counts Five.",
       choices: [
-        "It is the only system anyone has used.",
-        "It is the textbook's system, and many books today count six kingdoms or three domains.",
-        "It was never used.",
-        "It has no levels inside the kingdoms."
+        "It is the only system anyone has ever used",
+        "It is the one this course follows, and many books today count six kingdoms or three domains",
+        "It was never used",
+        "It has no levels inside the kingdoms"
       ], right: 1 },
 
     { q: "Which is the correct order of the levels, from the biggest group to the smallest?",
-      find: [23],
+      find: [34],
       hint: "Read Seven Levels Down.",
       choices: [
-        "Species, genus, family, order, class, phylum, kingdom.",
-        "Kingdom, class, phylum, order, family, genus, species.",
-        "Kingdom, phylum, class, order, family, genus, species.",
-        "Kingdom, phylum, order, class, family, species, genus."
+        "Species, genus, family, order, class, phylum, kingdom",
+        "Kingdom, class, phylum, order, family, genus, species",
+        "Kingdom, phylum, class, order, family, genus, species",
+        "Kingdom, phylum, order, class, family, species, genus"
+      ], right: 2 },
+
+    { q: "Which group holds more kinds of living things, a genus or an order?",
+      find: [36],
+      hint: "Read Seven Levels Down, and think about the ladder.",
+      choices: [
+        "A genus",
+        "They hold the same number",
+        "An order",
+        "It depends on the animal"
       ], right: 2 },
 
     { q: "In the wolf walk, why is the wolf an animal and not a plant?",
-      find: [27],
-      hint: "Read Watch It Worked and use the Show All button.",
+      find: [40],
+      hint: "Read One Wolf, Seven Levels.",
       choices: [
         "It makes its own food.",
         "It doesn't move.",
@@ -264,18 +345,8 @@ module.exports = {
         "It moves and can't make its own food."
       ], right: 3 },
 
-    { q: "What is the Arctic wolf's scientific name, and what group is the first word?",
-      find: [31],
-      hint: "Read Watch It Worked.",
-      choices: [
-        "Canis lupus, and Canis is the genus.",
-        "Canis familiaris, and Canis is the species.",
-        "Carnivora lupus, and Carnivora is the genus.",
-        "Lupus canis, and lupus is the genus."
-      ], right: 0 },
-
     { q: "What does the lesson say people who hold common descent and people who hold creation share when it comes to classification?",
-      find: [37],
+      find: [53],
       hint: "Read What the Groups Mean.",
       choices: [
         "They disagree about every kingdom.",
@@ -286,27 +357,27 @@ module.exports = {
   ],
 
   vocabQuestions: [
-    { q: "What is a <i>eukaryote</i>?",
+    { q: "What is a <i>nucleus</i>?",
       choices: [
-        "An organism with no nucleus.",
-        "A kind of bacterium.",
-        "An organism whose cells have a true nucleus and membrane-bound parts.",
-        "A fossil."
-      ], right: 2 },
-    { q: "What does <i>phylogeny</i> mean in the textbook?",
-      choices: [
-        "A group of related plants.",
-        "A kind of cell wall.",
-        "The name of a kingdom.",
-        "An organism's evolutionary history, used to help decide where it belongs."
-      ], right: 3 },
+        "The control room of a cell, the part that holds its instructions",
+        "A kind of bacterium",
+        "The skin of a cell",
+        "A fossil"
+      ], right: 0 },
     { q: "What is a <i>prokaryote</i>?",
       choices: [
-        "An organism whose cells have no organized nucleus.",
-        "An organism with many cells.",
-        "A kind of animal.",
-        "A plant with no leaves."
+        "A living thing whose cells have no walled-off nucleus",
+        "A living thing with many cells",
+        "A kind of animal",
+        "A plant with no leaves"
       ], right: 0 },
+    { q: "What is a <i>eukaryote</i>?",
+      choices: [
+        "A living thing with no nucleus",
+        "A kind of bacterium",
+        "A living thing whose cells have a true nucleus and parts wrapped in a thin skin",
+        "A fossil"
+      ], right: 2 },
     { q: "Which level comes right after <i>kingdom</i>?",
       choices: [
         "Species",

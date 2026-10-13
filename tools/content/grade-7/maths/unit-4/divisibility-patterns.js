@@ -8,17 +8,51 @@
    transcript on its watch page, so its order was not read; the order here follows
    the book: sharing picture, then each rule one at a time.
 
+   🚨 REWRITTEN 2026-10-13 (Sonnet, to be checked by Opus) after Kolten said the lessons
+   don't explain well. An audit graded the 2026-10-11 version B+: seven rules in one
+   lesson, and "splits evenly into groups of 4" as the reason for the 4 rule. This
+   one keeps all seven rules and teaches each with a one-line test and a worked
+   example, drawn as ONE TABLE THAT GROWS: the 2, 5 and 10 rows, then 3 and 9, then
+   4, then 6, each added in a short walk before the test walk. The opening is now a
+   walk that deals 36 cards to 4 friends and then 5 friends (a table of each gets /
+   left over), so remainder, divisible and factor are all pictured before any rule.
+   The 4 rule is explained with "every 100 is 25 fours", and "groups of" is gone.
+   Nothing cut, no Your Turn number changed.
+
    ⚠️ ONE WORLD: Eli's baseball cards and the equal piles he makes with them. Our
    numbers, never the book's (48 crayons, 126, 397, 1,260 and the desk-arranging
    problem are left out). The book has no rule for 7 or 8, and this lesson says so. */
 'use strict';
+
+/* draws a small table with a header row; rows is a list of equal-length lists */
+const table = (rows) => {
+  const n = rows[0].length, w = [];
+  for (let i = 0; i < n; i++) w[i] = Math.max(...rows.map((r) => [...r[i]].length)) + 2;
+  const line = (l, m, r) => l + w.map((x) => "─".repeat(x)).join(m) + r;
+  const row = (r) => "│" + r.map((c, i) => " " + c + " ".repeat(w[i] - 1 - [...c].length)).join("│") + "│";
+  return [line("┌", "┬", "┐"), row(rows[0]), line("├", "┼", "┤")]
+    .concat(rows.slice(1).map(row), [line("└", "┴", "┘")]).join("\n");
+};
+
+/* the seven rules, added to the table a few at a time as the lesson goes */
+const RULES = [
+  ["Divisor", "The test", "A number that passes"],
+  ["2", "Ones digit is 0, 2, 4, 6 or 8", "7,348"],
+  ["5", "Ones digit is 0 or 5", "8,265"],
+  ["10", "Ones digit is 0", "4,050"],
+  ["3", "Digit sum divides by 3", "4,512  (1 + 2 + 4 + 5 = 12)"],
+  ["9", "Digit sum divides by 9", "4,527  (4 + 5 + 2 + 7 = 18)"],
+  ["4", "Last two digits divide by 4", "5,316  (16 ÷ 4 = 4)"],
+  ["6", "Passes both the 2 test and the 3 test", "3,126"],
+];
+const rules = (k) => table(RULES.slice(0, k + 1));
 module.exports = {
   id: "maths/divisibility-patterns",
   slug: "divisibility-patterns",
   title: "Divisibility Patterns",
   unit: "Math 7 &middot; U4-L1",
   seq: { unit: 4, unitTitle: "Patterns and Number Sense", n: 1 },
-  natural: "2026-10-11",
+  natural: "2026-10-13",
 
   /* ── /teach-plan, 2026-10-11. Glencoe Course 2 pp129-131. ── */
   plan: {
@@ -35,7 +69,7 @@ module.exports = {
       "Eli's baseball cards and equal piles for his friends. WORLD: one box of cards, our numbers.",
       "Left out on purpose: the crayons, the 126 and 397 examples and the desk-arranging problem (three more worlds).",
     ],
-    digitize: "Reading engine. Four Watch It Worked walkthroughs (the ones-digit rules, the digit sum, the last two digits, then one number against all seven), one Your Turn typed step by step, a video behind a button, and the homework sheet.",
+    digitize: "Reading engine. Nine short Watch It Worked walkthroughs (dealing cards, a table that grows by a rule or two at a time, a test walk for each rule, then one number against all seven), one Your Turn typed step by step, a video behind a button, and the homework sheet.",
     unclear: "",
   },
 
@@ -48,7 +82,8 @@ module.exports = {
     contains: [
       "What divisible and factor mean, from a picture of sharing",
       "The rules for 2, 5 and 10, then 3 and 9, then 4, then 6",
-      "Four worked examples that show every test",
+      "One table of all seven rules, built a few rows at a time",
+      "Worked examples that show every test",
       "A Your Turn problem you work and type one step at a time",
     ] },
   eyebrow: ["Math 7", "U4-L1", "Patterns and Number Sense"],
@@ -75,17 +110,32 @@ module.exports = {
     { title: "Equal Piles", s: [
       "Eli has a shoebox of baseball cards, and he wants to hand them out to his friends in piles that are exactly equal, with none left over for arguments.",
       "A pile of 36 cards for 4 friends works out to 9 each, and nothing is left, so 36 is {{divisible}} by 4.",
-      "That's all divisible means: one whole number divides another with a {{remainder}} of zero, and the number you divided by is called a {{factor}} of the other.",
-      "Here 4 is a factor of 36, and so are 1, 2, 3, 6, 9, 12, 18 and 36, since each of them splits 36 into equal piles.",
-      "You could divide every time to find out, but there's a quicker way, because each divisor has a pattern in the digits that gives it away."
+      "That's all divisible means: one whole number divides another with nothing left over.",
+      "What's left over is called the {{remainder}}, so divisible just means the remainder is zero.",
+      "The number you divided by is called a {{factor}} of the other number, so 4 is a factor of 36.",
+      "",
+      "[walk] Deal 36 cards to 4 friends, and then to 5 friends.",
+      "[step] Share 36 cards among 4 friends, and each friend gets 9 with none left over. || " + table([["Friends", "Each gets", "Left over"], ["4", "9", "0"]]),
+      "[step] Share the same 36 cards among 5 friends, and each friend gets 7 with 1 card left over. || " + table([["Friends", "Each gets", "Left over"], ["4", "9", "0"], ["5", "7", "1"]]),
+      "[step] A remainder of zero means divisible, so 36 is divisible by 4 and not by 5. || 36 ÷ 4  →  remainder 0  →  divisible\n36 ÷ 5  →  remainder 1  →  not divisible",
+      "",
+      "You could divide every time to find out, but there's a quicker way, because each divisor leaves a pattern in the digits that gives it away.",
+      "Over this lesson you'll build a table with one rule for each divisor."
     ]},
 
     { title: "2, 5 and 10: Look at the Last Digit",
       s: [
-      "The easiest rules only need the last digit, which is the ones digit, and the first one is for 2: a number is divisible by 2 when its ones digit is even.",
-      "Even means 0, 2, 4, 6 or 8, so 7,348 passes and 7,349 doesn't.",
+      "The easiest rules only need the last digit, which is the ones digit, the digit on the far right.",
+      "The first rule is for 2, and it says a number is divisible by 2 when its ones digit is even.",
+      "Even means the ones digit is 0, 2, 4, 6 or 8, so 7,348 passes and 7,349 doesn't.",
       "The rule for 5 is that the ones digit is 0 or 5, and the rule for 10 is that the ones digit is 0.",
-      "Every number that passes the rule for 10 also passes the rule for 5, since anything divisible by 10 can be split into groups of 5 as well.",
+      "",
+      "[walk] Add the first three rules to your table.",
+      "[step] The rule for 2 is that the ones digit is even, like the 8 in 7,348. || " + rules(1),
+      "[step] The rule for 5 is that the ones digit is 0 or 5, like the 5 in 8,265. || " + rules(2),
+      "[step] The rule for 10 is that the ones digit is 0, like the 0 in 4,050. || " + rules(3),
+      "",
+      "Every number that passes the rule for 10 also passes the rule for 5, since 10 is just two 5s.",
       "",
       "[walk] Test 2,375 for 2, 5 and 10.",
       "[step] Look only at the ones digit. || 2,375 → ones digit is 5",
@@ -98,6 +148,11 @@ module.exports = {
       s: [
       "The rules for 3 and 9 use a different trick: you add up all the digits to get the {{digit sum}}.",
       "If the digit sum is divisible by 3, then the whole number is divisible by 3, and if the digit sum is divisible by 9, then the whole number is divisible by 9.",
+      "",
+      "[walk] Add the rules for 3 and 9 to your table.",
+      "[step] The rule for 3 is that the digit sum divides by 3, like 4,512, whose digits add to 12. || " + rules(4),
+      "[step] The rule for 9 is that the digit sum divides by 9, like 4,527, whose digits add to 18. || " + rules(5),
+      "",
       "A number can pass the rule for 3 and fail the rule for 9, which is how you can pick a number that is divisible by 3 but not by 9.",
       "",
       "[walk] Test 4,527 for 3 and 9.",
@@ -111,9 +166,13 @@ module.exports = {
 
     { title: "4: Look at the Last Two Digits",
       s: [
-      "The rule for 4 uses the last two digits, because 100 splits evenly into groups of 4, so everything in front of the last two digits is already fine.",
-      "That means a number is divisible by 4 when the number made by its last two digits is divisible by 4.",
+      "The rule for 4 uses the last two digits, because every 100 splits into 25 fours with nothing left over.",
+      "That means everything in front of the last two digits is already fine, and only the last two digits can leave a remainder.",
+      "So a number is divisible by 4 when the number made by its last two digits is divisible by 4.",
       "Don't use just the ones digit here, because 14 ends in an even digit and still isn't divisible by 4.",
+      "",
+      "[walk] Add the rule for 4 to your table.",
+      "[step] The rule for 4 is that the last two digits divide by 4, like the 16 at the end of 5,316. || " + rules(6),
       "",
       "[walk] Test 5,316 and 7,214 for 4.",
       "[step] Take the last two digits of 5,316, which make the number 16. || 5,316 → 16",
@@ -125,7 +184,10 @@ module.exports = {
     { title: "6: Both 2 and 3", s: [
       "The rule for 6 isn't new, since 6 is just 2 times 3, so a number is divisible by 6 when it passes both the rule for 2 and the rule for 3.",
       "Passing only one of them isn't enough, and the easiest way to forget this is to see an even number and shout 6 before checking the digits.",
-      "A number like 3,124 is even but its digit sum is 10, so it's not divisible by 3 and therefore not by 6."
+      "A number like 3,124 is even but its digit sum is 10, so it's not divisible by 3 and therefore not by 6.",
+      "",
+      "[walk] Add the last rule to your table.",
+      "[step] The rule for 6 is that the number passes both the rule for 2 and the rule for 3, like 3,126. || " + rules(7)
     ]},
 
     { title: "All Seven on One Number",
@@ -141,22 +203,22 @@ module.exports = {
     ]},
 
     { title: "When There Is No Rule", s: [
-      "The book gives rules for 2, 3, 4, 5, 6, 9 and 10, and none for 7 or 8, so for those you simply divide with a calculator and look for a remainder of zero.",
-      "There are tests for 7 and 8 too, but they take longer than just dividing."
+      "There are rules for 2, 3, 4, 5, 6, 9 and 10, and none that are quick for 7 or 8.",
+      "For those you simply divide with a calculator and look for a remainder of zero."
     ]}
   ],
 
   words: [
     ["Divisible", "One whole number is divisible by another when it divides evenly, with a remainder of zero.", 1],
-    ["Factor", "A number that divides another number evenly. 4 is a factor of 36.", 2],
-    ["Digit sum", "What you get when you add up all the digits of a number. Used to test for 3 and 9.", 14],
-    ["Remainder", "What is left over after dividing. A remainder of zero means it divided evenly.", 2],
+    ["Factor", "A number that divides another number evenly. 4 is a factor of 36.", 4],
+    ["Digit sum", "What you get when you add up all the digits of a number. Used to test for 3 and 9.", 25],
+    ["Remainder", "What is left over after dividing. A remainder of zero means it divided evenly.", 3],
   ],
 
-  findsAt: 43,
+  findsAt: 62,
   questions: [
     { tag: "The Setup", q: "Eli deals 36 cards into piles for 4 friends and none are left over. What does that show?",
-      find: [1, 2],
+      find: [1,4],
       hint: "Read Equal Piles.",
       choices: [
         "36 is divisible by 4, and 4 is a factor of 36.",
@@ -166,12 +228,12 @@ module.exports = {
       ], right: 0 },
 
     { tag: "Use It", q: "Which of these numbers is divisible by 10?",
-      find: [7],
+      find: [14],
       hint: "Look at the ones digit.",
       choices: ["4,055", "4,505", "4,050", "4,005"], right: 2 },
 
     { tag: "Use It", q: "Is 8,415 divisible by 9?",
-      find: [15, 20],
+      find: [32,34],
       hint: "Add the digits, then see whether the sum divides by 9.",
       choices: [
         "Yes, the digit sum is 18, and 18 is divisible by 9.",
@@ -181,12 +243,12 @@ module.exports = {
       ], right: 0 },
 
     { tag: "Use It", q: "Which number is divisible by 3 but not by 9?",
-      find: [16, 21],
+      find: [35,30],
       hint: "Find the digit sum for each. It has to divide by 3 and not by 9.",
       choices: ["3,114", "4,512", "2,007", "6,300"], right: 1 },
 
     { tag: "Use It", q: "Is 7,628 divisible by 4?",
-      find: [24],
+      find: [45],
       hint: "Only the last two digits matter.",
       choices: [
         "Yes, because 28 is divisible by 4.",
@@ -196,12 +258,12 @@ module.exports = {
       ], right: 0 },
 
     { tag: "Use It", q: "Which number is divisible by 6?",
-      find: [31],
+      find: [48],
       hint: "It has to pass the rule for 2 and the rule for 3.",
       choices: ["3,125", "4,562", "2,125", "5,214"], right: 3 },
 
     { tag: "Careful", q: "A student says 3,214 is divisible by 4 because it's even. What did he do wrong?",
-      find: [25],
+      find: [40],
       hint: "Read 4: Look at the Last Two Digits.",
       choices: [
         "Nothing, even numbers are always divisible by 4.",
@@ -211,7 +273,7 @@ module.exports = {
       ], right: 1 },
 
     { tag: "Careful", q: "Can Eli split 36 cards into 5 equal piles with none left over?",
-      find: [7],
+      find: [7, 14],
       hint: "Look at the ones digit of 36.",
       choices: [
         "No, because 36 doesn't end in 0 or 5.",
