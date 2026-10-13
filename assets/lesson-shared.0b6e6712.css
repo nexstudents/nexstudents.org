@@ -1224,8 +1224,24 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
   white-space:pre-wrap;letter-spacing:.02em;
 }
 .wk-step.is-shown .wk-show{visibility:visible}
+/* A drawn grid rendered as a real table (Punnett squares, small charts). */
+.wk-show.is-grid{white-space:normal;overflow-x:auto;font-style:normal}
+.wk-grid{border-collapse:collapse;margin:4px 0;font-family:"IBM Plex Sans",system-ui,sans-serif}
+.wk-grid td,.wk-grid th{border:1.5px solid var(--ink-soft);padding:7px 12px;text-align:left;font-size:.95em}
+.wk-grid thead th{font-weight:700;color:var(--ink)}
+.wk-grid.is-square td{text-align:center;min-width:3.2em;height:2.4em;font-size:1.15em;font-weight:700}
+.wk-grid.is-square th{border:none;text-align:center;font-size:1.1em;color:var(--ink-soft)}
+.wk-after{margin-top:8px;white-space:pre-wrap}
+.wk-grid td.is-shape{font-family:"NS Mono","Segoe UI Symbol",system-ui,sans-serif;font-size:1.5em;line-height:1;white-space:nowrap}
+/* 🚨 OUR OWN CODE FONT (2026-10-13). A phone has no Consolas or Cascadia, and its
+   fallback monospace lacks box, block and shape glyphs, so those came from another
+   font at another width and every drawn number line, bar graph and grid slid out of
+   line (Kolten's phone). DejaVu Sans Mono, cut to ASCII + box drawing + blocks +
+   shapes + arrows, 26 KB, Bitstream Vera licence (assets/fonts/DEJAVU-LICENSE.txt).
+   Only downloaded on a page that shows code or a drawing. */
+@font-face{font-family:"NS Mono";src:url("/assets/fonts/dejavu-sans-mono-sub.woff2") format("woff2");font-display:swap}
 .wk-show.is-code{
-  font-family:"Cascadia Mono","Cascadia Code",Consolas,"Courier New",monospace;
+  font-family:"NS Mono","Cascadia Mono","Cascadia Code",Consolas,"Courier New",monospace;
   font-size:.92em;letter-spacing:0;white-space:pre;overflow-x:auto;tab-size:4;line-height:1.2;
 }
 .wk-bar{display:flex;gap:8px;padding:10px 16px 14px;border-top:1px solid var(--rule)}

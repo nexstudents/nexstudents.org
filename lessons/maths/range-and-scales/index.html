@@ -116,7 +116,7 @@
 <div class="ascrim" id="ascrim"></div><aside class="adrawer" id="adrawer" aria-hidden="true" aria-label="Account"><div class="ad-top"><button class="ad-back" id="adBack" type="button" hidden><svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4 6.5 10l6 6"/></svg><span>Back</span></button><h2 class="ad-h" id="adH">Account</h2><button class="ad-x" id="adClose" type="button">Close</button></div><div class="ad-body" id="adBody"></div></aside>
 
   <div class="ns-back"><a href="/grade-7/maths/lessons/">&larr; 7th Grade Math</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.b4fc4e02.css">
+<link rel="stylesheet" href="/assets/lesson-shared.e9886ff4.css">
 
 <div class="wrap">
 
@@ -142,15 +142,14 @@
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
       <h3>Lesson Goal</h3>
-      <p>By the end of this lesson your student should be able to find the range of a data set, choose a scale that includes all the data, choose equal intervals that suit the spread, and explain why more than one scale can be right.</p>
+      <p>Your student finds the range of a data set, chooses a scale that includes all the data, chooses equal intervals that suit the spread, and explains why more than one scale can be right.</p>
       <h3>Where Students Get Stuck</h3>
       <p>🚨 A scale that cuts off the data. If the scale runs from 8 to 12 and a value is 6.5, that value has nowhere to go, so check both ends against the least and the greatest.</p>
       <p>Uneven intervals. Every step on the number line has to be the same size, or the picture lies about how far apart the numbers are.</p>
       <h3>Teaching Suggestion</h3>
-      <p>The eleven numbers are made up for practice. Have the student collect eight or ten real numbers, like the temperatures over a week, and draw two different number lines for them on paper.</p>
-      <p>The site can't draw a number line yet, so each one is described in words. Sketching them from the description is the practice.</p>
+      <p>The eleven numbers are made up for practice. Have your student collect eight or ten real numbers, like the temperatures over a week, and draw two different number lines for them on paper.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Range</dt><dd>The difference between the greatest number and the least number in a data set.</dd><dt>Scale</dt><dd>The set of numbers along a graph's number line. It has to include all the data.</dd><dt>Interval</dt><dd>One of the equal parts a scale is split into.</dd><dt>Data set</dt><dd>A collection of numbers you've gathered, like the hours from a survey.</dd></dl>
+      <dl><dt>Data set</dt><dd>A collection of numbers you've gathered, like the hours from a survey.</dd><dt>Range</dt><dd>The difference between the greatest number and the least number in a data set.</dd><dt>Scale</dt><dd>The set of numbers along a graph's number line. It has to include all the data.</dd><dt>Interval</dt><dd>One of the equal parts a scale is split into.</dd></dl>
     </div>
   </details>
 
@@ -488,56 +487,75 @@ var ART = {
     '<circle cx="12" cy="10" r="3"/>', "A map pin"),
 };
 
-var VISUALS = [
-  { at: 8, kind: "Example", body: "6.5, 9, 7.5, 13, 8, 10.5, 9.5, 11, 7, 8.5, 10" },
-  { at: 9, kind: "Example", body: "range = 13 - 6.5 = 6.5" },
-  { at: 13, kind: "Example", body: "a scale from 8 to 12 cuts off 6.5, 7, 7.5 and 13" },
-  { at: 14, kind: "Example", body: "a scale from 6 to 14 holds all eleven answers" },
-  { at: 19, kind: "Example", body: "6, 7, 8, 9, 10, 11, 12, 13, 14" }
-];
+var VISUALS = [];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
    build-lessons.js rewrites each ONE line. */
-var WORK = [];
+var WORK = [
+  {"title":"A New Range","ask":"A student counts the books on five shelves and gets 14, 9, 22, 17 and 11. Find the range.","steps":[{"ask":"What is the least number?","answer":9,"hint":"Look for the smallest.","why":"9 is the least."},{"ask":"What is the greatest number?","answer":22,"hint":"Look for the biggest.","why":"22 is the greatest."},{"ask":"What is the range?","answer":13,"hint":"Subtract the least from the greatest.","why":"22 − 9 = 13."}]},
+  {"title":"Count the Steps","ask":"A scale runs from 0 to 40 with intervals of 5.","steps":[{"ask":"How many equal steps are there from 0 to 40?","answer":8,"hint":"Divide the length of the scale by the size of one step.","why":"40 ÷ 5 = 8 steps."},{"ask":"How many marks are there, counting both ends?","answer":9,"hint":"There's one more mark than there are steps.","why":"8 steps have 9 marks, because both ends get a mark."},{"ask":"The data value 38 needs a place on this scale. What is the next mark above it?","answer":40,"hint":"The marks go 35, 40, so look between them.","why":"38 sits between 35 and 40, so the next mark above it is 40."}]}
+];
 var VIDEO = null;
 
 var PARTS = [
   { title: "Eleven Phones", s: [
     "A student asks eleven classmates how many hours a week they spend on the phone, and the answers come back as a jumble of whole numbers and halves.",
-    "Before anyone can make a graph of them, there's a decision to make that has nothing to do with the numbers themselves: how big should the number line be?",
+    "Before anyone can make a graph of them, there's a decision to make that has nothing to do with the numbers themselves, which is how big the number line should be.",
     "The eleven answers are made up for practice, but the decision is real, because every graph you'll ever draw begins with it.",
     "So how do you build a number line that fits all eleven answers and still shows them clearly?"
   ] },
   { title: "How Spread Out Is It?", s: [
-    "The eleven answers are listed below in the order they were collected.",
-    "The first thing to find is the least number and the greatest number, which are 6.5 and 13, and the gap between them is called the {{range}}.",
-    "To find it, subtract the least from the greatest, and the range is 13 minus 6.5, which is 6.5 hours.",
-    "The range tells you how far the data is spread, and it's the first number you need for deciding how big the number line has to be.",
+    "A set of numbers you've gathered is called a {{data set}}, and the first thing to find is how spread out it is.",
+    "The gap between the least number and the greatest number is called the {{range}}, and it tells you how long the number line has to be.",
     "",
-    "[ex] 6.5, 9, 7.5, 13, 8, 10.5, 9.5, 11, 7, 8.5, 10",
-    "[ex] range = 13 - 6.5 = 6.5"
+    "[walk] Find the range of the eleven phone hours: 6.5, 9, 7.5, 13, 8, 10.5, 9.5, 11, 7, 8.5, 10.",
+    "[step] Put the numbers in order from least to greatest, so the ends are easy to see. || 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 13",
+    "[step] The first number is the least, 6.5 hours, and the last is the greatest, 13 hours. || least    6.5\ngreatest 13",
+    "[step] Subtract the least from the greatest. || 13 − 6.5 = 6.5",
+    "[step] So the range is 6.5 hours. || range = 6.5 hours",
+    "",
+    "The range is the first number you need, because it tells you how much room the data takes up."
   ] },
   { title: "A Scale That Holds Everything", s: [
-    "A {{scale}} is the set of numbers along a graph's number line, and the rule for choosing one is simple: it has to include all of the data.",
-    "That means starting below the least number and ending above the greatest, so for these answers a scale from 6 to 14 works, since 6 is below 6.5 and 14 is above 13.",
-    "A scale from 8 to 12 might look neat, but four of the answers would have nowhere to go, and a graph with missing data is worse than no graph, because it looks finished.",
+    "A {{scale}} is the set of numbers along a graph's number line, and the rule for choosing one is simple, which is that it has to include all of the data.",
+    "That means starting below the least number and ending above the greatest, and a graph with missing data is worse than no graph, because it looks finished.",
     "",
-    "[ex] a scale from 8 to 12 cuts off 6.5, 7, 7.5 and 13",
-    "[ex] a scale from 6 to 14 holds all eleven answers"
+    "[walk] Draw a scale that holds all eleven phone hours.",
+    "[step] The least is 6.5 and the greatest is 13, so start at 6, which is below 6.5, and end at 14, which is above 13. || scale: 6 to 14",
+    "[step] Draw the number line with a tick at every whole number. || ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤\n6     7     8     9     10    11    12    13    14",
+    "[step] Put a dot above the line for each of the eleven answers. ||    ●  ●  ●  ●  ●  ●  ●  ●  ●  ●           ●\n├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤\n6     7     8     9     10    11    12    13    14",
+    "[step] Check that every dot sits on the line, which means the scale holds all the data. || 11 answers, 11 dots, none missing",
+    "",
+    "[walk] See what goes wrong with a scale from 8 to 12.",
+    "[step] Draw the number line from 8 to 12 and try to place the answers. || ●  ●  ●  ●  ●  ●  ●\n├─────┼─────┼─────┼─────┤\n8     9     10    11    12",
+    "[step] The answers 6.5, 7 and 7.5 are below 8, and 13 is above 12, so four answers have nowhere to go. || off the left edge:  6.5, 7, 7.5\noff the right edge: 13",
+    "",
+    "A scale from 8 to 12 might look neat, but it only shows seven of the eleven answers."
   ] },
   { title: "Equal Steps", s: [
     "Once you have the scale, you split it into equal parts, and each part is an {{interval}}.",
-    "On a number line from 6 to 14, intervals of 1 give you eight steps, and every one of the eleven answers lands close to a mark.",
-    "The size of the interval should fit the spread, because intervals that are too big squeeze all the data into one lump, and intervals that are too small spread a few points across a hundred marks.",
-    "Intervals of 10 on this number line would put marks at 0, 10 and 20, and all eleven answers would crowd in between the first two marks, so data that sit close together call for a small interval.",
+    "The size of the interval should fit the spread of the data, because the steps have to be the same size all the way along the line.",
     "",
-    "[ex] 6, 7, 8, 9, 10, 11, 12, 13, 14"
+    "[walk] See what happens when the intervals are too big.",
+    "[step] Use intervals of 10 on a number line from 0 to 20, which puts marks only at 0, 10 and 20. || ├───────────┼───────────┤\n0           10          20",
+    "[step] Now try to place the eleven answers, which all land between 6.5 and 13. ||         ●●●●●●  ●\n├───────────┼───────────┤\n0           10          20",
+    "[step] The dots pile into one lump, and you can't see how different the answers really are. || crowded:  too big an interval",
+    "",
+    "Intervals that are too small do the opposite, by spreading a few points across a hundred marks, so data that sit close together call for a small interval.",
+    "For the phone hours, intervals of 1 are a good fit, because every answer lands close to a mark."
   ] },
   { title: "More Than One Right Answer", s: [
-    "There's no single correct scale for a data set, and that surprises students who expect math to have exactly one answer.",
+    "There's no single correct scale for a data set, and that surprises people who expect math to have exactly one answer.",
     "A number line from 6 to 14 with intervals of 1 is a good choice for the phone hours, and a number line from 0 to 14 with intervals of 2 is a good choice too, though it spreads the data a little less.",
-    "What makes a choice right is not that it matches the book but that every piece of data fits and every step is the same size.",
-    "Try a new set: five numbers, 21, 35, 18, 40 and 27, with a range of 40 minus 18, which is 22, and a scale from 0 to 50 with intervals of 5 holds them all."
+    "What makes a choice right is not that it matches somebody else's but that every piece of data fits and every step is the same size.",
+    "",
+    "[walk] Build a number line for a new set: 21, 35, 18, 40 and 27.",
+    "[step] Find the least and the greatest, which are 18 and 40. || least    18\ngreatest 40",
+    "[step] Subtract to find the range. || 40 − 18 = 22",
+    "[step] Choose a scale from 0 to 50, which holds everything, with intervals of 5. || ├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤\n0    5    10   15   20   25   30   35   40   45   50",
+    "[step] Plot the five answers as dots. ||                   ●  ●     ●       ●    ●\n├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤\n0    5    10   15   20   25   30   35   40   45   50",
+    "",
+    "Every dot fits and every step is 5, so this is a fair number line, even though a line from 15 to 45 would work too."
   ] },
   { title: "Examine the Number Line", s: [
     "The last step is the one that catches the mistakes, so run three checks before you draw a thing.",
@@ -545,131 +563,141 @@ var PARTS = [
     "If the answer to all three is yes, then your number line is a fair one, whether it matches somebody else's or not, and that's how you answer the question the lesson began with."
   ] },
   { title: "What To Do Now", s: [
-    "A number line is a promise that every piece of data has a place on it, and the questions check that you can keep it.",
-    "four word cards sit at the top of the page, then Ten questions, then four more questions about those words, Fourteen questions in all.",
+    "A number line is a promise that every piece of data has a place on it, and now you get to draw some and check that you can keep it.",
+    "First work through Your Turn below the reading, typing each answer.",
+    "Then come four word cards, then Nine questions, then four more questions about those words, Thirteen questions in all.",
     "Whenever you need a scale, find the least and the greatest first, then pick a start below one and an end above the other.",
     "If the interval questions trip you up, read Equal Steps again.",
-    "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+    "Last, open the Homework Sheet with the button at the bottom of the page, and work every problem on paper."
   ] }
 ];
 
 var WORDS = [
+  ["Data set", "A collection of numbers you've gathered, like the hours from a survey.", [4]],
   ["Range", "The difference between the greatest number and the least number in a data set.", [5]],
-  ["Scale", "The set of numbers along a graph's number line. It has to include all the data.", [10]],
-  ["Interval", "One of the equal parts a scale is split into.", [15]],
-  ["Data set", "A collection of numbers you've gathered, like the hours from a survey.", [0]]
+  ["Scale", "The set of numbers along a graph's number line. It has to include all the data.", [12]],
+  ["Interval", "One of the equal parts a scale is split into.", [23]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
     q: "What are the least and the greatest answers in the phone survey?",
-    find: [5],
+    find: [7, 8],
     hint: "Read How Spread Out Is It?",
+    why: "Sorted from least to greatest, the first is 6.5 and the last is 13.",
     choices: [
     "7 and 11",
-    "6.5 and 13",
     "6 and 14",
+    "6.5 and 13",
     "8 and 12"
-  ],
-    right: 1
-  },
-  {
-    day: 1,
-    q: "How do you find the range of a set of numbers?",
-    find: [6],
-    hint: "Read How Spread Out Is It?",
-    choices: [
-    "Add the least and the greatest.",
-    "Subtract the greatest from the least.",
-    "Divide the greatest by the least.",
-    "Subtract the least from the greatest."
-  ],
-    right: 3
-  },
-  {
-    day: 1,
-    q: "What is the range of the phone hours?",
-    find: [9],
-    hint: "Greatest minus least.",
-    choices: [
-    "6.5",
-    "19.5",
-    "9.75",
-    "13"
-  ],
-    right: 0
-  },
-  {
-    day: 1,
-    q: "What's the rule for choosing a scale?",
-    find: [10],
-    hint: "Read A Scale That Holds Everything.",
-    choices: [
-    "It has to start at zero.",
-    "It has to use whole numbers only.",
-    "It has to end at 10.",
-    "It has to include all of the data."
-  ],
-    right: 3
-  },
-  {
-    day: 1,
-    q: "Why doesn't a scale from 8 to 12 work for the phone hours?",
-    find: [13],
-    hint: "Compare the ends of the scale with the least and the greatest.",
-    choices: [
-    "It's too wide.",
-    "Some of the answers fall outside it.",
-    "It's the wrong color.",
-    "It uses whole numbers."
-  ],
-    right: 1
-  },
-  {
-    day: 1,
-    q: "What is an interval?",
-    find: [15],
-    hint: "Read Equal Steps.",
-    choices: [
-    "The biggest number in the data.",
-    "The title of a graph.",
-    "One of the equal parts a scale is split into.",
-    "The gap between the least and the greatest."
   ],
     right: 2
   },
   {
     day: 1,
-    q: "What would intervals of 10 do to the phone-hours number line from 6 to 14?",
-    find: [18],
-    hint: "Read Equal Steps.",
+    q: "How do you find the range of a set of numbers?",
+    find: [9],
+    hint: "Read How Spread Out Is It?",
+    why: "Range is greatest minus least.",
     choices: [
-    "They'd pile every answer into one lump.",
-    "They'd spread the data out nicely.",
-    "They'd make the range bigger.",
-    "They'd cut off the greatest answer."
+    "Subtract the least from the greatest",
+    "Add the least and the greatest",
+    "Subtract the greatest from the least",
+    "Divide the greatest by the least"
+  ],
+    right: 0
+  },
+  {
+    day: 1,
+    q: "What is the range of the phone hours?",
+    find: [10],
+    hint: "Greatest minus least.",
+    why: "13 − 6.5 = 6.5.",
+    choices: [
+    "19.5",
+    "9.75",
+    "13",
+    "6.5"
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "What's the rule for choosing a scale?",
+    find: [12, 13],
+    hint: "Read A Scale That Holds Everything.",
+    why: "A scale that leaves out data makes the graph wrong.",
+    choices: [
+    "It has to include all of the data",
+    "It has to start at zero",
+    "It has to use whole numbers only",
+    "It has to end at 10"
+  ],
+    right: 0
+  },
+  {
+    day: 1,
+    q: "Why doesn't a scale from 8 to 12 work for the phone hours?",
+    find: [21, 22],
+    hint: "Compare the ends of the scale with the least and the greatest.",
+    why: "6.5, 7, 7.5 and 13 have nowhere to go.",
+    choices: [
+    "It's too wide",
+    "It's the wrong color",
+    "Some of the answers fall outside it",
+    "It uses whole numbers"
+  ],
+    right: 2
+  },
+  {
+    day: 1,
+    q: "What is an interval?",
+    find: [23],
+    hint: "Read Equal Steps.",
+    why: "An interval is one equal step of the scale.",
+    choices: [
+    "The biggest number in the data",
+    "The title of a graph",
+    "The gap between the least and the greatest",
+    "One of the equal parts a scale is split into"
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "What would intervals of 10 do to the phone-hours number line?",
+    find: [27, 28],
+    hint: "Look at the drawing with marks only at 0, 10 and 20.",
+    why: "All eleven dots would crowd between the same two marks.",
+    choices: [
+    "They'd pile every answer into one lump",
+    "They'd spread the data out nicely",
+    "They'd make the range bigger",
+    "They'd cut off the greatest answer"
   ],
     right: 0
   },
   {
     day: 1,
     q: "Which statement about choosing a scale is true?",
-    find: [20],
+    find: [31, 33],
     hint: "Read More Than One Right Answer.",
+    why: "What matters is that all the data fits and the steps are equal.",
     choices: [
-    "The scale must match the one in the book.",
-    "More than one scale can be right if all the data fits and the steps are equal.",
-    "A scale must always start at zero.",
-    "Only one scale can ever be right."
+    "The scale must match the one your teacher drew",
+    "More than one scale can be right if all the data fits and the steps are equal",
+    "A scale must always start at zero",
+    "Only one scale can ever be right"
   ],
     right: 1
   },
   {
     day: 1,
     q: "A set of numbers is 21, 35, 18, 40 and 27. What's its range?",
-    find: [23],
+    find: [35, 36],
     hint: "Find the greatest and the least.",
+    why: "40 − 18 = 22.",
     choices: [
     "22",
     "40",
@@ -679,17 +707,17 @@ var QUESTIONS = [
     right: 0
   },
   {
-    day: 1,
-    q: "Which of these is NOT one of the three checks before drawing a number line?",
-    find: [25],
-    hint: "Read Examine the Number Line.",
+    day: 2,
+    q: "What is a <i>data set</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "Is the greatest number inside the scale?",
-    "Is the least number inside the scale?",
-    "Are all the steps the same size?",
-    "Is the number line exactly the one in the book?"
+    "A single number",
+    "A collection of numbers you've gathered",
+    "A graph with two colors",
+    "A scale from zero to ten"
   ],
-    right: 3
+    right: 1
   },
   {
     day: 2,
@@ -697,12 +725,12 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "The middle number.",
-    "The most common number.",
-    "The difference between the greatest and the least number.",
-    "The sum of all the numbers."
+    "The middle number",
+    "The most common number",
+    "The sum of all the numbers",
+    "The difference between the greatest and the least number"
   ],
-    right: 2
+    right: 3
   },
   {
     day: 2,
@@ -710,12 +738,12 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "The set of numbers along the number line, which must include all the data.",
-    "A tool for weighing the data.",
-    "The color of the bars.",
-    "The title of the graph."
+    "A tool for weighing the data",
+    "The color of the bars",
+    "The set of numbers along the number line, which must include all the data",
+    "The title of the graph"
   ],
-    right: 0
+    right: 2
   },
   {
     day: 2,
@@ -723,23 +751,10 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "The title of a table.",
-    "The greatest number.",
-    "One of the equal parts a scale is split into.",
-    "A break in the survey."
-  ],
-    right: 2
-  },
-  {
-    day: 2,
-    q: "What is a <i>data set</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "A scale from zero to ten.",
-    "A collection of numbers you've gathered.",
-    "A single number.",
-    "A graph with two colors."
+    "The title of a table",
+    "One of the equal parts a scale is split into",
+    "The greatest number",
+    "A break in the survey"
   ],
     right: 1
   }
@@ -747,7 +762,7 @@ var QUESTIONS = [
 var LESSON_TITLE = "Range and Scales";
 var LESSON_UNIT  = "Math 7 · U3-L3";
 </script>
-<script src="/assets/lesson-engine-coding-0.000e83b1.js"></script>
+<script src="/assets/lesson-engine-coding-0.bad66820.js"></script>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
 <script src="/assets/ns-account.js?v=edab60f4"></script>

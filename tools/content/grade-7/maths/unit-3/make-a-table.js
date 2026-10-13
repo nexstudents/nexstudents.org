@@ -19,6 +19,14 @@
    ⚠️ The 3-2B data base lab (data base, file, field) is not covered. The packet
    calls it a follow-up, not required.
 
+   🚨 REWRITTEN 2026-10-13 (Sonnet, checked by Opus) after Kolten said the lessons
+   don't explain anything. The frequency table was given as six [ex] lines; it is now
+   DRAWN with box-drawing characters in a Watch It Worked that builds it in three
+   steps (the answers down the side, the tally marks, the frequencies), with a
+   slash across every group of four for the fifth mark. A Your Turn (a 12-student
+   favorite-fruit survey, five typed counts) is added. Nothing else was cut or
+   added; the 1876 and Bell facts are unchanged.
+
    ⚠️ NO SCRIPTURE. Paul's call, in the review queue. */
 'use strict';
 module.exports = {
@@ -27,7 +35,7 @@ module.exports = {
   title: "Make a Table",
   unit: "Math 7 &middot; U3-L2",
   seq: { unit: 3, unitTitle: "Statistics and Data Analysis", n: 2 },
-  natural: "2026-10-05",
+  natural: "2026-10-13",
 
   /* ── /teach-plan, 2026-10-05. Glencoe Course 2 pp93-95. ── */
   plan: {
@@ -44,7 +52,7 @@ module.exports = {
       "The telephone survey and its twenty made-up answers. WORLD: a class survey, the book's own opening. The title and objective don't name it.",
       "Left out: the amusement-park vote and the data base lab.",
     ],
-    digitize: "Reading engine. The table is given as [ex] lines, one row each, with the tally marks typed as vertical bars. A drawn table would help.",
+    digitize: "Reading engine. The frequency table is drawn with box-drawing characters in a Watch It Worked that builds it in three steps, and a Your Turn has typed counts.",
     unclear: "",
   },
 
@@ -104,12 +112,12 @@ module.exports = {
       "Then go through the raw list one response at a time and make one tally mark for each, with every fifth mark drawn across the four before it so the groups are easy to count.",
       "Last, count each row's tally marks and write that number in the frequency column, and you have a {{frequency table}}.",
       "",
-      "[ex] 1825: | = 1",
-      "[ex] 1850: |||| = 4",
-      "[ex] 1854: | = 1",
-      "[ex] 1862: ||| = 3",
-      "[ex] 1876: |||| |||| = 8",
-      "[ex] 1898: ||| = 3"
+      "[walk] Build the frequency table for the twenty answers, one step at a time.",
+      "[step] List each possible answer once, down the left side, with empty tally and frequency columns. || ┌────────┬───────────┬───────────┐\n│ Answer │ Tally     │ Frequency │\n├────────┼───────────┼───────────┤\n│ 1825   │           │           │\n│ 1850   │           │           │\n│ 1854   │           │           │\n│ 1862   │           │           │\n│ 1876   │           │           │\n│ 1898   │           │           │\n└────────┴───────────┴───────────┘",
+      "[step] Go through the raw list one response at a time and make one tally mark for each, with a slash across every group of four. || ┌────────┬───────────┬───────────┐\n│ Answer │ Tally     │ Frequency │\n├────────┼───────────┼───────────┤\n│ 1825   │ |         │           │\n│ 1850   │ ||||      │           │\n│ 1854   │ |         │           │\n│ 1862   │ |||       │           │\n│ 1876   │ ||||/ ||| │           │\n│ 1898   │ |||       │           │\n└────────┴───────────┴───────────┘",
+      "[step] Count the marks in each row and write that number in the frequency column. || ┌────────┬───────────┬───────────┐\n│ Answer │ Tally     │ Frequency │\n├────────┼───────────┼───────────┤\n│ 1825   │ |         │ 1         │\n│ 1850   │ ||||      │ 4         │\n│ 1854   │ |         │ 1         │\n│ 1862   │ |||       │ 3         │\n│ 1876   │ ||||/ ||| │ 8         │\n│ 1898   │ |||       │ 3         │\n└────────┴───────────┴───────────┘",
+      "",
+      "The slash across a group of four makes a group of five, so 1876 has one group of five plus three more, which is 8."
     ]},
 
     { title: "Read the Table", s: [
@@ -134,11 +142,11 @@ module.exports = {
   words: [
     ["Frequency table", "A table that lists each possible answer once, with a tally and a frequency beside it.", 12],
     ["Tally", "A mark, usually a short bar, made for each response, with every fifth one drawn across four.", 11],
-    ["Frequency", "The number of times an answer was given, found by counting its tally marks.", 20],
+    ["Frequency", "The number of times an answer was given, found by counting its tally marks.", 16],
     ["Survey", "A question asked of a group of people so you can collect their answers.", 0]
   ],
 
-  findsAt: 29,
+  findsAt: 28,
   questions: [
     { tag: "The Setup", q: "What was the one question the class of twenty was asked?",
       find: [0],
@@ -166,7 +174,7 @@ module.exports = {
       choices: ["As many times as it was said", "Twice", "Exactly once", "Never"], right: 2 },
 
     { tag: "Tallies", q: "What do you do with every fifth tally mark?",
-      find: [11],
+      find: [11, 17],
       hint: "It keeps the groups easy to count.",
       choices: [
         "Skip it.",
@@ -176,12 +184,12 @@ module.exports = {
       ], right: 1 },
 
     { tag: "Frequency", q: "How many students said 1850?",
-      find: [14],
+      find: [16],
       hint: "Look at the frequency beside 1850.",
       choices: ["1", "3", "8", "4"], right: 3 },
 
     { tag: "The Winner", q: "Which answer was the most popular, and how many students gave it?",
-      find: [20],
+      find: [19],
       hint: "Find the biggest frequency.",
       choices: [
         "1898, with 3 students",
@@ -191,12 +199,12 @@ module.exports = {
       ], right: 1 },
 
     { tag: "Reading", q: "How many students gave a year before 1860 (1825, 1850 or 1854)?",
-      find: [21],
+      find: [20],
       hint: "Add the frequencies of those three rows.",
       choices: ["3", "6", "4", "8"], right: 1 },
 
     { tag: "Examine", q: "The frequencies in the table add up to 20. What does that tell you?",
-      find: [27],
+      find: [26],
       hint: "Read Examine: Does It Add Up?",
       choices: [
         "Every student was counted exactly once.",
@@ -206,7 +214,7 @@ module.exports = {
       ], right: 0 },
 
     { tag: "Examine", q: "Suppose the frequencies had added up to 21 for a class of 20. What most likely happened?",
-      find: [28],
+      find: [27],
       hint: "The total should equal the number of students.",
       choices: [
         "A student answered twice on purpose.",
@@ -247,8 +255,31 @@ module.exports = {
       ], right: 3 }
   ],
 
+  work: [
+    { title: "Favorite Fruit",
+      ask: "Twelve students were asked their favorite fruit, and they said: apple, banana, apple, grape, banana, apple, apple, grape, banana, apple, apple, grape. Make a tally table in your head or on paper, then answer.",
+      steps: [
+        { ask: "How many students chose apple?", answer: 6,
+          hint: "Count every apple in the list.",
+          why: "Apple was said 6 times, so its frequency is 6." },
+        { ask: "How many students chose banana?", answer: 3,
+          hint: "Count every banana in the list.",
+          why: "Banana was said 3 times." },
+        { ask: "How many students chose grape?", answer: 3,
+          hint: "Count every grape in the list.",
+          why: "Grape was said 3 times." },
+        { ask: "Add the three frequencies. What's the total?", answer: 12, calc: "6+3+3",
+          hint: "Add the frequency column, then compare it with the number of students.",
+          why: "6 + 3 + 3 = 12, which matches the 12 students, so the table checks out." },
+        { ask: "How many more students chose apple than grape?", answer: 3, calc: "6-3",
+          hint: "Subtract the two frequencies.",
+          why: "6 − 3 = 3 more students." },
+      ] },
+  ],
+
   todo: { title: "What To Do Now", s: [
-      "Twenty answers turned into a table you could read in a few seconds, and the questions ask you to do the same thing yourself.",
+      "Twenty answers turned into a table you could read in a few seconds, and now you get to do the same thing yourself.",
+      "First work through Your Turn below the reading, typing each answer.",
       "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
       "The twenty answers were made up for practice, but the table method is the real thing.",
       "If you get a total that doesn't match, find the tally mark that was missed or doubled.",

@@ -116,7 +116,7 @@
 <div class="ascrim" id="ascrim"></div><aside class="adrawer" id="adrawer" aria-hidden="true" aria-label="Account"><div class="ad-top"><button class="ad-back" id="adBack" type="button" hidden><svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4 6.5 10l6 6"/></svg><span>Back</span></button><h2 class="ad-h" id="adH">Account</h2><button class="ad-x" id="adClose" type="button">Close</button></div><div class="ad-body" id="adBody"></div></aside>
 
   <div class="ns-back"><a href="/grade-7/science/lessons/">&larr; 7th Grade Science</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.b4fc4e02.css">
+<link rel="stylesheet" href="/assets/lesson-shared.e9886ff4.css">
 
 <div class="wrap">
 
@@ -142,17 +142,17 @@
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
       <h3>Lesson Goal</h3>
-      <p>Students will describe what the Human Genome Project set out to do, explain the railroad-map comparison, give one benefit and one risk of knowing a person's genes, and write a reasoned answer to the You Decide question.</p>
+      <p>Your student describes what the Human Genome Project set out to do, explains the railroad-map comparison, says what a base pair is, gives one benefit and one risk of knowing a person's genes, and writes a reasoned answer to the You Decide question.</p>
       <h3>Key Concepts</h3>
-      <p>A genome is the full set of genes and the DNA around them, and a gene map shows where each gene sits on each chromosome, the way a railroad map shows where each station sits on each line.</p>
-      <p>The book is from 1994 and said people had about 100,000 genes. The project finished in 2003 and found about 20,000, and the lesson tells the student so, because a good scientific map gets corrected when the real count comes in.</p>
+      <p>A genome is the full set of genes an organism carries, and a gene map shows where each gene sits on each chromosome, the way a railroad map shows where each station sits on each line.</p>
+      <p>Scientists in 1994 estimated about 100,000 human genes. The project finished in 2003 and found about 20,000, and the lesson tells your student so, because a good scientific map gets corrected when the real count comes in.</p>
       <h3>Teaching Suggestion</h3>
-      <p>Let the student argue both sides out loud before writing. The written answer is marked on whether it takes a clear position and supports it, not on which position it takes.</p>
-      <p>Handle this with care. A genetic condition is described here the way the unit has described them all, as part of a person and not as a flaw, and the student shouldn't walk away thinking a gene decides who someone is.</p>
+      <p>Let your student argue both sides out loud before writing. The written answer is marked on whether it takes a clear position and supports it, not on which position it takes.</p>
+      <p>Handle this with care. A genetic condition is described here the way the unit has described them all, as part of a person and not as a flaw, and your student shouldn't walk away thinking a gene decides who someone is.</p>
       <h3>Added From the Record</h3>
-      <p>The finish dates, the finished gene count and the 2008 law (GINA) are added from the historical record because the book predates all of them. The book's own points are the map comparison, the benefits, the concerns and its view that most scientists think the benefits outweigh the costs.</p>
+      <p>The finish dates, the finished gene count, the 2008 law (GINA), and the four DNA letters and their pairing are added from the historical record and standard biology. The map comparison, the benefits, the concerns and the view that most scientists think the benefits outweigh the costs are from the textbook.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Genome</dt><dd>The whole set of an organism's genes. Mapping a genome means finding where each gene sits on each chromosome.</dd><dt>Human Genome Project</dt><dd>The worldwide effort that began in 1990 to map all of a person's genes and read the whole code. It was finished in 2003.</dd><dt>Base pairs</dt><dd>The matched chemical letters that make up the rungs of the DNA spiral. A person has more than three billion of them.</dd></dl>
+      <dl><dt>DNA</dt><dd>The long code inside your cells that holds the instructions for building you. It is written in four letters, A, T, C and G.</dd><dt>Genome</dt><dd>The whole set of an organism's genes. Mapping a genome means finding where each gene sits on each chromosome.</dd><dt>Base pair</dt><dd>A matched pair of letters that forms one rung of the DNA ladder. A person has more than three billion of them.</dd><dt>Human Genome Project</dt><dd>The worldwide effort that began in 1990 to map all of a person's genes and read the whole code. It was finished in 2003.</dd></dl>
     </div>
   </details>
 
@@ -491,7 +491,7 @@ var ART = {
 };
 
 var VISUALS = [
-  { at: 21, kind: "Scripture", body: "Micah 6:8 says, “He hath shewed thee, O man, what is good; and what doth the LORD require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?”" }
+  { at: 43, kind: "Scripture", body: "Micah 6:8 says, “He hath shewed thee, O man, what is good; and what doth the LORD require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?”" }
 ];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
@@ -502,33 +502,65 @@ var VIDEO = null;
 var PARTS = [
   { title: "A Few Drops of Blood", s: [
     "A newborn baby, only a day or two old, gets her heel pricked at the hospital, and a few drops of blood are tested for conditions that a doctor can't see by looking at her.",
-    "In most states one of the conditions on that list is cystic fibrosis, a genetic disorder you read about in the last lessons, and the test works because scientists know where to look.",
-    "Think about how hard that is, since a person's DNA holds billions of chemical letters, and nobody can find one gene in that pile without a map.",
-    "So who made the map, and what else does it let people do?"
+    "In most states one of those conditions is cystic fibrosis, a genetic disorder from the last lesson, and the test works because scientists know where to look.",
+    "How do they know where to look, and who made the map that tells them?"
+  ] },
+  { title: "Quick Recap: What Your Cells Hold", s: [
+    "Inside almost every cell in your body is a long code called {{DNA}}, which holds the instructions for building you.",
+    "A gene is one section of that code, and it's the instructions for one trait, like a single recipe in a giant recipe book.",
+    "The code is packed into 46 strings called chromosomes, half from your mom and half from your dad.",
+    "",
+    "[walk] Zoom in from a cell down to the code.",
+    "[step] Start with one cell, far too small to see without a microscope. || cell",
+    "[step] Inside it are 46 chromosomes, the strings that hold the code. || cell\n└─ 46 chromosomes",
+    "[step] Each chromosome holds a long stretch of DNA, with many genes along it. || cell\n└─ 46 chromosomes\n   └─ many genes on each",
+    "[step] DNA is written with just four letters, A, T, C and G. || cell\n└─ 46 chromosomes\n   └─ many genes on each\n      └─ letters:  A T G C C A T G ...",
+    "",
+    "So a gene is a short piece of one long message, and the whole message is far too long to read without help."
   ] },
   { title: "A Map With Stations", s: [
     "A {{genome}} is the whole set of genes an organism carries, and mapping one means working out where every gene sits on every chromosome.",
-    "The book compares it to a railroad map, where the chromosomes are the long lines and the genes are the stations along them, so once you know where a station is, you can go straight to it.",
-    "In 1990 scientists in several countries began the Human Genome Project, an effort to map all of the genes in a person and to read, letter by letter, the whole code.",
-    "That's more than three billion {{base pairs}}, and the work needed powerful computers, since nobody could store or sort that many letters by hand."
+    "Think of a railroad map, where each chromosome is a long line and each gene is a station along it, so once you know where a station is, you can go straight to it.",
+    "",
+    "[walk] Draw a tiny piece of a gene map.",
+    "[step] A chromosome is a long line. || ──────────────────────────────",
+    "[step] Each gene is a station along the line, shown as a dot. || ──●─────●────●──────●────────●──",
+    "[step] Give each station a number, so you can find it again. || ──●─────●────●──────●────────●──\n  1     2    3      4        5",
+    "[step] A genome map is this picture for all 46 chromosomes, with every station placed. || 46 lines  ×  stations on each",
+    "",
+    "Without that map, finding one gene would be like looking for one house in a country with no street names."
   ] },
-  { title: "The Book Guessed High", s: [
-    "The science textbook behind this lesson was printed in 1994, long before the project was done, so it describes a map that was still being drawn.",
-    "It said people have about 100,000 genes spread across 46 chromosomes, and that scientists knew what only about 5,000 of them did.",
-    "The Human Genome Project announced a first draft in 2000 and declared the map finished in 2003, and the finished count was about 20,000 genes, a fifth of the guess.",
+  { title: "Reading the Code", s: [
+    "The project had a second job, which was to read the code, letter by letter.",
+    "DNA is shaped like a twisted ladder, and each rung of the ladder is a matched pair of letters called a {{base pair}}.",
+    "",
+    "[walk] Look at a few rungs of the DNA ladder.",
+    "[step] DNA has two long sides joined by rungs, like a ladder. || ┃     ┃\n┃─────┃\n┃─────┃\n┃─────┃",
+    "[step] Each rung is a base pair, and the letters always match up the same way, with A paired to T and C paired to G. || A ─── T\nG ─── C\nT ─── A\nC ─── G",
+    "[step] A person has more than three billion of these rungs. || 3,000,000,000+ base pairs",
+    "",
+    "The {{Human Genome Project}} began in 1990, when scientists in several countries set out to map every gene in a person and read the whole code.",
+    "That's more than three billion base pairs, and the work needed powerful computers, since nobody could store or sort that many letters by hand."
+  ] },
+  { title: "Counting the Genes", s: [
+    "In 1994, before the project was done, scientists estimated that people have about 100,000 genes.",
+    "The project announced a first draft in 2000 and declared the map finished in 2003, and the finished count was about 20,000 genes.",
+    "",
+    "[walk] Compare the 1994 estimate with the finished count.",
+    "[step] Use blocks, where one block stands for 10,000 genes. || ■ = 10,000 genes",
+    "[step] The 1994 estimate was 100,000, which is ten blocks. || 1994 estimate  │■■■■■■■■■■ 100,000",
+    "[step] The finished count is 20,000, which is two blocks. || 1994 estimate  │■■■■■■■■■■ 100,000\nfinished map   │■■ 20,000",
+    "[step] The estimate was five times too high. || 100,000 ÷ 20,000 = 5",
+    "",
     "Nobody was embarrassed, because that's how a map gets made: scientists give their best estimate, and then the real count arrives and they fix the number."
   ] },
-  { title: "What a Map Is Good For", s: [
-    "With the map in hand, doctors can find the genes behind cystic fibrosis, muscular dystrophy and many other disorders, and a test needs only a few drops of blood.",
-    "Finding out early can change what happens next, because a family can prepare, a doctor can start treatment sooner, and a person who carries a gene for heart disease can look after his health years before any trouble starts, for example by managing stress.",
+  { title: "A Benefit and a Risk", s: [
+    "With the map in hand, doctors can find the genes behind cystic fibrosis, muscular dystrophy and other disorders from just a few drops of blood.",
+    "Finding out early can change what happens next, because a family can prepare, a doctor can start treatment sooner, and a person who carries a gene for heart disease can look after his health years before any trouble starts.",
     "Most scientists believe the benefits outweigh the costs, and that's a big reason the project was worth doing.",
-    "But a map shows where things are, and the people who read it can use it well or badly."
-  ] },
-  { title: "Who Gets to Read It?", s: [
-    "A person's genes are about as private as information gets, and the book lays out the worry plainly: an employer or an airline might refuse to hire someone because of the genes he carries.",
-    "Another worry is more personal, because some people who learn they carry a gene for a disorder might choose not to have children.",
-    "Nobody has to take those worries on faith, since the United States passed a law in 2008, the Genetic Information Nondiscrimination Act, which says health insurers and employers can't use a person's genetic information against him.",
-    "It doesn't cover every kind of insurance, and the argument over how far it should reach is still going."
+    "But a map shows where things are, and the people who read it can use it well or badly.",
+    "A person's genes are about as private as information gets, and the worry is that an employer or an airline might refuse to hire someone because of the genes he carries.",
+    "The United States passed a law in 2008, the Genetic Information Nondiscrimination Act, which says health insurers and employers can't use a person's genetic information against him, though it doesn't cover every kind of insurance."
   ] },
   { title: "Do Justly", s: [
     "Think of the baby with the pricked heel, whose blood test could help her get care long before she can speak for herself.",
@@ -539,9 +571,9 @@ var PARTS = [
     "A map of the human genome is one of the most powerful things scientists have ever made, and what people do with it is a question about how they treat each other."
   ] },
   { title: "What To Do Now", s: [
-    "The map of the genome is finished, and the question below is the one the book leaves for you.",
-    "Start with the questions, Seven of them, and then the vocabulary check at the bottom, three questions on the word cards at the top of the page.",
-    "Then the part that matters most, and it happens on paper.",
+    "The map of the genome is finished, and the question below is the one that's left for you.",
+    "Start with the Eight questions, and then the four questions on the four word cards at the top of the page, Twelve questions in all.",
+    "Then comes the part that matters most, and it happens on paper.",
     "Should a person's genes ever be used to decide whether he gets a job or an insurance policy?",
     "Write your answer in your notebook in complete sentences, take a clear side, and give at least two reasons.",
     "There's no answer key, and you'll be marked on whether you took a clear position and supported it.",
@@ -550,100 +582,135 @@ var PARTS = [
 ];
 
 var WORDS = [
-  ["Genome", "The whole set of an organism's genes. Mapping a genome means finding where each gene sits on each chromosome.", [4]],
-  ["Human Genome Project", "The worldwide effort that began in 1990 to map all of a person's genes and read the whole code. It was finished in 2003.", [6]],
-  ["Base pairs", "The matched chemical letters that make up the rungs of the DNA spiral. A person has more than three billion of them.", [7]]
+  ["DNA", "The long code inside your cells that holds the instructions for building you. It is written in four letters, A, T, C and G.", [3]],
+  ["Genome", "The whole set of an organism's genes. Mapping a genome means finding where each gene sits on each chromosome.", [12]],
+  ["Base pair", "A matched pair of letters that forms one rung of the DNA ladder. A person has more than three billion of them.", [21]],
+  ["Human Genome Project", "The worldwide effort that began in 1990 to map all of a person's genes and read the whole code. It was finished in 2003.", [26]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
-    q: "Why is a genome map needed to find one gene?",
-    find: [2],
-    hint: "Read A Few Drops of Blood.",
+    q: "What is a gene?",
+    find: [4],
+    hint: "Read Quick Recap: What Your Cells Hold.",
+    why: "A gene is one recipe in the giant recipe book of DNA.",
     choices: [
-    "Because genes move around too fast to see.",
-    "Because only one person has each gene.",
-    "Because DNA holds billions of chemical letters, and nobody can find one gene in that pile without a map.",
-    "Because DNA is too small to be written down."
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "In the book's comparison, what do the genes stand for on the railroad map?",
-    find: [5],
-    hint: "Read A Map With Stations.",
-    choices: [
-    "The tickets.",
-    "The trains.",
-    "The long lines.",
-    "The stations along the lines."
+    "A whole cell.",
+    "A kind of chromosome.",
+    "A single DNA letter.",
+    "One section of DNA that holds the instructions for one trait."
   ],
     right: 3
   },
   {
     day: 1,
-    q: "Why did the project need powerful computers?",
-    find: [7],
-    hint: "Think about how many base pairs there are.",
+    q: "On the railroad-map comparison, what do the genes stand for?",
+    find: [13],
+    hint: "Read A Map With Stations.",
+    why: "Each chromosome is a line, and each gene is a station on it.",
     choices: [
-    "To protect the data from employers.",
-    "To store and sort billions of letters of code.",
-    "To draw pictures of the chromosomes.",
-    "To grow cells in the laboratory."
-  ],
-    right: 1
-  },
-  {
-    day: 1,
-    q: "How many human genes did the book's 1994 estimate say there were?",
-    find: [9],
-    hint: "Read The Book Guessed High.",
-    choices: [
-    "About 20,000",
-    "About 5,000",
-    "About 100,000",
-    "About 46"
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "What did the finished map find, in 2003?",
-    find: [10],
-    hint: "The finished count was much lower than the book's guess.",
-    choices: [
-    "About 20,000 genes.",
-    "About 100,000 genes.",
-    "No genes at all.",
-    "About a million genes."
+    "The stations along the lines.",
+    "The tickets.",
+    "The trains.",
+    "The long lines."
   ],
     right: 0
   },
   {
     day: 1,
-    q: "Which of these is a benefit of the map that the book names?",
-    find: [12],
-    hint: "Read What a Map Is Good For.",
+    q: "In a base pair, which letter is A always matched with?",
+    find: [24],
+    hint: "Look at the DNA ladder.",
+    why: "A pairs with T, and C pairs with G.",
     choices: [
-    "It tells you what job to take.",
-    "It lets doctors find the genes for disorders like cystic fibrosis from a few drops of blood.",
-    "It lets scientists skip experiments.",
-    "It makes every person healthy."
+    "G",
+    "T",
+    "C",
+    "A"
   ],
     right: 1
   },
   {
     day: 1,
-    q: "Which of these is a worry the book raises about knowing a person's genes?",
-    find: [16],
-    hint: "Read Who Gets to Read It?",
+    q: "Why did the project need powerful computers?",
+    find: [27],
+    hint: "Think about how many base pairs there are.",
+    why: "There are more than three billion base pairs, far too many to sort by hand.",
     choices: [
-    "Genes can't be read by computers.",
+    "To protect the data from employers.",
+    "To draw pictures of the chromosomes.",
+    "To grow cells in the laboratory.",
+    "To store and sort billions of letters of code."
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "About how many human genes did scientists estimate there were in 1994?",
+    find: [28],
+    hint: "Read Counting the Genes.",
+    why: "The 1994 estimate was about 100,000.",
+    choices: [
+    "About 100,000",
+    "About 5,000",
+    "About 20,000",
+    "About 46"
+  ],
+    right: 0
+  },
+  {
+    day: 1,
+    q: "The finished count was about 20,000 genes. The 1994 estimate was how many times too high?",
+    find: [28, 29, 34],
+    hint: "Divide 100,000 by 20,000.",
+    why: "100,000 ÷ 20,000 = 5.",
+    choices: [
+    "100 times",
+    "5 times",
+    "2 times",
+    "10 times"
+  ],
+    right: 1
+  },
+  {
+    day: 1,
+    q: "Which of these is a benefit of the map?",
+    find: [36, 37],
+    hint: "Read A Benefit and a Risk.",
+    why: "Doctors can find the gene from a few drops of blood and help early.",
+    choices: [
+    "It lets doctors find the genes for disorders like cystic fibrosis from a few drops of blood.",
+    "It lets scientists skip experiments.",
+    "It tells you what job to take.",
+    "It makes every person healthy."
+  ],
+    right: 0
+  },
+  {
+    day: 1,
+    q: "Which of these is a worry about knowing a person's genes?",
+    find: [40],
+    hint: "Read A Benefit and a Risk.",
+    why: "That is why the 2008 law was passed.",
+    choices: [
     "Every gene turns out to be harmful.",
     "Doctors will stop using blood tests.",
-    "An employer might refuse to hire a person because of the genes he carries."
+    "An employer might refuse to hire a person because of the genes he carries.",
+    "Genes can't be read by computers."
+  ],
+    right: 2
+  },
+  {
+    day: 2,
+    q: "What is <i>DNA</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "A kind of cell.",
+    "A single gene.",
+    "A map of a country.",
+    "The long code in your cells that holds the instructions for building you."
   ],
     right: 3
   },
@@ -653,10 +720,23 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A chromosome number.",
-    "The whole set of an organism's genes.",
     "A kind of cell.",
-    "A single gene."
+    "A single gene.",
+    "The whole set of an organism's genes.",
+    "A chromosome number."
+  ],
+    right: 2
+  },
+  {
+    day: 2,
+    q: "What is a <i>base pair</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "Two kinds of RNA.",
+    "A matched pair of letters that forms one rung of the DNA ladder.",
+    "Two parents.",
+    "Two chromosomes."
   ],
     right: 1
   },
@@ -666,31 +746,18 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "Map all of a person's genes and read the whole code.",
     "Make new organisms.",
     "Count the cells in the body.",
+    "Map all of a person's genes and read the whole code.",
     "Find the oldest fossil."
   ],
-    right: 0
-  },
-  {
-    day: 2,
-    q: "What are <i>base pairs</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "The matched chemical letters that make up the rungs of DNA.",
-    "Two parents.",
-    "Two chromosomes.",
-    "Two kinds of RNA."
-  ],
-    right: 0
+    right: 2
   }
 ];
 var LESSON_TITLE = "Mapping the Human Genome";
 var LESSON_UNIT  = "Life Science · U5-L4";
 </script>
-<script src="/assets/lesson-engine-coding-0.000e83b1.js"></script>
+<script src="/assets/lesson-engine-coding-0.bad66820.js"></script>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
 <script src="/assets/ns-account.js?v=edab60f4"></script>

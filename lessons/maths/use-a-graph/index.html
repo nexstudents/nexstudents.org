@@ -116,7 +116,7 @@
 <div class="ascrim" id="ascrim"></div><aside class="adrawer" id="adrawer" aria-hidden="true" aria-label="Account"><div class="ad-top"><button class="ad-back" id="adBack" type="button" hidden><svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4 6.5 10l6 6"/></svg><span>Back</span></button><h2 class="ad-h" id="adH">Account</h2><button class="ad-x" id="adClose" type="button">Close</button></div><div class="ad-body" id="adBody"></div></aside>
 
   <div class="ns-back"><a href="/grade-7/maths/lessons/">&larr; 7th Grade Math</a></div>
-<link rel="stylesheet" href="/assets/lesson-shared.b4fc4e02.css">
+<link rel="stylesheet" href="/assets/lesson-shared.e9886ff4.css">
 
 <div class="wrap">
 
@@ -142,15 +142,15 @@
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
       <h3>Lesson Goal</h3>
-      <p>By the end of this lesson your student should be able to read a bar graph, a double bar graph, a line graph and a circle graph, answer questions from them, use a trend to predict, and check the scale before answering.</p>
+      <p>Your student reads a bar graph, a double bar graph, a line graph and a circle graph, answers questions from them, uses a trend to predict, and checks the scale before answering.</p>
       <h3>Where Students Get Stuck</h3>
-      <p>🚨 Reading a value off the wrong scale. If each gridline stands for 100 and the student reads it as 1, every answer is off by a lot, so the scale is the first thing to check.</p>
-      <p>Forgetting the key on a double graph. Two colors mean two different things, and a student who skips the key will compare a bar with itself.</p>
+      <p>🚨 Reading a value off the wrong scale. If each block stands for 100 and he reads it as 1, every answer is off by a lot, so the scale is the first thing to check.</p>
+      <p>Forgetting the key on a double graph. Two block styles mean two different things, and a student who skips the key will compare a bar with itself.</p>
       <h3>Teaching Suggestion</h3>
       <p>Every number in this lesson is made up for practice. Find a real graph in a newspaper or an almanac and write two questions about it together, because that is the skill the lesson is for.</p>
-      <p>The site can't draw the graphs yet, so each one is given as a table of values. Sketching one from the table on paper is a good way to see what the words describe.</p>
+      <p>The graphs here are drawn with text, so a round circle graph is shown laid flat as a strip. Sketching a real pie on paper from the numbers is a good way to see the match.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Statistics</dt><dd>Collecting, organizing and summarizing numerical facts so you can answer questions and make predictions.</dd><dt>Key</dt><dd>The part of a graph that tells you what each color or symbol stands for.</dd><dt>Trend</dt><dd>The direction the numbers are heading over time, which a line graph shows.</dd><dt>Double bar graph</dt><dd>A graph with two bars side by side for every item, so two sets of data can be compared.</dd></dl>
+      <dl><dt>Statistics</dt><dd>Collecting, organizing and summarizing numerical facts so you can answer questions and make predictions.</dd><dt>Scale</dt><dd>The part of a graph that says how much one block or one gridline is worth.</dd><dt>Key</dt><dd>The part of a graph that tells you what each color, symbol or kind of bar stands for.</dd><dt>Double bar graph</dt><dd>A graph with two bars side by side for every item, so two sets of data can be compared.</dd><dt>Trend</dt><dd>The direction the numbers are heading over time, which a line graph shows.</dd></dl>
     </div>
   </details>
 
@@ -488,20 +488,14 @@ var ART = {
     '<circle cx="12" cy="10" r="3"/>', "A map pin"),
 };
 
-var VISUALS = [
-  { at: 7, kind: "Example", body: "Mandarin 920 · Spanish 480 · English 380 · Hindi 340 · Arabic 310" },
-  { at: 13, kind: "Example", body: "Spanish: 120 students in 1990, 200 in 2020" },
-  { at: 14, kind: "Example", body: "French: 90 students in 1990, 60 in 2020" },
-  { at: 19, kind: "Example", body: "2000: X is 40, Y is 120" },
-  { at: 20, kind: "Example", body: "2005: X is 60, Y is 110" },
-  { at: 21, kind: "Example", body: "2010: X is 80, Y is 100" },
-  { at: 22, kind: "Example", body: "2015: X is 100, Y is 90" },
-  { at: 28, kind: "Example", body: "printing 50% · food 25% · decorations 15% · prizes 10%" }
-];
+var VISUALS = [];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
    build-lessons.js rewrites each ONE line. */
-var WORK = [];
+var WORK = [
+  {"title":"Pages Read","ask":"A bar graph shows pages read each day, and one block (■) stands for 5 pages. Monday has 6 blocks, Tuesday has 4 blocks and Wednesday has 9 blocks.","steps":[{"ask":"How many pages were read on Wednesday?","answer":45,"hint":"9 blocks, 5 pages each.","why":"9 × 5 = 45 pages."},{"ask":"How many pages were read on Tuesday?","answer":20,"hint":"4 blocks, 5 pages each.","why":"4 × 5 = 20 pages."},{"ask":"How many more pages were read on Wednesday than on Tuesday?","answer":25,"hint":"Subtract the two values.","why":"45 − 20 = 25 more pages."}]},
+  {"title":"Saving Up","ask":"A line graph shows savings: $10 in week 1, $16 in week 2 and $22 in week 3, going up at the same pace.","steps":[{"ask":"How many dollars does the line go up each week?","answer":6,"hint":"Subtract week 1 from week 2.","why":"16 − 10 = 6 dollars a week."},{"ask":"Week 6 is how many weeks after week 3?","answer":3,"hint":"Count the weeks from 3 to 6.","why":"6 − 3 = 3 weeks."},{"ask":"If the pace holds, how many dollars will there be in week 6?","answer":40,"hint":"Start at $22 and add 3 weeks of $6.","why":"22 + 18 = 40 dollars, and that's a prediction, not a fact."}]}
+];
 var VIDEO = null;
 
 var PARTS = [
@@ -509,93 +503,112 @@ var PARTS = [
     "A class has a project on the languages of the world, and the first thing everyone wants to know is which language has the most speakers.",
     "A table of counts can answer that, but you'd have to read every number and compare them in your head, and a graph does the comparing for you in one look.",
     "That's the power of {{statistics}}, the collecting, organizing and summarizing of numerical facts, because a graph shows a trend that a column of numbers hides.",
-    "Every number in this lesson is made up for practice, so please don't quote them as real counts, but the skill of reading the graph is completely real.",
-    "So what do you read first when a graph lands on your desk?"
+    "Every number in this lesson is made up for practice, so please don't quote them as real counts, but the skill of reading the graph is completely real."
   ] },
-  { title: "Title, Axes, Key", s: [
-    "Before you look at a single bar, read the title, which says what the graph is about, and then the labels on the two sides, which say what the bars and the numbers stand for.",
-    "Say a bar graph is titled Speakers of Five Languages, in Millions, and the numbers along the side count by 100.",
+  { title: "A Bar Graph: Title, Scale, Key", s: [
+    "Before you look at a single bar, read the title, which says what the graph is about, and then the {{scale}}, which says how much one block or one gridline is worth.",
+    "Skipping that step is the number one way to misread a graph, so we'll always do it first.",
     "",
-    "[ex] Mandarin 920 · Spanish 480 · English 380 · Hindi 340 · Arabic 310",
+    "[walk] Read a bar graph and find who has the most speakers, and how many more.",
+    "[step] Read the title and the scale before anything else, because they say what the bars mean. || Speakers of Five Languages, in millions\none block (■) = 100 million",
+    "[step] Here's the graph, with one block for every 100 million speakers. || Mandarin │■■■■■■■■■ 900\nSpanish  │■■■■■ 500\nEnglish  │■■■■ 400\nHindi    │■■■ 300\nArabic   │■■ 200\n         └──────────",
+    "[step] The longest bar is Mandarin, so it has the most speakers, and the shortest bar is Arabic. || most:   Mandarin (9 blocks)\nfewest: Arabic (2 blocks)",
+    "[step] To find how many more speakers Mandarin has than English, read both values and subtract. || 900 − 400 = 500 million more",
     "",
-    "The tallest bar belongs to Mandarin at 920, so that's your answer to which language has the most speakers, and the shortest belongs to Arabic at 310.",
-    "To find how many more speakers Spanish has than Arabic, subtract the two values, and 480 minus 310 is 170 million.",
-    "You wouldn't have found that by guessing at the bar heights, so read the actual values and then do the arithmetic."
+    "You wouldn't get that by guessing at the bar heights, so read the actual values and then do the arithmetic.",
+    "That's why a table of numbers and a graph work best as a pair."
   ] },
   { title: "Two Colors, Two Stories", s: [
-    "A double bar graph puts two bars side by side for every item, and that's where the {{key}} matters, because the key tells you what each color means.",
-    "Say a school offers Spanish and French and counts the students enrolled in each in two different years, with a blue bar for 1990 and an orange bar for 2020.",
+    "A double bar graph puts two bars side by side for every item, and that's where the {{key}} matters, because the key tells you what each kind of bar means.",
+    "Say a school counts the students in its Spanish and French classes in two different years, and since we can't use colors in text, we'll use light blocks for 1990 and dark blocks for 2020.",
     "",
-    "[ex] Spanish: 120 students in 1990, 200 in 2020",
-    "[ex] French: 90 students in 1990, 60 in 2020",
+    "[walk] Read a {{double bar graph}} and tell what changed in each class.",
+    "[step] Read the title and the key first, because the key says which blocks are which year. || Students in Language Classes\n░ = 1990    █ = 2020\none block = 20 students",
+    "[step] Here's the graph, with a pair of bars for each language. || Spanish 1990 │░░░░░░ 120\n        2020 │██████████ 200\nFrench  1990 │░░░░ 80\n        2020 │███ 60",
+    "[step] Spanish went from 120 to 200, so it grew by 80 students. || 200 − 120 = 80 more",
+    "[step] French went from 80 to 60, so it shrank by 20 students. || 80 − 60 = 20 fewer",
     "",
-    "Without the key you couldn't tell which bar is which year, and a reader who skips it might compare Spanish in 1990 to Spanish in 2020 and think he was comparing two languages.",
-    "Read the pairs and you can see that Spanish grew by 80 students over the thirty years while French shrank by 30, a story you could only tell by using both colors."
+    "Without the key, you might compare Spanish in 1990 to Spanish in 2020 and think you were comparing two languages.",
+    "A pair of bars lets you see both years in a single look."
   ] },
-  { title: "A Trend You Can Follow", s: [
+  { title: "A Line Graph and a Trend", s: [
     "A line graph is the best choice when something changes over time, because the line shows the {{trend}}, the direction the numbers are heading.",
-    "Say a double line graph tracks learners of two languages over fifteen years, Language X in blue and Language Y in orange, and the numbers count thousands of learners.",
+    "Say a graph tracks the learners of two languages over fifteen years, with the numbers in thousands, using ● for Language X and ○ for Language Y.",
     "",
-    "[ex] 2000: X is 40, Y is 120",
-    "[ex] 2005: X is 60, Y is 110",
-    "[ex] 2010: X is 80, Y is 100",
-    "[ex] 2015: X is 100, Y is 90",
+    "[walk] Plot two lines and use them to find a crossing and make a prediction.",
+    "[step] Read the title and the scale, where the years go across the bottom and thousands of learners go up the side. || Learners of Two Languages (thousands)\n● = Language X    ○ = Language Y",
+    "[step] Plot Language X first, which starts at 40 in 2000 and gains 20 every five years. || 120 │\n100 │                    ●\n 80 │              ●\n 60 │        ●\n 40 │  ●\n    └────────────────────────\n     2000  2005  2010  2015",
+    "[step] Now plot Language Y, which starts at 120 and loses 20 every five years. || 120 │  ○\n100 │        ○           ●\n 80 │              ◎\n 60 │        ●           ○\n 40 │  ●\n    └────────────────────────\n     2000  2005  2010  2015",
+    "[step] The lines meet at 80 in the year 2010, shown by ◎, so that's when the two languages had the same number of learners. || 2010:  X = 80,  Y = 80",
+    "[step] To predict 2020, keep each line going at the same pace, because X gains 20 and Y loses 20 in the next five years. || 2020:  X = 100 + 20 = 120\n2020:  Y = 60 − 20 = 40",
     "",
-    "Y starts far ahead, but its line slopes down while X's slopes up, and by 2015 X has passed it, so the two lines must have crossed somewhere between 2010 and 2015.",
-    "When did it happen, and what would you expect in 2020?",
-    "If you extend both lines at the same pace, X gains about 20 every five years and Y loses about 10, so by 2020 X would be near 120 and Y near 80, and that's a prediction, not a fact."
+    "That last step is a prediction and not a fact, because a trend only tells you where the numbers are heading if nothing changes.",
+    "So treat a prediction as a good guess, and check it again when new numbers arrive."
   ] },
   { title: "A Pie With a Budget", s: [
     "A circle graph shows how a whole is split into parts, and the whole circle is the whole amount, so every slice is a share of it.",
-    "Say a club has $400 to spend on a language fair, and its circle graph says half goes to printing, a quarter to food, 15 percent to decorations and 10 percent to prizes.",
+    "We can't draw a round pie in text, so we'll lay it flat as a strip of 20 blocks, where every block is 5 percent of the whole.",
     "",
-    "[ex] printing 50% · food 25% · decorations 15% · prizes 10%",
+    "[walk] Read a circle graph of a club's $400 budget for a language fair.",
+    "[step] The whole strip is the whole $400, which is 100 percent. || [PPPPPPPPPPFFFFFDDDZZ]\nwhole strip = $400 = 100%",
+    "[step] The key says P is printing with 10 blocks, F is food with 5 blocks, D is decorations with 3 blocks, and Z is prizes with 2 blocks. || P  10 blocks = 50%\nF   5 blocks = 25%\nD   3 blocks = 15%\nZ   2 blocks = 10%",
+    "[step] Check that the slices add up to the whole before you trust the graph. || 50 + 25 + 15 + 10 = 100%",
+    "[step] Printing is half the budget, so it gets half of $400. || 400 ÷ 2 = $200",
     "",
-    "Printing gets half of $400, which is $200, and food gets a quarter, which is $100, so printing gets $100 more than food.",
-    "Check that the slices add up to 100 percent before you trust a circle graph, because a pie that doesn't add up has been drawn wrong."
+    "A pie that doesn't add up to 100 percent has been drawn wrong, so that check is worth the five seconds.",
+    "Circle graphs are best for parts of a whole, like a budget."
   ] },
   { title: "Examine the Scale", s: [
-    "You can read every part of a graph correctly and still get the answer wrong if you misread the scale, so the last step of the plan, Examine, starts there.",
-    "If each gridline stands for 100 and you read one as 1, your 170 million turns into 1.7 million, and the answer looks tidy and is completely wrong.",
-    "Ask whether the answer is about the size the bars suggested, whether the key was used, and whether you subtracted the right two values.",
-    "So the question that began the lesson has an answer: read the title, the axes and the key first, then the values, and then check the scale before you say a word."
+    "You can read every part of a graph correctly and still get the answer wrong if you misread the scale, so the last thing to do is check it.",
+    "Here's a quick check on the scale of the first graph.",
+    "",
+    "[walk] Check the scale on the Hindi bar from the first graph.",
+    "[step] The Hindi bar has 3 blocks. || ■■■  =  3 blocks",
+    "[step] Each block is 100 million speakers, not 1 million, so the bar is 3 times 100. || 3 × 100 = 300 million",
+    "[step] If you had read each block as 1, you'd have said 3 million, which is a hundred times too small. || 3 million   ✗\n300 million ✓",
+    "",
+    "Ask whether your answer is about the size the bars suggest, whether you used the key, and whether you subtracted the right two values.",
+    "So the question that began the lesson has an answer: read the title, the scale and the key first, then the values, and then check the scale before you say a word."
   ] },
   { title: "What To Do Now", s: [
-    "A graph is only as good as the person reading it, and these questions give you the practice, in the same order the lesson took the graphs.",
-    "four word cards sit at the top of the page, then Ten questions, then four more questions about those words, Fourteen questions in all.",
+    "A graph is only as good as the person reading it, and now you get the practice, in the same order the lesson took the graphs.",
+    "First work through Your Turn below the reading, typing each answer.",
+    "Then come five word cards, then Ten questions, then five more questions about those words, Fifteen questions in all.",
     "Every number was made up, so don't copy any of them into a report as a real count.",
-    "On each question, read the title, the axes and the key first, and check the scale before you answer.",
-    "If the line graph question trips you up, read A Trend You Can Follow again.",
-    "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+    "On each question, read the title, the scale and the key first, and check the scale before you answer.",
+    "Last, open the Homework Sheet with the button at the bottom of the page, and work every problem on paper."
   ] }
 ];
 
 var WORDS = [
   ["Statistics", "Collecting, organizing and summarizing numerical facts so you can answer questions and make predictions.", [2]],
-  ["Key", "The part of a graph that tells you what each color or symbol stands for.", [11]],
-  ["Trend", "The direction the numbers are heading over time, which a line graph shows.", [17]],
-  ["Double bar graph", "A graph with two bars side by side for every item, so two sets of data can be compared.", [11]]
+  ["Scale", "The part of a graph that says how much one block or one gridline is worth.", [4]],
+  ["Key", "The part of a graph that tells you what each color, symbol or kind of bar stands for.", [13]],
+  ["Double bar graph", "A graph with two bars side by side for every item, so two sets of data can be compared.", [15]],
+  ["Trend", "The direction the numbers are heading over time, which a line graph shows.", [22]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
     q: "When you get a new graph, what should you read first?",
-    find: [5],
-    hint: "Read Title, Axes, Key.",
+    find: [4, 5, 7],
+    hint: "Read A Bar Graph: Title, Scale, Key.",
+    why: "The title and scale tell you what the bars mean and how much each one is worth.",
     choices: [
-    "The last number on the scale.",
-    "Nothing, since you can see the answer.",
-    "The tallest bar only.",
-    "The title, the labels on the sides and the key."
+    "The last number on the scale",
+    "Nothing, since you can see the answer",
+    "The title and the scale",
+    "The tallest bar only"
   ],
-    right: 3
+    right: 2
   },
   {
     day: 1,
     q: "On the five-language bar graph, which language has the fewest speakers?",
-    find: [8],
+    find: [9],
     hint: "Look for the shortest bar.",
+    why: "Arabic has the shortest bar, only 2 blocks.",
     choices: [
     "Arabic",
     "English",
@@ -606,74 +619,80 @@ var QUESTIONS = [
   },
   {
     day: 1,
-    q: "How many more speakers does Spanish have than Arabic on that graph?",
-    find: [9],
+    q: "How many more speakers does Spanish have than Hindi on that graph?",
+    find: [8, 10],
     hint: "Read the two values, then subtract.",
+    why: "500 − 300 = 200 million.",
     choices: [
-    "17 million",
-    "480 million",
-    "170 million",
-    "790 million"
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "Why does a double bar graph need a key?",
-    find: [15],
-    hint: "Read Two Colors, Two Stories.",
-    choices: [
-    "To make the graph look finished.",
-    "To tell you the scale.",
-    "To show the highest value.",
-    "To say what each color or bar stands for."
-  ],
-    right: 3
-  },
-  {
-    day: 1,
-    q: "How many students were enrolled in Spanish in 2020?",
-    find: [13],
-    hint: "Look at the second number for Spanish.",
-    choices: [
-    "90",
-    "200",
-    "120",
-    "80"
+    "20 million",
+    "200 million",
+    "500 million",
+    "800 million"
   ],
     right: 1
   },
   {
     day: 1,
-    q: "What does a trend show?",
-    find: [17],
-    hint: "Read A Trend You Can Follow.",
+    q: "Why does a double bar graph need a key?",
+    find: [13, 16],
+    hint: "Read Two Colors, Two Stories.",
+    why: "Without the key you can't tell which bar is which.",
     choices: [
-    "The number of colors used.",
-    "The exact title of the graph.",
-    "The direction the numbers are heading over time.",
-    "The biggest bar."
+    "To make the graph look finished",
+    "To tell you the scale",
+    "To show the highest value",
+    "To say what each kind of bar stands for"
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "How many students were in the French classes in 1990?",
+    find: [17],
+    hint: "Find the light blocks for French.",
+    why: "French 1990 is 4 blocks of 20, so 80.",
+    choices: [
+    "120",
+    "60",
+    "80",
+    "20"
   ],
     right: 2
   },
   {
     day: 1,
-    q: "Between which years did Language X pass Language Y?",
-    find: [23],
-    hint: "In 2010 Y was ahead. In 2015 X was ahead.",
+    q: "What does a trend show?",
+    find: [22],
+    hint: "Read A Line Graph and a Trend.",
+    why: "A trend is the direction the numbers are heading.",
     choices: [
-    "Between 2010 and 2015",
-    "Between 2000 and 2005",
-    "Between 2005 and 2010",
-    "After 2015"
+    "The number of colors used",
+    "The direction the numbers are heading over time",
+    "The exact title of the graph",
+    "The biggest bar"
   ],
-    right: 0
+    right: 1
   },
   {
     day: 1,
-    q: "If both lines keep the same pace, about where would Language X be in 2020?",
-    find: [25],
-    hint: "X was at 100 in 2015 and gains about 20 every five years.",
+    q: "In what year did Language X and Language Y have the same number of learners?",
+    find: [28],
+    hint: "Look for the ◎ on the line graph.",
+    why: "Both were at 80 in 2010.",
+    choices: [
+    "2000",
+    "2005",
+    "2015",
+    "2010"
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "If both lines keep the same pace, about how many learners will Language X have in 2020?",
+    find: [29],
+    hint: "X was at 100 in 2015 and gains 20 every five years.",
+    why: "100 + 20 = 120.",
     choices: [
     "About 80",
     "About 140",
@@ -684,27 +703,29 @@ var QUESTIONS = [
   },
   {
     day: 1,
-    q: "A club has $400, and half goes to printing. How much is that?",
-    find: [29],
-    hint: "Read A Pie With a Budget.",
+    q: "The club's budget is $400, and food is 25 percent of it. How much is that?",
+    find: [36, 38],
+    hint: "A quarter of $400.",
+    why: "25 percent is a quarter, and 400 ÷ 4 = 100.",
     choices: [
-    "$100",
-    "$50",
+    "$25",
+    "$200",
     "$400",
-    "$200"
+    "$100"
   ],
     right: 3
   },
   {
     day: 1,
-    q: "Each gridline stands for 100, and you read it as 1. What happens to the answer?",
-    find: [32],
+    q: "A student reads the 3-block Hindi bar as 3 million, though each block is 100 million. What went wrong?",
+    find: [45, 46],
     hint: "Read Examine the Scale.",
+    why: "Each block is 100 million, so the bar is 300 million.",
     choices: [
-    "It's far too small, even though it may look tidy.",
-    "It gets larger by a little.",
-    "Nothing, it comes out the same.",
-    "It becomes a negative number."
+    "The student didn't check the scale, so the answer is 100 times too small",
+    "The student forgot the key",
+    "The student added instead of subtracting",
+    "Nothing, 3 million is right"
   ],
     right: 0
   },
@@ -714,12 +735,25 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A way to round numbers.",
-    "Collecting, organizing and summarizing numerical facts.",
-    "The tallest bar on a graph.",
-    "A kind of graph."
+    "A way to round numbers",
+    "Collecting, organizing and summarizing numerical facts",
+    "The tallest bar on a graph",
+    "A kind of graph"
   ],
     right: 1
+  },
+  {
+    day: 2,
+    q: "What does the <i>scale</i> of a graph tell you?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "Who drew the graph",
+    "What the graph's title is",
+    "How much one block or gridline is worth",
+    "Which color is which"
+  ],
+    right: 2
   },
   {
     day: 2,
@@ -727,25 +761,12 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "What each color or symbol stands for.",
-    "How the graph was drawn.",
-    "The answer to the problem.",
-    "The size of the paper."
+    "What each color, symbol or kind of bar stands for",
+    "The size of the paper",
+    "The answer to the problem",
+    "How the graph was drawn"
   ],
     right: 0
-  },
-  {
-    day: 2,
-    q: "What is a <i>trend</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "A kind of circle graph.",
-    "The direction the numbers are heading over time.",
-    "A sudden mistake in the data.",
-    "A label on the bottom of a graph."
-  ],
-    right: 1
   },
   {
     day: 2,
@@ -753,18 +774,31 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A graph that has been drawn twice.",
-    "A graph with two bars side by side for every item.",
-    "A graph with two titles.",
-    "A graph with bars that are twice as tall."
+    "A graph that has been drawn twice",
+    "A graph with two bars side by side for every item",
+    "A graph with two titles",
+    "A graph with bars that are twice as tall"
   ],
     right: 1
+  },
+  {
+    day: 2,
+    q: "What is a <i>trend</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "The direction the numbers are heading over time",
+    "A sudden mistake in the data",
+    "A label on the bottom of a graph",
+    "A kind of circle graph"
+  ],
+    right: 0
   }
 ];
 var LESSON_TITLE = "Use a Graph";
 var LESSON_UNIT  = "Math 7 · U3-L1";
 </script>
-<script src="/assets/lesson-engine-coding-0.000e83b1.js"></script>
+<script src="/assets/lesson-engine-coding-0.bad66820.js"></script>
 
 <script src="/assets/supabase-config.js?v=525295e0"></script>
 <script src="/assets/ns-account.js?v=edab60f4"></script>

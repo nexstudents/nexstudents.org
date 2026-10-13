@@ -453,8 +453,63 @@ PARTS.forEach(function(part){
         /* A work line that DRAWS a grid (box-drawing characters, like a Punnett
            square) needs the even-width face too, or its lines don't meet
            (2026-10-13). */
-        show.className = "wk-show" + (LESSON_ID.indexOf("coding/") === 0 || /[─-╿]/.test(stepShow) ? " is-code" : "");
-        show.textContent = stepShow;
+        show.className = "wk-show" + (LESSON_ID.indexOf("coding/") === 0 || /[─-◿]/.test(stepShow) ? " is-code" : "");
+        /* 🚨 A DRAWN GRID BECOMES A REAL TABLE (2026-10-13). Paul, from Kolten's
+           phone: "the right side of the boxes are inside of the box". Box-drawing
+           characters come from a fallback font on a phone, at a different width
+           from the letters, so a text grid can never line up everywhere. A work
+           line shaped like a grid (optional column letters, a ┌ line, rows split
+           by │, a └ line) is drawn as an HTML table instead. Anything else falls
+           back to plain text. */
+        var grid = (function(text){
+          var lines = text.split("\n"), top = -1, i;
+          for (i = 0; i < lines.length; i++) if (/^\s*┌/.test(lines[i])) { top = i; break; }
+          if (top < 0) return null;
+          var head = lines.slice(0, top).map(function(l){ return l.trim(); }).filter(Boolean);
+          if (head.length > 1) return null;
+          var rows = [], seps = [], bottom = -1;
+          for (i = top + 1; i < lines.length; i++) {
+            if (/^\s*└/.test(lines[i])) { bottom = i; break; }
+            if (/^\s*├/.test(lines[i])) { seps.push(rows.length); continue; }
+            if (lines[i].indexOf("│") < 0) return null;
+            var bits = lines[i].split("│");
+            rows.push({ label: bits[0].trim(), cells: bits.slice(1, -1).map(function(c){ return c.trim(); }) });
+          }
+          if (bottom < 0 || !rows.length) return null;
+          var n = rows[0].cells.length;
+          for (i = 0; i < rows.length; i++) if (rows[i].cells.length !== n) return null;
+          var cols = head.length ? head[0].split(/\s+/) : null;
+          if (cols && cols.length !== n) return null;
+          var labelled = rows.some(function(r){ return r.label; });
+          var boxHead = !cols && seps[0] === 1 && rows.length > 1 && !labelled;
+          var t = document.createElement("table");
+          t.className = "wk-grid" + (cols ? " is-square" : "");
+          var add = function(parent, tag, txt){ var c = document.createElement(tag); c.textContent = txt; parent.appendChild(c); return c; };
+          if (cols || boxHead) {
+            var hr = document.createElement("tr");
+            if (cols && labelled) add(hr, "th", "");
+            (cols || rows[0].cells).forEach(function(c){ add(hr, "th", c); });
+            add(t, "thead", "").appendChild(hr);
+          }
+          var tb = add(t, "tbody", "");
+          rows.slice(boxHead ? 1 : 0).forEach(function(r){
+            var tr = document.createElement("tr");
+            if (labelled) add(tr, "th", r.label);
+            r.cells.forEach(function(c){
+              var td = add(tr, "td", c);
+              /* family-chart shapes: one font's □ is tiny beside another's ○ */
+              if (/^[○□■●◯◻◼◽◾ c]+$/.test(c) && /[○□■●]/.test(c)) td.className = "is-shape";
+            });
+            tb.appendChild(tr);
+          });
+          var frag = document.createDocumentFragment();
+          frag.appendChild(t);
+          var after = lines.slice(bottom + 1).join("\n").trim();
+          if (after) add(frag, "div", after).className = "wk-after";
+          return frag;
+        })(stepShow);
+        if (grid) { show.className = "wk-show is-grid"; show.appendChild(grid); }
+        else show.textContent = stepShow;
         stepEl.appendChild(show);
       }
       p.appendChild(stepEl);
