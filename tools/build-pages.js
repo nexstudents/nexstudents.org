@@ -1960,7 +1960,7 @@ const EXTRAS = [
     contains: [
       "Game Coding: make a real game in Godot with C#",
       "A lesson semester plan for each elective, two lessons a week",
-      "Robotics Coding in C++, coming later",
+      "Web Coding (HTML + GitHub) and Robotics Coding (C++), coming later",
     ] },
 ];
 
@@ -1980,6 +1980,12 @@ const ELECTIVES = [
   /* 🤖 A FUTURE elective, a slot only (Paul, 2026-10-13: "Robotics Coding for
      C++ ... make one for a future elective"). No href until its lessons exist.
      C++ because that is what Arduino boards are programmed in. */
+  /* 🌐 A FUTURE elective, a slot only (Paul, 2026-10-13: "both GitHub and HTML
+     are together"). GitHub is a unit INSIDE it, the way the page goes online,
+     not its own elective. CSS and JavaScript: Paul undecided, so the card names
+     neither. */
+  { eyebrow: "Elective &middot; Coming Soon", title: "Web Coding",
+    blurb: "Build your own web page in HTML and put it online for anyone to visit with GitHub." },
   { eyebrow: "Elective &middot; Coming Soon", title: "Robotics Coding",
     blurb: "Program a real robot in C++: lights, motors and sensors, one wire at a time." },
 ];
