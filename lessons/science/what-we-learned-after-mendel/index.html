@@ -8,11 +8,11 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://nexstudents.org/lessons/science/what-we-learned-after-mendel/">
 <meta property="og:title" content="What We Learned After Mendel | NexStudents">
-<meta property="og:description" content="Mendel's peas were either tall or short, either yellow or green. Most of what you see in people is messier than that, and it follows rules too.">
+<meta property="og:description" content="Mendel's peas were either tall or short. Most of what you see in people is messier than that, and it still follows rules you can draw.">
 <meta property="og:image" content="https://nexstudents.org/assets/brand/share.png?v=88747775">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="What We Learned After Mendel | NexStudents">
-<meta name="twitter:description" content="Mendel's peas were either tall or short, either yellow or green. Most of what you see in people is messier than that, and it follows rules too.">
+<meta name="twitter:description" content="Mendel's peas were either tall or short. Most of what you see in people is messier than that, and it still follows rules you can draw.">
 <meta name="twitter:image" content="https://nexstudents.org/assets/brand/share.png?v=88747775">
 <script type="application/ld+json">
 {
@@ -127,7 +127,7 @@
       <span>How Traits Pass Down</span>
     </div>
     <h1>What We Learned After Mendel</h1>
-    <p class="dek">Mendel's peas were either tall or short, either yellow or green. Most of what you see in people is messier than that, and it follows rules too.</p>
+    <p class="dek">Mendel's peas were either tall or short. Most of what you see in people is messier than that, and it still follows rules you can draw.</p>
   </header>
 
   <!-- Teacher notes. Collapsed, above the reading, filled by build-lessons.js from
@@ -142,17 +142,18 @@
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
       <h3>Lesson Goal</h3>
-      <p>Students will explain incomplete dominance, multiple alleles and polygenic inheritance with one example each, and tell which pattern a described trait follows.</p>
+      <p>Your student explains incomplete dominance, multiple alleles and polygenic inheritance with one example each, fills in a Punnett square for the first two, and tells which pattern a described trait follows.</p>
       <h3>Key Concepts</h3>
-      <p>In incomplete dominance neither allele fully covers the other, so the heterozygous offspring looks in between. It isn't blending: crossing two pink flowers brings back red and white, which a true blend could never do.</p>
-      <p>A person still carries only two alleles of the ABO gene, even though three exist. And a polygenic trait gives a smooth range of results, not a few separate groups.</p>
+      <p>In incomplete dominance neither allele fully covers the other, so the Rr flower looks in between. It isn't blending: crossing two pink flowers brings back red and white, which a true blend could never do. Here R and r are only labels, because neither allele is the boss.</p>
+      <p>A person still carries only two alleles of the blood-type gene, even though three exist in the population. That gives six pairs and four blood types, and a polygenic trait gives a smooth range of results, not a few separate groups.</p>
       <h3>Where Students Get Stuck</h3>
       <p>🚨 Calling pink a blend. The test is what the next generation does: if the parents' original looks come back, the alleles stayed separate.</p>
-      <p>Counting three alleles in one person. The ABO gene has three forms in the population, but each person has just two of them.</p>
+      <p>Counting three alleles in one person. The blood-type gene has three forms in the population, but each person has just two of them, like a double scoop from three flavors.</p>
+      <p>Thinking type A means AA. It can also be AO, because the O hides under the A.</p>
       <h3>Teaching Suggestion</h3>
-      <p>Line the family up by height, or measure everyone in the house, and see that there's a smooth spread rather than a tall group and a short group. That is polygenic inheritance, and seeing it makes it plain.</p>
+      <p>Draw the Rr by Rr square on paper before the walkthrough, then count: one red, two pink, one white. Then line the family up by height and see the smooth slope instead of two groups, which is what polygenic means.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Incomplete dominance</dt><dd>A pattern in which neither allele fully covers the other, so offspring with one of each look in between.</dd><dt>Multiple alleles</dt><dd>A trait controlled by a gene that has more than two alleles in the population.</dd><dt>Polygenic inheritance</dt><dd>A pattern in which many gene pairs act together to control one trait.</dd></dl>
+      <dl><dt>Incomplete dominance</dt><dd>A pattern in which neither allele fully covers the other, so offspring with one of each look in between.</dd><dt>Multiple alleles</dt><dd>A gene that has more than two alleles in a group of people, though each person carries only two.</dd><dt>Polygenic inheritance</dt><dd>A pattern in which many gene pairs work together to control one trait, giving a smooth range.</dd></dl>
     </div>
   </details>
 
@@ -491,10 +492,8 @@ var ART = {
 };
 
 var VISUALS = [
-  { at: 7, kind: "Example", body: "RR = red, Rr = pink, rr = white" },
-  { at: 15, kind: "Example", body: "A = AA or AO, B = BB or BO, AB = AB, O = OO" },
-  { at: 19, kind: "Example", body: "AB, AO, BO, OO" },
-  { at: 29, kind: "Scripture", body: "Acts 17:26 says, “And hath made of one blood all nations of men for to dwell on all the face of the earth, and hath determined the times before appointed, and the bounds of their habitation.”" }
+  { at: 23, kind: "Example", body: "RR = red     Rr = pink     rr = white" },
+  { at: 71, kind: "Scripture", body: "Acts 17:26 says, “And hath made of one blood all nations of men for to dwell on all the face of the earth, and hath determined the times before appointed, and the bounds of their habitation.”" }
 ];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
@@ -503,122 +502,203 @@ var WORK = [];
 var VIDEO = null;
 
 var PARTS = [
+  { title: "Quick Recap: Genes, Copies and the Boss", s: [
+    "Last lesson you learned that every cell in your body holds a giant recipe book, and each recipe in it is called a gene.",
+    "A gene is the instructions for one trait, like eye color or height, and you have two copies of every gene, one from your mom and one from your dad.",
+    "The different versions of a gene are called alleles, so tall and short are two alleles of the pea plant's height gene.",
+    "When your two copies disagree, the boss copy shows up and is called dominant, and the copy that hides is called recessive.",
+    "Scientists write the boss as a capital letter and the hider as a small letter, so in Mendel's peas, TT and Tt are tall and tt is short.",
+    "A Punnett square is a grid that shows every way two parents' copies can come together, with one letter from the top and one from the side in each box.",
+    "Mendel's peas were simple, because one allele always won.",
+    "Today you'll meet three patterns where the rules work a little differently, and you'll draw each one."
+  ] },
   { title: "A Pink Flower Nobody Expected", s: [
-    "A botanist named Carl Correns, working around 1900, planted a garden of four o'clocks, a flower that comes in red and in white, and crossed a pure red one with a pure white one.",
-    "Mendel's rule from the last lesson says one color should win, so the flowers ought to have come up red, or perhaps white.",
-    "They came up pink, every one of them, and not one of them was red or white.",
-    "Did that break Mendel's rules, or was there another rule underneath them?"
+    "Around 1900, a botanist named Carl Correns grew a flower called the four o'clock, which comes in red and in white.",
+    "He took a pure red one and a pure white one and crossed them, which means he chose the two parents himself.",
+    "Pure just means every copy of the gene is the same, so the red flower has two red copies and the white flower has two white copies.",
+    "Mendel's rule says one color should win, so you'd expect all red flowers or all white flowers.",
+    "Instead every single baby flower came up pink, and not one was red or white.",
+    "Let's draw the cross to see why.",
+    "",
+    "[walk] Cross a pure red flower with a pure white flower.",
+    "[step] Give each color a letter, R for the red allele and r for the white one. || R = red     r = white",
+    "[step] The red flower has two red copies, so it's RR, and the white flower has two white copies, so it's rr. || red flower = RR\nwhite flower = rr",
+    "[step] Draw a square, and write RR across the top and rr down the side, one letter for each row and column. ||       R    R\n   ┌────┬────┐\nr  │    │    │\n   ├────┼────┤\nr  │    │    │\n   └────┴────┘",
+    "[step] Fill each box with the letter above it and the letter beside it, capital first. ||       R    R\n   ┌────┬────┐\nr  │ Rr │ Rr │\n   ├────┼────┤\nr  │ Rr │ Rr │\n   └────┴────┘",
+    "[step] Every box says Rr, so every baby gets one red copy and one white copy. || 4 boxes  =  4 Rr babies",
+    "",
+    "Every baby is Rr, and an Rr flower comes out pink, a look halfway between its two parents.",
+    "Usually a capital letter means the boss, but here neither allele is the boss, so R and r are only labels."
   ] },
   { title: "Nothing Blended Away", s: [
-    "It looks as if red paint and white paint were mixed to make pink, but Correns crossed the pink flowers with each other, and that settled it.",
-    "The next generation came up red, pink and white, in a ratio of one red to two pink to one white.",
-    "If the colors had really blended, like paint, the red and the white could never have come back, so the two alleles must have stayed separate inside the pink flower.",
+    "It looks like red paint and white paint got mixed to make pink, but Correns crossed the pink flowers with each other, and that settled it.",
     "",
-    "[ex] RR = red, Rr = pink, rr = white",
+    "[ex] RR = red     Rr = pink     rr = white",
     "",
-    "This pattern is called {{incomplete dominance}}, because neither allele fully covers the other, so a plant with one of each shows a look in between, and the Punnett square for two pink parents gives RR, Rr, Rr and rr, which is the 1 to 2 to 1 Correns counted."
+    "[walk] Cross two pink flowers, Rr and Rr.",
+    "[step] Write the first parent's letters across the top and the other parent's down the side. ||       R    r\n   ┌────┬────┐\nR  │    │    │\n   ├────┼────┤\nr  │    │    │\n   └────┴────┘",
+    "[step] Fill each box with the letter above it and the letter beside it, capital first. ||       R    r\n   ┌────┬────┐\nR  │ RR │ Rr │\n   ├────┼────┤\nr  │ Rr │ rr │\n   └────┴────┘",
+    "[step] Read the boxes with the key: RR is red, both Rr boxes are pink, and rr is white. || RR = red\nRr = pink\nRr = pink\nrr = white",
+    "[step] Count them up. || 1 red  :  2 pink  :  1 white",
+    "",
+    "Correns got red, pink and white flowers in just that 1 to 2 to 1 order, so the white came back.",
+    "If the colors had really blended like paint, you could never get the red and the white back out again.",
+    "So the two alleles stayed separate inside the pink flower, and each one did part of the job.",
+    "That pattern is called {{incomplete dominance}}, because neither allele fully covers the other, so a flower with one of each looks in between.",
+    "In Mendel's peas, Tt looked just like TT, but here Rr looks different from both RR and rr, and that's the big difference."
   ] },
   { title: "More Than Two Choices", s: [
-    "Mendel's traits had two forms each, but some genes have more than two, a pattern called {{multiple alleles}}.",
-    "Your blood type is the standard example, and it was sorted out by a scientist named Landsteiner around 1900.",
-    "The blood-type gene has three alleles, A, B and O, and A and B are both dominant over O, so a person with one A and one O has type A blood.",
-    "Even with three alleles in the population, you still carry only two of them, one from each parent, which gives six combinations and four blood types."
+    "You've probably heard of blood types, like type A, type B, type AB and type O.",
+    "Your blood type is a trait, and it's set by a gene, just like height in a pea plant.",
+    "But this gene is different, because it comes in three versions, or alleles, called A, B and O.",
+    "When a gene has more than two alleles in a group of people, that's called {{multiple alleles}}.",
+    "Here's the catch: you still only have two copies of the gene, one from each parent, so you carry just two of the three.",
+    "Think of three flavors of ice cream, where you get one scoop from your mom's tub and one from your dad's tub, so you end up with a double scoop and never all three flavors.",
+    "That makes six possible pairs: AA, AO, AB, BB, BO and OO.",
+    "Two rules tell you which blood type each pair makes.",
+    "The first rule is that A and B are both dominant over O, so an O hides whenever it sits next to an A or a B.",
+    "The second rule is that A and B don't cover each other, so a person with one of each shows both, and that's type AB."
   ] },
-  { title: "Reading a Blood Type", s: [
-    "Type A can be AA or AO, and type B can be BB or BO, because a single O is hidden under either dominant allele.",
-    "Type AB is its own case, because A and B don't cover each other and both show, and type O needs two O alleles, OO.",
+  { title: "The Blood-Type Table", s: [
+    "Let's use the two rules on all six pairs, one at a time.",
     "",
-    "[ex] A = AA or AO, B = BB or BO, AB = AB, O = OO",
+    "[walk] Find the blood type for each of the six pairs.",
+    "[step] AA has two A copies, so it's type A, and AO is type A too, because the O hides. || ┌─────────┬────────────┐\n│ Alleles │ Blood type │\n├─────────┼────────────┤\n│ AA      │ A          │\n│ AO      │ A          │\n└─────────┴────────────┘",
+    "[step] BB is type B, and BO is type B too, because the O hides again. || ┌─────────┬────────────┐\n│ Alleles │ Blood type │\n├─────────┼────────────┤\n│ AA      │ A          │\n│ AO      │ A          │\n│ BB      │ B          │\n│ BO      │ B          │\n└─────────┴────────────┘",
+    "[step] AB has one of each and neither covers the other, so both show and it's type AB. || ┌─────────┬────────────┐\n│ Alleles │ Blood type │\n├─────────┼────────────┤\n│ AA      │ A          │\n│ AO      │ A          │\n│ BB      │ B          │\n│ BO      │ B          │\n│ AB      │ AB         │\n└─────────┴────────────┘",
+    "[step] OO has nothing to cover the O copies, so type O needs two O alleles. || ┌─────────┬────────────┐\n│ Alleles │ Blood type │\n├─────────┼────────────┤\n│ AA      │ A          │\n│ AO      │ A          │\n│ BB      │ B          │\n│ BO      │ B          │\n│ AB      │ AB         │\n│ OO      │ O          │\n└─────────┴────────────┘",
     "",
-    "Matching blood types matters in a transfusion, so doctors always check the type before they give anyone blood."
+    "Six pairs of alleles make just four blood types, because AA and AO share a type, and so do BB and BO.",
+    "That's why a person with type A blood could be AA or AO, and you can't tell which one just from the type."
   ] },
   { title: "Two Parents, Four Possible Types", s: [
-    "Take a mother with type A blood who carries an O allele, so she's AO, and a father with type B who is BO.",
-    "Fill in the Punnett square with A and O across the top and B and O down the side, and the four boxes come out like this.",
+    "Say a mother has type A blood but carries a hidden O, so she's AO.",
+    "And say the father has type B blood but carries a hidden O, so he's BO.",
     "",
-    "[ex] AB, AO, BO, OO",
+    "[walk] Cross a mother who is AO with a father who is BO.",
+    "[step] Write the mother's letters across the top and the father's down the side. ||       A    O\n   ┌────┬────┐\nB  │    │    │\n   ├────┼────┤\nO  │    │    │\n   └────┴────┘",
+    "[step] Fill each box with the letter above it and the letter beside it. ||       A    O\n   ┌────┬────┐\nB  │ AB │ BO │\n   ├────┼────┤\nO  │ AO │ OO │\n   └────┴────┘",
+    "[step] Look each pair up in the table: AB is type AB, BO is type B, AO is type A, and OO is type O. || AB  →  type AB\nBO  →  type B\nAO  →  type A\nOO  →  type O",
     "",
-    "That's four different blood types from the same two parents, type AB, type A, type B and type O, which is why a child's blood type can surprise a family."
+    "That's four different blood types from the same two parents, with each type a one in four chance.",
+    "It shows why a child's blood type can surprise a family, since two parents with type A and type B blood can have a child with type O."
   ] },
-  { title: "When Many Genes Share One Trait", s: [
-    "Now think about height, and notice that you don't sort people into the tall ones and the short ones the way Mendel sorted his peas.",
-    "Line a whole class up from shortest to tallest and you get a smooth slope with everybody in a different place on it, because height isn't set by one pair of alleles but by many gene pairs acting together.",
-    "That pattern is {{polygenic inheritance}}, and it shows up in eye color, where there are many shades between pale blue and dark brown, and in skin color, which the book says is controlled by several gene pairs.",
-    "Each pair adds a small push in one direction, and the more pairs there are, the smoother the range of results turns out to be."
+  { title: "Many Genes, One Trait", s: [
+    "Now think about height, and notice that you can't sort people into tall ones and short ones the way Mendel sorted his peas.",
+    "Line a class up from shortest to tallest and you get a smooth slope, with everybody at a different spot.",
+    "That's because height isn't set by one pair of alleles but by many gene pairs working together, a pattern called {{polygenic inheritance}}.",
+    "One gene with two alleles is like a staircase with two steps, so you get two groups, but many genes together are like a ramp with every height in between.",
+    "Eye color works this way too, which is why there are many shades between pale blue and dark brown."
   ] },
   { title: "Which Pattern Is It?", s: [
-    "The easiest way to sort a trait is to ask what the offspring look like, because each pattern leaves a different fingerprint.",
-    "If they look like one parent or the other, with a hidden one that returns at about three to one, it's simple dominance, as in the peas.",
-    "If a middle look shows up and the parents' looks return later, it's incomplete dominance, and if one trait has more than two alleles in the population, it's multiple alleles.",
-    "And if you see a smooth range with everything in between, it's polygenic.",
+    "When you meet a new trait, ask what the babies look like and how many alleles there are, because each pattern leaves its own clue.",
+    "",
+    "[walk] Sort three traits by the clue each one leaves.",
+    "[step] Red and white parents have pink babies, and the white comes back later. || pink flowers  →  incomplete dominance",
+    "[step] The gene has three alleles, A, B and O, but each person carries only two. || blood type  →  multiple alleles",
+    "[step] Everyone lands at a different spot on a smooth slope. || height  →  polygenic inheritance",
+    "",
+    "And if one allele always wins, like tall over short in the peas, that's plain dominance, the pattern from last lesson.",
     "",
     "[verse] Acts 17:26 says, “And hath made of one blood all nations of men for to dwell on all the face of the earth, and hath determined the times before appointed, and the bounds of their habitation.”",
     "",
     "Paul was speaking to the people of Athens about the single origin of all people, and the passage isn't about blood types, but it fits what the types show, since the same four turn up in people everywhere on earth."
   ] },
   { title: "What To Do Now", s: [
-    "A pink flower, a blood type and a line of people sorted by height each followed a different rule, and the questions below ask you to tell them apart.",
+    "A pink flower, a blood type and a class lined up by height each followed a different rule, and the questions below ask you to tell them apart.",
     "three word cards sit at the top of the page, then Nine questions, then three more questions about those words, Twelve questions in all.",
-    "For every trait, ask what the offspring look like and whether the parents' looks come back, and that tells you which pattern you're in.",
-    "If the sorting questions trip you up, read Which Pattern Is It again.",
-    "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
+    "Before the crossing questions, draw the square on paper and fill in all four boxes yourself.",
+    "For every trait, ask what the babies look like and how many alleles there are, and that tells you which pattern you're in.",
+    "If you get stuck on a question, tap Find It in the Story and read the line the page shows you."
   ] }
 ];
 
 var WORDS = [
-  ["Incomplete dominance", "A pattern in which neither allele fully covers the other, so offspring with one of each look in between.", [8]],
-  ["Multiple alleles", "A trait controlled by a gene that has more than two alleles in the population.", [9]],
-  ["Polygenic inheritance", "A pattern in which many gene pairs act together to control one trait.", [23]]
+  ["Incomplete dominance", "A pattern in which neither allele fully covers the other, so offspring with one of each look in between.", [32]],
+  ["Multiple alleles", "A gene that has more than two alleles in a group of people, though each person carries only two.", [37]],
+  ["Polygenic inheritance", "A pattern in which many gene pairs work together to control one trait, giving a smooth range.", [62]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
-    q: "A pure red four o'clock is crossed with a pure white one. What color are the offspring?",
-    find: [2],
-    hint: "Read A Pink Flower Nobody Expected.",
+    q: "A pea plant has one tall copy and one short copy, and it grows tall. What do we call the tall allele?",
+    find: [3],
+    hint: "Read the recap.",
+    why: "The boss copy that shows up is the dominant one.",
     choices: [
-    "All red.",
-    "Half red and half white.",
-    "All white.",
-    "All pink."
+    "Recessive",
+    "Polygenic",
+    "Pure",
+    "Dominant"
   ],
     right: 3
   },
   {
     day: 1,
-    q: "How do we know pink isn't a blend of red and white?",
-    find: [4, 6],
-    hint: "Read Nothing Blended Away.",
+    q: "A pure red four o'clock (RR) is crossed with a pure white one (rr). What are the babies?",
+    find: [19, 20],
+    hint: "Look at the filled-in square.",
+    why: "Every box says Rr, and an Rr flower is pink.",
     choices: [
-    "Red and white come back when two pink flowers are crossed.",
-    "The pink was painted on.",
-    "Pink flowers can't make seeds.",
-    "The flowers are the same as the parents."
+    "All pink",
+    "All white",
+    "All red",
+    "Half red and half white"
   ],
     right: 0
   },
   {
     day: 1,
-    q: "Two pink flowers (Rr) are crossed. What ratio of red, pink and white would you expect?",
-    find: [5, 8],
-    hint: "RR, Rr, Rr and rr.",
+    q: "Why is an Rr flower pink?",
+    find: [20, 32],
+    hint: "Read the end of the first cross.",
+    why: "That's incomplete dominance: neither allele is the boss, so it looks in between.",
     choices: [
-    "2 red, 1 pink, 1 white",
-    "1 red, 2 pink, 1 white",
-    "All pink",
-    "3 red, 1 white"
+    "Pink is a third allele",
+    "Neither allele fully covers the other, so a look in between shows",
+    "White is the boss, so it covers red",
+    "Red is the boss, so it covers white"
   ],
     right: 1
   },
   {
     day: 1,
-    q: "How many alleles of the blood-type gene does one person carry?",
-    find: [12],
-    hint: "Read More Than Two Choices.",
+    q: "How do we know pink isn't red and white paint blended together?",
+    find: [29, 30, 31],
+    hint: "Think about what happened when two pink flowers were crossed.",
+    why: "Paint can't be un-mixed, but the red and white came back, so the alleles stayed separate.",
     choices: [
+    "The pink flowers were painted",
+    "Pink flowers look the same as the parents",
+    "Pink flowers can't make seeds",
+    "Red and white flowers came back when two pinks were crossed"
+  ],
+    right: 3
+  },
+  {
+    day: 1,
+    q: "Two pink flowers (Rr and Rr) are crossed. What ratio of red, pink and white do you expect?",
+    find: [27, 28],
+    hint: "Fill in the four boxes: RR, Rr, Rr, rr.",
+    why: "The boxes are RR, Rr, Rr and rr, which is 1 red, 2 pink and 1 white.",
+    choices: [
+    "All pink",
+    "2 red, 1 pink, 1 white",
+    "1 red, 2 pink, 1 white",
+    "3 red to 1 white"
+  ],
+    right: 2
+  },
+  {
+    day: 1,
+    q: "The blood-type gene has three alleles, A, B and O. How many does one person carry?",
+    find: [38],
+    hint: "One scoop from each parent.",
+    why: "You get one allele from each parent, so you carry two.",
+    choices: [
+    "Six",
     "Three",
-    "Four",
     "One",
     "Two"
   ],
@@ -626,66 +706,43 @@ var QUESTIONS = [
   },
   {
     day: 1,
-    q: "A person has the alleles AO. What's their blood type?",
-    find: [11, 13],
-    hint: "A is dominant over O.",
+    q: "A student says anyone with type A blood must be AA. What did the student miss?",
+    find: [46, 51],
+    hint: "Look at the table. Which pairs give type A?",
+    why: "Both AA and AO give type A. The O hides under the A.",
     choices: [
-    "Type AB",
-    "Type B",
-    "Type A",
-    "Type O"
-  ],
-    right: 2
-  },
-  {
-    day: 1,
-    q: "Which genotype gives type O blood?",
-    find: [14],
-    hint: "Read Reading a Blood Type.",
-    choices: [
-    "AB",
-    "BO",
-    "AO",
-    "OO"
-  ],
-    right: 3
-  },
-  {
-    day: 1,
-    q: "A mother who is AO and a father who is BO have a child. Which blood types are possible?",
-    find: [17, 20],
-    hint: "Fill in the square: AB, AO, BO, OO.",
-    choices: [
-    "Only type AB.",
-    "All four: A, B, AB and O.",
-    "Only type A and type B.",
-    "Only type O."
+    "Type A is really OO",
+    "Type A can also be AO, because the O hides",
+    "Type A is really AB",
+    "Nothing, the student is right"
   ],
     right: 1
   },
   {
     day: 1,
-    q: "Why does a class lined up by height form a smooth slope instead of two groups?",
-    find: [22, 24],
-    hint: "Read When Many Genes Share One Trait.",
+    q: "A mother who is AO and a father who is BO have a child. Which blood types are possible?",
+    find: [57, 58],
+    hint: "The four boxes are AB, BO, AO and OO.",
+    why: "AB gives type AB, BO gives B, AO gives A and OO gives O.",
     choices: [
-    "Everyone's height is exactly the same.",
-    "Height is not inherited at all.",
-    "Height is controlled by many gene pairs acting together.",
-    "Height is controlled by one pair of alleles."
+    "Only type O",
+    "Only type AB",
+    "All four: A, B, AB and O",
+    "Only type A and type B"
   ],
     right: 2
   },
   {
     day: 1,
-    q: "Black chickens crossed with white chickens produce blue offspring. Which pattern is that?",
-    find: [27],
-    hint: "A look in between that isn't a blend.",
+    q: "Why does a class lined up by height make a smooth slope instead of two groups?",
+    find: [61, 62],
+    hint: "Think of the ramp.",
+    why: "Many gene pairs each add a small push, which gives a smooth range.",
     choices: [
-    "Incomplete dominance.",
-    "Multiple alleles.",
-    "Simple dominance.",
-    "Polygenic inheritance."
+    "Height is set by many gene pairs working together",
+    "Height is not inherited at all",
+    "Everyone is the same height",
+    "Height is set by one pair of alleles"
   ],
     right: 0
   },
@@ -708,9 +765,9 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "More than two alleles of one gene in the population.",
+    "More than two alleles of one gene in a group of people.",
     "Two alleles in every person.",
-    "Alleles that blend.",
+    "Alleles that blend like paint.",
     "A trait with a smooth range."
   ],
     right: 0
@@ -722,7 +779,7 @@ var QUESTIONS = [
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
     "A trait with only two forms.",
-    "Many gene pairs acting together on one trait.",
+    "Many gene pairs working together on one trait.",
     "A color that is in between.",
     "A gene with three alleles."
   ],

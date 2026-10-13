@@ -8,11 +8,11 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://nexstudents.org/lessons/science/traits-disorders-and-human-genetics/">
 <meta property="og:title" content="Traits, Disorders, and Human Genetics | NexStudents">
-<meta property="og:description" content="Three daughters in a row, a boy who can't tell red from green, and two healthy parents with a child who isn't. The same few rules of heredity explain all three.">
+<meta property="og:description" content="Three daughters in a row, a boy who can't tell red from green, and two healthy parents with a child who isn't. The same few rules explain all three, and you can draw every one.">
 <meta property="og:image" content="https://nexstudents.org/assets/brand/share.png?v=88747775">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Traits, Disorders, and Human Genetics | NexStudents">
-<meta name="twitter:description" content="Three daughters in a row, a boy who can't tell red from green, and two healthy parents with a child who isn't. The same few rules of heredity explain all three.">
+<meta name="twitter:description" content="Three daughters in a row, a boy who can't tell red from green, and two healthy parents with a child who isn't. The same few rules explain all three, and you can draw every one.">
 <meta name="twitter:image" content="https://nexstudents.org/assets/brand/share.png?v=88747775">
 <script type="application/ld+json">
 {
@@ -127,7 +127,7 @@
       <span>How Traits Pass Down</span>
     </div>
     <h1>Traits, Disorders, and Human Genetics</h1>
-    <p class="dek">Three daughters in a row, a boy who can't tell red from green, and two healthy parents with a child who isn't. The same few rules of heredity explain all three.</p>
+    <p class="dek">Three daughters in a row, a boy who can't tell red from green, and two healthy parents with a child who isn't. The same few rules explain all three, and you can draw every one.</p>
   </header>
 
   <!-- Teacher notes. Collapsed, above the reading, filled by build-lessons.js from
@@ -142,18 +142,19 @@
         <button class="btn ghost" type="button" id="greset" hidden>Reset Test</button>
       </div>
       <h3>Lesson Goal</h3>
-      <p>Students will explain that the father's sperm decides a child's sex with a one in two chance each time, show how a sex-linked trait passes on the X, read a simple pedigree, and explain why two carriers can have a child with a recessive disorder.</p>
+      <p>Your student explains that the father's sperm decides a child's sex with a one in two chance each time, shows how a sex-linked trait passes on the X, reads a simple pedigree, and explains why two carriers can have a child with a recessive disorder.</p>
       <h3>Key Concepts</h3>
-      <p>A sex-linked trait shows more often in males because a son has only one X chromosome, so a single recessive allele on it is enough. A daughter needs the recessive allele on both of her X chromosomes.</p>
+      <p>A sex-linked trait shows more often in boys because a boy has only one X chromosome, so a single recessive allele on it is enough. A girl needs the recessive allele on both of her X chromosomes.</p>
       <p>A carrier has one recessive allele and one dominant one, so usually has no symptoms. Two carriers have a one in four chance of an affected child with each pregnancy.</p>
       <h3>Where Students Get Stuck</h3>
       <p>🚨 Thinking past girls make a boy more likely. Every child is a fresh coin flip, so after three girls the next child is still one in two.</p>
+      <p>Reading Xc, XXc and XcY. The little c is just a tag on the X that carries the color-blindness allele. The drawn table in the lesson lists all five combinations.</p>
       <p>Treating a disorder as someone's fault. Carrying a recessive allele is common, harms nobody, and isn't anyone's doing, which is why the lesson ends where it does.</p>
       <p>Mixing up carrier and affected. A carrier has one recessive allele and no symptoms, and an affected person has two.</p>
       <h3>Teaching Suggestion</h3>
-      <p>Go slowly through the disorders and let the student ask questions. If your family has a condition that runs in it, this is the lesson where it comes up, and the student should hear that the answer is nobody's fault.</p>
+      <p>Go slowly through the disorder and let your student ask questions. If your family has a condition that runs in it, this is the lesson where it comes up, and your student should hear that the answer is nobody's fault.</p>
       <h3>Key Vocabulary</h3>
-      <dl><dt>Sex-linked gene</dt><dd>A gene located on a sex chromosome, usually the X, so it's inherited differently in males and females.</dd><dt>Carrier</dt><dd>A person who has one recessive allele for a trait and usually doesn't show it, but can pass it on.</dd><dt>Pedigree</dt><dd>A chart of a family that shows how a trait is inherited through generations.</dd><dt>Genetic engineering</dt><dd>Changing the genes in a cell or organism on purpose.</dd></dl>
+      <dl><dt>Chromosome</dt><dd>A tiny string inside your cells that holds your genes. You get half of yours from each parent.</dd><dt>Sex-linked gene</dt><dd>A gene located on a sex chromosome, usually the X, so it's inherited differently in boys and girls.</dd><dt>Carrier</dt><dd>A person who has one recessive allele for a trait and usually doesn't show it, but can pass it on.</dd><dt>Pedigree</dt><dd>A chart of a family that shows how a trait is inherited through generations.</dd></dl>
     </div>
   </details>
 
@@ -492,11 +493,8 @@ var ART = {
 };
 
 var VISUALS = [
-  { at: 7, kind: "Example", body: "XX, XY, XX, XY" },
-  { at: 11, kind: "Example", body: "1/2 x 1/2 x 1/2 = 1/8" },
-  { at: 19, kind: "Example", body: "XX, XXc, XY, XcY" },
-  { at: 30, kind: "Example", body: "CC, Cc, Cc, cc" },
-  { at: 34, kind: "Scripture", body: "John 9:3 gives Jesus's answer, “Neither hath this man sinned, nor his parents: but that the works of God should be made manifest in him.”" }
+  { at: 22, kind: "Example", body: "1/2 × 1/2 × 1/2 = 1/8" },
+  { at: 64, kind: "Scripture", body: "John 9:3 gives Jesus's answer, “Neither hath this man sinned, nor his parents: but that the works of God should be made manifest in him.”" }
 ];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
@@ -505,62 +503,98 @@ var WORK = [];
 var VIDEO = null;
 
 var PARTS = [
+  { title: "Quick Recap: Genes and Hidden Copies", s: [
+    "In the last lessons you learned that your cells hold a recipe book of genes, and each gene is the instructions for one trait.",
+    "You have two copies of every gene, one from your mom and one from your dad, and the different versions of a gene are called alleles.",
+    "When your two copies disagree, the dominant allele shows and the recessive allele hides, and a recessive trait only shows when both copies are recessive.",
+    "Scientists write a dominant allele as a capital letter and a recessive allele as a small letter, so Cc has one of each.",
+    "A Punnett square is a grid that shows every way two parents' copies can come together, with one letter from the top and one from the side in each box.",
+    "Today you'll use that same grid to answer three questions about people, which are what decides a boy or a girl, why some traits show up more in boys, and how two healthy parents can have a child with a disorder."
+  ] },
   { title: "Three Girls, and a Fourth on the Way", s: [
     "The Rivera family already has three daughters, and when they find out a fourth baby is coming, a neighbor says it's about time they had a boy.",
     "Their oldest daughter wonders whether the odds were against three girls in a row, and whether the fourth baby is more likely to be a boy now.",
-    "It's an old question, and you can answer it once you know what decides whether a baby is a boy or a girl.",
+    "You can answer that once you know what decides whether a baby is a boy or a girl.",
     "So who decides, and does anything that already happened change the odds?"
   ] },
   { title: "X and Y", s: [
-    "Of the 46 chromosomes in your cells, one pair decides your sex, and those two chromosomes are called X and Y.",
-    "A female has two X chromosomes, XX, and a male has an X and a Y, XY.",
+    "Your genes are packed onto tiny strings inside your cells, and each string is called a {{chromosome}}.",
+    "You have 46 chromosomes, and you got half of them from your mom and half from your dad.",
+    "One pair of those chromosomes decides whether you're a boy or a girl, and the two kinds are named X and Y.",
+    "A girl has two X chromosomes, written XX, and a boy has one X and one Y, written XY.",
     "Every egg a mother makes carries an X, because that's all she has to give, but a sperm carries either an X or a Y, so it's the father's sperm that decides.",
     "",
-    "[ex] XX, XY, XX, XY",
+    "[walk] Cross a mother who is XX with a father who is XY.",
+    "[step] Write the mother's two letters across the top and the father's two letters down the side. ||       X    X\n   ┌────┬────┐\nX  │    │    │\n   ├────┼────┤\nY  │    │    │\n   └────┴────┘",
+    "[step] Fill each box with the letter above it and the letter beside it, X first. ||       X    X\n   ┌────┬────┐\nX  │ XX │ XX │\n   ├────┼────┤\nY  │ XY │ XY │\n   └────┴────┘",
+    "[step] Read the boxes, because XX is a girl and XY is a boy. || XX, XX  =  2 girls\nXY, XY  =  2 boys",
     "",
-    "Fill in the Punnett square, with X and X across the top and X and Y down the side, and two boxes come out XX, a girl, and two come out XY, a boy, so each child has a one in two chance of either one."
+    "Two boxes say XX and two say XY, so every baby has a one in two chance of being a girl and a one in two chance of being a boy."
   ] },
   { title: "A Coin With No Memory", s: [
     "Each baby is like one flip of a coin, with a one in two chance of coming up girl or boy.",
-    "Three flips in a row all coming up girl has a chance of one half times one half times one half, which is one in eight, so three daughters is unusual but it's far from unheard of.",
+    "Three flips in a row all coming up girl has a chance of one half times one half times one half, which is one in eight.",
     "",
-    "[ex] 1/2 x 1/2 x 1/2 = 1/8",
+    "[ex] 1/2 × 1/2 × 1/2 = 1/8",
     "",
-    "But a coin has no memory, and neither does a sperm, so the fourth baby is a fresh flip and the chance of a girl is still one in two."
+    "So three daughters in a row is unusual, but it's far from unheard of.",
+    "A coin has no memory, and neither does a sperm, so the fourth baby is a fresh flip and the chance of a girl is still one in two."
   ] },
   { title: "Traits That Ride on the X", s: [
-    "The X chromosome carries many genes that have nothing to do with being male or female, and a gene on it is called a {{sex-linked gene}}.",
-    "Red-green color blindness is one of them, and it's caused by a recessive allele on the X, so we'll write the normal X as X and the X with the color-blindness allele as Xc.",
-    "A girl has two X chromosomes, so a normal one on either side keeps her vision normal, but a boy has just one X, and if that one carries Xc he has nothing to cover it.",
-    "That's why far more boys than girls are color blind, even though the allele is the same for both."
+    "The X chromosome carries lots of genes that have nothing to do with being a boy or a girl, and a gene on it is called a {{sex-linked gene}}.",
+    "Red-green color blindness is one of them, and it's caused by a recessive allele on the X.",
+    "We'll write the normal X as X and the X that carries the color-blindness allele as Xc, where the little c is just a tag.",
+    "A girl has two X's, so a normal X on either side covers the Xc, but a boy has just one X, with nothing to cover it.",
+    "",
+    "[walk] Which letters mean color blind?",
+    "[step] A girl with two normal X's, XX, sees colors normally, and a girl with one Xc, XXc, also sees normally, because the normal X covers it. || ┌─────────┬─────────────────────────────────┐\n│ Letters │ Who they describe               │\n├─────────┼─────────────────────────────────┤\n│ XX      │ girl, sees colors normally      │\n│ XXc     │ girl, sees normally, carries Xc │\n└─────────┴─────────────────────────────────┘",
+    "[step] A girl is only color blind when both of her X's are Xc, which is XcXc. || ┌─────────┬─────────────────────────────────┐\n│ Letters │ Who they describe               │\n├─────────┼─────────────────────────────────┤\n│ XX      │ girl, sees colors normally      │\n│ XXc     │ girl, sees normally, carries Xc │\n│ XcXc    │ girl, color blind               │\n└─────────┴─────────────────────────────────┘",
+    "[step] A boy has only one X, so XY sees normally, but XcY has nothing to cover the Xc, and he's color blind. || ┌─────────┬─────────────────────────────────┐\n│ Letters │ Who they describe               │\n├─────────┼─────────────────────────────────┤\n│ XX      │ girl, sees colors normally      │\n│ XXc     │ girl, sees normally, carries Xc │\n│ XcXc    │ girl, color blind               │\n│ XY      │ boy, sees colors normally       │\n│ XcY     │ boy, color blind                │\n└─────────┴─────────────────────────────────┘",
+    "",
+    "That's why far more boys than girls are color blind, even though the allele is exactly the same for both."
   ] },
   { title: "One Carrier Mother, Four Possible Children", s: [
     "A woman with one normal X and one Xc sees colors normally herself, but she's a {{carrier}}, which means she carries the allele and can pass it on.",
-    "Suppose she and a father with normal vision, X and Y, have children, and the four boxes of the square come out like this.",
+    "Let's cross a carrier mother, XXc, with a father who sees normally, XY.",
     "",
-    "[ex] XX, XXc, XY, XcY",
+    "[walk] Cross a carrier mother, XXc, with a father who sees normally, XY.",
+    "[step] Write the mother's letters across the top and the father's down the side. ||       X     Xc\n   ┌─────┬─────┐\nX  │     │     │\n   ├─────┼─────┤\nY  │     │     │\n   └─────┴─────┘",
+    "[step] Fill each box with the letter above it and the letter beside it, X first. ||       X     Xc\n   ┌─────┬─────┐\nX  │ XX  │ XXc │\n   ├─────┼─────┤\nY  │ XY  │ XcY │\n   └─────┴─────┘",
+    "[step] Read each box with the table: XX is a normal girl, XXc is a carrier girl, XY is a normal boy, and XcY is a color-blind boy. || XX   =  girl, sees normally\nXXc  =  girl, carrier\nXY   =  boy, sees normally\nXcY  =  boy, color blind",
     "",
-    "Both daughters see normally, although one of them is a carrier like her mother, and of the two sons, one sees normally and one is color blind, so each son has a one in two chance."
+    "Both daughters see normally, although one of them is a carrier like her mother.",
+    "Of the two sons, one sees normally and one is color blind, so each son has a one in two chance."
   ] },
   { title: "Reading a Family Chart", s: [
-    "To follow a trait through a family, geneticists draw a {{pedigree}}, a chart of the family with a symbol for each person and a way of marking who has the trait.",
-    "Males are drawn as squares and females as circles, a line joins the parents, and the children hang beneath them in a row.",
-    "Read a pedigree for color blindness from the top down and you'll often see the trait skip a generation, passing through a carrier daughter to a grandson, which is the pattern a recessive allele on the X makes.",
-    "It's a way of turning a family's history into something you can reason about."
+    "To follow a trait through a family, scientists draw a {{pedigree}}, which is just a family chart.",
+    "In a pedigree, a circle is a girl or woman and a square is a boy or man, and a line joins the two parents.",
+    "The children hang beneath their parents, and anyone who has the trait gets a filled-in shape.",
+    "",
+    "[walk] Draw the pedigree for the carrier mother's family.",
+    "[step] Draw the mother as a circle and the father as a square, joined by a line, with a small c beside the mother because she's a carrier. ||        ○c ─────── □",
+    "[step] Hang the four children beneath them, circles for the two girls and squares for the two sons, and put a c beside the carrier daughter. ||        ○c ─────── □\n             │\n   ┌─────┬───┴──┬─────┐\n   ○     ○c     □     □",
+    "[step] Fill in the shape of the one son who is color blind. ||        ○c ─────── □\n             │\n   ┌─────┬───┴──┬─────┐\n   ○     ○c     □     ■",
+    "[step] Read it from the top down, where the mother carries the allele, and it shows in one of her sons and in none of her daughters. || ○ girl     □ boy\n■ color blind     c carrier",
+    "",
+    "In bigger charts the trait often skips a generation, passing through a carrier daughter to a grandson.",
+    "That's the pattern a recessive allele on the X makes, and a pedigree turns a family's history into something you can reason about."
   ] },
   { title: "Disorders That Need Two Copies", s: [
-    "Some disorders are caused by a recessive allele that isn't on the X at all, and a person has one only when they inherit the allele from both parents.",
-    "In sickle-cell anemia some red blood cells bend into a sickle shape and carry too little oxygen, and in cystic fibrosis the body makes thick mucus that clogs the lungs and the digestive system, although treatment helps people with it live longer.",
-    "A person with just one copy of the allele is a carrier, usually has no symptoms, and may never know, and in the case of sickle-cell the book notes that carriers are better protected against malaria.",
-    "Two carriers are healthy themselves, but each can pass the recessive allele on, so their child has a one in four chance of getting two copies."
+    "Some health problems, called genetic disorders, are caused by a recessive allele that isn't on the X at all.",
+    "Because the allele is recessive, a person only has the disorder when they get a copy from both parents.",
+    "Cystic fibrosis is one of them, and in it the body makes thick mucus that clogs the lungs and the digestive system, although treatment helps people with it live longer.",
+    "We'll write the normal allele as C and the cystic fibrosis allele as c, so a person with one of each, Cc, is a carrier who is healthy and usually never knows.",
+    "",
+    "[walk] Cross two carriers, Cc and Cc.",
+    "[step] Write one carrier's letters across the top and the other's down the side. ||       C    c\n   ┌────┬────┐\nC  │    │    │\n   ├────┼────┤\nc  │    │    │\n   └────┴────┘",
+    "[step] Fill each box with the letter above it and the letter beside it, capital first. ||       C    c\n   ┌────┬────┐\nC  │ CC │ Cc │\n   ├────┼────┤\nc  │ Cc │ cc │\n   └────┴────┘",
+    "[step] Read the boxes, because CC is healthy, both Cc boxes are healthy carriers, and only cc has cystic fibrosis. || CC  =  healthy, not a carrier\nCc  =  healthy carrier\nCc  =  healthy carrier\ncc  =  has cystic fibrosis",
+    "",
+    "Two carriers are healthy themselves, but each child has a one in four chance of getting two copies and having the disorder, and a two in four chance of being a carrier.",
+    "Sickle-cell anemia works the same way, with sickle-shaped red blood cells that carry too little oxygen."
   ] },
   { title: "Nobody's Fault", s: [
-    "Fill in the square for two carriers, with C and c across the top and C and c down the side, and the four boxes show how the chances divide.",
-    "",
-    "[ex] CC, Cc, Cc, cc",
-    "",
-    "One box is unaffected and carries nothing, two are carriers like their parents, and one has two recessive alleles, so each child has a one in four chance of having the disorder and a two in four chance of being a carrier.",
-    "Families can talk to a genetic counselor, who helps them understand these chances, and scientists can photograph and arrange a person's chromosomes in a karyotype to spot a disorder, and the field of genetic engineering is working on ways to change the genes themselves.",
+    "Doctors called genetic counselors help families understand these chances, and scientists are even learning to change genes on purpose, which is called genetic engineering.",
     "When Jesus and his disciples passed a man who'd been blind from birth, the disciples asked whose sin had caused it, his or his parents'.",
     "",
     "[verse] John 9:3 gives Jesus's answer, “Neither hath this man sinned, nor his parents: but that the works of God should be made manifest in him.”",
@@ -570,116 +604,124 @@ var PARTS = [
   { title: "What To Do Now", s: [
     "A fourth baby, a boy who can't tell red from green and two healthy carriers all follow the same few rules, and the questions below ask you to use them.",
     "four word cards sit at the top of the page, then Nine questions, then four more questions about those words, Thirteen questions in all.",
-    "For every problem, write the alleles or chromosomes down first, fill in the square, and count the boxes before you answer.",
+    "For every problem, write the letters down first, fill in the square, and count the boxes before you answer.",
     "If the odds questions trip you up, read A Coin With No Memory again, and remember that each baby is a fresh flip.",
     "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
   ] }
 ];
 
 var WORDS = [
-  ["Sex-linked gene", "A gene located on a sex chromosome, usually the X, so it's inherited differently in males and females.", [13]],
-  ["Carrier", "A person who has one recessive allele for a trait and usually doesn't show it, but can pass it on.", [17]],
-  ["Pedigree", "A chart of a family that shows how a trait is inherited through generations.", [21]],
-  ["Genetic engineering", "Changing the genes in a cell or organism on purpose.", [32]]
+  ["Chromosome", "A tiny string inside your cells that holds your genes. You get half of yours from each parent.", [10]],
+  ["Sex-linked gene", "A gene located on a sex chromosome, usually the X, so it's inherited differently in boys and girls.", [25]],
+  ["Carrier", "A person who has one recessive allele for a trait and usually doesn't show it, but can pass it on.", [34]],
+  ["Pedigree", "A chart of a family that shows how a trait is inherited through generations.", [42]]
 ];
 
 var QUESTIONS = [
   {
     day: 1,
-    q: "Which chromosomes decide whether a person is male or female?",
-    find: [4, 5],
+    q: "Which chromosomes decide whether a person is a boy or a girl?",
+    find: [12, 13],
     hint: "Read X and Y.",
+    why: "One pair, X and Y, decides.",
     choices: [
-    "Chromosome number one.",
-    "The X and Y chromosomes.",
-    "The chromosomes in the egg only.",
-    "All 46 chromosomes together."
+    "Chromosome number one",
+    "The X and Y chromosomes",
+    "The chromosomes in the egg only",
+    "All 46 chromosomes together"
   ],
     right: 1
   },
   {
     day: 1,
     q: "Why does the father's sperm decide a baby's sex?",
-    find: [6],
+    find: [14],
     hint: "An egg always carries an X.",
+    why: "An X sperm makes a girl (XX) and a Y sperm makes a boy (XY).",
     choices: [
-    "The sperm always carries a Y.",
-    "The mother's chromosomes never matter.",
-    "The sperm carries an X or a Y, while every egg carries an X.",
-    "The sperm is always bigger than the egg."
+    "The sperm always carries a Y",
+    "The mother's chromosomes never matter",
+    "The sperm carries an X or a Y, while every egg carries an X",
+    "The sperm is always bigger than the egg"
   ],
     right: 2
   },
   {
     day: 1,
-    q: "The Riveras have three daughters. What's the chance the fourth baby is a girl?",
-    find: [12],
+    q: "A neighbor says that after three girls, the fourth baby is more likely to be a boy. What's wrong with that?",
+    find: [24],
     hint: "Read A Coin With No Memory.",
+    why: "A coin has no memory, and neither does a sperm, so the chance stays one in two.",
     choices: [
-    "One in two",
-    "One in eight",
-    "Less than one in two",
-    "More than one in two"
+    "Each baby is a fresh flip, so it's still one in two",
+    "A fourth baby is always a girl",
+    "It's only true for the second baby",
+    "Nothing, the neighbor is right"
   ],
     right: 0
   },
   {
     day: 1,
-    q: "What's the chance of three girls in a row?",
-    find: [10, 11],
-    hint: "Multiply one half three times.",
+    q: "Why is red-green color blindness more common in boys?",
+    find: [28, 32, 33],
+    hint: "Look at the table. How many X's does a boy have?",
+    why: "One Xc is enough for a boy, but a girl needs two.",
     choices: [
-    "1/2",
-    "1/4",
-    "1/8",
-    "1/16"
+    "A boy has two X chromosomes",
+    "The allele only exists in boys",
+    "A boy has only one X, so one Xc has nothing to cover it",
+    "A girl's Y chromosome covers it"
   ],
     right: 2
   },
   {
     day: 1,
-    q: "Why is red-green color blindness more common in boys?",
-    find: [15, 16],
-    hint: "Read Traits That Ride on the X.",
+    q: "A girl has the letters XXc. What is she?",
+    find: [30],
+    hint: "The normal X covers the Xc.",
+    why: "She sees normally and carries the allele, so she's a carrier.",
     choices: [
-    "The allele only exists in boys.",
-    "A girl's Y chromosome covers it.",
-    "A boy has two X chromosomes.",
-    "A boy has only one X, so one recessive allele on it shows."
+    "A boy",
+    "A girl with no X",
+    "Color blind",
+    "A carrier who sees colors normally"
   ],
     right: 3
   },
   {
     day: 1,
-    q: "A carrier mother (X Xc) and a father with normal vision (X Y) have a son. What's the chance he's color blind?",
-    find: [18, 20],
-    hint: "Look at the two XY boxes: XY and XcY.",
+    q: "A carrier mother (XXc) and a father who sees normally (XY) have a son. What's the chance he's color blind?",
+    find: [40, 41],
+    hint: "Look at the two boy boxes: XY and XcY.",
+    why: "One of the two boy boxes is XcY, so each son has a one in two chance.",
     choices: [
     "One in two",
-    "Every son",
     "One in four",
+    "Every son",
     "None"
   ],
     right: 0
   },
   {
     day: 1,
-    q: "What is a pedigree used for?",
-    find: [21],
+    q: "In a pedigree, what does a filled-in square mean?",
+    find: [43, 44],
     hint: "Read Reading a Family Chart.",
+    why: "Squares are boys, and a filled-in shape means the person has the trait.",
     choices: [
-    "Choosing a baby's sex.",
-    "Counting a family's chromosomes.",
-    "Photographing chromosomes.",
-    "Following how a trait is inherited through the generations of a family."
+    "A baby on the way",
+    "A girl who has the trait",
+    "A boy who is a carrier",
+    "A boy who has the trait"
   ],
     right: 3
   },
   {
     day: 1,
-    q: "How many copies of the recessive allele does a person need to have sickle-cell anemia or cystic fibrosis?",
-    find: [25],
+    q: "How many copies of the recessive allele does a person need to have cystic fibrosis?",
+    find: [53],
     hint: "Read Disorders That Need Two Copies.",
+    why: "It's recessive, so a person needs a copy from both parents. Only cc has it.",
     choices: [
     "Three",
     "Two",
@@ -690,9 +732,10 @@ var QUESTIONS = [
   },
   {
     day: 1,
-    q: "Two carriers of a recessive disorder have a child. What's the chance the child has the disorder?",
-    find: [28, 31],
-    hint: "Count the cc box out of four.",
+    q: "Two carriers of a recessive disorder (Cc and Cc) have a child. What's the chance the child has the disorder?",
+    find: [60],
+    hint: "Count the cc boxes out of four.",
+    why: "One box out of four is cc.",
     choices: [
     "One in four",
     "Every child",
@@ -703,16 +746,29 @@ var QUESTIONS = [
   },
   {
     day: 2,
+    q: "What is a <i>chromosome</i>?",
+    find: null,
+    note: "Vocabulary. Use the word cards above, not the story.",
+    choices: [
+    "A disorder",
+    "A grid for predicting a cross",
+    "A tiny string inside your cells that holds your genes",
+    "A type of cell"
+  ],
+    right: 2
+  },
+  {
+    day: 2,
     q: "What is a <i>sex-linked gene</i>?",
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A gene that only males have.",
-    "A gene that has been changed on purpose.",
-    "A gene found on a sex chromosome, usually the X.",
-    "A gene that decides what color a person's eyes are."
+    "A gene that has been changed on purpose",
+    "A gene that only boys have",
+    "A gene that decides what color a person's eyes are",
+    "A gene found on a sex chromosome, usually the X"
   ],
-    right: 2
+    right: 3
   },
   {
     day: 2,
@@ -720,12 +776,12 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A person with no alleles.",
-    "A person with a disorder.",
-    "A person who has two recessive alleles.",
-    "A person with one recessive allele who usually shows no symptoms."
+    "A person with one recessive allele who usually shows no symptoms",
+    "A person with no alleles",
+    "A person who has two recessive alleles",
+    "A person with a disorder"
   ],
-    right: 3
+    right: 0
   },
   {
     day: 2,
@@ -733,23 +789,10 @@ var QUESTIONS = [
     find: null,
     note: "Vocabulary. Use the word cards above, not the story.",
     choices: [
-    "A chart that shows how a trait is inherited through a family.",
-    "A kind of chromosome.",
-    "A grid for predicting a cross.",
-    "A way of changing genes."
-  ],
-    right: 0
-  },
-  {
-    day: 2,
-    q: "What is <i>genetic engineering</i>?",
-    find: null,
-    note: "Vocabulary. Use the word cards above, not the story.",
-    choices: [
-    "Picking the sex of a baby.",
-    "Changing the genes in a cell or organism on purpose.",
-    "Photographing chromosomes.",
-    "Counting alleles in a family."
+    "A kind of chromosome",
+    "A chart that shows how a trait is inherited through a family",
+    "A grid for predicting a cross",
+    "A way of changing genes"
   ],
     right: 1
   }
