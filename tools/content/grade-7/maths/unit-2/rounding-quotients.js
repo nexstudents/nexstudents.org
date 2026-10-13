@@ -2,19 +2,19 @@
    Grade 7 · maths · unit 2. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
-   ⚠️ DRAFT PROSE, CLAUDE'S, 2026-10-05. Written on Sonnet from Glencoe Course 2
-   pp75-77 (Lesson 2-8), via the week 6-7 packet (paraphrased notes) and the
-   teach-plan. /natural pass run and stamped.
+   🚨 REWRITTEN 2026-10-13 (Opus) after Kolten said the lesson didn't explain it.
+   Paul: "that math lesson is just literally rounding and dividing into equal parts.
+   you need to round to the nearest tenth, hundredths or whole number. that's all
+   you're basically trying to explain ... explain it to a 12-year-old."
+   The 2026-10-05 version assumed he already knew how to round and what tenths and
+   hundredths are, packed four ideas into a few lines, and never worked a problem
+   step by step. This one starts from zero: what dividing does, what rounding is,
+   which digit is which (dimes and pennies), then two Watch It Worked walkthroughs
+   and a Your Turn. "Greatest place value" is OUT of the lesson (it was a fourth idea).
 
-   READING SHAPE.
-
-   ⚠️ THE WORLD IS THE BOOK'S OWN OPENING, KEPT: friends splitting a pizza bill.
-   The numbers are ours ($14.65 among four, $214.50 among seven), chosen so the
-   round-down answer comes up short by a cent and by two cents. The book's
-   planet-sized example (Ceres against Jupiter) is left out as another world;
-   rounding to the greatest place value is taught on the bill instead.
-
-   ⚠️ NO SCRIPTURE. Paul's call, in the review queue. */
+   ONE WORLD: friends splitting things evenly, money first because cents ARE
+   hundredths. Our numbers: $10 ÷ 3, 17 ÷ 3, then 23 ÷ 6 and $14 ÷ 3 in Your Turn.
+   None of them is on the homework sheet. */
 'use strict';
 module.exports = {
   id: "maths/rounding-quotients",
@@ -22,24 +22,22 @@ module.exports = {
   title: "Rounding Quotients",
   unit: "Math 7 &middot; U2-L8",
   seq: { unit: 2, unitTitle: "Applications with Decimals", n: 8 },
-  natural: "2026-10-05",
+  natural: "2026-10-13",
 
-  /* ── /teach-plan, 2026-10-05. Glencoe Course 2 pp75-77. ── */
+  /* ── /teach-plan, 2026-10-13 rewrite. Glencoe Course 2 pp75-77. ── */
   plan: {
-    objective: "Round a quotient to a given place, and round money quotients up to the next cent when sharing a cost.",
+    objective: "Divide to share something equally, then round the answer to the nearest whole number, tenth or hundredth.",
     markers: [
       "BOOK (paraphrased), Objective box: round decimal quotients to a specified place.",
-      "BOOK (paraphrased), opening: four friends split the cost of a pizza, the quotient has more decimal places than money does, and the answer is rounded up.",
+      "BOOK (paraphrased), opening: friends split a cost evenly and the quotient has more decimal places than money does.",
       "BOOK (paraphrased): money quotients are usually rounded up so the bill is covered.",
-      "BOOK (paraphrased), method: divide, check the digit after the place asked for, then round; sometimes round to the greatest place value of the quotient.",
-      "BOOK (paraphrased), Checking for Understanding: explain how to round a money quotient.",
     ],
-    method: "DIVIDE ONE PLACE PAST THE PLACE ASKED, LOOK AT THAT DIGIT, ROUND. For money that is being shared, round UP to the next cent so the bill is covered. Estimate first so you know how big the answer should be.",
+    method: "DIVIDE, FIND THE PLACE YOU'RE KEEPING, LOOK AT THE DIGIT NEXT DOOR. 5 or more, the kept digit goes up one; 4 or less, it stays the same. Everything after the kept place drops off.",
     exampleOnly: [
-      "The pizza night: $14.65 among four friends, $214.50 among seven teammates. WORLD: one pizza place, the book's own opening, with our numbers.",
-      "Left out on purpose: Ceres and Jupiter.",
+      "Friends splitting money and snacks. WORLD: sharing things evenly with friends.",
+      "Left out on purpose: rounding to the greatest place value (a fourth idea; the sheet still has one item).",
     ],
-    digitize: "Reading engine. Each division and each rounding shows as [ex] lines.",
+    digitize: "Reading engine. Two Watch It Worked walkthroughs (round to the cent, then round one answer three ways) and a Your Turn with typed answers.",
     unclear: "",
   },
 
@@ -48,177 +46,208 @@ module.exports = {
     note: "Print it and work every problem on paper. No multiple choice this time." },
 
   shelf: { grades: [7], subject: "Math",
-    blurb: "Four friends split a pizza and the calculator shows four decimal places. Rounding a quotient, and why money gets rounded up.",
+    blurb: "Split something evenly and the answer often has too many digits. How to round it to the nearest whole number, tenth or hundredth.",
     contains: [
-      "Dividing one place past the place you're rounding to",
-      "Rounding to the tenth, the hundredth and the whole number",
-      "Why shared money is rounded up to the next cent",
-      "Rounding to the greatest place value",
+      "What dividing into equal parts means, and why the answer needs rounding",
+      "The rounding rule: look at the digit next door, 5 or more goes up",
+      "Tenths and hundredths, explained with dimes and pennies",
+      "Two problems worked one step at a time",
+      "Your Turn: round an answer three ways, then split a bill",
     ] },
   eyebrow: ["Math 7", "U2-L8", "Applications with Decimals"],
-  dek: "A calculator will happily give you a quotient with six decimal places. Nobody can pay that, so you have to know where to stop.",
+  dek: "Split $10 between three friends and the answer goes 3.3333 forever. Here's how to round it to a number you can actually use.",
 
   ground: {
     sections: [
       { h: "Lesson Goal", p: [
-        "By the end of this lesson your student should be able to round a decimal quotient to a stated place, round a shared cost up to the next cent, and explain why up is the right direction for money."
+        "Your student divides to share something equally, then rounds the answer to the nearest whole number, tenth or hundredth. That's the whole lesson."
+      ]},
+      { h: "Key Concepts", p: [
+        "Rounding means swapping a messy number for the closest easy one. The rule: find the place you're keeping, look at the digit right after it, and if that digit is 5 or more the kept digit goes up by one; if it's 4 or less, the kept digit stays.",
+        "Tenths are the first digit after the decimal point and hundredths are the second. With money, tenths are dimes and hundredths are pennies, which is why rounding to the nearest cent means rounding to the hundredth."
       ]},
       { h: "Where Students Get Stuck", p: [
-        "🚨 Stopping the division too early. To round to the hundredths you have to divide out to the thousandths, because the digit one place past is the one that decides.",
-        "Rounding money down. A student who rounds 3.6625 to $3.66 gets the usual rounding right and still comes up a cent short when four people each pay it."
+        "Looking at the wrong digit. To round to the tenth you look at the hundredths digit, the one right after it. Have him put a finger on the place he's keeping and look one step to the right.",
+        "Not knowing which digit is the tenth and which is the hundredth. The dimes and pennies picture helps: $3.47 is three dollars, four dimes and seven pennies."
       ]},
       { h: "Teaching Suggestion", p: [
-        "Make the student multiply the rounded share back by the number of people. Seeing 3.66 x 4 land a cent under the bill is the reason money rounds up, and it works better than being told."
+        "Use real coins if you have them. Split $1 among three people with dimes and pennies, see that it can't come out even, and then decide together who gets the extra penny."
       ]},
       { h: "Key Vocabulary", vocab: true }
     ]
   },
 
   parts: [
-    { title: "Four Friends and One Pizza", s: [
-      "Four friends finish a pizza after practice, the bill comes to $14.65, and they agree to split it evenly.",
-      "Before anyone touches a calculator, a quick estimate says the bill is about $15, and $15 divided among four people is a bit under $4 each.",
-      "When one of them divides 14.65 by 4, the calculator shows 3.6625, and nobody can hand over a share of six and a quarter hundredths of a dollar.",
-      "So where do you stop, and which way do you round?"
+    { title: "Splitting Things Evenly", s: [
+      "Say you and two friends find $10 and decide to split it evenly, so everybody gets the same amount.",
+      "Splitting something into equal parts is what dividing does, so you'd work out 10 divided by 3.",
+      "The answer to a division problem has a name, the {{quotient}}, which is just a fancy word for how much each person gets.",
+      "When you type 10 ÷ 3 into a calculator, it shows 3.3333333, and those 3s keep going for as long as the screen lets them.",
+      "Nobody can hand you three dollars and a never-ending string of threes, so you need a number you can actually use."
     ]},
 
-    { title: "Divide One Place Past", s: [
-      "To round a quotient to a place, you divide until you've found the digit one place past the one you're rounding to, and that digit makes the decision.",
-      "Rounding 3.6625 to the nearest tenth means looking at the hundredths digit, which is 6, so the tenths digit goes up from 6 to 7, and rounding to the nearest hundredth means looking at the thousandths digit, which is 2, so the hundredths digit stays as it is.",
-      "To the nearest whole number it's 4, because the tenths digit is 6, and that matches the estimate of a bit under four dollars.",
+    { title: "What Rounding Means", s: [
+      "When you {{round}} a number, you swap it for the closest easy number, the way you'd say a game ended at about 9 o'clock when it really ended at 8:57.",
       "",
-      "[ex] 3.6625 to the nearest tenth = 3.7",
-      "[ex] 3.6625 to the nearest hundredth = 3.66",
-      "[ex] 3.6625 to the nearest whole number = 4"
-    ]},
-
-    { title: "But Money Is Different", s: [
-      "Usual rounding says each friend pays $3.66, and the easiest way to see the problem is to multiply it back by four, which comes to $14.64.",
-      "That's a cent short of the $14.65 bill, and somebody at the register will notice.",
-      "When money is being shared, you round up to the next cent, even when the usual rule says to round down, because the bill has to be covered.",
-      "Each friend pays $3.67, the group leaves a three-cent tip they didn't plan on, and everybody goes home.",
+      "[ex] 8:57 is really close to 9:00, so you say about 9.",
       "",
-      "[ex] 4 x 3.66 = 14.64",
-      "[ex] 4 x 3.67 = 14.68"
+      "Rounding works the same way with any number, because you pick the easy number it sits closest to.",
+      "The number 3.7 sits between 3 and 4, but it's much closer to 4, so 3.7 rounded to the nearest whole number is 4.",
+      "The number 3.2 is between 3 and 4 too, and it's closer to 3, so it rounds down to 3."
     ]},
 
-    { title: "Don't Stop Too Early", s: [
-      "A quotient can fool you if you quit dividing too soon, so keep going until you've reached the digit that decides.",
-      "Divide 14.65 by 4 and stop at 3.66, and you'd think there was nothing left to look at, but there's still a remainder of 0.01 waiting to be divided.",
-      "That's why you have to carry the division out one place further, to 3.662, before you can say what the hundredths digit rounds to.",
-      "Most of the wrong answers in this kind of problem come from stopping one digit early."
-    ]},
-
-    { title: "Seven Teammates", s: [
-      "The next week the whole team, seven players, splits a bigger bill of $214.50, and the same two ideas show up at once.",
-      "Divide 214.50 by 7 and you get 30.642857 and the digits keep going, so the question is how much each player pays.",
-      "The hundredths digit is 4 and the thousandths digit is 2, so the usual rounding gives $30.64, and seven players paying that come out two cents short.",
-      "So each player pays $30.65, even though the next digit was only a 2, because shared money rounds up.",
+    { title: "The Rule: Look Next Door", s: [
+      "You don't have to picture a number line every time, because there's a simple rule that always gives the same answer.",
+      "First find the digit for the place you're keeping, and then look at the very next digit to its right, the one next door.",
+      "If that next-door digit is 5 or more, the digit you're keeping goes up by one.",
+      "If the next-door digit is 4 or less, the digit you're keeping stays exactly the same.",
+      "Either way, every digit after the one you kept just drops off.",
       "",
-      "[ex] 7 x 30.64 = 214.48",
-      "[ex] 7 x 30.65 = 214.55"
+      "[walk] Round 3.7 to the nearest whole number.",
+      "[step] The place you're keeping is the ones place, so that's the 3. || 3.7  →  keep the 3",
+      "[step] The digit next door is the 7, right after the dot. || 3.7  →  next door is 7",
+      "[step] 7 is 5 or more, so the 3 goes up by one, and the 7 drops off. || 3 + 1 = 4",
+      "",
+      "So 3.7 rounds to 4, the same answer the number line gave you."
     ]},
 
-    { title: "Rounding to the Biggest Place", s: [
-      "Sometimes you don't want the exact share, just a sense of how big it is, and then you round to the greatest place value of the quotient.",
-      "The greatest place value in 30.64 is the tens place, so rounding there gives 30, which is the number you'd say out loud if someone asked what a pizza night costs each person.",
-      "Every problem in this lesson comes down to the same three steps: divide one place past, look at that digit, and then decide whether the situation calls for rounding the usual way or up.",
+    { title: "Tenths and Hundredths Are Dimes and Pennies", s: [
+      "The digits after the dot, which is called the decimal point, each have a name, and money makes them easy to remember.",
+      "The first digit after the dot is the tenths place, and with money it counts dimes, since a dime is one tenth of a dollar.",
+      "The second digit after the dot is the {{hundredths}} place, and it counts pennies, since a penny is one hundredth of a dollar.",
       "",
-      "[ex] 30.64 to the greatest place value = 30"
-    ]}
+      "[ex] $3.47 means 3 dollars, 4 dimes and 7 pennies.",
+      "",
+      "So the 4 in $3.47 is in the {{tenths}} place and the 7 is in the hundredths place.",
+      "That's also why rounding money to the nearest cent means rounding to the hundredth, because cents are hundredths."
+    ]},
+
+    { title: "Back to the $10", s: [
+      "Now you have everything you need to split the $10, so here it is, one step at a time.",
+      "",
+      "[walk] Split $10 among 3 friends, rounded to the nearest cent.",
+      "[step] Divide to split it evenly. || 10 ÷ 3 = 3.3333…",
+      "[step] Cents are hundredths, the second digit after the dot, so you're keeping that 3. || 3.3[3]33…  →  keep the hundredths 3",
+      "[step] Look next door, at the third digit after the dot, which is another 3. || 3.33[3]3…  →  next door is 3",
+      "[step] 3 is 4 or less, so the kept digit stays the same and everything after it drops off. || $3.33 each",
+      "",
+      "Each friend gets $3.33, and there's one penny left over, because three times $3.33 is $9.99.",
+      "When friends split a bill instead of found money, they usually round up to $3.34 so the bill is fully paid, since nobody wants to be a penny short at the register."
+    ]},
+
+    { title: "One Answer, Three Ways", s: [
+      "Sometimes you'll be asked to round to the nearest whole number, sometimes to the nearest tenth and sometimes to the nearest hundredth, and it's the same rule every time.",
+      "The only thing that changes is which digit you keep and which digit is next door.",
+      "",
+      "[walk] Three friends share 17 cookies, so round 17 ÷ 3 three ways.",
+      "[step] Divide first. || 17 ÷ 3 = 5.6666…",
+      "[step] Nearest whole number: keep the 5, and next door is a 6, which is 5 or more, so the 5 goes up. || 5.6666…  →  6",
+      "[step] Nearest tenth: keep the first 6 after the dot, and next door is another 6, so it goes up to 7. || 5.6666…  →  5.7",
+      "[step] Nearest hundredth: keep the second 6 after the dot, and next door is a 6 again, so it goes up to 7. || 5.6666…  →  5.67",
+      "",
+      "The cookies don't really get cut into 5.67 pieces, but the rounding shows you each friend gets a little more than five and a half."
+    ]},
+
+    { title: "The Mistake to Watch For", s: [
+      "The most common mistake is looking at the wrong digit, usually the one you're keeping instead of the one next door.",
+      "Put your finger on the place you're keeping, slide it one step to the right, and that's the only digit that decides.",
+      "",
+      "[ex] To round 2.41 to the nearest tenth, keep the 4 and look at the 1 next door, so it's 2.4.",
+      "",
+      "A second mistake is stopping the division too early, because you can't look next door if you haven't worked out that digit yet.",
+      "So keep dividing until you have at least one digit past the place you're rounding to."
+    ]},
   ],
 
   words: [
-    ["Quotient", "The answer to a division problem.", 2],
-    ["Place Value", "The value of a digit because of where it sits in a number, like tenths or hundredths.", 4],
-    ["Greatest Place Value", "The place of the leftmost digit of a number, which is the tens place in 30.64.", 27],
-    ["Round Up", "To raise a number to the next larger value of a place, as with a shared bill.", 12]
+    ["Quotient", "The answer to a division problem, like how much each person gets when you split something.", 2],
+    ["Round", "To swap a number for the closest easy number, using the digit next door to decide.", 5],
+    ["Tenths", "The first place after the decimal point. With money, it counts dimes.", 24],
+    ["Hundredths", "The second place after the decimal point. With money, it counts pennies.", 22],
   ],
 
-  findsAt: 30,
+  findsAt: 47,
+
   questions: [
-    { tag: "The Setup", q: "A calculator shows 3.6625 for 14.65 ÷ 4. Why can't the friends each pay that?",
-      find: [2],
-      hint: "Read Four Friends and One Pizza.",
-      choices: [
-        "Money can't have a decimal point.",
-        "It's more than the bill.",
-        "Money only has two decimal places, so the amount has to be rounded.",
-        "The bill should be divided by 5 instead."
-      ], right: 2 },
+    { tag: "Dividing", q: "You split $10 evenly among 3 friends. What kind of math does that?",
+      find: [1], hint: "Read Splitting Things Evenly.",
+      choices: ["Adding", "Dividing", "Multiplying", "Subtracting"], right: 1,
+      why: "Splitting into equal parts is dividing: 10 ÷ 3." },
 
-    { tag: "The Method", q: "To round a quotient to the nearest hundredth, which digit do you look at?",
-      find: [4, 5],
-      hint: "Read Divide One Place Past.",
-      choices: [
-        "The tenths digit.",
-        "The hundredths digit.",
-        "The whole-number digit.",
-        "The thousandths digit."
-      ], right: 3 },
+    { tag: "Rounding", q: "What does rounding a number mean?",
+      find: [5], hint: "Read What Rounding Means.",
+      choices: ["Making it a round shape", "Adding one to it", "Swapping it for the closest easy number", "Cutting off the last digit no matter what"], right: 2,
+      why: "Rounding picks the easy number it's closest to." },
 
-    { tag: "Rounding", q: "What is 3.6625 rounded to the nearest tenth?",
-      find: [5, 7],
-      hint: "Look at the hundredths digit.",
-      choices: ["3.6", "3.66", "3.7", "4"], right: 2 },
+    { tag: "The Rule", q: "When you round, which digit decides whether you go up or stay the same?",
+      find: [11], hint: "Read The Rule: Look Next Door.",
+      choices: ["The first digit of the number", "The digit you're keeping", "The last digit of the number", "The digit right next door to the one you're keeping"], right: 3,
+      why: "Only the digit right after the place you're keeping decides." },
 
-    { tag: "Money", q: "Why do four friends each paying $3.66 come up short?",
-      find: [10, 11],
-      hint: "Multiply 4 x 3.66.",
-      choices: [
-        "The four shares add up to $14.64, which is a cent less than the bill.",
-        "The four shares add up to more than the bill.",
-        "The estimate was wrong.",
-        "Because each friend should pay $3.60."
-      ], right: 0 },
+    { tag: "The Rule", q: "Round 6.8 to the nearest whole number.",
+      find: [12], hint: "Next door to the 6 is the 8. Is 8 five or more?",
+      choices: ["7", "6", "6.8", "8"], right: 0,
+      why: "8 is 5 or more, so the 6 goes up to 7." },
 
-    { tag: "Money", q: "When a bill is split, how should the share be rounded?",
-      find: [12],
-      hint: "Read But Money Is Different.",
-      choices: [
-        "Down to the next cent.",
-        "Up to the next cent, so the bill is covered.",
-        "To the nearest dollar.",
-        "To the nearest tenth."
-      ], right: 1 },
+    { tag: "Places", q: "In $5.29, which digit is in the hundredths place?",
+      find: [22], hint: "Hundredths is the second digit after the dot, the pennies.",
+      choices: ["5", "2", "9", "None of them"], right: 2,
+      why: "The 9 is the second digit after the dot, so it's 9 pennies." },
 
-    { tag: "Too Early", q: "Why is stopping at 3.66 when you divide 14.65 by 4 a mistake?",
-      find: [17, 18],
-      hint: "Read Don't Stop Too Early.",
-      choices: [
-        "Because 3.66 is the wrong answer to the division.",
-        "Because the quotient is a whole number.",
-        "Because you never need the hundredths place.",
-        "Because there's a remainder, and the next digit decides how to round."
-      ], right: 3 },
+    { tag: "The $10", q: "Why does $10 ÷ 3 round to $3.33 and not $3.34?",
+      find: [31], hint: "Look at the digit next door to the hundredths.",
+      choices: ["The digit next door is a 3, which is 4 or less, so it stays.", "Because you always round down with money.", "Because $3.34 is too much money.", "Because the tenths digit is 3."], right: 0,
+      why: "Next door to the hundredths is a 3, so the hundredths stays 3." },
 
-    { tag: "Seven Teammates", q: "The usual rounding for 214.50 ÷ 7 gives $30.64. What should each player pay?",
-      find: [23, 22],
-      hint: "Seven players paying $30.64 are two cents short.",
-      choices: ["$30.64", "$30.60", "$30.65", "$31.00"], right: 2 },
+    { tag: "Three Ways", q: "17 ÷ 3 = 5.6666… What is it rounded to the nearest tenth?",
+      find: [39], hint: "Keep the first digit after the dot and look next door.",
+      choices: ["5.6", "6", "5.67", "5.7"], right: 3,
+      why: "Next door to the first 6 is another 6, so it goes up to 7: 5.7." },
 
-    { tag: "Biggest Place", q: "What is 30.64 rounded to its greatest place value?",
-      find: [27],
-      hint: "The leftmost digit is in the tens place.",
-      choices: ["30", "31", "30.6", "40"], right: 0 }
+    { tag: "The Mistake", q: "To round 2.41 to the nearest tenth, which digit do you look at?",
+      find: [44], hint: "Keep the tenths, then slide one step right.",
+      choices: ["The 2", "The 1", "The 4", "You don't need to look at any"], right: 1,
+      why: "You keep the 4 and look at the 1 next door, so it's 2.4." },
   ],
 
   vocabQuestions: [
-    { q: "What is a <i>quotient</i>?",
-      choices: ["The number you divide by.", "The answer to a division problem.", "A rounded number.", "The number being divided."], right: 1 },
-    { q: "What does <i>place value</i> tell you?",
-      choices: ["How big a number is when it's rounded.", "Which digit is a zero.", "How many digits a number has.", "The value of a digit because of where it sits in the number."], right: 3 },
-    { q: "What is the <i>greatest place value</i> of 30.64?",
-      choices: ["The tens place.", "The ones place.", "The hundredths place.", "The tenths place."], right: 0 },
-    { q: "What does it mean to <i>round up</i> a bill's share?",
-      choices: ["Take away the cents.", "Raise it to the next larger cent so the bill is covered.", "Make it a whole dollar.", "Divide it again."], right: 1 }
+    { q: "What is a <i>quotient</i>?", choices: ["The number you divide by", "The answer to a division problem", "A rounded number", "A kind of decimal point"], right: 1 },
+    { q: "What does it mean to <i>round</i> a number?", choices: ["Add a zero to the end", "Swap it for the closest easy number", "Make it bigger every time", "Divide it by ten"], right: 1 },
+    { q: "Which place is <i>tenths</i>?", choices: ["The second digit after the dot", "The digit before the dot", "The first digit after the dot", "The last digit of any number"], right: 2 },
+    { q: "With money, what do <i>hundredths</i> count?", choices: ["Pennies", "Dimes", "Dollars", "Quarters"], right: 0 },
+  ],
+
+  work: [
+    { title: "23 Cookies, 6 Friends",
+      ask: "Six friends share 23 cookies, and 23 ÷ 6 = 3.8333… Round it three ways, one step at a time.",
+      steps: [
+        { ask: "Round 3.8333… to the nearest whole number.", answer: 4,
+          hint: "Keep the 3. Next door is the 8. Is 8 five or more?",
+          why: "8 is 5 or more, so the 3 goes up to 4." },
+        { ask: "Now round 3.8333… to the nearest tenth.", answer: 3.8,
+          hint: "Keep the 8, the first digit after the dot. Next door is a 3.",
+          why: "3 is 4 or less, so the 8 stays: 3.8." },
+        { ask: "Now round it to the nearest hundredth.", answer: 3.83,
+          hint: "Keep the 3 that's second after the dot. Next door is another 3.",
+          why: "3 is 4 or less, so it stays: 3.83." },
+      ] },
+    { title: "A $14 Bill, 3 Friends",
+      ask: "Three friends split a $14 bill. 14 ÷ 3 = 4.6666… Round to the nearest cent, then check it.",
+      steps: [
+        { ask: "Cents are hundredths. What is 4.6666… rounded to the nearest hundredth?", answer: 4.67,
+          hint: "Keep the second digit after the dot, a 6. Next door is another 6.",
+          why: "6 is 5 or more, so the kept 6 goes up to 7: $4.67 each." },
+        { ask: "Check it: what is 3 × 4.67?", answer: 14.01, calc: "3*4.67",
+          hint: "Multiply 4.67 by 3.",
+          why: "$14.01, so three friends paying $4.67 cover the $14 bill, with a penny extra." },
+      ] },
   ],
 
   todo: { title: "What To Do Now", s: [
-      "Four friends and a pizza bill put a decimal quotient in front of you, and the rest of this page is practice knowing where to stop.",
-      "{c} word cards sit at the top of the page, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
-      "For every quotient, find the digit one place past the place you're rounding to, and ask yourself whether it's a shared bill that has to be covered.",
-      "If the money questions trip you up, read But Money Is Different again.",
-      "Last, if the Homework Sheet button at the bottom of the page is lit up, print the sheet and do it on paper."
-  ] }
+      "Splitting things evenly gave you numbers with too many digits, and now you know how to round them.",
+      "First work through Your Turn below the reading, typing each answer.",
+      "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
+      "Whenever you round, put your finger on the place you're keeping and look one step to the right.",
+      "Last, open the Homework Sheet with the button at the bottom of the page, and work every problem on paper."
+  ] },
 };

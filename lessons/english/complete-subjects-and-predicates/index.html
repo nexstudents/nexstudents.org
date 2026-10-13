@@ -1027,7 +1027,7 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 .wk-step.is-shown .wk-show{visibility:visible}
 .wk-show.is-code{
   font-family:"Cascadia Mono","Cascadia Code",Consolas,"Courier New",monospace;
-  font-size:.92em;letter-spacing:0;white-space:pre;overflow-x:auto;tab-size:4;
+  font-size:.92em;letter-spacing:0;white-space:pre;overflow-x:auto;tab-size:4;line-height:1.2;
 }
 .wk-bar{display:flex;gap:8px;padding:10px 16px 14px;border-top:1px solid var(--rule)}
 .wk-bar button,.vid-go{
@@ -3045,7 +3045,10 @@ PARTS.forEach(function(part){
            code is different: in a serif ; and : and { } blur, and he must type
            exactly what he sees into Godot. Prose examples on these lessons stay
            italic serif. */
-        show.className = "wk-show" + (LESSON_ID.indexOf("coding/") === 0 ? " is-code" : "");
+        /* A work line that DRAWS a grid (box-drawing characters, like a Punnett
+           square) needs the even-width face too, or its lines don't meet
+           (2026-10-13). */
+        show.className = "wk-show" + (LESSON_ID.indexOf("coding/") === 0 || /[─-╿]/.test(stepShow) ? " is-code" : "");
         show.textContent = stepShow;
         stepEl.appendChild(show);
       }
