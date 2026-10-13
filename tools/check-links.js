@@ -115,7 +115,11 @@ const lessonPages = pages
 
 const shelfText = pages
   .map((f) => path.relative(ROOT, f).split(path.sep).join("/"))
-  .filter((r) => /^grade-[^/]+\/[^/]+\/lessons\/index\.html$/.test(r))
+  /* 🎮 An ELECTIVE's shelf counts too: /extras/electives/<course>/ (2026-10-13).
+     Electives sit under Extras, never on a grade (Paul). Still ONE shelf, the one
+     a student opens; the check stays as strict as it was. */
+  .filter((r) => /^grade-[^/]+\/[^/]+\/lessons\/index\.html$/.test(r) ||
+                 /^extras\/electives\/[^/]+\/index\.html$/.test(r))
   .map((r) => fs.readFileSync(path.join(ROOT, r), "utf8"))
   .join("\n");
 

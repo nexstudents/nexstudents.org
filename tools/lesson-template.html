@@ -1014,6 +1014,10 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
   white-space:pre-wrap;letter-spacing:.02em;
 }
 .wk-step.is-shown .wk-show{visibility:visible}
+.wk-show.is-code{
+  font-family:"Cascadia Mono","Cascadia Code",Consolas,"Courier New",monospace;
+  font-size:.92em;letter-spacing:0;white-space:pre;overflow-x:auto;tab-size:4;
+}
 .wk-bar{display:flex;gap:8px;padding:10px 16px 14px;border-top:1px solid var(--rule)}
 .wk-bar button,.vid-go{
   font:600 14px/1.2 "IBM Plex Sans",system-ui,sans-serif;padding:8px 14px;border-radius:8px;cursor:pointer;
@@ -2784,7 +2788,12 @@ PARTS.forEach(function(part){
       stepEl.appendChild(span);
       if (stepShow) {
         var show = document.createElement("span");
-        show.className = "wk-show";
+        /* 🎮 On a Game Coding lesson the work line IS C# code, so it is set in a
+           code face (2026-10-13). Paul rejected monospace for EXAMPLES in prose;
+           code is different: in a serif ; and : and { } blur, and he must type
+           exactly what he sees into Godot. Prose examples on these lessons stay
+           italic serif. */
+        show.className = "wk-show" + (LESSON_ID.indexOf("coding/") === 0 ? " is-code" : "");
         show.textContent = stepShow;
         stepEl.appendChild(show);
       }

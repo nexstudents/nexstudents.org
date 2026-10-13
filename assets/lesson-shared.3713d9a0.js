@@ -410,6 +410,33 @@ function paintKid(host, k){
     });
     box.appendChild(ul);
   }
+  /* 🎬 The lesson's Suggested Videos (2026-10-13), one Add button each for this
+     student, skipping any already added. Paul: "we can choose to add or not add". */
+  var sugg = Array.prototype.slice.call(document.querySelectorAll(".gsugg li[data-url]"))
+    .map(function(li){ return { p: parseVideo(li.getAttribute("data-url")), label: li.getAttribute("data-label") }; })
+    .filter(function(s){ return s.p && !rows.some(function(r){ return r.id === s.p.id; }); });
+  if (sugg.length) {
+    var sb = el("div", "gv-sugg");
+    sugg.forEach(function(sg){
+      var row = el("div", "gv-sugg-row");
+      row.appendChild(el("span", null, sg.label));
+      var b = el("button", "btn ghost", "Add"); b.type = "button";
+      b.setAttribute("aria-label", "Add " + sg.label + " for " + k.name);
+      b.onclick = function(){
+        if (rows.length >= VIDEO_CAP) { msg.textContent = "That's the most, " + VIDEO_CAP + " videos for one lesson. Remove one to add another."; return; }
+        var pos = S.videos.filter(function(r){ return r.student_id === k.id; })
+          .reduce(function(m, r){ return Math.max(m, r.position || 0); }, 0) + 1;
+        b.disabled = true; b.textContent = "Adding...";
+        acct().addLessonVideo(k.id, LESSON, sg.p.id, sg.p.start, sg.label, pos, sg.p.kind).then(function(r2){
+          if (r2) S.videos.push(r2);
+          paint(); publish();
+        }).catch(function(e){ b.disabled = false; b.textContent = "Add"; msg.textContent = e.message || "Could not save that video."; });
+      };
+      row.appendChild(b);
+      sb.appendChild(row);
+    });
+    box.appendChild(sb);
+  }
   var add = el("div", "gv-add");
   var url = el("input"); url.type = "text"; url.placeholder = "Paste a video link";
   url.setAttribute("aria-label", "YouTube link for " + k.name); url.autocomplete = "off"; url.spellcheck = false;

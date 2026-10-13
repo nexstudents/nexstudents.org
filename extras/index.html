@@ -43,7 +43,7 @@
 <link rel="icon" href="/assets/brand/logo-32.png?v=0dedafd9" sizes="32x32" type="image/png">
 <link rel="icon" href="/assets/brand/logo.png?v=16557244" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/assets/brand/logo-180.png?v=aa5af4a4">
-<link rel="stylesheet" href="/assets/ns.css?v=9e803cdb">
+<link rel="stylesheet" href="/assets/ns.css?v=c6825b06">
 <script>(function(){try{var d=document.documentElement,m=localStorage.getItem("ns:mode");if(m==="light"||m==="dark")d.setAttribute("data-theme",m);var c=localStorage.getItem("ns:accent");if(c&&/^#[0-9a-fA-F]{6}$/.test(c)){d.style.setProperty("--me",c);d.classList.add("has-me");}}catch(e){}try{var want=localStorage.getItem("ns:pickwho")==="true",sess=localStorage.getItem("ns:session")||sessionStorage.getItem("ns:session");if(want&&sess){d.classList.add("whop-pre");setTimeout(function(){d.classList.remove("whop-pre");},10000);}}catch(e){}})();</script>
 </head>
 <body>
@@ -134,21 +134,25 @@
       </div>
       <span class="tick-score"></span>
     </div>
-    <div class="card is-slot" aria-hidden="true">
-      <span class="cthumb"></span>
-      <span class="cbody">
-        <em>Coding &middot; Coming Soon</em>
-        <b class="ctitle">Coding</b>
-        <span class="cblurb">Write real code in the browser and see it run. Nothing to install.</span>
-      </span>
-    </div>
-    <div class="card is-slot" aria-hidden="true">
-      <span class="cthumb"></span>
-      <span class="cbody">
-        <em>Electives &middot; Coming Soon</em>
-        <b class="ctitle">Electives</b>
-        <span class="cblurb">Subjects outside the core four, for a student who wants to go wider.</span>
-      </span>
+    <div class="card" data-lesson="extras/electives">
+      <span class="tick-done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.3l4.6 4.6L19 7.4"/></svg></span>
+      <a class="clink" href="/extras/electives/">
+        <span class="cthumb"></span>
+        <span class="cbody">
+          <em>Electives &middot; One Semester Each</em>
+          <b class="ctitle">Electives</b>
+          <span class="cblurb">Courses outside the core four, for a student who wants to go wider.</span>
+        </span>
+      </a>
+      <div class="cmore">
+        <button class="cpeek" type="button">More Info</button>
+        <ul hidden><li>Game Coding: make a real game in Godot with C#</li><li>A lesson semester plan for each elective, two lessons a week</li><li>Robotics Coding in C++, coming later</li></ul>
+      </div>
+      <div class="cmeta">
+        <span>Game Coding first</span>
+        <u class="free">$0</u>
+      </div>
+      <span class="tick-score"></span>
     </div>
   </div>
 </div></div>

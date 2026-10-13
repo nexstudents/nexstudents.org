@@ -394,6 +394,19 @@ function requireGround(L) {
       }
       return;
     }
+    /* 🎬 SUGGESTED VIDEOS, 2026-10-13. Paul: "the visual panel also showing the
+       same video links we can choose to add or not add." A list the PARENT picks
+       from; nothing plays until they press Add (lesson-notes-client.js). Every id
+       must have passed oEmbed before it is listed here. */
+    if (s.videos) {
+      if (s.p || !Array.isArray(s.videos) || !s.videos.length ||
+          s.videos.some((v) => !/^[\w-]{11}$/.test(v.id || "") || !v.title || !v.channel || !v.why)) {
+        console.error("FAIL: " + L.id + ': ground section "' + s.h + '" needs videos: [{ id (11 chars), title,\n' +
+          "      channel, why, start? }] and no paragraphs.");
+        process.exit(1);
+      }
+      return;
+    }
     if (!Array.isArray(s.p) || !s.p.length) {
       console.error("FAIL: " + L.id + ': ground section "' + s.h + '" has no paragraphs');
       process.exit(1);
@@ -849,12 +862,28 @@ function workLiteral(W) {
   ).join(",\n") + "\n]";
 }
 
+/* 🎬 The Suggested Videos list in Teacher Notes. Each row is a plain link (watch
+   it first), and lesson-notes-client.js adds an Add button per student. */
+const htmlEsc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+function suggestMarkup(videos) {
+  return '<p class="gsugg-note">Optional. Watch one first, then press Add to put it in the Visual Panel for a student.</p>' +
+    '<ul class="gsugg">' + videos.map((v) => {
+      const url = "https://www.youtube.com/watch?v=" + v.id + (v.start ? "&t=" + v.start + "s" : "");
+      const at = v.start ? ", from " + Math.floor(v.start / 60) + ":" + String(v.start % 60).padStart(2, "0") : "";
+      return '<li data-url="' + htmlEsc(url) + '" data-label="' + htmlEsc(v.title) + '">' +
+        '<a href="' + htmlEsc(url) + '" target="_blank" rel="noopener">' + htmlEsc(v.title) + '</a>' +
+        '<span class="gsugg-ch">' + htmlEsc(v.channel + at) + '</span>' +
+        '<span class="gsugg-why">' + htmlEsc(v.why) + '</span></li>';
+    }).join("") + "</ul>";
+}
+
 function groundMarkup(L) {
   const g = L.ground;
   if (!g) return "";
   const body = g.sections.map((s) =>
     "      <h3>" + s.h + "</h3>\n      " + (s.vocab
       ? "<dl>" + L.words.map(([t, d]) => "<dt>" + t + "</dt><dd>" + d + "</dd>").join("") + "</dl>"
+      : s.videos ? suggestMarkup(s.videos)
       : s.p.map((t) => "<p>" + t + "</p>").join("\n      "))
   ).join("\n");
   /* 🚨 NO "FOR THE TEACHER" EYEBROW. Paul, 2026-09-04: "the teahcer note For the

@@ -621,6 +621,11 @@ const { COURSE2 } = require("./maths-units.js");
 const { LIFE } = require("./science-units.js");
 const { WORLD } = require("./history-units.js");
 const YEAR = require("./year-plan.js");
+/* The Game Coding elective (Godot + C#), its course and its one-semester plan
+   → coding-units.js, coding-plan.js. Grade 7 only; it is not in SUBJECTS,
+   because SUBJECTS would put an empty Coding shelf on every grade. */
+const { GODOT7 } = require("./coding-units.js");
+const CODING = require("./coding-plan.js");
 /* K-8 plans from Missouri's standards. Required up here because the shelf rows
    below are generated from it at load time → k8-plan.js. */
 const K8 = require("./k8-plan.js");
@@ -1443,6 +1448,27 @@ const planRow = (g) => !sameGrade(g, 7) ? (K8.GRADES.some((x) => sameGrade(x, g)
     </div>`)}
 </div>`;
 
+/* 🎮 The Game Coding shelf's one door: its semester plan. (The grade 7 page
+   used to carry a lessons door too; electives left the grade pages 2026-10-13.)
+   🚨 ELECTIVES LIVE UNDER EXTRAS, NEVER IN A GRADE'S SUBJECTS. Paul, 2026-10-13:
+   "the electives will not sit in the 7th grade subjects but in the Extras ...
+   under electives" and "its not specifically a 7th grade class." */
+const codingDoors = () => {
+  const plan = CODING.build();
+  const n = plan.weeks.reduce((a, w) => a + w.days.reduce((b, d) => b + d.slots.length, 0), 0);
+  return `<div class="subj-sub">
+      <a class="minibox" href="/extras/electives/game-coding/plan/">
+        <b>Lesson Semester Plan</b><span>Week 1 to Week ${CODING.WEEKS}, two lessons a week</span>
+        <u>${n} lessons in order &rarr;</u>
+      </a>
+    </div>`;
+};
+const codingShelfIntro = () => `<div class="band"><div class="wrap">
+  ${group("Start With the Semester Plan",
+    "Every lesson in order, two a week. Lesson 1 sets up Godot and the .NET SDK, with links to both.",
+    codingDoors())}
+</div></div>`;
+
 /* ── THE YEAR OUTLINE, a compact form of the plan ─────────────────────────
    Paul, 2026-09-04, asked for the outline to show on the lessons and worksheets
    pages too, not only on /grade-7/plan/. This is the unit view WITHOUT the
@@ -1655,6 +1681,10 @@ const COURSE_SHELVES = [
      subject whose lessons had no course behind them. */
   { grade: 7, subject: "Science", course: "Life Science",
     units: () => sciencePager(LIFE) },
+  /* The Game Coding ELECTIVE, Godot + C#, 2026-10-13. Not one of the four
+     subjects; its shelf and plan pages are pushed by hand under grade 7. */
+  { grade: 7, subject: "Coding", course: "Game Coding",
+    units: () => holtPager(GODOT7) },
 ];
 
 /* The Missouri plan as shelf units: same order as the year plan, one card per
@@ -1919,12 +1949,48 @@ const EXTRAS = [
       "Every past session kept, and a note of whether you finished the book",
     ] },
 
-  { eyebrow: "Coding &middot; Coming Soon", title: "Coding",
-    blurb: "Write real code in the browser and see it run. Nothing to install." },
-
-  { eyebrow: "Electives &middot; Coming Soon", title: "Electives",
-    blurb: "Subjects outside the core four, for a student who wants to go wider." },
+  /* 🚨 The "Coding · Coming Soon" card (code in the browser, nothing to
+     install) was REMOVED 2026-10-13: Game Coding is the coding course, and it is
+     an elective, so it sits inside Electives. Two coding cards would be one too many. */
+  { id: "extras/electives", href: "/extras/electives/",
+    eyebrow: "Electives &middot; One Semester Each",
+    title: "Electives",
+    blurb: "Courses outside the core four, for a student who wants to go wider.",
+    meta: "Game Coding first",
+    contains: [
+      "Game Coding: make a real game in Godot with C#",
+      "A lesson semester plan for each elective, two lessons a week",
+      "Robotics Coding in C++, coming later",
+    ] },
 ];
+
+/* The electives shelf: one card per elective. Game Coding is the first. */
+const ELECTIVES = [
+  { id: "extras/electives/game-coding", href: "/extras/electives/game-coding/",
+    eyebrow: "Elective &middot; Godot with C#",
+    title: "Game Coding",
+    blurb: "Make a real game, from a number you click to a reactor you have to keep from melting down.",
+    meta: "36 lessons &middot; 18 weeks",
+    contains: [
+      "Set up Godot and C# on your own computer, with the links",
+      "A clicker game in the first unit, built one step at a time",
+      "Every line of code shown worked, then typed by you",
+      "A reactor control game across Units 2 to 5",
+    ] },
+  /* 🤖 A FUTURE elective, a slot only (Paul, 2026-10-13: "Robotics Coding for
+     C++ ... make one for a future elective"). No href until its lessons exist.
+     C++ because that is what Arduino boards are programmed in. */
+  { eyebrow: "Elective &middot; Coming Soon", title: "Robotics Coding",
+    blurb: "Program a real robot in C++: lights, motors and sensors, one wire at a time." },
+];
+const electivesShelf = () => `<div class="band"><div class="wrap">
+  <div class="cardgrid">
+    ${ELECTIVES.map((x) => x.href
+      ? oneCard({ id: x.id, href: x.href, title: x.title, blurb: x.blurb,
+                  meta: x.meta, price: "$0", contains: x.contains }, x.eyebrow)
+      : slotCard(x.eyebrow, x.title, x.blurb)).join("\n    ")}
+  </div>
+</div></div>`;
 
 
 /* ── THE YEAR PLAN PAGE ───────────────────────────────────────────────────
@@ -1941,7 +2007,7 @@ const EXTRAS = [
    page exists: built, printable from Leif, or not written yet. A parent
    reading this must never be sent to a lesson that does not exist
    -> [[feedback-never-assign-an-unbuilt-lesson]]. */
-const SUBJ_ABBR = { Math: "M", Science: "S", English: "E", History: "H" };
+const SUBJ_ABBR = { Math: "M", Science: "S", English: "E", History: "H", Coding: "C" };
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const prettyDate = (iso) => {
   const p = iso.split("-");
@@ -2066,7 +2132,7 @@ const planBody = (plan, o = {}) => {
     }
   }
 
-  const SUBJECT_ORDER = ["English", "History", "Math", "Science"];
+  const SUBJECT_ORDER = ["English", "History", "Math", "Science", "Coding"];
   const units = SUBJECT_ORDER.filter((s) => bySubject[s]).map((subject) => {
     const list = Object.values(bySubject[subject]).sort((a, b) => a.first - b.first);
     const blocks = list.map((u) => {
@@ -2090,7 +2156,7 @@ const planBody = (plan, o = {}) => {
 
   return `<div class="band"><div class="wrap">
     <div class="plan-figs">
-      <div class="plan-fig"><b>36</b><span>Teaching weeks</span></div>
+      <div class="plan-fig"><b>${o.weeks || 36}</b><span>Teaching weeks</span></div>
       <div class="plan-fig"><b>${plan.schoolDays}</b><span>School days</span></div>
       <div class="plan-fig"><b>${state.built + state.todo}</b><span>Lessons</span></div>
       <div class="plan-fig"><b>${o.perDay || "3.0"}</b><span>Lessons a day</span></div>
@@ -2101,8 +2167,7 @@ const planBody = (plan, o = {}) => {
       <span><span class="plan-done">Done</span>${doneCount} finished by Kolten</span>` : ""}
     </p>
     <p class="plan-note">${o.note || "This is the plan, not the build. Each row says what a student does;"}
-      the dot says whether that page exists yet. Monday to Thursday, four days a week,
-      36 weeks, counted by week number rather than by date.</p>
+      the dot says whether that page exists yet. ${o.tail || "Monday to Thursday, four days a week, 36 weeks, counted by week number rather than by date."}</p>
 
     <div class="plan-views" role="group" aria-label="How to read the plan">
       <button type="button" class="plan-vb" data-view="weeks" aria-pressed="true">By week</button>
@@ -2866,6 +2931,34 @@ const pages = [
     h1: "7th Grade Lesson Year Plan.",
     lead: "Four subjects, Week 1 to Week 36, Monday to Thursday. Every lesson in the order it is taught.",
     body: yearPlanBody() },
+
+  /* 🎮 THE GAME CODING ELECTIVE, 2026-10-13. Paul: "this is an elective inside
+     NexStudents" and "put a full semester just like the year long lesson
+     planner." Same planBody, one semester, two lessons a week. */
+  { dir: "extras/electives/game-coding/plan", active: "x", pclass: "termshead",
+    title: "Game Coding Lesson Semester Plan | NexStudents",
+    desc: "The Game Coding elective, one semester: Week 1 to Week 18, two lessons a week, building a game in Godot with C#.",
+    crumb: '<a href="/extras/">Extras</a> &rsaquo; <a href="/extras/electives/">Electives</a> &rsaquo; <a href="/extras/electives/game-coding/">Game Coding</a> &rsaquo; Lesson Semester Plan',
+    h1: "Game Coding Lesson Semester Plan.",
+    lead: "One elective, Week 1 to Week 18, two lessons a week. A clicker first, then a reactor control game, built up one lesson at a time.",
+    body: planBody(CODING.build(), {
+      weeks: CODING.WEEKS, perDay: CODING.build().perDay.toFixed(1),
+      note: "This is the plan, not the build. Each row is one lesson in Godot, worked in C#;",
+      tail: "Two lessons a week, Monday and Wednesday, 18 weeks, counted by week number rather than by date.",
+    }) },
+  { dir: "extras/electives", active: "x", pclass: "termshead",
+    title: "Electives | NexStudents",
+    desc: "Electives: courses outside the four core subjects, taken one semester at a time.",
+    crumb: '<a href="/extras/">Extras</a> &rsaquo; Electives', h1: "Electives.",
+    lead: "Courses outside the four core subjects, each one a semester long. Pick one.",
+    body: electivesShelf() },
+  { dir: "extras/electives/game-coding", active: "x",
+    title: "Game Coding Lessons | NexStudents",
+    desc: "Game Coding, an elective: make a real game in Godot with C#, one short lesson at a time.",
+    crumb: '<a href="/extras/">Extras</a> &rsaquo; <a href="/extras/electives/">Electives</a> &rsaquo; Game Coding',
+    h1: "Game Coding Lessons.",
+    lead: "An elective. Make a real game in Godot with C#, starting from a number you click and ending with a reactor you have to keep from melting down.",
+    body: codingShelfIntro() + gradeSubjectLessons(7, "Coding") },
 
   /* The K-8 plans from Missouri's standards, one per grade. Grade 7's sits
      under its real plan until Paul decides which one Kolten follows. */

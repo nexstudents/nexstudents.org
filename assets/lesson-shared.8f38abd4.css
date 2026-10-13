@@ -898,6 +898,10 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
   white-space:pre-wrap;letter-spacing:.02em;
 }
 .wk-step.is-shown .wk-show{visibility:visible}
+.wk-show.is-code{
+  font-family:"Cascadia Mono","Cascadia Code",Consolas,"Courier New",monospace;
+  font-size:.92em;letter-spacing:0;white-space:pre;overflow-x:auto;tab-size:4;
+}
 .wk-bar{display:flex;gap:8px;padding:10px 16px 14px;border-top:1px solid var(--rule)}
 .wk-bar button,.vid-go{
   font:600 14px/1.2 "IBM Plex Sans",system-ui,sans-serif;padding:8px 14px;border-radius:8px;cursor:pointer;
@@ -1681,4 +1685,18 @@ a.lfoot-hw:hover{border-color:var(--lf-a);color:var(--lf-i)}
 .gv-sw[aria-checked="true"]::after{transform:translateX(20px)}
 .gv-sw:focus-visible{outline:2px solid var(--gn-a);outline-offset:2px}
 .gv-sec .gv-go{margin-top:2px}
+
+/* 🎬 SUGGESTED VIDEOS (2026-10-13): the lesson's own list in Teacher Notes, rendered
+   by build-lessons.js. Each row is a link to watch first; the per-student "Add"
+   buttons are drawn under each student by lesson-notes-client.js. */
+.gsugg{list-style:none;margin:6px 0 4px;padding:0;display:grid;gap:10px;max-width:68ch}
+.gsugg li{display:grid;gap:2px;line-height:1.45}
+.gsugg a{color:var(--gn-i);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.gsugg-ch{font-size:.86rem;color:var(--gn-d)}
+.gsugg-why{font-size:.92rem}
+.gsugg-note{font-size:.92rem}
+.gv-sugg{display:grid;gap:6px;margin:0 0 10px}
+.gv-sugg-row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.gv-sugg-row span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-sugg-row .btn{flex:0 0 auto;font-size:12.5px;padding:6px 12px}
 

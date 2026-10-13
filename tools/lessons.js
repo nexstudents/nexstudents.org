@@ -133,6 +133,14 @@ const LESSONS = [
   require('./content/grade-7/science/unit-7/how-scientists-classify-today'),
   require('./content/grade-7/science/unit-7/the-rain-forest'),
   require('./content/grade-7/science/unit-7/identifying-an-organism'),
+  require('./content/grade-7/coding/unit-1/set-up-and-press-play'),
+  require('./content/grade-7/coding/unit-1/nodes-a-number-on-the-screen'),
+  require('./content/grade-7/coding/unit-1/your-first-csharp-script'),
+  require('./content/grade-7/coding/unit-1/variables-and-your-first-click'),
+  require('./content/grade-7/coding/unit-1/your-own-methods'),
+  require('./content/grade-7/coding/unit-1/if-and-else'),
+  require('./content/grade-7/coding/unit-1/a-timer-that-counts'),
+  require('./content/grade-7/coding/unit-1/unit-1-review'),
 ];
 
 module.exports = { LESSONS };
