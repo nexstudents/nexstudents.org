@@ -60,85 +60,90 @@ __NAV__
 
   <div class="ns-back"><a href="__BACKHREF__">&larr; __BACKLABEL__</a></div>
 <style>
+/* 🚨 THESE DEFAULTS ARE GRAPHITE, THE DEFAULT THEME (2026-10-13). They were the old
+   Forest greens, and applyTheme() only swaps in the real theme from the script at
+   the END of the page, so every lesson painted GREEN first. On a slow phone (Paul,
+   over Tailscale) it flashed green; when the script failed, the whole lesson stayed
+   green. Keep these equal to THEMES.graphite, or the flash comes back. */
 :root{
-  --ground:#E7EDE4;
-  --surface:#F2F7EF;
-  --surface-2:#D8E2D2;
-  --ink:#152018;
-  --ink-soft:#48594D;
-  --ink-faint:#7B8C7F;
-  --rule:#C2CFBD;
-  --verdigris:#25664A;
-  --verdigris-ink:#174630;
-  --verdigris-soft:rgba(37,102,74,.12);
+  --ground:#EAEAEC;
+  --surface:#F5F5F7;
+  --surface-2:#DBDBDF;
+  --ink:#17181B;
+  --ink-soft:#4C4E54;
+  --ink-faint:#7F8189;
+  --rule:#C6C7CC;
+  --verdigris:#3A4A63;
+  --verdigris-ink:#273448;
+  --verdigris-soft:rgba(58,74,99,.12);
   --porphyry:#8A2F3F;
   --porphyry-soft:rgba(138,47,63,.10);
   /* 🚨 RIGHT IS GREEN ON EVERY THEME. Never move these into THEMES. */
   --laurel:#15803D;
   --laurel-soft:rgba(21,128,61,.12);
-  --brass:#7E6A16;
-  --band:rgba(158,138,40,.42);
-  --word:rgba(158,138,40,.85);
-  --on-accent:#F2F7EF;
-  --control-bg:#1F5A41;
-  --control-ink:#EDF4EA;
-  --control-border:#164630;
-  --tick-now:#14432E;
-  --tick-done:rgba(37,102,74,.30);
+  --brass:#7A6318;
+  --band:rgba(152,124,32,.38);
+  --word:rgba(152,124,32,.68);
+  --on-accent:#F5F5F7;
+  --control-bg:#333F55;
+  --control-ink:#EFF0F3;
+  --control-border:#242E3F;
+  --tick-now:#242E3F;
+  --tick-done:rgba(58,74,99,.30);
   --shadow:0 1px 2px rgba(21,32,24,.07),0 8px 24px rgba(21,32,24,.07);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --ground:#0E1A13;
-    --surface:#14251A;
-    --surface-2:#1C3123;
-    --ink:#E2EBE2;
-    --ink-soft:#93A896;
-    --ink-faint:#6B8071;
-    --rule:#27402F;
-    --verdigris:#66C293;
-    --verdigris-ink:#93D9B2;
-    --verdigris-soft:rgba(102,194,147,.16);
+    --ground:#131417;
+    --surface:#1B1D21;
+    --surface-2:#25272D;
+    --ink:#E4E5E9;
+    --ink-soft:#989BA4;
+    --ink-faint:#70737C;
+    --rule:#2F323A;
+    --verdigris:#8CA5CC;
+    --verdigris-ink:#AFC1DE;
+    --verdigris-soft:rgba(140,165,204,.16);
     --porphyry:#E08497;
     --porphyry-soft:rgba(224,132,151,.16);
     --laurel:#4ADE80;
     --laurel-soft:rgba(74,222,128,.16);
-    --brass:#D8B355;
-    --band:rgba(216,179,85,.42);
-    --word:rgba(216,179,85,.85);
-    --on-accent:#0B160F;
-    --control-bg:#17301F;
-    --control-ink:#DCEADF;
-    --control-border:#345A41;
-    --tick-now:#3F9B69;
-    --tick-done:rgba(102,194,147,.28);
+    --brass:#D6BC66;
+    --band:rgba(214,188,102,.28);
+    --word:rgba(214,188,102,.59);
+    --on-accent:#0F1013;
+    --control-bg:#222630;
+    --control-ink:#E0E3EA;
+    --control-border:#414755;
+    --tick-now:#5C79A6;
+    --tick-done:rgba(140,165,204,.28);
     --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.32);
   }
 }
 :root[data-theme="dark"]{
-  --ground:#0E1A13;
-  --surface:#14251A;
-  --surface-2:#1C3123;
-  --ink:#E2EBE2;
-  --ink-soft:#93A896;
-  --ink-faint:#6B8071;
-  --rule:#27402F;
-  --verdigris:#66C293;
-  --verdigris-ink:#93D9B2;
-  --verdigris-soft:rgba(102,194,147,.16);
+  --ground:#131417;
+  --surface:#1B1D21;
+  --surface-2:#25272D;
+  --ink:#E4E5E9;
+  --ink-soft:#989BA4;
+  --ink-faint:#70737C;
+  --rule:#2F323A;
+  --verdigris:#8CA5CC;
+  --verdigris-ink:#AFC1DE;
+  --verdigris-soft:rgba(140,165,204,.16);
   --porphyry:#E08497;
   --porphyry-soft:rgba(224,132,151,.16);
   --laurel:#4ADE80;
   --laurel-soft:rgba(74,222,128,.16);
-  --brass:#D8B355;
-  --band:rgba(216,179,85,.42);
-  --word:rgba(216,179,85,.85);
-  --on-accent:#0B160F;
-  --control-bg:#17301F;
-  --control-ink:#DCEADF;
-  --control-border:#345A41;
-  --tick-now:#3F9B69;
-  --tick-done:rgba(102,194,147,.28);
+  --brass:#D6BC66;
+  --band:rgba(214,188,102,.28);
+  --word:rgba(214,188,102,.59);
+  --on-accent:#0F1013;
+  --control-bg:#222630;
+  --control-ink:#E0E3EA;
+  --control-border:#414755;
+  --tick-now:#5C79A6;
+  --tick-done:rgba(140,165,204,.28);
   --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.32);
 }
 
@@ -5549,8 +5554,33 @@ function applyVoiceTo(u){
 }
 
 // DEVICE: the browser's own voice, and the fallback for everything
+/* 🚨 WAIT FOR THE VOICE LIST BEFORE THE FIRST SENTENCE (2026-10-13). On a phone
+   the list is empty until the first tap, and the Play tap both starts loading it
+   and starts reading. The first sentence went out in the phone's default voice,
+   then the list landed and the rest switched to the ranked British one. Paul:
+   "it changed from a generic female voice to now a British female voice."
+   So the first play waits up to 1.2s for the list, rebuilds the picker, then reads. */
+var voiceWaitDone = false;
 function playSynth(mine){
   if (!supported) return;
+  if (!voiceWaitDone) {
+    var t0 = Date.now();
+    var ready = function(){ return (synth.getVoices() || []).length > 0; };
+    if (!ready()) {
+      (function wait(){
+        if (mine !== gen) return;
+        if (ready() || Date.now() - t0 > 1200) {
+          voiceWaitDone = true;
+          if (typeof window.nsRebuildVoices === "function") window.nsRebuildVoices();
+          playSynth(mine);
+        } else setTimeout(wait, 100);
+      })();
+      return;
+    }
+    voiceWaitDone = true;
+    /* The list is there but the picker may still hold the empty first read. */
+    if (!resolveVoice() && typeof window.nsRebuildVoices === "function") window.nsRebuildVoices();
+  }
   var s = SENT[idx];
   var u = new SpeechSynthesisUtterance(s.text);
   u.rate = rateVal();

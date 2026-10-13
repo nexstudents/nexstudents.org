@@ -5801,8 +5801,33 @@ function applyVoiceTo(u){
 }
 
 // DEVICE: the browser's own voice, and the fallback for everything
+/* 🚨 WAIT FOR THE VOICE LIST BEFORE THE FIRST SENTENCE (2026-10-13). On a phone
+   the list is empty until the first tap, and the Play tap both starts loading it
+   and starts reading. The first sentence went out in the phone's default voice,
+   then the list landed and the rest switched to the ranked British one. Paul:
+   "it changed from a generic female voice to now a British female voice."
+   So the first play waits up to 1.2s for the list, rebuilds the picker, then reads. */
+var voiceWaitDone = false;
 function playSynth(mine){
   if (!supported) return;
+  if (!voiceWaitDone) {
+    var t0 = Date.now();
+    var ready = function(){ return (synth.getVoices() || []).length > 0; };
+    if (!ready()) {
+      (function wait(){
+        if (mine !== gen) return;
+        if (ready() || Date.now() - t0 > 1200) {
+          voiceWaitDone = true;
+          if (typeof window.nsRebuildVoices === "function") window.nsRebuildVoices();
+          playSynth(mine);
+        } else setTimeout(wait, 100);
+      })();
+      return;
+    }
+    voiceWaitDone = true;
+    /* The list is there but the picker may still hold the empty first read. */
+    if (!resolveVoice() && typeof window.nsRebuildVoices === "function") window.nsRebuildVoices();
+  }
   var s = SENT[idx];
   var u = new SpeechSynthesisUtterance(s.text);
   u.rate = rateVal();
