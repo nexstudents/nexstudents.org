@@ -105,7 +105,7 @@ module.exports = {
     { title: "Reading the Plot", s: [
       "A finished plot is a table and a graph at once, since turning it on its side gives you the same shape as a bar graph, but every score is still there in the leaves.",
       "The row with the most leaves shows where most of the kids landed, and here that's the 40s, with six leaves.",
-      "Because the leaves are in order, the mode is easy to see, since it's the leaf that repeats on one stem, and here three 8s on the 30s row make the mode 38.",
+      "Because the leaves are in order, the mode is easy to see, since it's the leaf that repeats on one stem, and here three 8s on the 30s row make 38 a mode while three 2s on the 50s row make 52 a mode too, so this list has two modes, 38 and 52.",
       "The median is the middle score, so count in from both ends until you reach the middle of the leaves.",
       "",
       "[walk] Read the median off the jump-rope plot.",
