@@ -7,6 +7,8 @@
    this course. Sources: the videos listed in the Suggested Videos section (Microsoft
    Developer, Arkade Games, Mina Pecheux), read for the teaching ORDER only, nothing copied.
 
+   Revised 2026-10-13 from YouTube transcripts (ideas only, nothing copied) + /natural.
+
    🚨 CODE LIVES ONLY IN [walk]/[step] WORK LINES (after the double bar). Sentences and
    questions name things in plain words. */
 'use strict';
@@ -32,7 +34,7 @@ module.exports = {
     unclear: "",
   },
   natural: "2026-10-13",
-  findsAt: 41,
+  findsAt: 43,
 
   shelf: { grades: [7], subject: "Coding",
     blurb: "Add a minus button and a reset button, then write a method of your own so the number updates in one place.",
@@ -91,6 +93,9 @@ module.exports = {
       "You already know a {{method}} is a named recipe, and so far every recipe you've written was answering a bell, like the one that adds one when the plus button rings.",
       "But you can also write recipes just because you want them, the way a cook writes down a sauce once and then says to add the sauce whenever a dish needs it.",
       "Using a recipe by its name is called making a {{call}}, and a call is written as the name followed by a pair of parentheses and a semicolon.",
+      "",
+      "[ex] If you wrote a recipe called Show The Number, then each button could just say to do Show The Number, instead of repeating every step itself.",
+      "",
       "That pair of parentheses matters more than it looks, because a name with no parentheses after it only mentions the recipe and never actually cooks it."
     ]},
 
@@ -127,7 +132,8 @@ module.exports = {
       "[step] Add one more call at the very end of the starting-up method, so the label shows the starting number as soon as the game opens. || UpdateLabel();",
       "[step] Check that your whole file looks like this, then build and press F5. || using Godot;\n\npublic partial class Main : Control\n{\n    private int count = 0;\n    private Label label;\n\n    public override void _Ready()\n    {\n        label = GetNode<Label>(\"CountLabel\");\n        GetNode<Button>(\"PlusButton\").Pressed += OnPlusPressed;\n        GetNode<Button>(\"MinusButton\").Pressed += OnMinusPressed;\n        GetNode<Button>(\"ResetButton\").Pressed += OnResetPressed;\n        UpdateLabel();\n    }\n\n    private void OnPlusPressed()\n    {\n        count = count + 1;\n        UpdateLabel();\n    }\n\n    private void OnMinusPressed()\n    {\n        count = count - 1;\n        UpdateLabel();\n    }\n\n    private void OnResetPressed()\n    {\n        count = 0;\n        UpdateLabel();\n    }\n\n    private void UpdateLabel()\n    {\n        label.Text = count.ToString();\n    }\n}",
       "",
-      "The game behaves exactly the same as before, but the label line now lives in one place, so a change to it only has to happen once."
+      "The game behaves exactly the same as before, but the label line now lives in one place, so a change to it only has to happen once.",
+      "Behind the scenes, when a click method reaches the call, the computer jumps over to your method, runs every line inside it from the top down, and then hops back to carry on where it left off."
     ]},
 
     { title: "Try It Before You Trust It", s: [
@@ -155,8 +161,8 @@ module.exports = {
   words: [
     ["Method", "A named recipe of code that you write once and can use as many times as you like.", 4 /*F:You already know a {{method}}*/],
     ["Call", "Using a method by writing its name, followed by parentheses and a semicolon.", 6 /*F:making a {{call}}*/],
-    ["Case-sensitive", "Treating capital and small letters as different, so UpdateLabel and Updatelabel are two names.", 34 /*F:{{case-sensitive}}*/],
-    ["Parentheses", "The pair of curved marks after a method's name, which tell the computer to actually run it.", 7 /*F:That pair of parentheses matters*/]
+    ["Case-sensitive", "Treating capital and small letters as different, so UpdateLabel and Updatelabel are two names.", 36 /*F:{{case-sensitive}}*/],
+    ["Parentheses", "The pair of curved marks after a method's name, which tell the computer to actually run it.", 8 /*F:That pair of parentheses matters*/]
   ],
 
   vocabQuestions: [

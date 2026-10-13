@@ -7,6 +7,8 @@
    this course. Sources: the videos listed in the Suggested Videos section, read for the
    teaching ORDER only, nothing copied.
 
+   Revised 2026-10-13 from YouTube transcripts (ideas only, nothing copied) + /natural.
+
    🚨 CODE LIVES ONLY IN [walk]/[step] WORK LINES (after the double bar). The finished
    code appears in the LAST step only, labeled as the check, after the student has tried. */
 'use strict';
@@ -26,13 +28,13 @@ module.exports = {
     method: "REBUILD FROM MEMORY, THEN CHECK. Recap each skill in a sentence or two, follow a build checklist for a new project called HeatTest, try the code yourself, and only then compare with the finished file in the last step.",
     exampleOnly: [
       "The names HeatTest, HeatLabel and CoolButton and the numbers 5 and 50 are our own, so the skill is rebuilding a clicker, not those names.",
-      "The word heat is a sneak peek: next unit the number becomes a reactor's heat.",
+      "The word heat is our own choice for the number, so the skill is the rebuild and not the theme.",
     ],
     digitize: "Reading engine with a recap in two parts, a challenge, one build-checklist walkthrough whose last step holds the finished code as the check, and nine questions that span the whole unit. The hands-on job is to build the challenge in a new Godot project.",
     unclear: "",
   },
   natural: "2026-10-13",
-  findsAt: 34,
+  findsAt: 37,
 
   shelf: { grades: [7], subject: "Coding",
     blurb: "Prove what you learned. Rebuild a clicker from an empty window in a brand new project, with a number that heats up and a button that cools it down.",
@@ -41,7 +43,7 @@ module.exports = {
       "A build checklist for a new project, with the finished code held back until you've tried",
       "Five vocabulary cards, each with a check question",
       "Nine questions that cover the whole unit",
-      "A sneak peek of the reactor your game becomes in the next unit",
+      "A look ahead to the next unit, where things start to move on the screen",
     ] },
   back: { href: "/extras/electives/game-coding/", label: "Game Coding" },
   eyebrow: ["Game Coding", "U1-L8", "Your First Game Window"],
@@ -55,7 +57,7 @@ module.exports = {
       { h: "Key Concepts", p: [
         "Unit 1 in one list: a node is a piece with one job, a scene is nodes saved together, a script is instructions attached to a node, a variable is a labeled box, a signal is a doorbell, a method is a named recipe, if and else make a decision, and a timer rings a signal on its own.",
         "The usual build order is: make the scene and nodes, attach the script, add the variable, connect the signals, write the methods, and then press F5 and test.",
-        "The same skills will build a reactor in the next unit, where the count becomes heat.",
+        "The same skills carry into the next unit, where things start to move on the screen.",
       ]},
       { h: "Where Students Get Stuck", p: [
         "Skipping the plan and typing straight away. Making a quick list of the nodes and what each one does saves time.",
@@ -91,7 +93,8 @@ module.exports = {
       "Start with the pieces, because everything in Godot is built from {{nodes}}, each a block with one job, such as showing text, being a button, or counting seconds.",
       "A {{scene}} is those blocks saved together as one file, with a root node at the top that everything else sits on, which in your projects is Main.",
       "A script is a set of written instructions clipped onto a node, and inside it you write methods, which are named recipes that you can call as often as you like.",
-      "That's the first half of the unit, and every one of those pieces was something you added by clicking or typing."
+      "That's the first half of the unit, and every one of those pieces was something you added by clicking or typing.",
+      "When you press F5, Godot opens your scene, creates the nodes from the top down, runs each script's starting-up method once, and then the game waits for a click or a ring."
     ]},
 
     { title: "Memory and Decisions", s: [
@@ -102,10 +105,14 @@ module.exports = {
     ]},
 
     { title: "The Challenge: Heat", s: [
-      "Your challenge is a small game in a new project called HeatTest, and it's a sneak peek, because in the next unit the number you've been counting turns into the heat of a reactor.",
+      "Your challenge is a small game in a new project called HeatTest, with a number that creeps up by itself and a button that cools it back down.",
       "A label called HeatLabel shows the heat, and a timer called HeatTimer adds one to it every second, so the heat is always creeping up.",
       "A button called CoolButton takes five off the heat when you press it, but it should never let the heat drop below zero.",
-      "Finally, the number turns red when the heat goes past fifty, and white again when it comes back down, so you know when the reactor is in trouble."
+      "",
+      "[ex] If the heat reads three and you press Cool, the box would drop to minus two, so the if has to catch it and put a zero back.",
+      "",
+      "Finally, the number turns red when the heat goes past fifty, and white again when it comes back down, so you can see at a glance when it has gone too far.",
+      "Before you start, make a guess about how many seconds it takes for the number to turn red if nobody ever presses Cool."
     ]},
 
     { title: "The Build Checklist", s: [
@@ -125,7 +132,7 @@ module.exports = {
 
     { title: "The Mistakes Worth Remembering", s: [
       "Every mistake in this unit came back to a short list, so read it again before you start and you'll dodge most of them.",
-      "Make sure Godot is the .NET version, the language is C# when you attach the script, and you build after every change to your code.",
+      "Make sure Godot is the .NET version, the language is C# when you attach the script, and you build after every change to your code, since Godot only runs the last built copy.",
       "Check that every name in your code matches the name in the Scene dock exactly, capital letters included, and that every line that does something ends with a semicolon.",
       "And keep the heat box at the top of the file and not inside a method, or it will start over at zero every time."
     ]},
@@ -133,7 +140,7 @@ module.exports = {
     { title: "Back to the Empty Window", s: [
       "Go back to the question: what happens when you start a brand new project and all you have is your own head?",
       "What happens is that the pieces come back, one at a time, a scene, some nodes, a script, a box, a doorbell, a decision and a clock.",
-      "That's the whole toolbox for Unit 1, and it's also the start of something bigger, because the heat you just made is the first part of a reactor.",
+      "That's the whole toolbox for Unit 1, and it's also the start of something bigger, because everything you build from here on is made of these same pieces.",
       "In the next unit the numbers start to move on their own, every single frame, and that is where a game starts to feel alive."
     ]}
   ],
@@ -141,8 +148,8 @@ module.exports = {
   words: [
     ["Node", "One piece of a game with one job, such as showing text or being a button.", 4 /*F:{{nodes}}*/],
     ["Scene", "A group of nodes saved together as one file.", 5 /*F:{{scene}}*/],
-    ["Variable", "A labeled box where a program keeps a value that can change.", 8 /*F:{{variable}}*/],
-    ["Signal", "A doorbell a node rings when something happens, which a method can answer.", 9 /*F:A {{signal}} is*/],
+    ["Variable", "A labeled box where a program keeps a value that can change.", 9 /*F:{{variable}}*/],
+    ["Signal", "A doorbell a node rings when something happens, which a method can answer.", 10 /*F:A {{signal}} is*/],
     ["Method", "A named recipe of code that you can call as many times as you like.", 6 /*F:which are named recipes*/]
   ],
 

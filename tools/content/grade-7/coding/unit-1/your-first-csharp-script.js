@@ -7,6 +7,8 @@
    this course. Sources: the videos listed in the Suggested Videos section (Microsoft
    Developer, Mina Pecheux, Brackeys), read for the teaching ORDER only, nothing copied.
 
+   Revised 2026-10-13 from YouTube transcripts (ideas only, nothing copied) + /natural.
+
    🚨 CODE LIVES ONLY IN [walk]/[step] WORK LINES (after the double bar). Sentences and
    questions name things in plain words, with a quoted short name only when unavoidable. */
 'use strict';
@@ -32,7 +34,7 @@ module.exports = {
     unclear: "",
   },
   natural: "2026-10-13",
-  findsAt: 45,
+  findsAt: 51,
 
   shelf: { grades: [7], subject: "Coding",
     blurb: "Write the first lines of code you've ever typed. Attach a script, print a message, and change what the label says from code.",
@@ -91,7 +93,11 @@ module.exports = {
       "A {{script}} is that list of moves, a set of written instructions that you clip onto a node, the way a recipe card gets clipped to the fridge.",
       "You write the script in a language called C#, which looks strange at first, but it's really just short sentences that each end with a special mark.",
       "Godot has a small number of named recipes, called methods, that it runs at set moments, and the one you'll use today runs exactly once, at the very start, when the node first appears in the game.",
-      "Anything you put inside that starting-up {{method}} gets done one time as the game begins, which makes it the perfect place for a first test."
+      "Anything you put inside that starting-up {{method}} gets done one time as the game begins, which makes it the perfect place for a first test.",
+      "",
+      "[ex] Your list might say that when the game starts, the label should change to say Ready.",
+      "",
+      "When you press F5, Godot creates Main, finds the script clipped to it, and runs that starting-up method right away, before you can click anything."
     ]},
 
     { title: "Attach a Script", s: [
@@ -128,12 +134,18 @@ module.exports = {
       "[step] Press F5 to play, then click the Output tab at the bottom of the editor. || F5\nBottom panel  ->  Output",
       "[step] Read the Output panel, where your message should be sitting on its own line. || Hello from my first script!",
       "",
+      "Here's what the build did while you waited: it read your C# from the top down, translated it into something the computer can run, and stopped with an error if a line made no sense.",
+      "That's why saving isn't enough, because Godot only runs the translated copy, and the old copy keeps running until you build a new one.",
+      "",
+      "[ex] Saving a recipe card changes the card, but the cook keeps working from the old translated copy until you hand over a fresh one.",
+      "",
       "Typing the code yourself matters, because your fingers learn the shapes of the words, and copy and paste teaches them nothing."
     ]},
 
     { title: "Change the Label from Code", s: [
       "A message in a panel is fun, but your players will never see it, so the next step is to reach out and change the label on the screen.",
       "To do that, your code has to find the label first, and the way it finds a node is by asking for it by name, which is why last lesson's spelling mattered.",
+      "Before you build, make a guess about what the number in the window will say once this line has run.",
       "",
       "[walk] How do you change the label's text from code?",
       "[step] Under the print line, add a line that finds the node named CountLabel, says it's a Label, and sets its text. || GetNode<Label>(\"CountLabel\").Text = \"Ready!\";",
@@ -161,8 +173,8 @@ module.exports = {
   words: [
     ["Script", "A set of written instructions attached to a node.", 4 /*F:A {{script}} is*/],
     ["Method", "A named set of instructions that runs at a certain moment, such as when the game starts.", 7 /*F:starting-up {{method}}*/],
-    ["Print", "A line of code that sends a message to the Output panel so you can see your code ran.", 23 /*F:a {{print}} line*/],
-    ["Build", "Turning your C# into something Godot can run, which you must do after every change.", 26 /*F:Build the project by clicking*/]
+    ["Print", "A line of code that sends a message to the Output panel so you can see your code ran.", 25 /*F:a {{print}} line*/],
+    ["Build", "Turning your C# into something Godot can run, which you must do after every change.", 28 /*F:Build the project by clicking*/]
   ],
 
   vocabQuestions: [

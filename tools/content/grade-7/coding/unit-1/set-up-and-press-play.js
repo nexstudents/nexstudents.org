@@ -7,6 +7,8 @@
    this course. Sources: the videos listed in the Suggested Videos section (Godot Basics,
    Microsoft Developer, Brackeys), read for the teaching ORDER only, nothing copied.
 
+   Revised 2026-10-13 from YouTube transcripts (ideas only, nothing copied) + /natural.
+
    🚨 NO CODE YET. This lesson has none. Where code does appear in later lessons it lives
    only in [walk]/[step] work lines (the part after the double bar), which the engine
    shows in a code font and does not read aloud. */
@@ -33,7 +35,7 @@ module.exports = {
     unclear: "",
   },
   natural: "2026-10-13",
-  findsAt: 42,
+  findsAt: 46,
 
   shelf: { grades: [7], subject: "Coding",
     blurb: "Every game starts as an empty window. Download the tools, make a project, and press Play for the very first time.",
@@ -94,7 +96,10 @@ module.exports = {
 
     { title: "Two Free Downloads", s: [
       "Godot is the program you'll build your games in, a free {{game engine}} that gives you a place to arrange pieces, a place to write code, and a Play button.",
-      "You'll write your code in a language called C#, and a computer can't read C# on its own, so it needs a helper called the {{SDK}} to turn your words into something it can run.",
+      "You'll write your code in a language called C#, and a computer can't read C# on its own, so it needs a helper called the {{SDK}} to translate your words into something it can run.",
+      "",
+      "[ex] Say you type a line that tells the game to show a three, and the helper turns it into the tiny number steps the computer's chip really follows.",
+      "",
       "That makes two downloads, Godot and the SDK, and both are free and come from official websites, which the Teacher Notes at the bottom of the page list for your parent.",
       "There's one catch that trips up almost every beginner, because Godot comes in two versions and only one of them can run C#."
     ]},
@@ -133,6 +138,10 @@ module.exports = {
     { title: "Make the Window", s: [
       "A {{scene}} is a group of pieces saved together as one file, and every scene needs a first piece that everything else sits on, called the {{root node}}.",
       "",
+      "[ex] Picture a family tree with one grandparent at the very top and everybody else hanging below, and that grandparent is the root.",
+      "",
+      "Before you run it, make a guess about what a game with one empty piece in it will look like when it opens.",
+      "",
       "[walk] How do you make your first scene and run it?",
       "[step] In the Scene dock, click the button that says User Interface, which makes a piece called Control to be your root. || Scene dock  ->  User Interface\nCreates: Control",
       "[step] Double-click the name Control and rename it Main, so the top of your scene tree reads Main. || Control  ->  Main",
@@ -140,12 +149,13 @@ module.exports = {
       "[step] Press F5 to play, and when Godot asks you to choose a main scene, click Select Current. || F5\nSelect Current",
       "[step] A plain gray window opens, and that window is your game, so stop it by pressing F8 or closing it. || F8",
       "",
-      "That gray rectangle doesn't look like much, but you made it, and every lesson from here on adds to it."
+      "That gray rectangle doesn't look like much, but you made it, and every lesson from here on adds to it.",
+      "Behind the scenes, F5 told Godot to open your main scene and create its pieces from the top down, which is why it asked you to pick one."
     ]},
 
     { title: "The Mistake Everyone Makes", s: [
       "The most common mistake in this whole course happens in the first ten minutes, and it's downloading the wrong Godot.",
-      "The plain version is the first big button on the website, it opens and runs and looks exactly the same, and you won't find out it's wrong until Lesson 3, when the C# code refuses to build.",
+      "The plain version is the first big button on the website, it opens and runs and looks exactly the same, and you won't find out it can't translate C# until Lesson 3, when your code refuses to build.",
       "The fix is easy but annoying: go back to the download page and click the button that says .NET.",
       "The second mistake works the same way, because Godot opens fine without the SDK, and you only discover it's missing when your first script won't run."
     ]},
@@ -161,9 +171,9 @@ module.exports = {
   words: [
     ["Game engine", "A program for building games that handles the drawing, the sound and the Play button so you can focus on your game.", 4 /*F:a free {{game engine}}*/],
     ["SDK", "A set of tools that lets your computer understand and run a programming language such as C#.", 5 /*F:called the {{SDK}}*/],
-    ["Project", "The folder that holds everything for one game, which Godot lists in its Project Manager.", 15 /*F:called the {{Project}} Manager*/],
-    ["Scene", "A group of pieces saved together as one file, such as main.tscn.", 26 /*F:A {{scene}} is*/],
-    ["Root node", "The first piece in a scene, which every other piece sits on, and ours is called Main.", 26 /*F:A {{scene}} is*/]
+    ["Project", "The folder that holds everything for one game, which Godot lists in its Project Manager.", 16 /*F:called the {{Project}} Manager*/],
+    ["Scene", "A group of pieces saved together as one file, such as main.tscn.", 27 /*F:A {{scene}} is*/],
+    ["Root node", "The first piece in a scene, which every other piece sits on, and ours is called Main.", 27 /*F:A {{scene}} is*/]
   ],
 
   vocabQuestions: [

@@ -7,6 +7,8 @@
    this course. Sources: the videos listed in the Suggested Videos section (Microsoft
    Developer, Brackeys, John Dee), read for the teaching ORDER only, nothing copied.
 
+   Revised 2026-10-13 from YouTube transcripts (ideas only, nothing copied) + /natural.
+
    🚨 CODE LIVES ONLY IN [walk]/[step] WORK LINES (after the double bar). Sentences and
    questions name things in plain words. */
 'use strict';
@@ -32,7 +34,7 @@ module.exports = {
     unclear: "",
   },
   natural: "2026-10-13",
-  findsAt: 42,
+  findsAt: 46,
 
   shelf: { grades: [7], subject: "Coding",
     blurb: "Make the number count up all by itself. A Timer node rings every second, and a new Auto button starts and stops it.",
@@ -91,7 +93,11 @@ module.exports = {
       "You already know a doorbell: a button rings its Pressed signal when somebody clicks it, and your code answers.",
       "A {{Timer}} is a node that rings a signal too, but nobody has to press it, because it rings its bell all on its own every time its wait runs out.",
       "That bell is called {{Timeout}}, and the setting that decides how many seconds it waits between rings is the Wait Time.",
-      "Your code answers it just like it answers a button, so the timer is really a button that presses itself."
+      "Your code answers it just like it answers a button, so the timer is really a button that presses itself.",
+      "",
+      "[ex] With a wait of one second, the bell rings at one second, then two, then three, and your method runs at every ring.",
+      "",
+      "That makes the trip the same as a click's, except the clock does the pressing: the timer rings Timeout, your method adds one, and the label shows the new number."
     ]},
 
     { title: "Add the Timer", s: [
@@ -128,7 +134,8 @@ module.exports = {
       "[step] In the starting-up method, connect the new button's Pressed signal to a method named OnAutoPressed. || GetNode<Button>(\"AutoButton\").Pressed += OnAutoPressed;",
       "[step] Write the method so it asks whether the timer is stopped, starts it if the answer is yes, and stops it if the answer is no. || private void OnAutoPressed()\n{\n    if (timer.IsStopped())\n    {\n        timer.Start();\n    }\n    else\n    {\n        timer.Stop();\n    }\n}",
       "",
-      "Build, press F5, and click Auto a few times to watch the counting pause and start again."
+      "Before you build, guess what the counting does when you click Auto once, and what it does when you click it a second time.",
+      "Then build, press F5, and click Auto a few times to watch the counting pause and start again."
     ]},
 
     { title: "Put It Together", s: [
@@ -137,6 +144,7 @@ module.exports = {
       "[walk] What does the finished file for this lesson look like?",
       "[step] The new timer box and the three new connections all sit in the starting-up method, and the two new methods sit below the others. || using Godot;\n\npublic partial class Main : Control\n{\n    private int count = 0;\n    private Label label;\n    private Timer timer;\n\n    public override void _Ready()\n    {\n        label = GetNode<Label>(\"CountLabel\");\n        timer = GetNode<Timer>(\"AutoTimer\");\n        GetNode<Button>(\"PlusButton\").Pressed += OnPlusPressed;\n        GetNode<Button>(\"MinusButton\").Pressed += OnMinusPressed;\n        GetNode<Button>(\"ResetButton\").Pressed += OnResetPressed;\n        GetNode<Button>(\"AutoButton\").Pressed += OnAutoPressed;\n        timer.Timeout += OnTimerTimeout;\n        UpdateLabel();\n    }\n\n    private void OnPlusPressed()\n    {\n        count = count + 1;\n        UpdateLabel();\n    }\n\n    private void OnMinusPressed()\n    {\n        if (count > 0)\n        {\n            count = count - 1;\n        }\n        UpdateLabel();\n    }\n\n    private void OnResetPressed()\n    {\n        count = 0;\n        UpdateLabel();\n    }\n\n    private void OnTimerTimeout()\n    {\n        count = count + 1;\n        UpdateLabel();\n    }\n\n    private void OnAutoPressed()\n    {\n        if (timer.IsStopped())\n        {\n            timer.Start();\n        }\n        else\n        {\n            timer.Stop();\n        }\n    }\n\n    private void UpdateLabel()\n    {\n        label.Text = count.ToString();\n        if (count > 100)\n        {\n            label.Modulate = Colors.Red;\n        }\n        else\n        {\n            label.Modulate = Colors.White;\n        }\n    }\n}",
       "",
+      "When the game opens, the starting-up method runs once from top to bottom, setting up every box and connection, and after that the game simply waits for the next ring or click.",
       "Every piece in there is something you've already written, which is a good sign that you're getting somewhere."
     ]},
 
@@ -159,7 +167,7 @@ module.exports = {
     ["Timer", "A node that rings a signal over and over after a set number of seconds.", 5 /*F:A {{Timer}} is*/],
     ["Timeout", "The signal a timer rings each time its wait time runs out.", 6 /*F:called {{Timeout}}*/],
     ["Wait Time", "The setting that decides how many seconds a timer waits between rings.", 6 /*F:called {{Timeout}}*/],
-    ["Autostart", "The setting that makes a timer begin counting as soon as the game opens.", 13 /*F:Switch on Autostart*/]
+    ["Autostart", "The setting that makes a timer begin counting as soon as the game opens.", 15 /*F:Switch on Autostart*/]
   ],
 
   vocabQuestions: [

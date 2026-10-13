@@ -496,7 +496,11 @@ var ART = {
     '<circle cx="12" cy="10" r="3"/>', "A map pin"),
 };
 
-var VISUALS = [];
+var VISUALS = [
+  { at: 6, kind: "Example", body: "Your clicker will be just two blocks, one that shows the number and one that you can press." },
+  { at: 18, kind: "Example", body: "Click Main and the Inspector shows Main's settings, then click the label and the whole panel swaps to show the label's words and size." },
+  { at: 36, kind: "Example", body: "Think of a doorbell screwed onto a wall with no wires behind it, which you can press all day while nothing rings." }
+];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
    build-lessons.js rewrites each ONE line. */
@@ -513,6 +517,9 @@ var PARTS = [
   { title: "Blocks With One Job", s: [
     "Picture a box of building blocks, where every block is a different shape and each one does a single thing, like a wheel, a window or a flat base plate.",
     "In Godot, those blocks are called {{nodes}}, and one node shows text, another is a button you can click, and another counts time, but none of them tries to do everything.",
+    "",
+    "[ex] Your clicker will be just two blocks, one that shows the number and one that you can press.",
+    "",
     "A scene is the model you build from the blocks, a group of nodes snapped together and saved as one file, and the base plate everything sits on is the root, which in your game is Main.",
     "Any node that sits under another one is its {{child node}}, so a button sitting on Main is a child of Main."
   ] },
@@ -530,7 +537,9 @@ var PARTS = [
   { title: "Properties Live in the Inspector", s: [
     "Every node has settings, and each setting is called a {{property}}, such as what the text says, how big it is, and where it sits on the screen.",
     "The place you change them is the {{Inspector}} on the right side of the editor, which always shows the properties of whichever node you've clicked in the Scene dock.",
-    "Click a different node and the Inspector changes to match, which is a good way to see how each kind of node is different.",
+    "",
+    "[ex] Click Main and the Inspector shows Main's settings, then click the label and the whole panel swaps to show the label's words and size.",
+    "",
     "With the label selected, you have three properties to change: the words, the size, and the position."
   ] },
   { title: "Make the Number Big", s: [
@@ -555,8 +564,12 @@ var PARTS = [
     "Press Ctrl+S to save, because you'll be adding to this scene in every lesson from now on."
   ] },
   { title: "Press Play, and Nothing Happens", s: [
-    "Press F5 now and you'll see your big zero with a button under it, and that part works.",
+    "Before you press F5, make a guess about what will happen when you click the button.",
+    "Press F5 and you'll see your big zero with a button under it, because Godot builds the pieces from the top down, Main first and then the label and the button on top of it.",
     "Then click the button, and nothing happens at all, which looks like a bug and isn't one.",
+    "",
+    "[ex] Think of a doorbell screwed onto a wall with no wires behind it, which you can press all day while nothing rings.",
+    "",
     "A node can sit on the screen without knowing what to do, because the button is only a block, and the instructions that tell it what to do come from code.",
     "Writing that code is the job of the next two lessons, so for today, a number and a button that don't do anything yet is exactly the right result."
   ] },
@@ -583,9 +596,9 @@ var PARTS = [
 
 var WORDS = [
   ["Node", "One piece of a game with one job, such as showing text or being a button.", [5]],
-  ["Child node", "A node that sits under another node in the Scene dock.", [7]],
-  ["Property", "A setting on a node, such as what its text says or how big it is.", [15]],
-  ["Inspector", "The panel on the right of the editor where you change the properties of the selected node.", [16]]
+  ["Child node", "A node that sits under another node in the Scene dock.", [8]],
+  ["Property", "A setting on a node, such as what its text says or how big it is.", [16]],
+  ["Inspector", "The panel on the right of the editor where you change the properties of the selected node.", [17]]
 ];
 
 var QUESTIONS = [

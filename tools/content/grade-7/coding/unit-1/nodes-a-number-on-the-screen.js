@@ -7,6 +7,8 @@
    this course. Sources: the videos listed in the Suggested Videos section (Microsoft
    Developer, Brackeys), read for the teaching ORDER only, nothing copied.
 
+   Revised 2026-10-13 from YouTube transcripts (ideas only, nothing copied) + /natural.
+
    🚨 NO CODE in sentences. Scene trees appear as text in [step] work lines only. */
 'use strict';
 module.exports = {
@@ -30,7 +32,7 @@ module.exports = {
     unclear: "",
   },
   natural: "2026-10-13",
-  findsAt: 44,
+  findsAt: 47,
 
   shelf: { grades: [7], subject: "Coding",
     blurb: "A game is built from small pieces called nodes. Add a label that shows a number and a button, and learn what a scene really is.",
@@ -86,6 +88,9 @@ module.exports = {
     { title: "Blocks With One Job", s: [
       "Picture a box of building blocks, where every block is a different shape and each one does a single thing, like a wheel, a window or a flat base plate.",
       "In Godot, those blocks are called {{nodes}}, and one node shows text, another is a button you can click, and another counts time, but none of them tries to do everything.",
+      "",
+      "[ex] Your clicker will be just two blocks, one that shows the number and one that you can press.",
+      "",
       "A scene is the model you build from the blocks, a group of nodes snapped together and saved as one file, and the base plate everything sits on is the root, which in your game is Main.",
       "Any node that sits under another one is its {{child node}}, so a button sitting on Main is a child of Main."
     ]},
@@ -105,7 +110,9 @@ module.exports = {
     { title: "Properties Live in the Inspector", s: [
       "Every node has settings, and each setting is called a {{property}}, such as what the text says, how big it is, and where it sits on the screen.",
       "The place you change them is the {{Inspector}} on the right side of the editor, which always shows the properties of whichever node you've clicked in the Scene dock.",
-      "Click a different node and the Inspector changes to match, which is a good way to see how each kind of node is different.",
+      "",
+      "[ex] Click Main and the Inspector shows Main's settings, then click the label and the whole panel swaps to show the label's words and size.",
+      "",
       "With the label selected, you have three properties to change: the words, the size, and the position."
     ]},
 
@@ -133,8 +140,12 @@ module.exports = {
     ]},
 
     { title: "Press Play, and Nothing Happens", s: [
-      "Press F5 now and you'll see your big zero with a button under it, and that part works.",
+      "Before you press F5, make a guess about what will happen when you click the button.",
+      "Press F5 and you'll see your big zero with a button under it, because Godot builds the pieces from the top down, Main first and then the label and the button on top of it.",
       "Then click the button, and nothing happens at all, which looks like a bug and isn't one.",
+      "",
+      "[ex] Think of a doorbell screwed onto a wall with no wires behind it, which you can press all day while nothing rings.",
+      "",
       "A node can sit on the screen without knowing what to do, because the button is only a block, and the instructions that tell it what to do come from code.",
       "Writing that code is the job of the next two lessons, so for today, a number and a button that don't do anything yet is exactly the right result."
     ]},
@@ -156,9 +167,9 @@ module.exports = {
 
   words: [
     ["Node", "One piece of a game with one job, such as showing text or being a button.", 5 /*F:are called {{nodes}}*/],
-    ["Child node", "A node that sits under another node in the Scene dock.", 7 /*F:{{child node}}*/],
-    ["Property", "A setting on a node, such as what its text says or how big it is.", 15 /*F:called a {{property}}*/],
-    ["Inspector", "The panel on the right of the editor where you change the properties of the selected node.", 16 /*F:{{Inspector}} on the right*/]
+    ["Child node", "A node that sits under another node in the Scene dock.", 8 /*F:{{child node}}*/],
+    ["Property", "A setting on a node, such as what its text says or how big it is.", 16 /*F:called a {{property}}*/],
+    ["Inspector", "The panel on the right of the editor where you change the properties of the selected node.", 17 /*F:{{Inspector}} on the right*/]
   ],
 
   vocabQuestions: [

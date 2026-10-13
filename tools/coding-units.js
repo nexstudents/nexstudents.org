@@ -15,12 +15,13 @@
    Godot Basics' C# setup). Nothing was copied; their order and their warnings
    were used. Their video ids sit on each lesson's `videos`, for a parent to add.
 
-   🚨 ONE GAME, BUILT UP ALL SEMESTER. Unit 1 is a clicker so he sees something
-   move in the first week. Units 2 to 5 turn it into a REACTOR CONTROL SIM,
-   because Kolten designed one already (Claude wrote that code; he did not).
-   Nuclear is his current interest, and heat, rods and coolant are real
-   feedback-loop thinking. Planes are not gone; the same skills make a flight
-   panel later.
+   🚨 ONE GAME, BUILT UP ALL SEMESTER, OUR OWN DESIGN. Unit 1 is a clicker so he
+   sees something work in the first week. Units 2 to 5 build a ROLLING-BALL
+   PUZZLE seen from above: a physics ball steered with the arrow keys, walls,
+   a goal hole, holes that reset it, switches, gates, keys, two levels. Paul,
+   2026-10-13: "we don't need to make a reactor game ... kind of like a moving
+   game ... a puzzle game with like a ball that moves around". (The reactor plan
+   was dropped the same day.)
 
    36 lessons, 2 a week, 18 weeks → coding-plan.js. Every unit ends in a review.
    ───────────────────────────────────────────────────────────────────────── */
@@ -41,39 +42,39 @@ const GODOT7 = {
       { title: "A Timer That Counts by Itself", slug: "coding/a-timer-that-counts" },
       { title: "Unit 1 Review: A Clicker From Scratch", slug: "coding/unit-1-review" },
     ]},
-    { n: 2, name: "Things That Change Over Time", lessons: [
-      { title: "Every Frame: _Process and Delta" },
-      { title: "Whole Numbers and Decimals: int and float" },
-      { title: "Keys on the Keyboard: the Input Map" },
-      { title: "A Heat Meter: the Progress Bar" },
-      { title: "Numbers You Set in the Inspector: [Export]" },
-      { title: "Keeping a Number in Range: Clamp" },
-      { title: "Unit 2 Review: The Heat Meter" },
+    { n: 2, name: "A Ball That Rolls", lessons: [
+      { title: "A Ball Scene: RigidBody2D" },
+      { title: "Seen From Above: Turning Off Gravity" },
+      { title: "Arrow Keys: the Input Map" },
+      { title: "Pushing the Ball: Forces" },
+      { title: "Slowing Down by Itself: Damping" },
+      { title: "Walls to Bounce Off" },
+      { title: "Unit 2 Review: Steer the Ball" },
     ]},
-    { n: 3, name: "Building the Reactor", lessons: [
-      { title: "Designing the Reactor on Paper" },
-      { title: "A Scene for Each Part" },
-      { title: "Control Rods: the Slider" },
-      { title: "Heat Rises When the Rods Come Out" },
-      { title: "The Coolant Pump" },
-      { title: "The Feedback Loop" },
-      { title: "Finding Other Nodes: GetNode" },
-      { title: "Unit 3 Review: A Reactor That Runs" },
+    { n: 3, name: "The First Puzzle Room", lessons: [
+      { title: "Designing a Room on Paper" },
+      { title: "Building the Walls" },
+      { title: "The Goal Hole: Area2D" },
+      { title: "You Win! Signals From the Goal" },
+      { title: "Holes That Send You Back" },
+      { title: "A Timer on the Screen" },
+      { title: "Your Best Time" },
+      { title: "Unit 3 Review: A Room You Can Solve" },
     ]},
-    { n: 4, name: "Warnings, Meltdown and Score", lessons: [
-      { title: "Warning Lights: Color From Code" },
-      { title: "The Alarm: Playing a Sound" },
-      { title: "Meltdown: Game Over" },
-      { title: "Try Again: Restarting the Scene" },
-      { title: "Keeping Score: Time Survived" },
-      { title: "Saving the High Score" },
-      { title: "Unit 4 Review: Win, Lose and Warnings" },
+    { n: 4, name: "Puzzle Pieces", lessons: [
+      { title: "A Switch That Opens a Gate" },
+      { title: "A Key and a Locked Door" },
+      { title: "Pieces You Make Once: Reusing Scenes" },
+      { title: "Press R to Restart" },
+      { title: "Building a Harder Room" },
+      { title: "Fair or Too Hard? Testing a Puzzle" },
+      { title: "Unit 4 Review: A Puzzle With Every Piece" },
     ]},
     { n: 5, name: "Finish It and Share It", lessons: [
-      { title: "A Main Menu: Changing Scenes" },
-      { title: "Easy, Normal and Hard" },
+      { title: "A Second Level: Changing Scenes" },
+      { title: "A Main Menu" },
+      { title: "Sounds for Rolling, Clicks and Winning" },
       { title: "Playtesting and Fixing Bugs" },
-      { title: "Your Own Feature" },
       { title: "Exporting Your Game" },
       { title: "Unit 5 Review: Show It Off" },
     ]},

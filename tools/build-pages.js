@@ -1969,13 +1969,13 @@ const ELECTIVES = [
   { id: "extras/electives/game-coding", href: "/extras/electives/game-coding/",
     eyebrow: "Elective &middot; Godot with C#",
     title: "Game Coding",
-    blurb: "Make a real game, from a number you click to a reactor you have to keep from melting down.",
+    blurb: "Make a real game, from a number you click to a rolling-ball puzzle of your own.",
     meta: "36 lessons &middot; 18 weeks",
     contains: [
       "Set up Godot and C# on your own computer, with the links",
       "A clicker game in the first unit, built one step at a time",
       "Every line of code shown worked, then typed by you",
-      "A reactor control game across Units 2 to 5",
+      "A rolling-ball puzzle game across Units 2 to 5",
     ] },
   /* 🤖 A FUTURE elective, a slot only (Paul, 2026-10-13: "Robotics Coding for
      C++ ... make one for a future elective"). No href until its lessons exist.
@@ -2946,7 +2946,7 @@ const pages = [
     desc: "The Game Coding elective, one semester: Week 1 to Week 18, two lessons a week, building a game in Godot with C#.",
     crumb: '<a href="/extras/">Extras</a> &rsaquo; <a href="/extras/electives/">Electives</a> &rsaquo; <a href="/extras/electives/game-coding/">Game Coding</a> &rsaquo; Lesson Semester Plan',
     h1: "Game Coding Lesson Semester Plan.",
-    lead: "One elective, Week 1 to Week 18, two lessons a week. A clicker first, then a reactor control game, built up one lesson at a time.",
+    lead: "One elective, Week 1 to Week 18, two lessons a week. A clicker first, then a rolling-ball puzzle game, built up one lesson at a time.",
     body: planBody(CODING.build(), {
       weeks: CODING.WEEKS, perDay: CODING.build().perDay.toFixed(1),
       note: "This is the plan, not the build. Each row is one lesson in Godot, worked in C#;",
@@ -2963,7 +2963,7 @@ const pages = [
     desc: "Game Coding, an elective: make a real game in Godot with C#, one short lesson at a time.",
     crumb: '<a href="/extras/">Extras</a> &rsaquo; <a href="/extras/electives/">Electives</a> &rsaquo; Game Coding',
     h1: "Game Coding Lessons.",
-    lead: "An elective. Make a real game in Godot with C#, starting from a number you click and ending with a reactor you have to keep from melting down.",
+    lead: "An elective. Make a real game in Godot with C#, starting from a number you click and ending with a rolling-ball puzzle game you can share.",
     body: codingShelfIntro() + gradeSubjectLessons(7, "Coding") },
 
   /* The K-8 plans from Missouri's standards, one per grade. Grade 7's sits

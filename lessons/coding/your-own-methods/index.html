@@ -496,7 +496,9 @@ var ART = {
     '<circle cx="12" cy="10" r="3"/>', "A map pin"),
 };
 
-var VISUALS = [];
+var VISUALS = [
+  { at: 7, kind: "Example", body: "If you wrote a recipe called Show The Number, then each button could just say to do Show The Number, instead of repeating every step itself." }
+];
 
 /* The worked problems, or [], then one "Watch It Explained" video, or null.
    build-lessons.js rewrites each ONE line. */
@@ -514,6 +516,9 @@ var PARTS = [
     "You already know a {{method}} is a named recipe, and so far every recipe you've written was answering a bell, like the one that adds one when the plus button rings.",
     "But you can also write recipes just because you want them, the way a cook writes down a sauce once and then says to add the sauce whenever a dish needs it.",
     "Using a recipe by its name is called making a {{call}}, and a call is written as the name followed by a pair of parentheses and a semicolon.",
+    "",
+    "[ex] If you wrote a recipe called Show The Number, then each button could just say to do Show The Number, instead of repeating every step itself.",
+    "",
     "That pair of parentheses matters more than it looks, because a name with no parentheses after it only mentions the recipe and never actually cooks it."
   ] },
   { title: "Add Two More Buttons", s: [
@@ -547,7 +552,8 @@ var PARTS = [
     "[step] Add one more call at the very end of the starting-up method, so the label shows the starting number as soon as the game opens. || UpdateLabel();",
     "[step] Check that your whole file looks like this, then build and press F5. || using Godot;\n\npublic partial class Main : Control\n{\n    private int count = 0;\n    private Label label;\n\n    public override void _Ready()\n    {\n        label = GetNode<Label>(\"CountLabel\");\n        GetNode<Button>(\"PlusButton\").Pressed += OnPlusPressed;\n        GetNode<Button>(\"MinusButton\").Pressed += OnMinusPressed;\n        GetNode<Button>(\"ResetButton\").Pressed += OnResetPressed;\n        UpdateLabel();\n    }\n\n    private void OnPlusPressed()\n    {\n        count = count + 1;\n        UpdateLabel();\n    }\n\n    private void OnMinusPressed()\n    {\n        count = count - 1;\n        UpdateLabel();\n    }\n\n    private void OnResetPressed()\n    {\n        count = 0;\n        UpdateLabel();\n    }\n\n    private void UpdateLabel()\n    {\n        label.Text = count.ToString();\n    }\n}",
     "",
-    "The game behaves exactly the same as before, but the label line now lives in one place, so a change to it only has to happen once."
+    "The game behaves exactly the same as before, but the label line now lives in one place, so a change to it only has to happen once.",
+    "Behind the scenes, when a click method reaches the call, the computer jumps over to your method, runs every line inside it from the top down, and then hops back to carry on where it left off."
   ] },
   { title: "Try It Before You Trust It", s: [
     "You'll press F5 and run through a short test, and it helps to guess the answer first.",
@@ -579,8 +585,8 @@ var PARTS = [
 var WORDS = [
   ["Method", "A named recipe of code that you write once and can use as many times as you like.", [4]],
   ["Call", "Using a method by writing its name, followed by parentheses and a semicolon.", [6]],
-  ["Case-sensitive", "Treating capital and small letters as different, so UpdateLabel and Updatelabel are two names.", [34]],
-  ["Parentheses", "The pair of curved marks after a method's name, which tell the computer to actually run it.", [7]]
+  ["Case-sensitive", "Treating capital and small letters as different, so UpdateLabel and Updatelabel are two names.", [36]],
+  ["Parentheses", "The pair of curved marks after a method's name, which tell the computer to actually run it.", [8]]
 ];
 
 var QUESTIONS = [

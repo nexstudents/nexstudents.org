@@ -7,6 +7,8 @@
    this course. Sources: the videos listed in the Suggested Videos section (Arkade Games,
    John Dee, Microsoft Developer), read for the teaching ORDER only, nothing copied.
 
+   Revised 2026-10-13 from YouTube transcripts (ideas only, nothing copied) + /natural.
+
    🚨 CODE LIVES ONLY IN [walk]/[step] WORK LINES (after the double bar). Sentences and
    questions name things in plain words. */
 'use strict';
@@ -32,7 +34,7 @@ module.exports = {
     unclear: "",
   },
   natural: "2026-10-13",
-  findsAt: 41,
+  findsAt: 46,
 
   shelf: { grades: [7], subject: "Coding",
     blurb: "Make the plus button actually count. A variable remembers the number, and a signal rings when the button is clicked.",
@@ -91,14 +93,20 @@ module.exports = {
       "The answer is a {{variable}}, which is a box with a name on the front where the game stores something it needs to remember.",
       "You'll call yours count, and whatever sits inside the box can change over time, which is where the word variable comes from, since it's something that can vary.",
       "Every box in C# also has a kind of thing it's allowed to hold, and an {{int}} box holds a whole number, like 0 or 5 or 100, but never a decimal and never words.",
-      "That makes the box easy to picture: a little crate labeled count, with a number inside that starts at zero."
+      "That makes the box easy to picture: a little crate labeled count, with a number inside that starts at zero.",
+      "",
+      "[ex] If the crate holds a two and you click once, it holds a three, and it keeps that three until the next click."
     ]},
 
     { title: "The Doorbell", s: [
       "Now you need a way for a click to reach your code, and that works like a doorbell on a house.",
       "When someone clicks the button, the button rings a {{signal}} called Pressed, and a signal is just a button's way of announcing that something happened.",
       "Your job is to answer the door by saying, when that bell rings, run this method of mine, and the plus-equals sign is how you say it.",
-      "A button rings its bell every time it's clicked, whether anyone is listening or not, and your connection is what makes someone listen."
+      "A button rings its bell every time it's clicked, whether anyone is listening or not, and your connection is what makes someone listen.",
+      "",
+      "[ex] Click three times and the bell rings three times, so your method answers three times, once for every ring.",
+      "",
+      "Put the whole trip together and one click goes like this: your mouse presses the button, the button rings Pressed, your method runs, the count goes up, and the label shows the new number."
     ]},
 
     { title: "Build the Box and the Doorbell", s: [
@@ -122,6 +130,7 @@ module.exports = {
       "[step] Then set the label's text to the count, but a label only holds words, so the number has to be turned into words first. || label.Text = count.ToString();",
       "[step] Check that your whole file looks like this, then build with the hammer and save. || using Godot;\n\npublic partial class Main : Control\n{\n    private int count = 0;\n    private Label label;\n\n    public override void _Ready()\n    {\n        label = GetNode<Label>(\"CountLabel\");\n        GetNode<Button>(\"PlusButton\").Pressed += OnPlusPressed;\n    }\n\n    private void OnPlusPressed()\n    {\n        count = count + 1;\n        label.Text = count.ToString();\n    }\n}",
       "",
+      "The equals sign in that line means put the answer into the box, so it reads as take what's in count, add one, and store it back.",
       "There's also a shortcut, a pair of plus signs after the name, that does the same thing as adding one, but keep the long version for now so you can see exactly what happens."
     ]},
 
@@ -141,6 +150,7 @@ module.exports = {
       "[step] Every click then shows a one, because the box is thrown away the moment the method finishes. || click, click, click  ->  1, 1, 1",
       "[step] The fix is to move the box back out to the top of the file, above the starting-up method, where it lives for the whole game. || private int count = 0;",
       "",
+      "A method gets fresh boxes every time it starts and throws them away when it ends, while a box at the top stays alive for as long as the game runs.",
       "A box inside a method is like a note on a napkin that gets thrown out after lunch, while a box at the top is a note on the fridge."
     ]},
 
@@ -155,9 +165,9 @@ module.exports = {
   words: [
     ["Variable", "A named box where a program keeps something it needs to remember, and what's inside can change.", 4 /*F:The answer is a {{variable}}*/],
     ["Int", "The kind of variable that holds a whole number, with no decimals.", 6 /*F:an {{int}} box holds*/],
-    ["Signal", "A message a node sends out when something happens, such as a button being clicked.", 9 /*F:rings a {{signal}}*/],
-    ["String", "Words and letters, which is what a label's text holds, as opposed to a number.", 23 /*F:a label only holds words*/],
-    ["Convert", "To turn one kind of thing into another, such as a number into words so it fits in a label.", 23 /*F:a label only holds words*/]
+    ["Signal", "A message a node sends out when something happens, such as a button being clicked.", 10 /*F:rings a {{signal}}*/],
+    ["String", "Words and letters, which is what a label's text holds, as opposed to a number.", 26 /*F:a label only holds words*/],
+    ["Convert", "To turn one kind of thing into another, such as a number into words so it fits in a label.", 26 /*F:a label only holds words*/]
   ],
 
   vocabQuestions: [

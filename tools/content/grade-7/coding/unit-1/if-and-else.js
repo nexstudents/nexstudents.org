@@ -7,6 +7,8 @@
    this course. Sources: the videos listed in the Suggested Videos section (Arkade Games,
    John Dee, Mina Pecheux), read for the teaching ORDER only, nothing copied.
 
+   Revised 2026-10-13 from YouTube transcripts (ideas only, nothing copied) + /natural.
+
    🚨 CODE LIVES ONLY IN [walk]/[step] WORK LINES (after the double bar). Sentences and
    questions name comparisons in plain words, such as "greater than". */
 'use strict';
@@ -32,7 +34,7 @@ module.exports = {
     unclear: "",
   },
   natural: "2026-10-13",
-  findsAt: 38,
+  findsAt: 42,
 
   shelf: { grades: [7], subject: "Coding",
     blurb: "Teach your game to make a decision. The number turns red past one hundred, and the minus button learns to stop at zero.",
@@ -82,7 +84,7 @@ module.exports = {
   parts: [
     { title: "The Number That Never Says No", s: [
       "Click the minus button at zero and your clicker cheerfully shows a minus one, and then a minus two, and it will keep going until the computer runs out of numbers.",
-      "In a real game that's a disaster, since heat can't be less than nothing, and a score that hits a limit is supposed to flash a warning at the player.",
+      "In a real game that's a disaster, since nobody can press a button fewer than zero times, and a number that hits its limit is supposed to warn the player.",
       "A game that never says no is only a calculator, and what turns it into a game is that it checks things and acts on what it finds.",
       "So how does code ask a question, and what does it do with the answer?"
     ]},
@@ -91,13 +93,20 @@ module.exports = {
       "The tool is called {{if}}, and it asks a yes-or-no question and then sends the code through one of two doors.",
       "If the answer is yes, the code goes through the first door and runs whatever is inside its curly braces, and if the answer is no, it skips that door completely.",
       "Right behind it you can add {{else}}, which is the second door, and it opens only when the answer was no.",
-      "The question itself is called a {{condition}}, and it always has to be something that is plainly true or false, like the number is over a hundred."
+      "The question itself is called a {{condition}}, and it always has to be something that is plainly true or false, like the number is over a hundred.",
+      "",
+      "[ex] Ask whether the number is over a hundred, and if the answer is yes the label turns red, but if the answer is no it stays white.",
+      "",
+      "Notice that the computer never answers maybe, because a condition only ever comes out as yes or no."
     ]},
 
     { title: "How to Ask About Numbers", s: [
       "To ask about numbers, you use a {{comparison}}, which puts two things side by side and checks how they relate.",
       "The marks you'll use are greater than, less than, greater than or equal to, less than or equal to, and two equals signs in a row, which ask whether two things are exactly the same.",
       "That last one is the sneaky one, because a single equals sign means put this value in the box, and a double one means are these two equal, so mixing them up is like saying a sentence when you meant to ask a question.",
+      "",
+      "[ex] With one sign you'd shove a five into the box, but with two signs you're only asking whether the box already holds a five.",
+      "",
       "Keep one more thing in mind: greater than means strictly greater, so a hundred is not greater than a hundred."
     ]},
 
@@ -122,7 +131,8 @@ module.exports = {
       "[step] After the first door, add an else, and inside it set the color back to white. || else\n{\n    label.Modulate = Colors.White;\n}",
       "[step] Check that your whole UpdateLabel method looks like this, then build. || private void UpdateLabel()\n{\n    label.Text = count.ToString();\n    if (count > 100)\n    {\n        label.Modulate = Colors.Red;\n    }\n    else\n    {\n        label.Modulate = Colors.White;\n    }\n}",
       "",
-      "Because every button calls UpdateLabel, the color check now happens after every click without you adding it anywhere else."
+      "Because every button calls UpdateLabel, the color check now happens after every click without you adding it anywhere else.",
+      "The computer reads that method from the top down, so it sets the text first, then meets the question, takes exactly one of the two doors, and skips the other."
     ]},
 
     { title: "Predict at the Edge", s: [
@@ -151,7 +161,7 @@ module.exports = {
     ["If", "A tool that asks a yes-or-no question and runs its braces only when the answer is yes.", 4 /*F:The tool is called {{if}}*/],
     ["Else", "The second door of an if, which runs when the answer was no.", 6 /*F:{{else}}*/],
     ["Condition", "The yes-or-no question inside an if, which must be plainly true or false.", 7 /*F:{{condition}}*/],
-    ["Comparison", "Putting two things side by side to check how they relate, such as greater than or equal to.", 8 /*F:{{comparison}}*/]
+    ["Comparison", "Putting two things side by side to check how they relate, such as greater than or equal to.", 10 /*F:{{comparison}}*/]
   ],
 
   vocabQuestions: [
