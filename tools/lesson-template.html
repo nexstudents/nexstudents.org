@@ -1027,6 +1027,72 @@ html.dbox-full-open, body.dbox-full-open{overflow:hidden}
 .wk-grid.is-square td{text-align:center;min-width:3.2em;height:2.4em;font-size:1.15em;font-weight:700}
 .wk-grid.is-square th{border:none;text-align:center;font-size:1.1em;color:var(--ink-soft)}
 .wk-after{margin-top:8px;white-space:pre-wrap}
+/* A phone: a six-column place-value grid (2026-10-14) ran off the right edge
+   at 390px. Tighter cells, smaller type, so it fits without scrolling. */
+@media (max-width:560px){
+  .wk-show.is-grid{padding:8px 6px}
+  .wk-show.is-grid .wk-grid:not(.is-square) td,.wk-show.is-grid .wk-grid:not(.is-square) th{padding:6px 5px;font-size:.78em}
+}
+/* 📐 Designed figures (drawFig). Labels are real text; lines are CSS borders. */
+.wk-show.is-fig{white-space:normal;font-style:normal;overflow-x:auto;padding:12px 10px}
+.fig{font-family:"IBM Plex Sans",system-ui,sans-serif;color:var(--ink);min-width:290px;max-width:560px}
+.fig-note{font-size:.82em;font-style:italic;color:var(--ink-soft);margin-top:4px}
+.fig-place{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));margin-bottom:6px;
+  padding-right:2.4em} /* room for the last slanted label, "thousandths" */
+.fp-col{grid-row:1;display:flex;flex-direction:column;align-items:center;text-align:center;
+  border-left:1px solid var(--rule);padding-bottom:4px}
+.fp-col.is-last{border-right:1px solid var(--rule)}
+.fig-note.is-narrow{display:none}
+/* A phone: the seven columns become seven rows (prefix | place | value). */
+/* ⚠️ Every phone selector starts ".fig .fig-place" so it outranks the wide
+   rules further down, whatever their order in this file. */
+@media (max-width:560px){
+  .wk-show .fig{min-width:0}
+  .fig .fig-place{display:flex;flex-direction:column;padding-right:0;max-width:300px}
+  .fig .fig-place .fp-col{display:grid;grid-template-columns:4.6em 1fr auto;align-items:center;
+    border:1px solid var(--rule);padding:8px 10px;text-align:left}
+  .fig .fig-place .fp-place{order:2;width:auto;height:auto}
+  .fig .fig-place .fp-place span{position:static;transform:none;font-size:.86em}
+  .fig .fig-place .fp-pre{order:1;width:auto;border-top:none;padding:0;font-size:.95em}
+  .fig .fig-place .fp-val{order:3;text-align:right}
+  .fig .fig-place .fp-hop{display:block;padding:2px 0 2px 1.2em}
+  .fig .fig-place .fp-arc{display:none}
+  .fig .fig-place .fp-x::before{content:"\2191  "}
+  .fig .fig-note.is-wide{display:none}
+  .fig .fig-note.is-narrow{display:block}
+  .fig .fig-arrows .fa-unit{width:2.25em;height:2.25em;font-size:.88em}
+  .fig .fig-arrows .fa-lab{font-size:.7em}
+  .fig .fig-arrows .fa-arc{margin:0 1px}
+}
+.fp-col.is-unit{background:var(--surface)}
+.fp-place{position:relative;display:block;width:100%;height:5.4em}
+.fp-place span{position:absolute;left:50%;bottom:.35em;transform:rotate(-55deg);transform-origin:0 50%;
+  white-space:nowrap;font-size:.74em;color:var(--ink-soft)}
+.fp-pre{display:block;width:100%;padding:6px 0 2px;border-top:1.5px solid var(--ink-soft);
+  font-weight:700;font-size:.86em}
+.fp-col.is-unit .fp-pre{color:var(--verdigris)}
+.fp-val{font-family:Georgia,"Times New Roman",serif;font-size:.92em}
+.fp-hop{grid-row:2;display:flex;flex-direction:column;align-items:center;padding:6px 18% 0}
+.fp-arc{position:relative;display:block;width:100%;height:10px;border:2px solid var(--verdigris);
+  border-top:none;border-radius:0 0 50% 50%/0 0 100% 100%}
+.fp-arc::before{content:"";position:absolute;left:-5px;top:-6px;border:5px solid transparent;
+  border-top:none;border-bottom:7px solid var(--verdigris)}
+.fp-x{font-size:.72em;font-weight:700;color:var(--verdigris);margin-top:2px;white-space:nowrap}
+.fa-cap{font-size:.84em;margin:2px 0}
+.fa-cap b{text-transform:uppercase;letter-spacing:.08em}
+.fa-cap.is-mul b,.fa-lab.is-mul{color:var(--verdigris)}
+.fa-cap.is-div b,.fa-lab.is-div{color:var(--ink-soft)}
+.fig-arrows{display:grid;align-items:center;justify-content:safe center;column-gap:2px;margin:8px 0}
+.fa-unit{width:2.7em;height:2.7em;border-radius:50%;border:2px solid var(--ink);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.fa-lab{text-align:center;font-size:.82em;font-weight:700;white-space:nowrap}
+.fa-arc{position:relative;display:block;height:13px;margin:0 4px;border:2px solid currentColor}
+.fa-arc.is-over{color:var(--verdigris);border-bottom:none;border-radius:50% 50% 0 0/100% 100% 0 0;align-self:end}
+.fa-arc.is-over::after{content:"";position:absolute;right:-6px;bottom:-7px;border:5px solid transparent;
+  border-bottom:none;border-top:7px solid currentColor}
+.fa-arc.is-under{color:var(--ink-soft);border-top:none;border-radius:0 0 50% 50%/0 0 100% 100%;align-self:start}
+.fa-arc.is-under::after{content:"";position:absolute;left:-6px;top:-7px;border:5px solid transparent;
+  border-top:none;border-bottom:7px solid currentColor}
 .wk-grid td.is-shape{font-family:"NS Mono","Segoe UI Symbol",system-ui,sans-serif;font-size:1.5em;line-height:1;white-space:nowrap}
 /* 🚨 OUR OWN CODE FONT (2026-10-13). A phone has no Consolas or Cascadia, and its
    fallback monospace lacks box, block and shape glyphs, so those came from another
@@ -2644,6 +2710,82 @@ new MutationObserver(applyTheme).observe(document.documentElement, { attributes:
    wins, the Lucide entries above should be swapped for their filled variants
    rather than left to sit alongside. Paul's call. */
 
+/* ---------- designed figures for a [step] work line ---------- */
+/* 📐 2026-10-14. Paul asked for the textbook's own charts, DESIGNED, not text
+   turned into a picture. Two figures, both built from elements so every label
+   is real text in the page font and every colour is a theme token:
+     @fig:place                          the metric place-value chart
+     @fig:arrows km m cm mm | 1,000 100 10   multiply over the top, divide under
+   Anything it does not recognise returns null and the line prints as text. */
+function drawFig(spec){
+  var el = function(tag, cls, txt){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  };
+  var bits = spec.trim().split(/\s*\|\s*/);
+  var head = bits[0].split(/\s+/);
+  var wrap = el("div", "fig");
+  if (head[0] === "place") {
+    var places = ["thousands", "hundreds", "tens", "ones", "tenths", "hundredths", "thousandths"];
+    var pre = ["kilo-", "hecto-", "deka-", "unit", "deci-", "centi-", "milli-"];
+    var val = ["1,000", "100", "10", "1", "0.1", "0.01", "0.001"];
+    /* Column, hop, column, hop... in DOM order. Wide screens place them on a
+       grid (the book's sideways chart); a phone has no room for seven columns,
+       so the CSS lets them fall into one list, kilo on top, each "x 10" hop
+       sitting between the two rows it joins. */
+    var f = el("div", "fig-place");
+    places.forEach(function(pl, i){
+      var c = el("div", "fp-col" + (i === 3 ? " is-unit" : "") + (i === 6 ? " is-last" : ""));
+      c.style.gridColumn = (2 * i + 1) + " / span 2";
+      var tag = el("span", "fp-place");
+      tag.appendChild(el("span", "", pl));
+      c.appendChild(tag);
+      c.appendChild(el("span", "fp-pre", pre[i]));
+      c.appendChild(el("span", "fp-val", val[i]));
+      f.appendChild(c);
+      if (i === 6) return;
+      var hop = el("div", "fp-hop");
+      hop.style.gridColumn = (2 * i + 2) + " / span 2";
+      hop.appendChild(el("span", "fp-arc"));
+      hop.appendChild(el("span", "fp-x", "× 10"));
+      f.appendChild(hop);
+    });
+    wrap.appendChild(f);
+    wrap.appendChild(el("div", "fig-note is-wide", "Each place is 10 times the place on its right."));
+    wrap.appendChild(el("div", "fig-note is-wide", "Each prefix is worth 10 times the prefix on its right."));
+    wrap.appendChild(el("div", "fig-note is-narrow", "Each place is 10 times the place below it, and so is each prefix."));
+    return wrap;
+  }
+  if (head[0] === "arrows") {
+    var units = head.slice(1), facs = (bits[1] || "").split(/\s+/).filter(Boolean);
+    if (units.length < 2 || facs.length !== units.length - 1) return null;
+    var g = el("div", "fig-arrows");
+    g.style.gridTemplateColumns = units.map(function(){ return "auto"; }).join(" minmax(30px,150px) ");
+    var put = function(node, col, row){ node.style.gridColumn = col; node.style.gridRow = row; g.appendChild(node); };
+    units.forEach(function(u, i){ put(el("div", "fa-unit", u), 2 * i + 1, 3); });
+    facs.forEach(function(x, i){
+      var col = 2 * i + 2;
+      put(el("div", "fa-lab is-mul", "× " + x), col, 1);
+      put(el("span", "fa-arc is-over"), col, 2);
+      put(el("span", "fa-arc is-under"), col, 4);
+      put(el("div", "fa-lab is-div", "÷ " + x), col, 5);
+    });
+    var top = el("div", "fa-cap is-mul");
+    top.appendChild(el("b", "", "Multiply"));
+    top.appendChild(document.createTextNode(" to change from a larger unit to a smaller unit"));
+    var bot = el("div", "fa-cap is-div");
+    bot.appendChild(el("b", "", "Divide"));
+    bot.appendChild(document.createTextNode(" to change from a smaller unit to a larger unit"));
+    wrap.appendChild(top);
+    wrap.appendChild(g);
+    wrap.appendChild(bot);
+    return wrap;
+  }
+  return null;
+}
+
 /* ---------- build the story ---------- */
 /* 🚨 WHICH PARAGRAPH EACH SENTENCE IS IN. The explainer blanks the moment the
    reading leaves the paragraph its picture belongs to. Paul, 2026-09-04: "i
@@ -2872,7 +3014,13 @@ PARTS.forEach(function(part){
           if (after) add(frag, "div", after).className = "wk-after";
           return frag;
         })(stepShow);
-        if (grid) { show.className = "wk-show is-grid"; show.appendChild(grid); }
+        /* 📐 A DESIGNED FIGURE (2026-10-14). Paul: "try to use the same graphs and
+           charts ... even if you need to design them not just turning text into
+           images". A work line starting @fig: names a figure drawn below from real
+           elements (CSS arcs, a grid), with every label in a real font. */
+        var fig = stepShow.indexOf("@fig:") === 0 ? drawFig(stepShow.slice(5)) : null;
+        if (fig) { show.className = "wk-show is-fig"; show.appendChild(fig); }
+        else if (grid) { show.className = "wk-show is-grid"; show.appendChild(grid); }
         else show.textContent = stepShow;
         stepEl.appendChild(show);
       }

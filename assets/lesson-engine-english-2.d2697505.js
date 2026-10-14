@@ -276,6 +276,82 @@ new MutationObserver(applyTheme).observe(document.documentElement, { attributes:
    wins, the Lucide entries above should be swapped for their filled variants
    rather than left to sit alongside. Paul's call. */
 
+/* ---------- designed figures for a [step] work line ---------- */
+/* 📐 2026-10-14. Paul asked for the textbook's own charts, DESIGNED, not text
+   turned into a picture. Two figures, both built from elements so every label
+   is real text in the page font and every colour is a theme token:
+     @fig:place                          the metric place-value chart
+     @fig:arrows km m cm mm | 1,000 100 10   multiply over the top, divide under
+   Anything it does not recognise returns null and the line prints as text. */
+function drawFig(spec){
+  var el = function(tag, cls, txt){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  };
+  var bits = spec.trim().split(/\s*\|\s*/);
+  var head = bits[0].split(/\s+/);
+  var wrap = el("div", "fig");
+  if (head[0] === "place") {
+    var places = ["thousands", "hundreds", "tens", "ones", "tenths", "hundredths", "thousandths"];
+    var pre = ["kilo-", "hecto-", "deka-", "unit", "deci-", "centi-", "milli-"];
+    var val = ["1,000", "100", "10", "1", "0.1", "0.01", "0.001"];
+    /* Column, hop, column, hop... in DOM order. Wide screens place them on a
+       grid (the book's sideways chart); a phone has no room for seven columns,
+       so the CSS lets them fall into one list, kilo on top, each "x 10" hop
+       sitting between the two rows it joins. */
+    var f = el("div", "fig-place");
+    places.forEach(function(pl, i){
+      var c = el("div", "fp-col" + (i === 3 ? " is-unit" : "") + (i === 6 ? " is-last" : ""));
+      c.style.gridColumn = (2 * i + 1) + " / span 2";
+      var tag = el("span", "fp-place");
+      tag.appendChild(el("span", "", pl));
+      c.appendChild(tag);
+      c.appendChild(el("span", "fp-pre", pre[i]));
+      c.appendChild(el("span", "fp-val", val[i]));
+      f.appendChild(c);
+      if (i === 6) return;
+      var hop = el("div", "fp-hop");
+      hop.style.gridColumn = (2 * i + 2) + " / span 2";
+      hop.appendChild(el("span", "fp-arc"));
+      hop.appendChild(el("span", "fp-x", "× 10"));
+      f.appendChild(hop);
+    });
+    wrap.appendChild(f);
+    wrap.appendChild(el("div", "fig-note is-wide", "Each place is 10 times the place on its right."));
+    wrap.appendChild(el("div", "fig-note is-wide", "Each prefix is worth 10 times the prefix on its right."));
+    wrap.appendChild(el("div", "fig-note is-narrow", "Each place is 10 times the place below it, and so is each prefix."));
+    return wrap;
+  }
+  if (head[0] === "arrows") {
+    var units = head.slice(1), facs = (bits[1] || "").split(/\s+/).filter(Boolean);
+    if (units.length < 2 || facs.length !== units.length - 1) return null;
+    var g = el("div", "fig-arrows");
+    g.style.gridTemplateColumns = units.map(function(){ return "auto"; }).join(" minmax(30px,150px) ");
+    var put = function(node, col, row){ node.style.gridColumn = col; node.style.gridRow = row; g.appendChild(node); };
+    units.forEach(function(u, i){ put(el("div", "fa-unit", u), 2 * i + 1, 3); });
+    facs.forEach(function(x, i){
+      var col = 2 * i + 2;
+      put(el("div", "fa-lab is-mul", "× " + x), col, 1);
+      put(el("span", "fa-arc is-over"), col, 2);
+      put(el("span", "fa-arc is-under"), col, 4);
+      put(el("div", "fa-lab is-div", "÷ " + x), col, 5);
+    });
+    var top = el("div", "fa-cap is-mul");
+    top.appendChild(el("b", "", "Multiply"));
+    top.appendChild(document.createTextNode(" to change from a larger unit to a smaller unit"));
+    var bot = el("div", "fa-cap is-div");
+    bot.appendChild(el("b", "", "Divide"));
+    bot.appendChild(document.createTextNode(" to change from a smaller unit to a larger unit"));
+    wrap.appendChild(top);
+    wrap.appendChild(g);
+    wrap.appendChild(bot);
+    return wrap;
+  }
+  return null;
+}
+
 /* ---------- build the story ---------- */
 /* 🚨 WHICH PARAGRAPH EACH SENTENCE IS IN. The explainer blanks the moment the
    reading leaves the paragraph its picture belongs to. Paul, 2026-09-04: "i
@@ -504,7 +580,13 @@ PARTS.forEach(function(part){
           if (after) add(frag, "div", after).className = "wk-after";
           return frag;
         })(stepShow);
-        if (grid) { show.className = "wk-show is-grid"; show.appendChild(grid); }
+        /* 📐 A DESIGNED FIGURE (2026-10-14). Paul: "try to use the same graphs and
+           charts ... even if you need to design them not just turning text into
+           images". A work line starting @fig: names a figure drawn below from real
+           elements (CSS arcs, a grid), with every label in a real font. */
+        var fig = stepShow.indexOf("@fig:") === 0 ? drawFig(stepShow.slice(5)) : null;
+        if (fig) { show.className = "wk-show is-fig"; show.appendChild(fig); }
+        else if (grid) { show.className = "wk-show is-grid"; show.appendChild(grid); }
         else show.textContent = stepShow;
         stepEl.appendChild(show);
       }

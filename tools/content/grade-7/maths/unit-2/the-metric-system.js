@@ -2,30 +2,21 @@
    Grade 7 · maths · unit 2. Its home is this folder.
    Built by tools/lessons.js. Edit the lesson here, not in the registry.
 
-   🚨 REWRITTEN 2026-10-13 (Sonnet, checked by Opus) after Kolten said the lessons
-   don't explain anything. Paul: "explain it to a 12-year-old."
-   The 2026-10-05 version described the prefix chart in one sentence and never
-   drew it, showed only a 1-place and a 3-place move, and never walked a single
-   conversion step by step or gave him one to try. This one starts from what the
-   three basic units are (doorknob, thumbtack, water bottle), DRAWS the prefix
-   ladder one rung at a time in a walk, then teaches each direction with the
-   dollar-dime-penny picture and two Watch It Worked walkthroughs each (1, 2 and
-   3 places both ways, the decimal point moved one place at a time), then a short
-   "which way?" check and a Your Turn with three typed conversions.
+   🔁 REPLACED 2026-10-14: THE BOOK'S METHOD. Paul asked how close a lesson could
+   get to the textbook, then: "lets push this as a replaced lesson". It follows
+   Glencoe Course 2 (1998) pp78-80 in ORDER and METHOD: opening speed question,
+   the place-value chart, solve the opener, the multiply/divide arrow diagram,
+   two examples each for length, mass and capacity, Guided Practice as Your
+   Turn, Exercises 14-38 as the homework sheet. The wording and every number are
+   ours; the book's text is not copied. The earlier runner/ladder version is in
+   git history before this date. SAME id and slug on purpose, so Kolten's saved
+   score stays on it (Paul: "just mark Koltens grade the same").
+   Paul's own edits: the 3 feet beside the doorknob, and the decimal point moving
+   one place per column (4.7 cm to 47 mm to 0.047 m), not "jumping".
 
-   ⚠️ THE WORLD IS OURS: one runner, Dana, with a run, a water bottle and a snack
-   bar. The book opens on the speed of sound, which is left out, and its
-   hair-hygrometer lab is not used (the packet marks it THIN). The benchmarks
-   (a meter is about the height of a doorknob, a gram about a thumbtack, a liter
-   about a large water bottle) are the book's.
-   Our numbers: 7 m, 2.5 L, 45 g, 360 cm and 3.2 cm in the reading; 2.4 km,
-   64 mm and 3,500 mL in Your Turn. None of them is a problem on the homework
-   sheet.
-
-   ⚠️ NO ADDED FACTS beyond the book's. The prefix values are the definitions of
-   the prefixes. "Kilo to centi is five rungs" is counting the ladder.
-
-   ⚠️ NO SCRIPTURE. Paul's call, in the review queue. */
+   The two charts are DESIGNED figures (@fig: in a work line, drawFig() in
+   lesson-template.html), not text art. Spoken lines carry no symbols; the
+   symbols live in the work lines, which the voice never reads. */
 'use strict';
 module.exports = {
   id: "maths/the-metric-system",
@@ -33,24 +24,23 @@ module.exports = {
   title: "The Metric System",
   unit: "Math 7 &middot; U2-L9",
   seq: { unit: 2, unitTitle: "Applications with Decimals", n: 9 },
-  natural: "2026-10-13",
+  natural: "2026-10-14",
 
-  /* ── /teach-plan, rewritten 2026-10-13. Glencoe Course 2 pp78-80. ── */
   plan: {
-    objective: "Change between metric units of length, mass and capacity by multiplying or dividing by 10, 100 or 1,000, using the prefix ladder to count the rungs.",
+    objective: "Change metric units of length, mass and capacity.",
     markers: [
       "BOOK (paraphrased), Objective box: change metric units of length, capacity and mass.",
-      "BOOK (paraphrased), terms: meter is the basic unit of length, about the height of a doorknob; gram is the basic unit of mass, and a thumbtack is about one gram; mass is the amount of matter in an object; a prefix shows the place value.",
-      "BOOK (paraphrased), chart: each metric place is 10 times the place to its right.",
-      "BOOK (paraphrased), method: to change to a smaller unit, multiply; to change to a larger unit, divide, which moves the decimal point.",
-      "BOOK (paraphrased), Checking for Understanding: how do you know whether to multiply or divide when you change units.",
+      "BOOK (paraphrased), Words to Learn: meter, metric system, gram, liter.",
+      "BOOK (paraphrased), place-value chart: each place is 10 times the place to its right, and so is each prefix.",
+      "BOOK (paraphrased), diagram: multiply to change from larger units to smaller units, divide to change from smaller units to larger units.",
+      "BOOK (paraphrased), examples: one line of reasoning each, written as 'multiply by 10 since 1 cm = 10 mm'.",
     ],
-    method: "DRAW THE LADDER, COUNT THE RUNGS, SLIDE THE POINT. Each rung is 10 times the one below it. To a SMALLER unit you multiply, which slides the decimal point right; to a LARGER unit you divide, which slides it left. The number of rungs between the two units is the number of places to slide (1, 2 or 3 means 10, 100 or 1,000).",
+    method: "THE CHART AND THE ARROWS, as the book does it. Find both units on the chart, then follow the arrow diagram: larger to smaller, multiply; smaller to larger, divide. The factor comes from the fact that links the two units (1 km = 1,000 m), and multiplying or dividing by 10, 100 or 1,000 moves the decimal point.",
     exampleOnly: [
-      "One runner's day: the run, the water bottle and the snack bar. WORLD: ours, to keep length, mass and capacity in one place.",
-      "Left out on purpose: the speed of sound, and the hair-hygrometer lab.",
+      "The car and the jet are ours, in place of the book's speed of sound in air and water. Same shape: two speeds in different units, change one to compare.",
+      "Benchmarks: doorknob (the book's), paper clip and a 2-liter soda bottle.",
     ],
-    digitize: "Reading engine. A Watch It Worked that builds the prefix ladder as a drawn table, four conversion walkthroughs (7 m to cm, 2.5 L to mL, 45 g to kg, 360 cm to m) with the decimal point moved one place at a time, and a Your Turn with typed answers.",
+    digitize: "Reading engine. Designed place-value chart and arrow diagrams in Watch It Worked steps, six worked examples, Guided Practice as Your Turn with typed answers.",
     unclear: "",
   },
 
@@ -59,240 +49,270 @@ module.exports = {
     note: "Print it and work every problem on paper. No multiple choice this time." },
 
   shelf: { grades: [7], subject: "Math",
-    blurb: "Meters, liters and grams each come in bigger and smaller sizes, all 10, 100 or 1,000 times apart. Draw the ladder, then change from one size to another by sliding the decimal point.",
+    blurb: "Every metric unit is a meter, a gram or a liter with a prefix on the front. Use the place-value chart and the arrow diagram to change from one to another.",
     contains: [
       "The meter, the gram and the liter, with something to picture for each",
-      "The prefix ladder drawn rung by rung: kilo, hecto, deka, deci, centi, milli",
-      "Going to a smaller unit: multiply and slide the point right",
-      "Going to a larger unit: divide and slide the point left",
-      "Your Turn: three conversions, one step at a time",
+      "The metric place-value chart, kilo down to milli",
+      "Moving the decimal point one place for every column",
+      "The multiply and divide arrow diagram",
+      "Six worked examples, two each for length, mass and capacity",
+      "Your Turn: eleven conversions",
     ] },
   eyebrow: ["Math 7", "U2-L9", "Applications with Decimals"],
-  dek: "The metric system is built on tens, so changing from one size to another is just sliding a decimal point. Here's which way to slide it and how far.",
+  dek: "Every metric unit is a meter, a gram or a liter with a prefix on the front. Use the chart and the arrows to change from one to another.",
 
   ground: {
     sections: [
       { h: "Lesson Goal", p: [
-        "Your student names the three basic metric units, reads the prefix ladder, and changes between units of length, mass and capacity by multiplying or dividing by 10, 100 or 1,000."
+        "Your student changes metric units of length, mass and capacity by multiplying or dividing by 10, 100 or 1,000."
       ]},
       { h: "Key Concepts", p: [
-        "Each rung of the ladder is 10 times the rung below it, so one rung is 10, two rungs is 100 and three rungs is 1,000. Going to a smaller unit takes more of them, so you multiply and the decimal point slides right. Going to a larger unit takes fewer, so you divide and the point slides left.",
-        "Money makes it easy to picture: a dollar is 10 dimes or 100 pennies, so the smaller the coin, the more of them you need."
+        "The metric prefixes line up with the place-value chart: kilo is the thousands place, the basic unit is the ones place, and milli is the thousandths place. Each place is 10 times the place on its right.",
+        "Going from a larger unit to a smaller one, you multiply. Going from a smaller unit to a larger one, you divide. Multiplying or dividing by 10, 100 or 1,000 just moves the decimal point."
       ]},
       { h: "Where Students Get Stuck", p: [
-        "🚨 Multiplying when the unit gets larger. Going from grams to kilograms makes the number smaller, because it takes fewer big units to cover the same amount.",
-        "Counting the rungs wrong. Basic to kilo is three, and basic to centi is two, so have him write the ladder out and put a finger on both units."
+        "🚨 Multiplying when the unit gets larger. Ask: will it take more of the new unit, or fewer? More means multiply.",
+        "Using the wrong factor. Have him write the fact that links the two units first, such as 1 kg = 1,000 g, before he multiplies or divides."
       ]},
       { h: "Teaching Suggestion", p: [
-        "Have your student draw the ladder from memory, kilo down to milli, and slide a finger from one unit to the other. The number of steps is the number of places, and the direction tells you whether to multiply or divide."
+        "Have your student draw the arrow diagram from memory (km, m, cm, mm with the factors) before starting Your Turn, then point to the two units for every problem."
       ]},
       { h: "Key Vocabulary", vocab: true }
     ]
   },
 
   parts: [
-    { title: "Three Numbers for One Morning", s: [
-      "A runner named Dana has three things on her list before she leaves: an 8-kilometer run, a water bottle that says 750 milliliters, and a snack bar whose wrapper says 45 grams.",
-      "Her watch counts the run in meters, and her kitchen scale shows kilograms, so the numbers on her gadgets don't match the numbers she just read.",
-      "That's because the metric system has a bigger size and a smaller size of every unit.",
-      "The whole system is built on tens, so changing from one size to another is just sliding a decimal point.",
-      "By the end of this lesson, you'll know which way to slide it and how far."
+    { title: "Which Is Faster?", s: [
+      "[ex] On the highway, a car goes about 30 meters every second.",
+      "A jet airliner cruises at about 0.25 kilometer every second.",
+      "Which one is faster?",
+      "",
+      "The two speeds use different units, so you can't just compare 30 and 0.25.",
+      "One way to find out is to change 0.25 kilometer into meters, and this lesson shows you how."
     ]},
 
-    { title: "Three Basic Units", s: [
-      "The metric system is a way of measuring that most of the world uses, and it starts with three basic units, one for each kind of measuring.",
-      "The {{meter}} measures length, which is how long something is, and a doorknob is about a meter off the floor.",
-      "The {{gram}} measures {{mass}}, which is the amount of matter in an object, and a thumbtack has a mass of about one gram.",
-      "Matter is just the stuff something is made of, so a bowling ball has far more mass than a feather.",
-      "The {{liter}} measures capacity, which is how much a container can hold, and a large water bottle holds about a liter."
+    { title: "Ten Times, Every Time", s: [
+      "Both speeds are measured with the {{meter}}, the basic unit of length in the {{metric system}}.",
+      "The metric system is the way most of the world measures, and it's built on tens, just like the numbers you already use.",
+      "A meter is a little more than 3 feet, which is about how high a doorknob is off the floor, so the next time you open a door, your hand is about a meter up.",
+      "Every other unit of length is the meter with a prefix on the front, which is a word part that tells you the place value of the unit, so the prefixes line up with the place-value chart you already know.",
+      "",
+      "[walk] Read the metric place-value chart.",
+      "[step] Each prefix sits in a place-value column, and the basic unit sits in the ones place. || @fig:place",
+      "[step] So kilo means thousands and milli means thousandths. || 1 kilometer = 1,000 meters\n1 millimeter = 0.001 meter",
+      "",
+      "Each place on the chart is 10 times the place on its right, and the prefixes work the same way, so one column to the left always means 10 times as much.",
+      "So every time you go one column on the chart, the decimal point moves one place, which is a factor of 10.",
+      "",
+      "[walk] Watch the decimal point move as 4.7 centimeters changes units.",
+      "[step] Start with 4.7 centimeters, in the centi column of the chart. || 4.7 cm",
+      "[step] Millimeters are one column smaller, so you need 10 times as many, and the decimal point moves one place to the right. || 4.7 cm  →  47 mm\n× 10: the point moves 1 place right",
+      "[step] Meters are two columns bigger, so you need fewer of them, and the decimal point moves two places to the left. || 4.7 cm  →  0.047 m\n÷ 100: the point moves 2 places left",
+      "[step] Count the columns between the two units, and that's how many places the point moves. || 1 column = 1 place = a factor of 10",
+      "",
+      "Going to a smaller unit moves the point to the right, and going to a bigger unit moves it to the left.",
+      "That's the whole trick, and it's why you never have to remember odd numbers like the 12 inches in a foot."
     ]},
 
-    { title: "Prefixes Are Size Tags", s: [
-      "Every other metric unit is one of those three basic units with a {{prefix}} on the front.",
-      "A prefix is a small word added to the front of another word, and in the metric system it tells you how big or small the unit is.",
-      "You already know one, because a kilometer is 1,000 meters, since kilo means 1,000.",
-      "There are six prefixes to know, and they stack up like the rungs of a ladder.",
-      "The basic unit sits in the middle, three rungs go up for bigger units, and three rungs go down for smaller ones.",
-      "Each rung up is 10 times bigger and each rung down is 10 times smaller, and that's the whole idea.",
+    { title: "Back to the Jet", s: [
+      "[walk] Change 0.25 kilometer into meters.",
+      "[step] One kilometer is 1,000 meters, so you multiply by 1,000. || 1 km = 1,000 m",
+      "[step] Multiplying by 1,000 moves the decimal point three places to the right. || 0.25 × 1,000 = 250",
+      "[step] So the jet goes 250 meters every second. || 0.25 km = 250 m",
+      "[step] 250 is greater than 30, so the jet is faster than the car. || 250 > 30",
       "",
-      "[walk] Build the metric ladder one rung at a time.",
-      "[step] Put the basic unit in the middle, the meter, the gram or the liter, and call it 1. || ┌────────────┬──────────────────────┐\n│ Prefix     │ Times the basic unit │\n├────────────┼──────────────────────┤\n│ BASIC UNIT │ 1                    │\n└────────────┴──────────────────────┘",
-      "[step] Go up one rung at a time, 10 times bigger each time, so deka is 10, hecto is 100 and kilo is 1,000. || ┌────────────┬──────────────────────┐\n│ Prefix     │ Times the basic unit │\n├────────────┼──────────────────────┤\n│ kilo       │ 1,000                │\n│ hecto      │ 100                  │\n│ deka       │ 10                   │\n│ BASIC UNIT │ 1                    │\n└────────────┴──────────────────────┘",
-      "[step] Go down one rung at a time, 10 times smaller each time, so deci is one tenth, centi is one hundredth and milli is one thousandth. || ┌────────────┬──────────────────────┐\n│ Prefix     │ Times the basic unit │\n├────────────┼──────────────────────┤\n│ kilo       │ 1,000                │\n│ hecto      │ 100                  │\n│ deka       │ 10                   │\n│ BASIC UNIT │ 1                    │\n│ deci       │ 0.1                  │\n│ centi      │ 0.01                 │\n│ milli      │ 0.001                │\n└────────────┴──────────────────────┘",
-      "",
-      "Deci, centi and milli are the tenths, hundredths and thousandths you already know from decimal places.",
-      "So a centimeter is one hundredth of a meter, and a milliliter is one thousandth of a liter."
+      "Here's a mental math hint: to multiply or divide by 10, 100 or 1,000, you only have to move the decimal point.",
+      "Count the zeros, and that's how many places it moves."
     ]},
 
-    { title: "Going to a Smaller Unit: Multiply", s: [
-      "Think of a dollar, which is 10 dimes or 100 pennies, so the smaller the coin, the more of them you need to make the same amount.",
-      "Units work the same way, so when you change to a smaller unit, the number gets bigger and you multiply.",
-      "Counting rungs tells you how much to multiply, because one rung is 10, two rungs is 100 and three rungs is 1,000.",
-      "Multiplying by 10, 100 or 1,000 slides the decimal point that many places to the right.",
+    { title: "Multiply or Divide?", s: [
+      "The jet was easy because the chart told you a kilometer is 1,000 meters, but most problems won't say whether to multiply or divide.",
+      "This diagram shows you which way to go.",
       "",
-      "[walk] Change 7 meters into centimeters.",
-      "[step] A centimeter is smaller than a meter, so the number gets bigger and you multiply. || m  →  cm   (smaller unit)\nmultiply",
-      "[step] Count the rungs from the basic unit down to centi, which is two. || BASIC UNIT  →  deci  →  centi\n2 rungs, so  × 100",
-      "[step] Multiplying by 100 slides the decimal point two places right, and empty spots fill with zeros. || 7.  →  70.  →  700.\n    1 place   2 places",
-      "[step] So 7 meters is 700 centimeters. || 7 m = 700 cm",
+      "[walk] Use the diagram to change units of length.",
+      "[step] To change from a larger unit to a smaller unit, multiply, and follow the arrows across the top. || @fig:arrows km m cm mm | 1,000 100 10",
+      "[step] To change from a smaller unit to a larger unit, divide, and follow the arrows along the bottom. || larger → smaller: multiply\nsmaller → larger: divide",
       "",
-      "Here's one more, this time with three rungs, so the point slides three places.",
+      "Think of coins: a dollar is 100 pennies, so the smaller coin always needs the bigger number.",
+      "A smaller unit works the same way, because it takes more of them to cover the same length, which is why the number gets bigger when you multiply.",
       "",
-      "[walk] Change 2.5 liters into milliliters.",
-      "[step] A milliliter is smaller than a liter, so the number gets bigger and you multiply. || L  →  mL   (smaller unit)\nmultiply",
-      "[step] From the basic unit down to milli is three rungs, so you multiply by 1,000. || BASIC UNIT  →  deci  →  centi  →  milli\n3 rungs, so  × 1,000",
-      "[step] Slide the decimal point three places right, adding zeros where you run out of digits. || 2.5  →  25.  →  250.  →  2500.\n       1 place  2 places  3 places",
-      "[step] So 2.5 liters is 2,500 milliliters. || 2.5 L = 2,500 mL"
+      "[walk] Change 0.6 centimeter into millimeters.",
+      "[step] To change centimeters to millimeters, multiply by 10, since 1 centimeter is 10 millimeters. || 0.6 cm = ? mm\n1 cm = 10 mm",
+      "[step] Multiplying by 10 moves the decimal point one place to the right. || 0.6 × 10 = 6",
+      "[step] So 0.6 centimeter is 6 millimeters. || 0.6 cm = 6 mm",
+      "",
+      "[walk] Change 3,200 meters into kilometers.",
+      "[step] To change meters to kilometers, divide by 1,000, since 1 kilometer is 1,000 meters. || 3,200 m = ? km\n1 km = 1,000 m",
+      "[step] Dividing by 1,000 moves the decimal point three places to the left. || 3,200 ÷ 1,000 = 3.2",
+      "[step] So 3,200 meters is 3.2 kilometers. || 3,200 m = 3.2 km"
     ]},
 
-    { title: "Going to a Larger Unit: Divide", s: [
-      "Now go the other way, because ten dimes make just one dollar, so the bigger the coin, the fewer of them you need.",
-      "When you change to a larger unit, the number gets smaller and you divide.",
-      "Dividing by 10, 100 or 1,000 slides the decimal point that many places to the left.",
+    { title: "A Paper Clip's Worth", s: [
+      "The {{gram}} is the basic unit of mass in the metric system.",
+      "Mass is how much matter an object has, and matter is just the stuff it's made of.",
+      "A paper clip has a mass of about one gram.",
+      "Kilogram, gram and milligram go together the same way kilometer, meter and millimeter do.",
       "",
-      "[walk] Change Dana's 45 grams into kilograms.",
-      "[step] A kilogram is bigger than a gram, so the number gets smaller and you divide. || g  →  kg   (bigger unit)\ndivide",
-      "[step] From the basic unit up to kilo is three rungs, so you divide by 1,000. || BASIC UNIT  →  deka  →  hecto  →  kilo\n3 rungs, so  ÷ 1,000",
-      "[step] Slide the decimal point three places left, and a whole number like 45 has its point hiding at the end. || 45.  →  4.5  →  0.45  →  0.045\n     1 place  2 places  3 places",
-      "[step] So 45 grams is 0.045 kilograms. || 45 g = 0.045 kg",
+      "[walk] The same diagram works for mass.",
+      "[step] A kilogram is 1,000 grams, and a gram is 1,000 milligrams. || @fig:arrows kg g mg | 1,000 1,000",
       "",
-      "Here's one with two rungs.",
+      "[walk] Change 3,850 grams into kilograms.",
+      "[step] To change grams to kilograms, divide by 1,000, since 1 kilogram is 1,000 grams. || 3,850 g = ? kg\n1 kg = 1,000 g",
+      "[step] Dividing by 1,000 moves the decimal point three places to the left. || 3,850 ÷ 1,000 = 3.85",
+      "[step] So 3,850 grams is 3.85 kilograms. || 3,850 g = 3.85 kg",
       "",
-      "[walk] Change 360 centimeters into meters.",
-      "[step] A meter is bigger than a centimeter, so the number gets smaller and you divide. || cm  →  m   (bigger unit)\ndivide",
-      "[step] From centi up to the basic unit is two rungs, so you divide by 100. || centi  →  deci  →  BASIC UNIT\n2 rungs, so  ÷ 100",
-      "[step] Slide the decimal point two places left. || 360.  →  36.0  →  3.60\n      1 place  2 places",
-      "[step] So 360 centimeters is 3.6 meters. || 360 cm = 3.6 m"
+      "[walk] Change 7 grams into milligrams.",
+      "[step] To change grams to milligrams, multiply by 1,000, since 1 gram is 1,000 milligrams. || 7 g = ? mg\n1 g = 1,000 mg",
+      "[step] Multiplying by 1,000 moves the decimal point three places to the right. || 7 × 1,000 = 7,000",
+      "[step] So 7 grams is 7,000 milligrams. || 7 g = 7,000 mg"
     ]},
 
-    { title: "Which Way Do I Move?", s: [
-      "The most common mistake is multiplying when you should divide, and one quick question prevents it.",
-      "Ask whether the unit you're changing to is bigger or smaller than the one you started with.",
-      "If it's smaller, expect a bigger number and multiply, and if it's bigger, expect a smaller number and divide.",
-      "Check it on a short one, like 3.2 centimeters into millimeters, where a millimeter is smaller and the two units are one rung apart, so you multiply by 10.",
+    { title: "How Much Does It Hold?", s: [
+      "The {{liter}} is the basic unit of capacity in the metric system.",
+      "Capacity is how much a container can hold, whether it's a liquid or something dry like rice.",
+      "A big bottle of soda holds 2 liters.",
+      "Kiloliter, liter and milliliter go together the same way too.",
       "",
-      "[ex] 3.2 cm = 3.2 × 10 = 32 mm",
+      "[walk] One more diagram, this time for capacity.",
+      "[step] A kiloliter is 1,000 liters, and a liter is 1,000 milliliters. || @fig:arrows kL L mL | 1,000 1,000",
       "",
-      "The ladder works between any two prefixes, not just the basic unit, so you just count the rungs between them, and kilo to centi is five rungs.",
-      "Dana's run, her water bottle and her snack bar are the same amounts all along, and only the size of the ruler changes."
+      "[walk] Change 0.4 liter into milliliters.",
+      "[step] Multiply by 1,000, since 1 liter is 1,000 milliliters. || 0.4 L = ? mL\n1 L = 1,000 mL",
+      "[step] Multiplying by 1,000 moves the decimal point three places to the right. || 0.4 × 1,000 = 400",
+      "[step] So 0.4 liter is 400 milliliters. || 0.4 L = 400 mL",
+      "",
+      "[walk] Change 675 liters into kiloliters.",
+      "[step] Divide by 1,000, since 1 kiloliter is 1,000 liters. || 675 L = ? kL\n1 kL = 1,000 L",
+      "[step] Dividing by 1,000 moves the decimal point three places to the left. || 675 ÷ 1,000 = 0.675",
+      "[step] So 675 liters is 0.675 kiloliter. || 675 L = 0.675 kL",
+      "",
+      "Every one of these starts with the same question: is the new unit larger or smaller?",
+      "Smaller means multiply, larger means divide, and the fact that links the two units tells you by how much."
     ]},
   ],
 
   words: [
-    ["Meter", "The basic metric unit of length, about the height of a doorknob.", 6],
-    ["Gram", "The basic metric unit of mass, about the mass of a thumbtack.", 7],
-    ["Liter", "The basic metric unit of capacity, about the amount a large water bottle holds.", 9],
-    ["Prefix", "The part at the front of a metric unit that shows its size, like kilo or milli.", 10],
-    ["Mass", "The amount of matter in an object.", 7]
+    ["Meter", "The basic unit of length in the metric system, a little more than 3 feet, about as high as a doorknob.", 5],
+    ["Metric System", "A way of measuring built on tens, used by most of the world.", 5],
+    ["Gram", "The basic unit of mass in the metric system, about the mass of a paper clip.", 43],
+    ["Liter", "The basic unit of capacity in the metric system.", 57]
   ],
 
-  findsAt: 58,
+  findsAt: 73,
 
   questions: [
-    { tag: "Basic Units", q: "Which basic metric unit measures length?",
-      find: [6], hint: "Read Three Basic Units.",
-      choices: ["The gram", "The liter", "The meter", "The prefix"], right: 2,
-      why: "The meter measures length. A doorknob is about a meter off the floor." },
+    { tag: "The Chart", q: "On the metric place-value chart, which place does the basic unit sit in?",
+      find: [10], hint: "Look at the chart in Ten Times, Every Time.",
+      choices: ["The thousands place", "The tens place", "The ones place", "The tenths place"], right: 2,
+      why: "The basic unit, the meter, gram or liter, sits in the ones place." },
 
-    { tag: "Basic Units", q: "What does mass tell you about an object?",
-      find: [7], hint: "A gram measures it.",
-      choices: ["How long it is", "How much it can hold", "How fast it moves", "How much matter is in it"], right: 3,
-      why: "Mass is the amount of matter in an object." },
+    { tag: "The Chart", q: "What does the prefix milli mean?",
+      find: [11], hint: "Find milli on the chart.",
+      choices: ["Thousands", "Thousandths", "Hundredths", "Tens"], right: 1,
+      why: "Milli sits in the thousandths place, so a millimeter is 0.001 meter." },
 
-    { tag: "Prefixes", q: "What does the prefix kilo mean?",
-      find: [12], hint: "A kilometer is how many meters?",
-      choices: ["One thousandth of the basic unit", "1,000 times the basic unit", "100 times the basic unit", "One tenth of the basic unit"], right: 1,
-      why: "Kilo means 1,000, so a kilometer is 1,000 meters." },
+    { tag: "The Chart", q: "Each place on the chart is how many times the place on its right?",
+      find: [12], hint: "Read the line right after the chart.",
+      choices: ["2 times", "100 times", "1,000 times", "10 times"], right: 3,
+      why: "Each place is 10 times the place on its right, and each prefix is too." },
 
-    { tag: "The Ladder", q: "On the metric ladder, what happens each time you go down one rung?",
-      find: [15], hint: "Look at the table you built.",
-      choices: ["The unit gets 10 times bigger", "The unit gets 10 times smaller", "The unit stays the same", "The unit gets 100 times smaller"], right: 1,
-      why: "Each rung down is 10 times smaller, like a dime next to a dollar." },
+    { tag: "The Jet", q: "Why was the jet faster than the car?",
+      find: [23,24,25], hint: "Read Back to the Jet.",
+      choices: ["0.25 km is 250 m, and 250 is greater than 30", "0.25 is less than 30", "Kilometers are always faster", "0.25 km is 25 m"], right: 0,
+      why: "0.25 × 1,000 = 250, so the jet goes 250 meters every second, more than the car's 30." },
 
-    { tag: "Which Way", q: "You change meters into centimeters. Which is right?",
-      find: [27,28], hint: "Is a centimeter bigger or smaller than a meter?",
-      choices: ["Divide by 100, because the unit gets smaller", "Multiply by 100, because the unit gets smaller", "Multiply by 1,000, because the unit gets bigger", "Divide by 10, because the unit gets bigger"], right: 1,
-      why: "A centimeter is smaller, so there are more of them, and meters to centimeters is two rungs, so multiply by 100." },
+    { tag: "Which Way", q: "You change a larger unit into a smaller unit. What do you do?",
+      find: [31], hint: "Look at the arrows across the top of the diagram.",
+      choices: ["Divide", "Add", "Multiply", "Subtract"], right: 2,
+      why: "Larger to smaller, multiply. A smaller unit takes more of them." },
 
-    { tag: "Multiply", q: "What is 6.5 liters in milliliters?",
-      find: [33,34,35], hint: "Three rungs down, so slide the point three places right.",
-      choices: ["0.0065 mL", "65 mL", "650 mL", "6,500 mL"], right: 3,
-      why: "Liters to milliliters is three rungs, so multiply by 1,000: 6,500 mL." },
+    { tag: "Length", q: "What is 0.8 cm in millimeters?",
+      find: [36,37], hint: "1 cm = 10 mm.",
+      choices: ["0.08 mm", "8 mm", "80 mm", "800 mm"], right: 1,
+      why: "Centimeters to millimeters, multiply by 10: 0.8 × 10 = 8 mm." },
 
-    { tag: "Spot the Mistake", q: "A student changes 45 grams into kilograms and gets 45,000 kg. What went wrong?",
-      find: [41], hint: "Is a kilogram bigger or smaller than a gram?",
-      choices: ["The student divided by 1,000 when they should have multiplied", "The student multiplied when they should have divided, because a kilogram is bigger", "The student counted two rungs instead of three", "Nothing, 45,000 kg is right"], right: 1,
-      why: "A kilogram is bigger, so the number gets smaller. 45 g is 0.045 kg." },
+    { tag: "Mass", q: "What is 2,600 g in kilograms?",
+      find: [50,51], hint: "1 kg = 1,000 g, and a kilogram is the larger unit.",
+      choices: ["2,600,000 kg", "260 kg", "26 kg", "2.6 kg"], right: 3,
+      why: "Grams to kilograms, divide by 1,000: 2,600 ÷ 1,000 = 2.6 kg." },
 
-    { tag: "Divide", q: "What is 800 centimeters in meters?",
-      find: [47,48,49], hint: "Two rungs up, so slide the point two places left.",
-      choices: ["80,000 m", "80 m", "8 m", "0.8 m"], right: 2,
-      why: "Centimeters to meters is two rungs, so divide by 100: 8 m." },
+    { tag: "Capacity", q: "What is 1.5 L in milliliters?",
+      find: [64,65], hint: "1 L = 1,000 mL.",
+      choices: ["1,500 mL", "150 mL", "15 mL", "0.0015 mL"], right: 0,
+      why: "Liters to milliliters, multiply by 1,000: 1.5 × 1,000 = 1,500 mL." },
 
-    { tag: "Put It Together", q: "Which is longer, 2 kilometers or 1,500 meters?",
-      find: [12], hint: "Change one so both are in meters.",
-      choices: ["1,500 meters", "They're the same", "2 kilometers, because it's 2,000 meters", "You can't tell"], right: 2,
-      why: "2 km = 2 × 1,000 = 2,000 m, which is longer than 1,500 m." }
+    { tag: "Spot the Mistake", q: "A student changes 45 g into kilograms and gets 45,000 kg. What went wrong?",
+      find: [50], hint: "Is a kilogram larger or smaller than a gram?",
+      choices: ["Nothing, that's right", "The student should have multiplied by 100", "The student multiplied, but a kilogram is larger, so they should have divided", "The student used the liter diagram"], right: 2,
+      why: "Smaller to larger means divide: 45 ÷ 1,000 = 0.045 kg." }
   ],
 
   vocabQuestions: [
-    { q: "What is a <i>meter</i> about as long as?",
-      choices: ["The height of a doorknob", "The width of a thumbtack", "A large water bottle", "A kitchen scale"], right: 0 },
-    { q: "What is a <i>gram</i> about as much as?",
-      choices: ["A water bottle", "A thumbtack", "A doorknob", "A pair of shoes"], right: 1 },
+    { q: "What does a <i>meter</i> measure?",
+      choices: ["Length", "Mass", "Capacity", "Time"], right: 0 },
+    { q: "What is the <i>metric system</i> built on?",
+      choices: ["Twelves", "Tens", "Sixties", "Halves"], right: 1 },
+    { q: "About how much mass does a <i>gram</i> have?",
+      choices: ["A car", "A bag of flour", "A paper clip", "A bowling ball"], right: 2 },
     { q: "What does a <i>liter</i> measure?",
-      choices: ["Length", "Mass", "How much a container can hold", "How fast something moves"], right: 2 },
-    { q: "What does a <i>prefix</i> like milli tell you?",
-      choices: ["What kind of thing is being measured", "How many digits there are", "Whether a number is rounded", "How big or small the unit is"], right: 3 },
-    { q: "What is <i>mass</i>?",
-      choices: ["The amount of matter in an object", "How far apart two things are", "How much a container holds", "The size of a unit"], right: 0 }
+      choices: ["Length", "Mass", "Speed", "Capacity"], right: 3 }
   ],
 
   work: [
-    { title: "A Long Walk",
-      ask: "Dana walks 2.4 kilometers to cool down. Change 2.4 km into meters, one step at a time.",
+    { title: "Length",
+      ask: "Complete each one. Ask first: is the new unit larger or smaller?",
       steps: [
-        { ask: "How many rungs is it from kilo down to the basic unit?", answer: 3,
-          hint: "Kilo, hecto, deka, then the basic unit. Count the steps.",
-          why: "Kilo to hecto, hecto to deka, deka to the basic unit: 3 rungs." },
-        { ask: "Meters are smaller than kilometers, so you multiply. What do you multiply by?", answer: 1000,
-          hint: "Three rungs means 1,000.",
-          why: "Three rungs is × 1,000." },
-        { ask: "How many meters is 2.4 km?", answer: 2400, calc: "2.4*1000",
-          hint: "Slide the point three places right: 2.4 becomes 24, then 240, then 2400.",
-          why: "2.4 × 1,000 = 2,400 m." },
+        { ask: "720 mm = ? cm", answer: 72, calc: "720/10",
+          hint: "1 cm = 10 mm, and a centimeter is larger, so divide by 10.",
+          why: "720 ÷ 10 = 72 cm." },
+        { ask: "5.6 km = ? m", answer: 5600, calc: "5.6*1000",
+          hint: "1 km = 1,000 m, and a meter is smaller, so multiply by 1,000.",
+          why: "5.6 × 1,000 = 5,600 m." },
+        { ask: "76 km = ? m", answer: 76000, calc: "76*1000",
+          hint: "Multiply by 1,000.",
+          why: "76 × 1,000 = 76,000 m." },
+        { ask: "How many centimeters are in 0.38 meter?", answer: 38, calc: "0.38*100",
+          hint: "1 m = 100 cm, so multiply by 100.",
+          why: "0.38 × 100 = 38 cm." },
       ] },
-    { title: "A Tiny Measurement",
-      ask: "A bead is 64 millimeters long. Change 64 mm into centimeters.",
+    { title: "Mass",
+      ask: "Complete each one.",
       steps: [
-        { ask: "How many rungs is it from milli up to centi?", answer: 1,
-          hint: "Milli, then centi. Count the step.",
-          why: "Milli to centi is 1 rung." },
-        { ask: "Centimeters are bigger, so you divide. What do you divide by?", answer: 10,
-          hint: "One rung means 10.",
-          why: "One rung is ÷ 10." },
-        { ask: "How many centimeters is 64 mm?", answer: 6.4, calc: "64/10",
-          hint: "Slide the point one place left.",
-          why: "64 ÷ 10 = 6.4 cm." },
+        { ask: "925 g = ? kg", answer: 0.925, calc: "925/1000",
+          hint: "A kilogram is larger, so divide by 1,000.",
+          why: "925 ÷ 1,000 = 0.925 kg." },
+        { ask: "12.4 g = ? mg", answer: 12400, calc: "12.4*1000",
+          hint: "A milligram is smaller, so multiply by 1,000.",
+          why: "12.4 × 1,000 = 12,400 mg." },
+        { ask: "58.3 kg = ? g", answer: 58300, calc: "58.3*1000",
+          hint: "Multiply by 1,000.",
+          why: "58.3 × 1,000 = 58,300 g." },
+        { ask: "How many grams are in 2.05 kilograms?", answer: 2050, calc: "2.05*1000",
+          hint: "1 kg = 1,000 g.",
+          why: "2.05 × 1,000 = 2,050 g." },
       ] },
-    { title: "A Big Jug",
-      ask: "A jug holds 3,500 milliliters. Change 3,500 mL into liters.",
+    { title: "Capacity",
+      ask: "Complete each one.",
       steps: [
-        { ask: "Liters are bigger than milliliters. How many rungs is it from milli up to the basic unit?", answer: 3,
-          hint: "Milli, centi, deci, then the basic unit.",
-          why: "Milli to centi to deci to the basic unit: 3 rungs." },
-        { ask: "How many liters is 3,500 mL?", answer: 3.5, calc: "3500/1000",
-          hint: "Divide by 1,000, which slides the point three places left.",
-          why: "3,500 ÷ 1,000 = 3.5 L." },
+        { ask: "3 L = ? mL", answer: 3000, calc: "3*1000",
+          hint: "A milliliter is smaller, so multiply by 1,000.",
+          why: "3 × 1,000 = 3,000 mL." },
+        { ask: "41 L = ? kL", answer: 0.041, calc: "41/1000",
+          hint: "A kiloliter is larger, so divide by 1,000.",
+          why: "41 ÷ 1,000 = 0.041 kL." },
+        { ask: "0.9 L = ? mL", answer: 900, calc: "0.9*1000",
+          hint: "Multiply by 1,000.",
+          why: "0.9 × 1,000 = 900 mL." },
       ] },
   ],
 
   todo: { title: "What To Do Now", s: [
-      "Dana's run, her water bottle and her snack bar all got changed from one metric unit to another, and now it's your turn to do the same.",
       "First work through Your Turn below the reading, typing each answer.",
-      "Then come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
-      "For every conversion, ask first whether the new unit is bigger or smaller, then count the rungs on the ladder.",
-      "If the multiply or divide questions trip you up, read Which Way Do I Move again.",
+      "Then, in your notebook, explain each of these in your own words.",
+      "How do you know whether to multiply or divide when you change metric units?",
+      "How is the metric system like the decimal place-value chart?",
+      "After that come {c} word cards, then {Q} questions, then {v} more questions about those words, {T} questions in all.",
+      "If a conversion trips you up, look at the arrow diagram again and ask whether the new unit is larger or smaller.",
       "Last, open the Homework Sheet with the button at the bottom of the page, and work every problem on paper."
   ] }
 };
