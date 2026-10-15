@@ -37,9 +37,12 @@ function ff(args) {
   return new Promise((ok, no) => execFile("ffmpeg", args, (e) => (e ? no(e) : ok())));
 }
 
-async function previews(slug, port) {
-  const dir = path.join(ROOT, "worksheets", "english", slug);
-  const url = "http://127.0.0.1:" + port + "/worksheets/english/" + slug + "/print/index.html";
+async function previews(arg, port) {
+  /* "slug" means an English sheet (the original use); "maths/slug" names the
+     subject folder (2026-10-14: the Metric System homework had no previews). */
+  const [subject, slug] = arg.indexOf("/") > 0 ? arg.split("/") : ["english", arg];
+  const dir = path.join(ROOT, "worksheets", subject, slug);
+  const url = "http://127.0.0.1:" + port + "/worksheets/" + subject + "/" + slug + "/print/index.html";
   const cdp = 9950 + Math.floor(Math.random() * 40);
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), "ns-pv-"));
   const proc = spawn(CHROME, ["--headless", "--disable-gpu", "--no-first-run", "--hide-scrollbars",
