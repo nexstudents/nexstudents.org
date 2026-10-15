@@ -19,7 +19,12 @@ const nap = (ms) => new Promise((r) => setTimeout(r, ms));
 const STRIP = "(function(){var st=document.createElement('style');" +
   "st.textContent='body>*:not(.sheet){display:none!important}'+" +
   "'html,body{background:#fff!important;margin:0!important;padding:0!important}'+" +
-  "'.sheet{margin:0!important;box-shadow:none!important;border:0!important}';" +
+  "'.sheet{margin:0!important;box-shadow:none!important;border:0!important}'+" +
+  /* 🚨 NEVER THE ANSWER KEY (rule since 2026-09-10; the product page adds a
+     Hidden From Preview tile). This tool slices the SCREEN every 11 inches,
+     not at print page breaks, so on 2026-10-14 the key bled into preview 3
+     and filled preview 4 of the Metric System homework, and went live. */
+  "'.key{display:none!important}';" +
   "document.head.appendChild(st);" +
   "var s=document.querySelector('.sheet');" +
   "if(s&&s.parentElement&&s.parentElement!==document.body){document.body.appendChild(s);}" +

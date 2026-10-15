@@ -42,6 +42,13 @@ const NAV = [
   { href: "/",             label: "Home",        note: "Start here",          key: "h",  top: true },
   { href: null,            label: "Grades",      note: "K through 8",         key: "gr", top: true,
     fallback: "/#grades" },
+  /* 🛒 SHOP, THIRD. Paul, 2026-10-14: "we need a way to access the shopping
+     menu". He first said first (Lizzie Peirce's SHOP leads her bar), then on
+     seeing it: "i should not be first on our page at the top ... make it third
+     after grades". Her dropdown of categories is still the model.
+     ⚠️ An EIGHTH drawer row: the drawer must not scroll (see About/Contact
+     below), so it was measured at 360x640 after adding it. */
+  { href: "/shop/",        label: "Shop",        note: "Lessons and worksheets", key: "s", top: true, noAll: true },
   { href: "/resources/",   label: "Resources",   note: "Tools we use",        key: "r",  top: true },
   { href: "/games/",       label: "Games",       note: "Play in the browser", key: "g",  top: true },
   { href: "/comics/",      label: "Comics",      note: "Read on the site",    key: "c",  top: true },
@@ -182,7 +189,26 @@ const promo = (p) => p
    EVERY top-level section has one. Paul, 2026-08-26: "i also asked for the
    dropdown for all the selections but you only did it for some of them."
    ------------------------------------------------------------------------ */
+/* The shop's categories, ONE list for the desktop panel and the phone sheet.
+   Each opens /shop/ already on that tab (#lessons and so on). */
+const SHOP_CATS = [
+  { label: "Shop All", href: "/shop/", note: "Everything for sale" },
+  { label: "Lessons", href: "/shop/#lessons", note: "A grade's lesson plan" },
+  { label: "Worksheets", href: "/shop/#worksheets", note: "Printables and packs" },
+  { label: "Bundles", href: "/shop/#bundles", note: "Many sheets in one" },
+  { label: "Extras", href: "/shop/#extras", note: "Coding and more" },
+  { label: "Free", href: "/shop/#free", note: "Everything at $0.00" },
+];
+
 const MENUS = {
+  s: {
+    /* Two headed columns, the way every other panel is laid out: what you can
+       buy, then the two ways to browse it all. */
+    body: '<div class="mg-cols">' +
+      col("Products", SHOP_CATS.filter(c => /#(lessons|worksheets|bundles|extras)$/.test(c.href))) +
+      col("Browse", SHOP_CATS.filter(c => c.href === "/shop/" || /#free$/.test(c.href))) + "</div>" +
+      '<p class="mg-note">Lessons by grade, worksheets and packs. Free items read $0.00.</p>',
+  },
   gr: {
     body: '<div class="mg-grades">' + gradeTiles() + "</div>" +
           '<p class="mg-note">Organised by grade first, then subject. A grade goes live when there is enough in it to be worth your time.</p>',
@@ -270,7 +296,8 @@ const megaPanel = () => '<div class="mg-panel" id="megapanel" aria-hidden="true"
     const n = NAV.filter(x => x.key === k)[0];
     return '<div class="mg-inner" data-for="' + k + '">' +
       '<div class="mg-body">' + MENUS[k].body +
-      (n.href ? '<p class="mg-all"><a href="' + n.href + '">All ' + n.label.toLowerCase() + " &rarr;</a></p>" : "") +
+      /* noAll: Shop already lists "Shop All", and "All shop" read badly. */
+      (n.href && !n.noAll ? '<p class="mg-all"><a href="' + n.href + '">All ' + n.label.toLowerCase() + " &rarr;</a></p>" : "") +
       "</div>" + promo(MENUS[k].promo) + "</div>";
   }).join("") + "</div>";
 
@@ -328,6 +355,8 @@ SHEETS.gr = { title: "Grades", parent: null, grid: true, promo: MENUS.gr.promo, 
     soon: !LIVE_GRADES.includes(g),
   }))
 };
+
+SHEETS.s = { title: "Shop", parent: null, view: "/shop/", rows: SHOP_CATS.slice(1) };
 
 SHEETS.r = { title: "Resources", parent: null, view: "/resources/", promo: MENUS.r.promo, rows: [
   { label: "What We Use", href: "/resources/", note: "Books, tools and supplies" },

@@ -454,8 +454,255 @@ const WORKSHEETS = require("./worksheets.js").SHEETS.map(w => ({
   /* A sheet IS sold on its own, so it keeps its price. Explicit, so the lesson
      branch in oneCard can never catch a worksheet by accident. */
   kind: "sheet",
+  /* worksheets.js marks a pack of many sheets kind "bundle"; the shop's
+     Bundles tab reads this (2026-10-14). */
+  bundle: w.kind === "bundle",
   price: w.price,
 }));
+
+/* 🛒 THE SHOP, 2026-10-14. Paul: "create a page to purchase worksheets or lessons
+   similar to the lizzie pierce page", "show it as the only one available right
+   now. so like a shopping page shows what is available", "they can browse lessons
+   or worksheets", "we can also do extras for ours like the coding".
+   Copied from lizziepeirce.com/shop for LAYOUT: a category row (All | Lessons |
+   Worksheets | Extras), then a three-across grid of tall pale tiles, the title
+   and the price under each, price always written $0.00 (never "Free").
+   🚨 ONLY WHAT EXISTS. No Coming Soon cards (Paul decides what shows). The lesson
+   product is 7th grade alone, because it is the only grade built (ROADMAP 64:
+   $25 a grade, lifetime). A grade joins SHOP_LESSONS when it is built. */
+/* Every grade gets a cover. Paul, 2026-10-14: "add one more each grade but right
+   now make them say coming soon like over the grade and make it faded like not
+   available". Prices are ROADMAP 64: K and 1st free, 2nd-8th $25. The one that
+   is built leads; the rest follow in grade order, faded, not clickable. Moving a
+   grade out of SHOP_SOON is all it takes to open it. */
+const SHOP_SOON = new Set(["K", "1", "2", "3", "4", "5", "6", "8"]);
+const SHOP_LESSONS = ["7", "K", "1", "2", "3", "4", "5", "6", "8"].map(g => ({
+  title: (g === "K" ? "Kindergarten" : ({ 1: "1st", 2: "2nd", 3: "3rd" }[g] || g + "th") + " Grade") + " Lessons",
+  price: g === "K" || g === "1" ? "$0" : "$25",
+  href: "/grade-" + g.toLowerCase() + "/lessons/", box: g, soon: SHOP_SOON.has(g),
+}));
+/* 📘 THE GRADE COVER, 2026-10-14. Paul: "make a better design for that 7th grade
+   lesson thumbnail", then, on a 3D box mockup: "dont do that. make a real
+   design for it." So it is a FLAT cover that fills the tile, the way every
+   worksheet cover is a flat 8.5x11 page. No perspective, no drop shadow, no
+   pretend packaging.
+   Real text and simple drawn icons (SVG is for geometry; letters stay a font).
+   The counts are COUNTED from the built lessons, so the cover can never promise
+   more than exists. Fixed colours: it is the product's cover, not page chrome,
+   so it reads the same in both themes. Sized in cqw off the tile, so it scales
+   from a phone's one column to the desktop's three. */
+const SUBJECT_ICON = {
+  English: "M2.5 5.5C5.5 4.5 8.5 4.8 12 6.8v13c-3.5-2-6.5-2.3-9.5-1.3zM21.5 5.5c-3-1-6-.7-9.5 1.3v13c3.5-2 6.5-2.3 9.5-1.3z",
+  History: "M3 21h18M5 21v-9M9.7 21v-9M14.3 21v-9M19 21v-9M2.5 9.5 12 4l9.5 5.5z",
+  Math: "M6.5 3.5v6M3.5 6.5h6M14.5 6.5h6M4 15l5 5M9 15l-5 5M14.5 17.5h6M17.5 14.6v.01M17.5 20.4v.01",
+  Science: "M9 3h6M10 3v6.2L4.6 18.6A1.6 1.6 0 0 0 6 21h12a1.6 1.6 0 0 0 1.4-2.4L14 9.2V3M7.2 15h9.6",
+};
+const shopBox = (g, soon) => {
+  /* All four subjects on every cover: a coming-soon grade has no lessons yet,
+     and its units show only where its outline exists. */
+  const rows = ["English", "History", "Math", "Science"].map(s => [s]);
+  const suf = g === "K" ? "" : ({ 1: "st", 2: "nd", 3: "rd" }[g] || "th");
+  const title = g === "K" ? '<div class="gcov-title is-k"><span>Kindergarten</span></div>'
+    : '<div class="gcov-title"><b>' + g + "</b><sup>" + suf + "</sup><span>Grade</span></div>";
+  const icon = (s) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + SUBJECT_ICON[s] + '"/></svg>';
+  return (soon ? '<span class="gcov-soon">Coming Soon</span>' : "") +
+    '<div class="gcov" aria-hidden="true">' +
+    /* Paul: "get rid of the nexstudents name on it and the logo, center the 7th
+       grade and lessons change to Lesson Plan". The site around it already says
+       NexStudents; the cover says what the product is. */
+    '<div class="gcov-head">' + title +
+    /* Paul: "dont add the current lesson just say 36 weeks". The live count
+       changes every week; the year is 36 teaching weeks (year-plan.js). */
+    '<div class="gcov-kind">Lesson Plan</div><div class="gcov-weeks">36 Weeks</div></div>' +
+    /* Paul, next: "if you like you can say total units". Units come from the
+       course OUTLINE (COURSE_SHELVES, the whole year, built or not), so this
+       number is stable where a lesson count moved every week. */
+    '<div class="gcov-grid">' + rows.map(([s]) => {
+      const c = COURSE_SHELVES.find(x => x.subject === s && sameGrade(x.grade, g));
+      const u = c ? c.units().length : 0;
+      return '<div class="gcov-sub">' + icon(s) + "<strong>" + s + "</strong>" +
+        (u ? "<em>" + u + " units</em>" : "") + "</div>";
+    }).join("") +
+    /* No nexstudents.org footer either (Paul: "dont add nexstudents.org at the
+       bottom"). */
+    "</div></div>";
+};
+const SHOP_EXTRAS = [
+  { title: "Game Coding", price: "$0", href: "/extras/electives/game-coding/",
+    tile: "Game Coding", sub: "Godot and C#, one semester" },
+];
+const money = (p) => {
+  const n = Number(String(p || "$0").replace(/[^0-9.]/g, "")) || 0;
+  return "$" + n.toFixed(2);
+};
+/* A coming-soon item is a <div>, not a link: nothing to open, nothing to buy.
+   It stays out of Free, so an unbuilt grade never reads as free to take. */
+const shopTile = (x, cat) =>
+  "<" + (x.soon ? 'div aria-disabled="true"' : "a") + ' class="shopcard' + (x.soon ? " is-soon" : "") +
+  '" data-cat="' + cat + '" data-bundle="' + (x.bundle ? 1 : 0) +
+  '" data-free="' + (!x.soon && money(x.price) === "$0.00" ? 1 : 0) + '"' +
+  /* Paul: "it only shows in the lessons though the full ones not the all".
+     A coming-soon card lives under the Lessons tab only, so All shows only
+     what can be bought. Hidden from the start because All is the opening view. */
+  (x.soon ? ' data-soon="1" hidden' : "") +
+  (x.soon ? "" : ' href="' + x.href + '"') + ">" +
+  '<div class="shoptile">' +
+  (x.box ? shopBox(x.box, x.soon)
+   : x.thumb ? '<img src="' + x.thumb + '" alt="" loading="lazy" decoding="async">'
+           : '<span class="shopword"><b>' + (x.tile || x.title) + "</b>" + (x.sub ? "<i>" + x.sub + "</i>" : "") + "</span>") +
+  "</div>" +
+  "<h3>" + x.title + "</h3><p>" + money(x.price) + "</p></" + (x.soon ? "div" : "a") + ">";
+const shopBody = () => {
+  /* "Free" is Paul's, 2026-10-14: "you also see the free tab on her page". It
+     cuts ACROSS the others: every $0.00 item, whatever kind it is. */
+  /* "Bundles", Paul the same day: "oh bundles maybe too". Like Free, it cuts
+     across: a bundle is still a worksheet product. Today that is the US History
+     Semester 1 pack; the $100 All Lessons joins it once a second grade exists. */
+  const cats = [["all", "All"], ["lessons", "Lessons"], ["worksheets", "Worksheets"], ["bundles", "Bundles"],
+                ["extras", "Extras"], ["free", "Free"]];
+  const cards = SHOP_LESSONS.map(x => shopTile(x, "lessons"))
+    .concat(WORKSHEETS.map(x => shopTile(x, "worksheets")))
+    .concat(SHOP_EXTRAS.map(x => shopTile(x, "extras")));
+  /* On a phone Lizzie swaps the tab row for a "Categories" dropdown (seen in her
+     page at 400px, 2026-10-14). Both are in the page; CSS shows one. */
+  const select = '<label class="shopselect"><span>Categories</span><span class="shopselbox">' +
+    '<select aria-label="Shop categories">' +
+    cats.map(([k, label]) => '<option value="' + k + '">' + label + "</option>").join("") +
+    '</select><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>' +
+    "</span></label>";
+  return '<div class="wrap shop">' + select +
+    '<nav class="shopcats" aria-label="Shop categories">' +
+    cats.map(([k, label], i) => '<button type="button" data-cat="' + k + '"' +
+      (i === 0 ? ' aria-pressed="true"' : ' aria-pressed="false"') + ">" + label + "</button>").join("") +
+    "</nav>" +
+    '<div class="shopgrid">' + cards.join("") + "</div></div>";
+};
+/* One show(k) for both controls, and each keeps the other in step, so turning
+   a phone sideways never shows a tab and a dropdown that disagree. */
+const shopScript = () => "<script>(function(){" +
+  "var bs=document.querySelectorAll('.shopcats button'),cs=document.querySelectorAll('.shopcard')," +
+  "sel=document.querySelector('.shopselect select');" +
+  "function show(k){" +
+  "bs.forEach(function(o){o.setAttribute('aria-pressed',o.getAttribute('data-cat')===k?'true':'false');});" +
+  "if(sel)sel.value=k;" +
+  "cs.forEach(function(c){if(c.getAttribute('data-soon')){c.hidden=k!=='lessons';return;}" +
+  "c.hidden=!(k==='all'||c.getAttribute('data-cat')===k||" +
+  "(k==='free'&&c.getAttribute('data-free')==='1')||(k==='bundles'&&c.getAttribute('data-bundle')==='1'));});}" +
+  "bs.forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-cat'));});});" +
+  "if(sel)sel.addEventListener('change',function(){show(sel.value);});" +
+  /* The menu links here as /shop/#lessons etc. (nav.js SHOP_CATS). Read it on
+     arrival, and again when the menu is used while already on this page. */
+  "function fromHash(){var k=(location.hash||'').slice(1);" +
+  "if(['lessons','worksheets','bundles','extras','free'].indexOf(k)>-1)show(k);else if(!k)show('all');}" +
+  "fromHash();window.addEventListener('hashchange',fromHash);" +
+  "})();</script>";
+/* No rules above or below the category row: Lizzie's has none, and a line with
+   no job is out (feedback: no decorative lines). The page head's own rule and
+   ns.css's nav border are both switched off here, on this page only. */
+/* MEASURED from lizziepeirce.com/shop at 1680px, 2026-10-14: "Shop" 40px weight
+   500; tabs 17px with about 55px between them; three columns about 33px apart,
+   wider than our usual reading column; title 20px weight 500 about 25px under
+   the picture; price 14px. Tiles stay 8.5x11 (ours are pictures of paper). */
+const shopHead = () => `<style>
+.phead{border-bottom:0}
+.phead.termshead h1{font-size:40px;font-weight:500;letter-spacing:normal}
+.shop{padding-bottom:64px;max-width:1520px}
+/* position:static - ns.css makes a bare <nav> sticky (the site menu), and the
+   tab row inherited it and slid over the menu on scroll. Hers scrolls away. */
+.shopcats{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 0;margin:0 0 36px;border:0;
+  position:static;background:none;backdrop-filter:none}
+.shopcats button{background:none;border:0;color:var(--dim);font:inherit;font-size:17px;
+  padding:4px 27px;cursor:pointer;border-left:1px solid var(--line)}
+.shopcats button:first-child{border-left:0}
+.shopcats button[aria-pressed="true"]{color:var(--fg);font-weight:700}
+.shopgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 33px}
+@media (max-width:860px){.shopgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 16px}
+  .shopcats button{padding:4px 15px}}
+.shopselect{display:none}
+/* A phone, measured on her page at 400px: "Shop" 27px and LEFT, a Categories
+   dropdown instead of tabs, ONE column. The box is darker than the page and
+   the arrow is an SVG centred in it (feedback: fields, icons, mobile). */
+@media (max-width:640px){
+  .phead.termshead h1{font-size:27px;text-align:left;margin-inline:0}
+  .shopcats{display:none}
+  .shopselect{display:flex;align-items:center;gap:14px;margin:0 0 24px;font-size:15px;font-weight:600}
+  .shopselbox{position:relative;flex:1}
+  .shopselbox select{width:100%;appearance:none;-webkit-appearance:none;font:inherit;font-weight:400;
+    color:var(--fg);background:var(--panel-2);border:1px solid var(--line);border-radius:0;
+    padding:10px 40px 10px 12px}
+  .shopselbox svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--fg)}
+  .shopgrid{grid-template-columns:minmax(0,1fr);gap:36px}
+}
+.shopcard{display:block;color:inherit;text-decoration:none}
+.shopcard[hidden]{display:none}
+.shoptile{background:var(--panel-2);aspect-ratio:8.5/11;overflow:hidden;display:flex;
+  align-items:center;justify-content:center}
+.shoptile img{width:100%;height:100%;object-fit:contain;display:block}
+/* Light mode: a white cover (and every white worksheet page) melted into the
+   pale page. Paul: "that white blends into the background so fix that". A thin
+   edge gives the tile its outline; box-shadow, so nothing shifts. */
+:root[data-theme="light"] .shoptile{box-shadow:0 0 0 1px var(--line)}
+.shopword{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;text-align:center}
+.shopword b{font-size:clamp(1.3rem,3vw,2rem);line-height:1.1}
+.shopword i{font-style:normal;color:var(--dim);font-size:.92rem}
+.shopcard h3{font-size:20px;font-weight:500;margin:25px 0 6px;line-height:1.25}
+.shopcard p{margin:0;font-size:14px;color:var(--dim)}
+@media (max-width:560px){.shopcard h3{font-size:16px;margin-top:14px}}
+@media (hover:hover){a.shopcard:hover h3{text-decoration:underline;text-underline-offset:3px}}
+/* The flat grade cover (shopBox). The tile is the size container; every size
+   below is in cqw, a percent of the tile's width. */
+.shoptile{container-type:inline-size}
+/* TWO COVERS, ONE PER THEME (Paul: "make a white version and you right now have
+   a darkmode version"). Dark is the default, as the site is; the white one
+   follows the nav's light toggle. In white, orange TEXT and icons use the
+   site's darker light-mode orange (--a-text #A8490A): the bright brand orange
+   is 2.5:1 on white and fails. */
+.gcov{--gc-bg:#14181d;--gc-fg:#f1f3f5;--gc-panel:#1f252c;--gc-acc:#FF751F;--gc-dim:#c9ced5;--gc-dim2:#a7afb8;
+  width:100%;height:100%;box-sizing:border-box;background:var(--gc-bg);color:var(--gc-fg);
+  padding:7cqw 7cqw 5cqw;display:flex;flex-direction:column}
+:root[data-theme="light"] .gcov{--gc-bg:#ffffff;--gc-fg:#14181d;--gc-panel:#eceff3;--gc-edge:#cfd6de;--gc-acc:#A8490A;
+  --gc-dim:#4c535c;--gc-dim2:#5d6874}
+/* Centred head (Paul). Letter-spaced caps carry a trailing gap after the last
+   letter, so LESSON PLAN gets the same amount as left padding to sit truly
+   centred. */
+.gcov-head{text-align:center;margin-top:3cqw}
+.gcov-head .gcov-kind{padding-left:.32em}
+.gcov-title{display:flex;align-items:baseline;justify-content:center;line-height:.85}
+.gcov-title b{font-size:28cqw;font-weight:800;letter-spacing:-.05em}
+.gcov-title sup{font-size:8cqw;font-weight:700;align-self:flex-start;margin:1cqw 3cqw 0 .6cqw;line-height:1}
+.gcov-title span{font-size:11cqw;font-weight:800;letter-spacing:-.02em}
+.gcov-title.is-k{padding:6cqw 0 3cqw}
+.gcov-title.is-k span{font-size:12.5cqw}
+/* Coming Soon (Paul: "say coming soon like over the grade and make it faded").
+   The cover and its caption fade; the label sits over the grade at full
+   strength so it reads first. */
+.shoptile{position:relative}
+.is-soon .gcov{opacity:.38;filter:grayscale(.6)}
+.is-soon h3,.is-soon p{opacity:.55}
+/* A diagonal band (Paul: "more like a diagonal across the card", "in a big
+   text", then "make it faded and the bar see through and you see the bottom
+   cut off").
+   ⚠️ 35 degrees, NOT the corner-to-corner 52: at 52 its ends ran out through
+   the top and bottom edges and were sliced off there, which read as the bottom
+   being cut off. At 35 they leave through the left and right sides
+   (tan 35 x half the width < half the height), cleanly and symmetrically.
+   See-through: a translucent band over the faded cover, softer text. */
+.gcov-soon{position:absolute;left:50%;top:50%;width:150%;z-index:1;text-align:center;white-space:nowrap;
+  transform:translate(-50%,-50%) rotate(-35deg);
+  background:color-mix(in srgb,var(--fg) 55%,transparent);color:color-mix(in srgb,var(--bg) 80%,transparent);
+  font-weight:800;text-transform:uppercase;letter-spacing:.12em;
+  font-size:10.5cqw;line-height:1;padding:3.4cqw 0}
+.gcov-kind{font-size:5cqw;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:var(--gc-acc);margin-top:3cqw}
+.gcov-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.6cqw;margin-top:auto}
+.gcov-sub{background:var(--gc-panel);border:1px solid var(--gc-edge,transparent);border-radius:2cqw;padding:3cqw 4cqw;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.8cqw}
+.gcov-sub svg{width:7cqw;height:7cqw;color:var(--gc-acc);margin-bottom:.6cqw}
+.gcov-sub strong{font-size:5cqw;font-weight:700}
+.gcov-weeks{font-size:5.4cqw;font-weight:600;color:var(--gc-dim);margin-top:3.4cqw}
+.gcov-sub em{font-style:normal;font-size:3.7cqw;color:var(--gc-dim2)}
+
+</style>`;
 
 /* The core subjects, in the order they appear everywhere on the site.
    `live` gates whether the subject gets its own pages: a subject with nothing
@@ -2909,6 +3156,15 @@ const pages = [
      home page still carries the picker at #grades, so the page had no job
      left. It redirects rather than 404s - see REDIRECTS below. */
 
+  /* 🛒 The shop: see SHOP_LESSONS above. pclass termshead centres the title,
+     the way Lizzie's "Shop" heading sits. */
+  { dir: "shop", active: "s", pclass: "termshead",
+    title: "Shop | NexStudents",
+    desc: "Everything NexStudents sells: grade lessons, worksheets and extras.",
+    h1: "Shop",
+    head: shopHead(), script: shopScript(),
+    body: shopBody() },
+
   { dir: "worksheets", active: "w",
     title: "Worksheets | NexStudents",
     desc: "Every free worksheet and term packet, all grades and subjects, in one place.",
@@ -3703,10 +3959,26 @@ const SOON_PAGES = [
      all end up at /?panel=account, which opens it.
      The reset link is the one exception: it lands with a real session and
      must go to "choose a new password" first, or the reset never happens. */
+  /* ↩️ ?next=/cart/ (2026-10-14): the cart sends a signed-out buyer of a lesson
+     plan here, and they must land back in the cart, not the account panel. It
+     is kept in sessionStorage because a Google sign-in leaves this page and
+     comes back without the query. Same-site paths only ("/x", never "//x"). */
+  /* ⚠️ NO REGEX AND NO BACKSLASH HERE: this script sits inside a template
+     literal, which eats them (recurring mistake 19). 92 is the backslash. */
+  var safeNext = function(p){
+    return typeof p === "string" && p.charAt(0) === "/" && p.length > 1 &&
+           p.charAt(1) !== "/" && p.charCodeAt(1) !== 92 ? p : "";
+  };
+  try {
+    var nx = safeNext(new URLSearchParams(location.search).get("next"));
+    if (nx) sessionStorage.setItem("ns:next", nx);
+  } catch (e) {}
   function paint(){
     if(!window.NSAccount || !NSAccount.isSignedIn()) return;
     if (NSAccount.isRecovery && NSAccount.isRecovery()) { setMode("reset"); return; }
-    location.replace("/?panel=account");
+    var go = "";
+    try { go = safeNext(sessionStorage.getItem("ns:next")); sessionStorage.removeItem("ns:next"); } catch (e) {}
+    location.replace(go || "/?panel=account");
   }
   /* 🔑 Hands the browser to the provider. There is no .then() to write: this
      call LEAVES the page, and the session comes back in the fragment on
@@ -3940,7 +4212,7 @@ const SOON_PAGES = [
 <\/script>` },
 
 
-  { dir: "cart", active: "p",
+  { dir: "cart", active: "s",   /* the cart belongs to the Shop (2026-10-14); it said For Parents */
     title: "Cart | NexStudents",
     desc: "Your cart. Free sheets go through it too, so you have a record.",
     /* Compact header and NO lead: the table below says what this page is.
@@ -3949,9 +4221,13 @@ const SOON_PAGES = [
     crumb: '<a href="/">Home</a> &rsaquo; Your Cart', h1: "Your Cart",
     body: `<div class="band"><div class="wrap">
 
+  <!-- 🛒 CONTINUE SHOPPING, 2026-10-14 (Paul: "yea we can build a continue
+       shopping"). Empty, it is the one button on the page. With items, it is a
+       quiet link under the table, so Check Out stays the main action. -->
   <div id="cartEmpty">
     <p class="dim">Your cart is empty. Everything on this site goes through the cart,
       including the free sheets, so you have a record of what you took.</p>
+    <p class="ck-shopbtn"><a class="btn" href="/shop/">Continue Shopping</a></p>
   </div>
 
   <div id="cartFull" class="hidden">
@@ -4007,6 +4283,9 @@ const SOON_PAGES = [
       </aside>
 
     </div>
+    <p class="ck-cont"><a href="/shop/"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"
+      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 3.5 5.5 8l4.5 4.5"/></svg>Continue Shopping</a></p>
   </div>
 
   <!-- 🛒 THE PAYMENT WINDOW (ROADMAP 37). Paul, 2026-09-10: the embedded form
@@ -4111,6 +4390,17 @@ const SOON_PAGES = [
     var email = $("coEmail").value;
     btn.disabled = true; $("coMsg").textContent = "Checking out\\u2026";
     NSAccount.priceList(NSAccount.cart()).then(function(rows){
+      /* 🔑 LESSONS AND EXTRAS NEED AN ACCOUNT (BEHAVIOR, 2026-10-14). Stop here,
+         before anything is recorded, and send them to sign in or create one,
+         straight back to this cart. The Worker refuses it too; this is only so
+         the buyer hears it before a card form opens. */
+      if (!NSAccount.isSignedIn() && rows.some(function(r){ return r.needs_account; })) {
+        $("coMsg").innerHTML = "Lessons unlock on your account, so please " +
+          "<a href='/account/?next=/cart/'>sign in or create an account</a> to buy them. " +
+          "Worksheets can still be bought without one.";
+        btn.disabled = false;
+        return;
+      }
       var paid = rows.filter(function(r){ return r.price_cents > 0; })
                      .map(function(r){ return r.slug; });
       if (!paid.length) return freeOnly(btn);
@@ -4138,10 +4428,15 @@ const SOON_PAGES = [
     if (!window.Stripe || !(window.NS_STRIPE && NS_STRIPE.publishableKey)) {
       throw new Error("Card checkout is still loading. Please try again in a moment.");
     }
-    return fetch(WORKER + "/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slugs: paid, email: email })
+    /* Signed in, the token rides along: a grade purchase is charged to THAT
+       account (the Worker reads the email from the token, never the form). */
+    return NSAccount.freshToken().then(function(tok){
+      var h = { "Content-Type": "application/json" };
+      if (tok) h["Authorization"] = "Bearer " + tok;
+      return fetch(WORKER + "/checkout", {
+        method: "POST", headers: h,
+        body: JSON.stringify({ slugs: paid, email: email })
+      });
     }).then(function(r){ return r.json(); }).then(function(d){
       if (!d || !d.clientSecret) throw new Error((d && d.error) || "Checkout is unavailable right now.");
       return Stripe(NS_STRIPE.publishableKey).initEmbeddedCheckout({ clientSecret: d.clientSecret });

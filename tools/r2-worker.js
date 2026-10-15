@@ -356,7 +356,13 @@ function jsonOut(obj, status) {
    anyway - its one-time minimum is 50 cents. Fail with a clear reason instead
    of passing a doomed request to Stripe. */
 async function checkout(request, env) {
-  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
+  /* "authorization" is allowed so a signed-in cart can send its token (a grade
+     purchase needs it, 2026-10-14). Without it the browser blocks the request. */
+  if (request.method === "OPTIONS") {
+    const h = cors();
+    h.set("access-control-allow-headers", "content-type, authorization");
+    return new Response(null, { status: 204, headers: h });
+  }
   if (request.method !== "POST") return jsonOut({ error: "Method not allowed" }, 405);
 
   if (!env.STRIPE_SECRET_KEY || !env.SUPABASE_URL || !env.SUPABASE_KEY) {
@@ -388,7 +394,7 @@ async function checkout(request, env) {
   let products;
   try {
     const r = await fetch(env.SUPABASE_URL + "/rest/v1/products?slug=in.(" +
-                          slugs.map(encodeURIComponent).join(",") + ")&select=slug,title,price_cents,active",
+                          slugs.map(encodeURIComponent).join(",") + ")&select=slug,title,price_cents,active,needs_account",
       { headers: { apikey: env.SUPABASE_KEY, Authorization: "Bearer " + env.SUPABASE_KEY } });
     if (!r.ok) throw new Error("products " + r.status);
     products = await r.json();
@@ -406,6 +412,30 @@ async function checkout(request, env) {
     const p = bySlug[s];
     if (!p || p.active === false) return jsonOut({ error: "No such product: " + s }, 404);
     if (!(p.price_cents > 0)) return jsonOut({ error: "This item is free. Use the free checkout." }, 400);
+  }
+
+  /* 🔑 LESSONS AND EXTRAS NEED AN ACCOUNT (BEHAVIOR, 2026-10-14). Paul: "buying
+     sheets as a guest is fine but buying lessons and extras they need to login
+     or create an account." A grade unlocks ON an account, so the buyer must be
+     signed in, and the order is charged to THAT account's email: the webhook
+     finds the account by email (record_purchase) and migration 025 grants the
+     scope. Taking the email from the token, never from the form, is what stops
+     a grade being bought "for" an address that is not the buyer's. */
+  if (slugs.some((s) => bySlug[s].needs_account)) {
+    const auth = request.headers.get("authorization") || "";
+    let user = null;
+    if (/^Bearer\s+\S+/.test(auth)) {
+      try {
+        const r = await fetch(env.SUPABASE_URL + "/auth/v1/user",
+          { headers: { apikey: env.SUPABASE_KEY, Authorization: auth } });
+        if (r.ok) user = await r.json();
+      } catch (e) { /* treated as signed out */ }
+    }
+    if (!user || !user.email) {
+      return jsonOut({ error: "Sign in or create an account to buy lessons. They unlock on your account.",
+                       needsAccount: true }, 401);
+    }
+    email = String(user.email);
   }
 
   /* ⚠️ ui_mode `embedded_page` is the current name. Accounts pinned to an older

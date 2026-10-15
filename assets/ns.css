@@ -2151,6 +2151,13 @@ html{-webkit-tap-highlight-color:transparent}
   font-size:.92rem;margin-top:10px}
 .ck-sum-row.ck-total{font-size:1.25rem}
 .ck-sum-row:not(.ck-total){font-size:1rem;font-weight:600}
+/* Continue Shopping (2026-10-14): a button when the cart is empty, a quiet
+   link with an SVG chevron under the table when it is not. */
+.ck-shopbtn{margin-top:18px}
+.ck-cont{margin:18px 0 0}
+.ck-cont a{display:inline-flex;align-items:center;gap:6px;color:var(--fg);font-weight:600;font-size:.95rem;
+  text-decoration:underline;text-underline-offset:3px}
+.ck-cont svg{flex:none}
 .ck-center{text-align:center;margin-top:12px}
 .ck-center a{color:var(--fg);text-decoration:underline;text-underline-offset:2px}
 .ck-who{margin-bottom:4px}
