@@ -329,6 +329,8 @@ function deny() {
 /* The only origin allowed to start a checkout. A wildcard here would let any
    site mount our payment form and bill our account for the Stripe fees. */
 const SITE = "https://nexstudents.org";
+/* This worker's own address, for the Download links in a receipt. */
+const WORKER_URL = "https://nexstudents-media.nexedgetech.workers.dev";
 
 function cors(extra) {
   const h = new Headers(extra || {});
@@ -716,9 +718,17 @@ async function sendReceipt(env, o) {
   const total = o.items.reduce((n, it) => n + Number(it.cents || 0), 0);
   const ref = o.session.slice(-8).toUpperCase();
 
+  /* ⬇️ A DOWNLOAD LINK ON EVERY PAID ITEM. Paul, 2026-10-18: "i want them to
+     still be able to download them from their email." This replaces the
+     2026-09-10 "button only, back to the site" rule for paid items. Each link
+     is the same bearer token /order/ already uses, through /download, so the
+     PDF still comes from R2 only after Postgres says the token is a purchase.
+     Nothing is attached: a file in an inbox cannot be taken back. */
   const rows = o.items.map((it) => {
     const name = esc(titles[it.slug] || it.slug);
-    return `<tr><td style="padding:12px 0;border-bottom:1px solid #e3e7ec">${name}</td>
+    const tok = !o.free && o.tokens[it.slug];
+    const dl = tok ? `<br><a href="${WORKER_URL}/download?t=${encodeURIComponent(tok)}" style="display:inline-block;margin-top:6px;color:#1b2229;font-weight:bold;font-size:14px">Download PDF</a>` : "";
+    return `<tr><td style="padding:12px 0;border-bottom:1px solid #e3e7ec">${name}${dl}</td>
       <td style="padding:12px 0;border-bottom:1px solid #e3e7ec;text-align:right;vertical-align:top">${money(it.cents)}</td></tr>`;
   }).join("");
 
