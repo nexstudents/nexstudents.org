@@ -532,7 +532,7 @@ const shopBox = (g, soon) => {
 };
 const SHOP_EXTRAS = [
   { title: "Game Coding", price: "$0", href: "/extras/electives/game-coding/",
-    tile: "Game Coding", sub: "Godot and C#, one semester" },
+    tile: "Game Coding", sub: "Godot and C#, one semester", grades: ["7"] },
 ];
 const money = (p) => {
   const n = Number(String(p || "$0").replace(/[^0-9.]/g, "")) || 0;
@@ -543,6 +543,11 @@ const money = (p) => {
 const shopTile = (x, cat) =>
   "<" + (x.soon ? 'div aria-disabled="true"' : "a") + ' class="shopcard' + (x.soon ? " is-soon" : "") +
   '" data-cat="' + cat + '" data-bundle="' + (x.bundle ? 1 : 0) +
+  /* Grade and subject for the filter rows above the tabs. A grade's lesson
+     pack holds all four subjects, so it says "all"; a sheet lists every grade
+     it is shelved under. */
+  '" data-grade=" ' + (x.box ? [x.box] : (x.grades || [])).map(String).join(" ") + ' "' +
+  ' data-subject="' + (x.box ? "all" : (x.subject || "")) +
   '" data-free="' + (!x.soon && money(x.price) === "$0.00" ? 1 : 0) + '"' +
   /* Paul: "it only shows in the lessons though the full ones not the all".
      A coming-soon card lives under the Lessons tab only, so All shows only
@@ -574,25 +579,51 @@ const shopBody = () => {
     '</select><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" ' +
     'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>' +
     "</span></label>";
-  return '<div class="wrap shop">' + select +
+  /* 🧭 GRADE + SUBJECT FILTERS, 2026-10-18. Paul: "above the all, lessons
+     worksheets, etc i want the different grade selector boxes like we have on
+     the homepage and in the side bar. then i want a selector for subjects
+     after". The tiles are the home picker's .gr markup and status words
+     (gradeStatus, one source), as buttons that filter in place. Tap a pressed
+     tile again to see every grade. */
+  const grades = '<div class="grades shopgrades" role="group" aria-label="Filter by grade">' +
+    ALL_GRADES.map(g => '<button type="button" class="gr ' + gradeStatusClass(g) + '" data-grade="' + g +
+      '" aria-pressed="false"><b>' + g + "</b><span>" + gradeStatus(g) + "</span></button>").join("") + "</div>";
+  const subjects = '<nav class="shopsubs" aria-label="Filter by subject">' +
+    [["", 'All<span class="subs-long"> Subjects</span>'], ["English", "English"], ["History", "History"], ["Math", "Math"], ["Science", "Science"]]
+      .map(([k, label], i) => '<button type="button" data-subject="' + k + '" aria-pressed="' + (i === 0) + '">' +
+        label + "</button>").join("") + "</nav>";
+  return '<div class="wrap shop">' + grades + subjects + select +
     '<nav class="shopcats" aria-label="Shop categories">' +
     cats.map(([k, label], i) => '<button type="button" data-cat="' + k + '"' +
       (i === 0 ? ' aria-pressed="true"' : ' aria-pressed="false"') + ">" + label + "</button>").join("") +
     "</nav>" +
-    '<div class="shopgrid">' + cards.join("") + "</div></div>";
+    '<div class="shopgrid">' + cards.join("") + "</div>" +
+    /* Grades fill in a few sheets at a time, so a grade can be empty. */
+    '<p class="shopempty" hidden>Nothing here yet for this choice.</p></div>';
 };
 /* One show(k) for both controls, and each keeps the other in step, so turning
    a phone sideways never shows a tab and a dropdown that disagree. */
 const shopScript = () => "<script>(function(){" +
   "var bs=document.querySelectorAll('.shopcats button'),cs=document.querySelectorAll('.shopcard')," +
-  "sel=document.querySelector('.shopselect select');" +
-  "function show(k){" +
+  "sel=document.querySelector('.shopselect select')," +
+  "gs=document.querySelectorAll('.shopgrades button'),ss=document.querySelectorAll('.shopsubs button')," +
+  "empty=document.querySelector('.shopempty'),cur='all',gr='',sub='';" +
+  /* Grade, subject and category all apply at once; show() redraws from all three. */
+  "function show(k){cur=k;" +
   "bs.forEach(function(o){o.setAttribute('aria-pressed',o.getAttribute('data-cat')===k?'true':'false');});" +
-  "if(sel)sel.value=k;" +
-  "cs.forEach(function(c){if(c.getAttribute('data-soon')){c.hidden=k!=='lessons';return;}" +
-  "c.hidden=!(k==='all'||c.getAttribute('data-cat')===k||" +
-  "(k==='free'&&c.getAttribute('data-free')==='1')||(k==='bundles'&&c.getAttribute('data-bundle')==='1'));});}" +
+  "gs.forEach(function(o){o.setAttribute('aria-pressed',o.getAttribute('data-grade')===gr?'true':'false');});" +
+  "ss.forEach(function(o){o.setAttribute('aria-pressed',o.getAttribute('data-subject')===sub?'true':'false');});" +
+  "if(sel)sel.value=k;var n=0;" +
+  "cs.forEach(function(c){var ok=(!gr||(c.getAttribute('data-grade')||'').indexOf(' '+gr+' ')>-1)&&" +
+  "(!sub||c.getAttribute('data-subject')===sub||c.getAttribute('data-subject')==='all');" +
+  "if(c.getAttribute('data-soon')){c.hidden=!(ok&&k==='lessons');}else{" +
+  "c.hidden=!(ok&&(k==='all'||c.getAttribute('data-cat')===k||" +
+  "(k==='free'&&c.getAttribute('data-free')==='1')||(k==='bundles'&&c.getAttribute('data-bundle')==='1')));}" +
+  "if(!c.hidden)n++;});if(empty)empty.hidden=n>0;}" +
   "bs.forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-cat'));});});" +
+  "gs.forEach(function(b){b.addEventListener('click',function(){var g=b.getAttribute('data-grade');" +
+  "gr=gr===g?'':g;show(cur);});});" +
+  "ss.forEach(function(b){b.addEventListener('click',function(){sub=b.getAttribute('data-subject');show(cur);});});" +
   "if(sel)sel.addEventListener('change',function(){show(sel.value);});" +
   /* The menu links here as /shop/#lessons etc. (nav.js SHOP_CATS). Read it on
      arrival, and again when the menu is used while already on this page. */
@@ -619,6 +650,29 @@ const shopHead = () => `<style>
   padding:4px 27px;cursor:pointer;border-left:1px solid var(--line)}
 .shopcats button:first-child{border-left:0}
 .shopcats button[aria-pressed="true"]{color:var(--fg);font-weight:700}
+/* Grade tiles: ns.css .gr as-is (home picker). Buttons, so reset the button
+   font and colour; the chosen tile gets a ring, never a new fill (only Live
+   is filled). Subjects copy the category row's look. */
+.shopgrades{max-width:980px;margin:0 auto 22px}
+.shopgrades .gr{font:inherit;color:var(--fg);cursor:pointer;padding:0}
+.shopgrades .gr.live{color:var(--orange-ink)}
+.shopgrades .gr[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--fg)}
+.shopsubs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 0;margin:0 0 22px;border:0;
+  position:static;background:none;backdrop-filter:none}
+.shopsubs button{background:none;border:0;color:var(--dim);font:inherit;font-size:17px;
+  padding:4px 27px;cursor:pointer;border-left:1px solid var(--line)}
+.shopsubs button:first-child{border-left:0}
+.shopsubs button[aria-pressed="true"]{color:var(--fg);font-weight:700}
+.shopempty{text-align:center;color:var(--dim);margin:24px 0}
+.shopempty[hidden]{display:none}
+@media (max-width:860px){.shopsubs button{padding:4px 15px}}
+/* A phone: three rows of three, K-8, so the block sits centred (Paul,
+   2026-10-18: "do them in 3s k-8 on mobile so its center"). */
+@media (max-width:640px){
+  .shopgrades{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .shopsubs button{font-size:15px;padding:4px 10px}
+  .subs-long{display:none}
+}
 .shopgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 33px}
 @media (max-width:860px){.shopgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 16px}
   .shopcats button{padding:4px 15px}}
