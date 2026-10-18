@@ -203,6 +203,12 @@ function cartBtn(s, variant) {
      where somebody who does NOT own the lesson meets the sheet - and two of
      these three are $2 on their own. */
   if (s.includedWith && variant === undefined) return "";
+  /* 🚨 NO CART ON A PRINT PAGE AT ALL (Paul, 2026-10-18): "these dont need an
+     add to cart if the user already purchased them they only need print or
+     download because add to cart is the shopping build setup". The print page
+     IS the sheet; whoever is on it already has it. Selling happens on the
+     product page ("p-cart"), and nowhere else. */
+  if (variant === undefined) return "";
   /* The thumbnail is a display hint only; the title and the price always come
      back from the products table. A sheet with no thumb passes nothing and the
      drawer draws a plain tile. */

@@ -797,6 +797,9 @@ body.print-all .wk+.wk{page-break-before:always}
   padding:14px 20px;border-radius:0;font-size:13px;text-transform:uppercase;
   letter-spacing:.16em}
 .btn.p-cart.is-off{opacity:.45;cursor:not-allowed}
+/* Owned, the button becomes a link (Open the Sheet / Download Again) and took
+   the page's link colour: white on orange, 2:1. Same dark ink as the button. */
+a.btn.p-cart,a.btn.p-cart:visited{color:var(--a-ink)}
 
 /* More Detail: a quiet disclosure under What's Included. Same caps weight as
    the headings but smaller, with a chevron that turns when open. */
