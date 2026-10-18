@@ -930,6 +930,22 @@ ${navScript()}
 `;
 }
 
+/* 🔎 MAKE THE ANSWERS EASY TO FIND (Paul, 2026-10-18: "make things easy for a
+   13 year old to discover"). Each vocabulary word is bolded where it first
+   appears in the story, including a plural or -ed form (duty -> duties). */
+function boldVocab(paras, vocab) {
+  const out = paras.slice();
+  for (const [term] of vocab) {
+    const t = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const forms = /y$/i.test(term) ? t + "|" + t.slice(0, -1) + "ies" : t;
+    const re = new RegExp("\\b(?:" + forms + ")(?:s|es|ed|d|ing)?\\b", "i");
+    const i = out.findIndex((p) => re.test(p));
+    if (i >= 0) out[i] = out[i].replace(re, (m) => "<b>" + m + "</b>");
+  }
+  return out;
+}
+const countWord = (n) => ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][n] || String(n);
+
 function sheetHtml(s) {
   const subjectSlug = subjSlug(s.subject);
   return `<!doctype html>
@@ -962,7 +978,7 @@ ${navMarkup("w")}
   </div>
 </div>
 
-<div class="sheet">
+<div class="sheet rsheet">
 
   ${namebar('<span>Score <u></u></span>')}
 
@@ -977,8 +993,9 @@ ${s.art ? `
   </figure>
 ` : ""}
   <h2>A Brief History</h2>
-  <div class="passage">
-    ${s.passage.map((p) => "<p>" + p + "</p>").join("\n    ")}
+  <p class="inst">Every question tells you which paragraph to look in, and the vocabulary words are in <b>bold</b> in the story.</p>
+  <div class="passage hwpass">
+    ${boldVocab(s.passage, s.vocab).map((p, i) => '<p><b class="pn">' + (i + 1) + "</b>" + p + "</p>").join("\n    ")}
   </div>
 
 ${s.scripture ? `
@@ -989,17 +1006,20 @@ ${s.scripture ? `
   </blockquote>
   <p class="verse-note">${s.scripture.connection}</p>
 ` : ""}
+  <!-- 📄 THE QUESTIONS GET THEIR OWN PAGE (Paul, 2026-10-18: "all the questions
+       need to fit one sheet its ok if the story has its own sheet"). -->
+  <div class="qpage">
   <h2>Vocabulary &mdash; write what each word means</h2>
   <ul class="vocab">
     ${s.vocab.map(([t]) => `<li><b>${t}</b><u></u></li>`).join("\n    ")}
   </ul>
 
-  <h2>Five Questions &mdash; answer in your own words</h2>
-  <ol class="qs">
-    ${s.questions.map(([q, , , n]) => `<li>${q}${lines(n)}</li>`).join("\n    ")}
-  </ol>
-
+  <h2>${countWord(s.questions.length)} Questions &mdash; answer in your own words</h2>
   <p class="note">${s.note}</p>
+  <ol class="qs">
+    ${s.questions.map(([q, , src, n]) => `<li>${q}${/^Paragraph/.test(src) ? ` <b class="hwpara">(${src})</b>` : ""}${lines(n)}</li>`).join("\n    ")}
+  </ol>
+  </div>
 
   <div class="key">
     <h2>Answer Key</h2>

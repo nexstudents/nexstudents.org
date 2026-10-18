@@ -98,8 +98,9 @@ body{margin:0;background:var(--bg);color:var(--fg)}
 /* Part headings: plain bold Arial, normal case (Paul, 2026-10-11: "i dont like the part a part b
    part c text much maybe a nicer text like Arial ... and bold"). Was 12px spaced grey caps. */
 .sheet h2{font-family:Arial,Helvetica,sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:0;
-  color:var(--fg);margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line);
-  max-width:none}
+  color:var(--fg);margin:34px 0 12px;max-width:none}
+/* No rule under a heading (Paul, 2026-10-18: "we dont need extra lines"). Bold
+   Arial and the space above already make it a heading; the line had no job. */
 .sheet h2:first-of-type{margin-top:0}
 .sheet p{margin:0 0 14px}
 .passage{font-size:1rem;line-height:1.75;color:var(--fg)}
@@ -123,7 +124,7 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
 .lines i{display:block;border-bottom:1px solid var(--line-ink);height:1.6em}
 
 .note{font-size:.85rem;color:var(--dim);background:var(--panel-2);
-  border-left:3px solid var(--a);padding:12px 15px;border-radius:0 var(--r) var(--r) 0;margin:18px 0 0}
+  padding:12px 15px;border-radius:var(--r);margin:18px 0 0}
 .note b{color:var(--fg)}
 
 .key{margin-top:46px;padding-top:22px;border-top:2px solid var(--fg)}
@@ -179,9 +180,8 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
     box-shadow:none}
   .sheet h1{font-size:19pt}
   .sheet h2,.eyebrow,.dek,.passage,.key .kv,.note{color:#000}
-  .sheet h2{border-color:#000}
   .key{border-color:#000}
-  .note{background:transparent;border-left:2px solid #000}
+  .note{background:transparent;padding-left:0;padding-right:0}
   .art{border:1px solid #999;page-break-inside:avoid}
   .art img{max-height:150mm;width:auto;margin:0 auto}
   .lines i,.vocab u,.namebar u{border-bottom:1px solid #000}
@@ -307,13 +307,12 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
    The verse sits between the reading and the vocabulary, the same place the
    Leif booklets put it. Styled as a quotation, not as a decorated box, so it
    reads as source material rather than a sidebar to skip. */
-.verse{margin:0 0 14px;padding:0 0 0 20px;border-left:3px solid var(--a)}
+.verse{margin:0 0 14px;padding:0 0 0 20px}
 .verse p{margin:0 0 7px;font-size:1.02rem;line-height:1.65;font-style:italic;color:var(--fg)}
 .verse cite{font-style:normal;font-size:.78rem;font-weight:800;letter-spacing:.08em;
   text-transform:uppercase;color:var(--dim)}
 .verse-note{font-size:.93rem;line-height:1.65;color:var(--dim);margin:0}
 @media print{
-  .verse{border-left:2px solid #000}
   .verse p,.verse cite,.verse-note{color:#000}
   .verse,.verse-note{page-break-inside:avoid}
 }
@@ -908,3 +907,24 @@ body.print-all .wk+.wk{page-break-before:always}
 /* figures sit centered: the drawn plot in a worked example, and data tables */
 .howex pre.fig{width:max-content;max-width:100%;margin:8px auto 4px}
 .owns .hwtab{margin:6px auto 12px}
+
+/* 📖 READING SHEETS (Boston Tea Party and friends), 2026-10-18. Title centred
+   (Paul: "center the title too"); the story keeps its own page(s) and every
+   question fits together on one page that starts fresh. */
+.rsheet .head{text-align:center}
+.rsheet .qpage{margin-top:34px}
+@media print{
+  .rsheet .qpage{page-break-before:always;break-before:page;margin-top:0}
+  .rsheet .qpage h2:first-child{margin-top:0}
+  /* One page for every question: vocabulary in two columns, tighter gaps.
+     The write-on lines keep their height so a 13 year old has room. */
+  .rsheet .qpage h2{margin:20px 0 10px}
+  .rsheet .qpage .vocab{grid-template-columns:1fr 1fr;gap:12px 28px}
+  .rsheet .qpage .vocab b{min-width:0;margin-right:4px}
+  .rsheet .qpage .note{margin:0 0 12px;padding:0}
+  .rsheet .qpage ol.qs>li{margin-bottom:6px}
+  .rsheet .qpage .lines{margin-top:2px}
+  .rsheet .qpage .lines i{height:1.45em}
+  .rsheet .qpage ol.qs>li{line-height:1.4}
+}
+.rsheet .hwpara{white-space:nowrap}
