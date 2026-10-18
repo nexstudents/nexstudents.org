@@ -696,6 +696,11 @@
        and the previous account's profiles stay on the device. */
     var gone = uid();
     session = null; sessDrop(); drop(WHO_KEY); drop(PICK_KEY); drop("ns:accent"); drop("ns:meicon");
+    /* Signing out forgets this device's purchases too, so the store shows Add To
+       Cart again (Paul, 2026-10-18). Nothing is lost: signing back in lists them
+       from my_downloads, and the receipt email still has every link. A guest
+       never signs out, so a guest's device memory is untouched. */
+    drop("ns:owned");
     if (gone) drop("ns:acct:v1:" + gone);
     document.dispatchEvent(new CustomEvent("ns:auth", { detail: { user: null } }));
   }
