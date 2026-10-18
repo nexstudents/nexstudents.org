@@ -116,7 +116,7 @@ const SUBJECTS = [
    per item. Grade 5 gets its own shelf back the moment it has content of its
    own - a real grade 5 lesson, not a grade 4 one relisted. Showing an empty
    grade is worse than not showing it. */
-const LIVE_GRADES = ["K", "2", "3", "4", "5", "7", "8"];   /* 2026-09-25: grammar moved to 2-5; integers moved 6 -> 7, so 6 has none built */
+const LIVE_GRADES = ["K", "2", "3", "4", "5", "6", "7", "8"];   /* 2026-09-25: grammar moved to 2-5; integers moved 6 -> 7, so 6 had none built. 2026-10-18: 6 back, with the two decimals/metric worksheets */
 const ALL_GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"];
 
 /* ── WHAT A GRADE TILE SAYS ────────────────────────────────────────────────

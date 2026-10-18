@@ -900,6 +900,68 @@ const SHEETS = [
   note: "<b>Before you answer.</b> The first four questions are hiding in the reading &mdash; find the sentence that answers each one and write its number in the margin beside it. Question 5 is a vocabulary word, so check the word list instead. The last three use the formula, and paragraph 6 shows you how, including a worked example. Write the unit on every calculation.",
 },
 
+/* ══════════════════════ DECIMALS AND METRIC, PARTS 1 AND 2 ══════════════════════
+   Made with Paul 2026-10-18 for Kolten's Unit 2 review, from the skills on the
+   Glencoe Course 2 Chapter 2 test. Every problem and example is OUR OWN; none is
+   the book's or a NexStudents lesson's (checked against unit-2 lesson files).
+   🚨 GRADE 6, Paul's call 2026-10-18: by today's standards these are 5th-6th
+   grade skills (6.NS.B.3 decimal fluency, 5.NBT.A.2 powers of ten, 5.MD.A.1 and
+   6.RP.A.3d unit conversion), so they shelve at 6, not at Kolten's 7.
+   💲 $2 PAID SHEETS (Paul, 2026-10-18). The PDFs are NOT in this repo: they sit
+   beside their source pages and in R2 at paid/<slug>.pdf. Cover = page 1 faded
+   out, preview-1 = the answer key with every answer blurred.
+   The PDFs are printed from the local source pages in
+   Projects/kolten-homeschool/materials/math-u2-one-sheet{,-part2}/index.html
+   (headless Chrome, --no-pdf-header-footer). Edit THERE and re-print; never run
+   make-pdf.js or make-cover.js over these. Covers and previews come from
+   make-preview.py, page 1 only, so the answer key on page 2 stays out of them.
+   Each PDF carries its own copyright line; do not add a second. */
+{
+  slug: "multiplying-and-dividing-decimals", subject: "Math", grade: 6, grades: [6], protect: true,
+  kind: "paid-sheet", tagline: "Part 1",
+  title: "Multiplying and Dividing Decimals",
+  dek: "Ten problems on one page, with a How To box and a worked example before each part.",
+  blurb: "Multiply and divide decimals, one page. Curved arrows show the decimal point jumping, and every division problem has room to work.",
+  unit: "Printable &middot; answer key included",
+  contains: [
+    "Six multiplication problems, including times 10, 100, 1,000 and powers of ten",
+    "Four long division problems, each in its own work box",
+    "A How To box and a step-by-step example before each part",
+    "Curved arrows that show the decimal point jumping",
+    "An answer key on page 2 that shows how each answer was found",
+  ],
+  steps: [
+    "Read the How To box and follow the example one step at a time before starting.",
+    "Work each problem in the space beside or under it, then write the answer in the box.",
+    "Check with the key on page 2. A miss usually means the decimal point jumped the wrong number of places.",
+  ],
+  after: "Part 2 covers the metric system with the same jumping-point method, so the two make a pair.",
+  price: "$2", buy: true, art: false, thumb: true, preview: true, keyPreview: true,
+},
+
+{
+  slug: "metric-system-conversions", subject: "Math", grade: 6, grades: [6], protect: true,
+  kind: "paid-sheet", tagline: "Part 2",
+  title: "The Metric System",
+  dek: "Change between meters, grams and liters by jumping the decimal point. Ten problems on one page.",
+  blurb: "Metric conversions on one page: mm, cm, m, mg, g, kg, mL and L, with unit boxes, worked examples and two word problems.",
+  unit: "Printable &middot; answer key included",
+  contains: [
+    "Unit boxes for length, mass and capacity at the top",
+    "Four big unit to small unit problems (multiply)",
+    "Four small unit to big unit problems (divide)",
+    "Two word problems that mix units",
+    "An answer key on page 2 that shows how each answer was found",
+  ],
+  steps: [
+    "Find both units in the boxes at the top. Going to a smaller unit means multiply; going to a bigger unit means divide.",
+    "Count the zeros in 10, 100 or 1,000. That is how many places the decimal point jumps.",
+    "For the word problems, change both amounts to the same unit before adding or subtracting.",
+  ],
+  after: "Part 1 teaches multiplying and dividing decimals with the same jumping-point idea.",
+  price: "$2", buy: true, art: false, thumb: true, preview: true, keyPreview: true,
+},
+
 ];
 
 /* The Math practice sheets live in their own file (14+ sheets, all one shape). */

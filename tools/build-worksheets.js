@@ -72,6 +72,20 @@ const ICON_DL = '<svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="tr
 const lines = (n) => '<span class="lines">' + '<i></i>'.repeat(n) + '</span>';
 
 const isPaid = (s) => (s.price || "$0") !== "$0";
+/* 🛡️ A paid sheet's pictures are guarded, and `protect: true` guards a free one too
+   (Paul, 2026-10-18). Deterrent only, see .p-guard in worksheet.css. No backticks below:
+   the script is written into a template literal. */
+const guarded = (s) => isPaid(s) || !!s.protect;
+function guardScript() {
+  return `<script>(function(){
+    var g = document.currentScript.previousElementSibling;
+    while (g && !(g.classList && g.classList.contains("p-guard"))) g = g.previousElementSibling;
+    if (!g) return;
+    ["contextmenu", "dragstart", "selectstart"].forEach(function(t){
+      g.addEventListener(t, function(e){ e.preventDefault(); });
+    });
+  })();</script>`;
+}
 
 /* The buy control. With a real Stripe Payment Link it is a button. Without
    one it says so plainly - never a placeholder URL, never a dead button. */
@@ -246,8 +260,12 @@ function priceText(p) {
    third and say answer key hidden from preview."
      1  the cover (thumb.jpg)
      2  page 1, WATERMARKED and downscaled (preview-1.jpg, tools/make-preview.py)
-     3  a tile saying the answer key is hidden. 🚨 A TILE, NEVER AN IMAGE OF THE
-        KEY, blurred or otherwise. What is not sold is not shipped.
+     3  a tile saying the answer key is hidden.
+   🔑 keyPreview: true (Paul, 2026-10-18, replacing the Sept 10 "tile, never a
+      blurred image" rule for these): preview-1 IS the key page with every
+      answer pixelated and blurred past reading, so the tile is skipped. Never
+      a light blur: the digits must not come back. Answers that are plain
+      numbers ("63") look like question labels; blur by label shape.
    A product with no previews keeps the single image, exactly as before.
    🆓 FREE SHEETS (2026-09-10): cover, then every preview-N.jpg found, PLAIN,
    and no hidden tile - an answer key is always free with its sheet, so there
@@ -324,11 +342,11 @@ function carousel(s, dir, art) {
     `<figure class="p-slide"><img src="${dir}${f}" alt="${s.title}, page ${i + 1}${paid ? " preview" : ""}" width="900" height="1165"${slides.length ? ' loading="lazy"' : ""}></figure>`));
   /* homework too, free or not: its previews stop before the key, and the tile says why
      (Paul, 2026-10-12: "they hide the answer key") */
-  if (paid || s.kind === "homework") slides.push(`<figure class="p-slide p-hidden"><div><span class="p-lock" aria-hidden="true">&#128274;</span>
+  if ((paid || s.kind === "homework") && !s.keyPreview) slides.push(`<figure class="p-slide p-hidden"><div><span class="p-lock" aria-hidden="true">&#128274;</span>
         <b>Answer Key</b><span>Hidden From Preview</span></div></figure>`);
   const dots = slides.map((_, i) =>
     `<button type="button" aria-label="Image ${i + 1} of ${slides.length}"${i ? "" : ' class="on"'}></button>`).join("");
-  return `<div class="p-img p-car">
+  return `<div class="p-img p-car${guarded(s) ? " p-guard" : ""}">
       <div class="p-track" tabindex="0" aria-label="Product images">${slides.join("")}</div>
       <button class="p-nav prev" type="button" aria-label="Previous image">&lsaquo;</button>
       <button class="p-nav next" type="button" aria-label="Next image">&rsaquo;</button>
@@ -445,7 +463,8 @@ function productBlock(s) {
     : (s.file ? `${dir}${s.file}` : "");
   return `<section class="product" data-slug="${s.slug}" data-paid="${paid ? 1 : 0}" data-print="${dir}print/" data-pdf="${pdf}">
     ${hasCarousel ? carousel(s, dir, art)
-      : `<div class="p-img">${s.thumb ? `<img src="${art}" alt="${s.title}" width="700" height="700">` : ""}</div>`}
+      : `<div class="p-img${guarded(s) ? " p-guard" : ""}">${s.thumb ? `<img src="${art}" alt="${s.title}" width="700" height="700"${guarded(s) ? ' draggable="false"' : ""}>` : ""}</div>`}
+    ${guarded(s) ? guardScript() : ""}
     <div class="p-info">
       <h1>${s.title}</h1>
       <p class="p-price">${priceText(s.price)}</p>
