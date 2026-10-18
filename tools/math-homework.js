@@ -24,7 +24,7 @@
 const sheet = (o) => Object.assign({
   subject: "Math", grade: 7, grades: [7], kind: "homework",
   unit: "Homework &middot; answer key included",
-  price: "$0", buy: null, art: false, thumb: false,
+  price: "$0", buy: null, art: false, thumb: true,   /* cover = page 1, tools/make-previews.js (2026-10-18) */
 }, o);
 
 

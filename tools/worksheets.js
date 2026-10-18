@@ -267,7 +267,7 @@ const SHEETS = [
     "Five questions, four answerable from the reading",
     "Answer key on its own page, citing where each answer is",
   ],
-  price: "$0", buy: null, art: false, thumb: false,
+  price: "$0", buy: null, art: false, thumb: true,
   passage: [
     "Britain won the French and Indian War in 1763 and came out of it holding more land in North America than ever before, along with an enormous debt. Parliament decided the colonists should help pay for a war fought partly on their behalf. That sounded reasonable in London. It landed very differently in Boston, because the colonists had no members in Parliament and had spent a century deciding their own taxes through their own assemblies.",
     "The taxes came one after another. The Stamp Act of 1765 taxed printed paper, from newspapers to playing cards. The Townshend Acts of 1767 taxed glass, paint, paper and tea. Colonists answered with boycotts, refusing to buy British goods until the taxes were repealed, and the boycotts worked well enough that most of the Townshend duties were dropped. The phrase people shouted was no taxation without representation. Notice what it says: the complaint was not that taxes existed, but that these ones were decided by a Parliament the colonists had no vote in.",

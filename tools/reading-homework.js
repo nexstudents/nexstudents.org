@@ -30,7 +30,7 @@
 const sheet = (o) => Object.assign({
   grade: 7, grades: [7], kind: "homework",
   unit: "Homework &middot; answer key included",
-  price: "$0", buy: null, art: false, thumb: false, online: true, story: true,
+  price: "$0", buy: null, art: false, thumb: true, online: true, story: true,   /* cover = page 1 (2026-10-18) */
 }, o);
 
 /* a typed item: the problem, the key line, and the word or phrase that marks the box */
