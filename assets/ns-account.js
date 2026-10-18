@@ -802,7 +802,10 @@
   /* Reads the real prices so the cart can be totalled honestly. */
   function priceList(slugs) {
     if (!slugs.length) return Promise.resolve([]);
-    var q = REST + "/products?select=slug,title,price_cents&slug=in.(" +
+    /* select=* rather than naming needs_account (migration 025): a named column
+       that does not exist yet makes PostgREST refuse the whole query, and the
+       cart would read as empty on any page served before the migration ran. */
+    var q = REST + "/products?select=*&slug=in.(" +
             slugs.map(encodeURIComponent).join(",") + ")";
     return fetch(q, { headers: headers(true) })
       .then(function (r) { return r.ok ? r.json() : []; })
@@ -1020,6 +1023,9 @@
     pinMap: pinMap, checkPin: checkPin, setPin: setPin, clearPin: clearPin,
     bootstrap: bootstrap, ownedSheet: ownedSheet,
     isSignedIn: function () { return !!session; },
+    /* A fresh access token or null, for a Worker call that must know who is
+       asking (a grade purchase, 2026-10-14). */
+    freshToken: function () { return refreshIfNeeded().then(function (s) { return s ? s.access_token : null; }); },
     uid: uid,
     cart: cart, cartAdd: cartAdd, cartRemove: cartRemove, cartClear: cartClear,
     cartThumb: cartThumb, cartHref: cartHref,
