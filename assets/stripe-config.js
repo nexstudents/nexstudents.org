@@ -8,12 +8,13 @@
    move money. The SECRET key (sk_...) lives in the Worker as STRIPE_SECRET_KEY
    and must never appear in this file or anywhere this repo publishes.
 
-   ⚠️ pk_test_ = SANDBOX. Test cards only. GOING LIVE is this one line plus the
+   ⚠️ pk_live_ = REAL MONEY. Swapping keys again means this one line plus the
    Worker's STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET, all three together, or
    the page starts a live checkout the Worker cannot price.
    ⚠️ It used to be baked into each page from a STRIPE_PK env var at build time,
    so a build run without the variable silently shipped a shop with no checkout.
    ============================================================================ */
 window.NS_STRIPE = {
-  publishableKey: "pk_test_51UDogSAu4JPty5AZuhf6wYGrR53iREhg9p664HR85pz1yzgbFoJzqJ2llXIv9Xn87N6XFCiBq5pCHK1ceGAKpLoN002mY6Cxn9"
+  // LIVE since 2026-10-19 (NexEdge Studios acct_1UDogJAWPpksClj5). Sandbox was pk_test_51UDogSAu4JPty5AZ...
+  publishableKey: "pk_live_51UDogJAWPpksClj5lr28KmDRUKcxsCC1xI2hyT5TuN5fBH0oVZcEQBphwYir3WwY5BfUnzCdac5ij3L0mEUFLy9U00IzgLuIhw"
 };
