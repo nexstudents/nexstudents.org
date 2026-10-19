@@ -826,7 +826,9 @@ a.btn.p-cart,a.btn.p-cart:visited{color:var(--a-ink)}
 .p-also{max-width:1120px;margin:56px auto 0;padding:0 20px}
 .p-also-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .p-also-card{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--fg);min-width:0}
-.p-also-img{display:block;aspect-ratio:1/1;max-width:100%;background:var(--panel-2);overflow:hidden;
+/* 8.5x11 like every cover (Paul, 2026-10-18: "the you might also like section
+   needs to be 8.5x11 and not square"). */
+.p-also-img{display:block;aspect-ratio:8.5/11;max-width:100%;background:var(--panel-2);overflow:hidden;
   margin-bottom:6px}
 .p-also-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
 @media(hover:hover){ .p-also-card:hover .p-also-img img{transform:scale(1.03)} }
@@ -971,3 +973,58 @@ a.btn.p-cart,a.btn.p-cart:visited{color:var(--a-ink)}
   .gsheet .grading{margin-top:0;padding-top:10px}
   .gsheet .grading .gtotal,.gsheet .grading .gline{margin-bottom:8px}
 }
+/* COPYRIGHT ON EVERY PRINTED PAGE (Paul, 2026-10-18: "make sure we have our
+   copyright on the bottom"). Printed in the page's own bottom margin, so it
+   can never sit on top of the work. A named page keeps the bigger margin to
+   these sheets, so no other sheet re-flows. The signoff's copy would print it
+   twice on the key page, so it hides in print here. */
+@media print{
+  .gsheet,.rsheet{page:gsheet}
+  .rsheet .signoff small{display:none}
+  .gsheet .signoff small{display:none}
+}
+@page gsheet{margin:14mm 14mm 18mm;
+  @bottom-center{content:"Copyright \00A9  NexEdge Studios \00B7  nexstudents.org";font-size:8pt;color:#000;font-family:Arial,sans-serif}}
+/* A FULL-WIDTH PHOTO across the top of a reading sheet (`banner: true`, Paul,
+   2026-10-18). Edge to edge of the sheet on screen; on paper it runs the full
+   width inside the page margins, since a home printer cannot print to the edge. */
+.banner{margin:-38px -44px 24px;padding:0;overflow:hidden;border-radius:var(--r) var(--r) 0 0}
+.banner img{display:block;width:100%;height:auto}
+@media (max-width:560px){ .banner{margin:-24px -19px 18px} }
+@media print{ .banner{margin:0 0 5mm;border-radius:0} }
+/* Name, Date and Score centred under a centred title (Paul, 2026-10-18:
+   "center it"), on the reading and subject/predicate sheets. */
+.rsheet .namebar,.gsheet .namebar{justify-content:center}
+/* A little more room between the photo and Name/Date (Paul, 2026-10-18:
+   "move name and date down slightly"). */
+.banner{margin-bottom:36px}
+@media (max-width:560px){ .banner{margin-bottom:26px} }
+@media print{ .banner{margin-bottom:8mm} }
+/* LESS DEAD SPACE ON THE READING SHEETS (Paul, 2026-10-18: "there is alot of
+   deadspace for this worksheet across three pages"). On paper the story sets a
+   little tighter, the photo is capped, and the questions follow the story on
+   the same page WHEN THEY FIT WHOLE; otherwise they move to the next page.
+   They still never split across two pages, and the key keeps its own page. */
+@media print{
+  .rsheet .passage{line-height:1.4;font-size:.95rem}
+  .rsheet .passage p{margin-bottom:4px}
+  .rsheet .banner img{width:100%;max-height:46mm;object-fit:cover;object-position:center top}
+  /* `qflow: true` in worksheets.js, only on sheets checked to fit: Chrome's
+     break-inside:avoid is not reliable on a block this tall, so the default
+     stays a fresh page for the questions. */
+  .rsheet.qflow .qpage{page-break-before:auto;break-before:auto;page-break-inside:avoid;break-inside:avoid;margin-top:3mm}
+}
+@media print{
+  /* the copyright margin took ~11pt a page; win it back on the reading sheets */
+  .rsheet .passage{line-height:1.36}
+  .rsheet .qpage .lines i{height:1.32em}
+  .rsheet .qpage ol.qs>li{margin-bottom:3px}
+  .rsheet .qpage h2{margin:14px 0 8px}
+}
+@media print{
+  /* a little less air above the story, so Newton's fits on page 1 */
+  .rsheet .namebar{margin-bottom:12px}
+  .rsheet .head{margin-bottom:6px}
+  .rsheet > h2:first-of-type{margin-top:10px}
+}
+@media print{ .rsheet h2{break-after:avoid;page-break-after:avoid} }

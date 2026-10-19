@@ -431,7 +431,7 @@ function alsoLike(s) {
       ${picks.map((o) => {
         const href = `/worksheets/${subjSlug(o.subject)}/${o.slug}/`;
         return `<a class="p-also-card" href="${href}">
-        <span class="p-also-img"><img src="${href}thumb.jpg" alt="" width="300" height="300" loading="lazy"></span>
+        <span class="p-also-img"><img src="${href}thumb.jpg" alt="" width="800" height="1035" loading="lazy"></span>
         <b>${o.title}</b><span>${priceText(o.price)}</span></a>`;
       }).join("\n      ")}
     </div>
@@ -984,8 +984,10 @@ ${navMarkup("w")}
   </div>
 </div>
 
-<div class="sheet rsheet">
-
+<div class="sheet rsheet${s.qflow ? " qflow" : ""}">
+${s.banner ? `
+  <figure class="banner"><img src="banner.jpg" alt=""></figure>
+` : ""}
   ${namebar('<span>Score <u></u></span>')}
 
   <div class="head">
@@ -1032,7 +1034,7 @@ ${s.scripture ? `
 
     <p class="kv"><b>Vocabulary.</b> ${s.vocab.map(([t, d]) => `<b>${t}</b> ${d}`).join(" &nbsp; ")}</p>
 
-    <p class="kv" style="margin-top:14px"><b>Five Questions.</b> Accept answers in the student's own words that carry the sense below. The place each answer comes from is noted, so you can check it was found rather than guessed.</p>
+    <p class="kv" style="margin-top:14px"><b>${countWord(s.questions.length)} Questions.</b> Accept answers in the student's own words that carry the sense below. The place each answer comes from is noted, so you can check it was found rather than guessed.</p>
     <ol>
       ${s.questions.map(([, a, src]) => `<li>${a} <i>(${src})</i></li>`).join("\n      ")}
     </ol>

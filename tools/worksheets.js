@@ -162,6 +162,14 @@ const SHEETS = [
 /* ══════════════════════════ 1. LEWIS AND CLARK ══════════════════════════ */
 {
   slug: "lewis-and-clark", subject: "History", grade: 8,
+  /* qflow: the questions fit under the story on page 2, so they follow it
+     there instead of starting a page (Paul, 2026-10-18: dead space). */
+  qflow: true,
+  /* banner.jpg: Paul's full-width photo across the top of the sheet,
+     2026-10-18: "a full bleed photo to go inside the lewis and clark worksheet
+     at the top of the page". It replaces art.jpg on the sheet (kept on disk,
+     so `art` is false below). */
+  banner: true,
   title: "Lewis and Clark: The Corps of Discovery",
   dek: "Read the history, then answer in your own words. Answer key on the last page.",
   blurb: "The Corps of Discovery, a word list and five questions. Answer key included.",
@@ -171,7 +179,7 @@ const SHEETS = [
     "Five questions, four answerable from the reading",
     "Answer key on its own page, citing where each answer is",
   ],
-  price: "$0", buy: null, art: true, thumb: true,
+  price: "$0", buy: null, art: false, thumb: true,
   passage: [
     "In 1803 the United States bought a piece of land so large it doubled the size of the country. It was called the Louisiana Purchase. The strange part is that almost nobody in the government knew what was in it. There were no reliable maps, rivers nobody had measured, and mountains nobody had crossed. President Thomas Jefferson wanted to know what he had just bought.",
     "He chose Meriwether Lewis to lead an expedition west, and Lewis chose his friend William Clark to share command. Their group of soldiers and boatmen became known as the Corps of Discovery. They left St. Louis in May of 1804 and pushed up the Missouri River, rowing and sometimes dragging the boats against the current for months. Jefferson gave them real work along the way: map the rivers, record the plants and animals, and make peaceful contact with the American Indian nations whose land they were crossing.",
@@ -180,8 +188,8 @@ const SHEETS = [
     "What they found ended one dream and began another. There was no easy water route to the Pacific, so that hope was gone for good. But the maps were real, and settlers followed them west for the rest of the century. For the nations already living on that land, those same maps marked the beginning of enormous loss. Both of those things are true about the same expedition.",
   ],
   vocab: [
-    ["expedition", "A long organised journey made for a purpose, such as exploring."],
-    ["corps", "An organised group of people working together, often military."],
+    ["expedition", "A long organized journey made for a purpose, such as exploring."],
+    ["corps", "An organized group of people working together, often military."],
     ["interpreter", "Someone who translates between people who speak different languages."],
     ["upstream", "Against the current, towards where a river begins."],
     ["Northwest Passage", "A hoped-for water route running across North America to the Pacific, which did not exist."],
@@ -258,6 +266,7 @@ const SHEETS = [
 /* ═════════════════════════ 3. THE BOSTON TEA PARTY ═══════════════════════ */
 {
   slug: "boston-tea-party", subject: "History", grade: 8,
+  qflow: true,  /* questions follow the story on the same page; see Lewis and Clark */
   title: "The Boston Tea Party",
   dek: "Read the history, then answer in your own words. Answer key on the last page.",
   blurb: "Cheaper tea, an angry city, and why the price was never the point. Answer key included.",
