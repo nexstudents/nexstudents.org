@@ -931,3 +931,43 @@ a.btn.p-cart,a.btn.p-cart:visited{color:var(--a-ink)}
   .rsheet .qpage ol.qs>li{line-height:1.4}
 }
 .rsheet .hwpara{white-space:nowrap}
+
+/* ── THE SUBJECT AND PREDICATE SHEETS, 2026-10-18 ─────────────────────────
+   Paul: "redesign them", in the same pass as the reading sheets: title
+   centred, no extra lines, easy for a 13 year old. `.gsheet` is set by
+   build-worksheets.js on the split sheet and the grammar homework only. */
+.gsheet .head{text-align:center}
+/* Circle one: both answers printed on the sentence's row, he circles one. */
+.gsheet .choose{margin:2px 0 4px;font-size:.92rem;display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline}
+.gsheet .choose .olbl{min-width:0;color:var(--dim);font-size:.82rem}
+.gsheet .choose i{font-style:normal;font-weight:600;padding:0 4px}
+.gsheet .choose .or{color:var(--dim);font-size:.82rem}
+.gsheet .owns .sortsent{margin:0 0 4px;font-size:1.05rem;line-height:1.8}
+.gsheet .owns .sortsent .mk{text-decoration:none;border-bottom:2px solid var(--line-ink);padding-bottom:2px}
+/* Two short answers side by side on one row. */
+.gsheet .pair{margin:0 0 6px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.gsheet .pair .olbl{min-width:0}
+.gsheet .pair u{text-decoration:none;flex:0 0 150px;border-bottom:1px solid var(--line-ink);min-height:1.6em;margin-right:22px}
+@media print{
+  .gsheet .owns > li{padding-top:10px}
+  .gsheet .sorts > li{padding-top:10px}
+  .gsheet .splits .spl{line-height:2.1}
+  .gsheet .pair u,.gsheet .owns .sortsent .mk{border-bottom-color:#000}
+  .gsheet .choose .olbl,.gsheet .choose .or{color:#000}
+}
+/* Circling a word needs no room between words the way drawing a line does,
+   so circle rows close up and stop wrapping. A part heading and its note never
+   end a page alone (Part D did, 2026-10-18). */
+.gsheet .circ .spl{line-height:2}
+.gsheet .circ .spl span{margin-right:7px}
+@media print{
+  .gsheet h2.scored,.gsheet .inst{break-after:avoid;page-break-after:avoid}
+  .gsheet .owns > li:first-child,.gsheet .splits > li:first-child,.gsheet .sorts > li:first-child{break-before:avoid;page-break-before:avoid}
+}
+@media print{
+  .gsheet .owns > li{padding-top:7px}
+  .gsheet .owns .sortsent{line-height:1.5;margin-bottom:2px}
+  .gsheet .owns .ownline,.gsheet .owns .ownhalf{margin-bottom:8px}
+  .gsheet .grading{margin-top:0;padding-top:10px}
+  .gsheet .grading .gtotal,.gsheet .grading .gline{margin-bottom:8px}
+}

@@ -694,7 +694,7 @@ ${navMarkup("w")}
   </div>
 </div>
 
-<div class="sheet">
+<div class="sheet${s.kind === "split" || require("./homework-sheet.js").isGrammar(s) ? " gsheet" : ""}">
 
   ${namebar('')}
 

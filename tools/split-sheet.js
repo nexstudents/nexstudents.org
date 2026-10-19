@@ -46,7 +46,10 @@ function partBItem(S, n) {
     : '<span class="pl">' + esc(a) + '</span> <u class="mk">' + esc(b) + '</u>';
   return '<li><b>' + (n + 1) + '.</b><div class="sortrow">' +
          '<p class="sortsent">' + marked + '</p>' +
-         '<p class="sortans">The underlined half is the <u></u></p></div></li>';
+         /* Circle one, not a line to write on (Paul, 2026-10-18: "we dont need
+            extra lines"). Same markup as the homework sheets' choice row. */
+         '<p class="choose"><span class="olbl">The underlined half is the</span>' +
+         '<i>complete subject</i><span class="or">or</span><i>complete predicate</i></p></div></li>';
 }
 
 function keyItem(P) {

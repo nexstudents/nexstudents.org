@@ -469,7 +469,7 @@ const SHEETS = [
   price: "$0", buy: null, art: false, thumb: true,
   eyebrow: "The Sentence &middot; U1-L2",
   noteA: "Draw one straight line down between the complete subject and the complete predicate.",
-  noteB: "One half of each sentence is underlined. Write whether it is the complete subject or the complete predicate.",
+  noteB: "One half of each sentence is underlined. Circle whether it is the complete subject or the complete predicate.",
   /* 🚨 PART C IS THE POINT OF THE SHEET. The page can already ask him to find a
      line someone else drew; only paper can ask him to write a sentence of his
      own and then take it apart. Paul, 2026-09-09. */
@@ -569,8 +569,8 @@ const SHEETS = [
       ] },
 
     { kind: "name", heading: "Which kind?",
-      note: "Nothing is marked for you. Decide which half got joined and write subject or predicate on the line.",
-      labels: ["This sentence has a compound"],
+      note: "Nothing is marked for you. Decide which half got joined, then circle it.",
+      labels: ["This sentence has a"], choices: ["compound subject", "compound predicate"],
       items: [
         { sentence: "Dell and his brother open the gate at six.", answers: ["compound subject"] },
         { sentence: "The honey seller wipes the jars and lines them up.", answers: ["compound predicate"] },
@@ -683,7 +683,7 @@ const SHEETS = [
 
     { kind: "own", heading: "Write your own",
       note: "Write a sentence of your own on the first line, then write its two words underneath.",
-      key: "The simple subject should be one noun or pronoun, never a describing word beside it, and the simple predicate should be the verb. If the two words he writes do not make sense read on their own, he has picked out of the describing phrase.",
+      key: "The simple subject should be one noun or pronoun, never a describing word beside it, and the simple predicate should be the verb. If the two words they write do not make sense read on their own, they picked a word out of the describing phrase.",
       items: [
         { ask: "A sentence about anything you like", markLabel: "Its two words" },
         { ask: "A longer sentence, with a phrase in the middle", markLabel: "Its two words" },
@@ -734,8 +734,8 @@ const SHEETS = [
       ] },
 
     { kind: "name", heading: "Name the half",
-      note: "One half of each sentence is underlined. Write whether it is the complete subject or the complete predicate.",
-      labels: ["The underlined half is the"],
+      note: "One half of each sentence is underlined. Circle whether it is the complete subject or the complete predicate.",
+      labels: ["The underlined half is the"], choices: ["complete subject", "complete predicate"],
       items: [
         { sentence: "The tallest player on our team pitched the last inning.",
           mark: { split: 6, shaded: "first" }, answers: ["complete subject"] },

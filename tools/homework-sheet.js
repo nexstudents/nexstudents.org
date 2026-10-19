@@ -357,6 +357,22 @@ function markedSentence(it) {
 
 function nameItem(it, n, part) {
   const labels = part.labels || [''];
+  /* ⭕ CIRCLE ONE, 2026-10-18. Paul: "we dont need extra lines" and "make things
+     easy for a 13 year old". When the answer is one of two set phrases, both
+     are printed and he circles one, on the sentence's own row. Same decision,
+     no line to write "complete predicate" on five times. */
+  if (part.choices)
+    return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' +
+           '<p class="sortsent">' + markedSentence(it) + '</p>' +
+           '<p class="choose">' + (labels[0] ? '<span class="olbl">' + esc(labels[0]) + '</span>' : '') +
+           part.choices.map((c) => '<i>' + esc(c) + '</i>').join('<span class="or">or</span>') +
+           '</p></div></li>';
+  /* Two short answers sit side by side on one row, not a full-width line each. */
+  if (labels.length > 1)
+    return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' +
+           '<p class="sortsent">' + markedSentence(it) + '</p><p class="pair">' +
+           labels.map((l) => '<span class="olbl">' + esc(l) + '</span><u></u>').join('') +
+           '</p></div></li>';
   const rules = labels.map((l) =>
     '<p class="ownhalf"><span class="olbl">' + esc(l) + '</span><u></u></p>').join('');
   return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' +
@@ -507,7 +523,7 @@ const weight = (it) => (it.sub ? it.sub.length : 1);
 const RENDER = {
   solve: { cls: 'owns', item: solveItem },
   divide: { cls: 'splits', item: divideItem },
-  circle: { cls: 'splits', item: circleItem },
+  circle: { cls: 'splits circ', item: circleItem },
   /* ⚠️ `owns`, NOT `sorts`. A name item is built out of .ownrow and .ownhalf,
      and worksheet.css styles those write-on rules under .owns only. Inside a
      .sorts list the labels render with no line to write on at all, which is how
@@ -574,16 +590,20 @@ function keyHtml(part, i) {
    ⚠️ The total is added up BY HAND and signed BY HAND. Do not "improve" this by
    printing a computed score. There is nothing to compute from, and the
    signature is the point rather than the arithmetic. */
-function gradingBlock(total) {
+function gradingBlock(total, short) {
+  /* `short`: the grammar sheets keep Total and Graded by, without the two Notes
+     rules (Paul, 2026-10-18: "we dont need extra lines"). */
   return `
   <div class="grading">
     <p class="gtotal"><span class="olbl">Total</span><u></u> <b>/ ${total}</b></p>
-    <p class="gline"><span class="olbl">Graded by</span><u></u></p>
+    <p class="gline"><span class="olbl">Graded by</span><u></u></p>` + (short ? '' : `
     <p class="gline"><span class="olbl">Notes</span><u></u></p>
-    <p class="gline"><u></u></p>
+    <p class="gline"><u></u></p>`) + `
   </div>
 `;
 }
+/* The subject and predicate sheets: the only ones built from these part kinds. */
+const isGrammar = (s) => (s.parts || []).some((p) => ['circle', 'name', 'divide', 'combine'].includes(p.kind));
 
 /* ── the online half: Check My Answers, the score, the key behind a button,
    and the record that tells the lesson it's done (2026-10-11).
@@ -787,10 +807,10 @@ function homeworkSheetBody(s) {
     'On screen, tap a box, type your answer, and press Check My Answers at the bottom. ' +
     'On paper, press Print at the top and write on the lines.</div>\n' : '';
   return top + howToHtml(s.howTo) + passageHtml(s.passage, s) + partsHtml + online +
-    gradingBlock(total) +
+    gradingBlock(total, isGrammar(s)) +
     '\n  <div class="key">\n    <h2>Answer key</h2>\n    ' +
     s.parts.map(keyHtml).join('\n    ') +
     '\n  </div>\n';
 }
 
-module.exports = { homeworkSheetBody, lessonFor };
+module.exports = { homeworkSheetBody, lessonFor, isGrammar };
