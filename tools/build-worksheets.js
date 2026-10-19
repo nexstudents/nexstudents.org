@@ -125,7 +125,37 @@ function sheetHead(s) {
     socialTags({ path: url, title: s.title + " | NexStudents", desc: s.blurb, type: "article",
                  image: s.thumb ? "https://nexstudents.org" + url + "thumb.jpg" : null }),
     breadcrumbLd([{ name: "Home", path: "/" }, { name: back.label, path: back.href }], s.title),
+    /* 🔎 Google Images (ROADMAP 54): lets Google show the big picture, not a thumbnail. */
+    '<meta name="robots" content="max-image-preview:large">',
   ].join("\n");
+}
+
+/* 🔎 PRODUCT DETAILS FOR GOOGLE (ROADMAP 54, 2026-10-19). Name, pictures and price,
+   so a sheet can show in Google Images and Shopping with "Free" or "$2.00" on it.
+   Only on the PRODUCT page, never print/. A paid sheet not on sale yet gets no
+   price, because telling Google it is in stock would be a lie. */
+function productLd(s) {
+  const url = "https://nexstudents.org/worksheets/" + subjSlug(s.subject) + "/" + s.slug + "/";
+  const images = [];
+  if (s.thumb) images.push(url + "thumb.jpg");
+  for (const f of previewFiles(s)) images.push(url + f);
+  const ld = {
+    "@context": "https://schema.org", "@type": "Product",
+    name: s.title, description: s.blurb, url,
+    brand: { "@type": "Brand", name: "NexStudents" },
+    category: s.subject + " Worksheets",
+  };
+  if (images.length) ld.image = images;
+  if (!isPaid(s) || s.buy) {
+    ld.offers = {
+      "@type": "Offer", url, priceCurrency: "USD",
+      price: String(s.price || "$0").replace(/[^0-9.]/g, "") || "0",
+      availability: "https://schema.org/InStock",
+    };
+  }
+  /* "</" inside a script tag would end it early, so escape it. */
+  return '<script type="application/ld+json">\n' +
+    JSON.stringify(ld, null, 2).replace(/<\//g, "<\\/") + "\n</script>";
 }
 
 function backTarget(s) {
@@ -553,6 +583,7 @@ function paidSheetHtml(s) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 ${sheetHead(s)}
+${productLd(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} | NexStudents</title>
@@ -589,6 +620,7 @@ function bundleHtml(s) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 ${sheetHead(s)}
+${productLd(s)}
 ${modeBoot()}
 ${faviconTags()}
 <title>${s.title} | NexStudents</title>

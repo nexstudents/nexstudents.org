@@ -42,7 +42,8 @@ function shell(o) {
 <!-- An empty shelf for a year with nothing in it. Reachable, but not offered
      to search until it holds something worth ranking. Drops off by itself the
      moment the grade goes live. -->
-<meta name="robots" content="noindex,follow">` : ""}
+<meta name="robots" content="noindex,follow">` : `
+<meta name="robots" content="max-image-preview:large">`}
 <title>${o.title}</title>
 <meta name="description" content="${o.desc}">
 <meta name="theme-color" content="#0a0b0d">

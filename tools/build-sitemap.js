@@ -62,7 +62,19 @@ for (const f of files) {
     loc = SITE + "/" + path.relative(ROOT, f).split(path.sep).join("/");
   }
 
-  pages.push({ loc, lastmod: fs.statSync(f).mtime.toISOString().slice(0, 10) });
+  /* 🔎 PICTURES, FOR GOOGLE IMAGES (ROADMAP 54, 2026-10-19). The page's share
+     picture plus a worksheet's cover and preview pages from its own folder.
+     Only for a folder page, so print/ (no pictures of its own) adds nothing. */
+  const images = new Set();
+  const og = html.match(/<meta property="og:image" content="([^"]+)"/);
+  if (og && og[1].startsWith(SITE)) images.add(og[1]);
+  if (base === "index.html") {
+    for (const name of fs.readdirSync(path.dirname(f)).sort()) {
+      if (/^(thumb|preview-\d+)\.jpg$/.test(name)) images.add(loc + name);
+    }
+  }
+
+  pages.push({ loc, images: [...images], lastmod: fs.statSync(f).mtime.toISOString().slice(0, 10) });
 }
 
 /* Home first, then shortest paths first, so the file reads like the site. */
@@ -70,9 +82,12 @@ pages.sort((a, b) => a.loc.length - b.loc.length || a.loc.localeCompare(b.loc));
 
 const xml =
   '<?xml version="1.0" encoding="UTF-8"?>\n' +
-  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' +
+  ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' +
   pages.map(p =>
-    "  <url>\n    <loc>" + p.loc + "</loc>\n    <lastmod>" + p.lastmod + "</lastmod>\n  </url>"
+    "  <url>\n    <loc>" + p.loc + "</loc>\n    <lastmod>" + p.lastmod + "</lastmod>\n" +
+    p.images.map(i => "    <image:image><image:loc>" + i.replace(/&/g, "&amp;") + "</image:loc></image:image>\n").join("") +
+    "  </url>"
   ).join("\n") +
   "\n</urlset>\n";
 
