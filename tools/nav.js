@@ -241,7 +241,7 @@ const MENUS = {
              ratio: "1/1", label: "Free &middot; Lewis and Clark" },
   },
   g: {
-    /* Every game has a page. Two are playable; the other five open a page that
+    /* Every game has a page. Three are playable; the other four open a page that
        says what the game will be and what it is for, rather than a dead label.
        Paul, 2026-08-29: "i want this the entire site." */
     body: '<div class="mg-cols">' +
@@ -252,7 +252,7 @@ const MENUS = {
                { label: "Comma Catcher", href: "/games/comma-catcher/" }]) +
       col("History", [{ label: "Show Me The States", href: "/games/show-me-the-states/" }]) +
       col("Science", [{ label: "Sort the Mixture", href: "/games/sort-the-mixture/" }]) + "</div>" +
-      '<p class="mg-note">Two are playable now. The rest have a page saying what they will be.</p>',
+      '<p class="mg-note">Three are playable now. The rest have a page saying what they will be.</p>',
   },
   c: {
     body: '<div class="mg-cols">' +
@@ -373,7 +373,7 @@ SHEETS.g = { title: "Games", parent: null, view: "/games/", rows: [
   { label: "Speed Run Math", href: "/games/speed-run-math/", note: "Multiplication, timed" },
   { label: "Remainder Race", href: "/games/remainder-race/", note: "Being built" },
   { label: "Fraction Match", href: "/games/fraction-match/", note: "Being built" },
-  { label: "Spelling Ladder", href: "/games/spelling-ladder/", note: "Being built" },
+  { label: "Spelling Ladder", href: "/games/spelling-ladder/", note: "The week's spelling words" },
   { label: "Comma Catcher", href: "/games/comma-catcher/", note: "Being built" },
   { label: "Show Me The States", href: "/games/show-me-the-states/", note: "Fifty states and capitals" },
   { label: "Sort the Mixture", href: "/games/sort-the-mixture/", note: "Being built" },
