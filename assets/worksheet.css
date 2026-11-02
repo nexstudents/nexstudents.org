@@ -1028,3 +1028,52 @@ a.btn.p-cart,a.btn.p-cart:visited{color:var(--a-ink)}
   .rsheet > h2:first-of-type{margin-top:10px}
 }
 @media print{ .rsheet h2{break-after:avoid;page-break-after:avoid} }
+
+/* 📄 ONE-PAGE SHEETS (`onePage: true`, Paul 2026-11-01: "it needs to fit on one page. the answer
+   key can be on a second page"). Same look, less air, on screen and paper alike. A part with
+   `cols: 2` puts its short items side by side; one column again on a phone. */
+.onepage .hwhow{margin:0 0 10px;padding:9px 14px;font-size:.86rem;line-height:1.32}
+.onepage .hwhow h2{margin:0 0 4px}
+.onepage .howsteps li{margin:1px 0}
+.onepage .howex{margin-top:6px}
+.onepage .howex p{margin:2px 0 3px}
+.onepage .howex ol li{margin:0}
+.onepage .howex pre{margin:0 0 2px}
+.onepage h2.scored{margin:10px 0 2px}
+.onepage .inst{margin:0 0 2px;font-size:.86rem}
+.onepage .owns{margin:0 0 4px}
+.onepage .owns > li{padding:5px 0 0}
+.onepage .owns .ownline{margin:0 0 3px}
+.onepage .owns u{min-height:1.45em}
+.onepage .grading{margin:4px 0 0;padding:8px 0 0}
+.onepage .grading .gtotal,.onepage .grading .gline,.onepage .grading .gauto{margin:0 0 6px}
+.onepage .hwcols2{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+.onepage .hwcols2 .hwq{max-width:none;flex:1 1 auto}
+.onepage .hwcols2 .hwans u{flex:0 0 7.5em}
+.onepage .grading{display:grid;grid-template-columns:auto 1fr 1fr;column-gap:24px;align-items:baseline}
+.onepage .grading > p:last-child:not(.gtotal){display:none}
+.onepage .grading .olbl{min-width:0}
+.sheet:has(.onepage) .head{margin-bottom:4px}
+.sheet:has(.onepage) .namebar{margin-bottom:10px}
+@media (max-width:560px){ .onepage .hwcols2{grid-template-columns:1fr} }
+.onepage .howex ol li{display:grid;grid-template-columns:minmax(0,24em) minmax(0,1fr);column-gap:16px;align-items:baseline}
+.onepage .howex ol li pre{margin:0}
+.onepage .hwcols3{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:22px}
+.onepage .hwcols3 .hwq{max-width:none;flex:1 1 auto}
+.onepage .hwcols3 .hwans .olbl{display:none}
+.onepage .hwcols3 .hwans u{flex:0 0 7.5em}
+.onepage .owns u{min-height:1.3em}
+.onepage .owns > li{padding:3px 0 0}
+.onepage h2.scored{margin:7px 0 1px}
+@media (max-width:560px){ .onepage .hwcols3{grid-template-columns:1fr} .onepage .howex ol li{display:block} }
+@media print{ .onepage{font-size:.95em} }
+.onepage .howex ol li pre{justify-self:start}
+.onepage .hwcols3 .hwq{white-space:nowrap}
+.onepage .hwcols3 .hwans{flex:1 1 auto;display:flex}
+.onepage .hwcols3 .hwans u{flex:1 1 3em;min-width:3em}
+@media print{ .sheet:has(.onepage) .head{margin-bottom:0;padding-bottom:0} .sheet:has(.onepage) .hwhow{margin-top:4px} }
+@media (max-width:560px){ .onepage .howex ol li{display:block} .onepage .howex pre{white-space:pre-wrap;overflow-wrap:anywhere} }
+/* three columns: the answer line sits UNDER its statement, full column width (Paul: squeezed beside it looked ugly) */
+.onepage .hwcols3 p.hwrow{grid-template-columns:minmax(0,1fr)}
+.onepage .hwcols3 p.hwrow .hwans{margin-top:6px;grid-column:1 / -1}
+.onepage .hwcols3 .hwans u{flex:1 1 auto}

@@ -2222,6 +2222,82 @@ sheet({
   ],
 }),
 
+/* 🆕 PRE-ALGEBRA (ML 2008), Paul's new shape, 2026-11-01: the lesson teaches, this sheet IS
+   the work. About 10 problems on ONE page, a worked example in the BOOK's shape (one line per
+   move, the reason on the right), room to show the work, key on page 2. Must stand on its own
+   (it may be sold). Third build: copies the book's teaching shape, adds nothing.
+   Book pp63-66, our numbers, all made up for practice. */
+sheet({
+  slug: "properties-and-operations-homework", lesson: "maths/properties-and-operations",
+  includedWith: "maths/properties-and-operations",
+  online: true,
+  onePage: true,
+  title: "Properties and Operations: Homework",
+  dek: "Move the numbers, group the easy ones, and give the reason for each line.",
+  blurb: "Homework for Pre-Algebra 2.1. The commutative, associative and identity properties in plain English, a worked example one line at a time, ten problems and an answer key.",
+  contains: [
+    "What commutative and associative mean, in numbers and in algebra",
+    "A worked example with the reason for each line",
+    "Evaluate, simplify and name the property",
+    "Changing units with a conversion factor",
+    "An answer key",
+  ],
+  eyebrow: "Pre-Algebra &middot; 2.1",
+  signoff: "Commute means move, associate means group.",
+  howTo: {
+    steps: [
+      "Commutative property: commute means move. You can add or multiply in any order. 5 + 8 = 8 + 5, and a + b = b + a. 3 × 4 = 4 × 3, and ab = ba.",
+      "Associative property: associate means group. You can move the parentheses when adding or multiplying. (2 + 6) + 4 = 2 + (6 + 4), and (a + b) + c = a + (b + c).",
+      "Identity property: adding 0 or multiplying by 1 changes nothing. 9 + 0 = 9, and 9 × 1 = 9.",
+      "These work for adding and multiplying only. 10 - 4 is not 4 - 10.",
+    ],
+    example: {
+      problem: "Evaluate 16 + 37 + 84. Give the reason for each line.",
+      work: [
+        ["You'd normally go left to right.", "(16 + 37) + 84      order of operations"],
+        ["Swap 16 and 37.", "(37 + 16) + 84      commutative property"],
+        ["Group 16 and 84, which make 100.", "37 + (16 + 84)      associative property"],
+        ["Add the easy pair.", "37 + 100"],
+        ["Add what's left.", "137"],
+      ],
+    },
+  },
+  parts: [
+    { kind: "solve", heading: "Evaluate",
+      note: "Use the properties to make it easy. Write one line per move, with the reason, the way the example does.",
+      key: "the answers. A full answer gives the reason for each line.",
+      lines: 1,
+      items: [
+        q("35 + 48 + 65", "148", "35+65+48"),
+        q("4 × 13 × 25", "1300", "4*25*13"),
+        q("2xy, when x = 50 and y = -9", "-900", "2*50*(-9)"),
+        q("25 + 19 + 75", "119", "25+75+19"),
+      ] },
+    { kind: "solve", heading: "Simplify", cols: 2,
+      note: "Group the plain numbers together and work them out. The letter stays.",
+      key: "the simplified expressions.",
+      items: [
+        Object.assign(q("(x + 9) + 6", "x + 15. Group 9 and 6 (associative), then add."), { check: "x + 15" }),
+        Object.assign(q("7(4m)", "28m. Group 7 and 4 (associative), then multiply."), { check: "28m" }),
+      ] },
+    { kind: "solve", heading: "Name the Property", cols: 3,
+      note: "Write commutative, associative or identity.",
+      key: "the property each one shows.",
+      items: [
+        Object.assign(q("12 · 1 = 12", "Identity. The 1 changes nothing."), { check: "identity" }),
+        Object.assign(q("(3 + p) + 8 = 3 + (p + 8)", "Associative. Only the parentheses moved."), { check: "associative" }),
+        Object.assign(q("-6 · 11 = 11 · (-6)", "Commutative. The numbers changed places."), { check: "commutative" }),
+      ] },
+    { kind: "solve", heading: "Change the Units", cols: 2,
+      note: "Multiply by a conversion factor with the unit you want on top. 1 yard = 3 feet, 1 hour = 60 minutes.",
+      key: "the answers.",
+      items: [
+        q("5 yards = ? feet", "15 feet", "5*3"),
+        q("210 minutes = ? hours", "3.5 hours", "210/60"),
+      ] },
+  ],
+}),
+
 ];
 
 module.exports = { MATH_HOMEWORK };

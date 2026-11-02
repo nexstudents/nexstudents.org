@@ -173,7 +173,7 @@ const COURSE2 = {
       L("5-6", "Geometry Connection: Perimeter", 194),
       L("5-7", "Circles and Circumference", 197),
       L("5-8", "Probability Connection: Expected Value", 201),
-      L("5-9", "Properties", 204),
+      L("5-9", "Properties", 204, "maths/properties-and-operations"),
       L("5-10", "Dividing Fractions and Mixed Numbers", 207),
       LAB("5-10B", "Mathematics Lab: Fraction Patterns", 210),
       L("5-11", "Problem-Solving Strategy: Eliminate Possibilities", 212),

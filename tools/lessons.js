@@ -77,6 +77,7 @@ const LESSONS = [
   require('./content/grade-7/maths/unit-3/making-predictions'),
   require('./content/grade-7/maths/unit-3/misleading-statistics'),
   require('./content/grade-7/maths/unit-3/unit-3-review'),
+  require('./content/grade-7/maths/unit-5/properties-and-operations'),
   require('./content/grade-7/maths/unit-4/divisibility-patterns'),
   require('./content/grade-7/maths/unit-4/prime-factorization'),
   require('./content/grade-3/english/unit-4/kinds-of-sentences'),

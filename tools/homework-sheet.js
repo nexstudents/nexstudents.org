@@ -552,7 +552,7 @@ function partHtml(part, i) {
   return `
   <h2 class="scored">Part ${LETTER[i]} &mdash; ${part.heading} <span class="pts"><u></u> / ${part.items.reduce((t, it) => t + weight(it), 0)}</span></h2>
   <p class="inst">${part.note}</p>
-  <ul class="${r.cls}">
+  <ul class="${r.cls}${part.cols ? ' hwcols' + part.cols : ''}">
     ${items}
   </ul>
 `;
@@ -806,8 +806,11 @@ function homeworkSheetBody(s) {
   const top = online ? '\n  <div class="hwtop"><b>Fill it out online or print it.</b>' +
     'On screen, tap a box, type your answer, and press Check My Answers at the bottom. ' +
     'On paper, press Print at the top and write on the lines.</div>\n' : '';
-  return top + howToHtml(s.howTo) + passageHtml(s.passage, s) + partsHtml + online +
-    gradingBlock(total, isGrammar(s)) +
+  /* 📄 onePage (Paul, 2026-11-01: "it needs to fit on one page. the answer key can be on a
+     second page"): tighter spacing on screen and paper, and `cols: 2` parts side by side. */
+  const work = top + howToHtml(s.howTo) + passageHtml(s.passage, s) + partsHtml + online +
+    gradingBlock(total, isGrammar(s));
+  return (s.onePage ? '\n  <div class="onepage">' + work + '\n  </div>\n' : work) +
     '\n  <div class="key">\n    <h2>Answer key</h2>\n    ' +
     s.parts.map(keyHtml).join('\n    ') +
     '\n  </div>\n';
