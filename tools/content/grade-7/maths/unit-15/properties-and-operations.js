@@ -34,8 +34,9 @@ module.exports = {
   slug: "properties-and-operations",
   title: "Properties and Operations",
   unit: "Pre-Algebra &middot; 2.1",
-  /* Shelved for now in Glencoe Course 2 slot 5-9 "Properties" (Paul said push, 2026-11-01). A Pre-Algebra shelf of its own is still his call. */
-  seq: { unit: 5, unitTitle: "Applications with Fractions", n: 9 },
+  /* Was shelved in Glencoe slot 5-9 from 2026-11-01. From 2026-11-07 it is lesson 1 of the
+     Pre-Algebra unit (prealgebra-units.js, pager number 15) on the Math 7 shelf. */
+  seq: { unit: 15, unitTitle: "Pre-Algebra: Solving Equations", n: 1 },
   natural: "2026-11-01",
 
   /* ── /teach-plan, 2026-11-01. ML Pre-Algebra 2008 pp63-66. ── */
@@ -85,6 +86,12 @@ module.exports = {
       ]},
       { h: "Book Pages", p: [
         "McDougal Littell Pre-Algebra (2008), pages 63 to 66. Read free on archive.org: https://archive.org/details/prealgebra0000unse_z0p2/page/63/mode/1up"
+      ]},
+      { h: "Suggested Videos", videos: [
+        { id: "Doqt7bb8Gno", title: "Multiplication Properties | Commutative, Associative, Identity, & Zero", channel: "Math with Mr. J",
+          why: "A short, clear walk through the same properties, on the multiplying side." },
+        { id: "a0deCn5QNFI", title: "Addition Properties - Commutative, Associative, Identity, Inverse | Algebra", channel: "The Organic Chemistry Tutor",
+          why: "The adding side of the same properties, with plain worked examples." },
       ]},
       { h: "Key Vocabulary", vocab: true }
     ]

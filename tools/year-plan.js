@@ -43,6 +43,7 @@ const { GRADE7, HOLT7 } = require("./english-units.js");
    Set above 1 only to keep HM lessons at the front again. */
 const HOLT_FROM_WEEK = 1;
 const { COURSE2 } = require("./maths-units.js");
+const { PREALG } = require("./prealgebra-units.js");
 
 const D = (y, m, d) => new Date(Date.UTC(y, m - 1, d));
 const iso = (x) => x.toISOString().slice(0, 10);
@@ -161,14 +162,32 @@ const flatten = {
      ⚠️ Adding the 14 reviews takes the year from 429 to 443, 3.04 -> 3.14 a day.
      That was a deliberate call, not a tidy-up. Do not quietly add the 14 halfway
      checks as well without re-running the deal and re-checking the fit. */
-  Math: () => COURSE2.units.flatMap((u) => u.items
-    .filter((i) => i.kind === "lesson" ||
-                   (i.kind === "review" && !/^Halfway Check/.test(i.title)))
-    .map((i) => ({
-      subject: "Math", unit: u.n, unitTitle: u.title,
+  Math: () => {
+    const glencoe = COURSE2.units.flatMap((u) => u.items
+      .filter((i) => i.kind === "lesson" ||
+                     (i.kind === "review" && !/^Halfway Check/.test(i.title)))
+      .map((i) => ({
+        subject: "Math", unit: u.n, unitTitle: u.title,
+        label: i.label, title: i.title,
+        state: i.slug ? "built" : "todo", href: hrefOf(i.slug),
+      })));
+    /* 🚨 PRE-ALGEBRA REPLACES GLENCOE 4-3 TO 4-9, from plan week 10. Paul,
+       2026-11-07: "Kolten is switching to algebra lessons instead ... replace the
+       current math lessons with the ones we choose from the archive.org book."
+       The swap is SAME LENGTH on purpose (7 Pre-Algebra lessons for the 7
+       Glencoe rows that sat in weeks 10-11): the pacer sizes every week from the
+       queue's length, so a longer queue would quietly reshuffle weeks 6-9, which
+       Kolten has already done. Glencoe resumes at 4-10 after them, until Paul
+       says what follows Pre-Algebra Chapter 2. */
+    const at = glencoe.findIndex((x) => x.label === "4-3");
+    const pa = PREALG.units.flatMap((u) => u.items.map((i) => ({
+      subject: "Math", unit: u.n, unitTitle: u.title, course: "Pre-Algebra",
       label: i.label, title: i.title,
       state: i.slug ? "built" : "todo", href: hrefOf(i.slug),
-    }))),
+    })));
+    glencoe.splice(at, pa.length, ...pa);
+    return glencoe;
+  },
 };
 
 /* ── THE CALENDAR ─────────────────────────────────────────────────────────── */

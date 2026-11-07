@@ -922,6 +922,7 @@ const lessonCards = (list, showSubject, slots) => {
 const { UNITS, BUILT } = require("./leif-units.js");
 const { GRADE3, GRADE4, GRADE7, HOLT7 } = require("./english-units.js");
 const { COURSE2 } = require("./maths-units.js");
+const { PREALG } = require("./prealgebra-units.js");
 const { LIFE } = require("./science-units.js");
 const { WORLD } = require("./history-units.js");
 const YEAR = require("./year-plan.js");
@@ -1978,7 +1979,13 @@ const COURSE_SHELVES = [
      Pre-Algebra title. Naming this one Pre-Algebra would promise the algebra track
      and not deliver it, to the exact person who picks a course by its name. */
   { grade: 7, subject: "Math",   course: "Math 7",
-    units: () => mathsPager(COURSE2) },
+    /* 🆕 2026-11-07: Pre-Algebra Chapter 2 is the page after Glencoe's 14 chapters
+       (prealgebra-units.js, pager number 15). Labels are the book's own "2.1", so a
+       card reads "Math 7 · 2.1". A shelf of its own is still Paul's call. */
+    units: () => mathsPager(COURSE2).concat(PREALG.units.map((u) => ({
+      n: u.n, name: u.title,
+      items: u.items.map((i) => ({ label: i.label, title: i.title, slug: i.slug || null })),
+    }))) },
   /* Grade 7 science, Merrill Life Science 1994 — 28 chapters, 106 sections.
      Chapter 1 is the only complete one: all four of its sections are built, in
      Paul's own words. Added 2026-09-04, the day science stopped being the one

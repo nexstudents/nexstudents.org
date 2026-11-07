@@ -198,7 +198,7 @@ const LIFE = {
         { label: "T", title: "Technology: Beyond Appearances", page: 163, kind: "feature" },
         { label: "7-1A", title: "Activity: Classifying Seeds", page: 159, kind: "activity" },
         { label: "7-2A", title: "Activity: Using a Dichotomous Key", page: 170, kind: "activity" },
-        { label: "7-5", title: "Unit 7 Review: Sorting and Naming Living Things", kind: "review" },
+        { label: "7-5", title: "Unit 7 Review: Sorting and Naming Living Things", kind: "review", slug: "science/unit-7-review" },
       ],
     },
 
@@ -206,22 +206,22 @@ const LIFE = {
     {
       n: 8, page: 180, title: "The Smallest Living Things", book: "Viruses and Monerans", bookUnit: 3, bookUnitTitle: "Simple Living Things",
       items: [
-        { label: "8-1", title: "Viruses: Alive, or Not?", book: "Viruses: Are They Alive?", page: 182, kind: "lesson" },
-        { label: "8-2", title: "What It Costs to Cure a Disease", book: "Science and Society: The Cost of Curing a Disease", page: 186, kind: "lesson" },
-        { label: "8-3", title: "Bacteria, the Kingdom Monera", book: "Kingdom Monera", page: 188, kind: "lesson" },
-        { label: "8-4", title: "The Bacteria You Live With Every Day", book: "Monerans in Your Life", page: 193, kind: "lesson" },
+        { label: "8-1", title: "Viruses: Alive, or Not?", book: "Viruses: Are They Alive?", page: 182, kind: "lesson", slug: "science/viruses-alive-or-not" },
+        { label: "8-2", title: "What It Costs to Cure a Disease", book: "Science and Society: The Cost of Curing a Disease", page: 186, kind: "lesson", slug: "science/what-it-costs-to-cure-a-disease" },
+        { label: "8-3", title: "Bacteria, the Kingdom Monera", book: "Kingdom Monera", page: 188, kind: "lesson", slug: "science/bacteria-the-kingdom-monera" },
+        { label: "8-4", title: "The Bacteria You Live With Every Day", book: "Monerans in Your Life", page: 193, kind: "lesson", slug: "science/the-bacteria-you-live-with" },
         { label: "PS", title: "Problem Solving: How Are E. coli Bacteria Helpful?", page: 190, kind: "feature" },
         { label: "T", title: "Technology: Hungry Bacteria", page: 195, kind: "feature" },
         { label: "8-1A", title: "Activity: Observing Cyanobacteria", page: 192, kind: "activity" },
         { label: "8-2A", title: "Activity: Observing and Culturing Bacteria", page: 196, kind: "activity" },
-        { label: "8-5", title: "Unit 8 Review: The Smallest Living Things", kind: "review" },
+        { label: "8-5", title: "Unit 8 Review: The Smallest Living Things", kind: "review", slug: "science/unit-8-review" },
       ],
     },
     {
       n: 9, page: 200, title: "Protists and Fungi", book: "Protists and Fungi", bookUnit: 3, bookUnitTitle: "Simple Living Things",
       items: [
-        { label: "9-1", title: "Protists: The Odd Ones Out", book: "Kingdom Protista", page: 202, kind: "lesson" },
-        { label: "9-2", title: "Fungi, and What They Break Down", book: "Kingdom Fungi", page: 211, kind: "lesson" },
+        { label: "9-1", title: "Protists: The Odd Ones Out", book: "Kingdom Protista", page: 202, kind: "lesson", slug: "science/protists-the-odd-ones-out" },
+        { label: "9-2", title: "Fungi, and What They Break Down", book: "Kingdom Fungi", page: 211, kind: "lesson", slug: "science/fungi-and-what-they-break-down" },
         { label: "9-3", title: "Why We Could Not Live Without Fungi", book: "Science and Society: Fungus, Can't Live Without It", page: 216, kind: "lesson" },
         { label: "PS", title: "Problem Solving: Puzzled about Slime", page: 206, kind: "feature" },
         { label: "T", title: "Technology: A Yeast Library", page: 213, kind: "feature" },
