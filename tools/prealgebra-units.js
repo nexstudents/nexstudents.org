@@ -32,6 +32,18 @@ const PREALG = {
       { label: "2.6", title: "Solving Equations Using Multiplication or Division", page: 97, kind: "lesson", slug: "maths/solving-equations-using-multiplication-or-division" },
       { label: "2.7", title: "Decimal Operations and Equations with Decimals", page: 102, kind: "lesson", slug: "maths/decimal-operations-and-equations-with-decimals" },
     ]},
+    /* 🆕 2026-11-22: Chapter 3 is the next page on the Math 7 shelf, pager number 16
+       (folder content/grade-7/maths/unit-16/). Paul, 2026-11-07: Math continues with
+       Pre-Algebra Chapter 3, not Glencoe 4-10. Pages read off the book in the week 12
+       packet; 3.4 and 3.6 start pages are exact, their end pages were not read. */
+    { n: SHELF_UNIT + 1, chapter: 3, title: "Pre-Algebra: Multi-Step Equations and Inequalities", items: [
+      { label: "3.1", title: "Solving Two-Step Equations", page: 120, kind: "lesson", slug: "maths/solving-two-step-equations" },
+      { label: "3.2", title: "Solving Equations with Like Terms and Parentheses", page: 125, kind: "lesson", slug: "maths/solving-equations-with-like-terms-and-parentheses" },
+      { label: "3.3", title: "Solving Equations with Variables on Both Sides", page: 131, kind: "lesson", slug: "maths/solving-equations-with-variables-on-both-sides" },
+      { label: "3.4", title: "Solving Inequalities Using Addition or Subtraction", page: 138, kind: "lesson" },
+      { label: "3.5", title: "Solving Inequalities Using Multiplication or Division", page: 144, kind: "lesson" },
+      { label: "3.6", title: "Solving Multi-Step Inequalities", page: 149, kind: "lesson" },
+    ]},
   ],
 };
 

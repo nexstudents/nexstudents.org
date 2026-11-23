@@ -179,6 +179,10 @@ const flatten = {
        queue's length, so a longer queue would quietly reshuffle weeks 6-9, which
        Kolten has already done. Glencoe resumes at 4-10 after them, until Paul
        says what follows Pre-Algebra Chapter 2. */
+    /* 🆕 2026-11-22: Chapter 3 (3.1-3.6) joins Chapter 2 in PREALG, so the splice now
+       takes 13 Glencoe rows (4-3 to 4-9, then 4-10 to 4-11 and 5-1 to 5-4). Paul,
+       2026-11-07: Math continues with Pre-Algebra Chapter 3, not Glencoe 4-10. Weeks 1-11
+       are byte-identical before and after (checked); week 12 Math is 3.1, 3.2, 3.3, 3.4. */
     const at = glencoe.findIndex((x) => x.label === "4-3");
     const pa = PREALG.units.flatMap((u) => u.items.map((i) => ({
       subject: "Math", unit: u.n, unitTitle: u.title, course: "Pre-Algebra",

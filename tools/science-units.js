@@ -222,12 +222,12 @@ const LIFE = {
       items: [
         { label: "9-1", title: "Protists: The Odd Ones Out", book: "Kingdom Protista", page: 202, kind: "lesson", slug: "science/protists-the-odd-ones-out" },
         { label: "9-2", title: "Fungi, and What They Break Down", book: "Kingdom Fungi", page: 211, kind: "lesson", slug: "science/fungi-and-what-they-break-down" },
-        { label: "9-3", title: "Why We Could Not Live Without Fungi", book: "Science and Society: Fungus, Can't Live Without It", page: 216, kind: "lesson" },
+        { label: "9-3", title: "Why We Could Not Live Without Fungi", book: "Science and Society: Fungus, Can't Live Without It", page: 216, kind: "lesson", slug: "science/why-we-could-not-live-without-fungi" },
         { label: "PS", title: "Problem Solving: Puzzled about Slime", page: 206, kind: "feature" },
         { label: "T", title: "Technology: A Yeast Library", page: 213, kind: "feature" },
         { label: "9-1A", title: "Activity: Comparing Algae and Protozoa", page: 210, kind: "activity" },
         { label: "9-2A", title: "Activity: Designing an Experiment", page: 218, kind: "activity" },
-        { label: "9-4", title: "Unit 9 Review: Protists and Fungi", kind: "review" },
+        { label: "9-4", title: "Unit 9 Review: Protists and Fungi", kind: "review", slug: "science/unit-9-review-protists-and-fungi" },
       ],
     },
 
