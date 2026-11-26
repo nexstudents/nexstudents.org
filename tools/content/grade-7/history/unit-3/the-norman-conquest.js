@@ -92,6 +92,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "the-norman-conquest-homework", subject: "history",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   shelf: { grades: [7], subject: "History",
     blurb: "A king dies with no child, and three men want the crown. Three battles in one autumn, a win at Hastings, and the castles, the Domesday Book and the new language that followed.",
     contains: [

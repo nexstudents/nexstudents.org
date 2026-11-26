@@ -75,6 +75,9 @@ module.exports = {
   natural: "2026-11-22",
   findsAt: 78,
 
+  sheet: { slug: "tone-homework", subject: "english",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   shelf: { grades: [7], subject: "English",
     blurb: "Say \"You're a big help\" two ways and it means two opposite things. How to hear a writer's tone, with a poem by Paul Laurence Dunbar about a smile that hides something.",
     contains: [

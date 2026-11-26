@@ -92,6 +92,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "the-vikings-and-the-kingdoms-they-made-homework", subject: "history",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   shelf: { grades: [7], subject: "History",
     blurb: "In 793 ships came out of the sea and raided a monastery. Where the Vikings came from, why they raided, traded and settled, and how their homelands became Christian kingdoms.",
     contains: [

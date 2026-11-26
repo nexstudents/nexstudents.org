@@ -83,6 +83,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "why-we-could-not-live-without-fungi-homework", subject: "science",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   shelf: { grades: [7], subject: "Science",
     blurb: "Before the 1940s a bad bacterial infection could kill you. A mold on an orange changed that, and fungi have been making medicine ever since. What they make, what goes wrong, and why some say preventing a disease beats curing it.",
     contains: [

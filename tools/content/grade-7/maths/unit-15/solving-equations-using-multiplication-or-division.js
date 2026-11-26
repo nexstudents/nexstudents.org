@@ -59,6 +59,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "solving-equations-using-multiplication-or-division-homework", subject: "maths",
+    note: "This is your work for the lesson. Do it on screen or print it." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Multiplying and dividing undo each other. Three worked examples solve equations both ways, then use distance, rate and time for a flight.",
     contains: [

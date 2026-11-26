@@ -2298,6 +2298,279 @@ sheet({
   ],
 }),
 
+/* 🆕 WEEKS 10-12 HOMEWORK (2026-11-26). Kolten goes back to public school Jan 5 and his dad
+   wants proof the lessons stuck, so every lesson from plan week 10 on gets a sheet. A
+   plain-English how-to, one worked example (a sentence, then the math under it), about ten
+   problems, one per row, spaced exactly like the Prime Factorization sheet Paul approved (no `space`, no `lines`). NOT onePage (Paul, 2026-11-26: two pages is
+   fine; the one-page squeeze left no room to work). Word problems never print the equation.
+   Our numbers, all made up for practice. */
+sheet({
+  slug: "solving-equations-using-multiplication-or-division-homework", lesson: "maths/solving-equations-using-multiplication-or-division",
+  includedWith: "maths/solving-equations-using-multiplication-or-division",
+  online: true,
+  title: "Solving Equations Using Multiplication or Division: Homework",
+  dek: "Undo the multiplying by dividing, undo the dividing by multiplying, and check every answer.",
+  blurb: "Homework for Pre-Algebra 2.6. How to undo multiplying and dividing in plain English, a worked example one line at a time, ten problems with flights and an answer key.",
+  contains: [
+    "What to do when the letter is multiplied, and when it is divided",
+    "A worked example with the reason for each line",
+    "Dividing, multiplying and signs",
+    "Flight problems with distance, rate and time",
+    "An answer key",
+  ],
+  eyebrow: "Pre-Algebra &middot; 2.6",
+  signoff: "Multiplying and dividing undo each other, so do the opposite to both sides.",
+  howTo: {
+    steps: [
+      "Your goal is to get the letter alone. Whatever is stuck to the letter, do the opposite to both sides.",
+      "If the letter is multiplied, divide both sides by that number. 5x = 30 becomes x = 6, because 30 ÷ 5 = 6.",
+      "If the letter is divided, multiply both sides by that number. y/4 = 3 becomes y = 12, because 4 × 3 = 12.",
+      "Watch the signs. Two negatives make a positive: -20 ÷ -4 = 5. One negative makes a negative: 20 ÷ -4 = -5.",
+      "Never divide by 0. Then check: put your answer back in the first equation and see if both sides match.",
+    ],
+    example: {
+      problem: "Solve -6x = 42 and check it.",
+      work: [
+        ["Start with the equation.", "-6x = 42"],
+        ["The letter is multiplied by -6, so divide both sides by -6.", "-6x/-6 = 42/-6"],
+        ["A positive divided by a negative is negative.", "x = -7"],
+        ["Put -7 back in for x.", "-6(-7) = 42"],
+      ],
+    },
+  },
+  parts: [
+    { kind: "solve", heading: "Divide to Solve",
+      note: "The letter is multiplied. Divide both sides by its number. Show one line per move.",
+      key: "the answers. A full answer divides both sides by the number stuck to the letter.",
+      items: [
+        q("6x = 54", "x = 9", "54/6"),
+        q("-8x = 72", "x = -9", "72/-8"),
+        q("105 = 15k", "k = 7", "105/15"),
+        q("-9m = -45", "m = 5", "-45/-9"),
+      ] },
+    { kind: "solve", heading: "Multiply to Solve",
+      note: "The letter is divided. Multiply both sides by the number under it.",
+      key: "the answers.",
+      items: [
+        q("n/5 = 12", "n = 60", "5*12"),
+        q("-3 = y/7", "y = -21", "7*-3"),
+        q("w/-4 = -6", "w = 24", "-4*-6"),
+      ] },
+    { kind: "solve", heading: "Flights",
+      note: "Sam's plane uses d = rt: distance equals rate (speed) times time. Write the equation, then solve for t.",
+      key: "the equation and the answer.",
+      items: [
+        q("Sam flies 600 miles at 120 miles per hour. How many hours is the flight?", "t = 5 hours, from 600 = 120t", "600/120"),
+        q("A cargo plane flies 910 miles at 130 miles per hour. How many hours is the flight?", "t = 7 hours, from 910 = 130t", "910/130"),
+      ] },
+    { kind: "solve", heading: "Check It",
+      note: "Put the answer in the equation. Write yes or no, and show the check.",
+      key: "yes or no, with the check.",
+      items: [
+        Object.assign(q("Is x = -6 the solution of -7x = 42?", "Yes. -7(-6) = 42, so it checks."), { check: "yes" }),
+      ] },
+  ],
+}),
+
+sheet({
+  slug: "solving-two-step-equations-homework", lesson: "maths/solving-two-step-equations",
+  includedWith: "maths/solving-two-step-equations",
+  online: true,
+  title: "Solving Two-Step Equations: Homework",
+  dek: "Undo the adding or subtracting first, then the multiplying or dividing, like taking off shoes before socks.",
+  blurb: "Homework for Pre-Algebra 3.1. The two-step plan in plain English, a worked example one line at a time, ten problems with a gym and a music shop, and an answer key.",
+  contains: [
+    "The order for undoing two steps",
+    "A worked example with the reason for each line",
+    "Subtract then divide, add then multiply, and a letter with a minus sign",
+    "Word problems from a gym and a music shop",
+    "An answer key",
+  ],
+  eyebrow: "Pre-Algebra &middot; 3.1",
+  signoff: "Undo the last thing done first: the adding or subtracting, then the multiplying or dividing.",
+  howTo: {
+    steps: [
+      "A two-step equation has two things stuck to the letter. In 2x + 5 = 17, x was multiplied by 2, then 5 was added.",
+      "Step 1: undo the adding or subtracting. Step 2: undo the multiplying or dividing. Do each to both sides.",
+      "If the letter has a minus sign, like 9 - 2y, the number stuck to y is -2. Divide by -2, not 2.",
+      "Check by putting your answer back in the first equation.",
+    ],
+    example: {
+      problem: "Solve 5x - 8 = 22 and check it.",
+      work: [
+        ["Start with the equation.", "5x - 8 = 22"],
+        ["The last thing done was subtracting 8, so add 8 to both sides.", "5x - 8 + 8 = 22 + 8"],
+        ["Simplify.", "5x = 30"],
+        ["Now undo the multiplying: divide both sides by 5.", "5x/5 = 30/5"],
+        ["Simplify.", "x = 6"],
+        ["Put 6 back in for x.", "5(6) - 8 = 22"],
+      ],
+    },
+  },
+  parts: [
+    { kind: "solve", heading: "Subtract or Add, Then Divide",
+      note: "Undo the adding or subtracting first. Then divide.",
+      key: "the answers. A full answer undoes the adding or subtracting first.",
+      items: [
+        q("2x + 7 = 19", "x = 6", "(19-7)/2"),
+        q("4x + 9 = 1", "x = -2", "(1-9)/4"),
+        q("3x - 8 = 13", "x = 7", "(13+8)/3"),
+        q("6y + 11 = 41", "y = 5", "(41-11)/6"),
+      ] },
+    { kind: "solve", heading: "Add or Subtract, Then Multiply",
+      note: "The letter is divided here. Undo the adding or subtracting first, then multiply.",
+      key: "the answers.",
+      items: [
+        q("k/3 + 4 = 9", "k = 15", "(9-4)*3"),
+        q("m/5 - 2 = -6", "m = -20", "(-6+2)*5"),
+      ] },
+    { kind: "solve", heading: "The Letter Has a Minus Sign",
+      note: "The number stuck to the letter is negative, so divide by a negative.",
+      key: "the answers.",
+      items: [
+        q("9 - 2y = 15", "y = -3", "(15-9)/-2"),
+        q("4 - 5n = -16", "n = 4", "(-16-4)/-5"),
+      ] },
+    { kind: "solve", heading: "Word Problems",
+      note: "Write the equation first, then solve it.",
+      key: "the equation and the answer.",
+      items: [
+        q("A gym charges $35 to join plus $20 a month. Maya has paid $155 in all. How many months has she been a member?", "m = 6 months", "(155-35)/20"),
+        q("A guitar costs $360 at a music shop. Eli pays $90 down and the rest in 5 equal payments. How much is each payment?", "p = $54", "(360-90)/5"),
+      ] },
+  ],
+}),
+
+sheet({
+  slug: "solving-equations-with-like-terms-and-parentheses-homework", lesson: "maths/solving-equations-with-like-terms-and-parentheses",
+  includedWith: "maths/solving-equations-with-like-terms-and-parentheses",
+  online: true,
+  title: "Solving Equations with Like Terms and Parentheses: Homework",
+  dek: "Clean up first: distribute, combine like terms, then solve the two-step equation that's left.",
+  blurb: "Homework for Pre-Algebra 3.2. Distributing and combining like terms in plain English, a worked example one line at a time, ten problems with a cheerleaders' budget and an answer key.",
+  contains: [
+    "The order: distribute, combine, undo adding, undo multiplying, check",
+    "A worked example with the reason for each line",
+    "Like terms, parentheses, and a negative outside the parentheses",
+    "A budget word problem and a spot-the-mistake item",
+    "An answer key",
+  ],
+  eyebrow: "Pre-Algebra &middot; 3.2",
+  signoff: "Distribute first, combine like terms, then solve the two-step equation.",
+  howTo: {
+    steps: [
+      "Like terms have the same letter. 2x + 7x is 9x. Plain numbers combine with plain numbers.",
+      "The distributive property: the number outside the parentheses multiplies every term inside. 4(x + 3) = 4x + 12.",
+      "The order every time: 1) distribute, 2) combine like terms, 3) undo the adding or subtracting, 4) undo the multiplying or dividing, 5) check.",
+      "A negative outside must reach every term inside. -5(x - 2) = -5x + 10, because a negative times a negative is positive.",
+    ],
+    example: {
+      problem: "Solve 6x - 2(x + 3) = 10 and check it.",
+      work: [
+        ["Start with the equation.", "6x - 2(x + 3) = 10"],
+        ["Distribute -2 to both terms inside.", "6x - 2x - 6 = 10"],
+        ["Combine like terms: 6x - 2x is 4x.", "4x - 6 = 10"],
+        ["Add 6 to both sides.", "4x - 6 + 6 = 10 + 6"],
+        ["Divide both sides by 4.", "x = 4"],
+        ["Put 4 back in for x.", "6(4) - 2(4 + 3) = 24 - 14 = 10, so it checks"],
+      ],
+    },
+  },
+  parts: [
+    { kind: "solve", heading: "Combine Like Terms First",
+      note: "Add the like terms, then solve.",
+      key: "the answers. A full answer combines like terms before undoing anything.",
+      items: [
+        q("4.50n + 0.50n + 30 = 130", "n = 20", "(130-30)/(4.5+0.5)"),
+        q("2x + 7x - 5 = 31", "x = 4", "(31+5)/9"),
+      ] },
+    { kind: "solve", heading: "Distribute First",
+      note: "Multiply the number outside by every term inside.",
+      key: "the answers.",
+      items: [
+        q("4(x + 3) = 32", "x = 5", "32/4-3"),
+        q("-5(x - 2) = 20", "x = -2", "(20-10)/-5"),
+        q("3(2m + 1) = 27", "m = 4", "(27/3-1)/2"),
+      ] },
+    { kind: "solve", heading: "Distribute, Then Combine",
+      note: "Both tools in one problem. Watch the sign in front of the parentheses.",
+      key: "the answers.",
+      items: [
+        q("7x - 3(x + 2) = 14", "x = 5", "(14+6)/4"),
+        q("8n - 2(n - 3) = 30", "n = 4", "(30-6)/6"),
+      ] },
+    { kind: "solve", heading: "Budget and Mistake",
+      note: "The cheerleaders are buying for a game. Then find the mistake and fix it.",
+      key: "the answers.",
+      items: [
+        q("The cheerleaders spend $25 on a banner, then buy the same number of ribbons at $1.25 and bows at $0.75. Their budget is $85. How many of each can they buy?", "n = 30 of each", "(85-25)/(1.25+0.75)"),
+        Object.assign(q("A student changed -4(5 - x) = 8 to -20 - 4x = 8. What is wrong with that line? Then solve the equation the right way.", "x = 7. The -4 must also multiply -x, so the line is -20 + 4x = 8.", "(8+20)/4"), { check: "7" }),
+      ] },
+  ],
+}),
+
+sheet({
+  slug: "solving-equations-with-variables-on-both-sides-homework", lesson: "maths/solving-equations-with-variables-on-both-sides",
+  includedWith: "maths/solving-equations-with-variables-on-both-sides",
+  online: true,
+  title: "Solving Equations with Variables on Both Sides: Homework",
+  dek: "Get all the letters on one side and all the plain numbers on the other, and spot the equations with no solution.",
+  blurb: "Homework for Pre-Algebra 3.3. Moving the letter terms in plain English, a worked example one line at a time, nine problems with a Spanish club and an answer key.",
+  contains: [
+    "How to gather the letter terms on one side",
+    "A worked example with the reason for each line",
+    "Solving, and the two special endings: no solution and every number",
+    "Word problems that compare two plans",
+    "An answer key",
+  ],
+  eyebrow: "Pre-Algebra &middot; 3.3",
+  signoff: "Gather the letters on one side, the numbers on the other, then solve what's left.",
+  howTo: {
+    steps: [
+      "Now the letter is on both sides, like 6x + 4 = 2x + 20. You can't undo two of them at once.",
+      "Subtract the smaller letter term from both sides, so the letters end up on one side. Then it's a two-step equation.",
+      "Sometimes the letters vanish. If you get a false statement like 5 = 0, there is no solution. If you get a true one like 6 = 6, every number is a solution.",
+      "Check by putting your answer in for the letter on both sides. Both sides must match.",
+    ],
+    example: {
+      problem: "Solve 8x + 3 = 5x + 18 and check it.",
+      work: [
+        ["Start with the equation.", "8x + 3 = 5x + 18"],
+        ["Subtract 5x, the smaller letter term, from both sides.", "8x + 3 - 5x = 5x + 18 - 5x"],
+        ["Subtract 3 from both sides.", "3x = 15"],
+        ["Divide both sides by 3.", "x = 5"],
+        ["Put 5 in for x on both sides.", "8(5) + 3 = 43 and 5(5) + 18 = 43, so it checks"],
+      ],
+    },
+  },
+  parts: [
+    { kind: "solve", heading: "Letters on Both Sides",
+      note: "Subtract the smaller letter term from both sides first.",
+      key: "the answers. A full answer gathers the letter terms on one side first.",
+      items: [
+        q("6x + 4 = 2x + 20", "x = 4", "(20-4)/(6-2)"),
+        q("9n - 8 = 5n + 12", "n = 5", "(12+8)/(9-5)"),
+        q("3a - 10 = 8a + 5", "a = -3", "(5+10)/(3-8)"),
+        q("4 - 3y = y - 12", "y = 4", "(4+12)/4"),
+      ] },
+    { kind: "solve", heading: "One Solution, None, or Every Number",
+      note: "Simplify until the letters are gone or you have one answer. Write what you find.",
+      key: "what each one has.",
+      items: [
+        Object.assign(q("3(x + 2) = 3x + 9", "No solution. It ends at 6 = 9, which is false."), { check: "no solution" }),
+        Object.assign(q("2(3x + 4) = 6x + 8", "Every number. It ends at 8 = 8, which is true."), { check: "every number" }),
+        Object.assign(q("5x - 6 = 5x + 2", "No solution. It ends at -6 = 2, which is false."), { check: "no solution" }),
+      ] },
+    { kind: "solve", heading: "Compare Two Plans",
+      note: "Write the equation, solve it, and say what the answer means.",
+      key: "the equation and the answer.",
+      items: [
+        q("The Spanish club can rent a bus from Company A for $30 plus $6 per student, or from Company B for $90 plus $3 per student. For how many students do both cost the same?", "s = 20 students", "(90-30)/(6-3)"),
+        q("Plan A costs $8 plus $3 a ride. Plan B costs $2 plus $5 a ride. After how many rides do the plans cost the same?", "r = 3 rides", "(8-2)/(5-3)"),
+      ] },
+  ],
+}),
+
 ];
 
 module.exports = { MATH_HOMEWORK };

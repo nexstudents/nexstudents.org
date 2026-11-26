@@ -44,6 +44,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "solving-equations-with-like-terms-and-parentheses-homework", subject: "maths",
+    note: "This is your work for the lesson. Do it on screen or print it." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "Clear the parentheses, combine the like terms, and what is left is a two-step equation you already know how to solve.",
     contains: [

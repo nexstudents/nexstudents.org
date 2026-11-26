@@ -72,6 +72,9 @@ const D = (items) => ({ kind: "solve", heading: "Think It Through",
   note: "Answer each one in one sentence. You mark these yourself against the key.",
   key: "what a good answer includes.", items });
 
+/* a written answer whose answer IS the marked sentence (weeks 10-12 sheets) */
+const said = (problem, sentence, from) => told(problem, sentence, sentence, from);
+
 const READING_HOMEWORK = [
 
 /* ── SCIENCE 6-2 ───────────────────────────────────────────────────────── */
@@ -1228,6 +1231,466 @@ sheet({
       told("Why shouldn't you combine every short sentence in a draft?",
         "A few short sentences are fine, especially at a moment of high drama, because the aim is variety and not one very long line.",
         "A few short sentences are fine, especially at a moment of high drama, because the aim is variety and not one very long line.", 7),
+    ]),
+  ],
+}),
+
+/* ── WEEKS 10-12 (2026-11-26): Kolten goes back to public school Jan 5 and his dad wants proof the
+   lessons stuck, so every lesson from plan week 10 on gets a sheet. Same story-sheet shape; our own
+   stories, facts only from the lesson. `said` = a written answer whose answer IS the marked sentence. */
+
+/* ── SCIENCE 9-2 ───────────────────────────────────────────────────────── */
+sheet({
+  subject: "Science", slug: "fungi-and-what-they-break-down-homework", lesson: "science/fungi-and-what-they-break-down",
+  includedWith: "science/fungi-and-what-they-break-down",
+  title: "Fungi, and What They Break Down: Homework",
+  dek: "Read the story of a fuzzy slice of bread, then show how fungi eat, grow and spread, and why the world needs them.",
+  blurb: "A one-page story of mold on a slice of bread, then multiple choice, true or false, key words and written answers. Answer key included.",
+  contains: [
+    "A one-page story of a fungus growing on a slice of bread",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
+  ],
+  eyebrow: "Life Science &middot; U9-L2",
+  signoff: "Fungi can't make their own food, so they break down what was once alive and return it to the soil.",
+  passage: { title: "The Slice at the Bottom of the Bag", paras: [
+    "Mia dug to the bottom of her backpack and found a slice of bread wearing a fuzzy green coat. Her little brother said it was gross, but her dad said it was a fungus, and that fungi are all around us. They live in mushrooms, in the mold on old bread, in the mildew on a shower curtain and in the yeast that makes bread rise. People once thought fungi were plants, but they have no chlorophyll, so they can't make their own food.",
+    "So how does a fungus live, Mia asked. Her dad said a fungus has a very important job as a decomposer. A decomposer breaks down dead plants, dead animals and food scraps, and it returns the nutrients to the soil. Bacteria do this job too, and together they are nature's recyclers. Without them the whole world would be buried in waste.",
+    "Mia looked at the green coat with a magnifying glass and saw it was made of thin threads. Her dad said those threads are called hyphae, which are tiny threadlike tubes. A whole mat of hyphae is called a mycelium, and the mycelium is the body of the fungus. It is usually hidden in the soil or inside whatever the fungus is growing on. A mushroom is only the small part that pushes up into the air to make spores.",
+    "Then Mia asked how a fungus eats, since it has no mouth. Her dad said a fungus does something odd. Its hyphae grow into the bread and release enzymes, which work like a digestive juice. The bread breaks down into tiny pieces outside the fungus. Then the hyphae soak up the food. That means a fungus digests its food outside its own body and soaks up the result.",
+    "Spores were next. A spore is a tiny reproductive cell that grows into a new fungus, and one puffball can puff out a whole cloud of them. A spore needs only moisture, warmth and food to start growing. That is why the bread went fuzzy in a warm, wet bag. Fungi grow best in warm, wet places, and scientists sort them into four groups by where they make their spores.",
+    "Mia learned the groups with a little key. Black bread mold makes its spores in round cases on upright hyphae. Yeast and morels make theirs in tiny sacs. Mushrooms make theirs on club-shaped tips that line the gills under the cap, and puffballs and shelf fungi on trees do the same. The fourth group, the imperfect fungi, are the ones whose sexual stage, one way of making spores, has never been seen.",
+    "That evening her mom baked bread, and Mia watched the yeast. Yeast is a sac fungus that can reproduce by budding, when a new cell grows from the side of the parent. In the dough the yeast eats sugar and gives off carbon dioxide gas and a little alcohol. The gas makes bubbles, and the bubbles make the dough rise.",
+    "Before bed Mia asked about the mushrooms in the yard. Her dad said never to eat a wild mushroom. Many are poisonous, and even experts sometimes make mistakes. A mushroom from the store is grown for food, but one you find outside is not safe to eat. He added that most fungi feed on dead things, but a few feed on living ones, and athlete's foot and ringworm are fungi that live on a person's skin.",
+  ] },
+  parts: [
+    CHECK([
+      mc("What does a fungus do with the food it digests?", ["It swallows it whole", "It soaks up the broken-down food", "It sends it to its roots", "It stores it as chlorophyll"], "b", 4),
+      mc("What is the hidden body of a fungus called?", ["a spore", "a gill", "a mycelium", "a mushroom"], "c", 3),
+      mc("Which group makes spores on club-shaped tips under the cap?", ["bread molds", "yeast and morels", "the imperfect fungi", "mushrooms"], "d", 6),
+      mc("What does yeast give off in dough?", ["carbon dioxide gas", "oxygen", "chlorophyll", "water vapor only"], "a", 7),
+      mc("A spore needs moisture, warmth and ____ to start growing.", ["sunlight", "food", "soil", "a mushroom"], "b", 5),
+    ]),
+    TRUEFALSE([
+      tf("A fungus can make its own food, like a plant.", false, "Fungi have no chlorophyll, so they can't make their own food.", 1),
+      tf("A mushroom is the whole fungus.", false, "A mushroom is only the part that pushes up to make spores.", 3),
+      tf("A fungus digests its food outside its own body.", true, "", 4),
+      tf("A mushroom from the store is grown for food.", true, "", 8),
+    ]),
+    KEYWORDS([
+      at(2, c("What is a living thing called that breaks down dead plants and animals?", "A decomposer.", "decomposer|decomposers")),
+      at(3, c("What are the tiny threadlike tubes of a fungus called?", "Hyphae.", "hyphae")),
+      at(5, c("What is a tiny reproductive cell that grows into a new fungus called?", "A spore.", "spore")),
+      at(7, c("What is it called when a new yeast cell grows from the side of the parent?", "Budding.", "budding")),
+    ]),
+    THINK([
+      said("What would happen without decomposers?", "Without them the whole world would be buried in waste.", 2),
+      said("What kind of place do fungi grow best in?", "Fungi grow best in warm, wet places, and scientists sort them into four groups by where they make their spores.", 5),
+      said("What does the story say about eating a mushroom you find outside?", "A mushroom from the store is grown for food, but one you find outside is not safe to eat.", 8),
+    ]),
+  ],
+}),
+
+/* ── SCIENCE 9-3 ───────────────────────────────────────────────────────── */
+sheet({
+  subject: "Science", slug: "why-we-could-not-live-without-fungi-homework", lesson: "science/why-we-could-not-live-without-fungi",
+  includedWith: "science/why-we-could-not-live-without-fungi",
+  title: "Why We Could Not Live Without Fungi: Homework",
+  dek: "Read the story of a boy and his grandfather, then show how medicines made from fungi fight bacteria and help transplants.",
+  blurb: "A one-page story about medicines that come from fungi, then multiple choice, true or false, key words and written answers. Answer key included.",
+  contains: [
+    "A one-page story about antibiotics, antivirals and transplants",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
+  ],
+  eyebrow: "Life Science &middot; U9-L3",
+  signoff: "Fungi gave us antibiotics, the first antiviral drug and a medicine that helps transplants last.",
+  passage: { title: "Grandpa's Kidney", paras: [
+    "Jonah's grandfather has a long scar on his side, and one afternoon Jonah finally asked about it. Grandpa said he was alive because of fungi, and Jonah thought that sounded like a joke. It wasn't. Before the 1940s a person who caught pneumonia or tuberculosis could very easily die of it. Both diseases are caused by bacteria, and doctors had very few ways to stop them.",
+    "The cure came from a mold. An antibiotic is a chemical that harms bacteria, and many antibiotics are made from fungi that grow in the soil. The most famous is penicillin, which comes from a fungus called Penicillium that grows easily on a moldy orange. When a doctor gives an antibiotic, it stops the bacteria from reproducing and growing, and most bacterial infections are cured.",
+    "Grandpa warned Jonah that an antibiotic only works on bacteria, so it does nothing against a virus like a cold. A few people also can't take certain antibiotics, because the drug gives them an allergic reaction. And there is a bigger problem. Bacteria can change so that an antibiotic no longer affects them, and doctors say those bacteria have become resistant.",
+    "Penicillin once worked on a great many kinds of bacteria, and now it has no effect on most of them. The same thing has happened to other antibiotics, so scientists keep working to make new ones. That is one reason a doctor won't hand out an antibiotic for every sniffle.",
+    "Jonah asked what helps against a virus. Grandpa said a medicine for a virus is called an antiviral drug, and it was much harder to make. A virus has very few parts of its own for a drug to attack, and the early antiviral drugs often hurt the patient too. In 1978 a drug called vidarabine was approved to treat encephalitis, which is swelling of the brain that mosquitoes can carry. It was the very first antiviral drug, and it was made from a species of fungus.",
+    "Then Grandpa told about his own kidney. Years ago his kidneys had failed, and doctors did a transplant, which means they took a healthy kidney from one person and put it into a sick person. The body has guards, the immune system, and its job is to attack anything that doesn't belong. When they attack a new organ, that is called rejection.",
+    "To hold back rejection, Grandpa takes a drug called cyclosporine. It was approved in 1983, and it is made from an imperfect fungus, so transplants became much more common. Jonah liked that, but his grandfather said the medicine has a price. A patient has to take it for life, it is expensive, and it can cause side effects such as kidney failure.",
+    "Cyclosporine also holds back the immune system, which is why a person who takes it can catch infections more easily. Grandpa washes his hands a lot and sees his doctor often. Jonah decided that a mold on an orange, a tiny cell in the soil, had done more for his family than he ever knew.",
+  ] },
+  parts: [
+    CHECK([
+      mc("Which fungus does penicillin come from?", ["Yeast", "Penicillium", "A mushroom", "Black bread mold"], "b", 2),
+      mc("An antibiotic works against ____.", ["viruses like a cold", "all germs", "bacteria", "mosquitoes"], "c", 3),
+      mc("What does it mean when bacteria become resistant?", ["They grow faster", "They get sick", "They turn into viruses", "An antibiotic no longer affects them"], "d", 3),
+      mc("What was the first antiviral drug, vidarabine, made from?", ["a species of fungus", "a kind of bacteria", "a mosquito", "an orange peel"], "a", 5),
+      mc("Which medicine does Grandpa take to hold back rejection?", ["penicillin", "cyclosporine", "vidarabine", "Penicillium"], "b", 7),
+    ]),
+    TRUEFALSE([
+      tf("Antibiotics cure a cold.", false, "An antibiotic only works on bacteria, and a cold is caused by a virus.", 3),
+      tf("Penicillin still works on most kinds of bacteria today.", false, "Penicillin now has no effect on most of them.", 4),
+      tf("Rejection is when the immune system attacks a new organ.", true, "", 6),
+      tf("Cyclosporine is made from an imperfect fungus.", true, "", 7),
+    ]),
+    KEYWORDS([
+      at(2, c("What is a chemical that harms bacteria called?", "An antibiotic.", "antibiotic")),
+      at(3, c("What word describes bacteria that an antibiotic no longer affects?", "Resistant.", "resistant")),
+      at(5, c("What is a medicine for a virus called?", "An antiviral drug.", "antiviral")),
+      at(6, c("What is it called when doctors put a healthy organ from one person into a sick person?", "A transplant.", "transplant")),
+    ]),
+    THINK([
+      said("Why won't a doctor give an antibiotic for every sniffle?", "That is one reason a doctor won't hand out an antibiotic for every sniffle.", 4),
+      said("What was true of the early antiviral drugs?", "A virus has very few parts of its own for a drug to attack, and the early antiviral drugs often hurt the patient too.", 5),
+      said("What price does cyclosporine have?", "A patient has to take it for life, it is expensive, and it can cause side effects such as kidney failure.", 7),
+    ]),
+  ],
+}),
+
+/* ── HISTORY 3-6 ───────────────────────────────────────────────────────── */
+sheet({
+  subject: "History", slug: "towns-guilds-and-the-roads-between-them-homework", lesson: "history/towns-guilds-and-the-roads-between-them",
+  includedWith: "history/towns-guilds-and-the-roads-between-them",
+  title: "Towns, Guilds, and the Roads Between Them: Homework",
+  dek: "Read the story of a baker's apprentice, then show how towns grew, how guilds trained workers and how goods moved on the roads.",
+  blurb: "A one-page story of a boy in a medieval town, then multiple choice, true or false, key words, a sort of the guild ladder and written answers. Answer key included.",
+  contains: [
+    "A one-page story of a baker's apprentice in a medieval town",
+    "A sort of the three steps on the guild ladder",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
+  ],
+  eyebrow: "World History &middot; U3-L6",
+  signoff: "Guilds trained workers step by step, and merchants on rough roads kept the goods moving.",
+  passage: { title: "Hugh and the Baker's Oven", paras: [
+    "For a long time after Rome fell, towns had shrunk, and most people lived on manors where they grew what they needed. Around the year 1000, things began to change. Lords had grown powerful enough to bring peace and stability, and merchants could travel and trade more freely. Builders and tradespeople gathered wherever merchants settled, and those settlements grew into towns. Hugh's father brought him to one of those towns when the boy was twelve.",
+    "Hugh stared at the market square and the cathedral, which stood at the center of the town, with busy streets running out from them. The town was dirty, cramped and noisy. The narrow streets weren't paved, so they turned to knee-deep mud when it rained. Wooden houses were packed close together and burned easily, and the city of Rouen burned down six times between 1200 and 1225.",
+    "Back home the manor made its living from farming. This town made its living from crafts and trade, and that was the main difference. Hugh was going to learn a craft, and he would learn it from a baker named Master Aldous.",
+    "Master Aldous belonged to a guild. People who did the same job in a town, such as goldsmiths, bakers, weavers and dyers, joined together in a guild. A guild made rules about how much its members could make and how good their work had to be, so that customers could trust what they bought. It also looked out for its members and tried to make sure that everybody in the trade found work.",
+    "Hugh began as an apprentice, a young learner who lived with a master and worked for his food and training. He hauled flour and cleaned the oven. After several years he would become a journeyman, a trained worker who was paid for his work. Then he would bake a masterpiece to prove his skill, and if the guild approved it, he would become a master. A master could run his own shop and train others.",
+    "Hugh's job on market day was to carry loaves to the square, and there he saw goods from far away. Merchants carried them by river and along rough roads, and meeting places called fairs grew up where merchants came to buy and sell. One famous set of fairs was in Champagne, in France. In the south, Italian trading cities such as Venice and Genoa grew rich on trade, and in the north a group of trading towns called the Hanseatic League worked together to protect their trade.",
+    "Some towns even won freedom from the lord whose land they stood on. They did it by getting a charter, which was a written grant from a lord or king that gave the town its rights. People said that town air makes you free, but it was only a saying and not a law. Hugh did not know yet whether his town had a charter, but he knew he would be a master someday.",
+  ] },
+  parts: [
+    CHECK([
+      mc("What made a town's living different from a manor's?", ["It grew only wheat", "It traded and made crafts", "It fought wars", "It had no merchants"], "b", 3),
+      mc("What was an apprentice?", ["a king's helper", "a trained worker who was paid", "a young learner who lived with a master", "a merchant at a fair"], "c", 5),
+      mc("What was the reason a guild set rules for its members?", ["to keep prices high", "to hide trade secrets", "to punish the lords", "so customers could trust what they bought"], "d", 4),
+      mc("What came after journeyman on the guild ladder?", ["master, after a masterpiece", "apprentice", "charter", "merchant"], "a", 5),
+      mc("Which trading cities in the south grew rich on trade?", ["Rouen and Paris", "Venice and Genoa", "Champagne and Rome", "London and Dover"], "b", 6),
+    ]),
+    TRUEFALSE([
+      tf("The streets of a medieval town were paved and clean.", false, "The narrow streets weren't paved, and they turned to knee-deep mud when it rained.", 2),
+      tf("A guild looked out for its members.", true, "", 4),
+      tf("A journeyman had to pay his master for his training.", false, "A journeyman was a trained worker who was paid for his work.", 5),
+      tf("A charter gave a town its rights.", true, "", 7),
+    ]),
+    KEYWORDS([
+      at(4, c("What is a group of people who do the same job in a town called?", "A guild.", "guild")),
+      at(5, c("What is a trained worker who is paid for his work called?", "A journeyman.", "journeyman")),
+      at(6, c("What are the meeting places where merchants came to buy and sell called?", "Fairs.", "fair|fairs")),
+      at(7, c("What is a written grant from a lord or king that gave a town its rights called?", "A charter.", "charter")),
+    ]),
+    SORTX("The Guild Ladder", "Apprentice, Journeyman, Master", "Paragraph 5 names three steps on the guild ladder. Match each description to its step.", [
+      at(5, set("Write APPRENTICE, JOURNEYMAN or MASTER.", [
+        ["Can run his own shop and train others.", "MASTER. A master could run his own shop and train others.", "master"],
+        ["Lives with a master and works for food and training.", "APPRENTICE. An apprentice lived with a master and worked for his food and training.", "apprentice"],
+        ["A trained worker who is paid for his work.", "JOURNEYMAN. A journeyman was a trained worker who was paid.", "journeyman"],
+      ])),
+    ]),
+    THINK([
+      said("Why did a guild make rules about how good the work had to be?", "A guild made rules about how much its members could make and how good their work had to be, so that customers could trust what they bought.", 4),
+      said("How did goods get to the towns?", "Merchants carried them by river and along rough roads, and meeting places called fairs grew up where merchants came to buy and sell.", 6),
+    ]),
+  ],
+}),
+
+/* ── HISTORY 3-7 ───────────────────────────────────────────────────────── */
+sheet({
+  subject: "History", slug: "the-vikings-and-the-kingdoms-they-made-homework", lesson: "history/the-vikings-and-the-kingdoms-they-made",
+  includedWith: "history/the-vikings-and-the-kingdoms-they-made",
+  title: "The Vikings, and the Kingdoms They Made: Homework",
+  dek: "Read the story of a boy who watched the Vikings come, then show who they were, why they came and the kingdoms they left behind.",
+  blurb: "A one-page story of the Vikings, then multiple choice, true or false, key words, a timeline sort and written answers. Answer key included.",
+  contains: [
+    "A one-page story of the Vikings from raiders to kings",
+    "A sort of the dates on the Viking timeline",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
+  ],
+  eyebrow: "World History &middot; U3-L7",
+  signoff: "The Vikings began as raiders, and some of them ended as settlers, neighbors and kings.",
+  passage: { title: "Ships at Dawn", paras: [
+    "Brother Colm was only a boy in the summer of 793, and he never forgot the morning the ships came. His monastery sat on Lindisfarne, an island off the northeast coast of England. A monastery was where monks lived and prayed, and it was full of gold and silver for the church. Nothing but the monks stood guard over it. The strangers burned and robbed it and sailed away, and people across Europe took the raid as a sign that something new had begun.",
+    "The strangers were the Vikings, who came from Scandinavia, the far north of Europe, which is today's Norway, Sweden and Denmark. A raid is a sudden strike on a place that is not ready for it, followed by a quick escape with the loot. But raiding was only part of their story, because the same people were also traders, farmers and settlers. Their longships were built with overlapping planks, strong enough to cross the open sea and shallow enough to row up a river.",
+    "Historians still argue about why the Vikings left home, and most think there was more than one reason. At home the population was growing, farming was getting better, and the chiefs fought each other for power. Overseas there were monasteries and towns full of treasure with almost no defense. The timing mattered too, because the Frankish empire had just fallen apart. Charlemagne died in 814, and a treaty in 843 split his empire in three, so the weaker kingdoms couldn't guard every coast and river.",
+    "Think about an ordinary village in those years, which could be raided on any day with almost no warning. A king far away couldn't help, so people turned to a strong lord nearby who had armed men and a place to hide. The Vikings didn't create feudalism by themselves, but the raids were one of the reasons so many people wanted a strong local lord.",
+    "After a while the Vikings stopped only raiding and started staying. In 867 the Danes took the northern English kingdom of Northumbria, and the part of England under Viking control became the Danelaw. In 911 the Frankish king gave a Viking leader named Rollo some land in northern France, and it became Normandy, which means the land of the Northmen. Rollo swore to be the king's loyal man, became a Christian, and promised to defend the coast against other Vikings.",
+    "Others sailed west. Erik the Red pioneered Greenland, and about the year 1000 his son Leif Erikson reached a land he called Vinland, on the coast of North America. Iceland turned Christian about the same time, because kings and people began to convert, which means to change their religion.",
+    "Back home the small chiefdoms of Norway, Sweden and Denmark joined into larger kingdoms. Cnut shows how far that could go, because he won England in 1016, and by his death in 1035 he ruled Denmark, England, Norway and parts of Sweden. The raiders from the far north had become neighbors and kings in Europe.",
+  ] },
+  parts: [
+    CHECK([
+      mc("Where was the monastery the Vikings raided in 793?", ["on an island called Lindisfarne", "in Rome", "in Normandy", "in Iceland"], "a", 1),
+      mc("What made a longship good for raiding?", ["It had huge sails only", "It was strong enough for the sea and shallow enough for rivers", "It was too heavy to sink", "It could not be seen from shore"], "b", 2),
+      mc("What treaty split the Frankish empire into three?", ["the treaty of 800", "the treaty of 911", "the treaty of 843", "the treaty of 1066"], "c", 3),
+      mc("What does the name Normandy mean?", ["the land of the Danes", "the land of Rollo", "the land of kings", "the land of the Northmen"], "d", 5),
+      mc("Which king ruled Denmark, England, Norway and parts of Sweden by his death?", ["Cnut", "Rollo", "Erik the Red", "Alfred"], "a", 7),
+    ]),
+    TRUEFALSE([
+      tf("The Vikings were only raiders.", false, "They were also traders, farmers and settlers.", 2),
+      tf("The Vikings came from Scandinavia.", true, "", 2),
+      tf("The Vikings created feudalism all by themselves.", false, "They didn't create feudalism by themselves, but the raids made people want a strong local lord.", 4),
+      tf("Leif Erikson reached a land he called Vinland.", true, "", 6),
+    ]),
+    KEYWORDS([
+      at(2, c("What is a sudden strike on a place that is not ready for it called?", "A raid.", "raid")),
+      at(5, c("What was the part of England under Viking control called?", "The Danelaw.", "danelaw")),
+      at(5, c("What is the land in northern France that Rollo was given called?", "Normandy.", "normandy")),
+      at(6, c("What word means to change your religion?", "Convert.", "convert")),
+    ]),
+    SORTX("The Timeline", "Date", "The story gives these dates. Match each event to its year.", [
+      at(5, set("Write the year: 793, 867, 911 or 1016.", [
+        ["The Danes take Northumbria.", "867. The Danelaw began then.", "867"],
+        ["Rollo is given the land that becomes Normandy.", "911.", "911"],
+        ["Vikings raid the monastery on Lindisfarne.", "793.", "793"],
+        ["Cnut wins England.", "1016.", "1016"],
+      ])),
+    ]),
+    THINK([
+      said("Why did so many people want a strong local lord?", "The Vikings didn't create feudalism by themselves, but the raids were one of the reasons so many people wanted a strong local lord.", 4),
+      said("What did Rollo promise when he was given the land?", "Rollo swore to be the king's loyal man, became a Christian, and promised to defend the coast against other Vikings.", 5),
+    ]),
+  ],
+}),
+
+/* ── HISTORY 3-8 ───────────────────────────────────────────────────────── */
+sheet({
+  subject: "History", slug: "the-norman-conquest-homework", lesson: "history/the-norman-conquest",
+  includedWith: "history/the-norman-conquest",
+  title: "The Norman Conquest: Homework",
+  dek: "Read the story of the year 1066, then show who claimed the crown, how William won and what changed in England.",
+  blurb: "A one-page story of the Norman Conquest, then multiple choice, true or false, key words, a sort of the three claimants and written answers. Answer key included.",
+  contains: [
+    "A one-page story of 1066, from three claimants to Domesday Book",
+    "A sort of the three men who claimed the crown",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
+  ],
+  eyebrow: "World History &middot; U3-L8",
+  signoff: "William won at Hastings, and the Normans changed England's castles, land and language.",
+  passage: { title: "The Year of Three Claimants", paras: [
+    "In January 1066 the king of England, Edward the Confessor, died, and he had no child to take his place. That left a crown with no obvious owner. The people of Normandy, who were called the Normans, were descendants of the Vikings, and the Norman duke was one of the men who wanted that crown.",
+    "A claimant is a person who says a crown is rightfully his, and there were three. Harold Godwinson was an English earl, and the council of English nobles chose him as king. William was the duke of Normandy, and a duke is a nobleman who rules a region, ranking just below a king. William said that Edward had promised him the crown and that Harold had once sworn an oath to support him. The third was Harald Hardrada, the king of Norway, who claimed the crown through an old agreement.",
+    "Hardrada moved first, and on 20 September he beat the northern English earls at a battle called Fulford. Harold Godwinson marched north, and on 25 September at Stamford Bridge he beat the Norwegians, and Hardrada was killed. But three days later William landed his army on the south coast at Pevensey, and he built a wooden castle at Hastings to hold his ground. Harold had to turn around and march his tired men all the way south again.",
+    "On 14 October 1066 the two armies met near Hastings, and the fighting went on for most of the day. The English fought on foot behind a wall of shields, and the Normans had knights on horseback and archers. Harold was killed in the battle, and the English lost their king. Many people have heard that he died from an arrow in the eye, but historians aren't sure how he really died. On Christmas Day William was crowned king in Westminster Abbey, and that is why he is called William the Conqueror.",
+    "A conquest is when one people takes over another's land by force, and the Normans had to work to hold England. They built castles in great numbers, and most were the motte-and-bailey kind, which was a mound of earth with a wooden tower on top and a fenced yard beside it. When the north of England rose up against him, William crushed the revolt and laid waste to the land, and many people there suffered.",
+    "William gave land to Norman lords who swore oaths to him, so it was the feudal system, and it was set up from the top. In 1086 he had a huge survey made of who owned what land and what it was worth. It was written down in the Domesday Book, which he could use to collect taxes.",
+    "The new lords spoke French, so French became the language of the court, and thousands of French words slowly entered English. The story of the conquest was also told in cloth, in the Bayeux Tapestry, an embroidered strip about seventy meters long. William also tied the nobility of France and England together, and that tangle of who had the right to rule which land caused trouble for a long time.",
+  ] },
+  parts: [
+    CHECK([
+      mc("Why was the English crown without an obvious owner in January 1066?", ["Harold had given it away", "The pope had taken it", "Edward died and had no child", "William had stolen it"], "c", 1),
+      mc("Who beat the Norwegians at Stamford Bridge?", ["William", "Hardrada", "Edward", "Harold Godwinson"], "d", 3),
+      mc("Where did William land his army?", ["at Pevensey", "at Stamford Bridge", "at Fulford", "at Westminster"], "a", 3),
+      mc("What did the Domesday Book record?", ["the battles of 1066", "who owned what land and what it was worth", "the laws of Normandy", "the names of the knights"], "b", 6),
+      mc("What language did the new lords speak?", ["Danish", "Norwegian", "French", "Latin"], "c", 7),
+    ]),
+    TRUEFALSE([
+      tf("Harold Godwinson was chosen king by the council of English nobles.", true, "", 2),
+      tf("Historians are sure Harold died from an arrow in the eye.", false, "Historians aren't sure how he really died.", 4),
+      tf("William was crowned king on Christmas Day.", true, "", 4),
+      tf("Most Norman castles were made of stone from the start.", false, "Most were the motte-and-bailey kind, with a wooden tower on a mound of earth.", 5),
+    ]),
+    KEYWORDS([
+      at(2, c("What is a person who says a crown is rightfully his called?", "A claimant.", "claimant")),
+      at(5, c("What is it called when one people takes over another's land by force?", "A conquest.", "conquest")),
+      at(6, c("What was the great survey of land and who owned it called?", "The Domesday Book.", "domesday")),
+      at(7, c("What is the embroidered strip that tells the story of the conquest called?", "The Bayeux Tapestry.", "bayeux")),
+    ]),
+    SORTX("Who Claimed the Crown?", "Harold, William, Hardrada", "Paragraph 2 names three claimants. Match each clue to its man.", [
+      at(2, set("Write HAROLD, WILLIAM or HARDRADA.", [
+        ["The duke of Normandy.", "WILLIAM. William was the duke of Normandy.", "william"],
+        ["The English earl the council chose.", "HAROLD. Harold Godwinson was chosen by the council.", "harold"],
+        ["The king of Norway.", "HARDRADA. Harald Hardrada was the king of Norway.", "hardrada"],
+      ])),
+    ]),
+    THINK([
+      said("What two things did William point to in his claim?", "William said that Edward had promised him the crown and that Harold had once sworn an oath to support him.", 2),
+      said("What did the Normans do when the north rose up?", "When the north of England rose up against him, William crushed the revolt and laid waste to the land, and many people there suffered.", 5),
+    ]),
+  ],
+}),
+
+/* ── ENGLISH U3-L4 ─────────────────────────────────────────────────────── */
+sheet({
+  subject: "English", slug: "third-person-limited-point-of-view-homework", lesson: "english/third-person-limited-point-of-view",
+  includedWith: "english/third-person-limited-point-of-view",
+  title: "Third-Person Limited Point of View: Homework",
+  dek: "Read the story of a boy trying out a flashlight idea, then show whose mind the narrator enters and what the reader can't know.",
+  blurb: "A one-page story about third-person limited, then multiple choice, true or false, key words, an inside-or-outside sort and written answers. Answer key included.",
+  contains: [
+    "A one-page story about a narrator who stays in one character's mind",
+    "A sort of lines that are inside or outside the character's mind",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
+  ],
+  eyebrow: "English 7 &middot; U3-L4",
+  signoff: "The narrator stays outside the story but shines a light into one character's mind only.",
+  passage: { title: "The Flashlight and the Diving Tower", paras: [
+    "Ms. Reyes turned off the classroom lights and switched on a flashlight. She said that third-person limited works like that beam. The narrator stands outside the story and says he, she or they, and never I. But the narrator lets you inside the head of only one character. Whatever that character thinks and feels, you see. Everything else stays in the dark.",
+    "She read a scene she had written. Lena carried a tray of cups across the cafeteria and hoped she wouldn't trip. Across the room her friend Omar laughed with the other boys, and he never looked her way. Ms. Reyes asked the class whose mind they were in. Ben said Lena's, because they heard her hope, while they only saw Omar laugh. So no one could say whether Omar was bored, tired or worried.",
+    "Ms. Reyes gave them two tools for reading one mind. The first tool is to mark the lines that show the character's thoughts and feelings, and to tell them apart from lines that only show what she sees, hears or does. The second tool is to ask what you can't know, because the narrator stays with her and never goes into anyone else's mind.",
+    "Ben tried the tools on a scene of his own. Nina climbed the last step of the diving tower. Her knees shook, and she wished she had stayed on the ground. Far below, the coach folded her arms and said nothing. Ben marked the wish as inside Nina's mind, because it told what she wanted. He marked the folded arms as outside, because they only showed what Nina could see.",
+    "Then Ms. Reyes asked him to move the narrator into the coach's head. Ben rewrote one line so that the coach folded her arms and wondered whether Nina would jump. Now the reader knew what the coach thought. But Nina's reason for standing still had turned into a mystery. She said that is why a writer picks one head, because whoever's mind you enter, the story becomes theirs.",
+    "The class talked about what the point of view does to a reader. You know only what that one character knows, and you feel close to her, since you are living inside her worries. The gaps make her choice feel lonelier, because everyone else is only a face and a voice. Only one person has a mind you can enter.",
+    "At the end Ben checked that his story was really third person and not first. The narrator called the girl Nina and she, and never once said I. Ms. Reyes switched the lights back on and said that was a good place to stop. Ben packed up his notebook and decided that he would try the flashlight trick on every story he read that week.",
+  ] },
+  parts: [
+    CHECK([
+      mc("In third-person limited, which word does the narrator never say?", ["he", "she", "they", "I"], "d", 1),
+      mc("Whose mind are we in during the cafeteria scene?", ["Omar's", "Lena's", "the teacher's", "Ben's"], "b", 2),
+      mc("What is the second tool for reading one mind?", ["Count the sentences", "Find the longest line", "Ask what you can't know", "Skip the dialogue"], "c", 3),
+      mc("Why did Ben mark the folded arms as outside Nina's mind?", ["They show what Nina can see, not what she thinks", "They show what Nina wants", "The coach was angry", "Nina did not notice them"], "a", 4),
+      mc("What happened when the narrator moved into the coach's head?", ["Nothing changed", "Nina's reason became a mystery", "The story became first person", "The coach became Nina"], "b", 5),
+    ]),
+    TRUEFALSE([
+      tf("A third-person limited narrator goes into every character's mind.", false, "But the narrator lets you inside the head of only one character.", 1),
+      tf("In the cafeteria scene we only see Omar laugh.", true, "", 2),
+      tf("A line that tells what a character wants is inside her mind.", true, "", 4),
+      tf("The narrator of Ben's story said I.", false, "The narrator called the girl Nina and she, and never said I.", 7),
+    ]),
+    KEYWORDS([
+      at(1, c("What is the point of view called where the narrator stays outside the story but enters one character's head?", "Third-person limited.", "limited")),
+      at(3, c("What do you ask in the second tool?", "What you can't know.", "can't know|cant know")),
+      at(6, c("What do the gaps in the story make her choice feel?", "Lonelier.", "lonelier")),
+      at(7, c("Which word did the narrator never say?", "I.", "i")),
+    ]),
+    SORTX("Inside or Outside?", "Inside or Outside", "Paragraph 4 shows how to tell lines apart. INSIDE tells what the character thinks, feels or wants. OUTSIDE only shows what she sees, hears or does.", [
+      at(4, set("Write INSIDE if it is in Nina's mind, or OUTSIDE if it is not.", [
+        ["She wished she had stayed on the ground.", "INSIDE. It tells what Nina wants.", "inside"],
+        ["The coach folded her arms.", "OUTSIDE. It is only what Nina can see.", "outside"],
+        ["Her knees shook.", "INSIDE. It is what Nina feels.", "inside"],
+        ["The coach said nothing.", "OUTSIDE. It is only what Nina can hear.", "outside"],
+      ])),
+    ]),
+    THINK([
+      said("What does the narrator do in third-person limited?", "But the narrator lets you inside the head of only one character.", 1),
+      said("Why does a writer pick one head?", "She said that is why a writer picks one head, because whoever's mind you enter, the story becomes theirs.", 5),
+    ]),
+  ],
+}),
+
+/* ── ENGLISH U3-L5 ─────────────────────────────────────────────────────── */
+sheet({
+  subject: "English", slug: "tone-homework", lesson: "english/tone",
+  includedWith: "english/tone",
+  title: "Tone: Homework",
+  dek: "Read the story of a boy who hears the same words two ways, then find the clue words that show a writer's attitude.",
+  blurb: "A one-page story about tone, then multiple choice, true or false, key words, a clue-word sort and written answers. Answer key included.",
+  contains: [
+    "A one-page story about tone, sarcasm and mood",
+    "A sort of clue words as warm or harsh",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
+  ],
+  eyebrow: "English 7 &middot; U3-L5",
+  signoff: "Tone is the writer's attitude, and the clue words are your evidence.",
+  passage: { title: "Nice Job", paras: [
+    "On Saturday Dev heard his aunt say the same two words twice. The first time Dev had carried every box up three flights of stairs, and she smiled and said, nice job. The second time he dropped a full jar of pickles in the hall, and she sighed and said, nice job. The words never changed, but the meaning did. The first one was a thank you, and the second was a joke with a sting in it.",
+    "The difference was the tone, which is the attitude of the speaker toward the person, the subject or the thing being talked about. An attitude is how someone feels about something, whether that is thankful, bored, proud or annoyed. The second nice job was also an example of sarcasm, which is saying the opposite of what you mean so that it stings or makes fun.",
+    "When you talk, your voice carries the tone. A writer has no voice on the page, so he has to put the tone somewhere else. He puts it in the words he picks and the details he includes, and that is where you look. The clue words are your evidence.",
+    "Dev's aunt wrote two sentences about her kitchen to show him. The first said the kitchen was snug and sunny, with a humming kettle and warm bread cooling by the window. The second said the kitchen was cramped and greasy, with a shrieking kettle and stale bread sitting on the counter. Both sentences described the same room, but the first writer liked it and the second one didn't.",
+    "She said to look for the words that carry a feeling, and then ask what attitude would make a writer choose them. In the first kitchen the clue words were snug, sunny and warm, and they are all gentle. In the second the clue words were cramped, greasy and stale, and they are all harsh. That one question is the whole skill.",
+    "Then she told him about mood. Mood is the feeling you get as a reader. Tone is what the writer feels about the subject, and mood is what the writing makes you feel. The two are often close, but they aren't the same thing.",
+    "She had one more lesson, and it was the tricky one. A girl on the stage grinned at the crowd and said she was fine. Her hands were clenched in her lap, and her voice cracked on the last word. The surface said cheerful, but the words underneath said hurt. Then the girl lifted her chin and said she would sing again, and the tone changed to defiant. A writer's attitude can shift as a piece goes on, so don't name one tone for the whole thing until you've read all of it.",
+  ] },
+  parts: [
+    CHECK([
+      mc("Which of these best describes the tone of a piece?", ["the loudness of a voice", "the writer's or speaker's attitude", "the feeling the reader gets", "the number of words"], "b", 2),
+      mc("The second nice job was sarcasm. What is sarcasm?", ["a kind of thank you", "a quiet voice", "saying the opposite of what you mean so it stings", "a very long sentence"], "c", 2),
+      mc("Where does a writer put tone, since he has no voice on the page?", ["in the page number", "in the title only", "in the font", "in the words he picks and the details he includes"], "d", 3),
+      mc("Which words are clue words for the second kitchen?", ["cramped, greasy and stale", "snug, sunny and warm", "kettle, bread and window", "morning, counter and hall"], "a", 5),
+      mc("Which choice is the best meaning of mood?", ["what the writer feels", "what the writing makes you feel", "what the voice sounds like", "what the title says"], "b", 6),
+    ]),
+    TRUEFALSE([
+      tf("The two nice jobs had the same words and the same meaning.", false, "The words never changed, but the meaning did.", 1),
+      tf("The clue words are your evidence for the tone.", true, "", 3),
+      tf("The first kitchen was written by a writer who didn't like it.", false, "The first writer liked the kitchen, and the second one didn't.", 4),
+      tf("A writer's attitude can shift as a piece goes on.", true, "", 7),
+    ]),
+    KEYWORDS([
+      at(2, c("What is the attitude of a speaker toward a subject called?", "Tone.", "tone")),
+      at(2, c("What is saying the opposite of what you mean so that it stings called?", "Sarcasm.", "sarcasm")),
+      at(6, c("What is the feeling you get as a reader called?", "Mood.", "mood")),
+      at(7, c("What tone did the girl's voice change to when she lifted her chin?", "Defiant.", "defiant")),
+    ]),
+    SORTX("Warm or Harsh?", "Warm or Harsh", "Paragraph 5 sorts clue words by the feeling they carry. WARM words are gentle. HARSH words are rough or unpleasant.", [
+      at(5, set("Write WARM or HARSH.", [
+        ["snug", "WARM. It is one of the gentle clue words.", "warm"],
+        ["greasy", "HARSH. It is one of the rough clue words.", "harsh"],
+        ["sunny", "WARM. It is one of the gentle clue words.", "warm"],
+        ["stale", "HARSH. It is one of the rough clue words.", "harsh"],
+      ])),
+    ]),
+    THINK([
+      said("What question is the whole skill of finding tone?", "She said to look for the words that carry a feeling, and then ask what attitude would make a writer choose them.", 5),
+      said("What is the difference between tone and mood?", "Tone is what the writer feels about the subject, and mood is what the writing makes you feel.", 6),
+    ]),
+  ],
+}),
+
+/* ── ENGLISH U3-L6 ─────────────────────────────────────────────────────── */
+sheet({
+  subject: "English", slug: "first-person-narrator-and-history-homework", lesson: "english/first-person-narrator-and-history",
+  includedWith: "english/first-person-narrator-and-history",
+  title: "First-Person Narrator and History: Homework",
+  dek: "Read the story of a boy at a river ferry, then use evidence from what a narrator sees to reach a conclusion about a stranger.",
+  blurb: "A one-page story told by a first-person narrator, then multiple choice, true or false, key words, an evidence sort and written answers. Answer key included.",
+  contains: [
+    "A one-page story told in the first person",
+    "A sort of clues into what a character says or does and how others react",
+    "Multiple choice, true or false, and key words to find in the story",
+    "Written answers, and an answer key that names the paragraph",
+  ],
+  eyebrow: "English 7 &middot; U3-L6",
+  signoff: "A first-person narrator knows only what he saw, so gather three clues before you reach a conclusion.",
+  passage: { title: "The Stranger at the Ferry", paras: [
+    "Point of view is who is telling the story. In the third person an outside voice says he, she or they. In the first person a character tells it, and says I. That character is the narrator, the one telling the story, so if a story has an I that is a character in it, you are reading first person.",
+    "A first-person narrator is a person inside the story, so he can only tell you what he saw, heard, did and guessed. He can't read anyone else's mind, and he doesn't know what happens in a room he isn't in. If you want to understand the other characters, you have to work them out from clues, the way the narrator does.",
+    "Evidence is a clue in the text, and a conclusion is a decision you reach after putting several clues together. The clues are what a character says and does, and how the other characters react to him. One clue can be a coincidence, but three that point the same way are a conclusion you can trust.",
+    "This story is a made-up one, but it takes place in the real past, so it is called historical fiction. Its narrator is Ned, and he is telling it long after it happened. My uncle kept the ferry at Miller's Bend, and I helped him haul the rope. One morning a tall stranger came down the road with a canvas bag and asked in a low voice for a place on the boat.",
+    "He would not sit with his back to the road. He asked every day whether any riders had come by that morning. At first I thought he only wanted company, but at last I began to see he wanted to avoid them. Ned says at first I thought and at last I began to see, because he can't read the stranger's mind and has to work it out by watching.",
+    "My uncle, who joked with everyone, stopped joking when the stranger was near. The dog growled at him each time he passed the dock. The people who crossed the river learned to let him be. That is the third kind of clue, how everyone else behaves around him.",
+    "Three clues now point the same way. He is watching the road, he asks about riders, and everyone is wary of him. The conclusion is that he is hiding from someone. Ned doesn't know who, and neither do you, because the narrator only knows what he saw. For now, all anyone at the ferry could do was watch the road and wait for the next boat to cross. Ned kept pulling the rope, and he kept his eyes open for any more clues.",
+  ] },
+  parts: [
+    CHECK([
+      mc("In the first person, which word does the narrator use?", ["he", "she", "they", "I"], "d", 1),
+      mc("Which of these can a first-person narrator describe?", ["what everyone thinks", "what he saw, heard, did and guessed", "what happens in other rooms", "the end of the story"], "b", 2),
+      mc("What is a conclusion?", ["a clue in the text", "the last sentence", "a decision reached after putting several clues together", "a character's name"], "c", 3),
+      mc("What is a made-up story set in the real past called?", ["a biography", "an essay", "a fable", "historical fiction"], "d", 4),
+      mc("Why did Ned say at first I thought and at last I began to see?", ["He has to work out the stranger's mind by watching", "He forgot the story", "He was in a hurry", "He didn't like the stranger"], "a", 5),
+    ]),
+    TRUEFALSE([
+      tf("A first-person narrator can read other characters' minds.", false, "He can only tell what he saw, heard, did and guessed.", 2),
+      tf("One clue is enough to be sure of a conclusion.", false, "One clue can be a coincidence, but three that point the same way are a conclusion you can trust.", 3),
+      tf("The stranger would not sit with his back to the road.", true, "", 5),
+      tf("How other characters react to someone can be a clue.", true, "", 6),
+    ]),
+    KEYWORDS([
+      at(1, c("What is the character who tells the story called?", "The narrator.", "narrator")),
+      at(3, c("What is a clue in the text called?", "Evidence.", "evidence")),
+      at(3, c("What do you call the decision you reach after putting several clues together?", "A conclusion.", "conclusion")),
+      at(4, c("What do you call a made-up story set in the real past?", "Historical fiction.", "historical fiction")),
+    ]),
+    SORTX("Which Kind of Clue?", "Does, React", "Paragraph 3 names two places to find clues. SAYS OR DOES is something the character himself does. OTHERS REACT is how other people behave around him.", [
+      at(3, set("Write DOES or REACT.", [
+        ["He asked every day whether any riders had come by.", "DOES. It is something the stranger did.", "does"],
+        ["The dog growled at him each time he passed the dock.", "REACT. It is how the dog behaved around him.", "react"],
+        ["He would not sit with his back to the road.", "DOES. It is something the stranger did.", "does"],
+        ["My uncle stopped joking when the stranger was near.", "REACT. It is how the uncle behaved around him.", "react"],
+      ])),
+    ]),
+    THINK([
+      said("Why is a first-person narrator limited in what he can tell?", "A first-person narrator is a person inside the story, so he can only tell you what he saw, heard, did and guessed.", 2),
+      said("How many clues make a conclusion you can trust?", "One clue can be a coincidence, but three that point the same way are a conclusion you can trust.", 3),
     ]),
   ],
 }),

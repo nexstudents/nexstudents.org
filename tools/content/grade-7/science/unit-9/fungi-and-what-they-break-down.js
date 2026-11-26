@@ -100,6 +100,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "fungi-and-what-they-break-down-homework", subject: "science",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   shelf: { grades: [7], subject: "Science",
     blurb: "A mushroom, the black fuzz on old bread and the yeast in a loaf are all fungi. Fungi can't make food and don't move, so what do they do? They digest dead things, and the world would be buried without them.",
     contains: [

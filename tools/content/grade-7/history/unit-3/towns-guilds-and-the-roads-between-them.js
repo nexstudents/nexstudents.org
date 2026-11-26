@@ -83,6 +83,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "towns-guilds-and-the-roads-between-them-homework", subject: "history",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   shelf: { grades: [7], subject: "History",
     blurb: "Around the year 1000, towns began to grow again. Mud and fire in a medieval town, a guild that trained a worker from apprentice to master, and the fairs and roads that carried goods.",
     contains: [

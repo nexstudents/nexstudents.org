@@ -78,6 +78,9 @@ module.exports = {
   natural: "2026-11-22",
   findsAt: 70,
 
+  sheet: { slug: "first-person-narrator-and-history-homework", subject: "english",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   shelf: { grades: [7], subject: "English",
     blurb: "A boy named Jim tells you about the strange old sailor who came to stay at his family's inn. How to spot a first-person narrator, and how to collect clues and draw a conclusion about a character.",
     contains: [

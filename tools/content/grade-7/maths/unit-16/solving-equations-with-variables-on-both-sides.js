@@ -48,6 +48,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "solving-equations-with-variables-on-both-sides-homework", subject: "maths",
+    note: "This is your work for the lesson. Do it on screen or print it." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "When the letter shows up on both sides, move it to one side and solve. Two special cases have no answer at all, or every answer.",
     contains: [

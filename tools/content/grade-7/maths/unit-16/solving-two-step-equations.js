@@ -46,6 +46,9 @@ module.exports = {
     unclear: "",
   },
 
+  sheet: { slug: "solving-two-step-equations-homework", subject: "maths",
+    note: "This is your work for the lesson. Do it on screen or print it." },
+
   shelf: { grades: [7], subject: "Math",
     blurb: "A two-step equation has two things stuck to the letter. Undo them in reverse order, the plus or minus first, and check the answer.",
     contains: [

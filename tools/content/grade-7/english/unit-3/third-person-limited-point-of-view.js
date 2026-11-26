@@ -73,6 +73,9 @@ module.exports = {
   natural: "2026-11-07",
   findsAt: 84,
 
+  sheet: { slug: "third-person-limited-point-of-view-homework", subject: "english",
+    note: "Do it on screen or print it. Your score shows here once you check it." },
+
   shelf: { grades: [7], subject: "English",
     blurb: "A nine-year-old girl in the woods has a secret worth ten dollars. What it means when a story stays inside one character's head.",
     contains: [

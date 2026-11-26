@@ -400,6 +400,10 @@ function ownItem(it, n) {
    and its answer rule share ONE row. Work rules are added only where `lines`
    is set, on the item or the part, for the multi-step ones that need room. */
 const workLines = (k) => Array.from({ length: k || 0 }, () => '<p class="ownline"><u></u></p>').join('');
+/* Blank room to work, NO rules (Paul, 2026-11-26: "i just said i wanted more spacing and no extra lines").
+   `space: n` on a solve part or item leaves about n lines of white space under the problem. Prefer this to
+   `lines` for Math work: a ruled line is only for a written answer. */
+const workSpace = (k) => (k ? '<div class="hwspace" style="height:' + (k * 1.9) + 'em" aria-hidden="true"></div>' : '');
 
 /* ── TYPE IT IN AND CHECK IT (2026-10-11) ───────────────────────────────────
    Paul: "i would even test you to make interactive worksheets ... saves me on
@@ -514,7 +518,8 @@ function solveItem(it, n, part) {
         attr(it.problem) + '"></textarea></div>'
       : workLines(3));
   } else {
-    body = answerRow(it.problem, part.answerLabel, checkFor(it)) + workLines(lines);
+    body = answerRow(it.problem, part.answerLabel, checkFor(it)) + workLines(lines) +
+      workSpace(it.space != null ? it.space : part.space);
   }
   return '<li><b>' + (n + 1) + '.</b><div class="ownrow">' + body + '</div></li>';
 }
@@ -550,7 +555,7 @@ function partHtml(part, i) {
   const items = (part.items || []).map((it, n) => r.item(it, n, part)).join('\n    ');
   PARTW = 0;
   return `
-  <h2 class="scored">Part ${LETTER[i]} &mdash; ${part.heading} <span class="pts"><u></u> / ${part.items.reduce((t, it) => t + weight(it), 0)}</span></h2>
+  <h2 class="scored">Part ${LETTER[i]}: ${part.heading} <span class="pts"><u></u> / ${part.items.reduce((t, it) => t + weight(it), 0)}</span></h2>
   <p class="inst">${part.note}</p>
   <ul class="${r.cls}${part.cols ? ' hwcols' + part.cols : ''}">
     ${items}
@@ -563,7 +568,7 @@ function keyHtml(part, i) {
   /* 🚨 `own` HAS NO KEY AND MUST NOT PRETEND TO. The only wrong answer lives in
      a sentence nobody has written yet, so the key says what to LOOK FOR. */
   if (part.kind === 'own')
-    return '<p class="kv"><b>Part ' + LETTER[i] + '</b> &mdash; answers vary. ' + part.key + '</p>';
+    return '<p class="kv"><b>Part ' + LETTER[i] + ':</b> answers vary. ' + part.key + '</p>';
 
   const rows = (part.items || []).map((it) => {
     if (part.kind === 'divide') {
@@ -580,7 +585,7 @@ function keyHtml(part, i) {
     return '<li>' + esc(it.answer) + '</li>';
   }).join('\n      ');
 
-  return '<p class="kv"><b>Part ' + LETTER[i] + '</b>' + (part.key ? ' &mdash; ' + part.key : '') +
+  return '<p class="kv"><b>Part ' + LETTER[i] + (part.key ? ':</b> ' + part.key : '</b>') +
          '</p>\n    <ol>\n      ' + rows + '\n    </ol>';
 }
 
@@ -811,7 +816,7 @@ function homeworkSheetBody(s) {
   const work = top + howToHtml(s.howTo) + passageHtml(s.passage, s) + partsHtml + online +
     gradingBlock(total, isGrammar(s));
   return (s.onePage ? '\n  <div class="onepage">' + work + '\n  </div>\n' : work) +
-    '\n  <div class="key">\n    <h2>Answer key</h2>\n    ' +
+    '\n  <div class="key">\n    <h2>Answer Key</h2>\n    ' +
     s.parts.map(keyHtml).join('\n    ') +
     '\n  </div>\n';
 }

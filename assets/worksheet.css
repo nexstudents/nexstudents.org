@@ -365,7 +365,7 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
    One row rather than two lines, so the footer costs the page no extra height. */
 .signoff{
   display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;
-  margin:22px 0 0;padding-top:14px;border-top:1px solid var(--line);
+  margin:22px 0 0;padding-top:14px;
   font-size:.83rem;color:var(--dim);
 }
 .signoff em{font-style:italic}
@@ -376,7 +376,7 @@ ol.qs>li{margin-bottom:20px;font-size:.95rem;line-height:1.55}
   .bonus{border-color:#000;page-break-inside:avoid}
   /* Grey reads as ink-saver on paper. Everything on a printed sheet is black. */
   .bonus h3,.bonus .why,.notes b,.pts,.words li b,.bonus .row b{color:#000}
-  .signoff{border-top-color:#000;color:#000;margin-top:10px;padding-top:8px}
+  .signoff{color:#000;margin-top:10px;padding-top:8px}
   .notes{page-break-inside:avoid}
 }
 @media (max-width:560px){
@@ -650,7 +650,8 @@ body.print-all .wk+.wk{page-break-before:always}
    The total is added up and signed by a person, so these are real ruled lines
    like the answer lines above, not decoration. Without the rule the words
    Total, Graded by and Notes float on the page with nothing to write on. */
-.grading{margin:6px 0 24px;padding:16px 0 0;border-top:1px solid var(--line-ink)}
+/* No rule above the box (Paul, 2026-11-26: no extra lines). The write-on lines below stay: they have a job. */
+.grading{margin:22px 0 24px;padding:0}
 .grading .gtotal,.grading .gline{margin:0 0 13px;display:flex;gap:10px;align-items:baseline}
 .grading .olbl{font-size:.78rem;color:var(--dim);white-space:nowrap;min-width:78px}
 .grading u{text-decoration:none;flex:1;border-bottom:1px solid var(--line-ink);min-height:1.7em}
@@ -1028,6 +1029,10 @@ a.btn.p-cart,a.btn.p-cart:visited{color:var(--a-ink)}
   .rsheet > h2:first-of-type{margin-top:10px}
 }
 @media print{ .rsheet h2{break-after:avoid;page-break-after:avoid} }
+/* Homework parts (2026-11-26): a part's heading and note stay with its first problem, and a problem never splits
+   across pages. Paul saw "Part A" alone at the foot of page 1 on the Pre-Algebra 3.1 sheet. The Total box rides with the last question (three sheets printed a page holding only it). */
+@media print{ .sheet h2.scored,.sheet h2.scored + .inst{break-after:avoid;page-break-after:avoid} .sheet ul.owns > li{break-inside:avoid;page-break-inside:avoid}
+  .sheet .grading{break-before:avoid;page-break-before:avoid} }
 
 /* 📄 ONE-PAGE SHEETS (`onePage: true`, Paul 2026-11-01: "it needs to fit on one page. the answer
    key can be on a second page"). Same look, less air, on screen and paper alike. A part with
